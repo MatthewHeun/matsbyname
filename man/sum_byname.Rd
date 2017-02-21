@@ -57,4 +57,5 @@ DF2[[2,"U"]] <- U
 DF2[[1,"G"]] <- G
 DF2[[2,"G"]] <- G
 sum_byname(DF2$U, DF2$G)
+DF2 \%>\% mutate(sums = sum_byname(U, G))
 }

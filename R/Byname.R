@@ -96,10 +96,10 @@ sum_byname <- function(augend, addend){
 #' difference_byname(DF$U, DF$G)
 #' DF %>% mutate(diffs = difference_byname(U, G))
 difference_byname <- function(minuend, subtrahend){
-  if (missing(minuend)){
+  if (is.null(minuend) | missing(minuend)){
     return(elementproduct_byname(-1, subtrahend))
   }
-  if (missing(subtrahend)){
+  if (is.null(subtrahend) | missing(subtrahend)){
     return(minuend)
   }
   binaryfunctionhelper_byname(difference_byname, `-`, minuend, subtrahend)
