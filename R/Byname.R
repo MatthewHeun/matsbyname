@@ -1,0 +1,875 @@
+library("parallel")
+library("magrittr")
+
+#' Name-wise addition of matrices.
+#' 
+#' @param augend Addend matrix or constant
+#' @param addend Augend matrix or constant
+#' 
+#' Performs a union and sorting of row and column names prior to summation.
+#' Zeroes are inserted for missing matrix elements.
+#'
+#' @return A matrix representing the name-wise sum of \code{addend} and \code{augend}
+#' @export
+#' 
+#' @examples
+#' sum_byname(2, 2)
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>% 
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' G <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' U + G # Non-sensical.  Row and column names not respected.
+#' sum_byname(U, G)
+#' sum_byname(U, 100)
+#' sum_byname(200, G)
+#' V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, commoditynames)) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' U + V # row and column names are non-sensical and blindly taken from first argument (U)
+#' \dontrun{sum_byname(U, V)} # Fails, because row and column types are different
+#' # This also works with lists
+#' sum_byname(list(U,U), list(G,G))
+#' sum_byname(list(U,U), list(100,100))
+#' sum_byname(list(U,U), as.list(rep_len(100, 2)))
+#' DF <- data.frame(U = I(list()), G = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' DF[[1,"G"]] <- G
+#' DF[[2,"G"]] <- G
+#' sum_byname(DF$U, DF$G)
+#' DF %>% mutate(sums = sum_byname(U, G))
+#' sum_byname(U) # If only one argument, return it.
+#' sum_byname(2, NULL)
+#' sum_byname(NULL, 1)
+#' sum_byname(list(NULL, 1), list(1, 1))
+#' DF2 <- data.frame(U = I(list()), G = I(list()))
+#' DF2[[1,"U"]] <- NULL
+#' DF2[[2,"U"]] <- U
+#' DF2[[1,"G"]] <- G
+#' DF2[[2,"G"]] <- G
+#' sum_byname(DF2$U, DF2$G)
+#' DF2 %>% mutate(sums = sum_byname(U, G))
+sum_byname <- function(augend, addend){
+  if (is.null(addend) | missing(addend)){
+    return(augend)
+  }
+  if (is.null(augend) | missing(augend)){
+    return(addend)
+  }
+  binaryfunctionhelper_byname(sum_byname, `+`, augend, addend)
+}
+
+#' Name-wise subtraction of matrices.
+#' 
+#' @param minuend Minuend matrix or constant
+#' @param subtrahend Subtrahend matrix or constant
+#' 
+#' Performs a union and sorting of row and column names prior to differentiation.
+#' Zeroes are inserted for missing matrix elements.
+#'
+#' @return A matrix representing the name-wise difference between \code{minuend} and \code{subtrahend}
+#' @export
+#' 
+#' @examples
+#' difference_byname(100, 50)
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' G <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' U - G # Non-sensical. Row and column names not respected.
+#' difference_byname(U, G) # Row and column names respected! Should be all zeroes.
+#' difference_byname(100, U)
+#' difference_byname(10, G)
+#' difference_byname(G) # When subtrahend is missing, return minuend (in this case, G).
+#' difference_byname(subtrahend = G) # When minuend is missing, return - subtrahend (in this case, -G)
+#' # This also works with lists
+#' difference_byname(list(100, 100), list(50, 50))
+#' difference_byname(list(U,U), list(G,G))
+#' DF <- data.frame(U = I(list()), G = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' DF[[1,"G"]] <- G
+#' DF[[2,"G"]] <- G
+#' difference_byname(DF$U, DF$G)
+#' DF %>% mutate(diffs = difference_byname(U, G))
+difference_byname <- function(minuend, subtrahend){
+  if (missing(minuend)){
+    return(elementproduct_byname(-1, subtrahend))
+  }
+  if (missing(subtrahend)){
+    return(minuend)
+  }
+  binaryfunctionhelper_byname(difference_byname, `-`, minuend, subtrahend)
+}
+
+#' Name-wise matrix multiplication
+#' 
+#' @param multiplicand Multiplicand matrix
+#' @param multiplier Multiplier matrix
+#' 
+#' Performs a union and sorting of multiplicand rows and multiplier columns by name prior to multiplication.
+#' Zeroes are inserted for missing matrix elements.
+#' Doing so ensures that 
+#' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
+#' I.e., the number of columns in \code{multiplicand} 
+#' will equal the number of rows in \code{multiplier},
+#' so long as the column names of multiplicand are unique and 
+#' the row names of multiplier are unique.
+#' If column type of \code{multiplicand} is not same as 
+#' row type of \code{multiplier}, 
+#' the function will fail.
+#' The result is matrix product 
+#' with row names from \code{multiplicand} and column names from \code{multiplier}.
+#'
+#' @return A matrix representing the name-wise product of \code{multiplicand} and \code{multiplier}
+#' @export
+#'
+#' @examples
+#' V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) %>% 
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("g2", "g1"))) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' matrixproduct_byname(V, G) # Succeeds because G is completed to include a row named c3 (that contains zeroes).
+#' \dontrun{V %*% G} # Fails because E lacks a row named c3.
+#' # This also works with lists
+#' matrixproduct_byname(list(V,V), list(G,G))
+#' DF <- data.frame(V = I(list()), G = I(list()))
+#' DF[[1,"V"]] <- V
+#' DF[[2,"V"]] <- V
+#' DF[[1,"G"]] <- G
+#' DF[[2,"G"]] <- G
+#' matrixproduct_byname(DF$V, DF$G)
+#' DF %>% mutate(matprods = matrixproduct_byname(V, G))
+matrixproduct_byname <- function(multiplicand, multiplier){
+  if (is.list(multiplicand) & is.list(multiplier)){
+    stopifnot(length(multiplicand) == length(multiplier))
+    return(mcMap(matrixproduct_byname, multiplicand, multiplier))
+  }
+  # Check that multiplicand columns and multiplier rows are same type
+  stopifnot(coltype(multiplicand) == rowtype(multiplier))
+  matrices <- complete_and_sort(multiplicand, transpose_byname(multiplier), margin = 2)
+  matrices$m2 <- transpose_byname(matrices$m2) # Need to re-transpose, because of transpose_byname above.
+  matrices$m1 %*% matrices$m2 %>%
+    setrowtype(rowtype(multiplicand)) %>% 
+    setcoltype(coltype(multiplier))
+}
+
+#' Name-wise matrix element multiplication
+#' 
+#' @param multiplicand Multiplicand matrix or constant
+#' @param multiplier Multiplier matrix or constant
+#' 
+#' Performs a union and sorting of names of rows and columns for both \code{multiplicand} and \code{multiplier}
+#' prior to element multiplication.
+#' Zeroes are inserted for missing matrix elements.
+#' Doing so ensures that 
+#' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
+#'
+#' @return A matrix representing the name-wise element product of \code{multiplicand} and \code{multiplier}
+#' @export
+#'
+#' @examples
+#' elementproduct_byname(2, 2)
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' G <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' U * G # Not what is desired, because names aren't aligned
+#' elementproduct_byname(U, G)
+#' elementproduct_byname(U, 0)
+#' elementproduct_byname(0, G)
+#' # This also works with lists
+#' elementproduct_byname(list(U, U), list(G, G))
+#' DF <- data.frame(U = I(list()), G = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' DF[[1,"G"]] <- G
+#' DF[[2,"G"]] <- G
+#' elementproduct_byname(DF$U, DF$G)
+#' DF %>% mutate(elementprods = elementproduct_byname(U, G))
+elementproduct_byname <- function(multiplicand, multiplier){
+  binaryfunctionhelper_byname(elementproduct_byname, `*`, multiplicand, multiplier)
+}
+
+#' Name-wise matrix element division
+#' 
+#' @param dividend Dividend matrix or constant
+#' @param divisor Divisor matrix or constant
+#' 
+#' Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
+#' prior to element division.
+#' Zeroes are inserted for missing matrix elements.
+#' Doing so ensures that 
+#' the dimensions of the \code{dividend} and \code{divisor} will be conformable.
+#'
+#' @return A matrix representing the name-wise element quotient of \code{dividend} and \code{divisor}
+#' @export
+#'
+#' @examples
+#' elementquotient_byname(100, 50)
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' G <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' U / G # Non-sensical.  Names aren't aligned
+#' elementquotient_byname(U, G)
+#' elementquotient_byname(U, 10)
+#' elementquotient_byname(10, G)
+#' # This also works with lists
+#' elementquotient_byname(10, list(G,G))
+#' elementquotient_byname(list(G,G), 10)
+#' elementquotient_byname(list(U, U), list(G, G))
+#' DF <- data.frame(U = I(list()), G = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' DF[[1,"G"]] <- G
+#' DF[[2,"G"]] <- G
+#' elementquotient_byname(DF$U, DF$G)
+#' DF %>% mutate(elementquotients = elementquotient_byname(U, G))
+elementquotient_byname <- function(dividend, divisor){
+  binaryfunctionhelper_byname(elementquotient_byname, `/`, dividend, divisor)
+}
+
+#' Invert a matrix
+#'
+#' This function transposes row and column names as well as row and column types.
+#' 
+#' @param m the matrix to be inverted. \code{m} must be square.
+#'
+#' @return the inversion 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' invert_byname(m)
+#' matrixproduct_byname(m, invert_byname(m))
+#' matrixproduct_byname(invert_byname(m), m)
+#' invert_byname(list(m,m))
+invert_byname <- function(m){
+  if (is.list(m)){
+    return(mcMap(invert_byname, m))
+  }
+  stopifnot(nrow(m) == ncol(m))
+  sort_rows_cols(m) %>%
+    solve %>%
+    setrowtype(coltype(m)) %>%
+    setcoltype(rowtype(m))
+}
+
+#' Transpose a matrix by name
+#'
+#' @param m the matrix to be transposed
+#'
+#' @return the transposed matrix
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' transpose_byname(m)
+#' transpose_byname(list(m,m))
+transpose_byname <- function(m){
+  if (is.list(m)){
+    return(mcMap(transpose_byname, m))
+  }
+  sort_rows_cols(m) %>%
+    t %>%
+    setrowtype(coltype(m)) %>%
+    setcoltype(rowtype(m))
+}
+
+#' Creates a diagonal "hat" matrix from a vector.
+#'
+#' @param v The vector from which a "hat" matrix is to be created.
+#' 
+#' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
+#' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
+#' \code{v} must be a matrix with at least one dimension of length 1 (a vector).
+#' The names of both dimensions of the hatized matrix are the same and taken from \code{v}.
+#' Note that the vector names are sorted prior to forming the "hat" matrix
+#'
+#' @return A square "hat" matrix with size equal to the length of \code{v}.
+#' @export
+#'
+#' @examples
+#' v <- matrix(1:10, ncol = 1, dimnames=list(c(paste0("i", 1:10)), c("c1"))) %>%
+#'   setrowtype("Industries") %>% setcoltype(NA)
+#' r <- matrix(1:5, nrow = 1, dimnames=list(c("r1"), c(paste0("c", 1:5)))) %>%
+#'   setrowtype(NA) %>% setcoltype("Commodities")
+#' hatize_byname(v)
+#' hatize_byname(r)
+#' # This also works with lists.
+#' hatize_byname(list(v, v))
+hatize_byname <- function(v){
+  if (is.list(v)){
+    return(mcMap(hatize_byname, v))
+  }
+  v_sorted <- sort_rows_cols(v) %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
+  out <- OpenMx::vec2diag(v_sorted)
+  if (ncol(v) == 1){
+    rownames(out) <- rownames(v_sorted)
+    colnames(out) <- rownames(v_sorted)
+    out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
+  } else if (nrow(v) == 1){
+    rownames(out) <- colnames(v)
+    colnames(out) <- colnames(v)
+    out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
+  } else {
+    stop("matrix v must have at least one dimension of length 1 in hatize")
+  }
+  return(out)
+}
+
+#' Named identity matrix
+#'
+#' Creates an identity matrix (I) with ones on the diagonal with same size and names as \code{m}.
+#' \code{m} must be square.
+#' 
+#' @param m The matrix whose names and dimensions are to be preserved in an identity matrix.
+#'
+#' @return A square identity matrix with ones on the diagonal. 
+#' Row and column names are taken from row and column
+#' names of \code{m}.
+#' Row and column names are sorted.
+#' @export
+#'
+#' @examples
+#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' identize_byname(m)
+#' n <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' identize_byname(n)
+#' # This also works with lists
+#' identize_byname(list(m, m))
+identize_byname <- function(m){
+  if (is.list(m)){
+    return(mcMap(identize_byname, m))
+  }
+  stopifnot(nrow(m) == ncol(m))
+  n <- sort_rows_cols(m)
+  rep_len(1, length.out = nrow(n)) %>%
+    matrix(ncol = 1, dimnames = list(paste0("r", 1:nrow(n)), c("c1"))) %>%
+    hatize_byname %>%
+    setrownames_byname(rownames(n)) %>%
+    setcolnames_byname(colnames(n)) %>%
+    setrowtype(rowtype(m)) %>% 
+    setcoltype(coltype(m))
+}
+
+#' Select rows of a matrix (or list of matrices) by name
+#'
+#' @param m a matrix or a list of matrices
+#' @param row_names a vector of String containing the row names to keep
+#'
+#' @return matrix with only rows named \code{row_names} kept.
+#' @export
+#'
+#' @examples
+#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' select_rows_byname(m, c("i1", "i4"))
+#' # Also works for lists
+#' select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
+#' select_rows_byname(list(m,m), row_names = c("i1", "i4"))
+select_rows_byname <- function(m, row_names){
+  if (is.list(m)){
+    row_names <- make_list(row_names, n = length(m))
+    return(mcMap(select_rows_byname, m = m, row_names = row_names))
+  }
+  return(m[row_names, ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+}
+
+#' Select columns of a matrix (or list of matrices) by name
+#'
+#' @param m a matrix or a list of matrices
+#' @param col_names a vector of String containing the column names to keep
+#'
+#' @return matrix with only columns named \code{col_names} kept.
+#' @export
+#'
+#' @examples
+#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' select_cols_byname(m, c("c1", "c4"))
+#' # Also works for lists
+#' select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
+#' select_cols_byname(list(m,m), col_names = c("c1", "c4"))
+select_cols_byname <- function(m, col_names){
+  if (is.list(m)){
+    col_names <- make_list(col_names, n = length(m))
+    return(mcMap(select_cols_byname, m = m, col_names = col_names))
+  }
+  return(m[ , col_names] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+}
+
+#' Row sums, sorted by name
+#'
+#' @param m a matrix or data frame from which row sums are desired.
+#' @param colname Name of the column containing row sums
+#' 
+#' Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
+#' In contrast to \code{rowSums} (which returns a \code{numeric} result), 
+#' the return value from \code{rowsums_byname} is a matrix.
+#' An optional \code{colname} can be supplied.
+#'
+#' @return a column vector of type \code{matrix} containing the row sums of \code{m}
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' rowsums_byname(m)
+#' rowsums_byname(m, "E.ktoe")
+#' # This also works with lists
+#' rowsums_byname(list(m, m))
+#' rowsums_byname(list(m, m), "E.ktoe")
+#' rowsums_byname(list(m, m), NA)
+#' rowsums_byname(list(m, m), NULL)
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' rowsums_byname(DF$m[[1]])
+#' rowsums_byname(DF$m)
+#' ans <- DF %>% mutate(rs = rowsums_byname(m))
+#' ans
+#' ans$rs[[1]]
+rowsums_byname <- function(m, colname = NA){
+  if (is.list(m)){
+    if (is.null(colname)){
+      colname <- NA
+    }
+    return(mcMap(rowsums_byname, m, colname))
+  }
+  if (is.na(colname) | is.null(colname)){
+    # Set the column name to the column type, since we added all items of coltype together.
+    colname <- coltype(m)
+  }
+  rowSums(m) %>%
+    # Preserve matrix structure (i.e., result will be a column vector of type matrix)
+    matrix(byrow = TRUE) %>%
+    # Preserve row names
+    setrownames_byname(rownames(m)) %>%
+    # But sort the result on names
+    sort_rows_cols %>%
+    setcolnames_byname(colname) %>%
+    setrowtype(rowtype(m)) %>%
+    setcoltype(coltype(m))
+}
+
+#' Column sums, sorted by name
+#'
+#' @param m a matrix or data frame from which column sums are desired.
+#' @param rowname Name of the row containing column sums
+#' 
+#' Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
+#' In contrast to \code{colSums} (which returns a \code{numeric} result), 
+#' the return value from \code{colsums_byname} is a matrix.
+#' An optional \code{rowname} can be supplied.
+#'
+#' @return a row vector of type \code{matrix} containing the column sums of \code{m}.
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' colsums_byname(m)
+#' colsums_byname(m, "E.ktoe")
+#' m %>% colsums_byname %>% rowsums_byname
+#' # This also works with lists
+#' colsums_byname(list(m, m))
+#' colsums_byname(list(m, m), "E.ktoe")
+#' colsums_byname(list(m, m), NA)
+#' colsums_byname(list(m, m), NULL)
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' colsums_byname(DF$m[[1]])
+#' colsums_byname(DF$m)
+#' colsums_byname(DF$m, "sums")
+#' res <- DF %>% mutate(
+#'   cs = colsums_byname(m),
+#'   cs2 = colsums_byname(m, rowname = "sum")
+#' )
+#' res$cs2
+colsums_byname <- function(m, rowname = NA){
+  if (is.list(m)){
+    if (is.null(rowname)){
+      rowname <- NA
+    }
+    return(mcMap(colsums_byname, m, rowname))
+  }
+  if (is.na(rowname) | is.null(rowname)){
+    # Set the column name to the column type, since we added all items of coltype together.
+    rowname <- rowtype(m)
+  }
+  colSums(m) %>%
+    # Preserve matrix structure (i.e., result will be a row vector of type matrix)
+    matrix(nrow = 1) %>%
+    # Preserve column names
+    setcolnames_byname(colnames(m)) %>%
+    # But sort the result on names
+    sort_rows_cols %>%
+    setrownames_byname(rowname) %>%
+    setrowtype(rowtype(m)) %>%
+    setcoltype(coltype(m))
+}
+
+#' Sum of all elements in a matrix
+#' 
+#' This is functionally equivalent to \code{m %>% rowsum_byname %>% colsum_byname},
+#' but returns a single numeric value instead of a 1x1 matrix.
+#'
+#' @param m the matrix whose elements are to be summed
+#'
+#' @return the sum of all elements in \code{m} as a numeric
+#' @export
+#'
+#' @examples
+#' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' sumall_byname(m)
+#' rowsums_byname(m) %>% colsums_byname
+#' # Also works for lists
+#' sumall_byname(list(m,m))
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' sumall_byname(DF$m[[1]])
+#' sumall_byname(DF$m)
+#' res <- DF %>% mutate(
+#'   sums = sumall_byname(m)
+#' )
+#' res$sums
+sumall_byname <- function(m){
+  if (is.list(m)){
+    return(mcMap(sumall_byname, m))
+  }
+  m %>%
+    rowsums_byname %>%
+    colsums_byname %>%
+    as.numeric
+}
+
+#' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
+#' 
+#' \code{m} must be square.
+#' Note: the order of rows and columns of \code{m} may before subtracting from \code{I}, 
+#' because the rows and columns are sorted by name prior to subtracting from \code{I}.
+#'
+#' @param m the matrix to be subtracted from \code{I}
+#'
+#' @return The difference between an identity matrix (\code{I}) and \code{m} 
+#' (whose rows and columns have been completed and sorted)
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' diag(1, nrow = 2) - m # Rows and columns of A are unsorted
+#' Iminus_byname(m) # Rows and columns of A are sorted prior to subtracting from the identity matrix
+#' # This also works with lists
+#' Iminus_byname(list(m,m))
+Iminus_byname <- function(m){
+  if (is.list(m)){
+    return(mcMap(Iminus_byname, m))
+  }
+  sort_rows_cols(m) %>% 
+    setrowtype(rowtype(m)) %>% 
+    setcoltype(coltype(m)) %>% 
+    difference_byname(identize_byname(.), .)
+}
+
+#' Sets row names
+#' 
+#' Sets row names in a way that is amenable to use in chaining operations in a functional programming way
+#'
+#' @param m The matrix or data frame on which row names are to be set
+#' @param rownames The new row names
+#'
+#' @return a copy of \code{m} with new row names
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' setrownames_byname(m, c("a", "b"))
+#' setrownames_byname(m %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("c", "d"))
+#' m %>% setrownames_byname(NULL)
+#' m %>% setrownames_byname(NA)
+#' # This also works for lists
+#' setrownames_byname(list(m,m), list(c("a", "b"), c("c", "d")))
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' setrownames_byname(DF$m, list(c("r1", "r2")))
+#' setrownames_byname(DF$m, list(c("a", "b"), c("c", "d")))
+#' DF <- DF %>% mutate(m = setrownames_byname(m, list(c("r1", "r2"))))
+#' DF$m[[1]]
+setrownames_byname <- function(m, rownames){
+  if (is.list(m) & is.list(rownames)){
+    return(mcMap(setrownames_byname, m, rownames))
+  }
+  out <- m
+  if (is.null(rownames) || is.na(rownames)){
+    # replace with default row names
+    rownames(out) <- paste0("[", 1:nrow(out),",]")
+  } else {
+    rownames(out) <- rownames
+  }
+  return(out)
+}
+
+#' Sets column names
+#' 
+#' Sets column names in a way that is amenable to use in chaining operations in a functional programming way
+#'
+#' @param m The matrix or data frame on which column names are to be set
+#' @param colnames The new column names. If \code{NULL} or \code{NA}, names are reset to default: "[,j]".
+#'
+#' @return a copy of \code{m} with new column names
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>% 
+#'   setrowtype("Industries") %>% setcoltype("Commodity")
+#' setcolnames_byname(m, c("a", "b", "c"))
+#' setcolnames_byname(m, NULL) # Returns to default columns names "[,j]"
+#' setcolnames_byname(m, NA) # Returns to default columns names "[,j]"
+#' # This also works for lists
+#' setcolnames_byname(list(m,m), list(c("a", "b", "c"), c("d", "e", "f")))
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' setcolnames_byname(DF$m, list(c("cnew1", "cnew2", "cnew3")))
+#' setcolnames_byname(DF$m, list(c("a", "b", "c"), c("d", "e", "f")))
+#' DF <- DF %>% mutate(m = setcolnames_byname(m, list(c("cnew1", "cnew2", "cnew3"))))
+#' DF$m[[1]]
+#' DF$m[[2]]
+setcolnames_byname <- function(m, colnames) {
+  if (is.list(m) & is.list(colnames)){
+    return(mcMap(setcolnames_byname, m, colnames))
+  }
+  out <- m
+  if (is.null(colnames) || is.na(colnames)){
+    # replace with default column names
+    colnames(out) <- paste0("[,", 1:ncol(out), "]")
+  } else {
+    colnames(out) <- colnames
+  }
+  return(out)
+}
+
+#' Sets row type for a matrix or a list of matrices
+#' 
+#' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{%>%})
+#' in a functional way.
+#' Row types are strings stored in the \code{rowtype} attribute.
+#'
+#' @param x the matrix on which row type is to be set
+#' @param rowtype the type of item stored in rows
+#'
+#' @return a copy of \code{x} with \code{rowtype} attribute set
+#' @export
+#'
+#' @examples
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames))
+#' U %>% setrowtype("Commodities")
+#' # This also works for lists
+#' setrowtype(list(U,U), rowtype = "Commodities")
+#' setrowtype(list(U,U), rowtype = list("Commodities", "Commodities"))
+#' DF <- data.frame(U = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' setrowtype(DF$U, "Commodities")
+#' DF <- DF %>% mutate(newcol = setrowtype(U, "Commodities"))
+#' DF$newcol[[1]]
+#' DF$newcol[[2]]
+setrowtype <- function(x, rowtype){
+  if (is.list(x)){
+    return(mcMap(setrowtype, x, rowtype))
+  }
+  attr(x, "rowtype") <- rowtype
+  return(x)
+}
+
+#' Sets column type for a matrix or a list of matrices
+#' 
+#' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{%>%})
+#' in a functional way.
+#' Column types are strings stored in the \code{coltype} attribute.
+#'
+#' @param x the matrix on which column type is to be set
+#' @param coltype the type of item stored in columns
+#'
+#' @return a copy of \code{x} with \code{coltype} attribute set
+#' @export
+#'
+#' @examples
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames))
+#' U %>% setcoltype("Industries")
+#' # This also works for lists
+#' setcoltype(list(U,U), coltype = "Industries")
+#' setcoltype(list(U,U), coltype = list("Industries", "Industries"))
+#' DF <- data.frame(U = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' setcoltype(DF$U, "Industries")
+#' DF <- DF %>% mutate(newcol = setcoltype(U, "Industries"))
+#' DF$newcol[[1]]
+#' DF$newcol[[2]]
+setcoltype <- function(x, coltype){
+  if (is.list(x)){
+    return(mcMap(setcoltype, x, coltype))
+  }
+  attr(x, "coltype") <- coltype
+  return(x)
+}
+
+#' Row type
+#'
+#' Extracts row type of \code{x}.
+#' 
+#' @param x the object from which you want to extract row types
+#'
+#' @return the row type of \code{x}
+#' @export
+#'
+#' @examples
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>% 
+#'   setrowtype(rowtype = "Commodities") %>% setcoltype("Industries")
+#' rowtype(U)
+#' # This also works for lists
+#' rowtype(list(U,U))
+rowtype <- function(x){
+  if (is.list(x)){
+    return(mcMap(rowtype, x))
+  }
+  return(attr(x, "rowtype"))
+}
+
+#' Column type
+#'
+#' Extracts column type of \code{x}.
+#' 
+#' @param x the object from which you want to extract column types
+#'
+#' @return the column type of \code{x}
+#' @export
+#'
+#' @examples
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>% 
+#'   setrowtype(rowtype = "Commodities") %>% setcoltype("Industries")
+#' coltype(U)
+#' # This also works for lists
+#' coltype(list(U,U))
+coltype <- function(x){
+  if (is.list(x)){
+    return(mcMap(coltype, x))
+  }
+  return(attr(x, "coltype"))
+}
+
+#' Compare two matrices (byname)
+#'
+#' Matries are completed and sorted relative to one another before comparison
+#'
+#' @param a the first matrix to be compared
+#' @param b the second matrix to be compared
+#'
+#' @return \code{TRUE} iff row and column types are same \code{and} 
+#' row and column names are same \code{and}
+#' all entries in the matrix are same.
+#' @export
+#'
+#' @examples
+#' a <- matrix(1:4, nrow = 2)
+#' b <- matrix(1:4, nrow = 2)
+#' equal_byname(a, b)
+#' a <- a %>% setrowtype("Industries") %>% setcoltype("Commodities")
+#' equal_byname(a, b) # FALSE because a has row and column types, but b does not.
+#' b <- b %>% setrowtype("Industries") %>% setcoltype("Commodities")
+#' equal_byname(a, b)
+#' dimnames(a) <- list(c("i1", "i2"), c("c1", "c2"))
+#' dimnames(b) <- list(c("c1", "c2"), c("i1", "i2"))
+#' equal_byname(a, b) # FALSE, because row and column names are not equal
+#' dimnames(b) <- dimnames(a)
+#' equal_byname(a, b)
+equal_byname <- function(a, b) {
+  if (is.list(a) & is.list(b)){
+    return(mcMap(equal_byname, a, b))
+  }
+  mats <- complete_and_sort(a, b)
+  m1 <- mats$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+  m2 <- mats$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  return(isTRUE(all.equal(m1, m2)))
+}
+
+#' Helper function for binary _byname operations
+#' 
+#' Puts all tasks associated with performing a binary matrix operation _byname in one place,
+#' including dealing intelligently with lists.
+#'
+#' @param FUN  the function that is calling this helper
+#' @param OPER the operation that \code{FUN} performs
+#' @param a    the first operand
+#' @param b    the second operand
+#'
+#' @return the result of applying \code{OPER} to \code{a} and \code{b} via \code{FUN}
+binaryfunctionhelper_byname <- function(FUN, OPER, a, b){
+  if (is.list(a) | is.list(b)){
+    # One is a list and the other is not.  Make the other into a list.
+    if (! is.list(a)){
+      a <- make_list(a, n = length(b))
+    }
+    if (! is.list(b)){
+      b <- make_list(b, n = length(a))
+    }
+  }
+  if (is.list(a) & is.list(b)){
+    stopifnot(length(a) == length(b))
+    return(mcMap(FUN, a, b))
+  }
+  # Neither a nor b are lists.
+  if (! is.matrix(a) & ! is.matrix(b)){
+    # Neither are matrices. Assume we have two constants. Apply OPER to them and return.
+    return(OPER(a,b))
+  }
+  # If one of a and b is not a matrix, make appropriate-sized matrix before continuing with the rest of the function.
+  if (! is.matrix(a)){
+    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b)) %>% 
+                setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  }
+  if (! is.matrix(b)){
+    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a)) %>% 
+      setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+  }
+  # Check that row and column types are equal between a and b, but only if they exist.
+  if (!is.null(rowtype(a)) & !is.null(rowtype(b)) & !is.na(rowtype(a)) & !is.na(rowtype(b))){
+    stopifnot(rowtype(a) == rowtype(b))
+  }
+  if (!is.null(coltype(a)) & !is.null(coltype(b)) & !is.na(coltype(a)) & !is.na(coltype(b))){
+    stopifnot(coltype(a) == coltype(b))
+  }
+  
+  matrices <- complete_and_sort(a, b)
+  OPER(matrices$m1, matrices$m2) %>%
+    setrowtype(rowtype(a)) %>% 
+    setcoltype(coltype(a))
+}

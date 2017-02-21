@@ -1,0 +1,25 @@
+Package: byname
+Type: Package
+Title: Matrix mathematics that respects dimnames and provides row and column
+    types
+Version: 0.1
+Date: 2017-01-29
+Author: Matthew Kuperus Heun
+Maintainer: Matthew Kuperus Heun <matthew.heun@me.com>
+Description: Am implementation of matrix mathematics operations that respects 
+    names for rows and columns. 
+    For example, when two matrices with different row and column names are summed, 
+    the value of the sum contains the union of rows and columns of both matrices,
+    with missing rows and columns inserted as zeroes prior to the sum operation.
+    This package also provides the capability to provide "types" for the data 
+    in rows and columns. 
+    For example, rows might contain industries and columns might contain products.
+    The functions contained in this package simplify
+    matrix mathematics in situations where operand matrices are from different data sources.
+License: <<No license at this point.>>
+RoxygenNote: 6.0.1
+Imports:
+    dplyr,
+    magrittr,
+    OpenMx,
+    parallel
