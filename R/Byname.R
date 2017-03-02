@@ -562,7 +562,7 @@ sumall_byname <- function(m){
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
 #' 
 #' \code{m} must be square.
-#' Note: the order of rows and columns of \code{m} may before subtracting from \code{I}, 
+#' Note: the order of rows and columns of \code{m} may change before subtracting from \code{I}, 
 #' because the rows and columns are sorted by name prior to subtracting from \code{I}.
 #'
 #' @param m the matrix to be subtracted from \code{I}
