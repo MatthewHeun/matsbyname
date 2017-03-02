@@ -9,7 +9,7 @@ rowsums_byname(m, colname = NA)
 \arguments{
 \item{m}{a matrix or data frame from which row sums are desired.}
 
-\item{colname}{Name of the column containing row sums
+\item{colname}{name of the output column containing row sums
 
 Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
 In contrast to \code{rowSums} (which returns a \code{numeric} result), 

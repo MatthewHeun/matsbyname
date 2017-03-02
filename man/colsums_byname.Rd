@@ -4,12 +4,12 @@
 \alias{colsums_byname}
 \title{Column sums, sorted by name}
 \usage{
-colsums_byname(m, rowname = NA)
+colsums_byname(m, colname = NA)
 }
 \arguments{
 \item{m}{a matrix or data frame from which column sums are desired.}
 
-\item{rowname}{Name of the row containing column sums
+\item{colname}{name of the output column containing column sums
 
 Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
 In contrast to \code{colSums} (which returns a \code{numeric} result), 

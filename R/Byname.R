@@ -414,7 +414,7 @@ select_cols_byname <- function(m, col_names){
 #' Row sums, sorted by name
 #'
 #' @param m a matrix or data frame from which row sums are desired.
-#' @param colname Name of the column containing row sums
+#' @param colname name of the output column containing row sums
 #' 
 #' Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
 #' In contrast to \code{rowSums} (which returns a \code{numeric} result), 
@@ -468,7 +468,7 @@ rowsums_byname <- function(m, colname = NA){
 #' Column sums, sorted by name
 #'
 #' @param m a matrix or data frame from which column sums are desired.
-#' @param rowname Name of the row containing column sums
+#' @param colname name of the output column containing column sums
 #' 
 #' Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
 #' In contrast to \code{colSums} (which returns a \code{numeric} result), 
@@ -500,7 +500,7 @@ rowsums_byname <- function(m, colname = NA){
 #'   cs2 = colsums_byname(m, rowname = "sum")
 #' )
 #' res$cs2
-colsums_byname <- function(m, rowname = NA){
+colsums_byname <- function(m, colname = NA){
   if (is.list(m)){
     if (is.null(rowname)){
       rowname <- NA
