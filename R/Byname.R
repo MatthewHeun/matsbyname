@@ -449,8 +449,15 @@ rowsums_byname <- function(m, colname = NA){
     }
     return(mcMap(rowsums_byname, m, colname))
   }
-  if (is.na(colname) | is.null(colname)){
+  # if (is.na(colname) | is.null(colname)){
+  #   # Set the column name to the column type, since we added all items of coltype together.
+  #   colname <- coltype(m)
+  # }
+  if (is.null(colname)){
     # Set the column name to the column type, since we added all items of coltype together.
+    colname <- coltype(m)
+  }
+  if (is.na(colname)){
     colname <- coltype(m)
   }
   rowSums(m) %>%
@@ -468,7 +475,7 @@ rowsums_byname <- function(m, colname = NA){
 #' Column sums, sorted by name
 #'
 #' @param m a matrix or data frame from which column sums are desired.
-#' @param colname name of the output column containing column sums
+#' @param rowname name of the output row containing column sums
 #' 
 #' Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
 #' In contrast to \code{colSums} (which returns a \code{numeric} result), 
@@ -482,13 +489,13 @@ rowsums_byname <- function(m, colname = NA){
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' colsums_byname(m)
-#' colsums_byname(m, "E.ktoe")
+#' colsums_byname(m, rowname = "E.ktoe")
 #' m %>% colsums_byname %>% rowsums_byname
 #' # This also works with lists
 #' colsums_byname(list(m, m))
-#' colsums_byname(list(m, m), "E.ktoe")
-#' colsums_byname(list(m, m), NA)
-#' colsums_byname(list(m, m), NULL)
+#' colsums_byname(list(m, m), rowname = "E.ktoe")
+#' colsums_byname(list(m, m), rowname = NA)
+#' colsums_byname(list(m, m), rowname = NULL)
 #' DF <- data.frame(m = I(list()))
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
@@ -500,15 +507,22 @@ rowsums_byname <- function(m, colname = NA){
 #'   cs2 = colsums_byname(m, rowname = "sum")
 #' )
 #' res$cs2
-colsums_byname <- function(m, colname = NA){
+colsums_byname <- function(m, rowname = NA){
   if (is.list(m)){
     if (is.null(rowname)){
       rowname <- NA
     }
     return(mcMap(colsums_byname, m, rowname))
   }
-  if (is.na(rowname) | is.null(rowname)){
+  # if (is.null(rowname) | is.na(rowname)){
+  #   # Set the column name to the column type, since we added all items of coltype together.
+  #   rowname <- rowtype(m)
+  # }
+  if (is.null(rowname)){
     # Set the column name to the column type, since we added all items of coltype together.
+    rowname <- rowtype(m)
+  }
+  if (is.na(rowname)){
     rowname <- rowtype(m)
   }
   colSums(m) %>%
@@ -561,9 +575,10 @@ sumall_byname <- function(m){
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
 #' 
-#' \code{m} must be square.
-#' Note: the order of rows and columns of \code{m} may change before subtracting from \code{I}, 
+#' The order of rows and columns of \code{m} may change before subtracting from \code{I}, 
 #' because the rows and columns are sorted by name prior to subtracting from \code{I}.
+#' Furthermore, if \code{m} is not square, it will be made square
+#' before subtracting from \code{I} by calling \code{complete_and_sort}.
 #'
 #' @param m the matrix to be subtracted from \code{I}
 #'
@@ -578,11 +593,17 @@ sumall_byname <- function(m){
 #' Iminus_byname(m) # Rows and columns of A are sorted prior to subtracting from the identity matrix
 #' # This also works with lists
 #' Iminus_byname(list(m,m))
+#' # If the m is not square before subtracting from I,
+#' # it will be made square by the function complete_and_sort.
+#' m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) %>% 
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' Iminus_byname(m2)
 Iminus_byname <- function(m){
   if (is.list(m)){
     return(mcMap(Iminus_byname, m))
   }
-  sort_rows_cols(m) %>% 
+  # sort_rows_cols(m) %>% 
+  complete_and_sort(m) %>% 
     setrowtype(rowtype(m)) %>% 
     setcoltype(coltype(m)) %>% 
     difference_byname(identize_byname(.), .)

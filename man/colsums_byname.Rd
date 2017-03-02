@@ -4,12 +4,12 @@
 \alias{colsums_byname}
 \title{Column sums, sorted by name}
 \usage{
-colsums_byname(m, colname = NA)
+colsums_byname(m, rowname = NA)
 }
 \arguments{
 \item{m}{a matrix or data frame from which column sums are desired.}
 
-\item{colname}{name of the output column containing column sums
+\item{rowname}{name of the output row containing column sums
 
 Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
 In contrast to \code{colSums} (which returns a \code{numeric} result), 
@@ -26,13 +26,13 @@ Column sums, sorted by name
 m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 colsums_byname(m)
-colsums_byname(m, "E.ktoe")
+colsums_byname(m, rowname = "E.ktoe")
 m \%>\% colsums_byname \%>\% rowsums_byname
 # This also works with lists
 colsums_byname(list(m, m))
-colsums_byname(list(m, m), "E.ktoe")
-colsums_byname(list(m, m), NA)
-colsums_byname(list(m, m), NULL)
+colsums_byname(list(m, m), rowname = "E.ktoe")
+colsums_byname(list(m, m), rowname = NA)
+colsums_byname(list(m, m), rowname = NULL)
 DF <- data.frame(m = I(list()))
 DF[[1,"m"]] <- m
 DF[[2,"m"]] <- m

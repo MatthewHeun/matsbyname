@@ -14,9 +14,10 @@ The difference between an identity matrix (\code{I}) and \code{m}
 (whose rows and columns have been completed and sorted)
 }
 \description{
-\code{m} must be square.
-Note: the order of rows and columns of \code{m} may before subtracting from \code{I}, 
+The order of rows and columns of \code{m} may change before subtracting from \code{I}, 
 because the rows and columns are sorted by name prior to subtracting from \code{I}.
+Furthermore, if \code{m} is not square, it will be made square
+before subtracting from \code{I} by calling \code{complete_and_sort}.
 }
 \examples{
 m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) \%>\%
@@ -25,4 +26,9 @@ diag(1, nrow = 2) - m # Rows and columns of A are unsorted
 Iminus_byname(m) # Rows and columns of A are sorted prior to subtracting from the identity matrix
 # This also works with lists
 Iminus_byname(list(m,m))
+# If the m is not square before subtracting from I,
+# it will be made square by the function complete_and_sort.
+m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) \%>\% 
+  setrowtype("Industries") \%>\% setcoltype("Commodities")
+Iminus_byname(m2)
 }
