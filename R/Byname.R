@@ -368,15 +368,19 @@ identize_byname <- function(m){
 #' Select rows of a matrix (or list of matrices) by name
 #'
 #' @param m a matrix or a list of matrices
-#' @param row_names a vector of String containing the row names to keep
+#' @param row_names a vector of Strings containing the row names to keep
+#' or delete (if names are preceded by a \code{-}).
 #'
-#' @return matrix with only rows named \code{row_names} kept.
+#' @return matrix with rows selected by \code{row_names}.
 #' @export
 #'
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_rows_byname(m, c("i1", "i4"))
+#' select_rows_byname(m, c("-i3"))
+#' select_rows_byname(m, c("-i1", "-i3"))
+#' select_rows_byname(m, c("-i1", "-i3", "i4")) # Keeping has precedence.
 #' # Also works for lists
 #' select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
 #' select_rows_byname(list(m,m), row_names = c("i1", "i4"))
@@ -385,21 +389,38 @@ select_rows_byname <- function(m, row_names){
     row_names <- make_list(row_names, n = length(m))
     return(mcMap(select_rows_byname, m = m, row_names = row_names))
   }
-  return(m[row_names, ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # return(m[row_names, ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  retain <- retain_remove(row_names)[["retain_names"]]
+  remove <- retain_remove(row_names)[["remove_names"]]
+  retain_indices <- which(rownames(m) %in% retain)
+  remove_indices <- which(rownames(m) %in% remove)
+  if (length(retain_indices) == 0){
+    # Nothing to be retained, so try removing columns
+    if (length(remove) == 0){
+      # Do nothing
+      return(m)
+    }
+    # Remove
+    return(m[-remove_indices , ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  }
+  # Retain
+  return(m[retain_indices , ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
 }
 
 #' Select columns of a matrix (or list of matrices) by name
 #'
 #' @param m a matrix or a list of matrices
-#' @param col_names a vector of String containing the column names to keep
+#' @param col_names a vector of Strings containing the column names to keep
+#' or delete (if names are preceded by a \code{-}).
 #'
-#' @return matrix with only columns named \code{col_names} kept.
+#' @return matrix with columns selected according to \code{col_names}.
 #' @export
 #'
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_cols_byname(m, c("c1", "c4"))
+#' select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4"))
 #' # Also works for lists
 #' select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
 #' select_cols_byname(list(m,m), col_names = c("c1", "c4"))
@@ -408,7 +429,54 @@ select_cols_byname <- function(m, col_names){
     col_names <- make_list(col_names, n = length(m))
     return(mcMap(select_cols_byname, m = m, col_names = col_names))
   }
-  return(m[ , col_names] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  retain <- retain_remove(col_names)[["retain_names"]]
+  remove <- retain_remove(col_names)[["remove_names"]]
+  retain_indices <- which(colnames(m) %in% retain)
+  remove_indices <- which(colnames(m) %in% remove)
+  if (length(retain_indices) == 0){
+    # Nothing to be retained, so try removing columns
+    if (length(remove) == 0){
+      # Do nothing
+      return(m)
+    }
+    # Remove
+    return(m[ , -remove_indices] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  }
+  # Retain
+  return(m[ , retain_indices] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+}
+
+
+#' Decides which columns to retain and remove.
+#' 
+#' This is a helper function for \code{select_rows_byname} and \code{select_cols_byname}.
+#' Specify removal by a leading \code{-}.
+#' Names without a leading \code{-} will be retained.
+#' Any number of leading \code{-} will be ignored when deciding the names of columns to be removed.
+#'
+#' @param col_names names of columns to be retained or removed. 
+#'
+#' @return a list with two items: \code{retain_names} and \code{remove_names}.
+#'
+#' @examples 
+#' retain_remove("c1")
+#' retain_remove("-c1")
+#' retain_remove(c("c1", "-c1")) # Retain takes precedence.
+#' names <- c("-c1", "-c4", "-----c3", "c2", "c4", "c4") # Multiple "-" ignored.
+#' retain_remove(names)
+retain_remove <- function(col_names){
+  # Get the indices in col_names of columns to be removed and retained
+  remove_indices <- which(startsWith(col_names, "-"))
+  retain_indices <- setdiff(1:length(col_names), remove_indices)
+  # Get the names of columns to be removed and retained
+  remove_names <- col_names[remove_indices] %>% sub("^-*", "", .) %>% unique # removes any number of leading "-"
+  retain_names <- col_names[retain_indices] %>% unique
+  # Get the names of columns that are in both remove and retain
+  common_names <- intersect(remove_names, retain_names)
+  # Remove common names from those columns that are to be deleted.
+  # This step means that keeping takes precedence over removing.
+  remove_names <- setdiff(remove_names, common_names)
+  return(list(retain_names = retain_names, remove_names = remove_names))  
 }
 
 #' Row sums, sorted by name

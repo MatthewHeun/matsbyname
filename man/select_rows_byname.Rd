@@ -9,10 +9,11 @@ select_rows_byname(m, row_names)
 \arguments{
 \item{m}{a matrix or a list of matrices}
 
-\item{row_names}{a vector of String containing the row names to keep}
+\item{row_names}{a vector of Strings containing the row names to keep
+or delete (if names are preceded by a \code{-}).}
 }
 \value{
-matrix with only rows named \code{row_names} kept.
+matrix with rows selected by \code{row_names}.
 }
 \description{
 Select rows of a matrix (or list of matrices) by name
@@ -21,6 +22,9 @@ Select rows of a matrix (or list of matrices) by name
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 select_rows_byname(m, c("i1", "i4"))
+select_rows_byname(m, c("-i3"))
+select_rows_byname(m, c("-i1", "-i3"))
+select_rows_byname(m, c("-i1", "-i3", "i4")) # Keeping has precedence.
 # Also works for lists
 select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
 select_rows_byname(list(m,m), row_names = c("i1", "i4"))
