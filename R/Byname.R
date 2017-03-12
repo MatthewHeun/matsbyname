@@ -677,11 +677,63 @@ Iminus_byname <- function(m){
     difference_byname(identize_byname(.), .)
 }
 
+#' Gets row names
+#' 
+#' Gets row names in a way that is amenable to use in chaining operations in a functional programming way
+#'
+#' @param m The matrix or data frame on which row names are to be retrieved
+#'
+#' @return row names of \code{m}
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' getrownames_byname(m)
+#' # This also works for lists
+#' getrownames_byname(list(m,m))
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' getrownames_byname(DF$m)
+getrownames_byname <- function(m){
+  if (is.list(m)){
+    return(mcMap(getrownames_byname, m))
+  }
+  return(rownames(m))
+}
+
+#' Gets column names
+#' 
+#' Gets column names in a way that is amenable to use in chaining operations in a functional programming way
+#'
+#' @param m The matrix or data frame from which column names are to be retrieved
+#'
+#' @return column names of \code{m}
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' getcolnames_byname(m)
+#' # This also works for lists
+#' getcolnames_byname(list(m,m))
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' getcolnames_byname(DF$m)
+getcolnames_byname <- function(m){
+  if (is.list(m)){
+    return(mcMap(getcolnames_byname, m))
+  }
+  return(colnames(m))
+}
+
 #' Sets row names
 #' 
 #' Sets row names in a way that is amenable to use in chaining operations in a functional programming way
 #'
-#' @param m The matrix or data frame on which row names are to be set
+#' @param m The matrix or data frame from which row names are to be set
 #' @param rownames The new row names
 #'
 #' @return a copy of \code{m} with new row names
