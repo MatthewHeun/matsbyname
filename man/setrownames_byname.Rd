@@ -7,7 +7,7 @@
 setrownames_byname(m, rownames)
 }
 \arguments{
-\item{m}{The matrix or data frame on which row names are to be set}
+\item{m}{The matrix or data frame from which row names are to be set}
 
 \item{rownames}{The new row names}
 }
