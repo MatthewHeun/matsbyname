@@ -966,6 +966,39 @@ equal_byname <- function(a, b) {
   return(isTRUE(all.equal(m1, m2)))
 }
 
+#' Test whether this is the zero matrix
+#'
+#' @param m a matrix of list of matrices
+#' @param tol the allowable deviation from 0 for any element
+#'
+#' @return \code{TRUE} iff this is the zero matrx within \code{tol}.
+#' @export
+#'
+#' @examples
+#' zero <- matrix(0, nrow = 50, ncol = 50)
+#' iszero_byname(zero)
+#' nonzero <- matrix(1:4, nrow = 2)
+#' iszero_byname(nonzero)
+#' # Also works for lists
+#' iszero_byname(list(zero, nonzero))
+#' # And it works for data frames
+#' DF <- data.frame(A = I(list()), B = I(list()))
+#' DF[[1,"A"]] <- zero
+#' DF[[2,"A"]] <- nonzero
+#' DF[[1,"B"]] <- nonzero
+#' DF[[2,"B"]] <- zero
+#' iszero_byname(DF$A)
+#' iszero_byname(DF$B)
+#' iszero_byname(matrix(1e-10, nrow = 2))
+#' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
+iszero_byname <- function(m, tol = 1e-6){
+  if (is.list(m)){
+    return(mcMap(iszero_byname, m, tol))
+  }
+  test <- abs(m) < tol
+  return(all(test))
+}
+
 #' Helper function for binary _byname operations
 #' 
 #' Puts all tasks associated with performing a binary matrix operation _byname in one place,
