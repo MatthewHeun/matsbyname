@@ -370,6 +370,7 @@ identize_byname <- function(m){
 #' @param m a matrix or a list of matrices
 #' @param row_names a vector of Strings containing the row names to keep
 #' or delete (if names are preceded by a \code{-}).
+#' Retaining rows takes precedence over removing rows.
 #'
 #' @return matrix with rows selected by \code{row_names}.
 #' @export
@@ -412,6 +413,7 @@ select_rows_byname <- function(m, row_names){
 #' @param m a matrix or a list of matrices
 #' @param col_names a vector of Strings containing the column names to keep
 #' or delete (if names are preceded by a \code{-}).
+#' Retaining columns takes precedence over removing columns.
 #'
 #' @return matrix with columns selected according to \code{col_names}.
 #' @export
@@ -420,10 +422,12 @@ select_rows_byname <- function(m, row_names){
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_cols_byname(m, c("c1", "c4"))
-#' select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4"))
+#' select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4")) # Retain take precedence over remove.
 #' # Also works for lists
 #' select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
 #' select_cols_byname(list(m,m), col_names = c("c1", "c4"))
+#' # Also works for data frames
+#' 
 select_cols_byname <- function(m, col_names){
   if (is.list(m)){
     col_names <- make_list(col_names, n = length(m))
