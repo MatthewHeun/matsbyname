@@ -10,7 +10,8 @@ select_rows_byname(m, row_names)
 \item{m}{a matrix or a list of matrices}
 
 \item{row_names}{a vector of Strings containing the row names to keep
-or delete (if names are preceded by a \code{-}).}
+or delete (if names are preceded by a \code{-}).
+Retaining rows takes precedence over removing rows.}
 }
 \value{
 matrix with rows selected by \code{row_names}.

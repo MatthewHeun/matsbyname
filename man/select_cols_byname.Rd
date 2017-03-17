@@ -10,7 +10,8 @@ select_cols_byname(m, col_names)
 \item{m}{a matrix or a list of matrices}
 
 \item{col_names}{a vector of Strings containing the column names to keep
-or delete (if names are preceded by a \code{-}).}
+or delete (if names are preceded by a \code{-}).
+Retaining columns takes precedence over removing columns.}
 }
 \value{
 matrix with columns selected according to \code{col_names}.
@@ -22,8 +23,10 @@ Select columns of a matrix (or list of matrices) by name
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 select_cols_byname(m, c("c1", "c4"))
-select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4"))
+select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4")) # Retain take precedence over remove.
 # Also works for lists
 select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
 select_cols_byname(list(m,m), col_names = c("c1", "c4"))
+# Also works for data frames
+
 }
