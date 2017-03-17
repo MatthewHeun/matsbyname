@@ -11,7 +11,9 @@ select_rows_byname(m, row_names)
 
 \item{row_names}{a vector of Strings containing the row names to keep
 or delete (if names are preceded by a \code{-}).
-Retaining rows takes precedence over removing rows.}
+Retaining rows takes precedence over removing rows.
+If \code{m} contains none of the requested rows to be retained, \code{NULL} is returned.
+If \code{m} contains none of the requested rows to be removed, \code{m} is returned.}
 }
 \value{
 matrix with rows selected by \code{row_names}.
@@ -22,10 +24,14 @@ Select rows of a matrix (or list of matrices) by name
 \examples{
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
+select_rows_byname(m, "i1")
+select_rows_byname(m, c("i1"))
 select_rows_byname(m, c("i1", "i4"))
 select_rows_byname(m, c("-i3"))
 select_rows_byname(m, c("-i1", "-i3"))
 select_rows_byname(m, c("-i1", "-i3", "i4")) # Keeping has precedence.
+select_rows_byname(m, c("x")) # Matches nothing.  NULL is returned.
+select_rows_byname(m, c("-x")) # Matches nothing.  All of m is returned.
 # Also works for lists
 select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
 select_rows_byname(list(m,m), row_names = c("i1", "i4"))
