@@ -371,17 +371,23 @@ identize_byname <- function(m){
 #' @param row_names a vector of Strings containing the row names to keep
 #' or delete (if names are preceded by a \code{-}).
 #' Retaining rows takes precedence over removing rows.
-#'
+#' If \code{m} contains none of the requested rows to be retained, \code{NULL} is returned.
+#' If \code{m} contains none of the requested rows to be removed, \code{m} is returned.
+#'   
 #' @return matrix with rows selected by \code{row_names}.
 #' @export
 #'
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' select_rows_byname(m, "i1")
+#' select_rows_byname(m, c("i1"))
 #' select_rows_byname(m, c("i1", "i4"))
 #' select_rows_byname(m, c("-i3"))
 #' select_rows_byname(m, c("-i1", "-i3"))
 #' select_rows_byname(m, c("-i1", "-i3", "i4")) # Keeping has precedence.
+#' select_rows_byname(m, c("x")) # Matches nothing.  NULL is returned.
+#' select_rows_byname(m, c("-x")) # Matches nothing.  All of m is returned.
 #' # Also works for lists
 #' select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
 #' select_rows_byname(list(m,m), row_names = c("i1", "i4"))
@@ -390,16 +396,26 @@ select_rows_byname <- function(m, row_names){
     row_names <- make_list(row_names, n = length(m))
     return(mcMap(select_rows_byname, m = m, row_names = row_names))
   }
-  # return(m[row_names, ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   retain <- retain_remove(row_names)[["retain_names"]]
   remove <- retain_remove(row_names)[["remove_names"]]
   retain_indices <- which(rownames(m) %in% retain)
   remove_indices <- which(rownames(m) %in% remove)
   if (length(retain_indices) == 0){
     # Nothing to be retained, so try removing columns
-    if (length(remove) == 0){
-      # Do nothing
-      return(m)
+    if (length(remove_indices) == 0){
+      # Nothing to be retained and nothing to be removed.
+      # If the caller wanted to retain something, don't retain anything.
+      # Do this first, because retain takes precedence.
+      if (length(retain) > 0){
+        return(NULL)
+      }
+      # If the caller wanted to remove something, don't remove anything; return m
+      if (length(remove) > 0){
+        return(m)
+      }
+      # Neither retain nor remove had any items.
+      # This is almost surely an error.
+      stop("remove and retain are empty in select_rows_byname.")
     }
     # Remove
     return(m[-remove_indices , ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
@@ -414,6 +430,8 @@ select_rows_byname <- function(m, row_names){
 #' @param col_names a vector of Strings containing the column names to keep
 #' or delete (if names are preceded by a \code{-}).
 #' Retaining columns takes precedence over removing columns.
+#' If \code{m} contains none of the requested columns to be retained, \code{NULL} is returned.
+#' If \code{m} contains none of the requested columns to be removed, \code{m} is returned.
 #'
 #' @return matrix with columns selected according to \code{col_names}.
 #' @export
@@ -423,11 +441,11 @@ select_rows_byname <- function(m, row_names){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_cols_byname(m, c("c1", "c4"))
 #' select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4")) # Retain take precedence over remove.
+#' select_cols_byname(m, "x") # Matches nothing. NULL is returned
+#' select_cols_byname(m, "-x") # Matches nothing. m is returned
 #' # Also works for lists
 #' select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
 #' select_cols_byname(list(m,m), col_names = c("c1", "c4"))
-#' # Also works for data frames
-#' 
 select_cols_byname <- function(m, col_names){
   if (is.list(m)){
     col_names <- make_list(col_names, n = length(m))
@@ -439,9 +457,20 @@ select_cols_byname <- function(m, col_names){
   remove_indices <- which(colnames(m) %in% remove)
   if (length(retain_indices) == 0){
     # Nothing to be retained, so try removing columns
-    if (length(remove) == 0){
-      # Do nothing
-      return(m)
+    if (length(remove_indices) == 0){
+      # Nothing to be retained and nothing to be removed.
+      # If the caller wanted to retain something, don't retain anything.
+      # Do this first, because retain takes precedence.
+      if (length(retain) > 0){
+        return(NULL)
+      }
+      # If the caller wanted to remove something, don't remove anything; return m
+      if (length(remove) > 0){
+        return(m)
+      }
+      # Neither retain nor remove had any items.
+      # This is almost surely an error.
+      stop("remove and retain are empty in select_cols_byname.")
     }
     # Remove
     return(m[ , -remove_indices] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
