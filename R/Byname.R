@@ -374,7 +374,7 @@ identize_byname <- function(m){
 #' If \code{m} contains none of the requested rows to be retained, \code{NULL} is returned.
 #' If \code{m} contains none of the requested rows to be removed, \code{m} is returned.
 #'   
-#' @return matrix with rows selected by \code{row_names}.
+#' @return a matrix that is a subset of \code{m} with rows selected by \code{row_names}.
 #' @export
 #'
 #' @examples
@@ -418,10 +418,26 @@ select_rows_byname <- function(m, row_names){
       stop("remove and retain are empty in select_rows_byname.")
     }
     # Remove
-    return(m[-remove_indices , ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+    return(m[-remove_indices , ] %>% 
+             # When only 1 row is selected, the natural result will be a numeric vector
+             # We want to ensure that the return value is a matrix
+             # with correct rowtype and coltype.
+             # Thus, we need to take these additional steps.
+             matrix(nrow = nrow(m) - length(remove_indices),
+                    dimnames = list(dimnames(m)[[1]][setdiff(1:nrow(m), remove_indices)], 
+                                    dimnames(m)[[2]])) %>% 
+             setrowtype(rowtype(m)) %>% 
+             setcoltype(coltype(m))
+    )
   }
   # Retain
-  return(m[retain_indices , ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  return(m[retain_indices , ] %>% 
+           matrix(nrow = length(retain_indices),
+                  dimnames = list(dimnames(m)[[1]][retain_indices], 
+                                  dimnames(m)[[2]])) %>% 
+    setrowtype(rowtype(m)) %>% 
+    setcoltype(coltype(m))
+  )
 }
 
 #' Select columns of a matrix (or list of matrices) by name
@@ -433,12 +449,13 @@ select_rows_byname <- function(m, row_names){
 #' If \code{m} contains none of the requested columns to be retained, \code{NULL} is returned.
 #' If \code{m} contains none of the requested columns to be removed, \code{m} is returned.
 #'
-#' @return matrix with columns selected according to \code{col_names}.
+#' @return a matrix that is a subset of \code{m} with columns selected according to \code{col_names}.
 #' @export
 #'
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' select_cols_byname(m, "c2")
 #' select_cols_byname(m, c("c1", "c4"))
 #' select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4")) # Retain take precedence over remove.
 #' select_cols_byname(m, "x") # Matches nothing. NULL is returned
@@ -473,12 +490,27 @@ select_cols_byname <- function(m, col_names){
       stop("remove and retain are empty in select_cols_byname.")
     }
     # Remove
-    return(m[ , -remove_indices] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+    return(m[ , -remove_indices] %>% 
+             # When only 1 column is selected, the natural result will be a numeric vector
+             # We want to ensure that the return value is a matrix
+             # with correct rowtype and coltype.
+             # Thus, we need to take these additional steps.
+             matrix(ncol = ncol(m) - length(remove_indices),
+                    dimnames = list(dimnames(m)[[1]], 
+                                    dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>% 
+             setrowtype(rowtype(m)) %>% 
+             setcoltype(coltype(m))
+    )
   }
   # Retain
-  return(m[ , retain_indices] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  return(m[ , retain_indices] %>% 
+           matrix(ncol = length(retain_indices),
+                  dimnames = list(dimnames(m)[[1]], 
+                                  dimnames(m)[[2]][retain_indices])) %>% 
+           setrowtype(rowtype(m)) %>% 
+           setcoltype(coltype(m))
+  )
 }
-
 
 #' Decides which columns to retain and remove.
 #' 

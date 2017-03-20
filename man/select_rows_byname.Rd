@@ -16,7 +16,7 @@ If \code{m} contains none of the requested rows to be retained, \code{NULL} is r
 If \code{m} contains none of the requested rows to be removed, \code{m} is returned.}
 }
 \value{
-matrix with rows selected by \code{row_names}.
+a matrix that is a subset of \code{m} with rows selected by \code{row_names}.
 }
 \description{
 Select rows of a matrix (or list of matrices) by name

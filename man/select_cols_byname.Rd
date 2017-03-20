@@ -16,7 +16,7 @@ If \code{m} contains none of the requested columns to be retained, \code{NULL} i
 If \code{m} contains none of the requested columns to be removed, \code{m} is returned.}
 }
 \value{
-matrix with columns selected according to \code{col_names}.
+a matrix that is a subset of \code{m} with columns selected according to \code{col_names}.
 }
 \description{
 Select columns of a matrix (or list of matrices) by name
@@ -24,6 +24,7 @@ Select columns of a matrix (or list of matrices) by name
 \examples{
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
+select_cols_byname(m, "c2")
 select_cols_byname(m, c("c1", "c4"))
 select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4")) # Retain take precedence over remove.
 select_cols_byname(m, "x") # Matches nothing. NULL is returned
