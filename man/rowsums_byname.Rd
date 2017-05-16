@@ -14,7 +14,7 @@ rowsums_byname(m, colname = NA)
 Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
 In contrast to \code{rowSums} (which returns a \code{numeric} result), 
 the return value from \code{rowsums_byname} is a matrix.
-An optional \code{colname} can be supplied.}
+An optional \code{colname} for the resulting column vector can be supplied.}
 }
 \value{
 a column vector of type \code{matrix} containing the row sums of \code{m}

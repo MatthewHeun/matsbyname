@@ -519,7 +519,7 @@ select_cols_byname <- function(m, col_names){
 #' Names without a leading \code{-} will be retained.
 #' Any number of leading \code{-} will be ignored when deciding the names of columns to be removed.
 #'
-#' @param col_names names of columns to be retained or removed. 
+#' @param row_col_names names of rows or columns to be retained or removed. 
 #'
 #' @return a list with two items: \code{retain_names} and \code{remove_names}.
 #'
@@ -529,13 +529,13 @@ select_cols_byname <- function(m, col_names){
 #' retain_remove(c("c1", "-c1")) # Retain takes precedence.
 #' names <- c("-c1", "-c4", "-----c3", "c2", "c4", "c4") # Multiple "-" ignored.
 #' retain_remove(names)
-retain_remove <- function(col_names){
+retain_remove <- function(row_col_names){
   # Get the indices in col_names of columns to be removed and retained
-  remove_indices <- which(startsWith(col_names, "-"))
-  retain_indices <- setdiff(1:length(col_names), remove_indices)
+  remove_indices <- which(startsWith(row_col_names, "-"))
+  retain_indices <- setdiff(1:length(row_col_names), remove_indices)
   # Get the names of columns to be removed and retained
-  remove_names <- col_names[remove_indices] %>% sub("^-*", "", .) %>% unique # removes any number of leading "-"
-  retain_names <- col_names[retain_indices] %>% unique
+  remove_names <- row_col_names[remove_indices] %>% sub("^-*", "", .) %>% unique # removes any number of leading "-"
+  retain_names <- row_col_names[retain_indices] %>% unique
   # Get the names of columns that are in both remove and retain
   common_names <- intersect(remove_names, retain_names)
   # Remove common names from those columns that are to be deleted.
@@ -552,7 +552,7 @@ retain_remove <- function(col_names){
 #' Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
 #' In contrast to \code{rowSums} (which returns a \code{numeric} result), 
 #' the return value from \code{rowsums_byname} is a matrix.
-#' An optional \code{colname} can be supplied.
+#' An optional \code{colname} for the resulting column vector can be supplied.
 #'
 #' @return a column vector of type \code{matrix} containing the row sums of \code{m}
 #' @export
@@ -613,7 +613,7 @@ rowsums_byname <- function(m, colname = NA){
 #' Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
 #' In contrast to \code{colSums} (which returns a \code{numeric} result), 
 #' the return value from \code{colsums_byname} is a matrix.
-#' An optional \code{rowname} can be supplied.
+#' An optional \code{rowname} for the resulting row vector can be supplied.
 #'
 #' @return a row vector of type \code{matrix} containing the column sums of \code{m}.
 #' @export
@@ -740,6 +740,49 @@ Iminus_byname <- function(m){
     setrowtype(rowtype(m)) %>% 
     setcoltype(coltype(m)) %>% 
     difference_byname(identize_byname(.), .)
+}
+
+
+#' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
+#'
+#' @param m the matrix to be cleaned
+#' @param margin the dimension over which cleaning should occur
+#' @param clean_value the undesirable value
+#' 
+#' When a row (when \code{margin = 1}) or a column (when \code{margin = 2}) 
+#' contains exclusively \code{clean_value}, the row or column is deleted from the matrix.
+#'
+#' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{clean_value}.
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(-20, 1, -20, 2), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+#' m
+#' m %>% clean_byname(margin = 1, clean_value = -20) # Eliminates -20, -20 row
+#' m %>% clean_byname(margin = 2) # Nothing cleaned, because no columns contain all 0's.
+#' 
+clean_byname <- function(m, margin, clean_value = 0){
+  if (is.list(m)){
+    return(mcMap(clean_byname, m = m, margin = margin, clean_value = clean_value))
+  }
+  if (margin == 1){
+    # Want to clean rows. Code below assumes want to clean columns.
+    # Transpose and then transpose again before returning.
+    a <- transpose_byname(m)
+  } else if (margin == 2){
+    a <- m
+  } else {
+    stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
+  }
+  keepcols <- apply(a, 2, function(x) {!all(x == clean_value)})
+  keepcolnames <- names(which(keepcols))
+  b <- select_cols_byname(m = a, col_names = keepcolnames)
+  if (margin == 1){
+    c <- transpose_byname(b)
+  } else if (margin == 2){
+    c <- b
+  }
+  return(c)
 }
 
 #' Gets row names

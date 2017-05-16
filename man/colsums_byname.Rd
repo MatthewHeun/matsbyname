@@ -14,7 +14,7 @@ colsums_byname(m, rowname = NA)
 Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
 In contrast to \code{colSums} (which returns a \code{numeric} result), 
 the return value from \code{colsums_byname} is a matrix.
-An optional \code{rowname} can be supplied.}
+An optional \code{rowname} for the resulting row vector can be supplied.}
 }
 \value{
 a row vector of type \code{matrix} containing the column sums of \code{m}.

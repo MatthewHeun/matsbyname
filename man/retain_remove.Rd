@@ -4,10 +4,10 @@
 \alias{retain_remove}
 \title{Decides which columns to retain and remove.}
 \usage{
-retain_remove(col_names)
+retain_remove(row_col_names)
 }
 \arguments{
-\item{col_names}{names of columns to be retained or removed.}
+\item{row_col_names}{names of rows or columns to be retained or removed.}
 }
 \value{
 a list with two items: \code{retain_names} and \code{remove_names}.
