@@ -762,6 +762,7 @@ Iminus_byname <- function(m){
 #' m %>% clean_byname(margin = 2) # Nothing cleaned, because no columns contain all 0's (the default clean_value).
 #' # Also works with lists
 #' list(m, m) %>% clean_byname(margin = 1, clean_value = -20)
+#' # Also works with data frames
 #' DF <- data.frame(m = I(list()))
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
@@ -783,11 +784,10 @@ clean_byname <- function(m, margin, clean_value = 0){
   keepcolnames <- names(which(keepcols))
   b <- select_cols_byname(m = a, col_names = keepcolnames)
   if (margin == 1){
-    c <- transpose_byname(b)
+    return(transpose_byname(b))
   } else if (margin == 2){
-    c <- b
+    return(b)
   }
-  return(c)
 }
 
 #' Gets row names

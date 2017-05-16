@@ -29,6 +29,7 @@ m \%>\% clean_byname(margin = 1, clean_value = -20) # Eliminates -20, -20 row
 m \%>\% clean_byname(margin = 2) # Nothing cleaned, because no columns contain all 0's (the default clean_value).
 # Also works with lists
 list(m, m) \%>\% clean_byname(margin = 1, clean_value = -20)
+# Also works with data frames
 DF <- data.frame(m = I(list()))
 DF[[1,"m"]] <- m
 DF[[2,"m"]] <- m
