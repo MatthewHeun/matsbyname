@@ -26,6 +26,11 @@ Cleans (deletes) rows or columns of matrices that contain exclusively \code{clea
 m <- matrix(c(-20, 1, -20, 2), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
 m
 m \%>\% clean_byname(margin = 1, clean_value = -20) # Eliminates -20, -20 row
-m \%>\% clean_byname(margin = 2) # Nothing cleaned, because no columns contain all 0's.
-
+m \%>\% clean_byname(margin = 2) # Nothing cleaned, because no columns contain all 0's (the default clean_value).
+# Also works with lists
+list(m, m) \%>\% clean_byname(margin = 1, clean_value = -20)
+DF <- data.frame(m = I(list()))
+DF[[1,"m"]] <- m
+DF[[2,"m"]] <- m
+DF \%>\% clean_byname(margin = 1, clean_value = -20)
 }
