@@ -746,7 +746,8 @@ Iminus_byname <- function(m){
 #' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
 #'
 #' @param m the matrix to be cleaned
-#' @param margin the dimension over which cleaning should occur
+#' @param margin the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns, 
+#' or \code{c(1,2)} for both rows and columns.
 #' @param clean_value the undesirable value
 #' 
 #' When a row (when \code{margin = 1}) or a column (when \code{margin = 2}) 
@@ -767,7 +768,22 @@ Iminus_byname <- function(m){
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
 #' DF %>% clean_byname(margin = 1, clean_value = -20)
+#' m2 <- matrix(c(-20, -20, 0, -20, -20, 0, -20, -20, -20), nrow = 3, 
+#'              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")) )
+#' m2
+#' clean_byname(m2, margin = c(1,2), clean_value = -20)
+#' DF2 <- data.frame(m2 = I(list()))
+#' DF2[[1, "m2"]] <- m2
+#' DF2[[2, "m2"]] <- m2
+#' DF2 %>% clean_byname(margin = c(1,2), clean_value = -20)
+#' 
 clean_byname <- function(m, margin, clean_value = 0){
+  if (1 %in% margin & 2 %in% margin){
+    # Clean both dimensions of m.
+    cleaned1 <- clean_byname(m, margin = 1, clean_value = clean_value)
+    cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
+    return(cleaned2)
+  }
   if (is.list(m)){
     return(mcMap(clean_byname, m = m, margin = margin, clean_value = clean_value))
   }
