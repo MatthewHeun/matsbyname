@@ -147,7 +147,7 @@ difference_byname <- function(minuend, subtrahend){
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that 
 #' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
-#' I.e., the number of columns in \code{multiplicand} 
+#' I.e., the number of columns in \code{multiplicand}
 #' will equal the number of rows in \code{multiplier},
 #' so long as the column names of multiplicand are unique and 
 #' the row names of multiplier are unique.

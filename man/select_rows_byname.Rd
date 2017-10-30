@@ -13,7 +13,7 @@ select_rows_byname(m, row_names, exact = TRUE)
 or delete (if names are preceded by a \code{-}).}
 
 \item{exact}{If \code{TRUE}, an exact match of row names is required.
-If \code{FALSE}, partial match at the beginning of the name will be considered a match.
+If \code{FALSE}, \code{startsWith} will determine matches.
 Retaining rows takes precedence over removing rows.
 If \code{m} contains none of the requested rows to be retained, \code{NULL} is returned.
 If \code{m} contains none of the requested rows to be removed, \code{m} is returned.}

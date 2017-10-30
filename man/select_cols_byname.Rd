@@ -13,7 +13,7 @@ select_cols_byname(m, col_names, exact = TRUE)
 or delete (if names are preceded by a \code{-}).}
 
 \item{exact}{If \code{TRUE}, an exact match of column names is required.
-If \code{FALSE}, partial match at the beginning of the name will be considered a match.
+If \code{FALSE}, \code{startsWith} will determine matches.
 Retaining columns takes precedence over removing columns.
 If \code{m} contains none of the requested columns to be retained, \code{NULL} is returned.
 If \code{m} contains none of the requested columns to be removed, \code{m} is returned.}

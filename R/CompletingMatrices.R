@@ -15,11 +15,11 @@ library("parallel")
 #' I.e., \code{x} will be made square, and will contain the union of row and column names from \code{x} itself.
 #'
 #' @param x A matrix or data frame to be completed
-#' @param names The names of rows and columns to be completed in \code{x}, with 
-#' the same structure as the value of \code{dimnames(matrix)}.
 #' @param matrix Instead of supplying \code{names} directly, a \code{matrix} can be supplied
 #' from which \code{dimnames} will be extracted. If \code{matrix} is \code{NULL} (the default), 
 #' \code{x} will be completed relative to itself.
+#' @param names The names of rows and columns to be completed in \code{x}, with 
+#' the same structure as the value of \code{dimnames(matrix)}.
 #' @param fill Rows and columns added to \code{x} will contain \code{fill}
 #' @param margin Specifies the subscript(s) in \code{x} over which completion will occur. 
 #' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
