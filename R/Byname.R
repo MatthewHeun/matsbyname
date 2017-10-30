@@ -419,6 +419,8 @@ identize_byname <- function(m){
 #' @param m a matrix or a list of matrices
 #' @param row_names a vector of Strings containing the row names to keep
 #' or delete (if names are preceded by a \code{-}).
+#' @param exact If \code{TRUE}, an exact match of row names is required.
+#' If \code{FALSE}, partial match at the beginning of the name will be considered a match.
 #' Retaining rows takes precedence over removing rows.
 #' If \code{m} contains none of the requested rows to be retained, \code{NULL} is returned.
 #' If \code{m} contains none of the requested rows to be removed, \code{m} is returned.
@@ -437,18 +439,33 @@ identize_byname <- function(m){
 #' select_rows_byname(m, c("-i1", "-i3", "i4")) # Keeping has precedence.
 #' select_rows_byname(m, c("x")) # Matches nothing.  NULL is returned.
 #' select_rows_byname(m, c("-x")) # Matches nothing.  All of m is returned.
+#' select_rows_byname(m, "i", exact = FALSE) # Matches all rows, 
+#'                                           # because partial match is OK, and
+#'                                           # all row names start with "i".
 #' # Also works for lists
 #' select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
 #' select_rows_byname(list(m,m), row_names = c("i1", "i4"))
-select_rows_byname <- function(m, row_names){
+#' # Test inexact matches
+#' n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+#' select_rows_byname(n, "a", exact = FALSE)
+#' select_rows_byname(n, "-a", exact = FALSE)
+select_rows_byname <- function(m, row_names, exact = TRUE){
   if (is.list(m)){
     row_names <- make_list(row_names, n = length(m))
     return(mcMap(select_rows_byname, m = m, row_names = row_names))
   }
   retain <- retain_remove(row_names)[["retain_names"]]
   remove <- retain_remove(row_names)[["remove_names"]]
-  retain_indices <- which(rownames(m) %in% retain)
-  remove_indices <- which(rownames(m) %in% remove)
+  retain_indices <- if (exact) {
+    which(rownames(m) %in% retain)
+  } else {
+    which(startsWith(rownames(m), retain))
+  }
+  remove_indices <- if (exact) {
+    which(rownames(m) %in% remove)
+  } else {
+    which(startsWith(rownames(m), remove))
+  }
   if (length(retain_indices) == 0){
     # Nothing to be retained, so try removing columns
     if (length(remove_indices) == 0){
@@ -494,6 +511,8 @@ select_rows_byname <- function(m, row_names){
 #' @param m a matrix or a list of matrices
 #' @param col_names a vector of Strings containing the column names to keep
 #' or delete (if names are preceded by a \code{-}).
+#' @param exact If \code{TRUE}, an exact match of column names is required.
+#' If \code{FALSE}, partial match at the beginning of the name will be considered a match.
 #' Retaining columns takes precedence over removing columns.
 #' If \code{m} contains none of the requested columns to be retained, \code{NULL} is returned.
 #' If \code{m} contains none of the requested columns to be removed, \code{m} is returned.
@@ -512,15 +531,29 @@ select_rows_byname <- function(m, row_names){
 #' # Also works for lists
 #' select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
 #' select_cols_byname(list(m,m), col_names = c("c1", "c4"))
-select_cols_byname <- function(m, col_names){
+#' # Test inexact matches
+#' n <- setcolnames_byname(m, c("d1", "d2", "e1", "e2"))
+#' select_cols_byname(n, "d", exact = FALSE)
+#' select_cols_byname(n, "-d", exact = FALSE)
+select_cols_byname <- function(m, col_names, exact = TRUE){
   if (is.list(m)){
     col_names <- make_list(col_names, n = length(m))
     return(mcMap(select_cols_byname, m = m, col_names = col_names))
   }
   retain <- retain_remove(col_names)[["retain_names"]]
   remove <- retain_remove(col_names)[["remove_names"]]
-  retain_indices <- which(colnames(m) %in% retain)
-  remove_indices <- which(colnames(m) %in% remove)
+  # retain_indices <- which(colnames(m) %in% retain)
+  # remove_indices <- which(colnames(m) %in% remove)
+  retain_indices <- if (exact) {
+    which(colnames(m) %in% retain)
+  } else {
+    which(startsWith(colnames(m), retain))
+  }
+  remove_indices <- if (exact) {
+    which(colnames(m) %in% remove)
+  } else {
+    which(startsWith(colnames(m), remove))
+  }
   if (length(retain_indices) == 0){
     # Nothing to be retained, so try removing columns
     if (length(remove_indices) == 0){
