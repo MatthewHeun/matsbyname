@@ -4,13 +4,16 @@
 \alias{select_rows_byname}
 \title{Select rows of a matrix (or list of matrices) by name}
 \usage{
-select_rows_byname(m, row_names)
+select_rows_byname(m, row_names, exact = TRUE)
 }
 \arguments{
 \item{m}{a matrix or a list of matrices}
 
 \item{row_names}{a vector of Strings containing the row names to keep
-or delete (if names are preceded by a \code{-}).
+or delete (if names are preceded by a \code{-}).}
+
+\item{exact}{If \code{TRUE}, an exact match of row names is required.
+If \code{FALSE}, partial match at the beginning of the name will be considered a match.
 Retaining rows takes precedence over removing rows.
 If \code{m} contains none of the requested rows to be retained, \code{NULL} is returned.
 If \code{m} contains none of the requested rows to be removed, \code{m} is returned.}
@@ -32,7 +35,14 @@ select_rows_byname(m, c("-i1", "-i3"))
 select_rows_byname(m, c("-i1", "-i3", "i4")) # Keeping has precedence.
 select_rows_byname(m, c("x")) # Matches nothing.  NULL is returned.
 select_rows_byname(m, c("-x")) # Matches nothing.  All of m is returned.
+select_rows_byname(m, "i", exact = FALSE) # Matches all rows, 
+                                          # because partial match is OK, and
+                                          # all row names start with "i".
 # Also works for lists
 select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
 select_rows_byname(list(m,m), row_names = c("i1", "i4"))
+# Test inexact matches
+n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+select_rows_byname(n, "a", exact = FALSE)
+select_rows_byname(n, "-a", exact = FALSE)
 }

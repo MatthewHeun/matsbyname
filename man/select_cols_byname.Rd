@@ -4,13 +4,16 @@
 \alias{select_cols_byname}
 \title{Select columns of a matrix (or list of matrices) by name}
 \usage{
-select_cols_byname(m, col_names)
+select_cols_byname(m, col_names, exact = TRUE)
 }
 \arguments{
 \item{m}{a matrix or a list of matrices}
 
 \item{col_names}{a vector of Strings containing the column names to keep
-or delete (if names are preceded by a \code{-}).
+or delete (if names are preceded by a \code{-}).}
+
+\item{exact}{If \code{TRUE}, an exact match of column names is required.
+If \code{FALSE}, partial match at the beginning of the name will be considered a match.
 Retaining columns takes precedence over removing columns.
 If \code{m} contains none of the requested columns to be retained, \code{NULL} is returned.
 If \code{m} contains none of the requested columns to be removed, \code{m} is returned.}
@@ -32,4 +35,8 @@ select_cols_byname(m, "-x") # Matches nothing. m is returned
 # Also works for lists
 select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
 select_cols_byname(list(m,m), col_names = c("c1", "c4"))
+# Test inexact matches
+n <- setcolnames_byname(m, c("d1", "d2", "e1", "e2"))
+select_cols_byname(n, "d", exact = FALSE)
+select_cols_byname(n, "-d", exact = FALSE)
 }
