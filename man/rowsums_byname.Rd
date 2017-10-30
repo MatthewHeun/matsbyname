@@ -40,4 +40,5 @@ rowsums_byname(DF$m)
 ans <- DF \%>\% mutate(rs = rowsums_byname(m))
 ans
 ans$rs[[1]]
+rowsums_byname(NULL)
 }

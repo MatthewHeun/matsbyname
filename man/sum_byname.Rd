@@ -48,8 +48,9 @@ DF[[2,"G"]] <- G
 sum_byname(DF$U, DF$G)
 DF \%>\% mutate(sums = sum_byname(U, G))
 sum_byname(U) # If only one argument, return it.
-sum_byname(2, NULL)
-sum_byname(NULL, 1)
+sum_byname(2, NULL) # Gives 2
+sum_byname(2, NA)   # Gives NA
+sum_byname(NULL, 1) # Gives 1
 sum_byname(list(NULL, 1), list(1, 1))
 DF2 <- data.frame(U = I(list()), G = I(list()))
 DF2[[1,"U"]] <- NULL
@@ -57,5 +58,8 @@ DF2[[2,"U"]] <- U
 DF2[[1,"G"]] <- G
 DF2[[2,"G"]] <- G
 sum_byname(DF2$U, DF2$G)
-DF2 \%>\% mutate(sums = sum_byname(U, G))
+DF3 <- DF2 \%>\% mutate(sums = sum_byname(U, G))
+DF3
+DF3$sums[[1]]
+DF3$sums[[2]]
 }

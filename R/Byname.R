@@ -1,5 +1,6 @@
 library("parallel")
 library("magrittr")
+library("dplyr")
 
 #' Name-wise addition of matrices.
 #' 
@@ -40,8 +41,9 @@ library("magrittr")
 #' sum_byname(DF$U, DF$G)
 #' DF %>% mutate(sums = sum_byname(U, G))
 #' sum_byname(U) # If only one argument, return it.
-#' sum_byname(2, NULL)
-#' sum_byname(NULL, 1)
+#' sum_byname(2, NULL) # Gives 2
+#' sum_byname(2, NA)   # Gives NA
+#' sum_byname(NULL, 1) # Gives 1
 #' sum_byname(list(NULL, 1), list(1, 1))
 #' DF2 <- data.frame(U = I(list()), G = I(list()))
 #' DF2[[1,"U"]] <- NULL
@@ -49,15 +51,32 @@ library("magrittr")
 #' DF2[[1,"G"]] <- G
 #' DF2[[2,"G"]] <- G
 #' sum_byname(DF2$U, DF2$G)
-#' DF2 %>% mutate(sums = sum_byname(U, G))
+#' DF3 <- DF2 %>% mutate(sums = sum_byname(U, G))
+#' DF3
+#' DF3$sums[[1]]
+#' DF3$sums[[2]]
 sum_byname <- function(augend, addend){
-  if (is.null(addend) | missing(addend)){
+  if (missing(addend)){
     return(augend)
   }
-  if (is.null(augend) | missing(augend)){
+  if (is.null(addend)){
+    return(augend)
+  }
+  if (missing(augend)){
     return(addend)
   }
-  binaryfunctionhelper_byname(sum_byname, `+`, augend, addend)
+  if (is.null(augend)){
+    return(addend)
+  }
+  args <- organize_args(augend, addend)
+  augend <- args$a
+  addend <- args$b
+  if (is.list(augend) & is.list(addend)){
+    return(mcMap(sum_byname, augend, addend))
+  }
+  (augend + addend) %>%
+    setrowtype(rowtype(augend)) %>%
+    setcoltype(coltype(augend))
 }
 
 #' Name-wise subtraction of matrices.
@@ -96,13 +115,27 @@ sum_byname <- function(augend, addend){
 #' difference_byname(DF$U, DF$G)
 #' DF %>% mutate(diffs = difference_byname(U, G))
 difference_byname <- function(minuend, subtrahend){
-  if (is.null(minuend) | missing(minuend)){
+  if (missing(minuend)){
     return(elementproduct_byname(-1, subtrahend))
   }
-  if (is.null(subtrahend) | missing(subtrahend)){
+  if (is.null(minuend)){
+    return(elementproduct_byname(-1, subtrahend))
+  }
+  if (missing(subtrahend)){
     return(minuend)
   }
-  binaryfunctionhelper_byname(difference_byname, `-`, minuend, subtrahend)
+  if (is.null(subtrahend)){
+    return(minuend)
+  }
+  args <- organize_args(minuend, subtrahend)
+  minuend <- args$a
+  subtrahend <- args$b
+  if (is.list(minuend) & is.list(subtrahend)){
+    return(mcMap(difference_byname, minuend, subtrahend))
+  }
+  (minuend - subtrahend) %>%
+    setrowtype(rowtype(minuend)) %>%
+    setcoltype(coltype(minuend))
 }
 
 #' Name-wise matrix multiplication
@@ -193,7 +226,15 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
 elementproduct_byname <- function(multiplicand, multiplier){
-  binaryfunctionhelper_byname(elementproduct_byname, `*`, multiplicand, multiplier)
+  args <- organize_args(multiplicand, multiplier)
+  multiplicand <- args$a
+  multiplier <- args$b
+  if (is.list(multiplicand) & is.list(multiplier)){
+    return(mcMap(elementproduct_byname, multiplicand, multiplier))
+  }
+  (multiplicand * multiplier) %>%
+    setrowtype(rowtype(multiplicand)) %>%
+    setcoltype(coltype(multiplicand))
 }
 
 #' Name-wise matrix element division
@@ -234,7 +275,15 @@ elementproduct_byname <- function(multiplicand, multiplier){
 #' elementquotient_byname(DF$U, DF$G)
 #' DF %>% mutate(elementquotients = elementquotient_byname(U, G))
 elementquotient_byname <- function(dividend, divisor){
-  binaryfunctionhelper_byname(elementquotient_byname, `/`, dividend, divisor)
+  args <- organize_args(dividend, divisor)
+  dividend <- args$a
+  divisor <- args$b
+  if (is.list(dividend) & is.list(divisor)){
+    return(mcMap(elementquotient_byname, dividend, divisor))
+  }
+  (dividend / divisor) %>%
+    setrowtype(rowtype(dividend)) %>%
+    setcoltype(coltype(dividend))
 }
 
 #' Invert a matrix
@@ -575,6 +624,7 @@ retain_remove <- function(row_col_names){
 #' ans <- DF %>% mutate(rs = rowsums_byname(m))
 #' ans
 #' ans$rs[[1]]
+#' rowsums_byname(NULL)
 rowsums_byname <- function(m, colname = NA){
   if (is.list(m)){
     if (is.null(colname)){
@@ -1123,18 +1173,34 @@ iszero_byname <- function(m, tol = 1e-6){
   return(all(test))
 }
 
-#' Helper function for binary _byname operations
+#' Organize binary arguments
 #' 
-#' Puts all tasks associated with performing a binary matrix operation _byname in one place,
-#' including dealing intelligently with lists.
+#' In service of binary \code{_byname} functions, 
+#' this function organizes their arguments.
+#' Actions performed are:
+#' * if only one argument is a list, make the other argument also a list of equal length.
+#' * if both arguments are lists, ensure that they are same length.
+#' * if one argument is a matrix and the other is a constant, make the constant into a matrix.
+#' * ensures that row and column types match
+#' * completes and sorts the matrices
 #'
-#' @param FUN  the function that is calling this helper
-#' @param OPER the operation that \code{FUN} performs
-#' @param a    the first operand
-#' @param b    the second operand
+#' @param a the first argument to be organized
+#' @param b the second argument to be organized
 #'
-#' @return the result of applying \code{OPER} to \code{a} and \code{b} via \code{FUN}
-binaryfunctionhelper_byname <- function(FUN, OPER, a, b){
+#' @return a list with two elements (\code{a} and \code{b}) containing organized versions of the arguments
+organize_args <- function(a, b){
+  if (missing(a)){
+    stop("Missing argument a in organize_args.")
+  }
+  if (is.null(a)){
+    stop("Null argument a in organize_args.")
+  }
+  if (missing(b)){
+    stop("Missing argument b in organize_args.")
+  }
+  if (is.null(b)){
+    stop("Null argument b in organize_args.")
+  }
   if (is.list(a) | is.list(b)){
     # One is a list and the other is not.  Make the other into a list.
     if (! is.list(a)){
@@ -1145,33 +1211,33 @@ binaryfunctionhelper_byname <- function(FUN, OPER, a, b){
     }
   }
   if (is.list(a) & is.list(b)){
+    # Both a and b are lists. Ensure they're the same length.
     stopifnot(length(a) == length(b))
-    return(mcMap(FUN, a, b))
+    # Now return the lists.
+    return(list(a = a, b = b))
   }
   # Neither a nor b are lists.
   if (! is.matrix(a) & ! is.matrix(b)){
-    # Neither are matrices. Assume we have two constants. Apply OPER to them and return.
-    return(OPER(a,b))
+    # Neither a nor b are matrices. Assume we have two constants. Return the constants in a vector.
+    return(list(a = a, b = b))
   }
-  # If one of a and b is not a matrix, make appropriate-sized matrix before continuing with the rest of the function.
-  if (! is.matrix(a)){
+  # Neither a nor b are lists.
+  # We don't know if one or both a and b is a matrix. 
+  # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
+  if (! is.matrix(a) & is.matrix(b)){
     a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b)) %>% 
-                setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
-  }
-  if (! is.matrix(b)){
+      setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  } else if (is.matrix(a) & ! is.matrix(b)){
     b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a)) %>% 
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
-  # Check that row and column types are equal between a and b, but only if they exist.
-  if (!is.null(rowtype(a)) & !is.null(rowtype(b)) & !is.na(rowtype(a)) & !is.na(rowtype(b))){
-    stopifnot(rowtype(a) == rowtype(b))
-  }
-  if (!is.null(coltype(a)) & !is.null(coltype(b)) & !is.na(coltype(a)) & !is.na(coltype(b))){
-    stopifnot(coltype(a) == coltype(b))
-  }
-  
+  # Assume that both a and b are now matrices.
+  # Verify that row and column types are same for a and b.
+  stopifnot(rowtype(a) == rowtype(b))
+  stopifnot(coltype(a) == coltype(b))
+  # Ensure that matrices have same row and column names and are in same order.
   matrices <- complete_and_sort(a, b)
-  OPER(matrices$m1, matrices$m2) %>%
-    setrowtype(rowtype(a)) %>% 
-    setcoltype(coltype(a))
+  outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+  outb <- matrices$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  return(list(a = outa, b = outb))
 }
