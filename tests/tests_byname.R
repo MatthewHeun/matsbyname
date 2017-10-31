@@ -180,20 +180,28 @@ test_that("matrix row selection by name", {
   expect_true(select_rows_byname(m, c("x")) %>% is.null)
   # Matches nothing.  All of m is returned.
   expect_equal(select_rows_byname(m, c("-x")), m)
-  # Matches all rows, because partial match is OK, and all row names start with "i".
-  expect_equal(select_rows_byname(m, "i", exact = FALSE), m)
+})
+
+test_that("matrix row selection by name with inexact matches", {
+  n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+  # Matches first two rows, because partial match is OK.
+  expect_equal(select_rows_byname(n, "a", exact = FALSE), 
+               n[c(1,2), ] %>% setrowtype(rowtype(n)) %>% setcoltype(coltype(n)))
+  # Deletes first two rows, because partial match is OK, and first two row names start with "a".
+  expect_equal(select_rows_byname(n, "-a", exact = FALSE), 
+               n[c(3,4), ] %>% setrowtype(rowtype(n)) %>% setcoltype(coltype(n)))
+  
 })
 
 test_that("matrix row selection by name in lists", {
+  # Use different row names for each item in the list
   expect_equal(select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3"))), 
                list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
                     m[c(2,3), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
+  # Use same row names for each item in the list
+  expect_equal(select_rows_byname(list(m,m), row_names = c("i1", "i4")),
+               list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
+                    m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
 })
 
-#' # Also works for lists
-#' select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
-#' select_rows_byname(list(m,m), row_names = c("i1", "i4"))
-#' # Test inexact matches
-#' n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
-#' select_rows_byname(n, "a", exact = FALSE)
-#' select_rows_byname(n, "-a", exact = FALSE)
+
