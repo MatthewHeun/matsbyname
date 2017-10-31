@@ -158,6 +158,8 @@ m_colnames <- paste0("p", 1:4)
 m <- matrix(1:16, ncol = 4, dimnames=list(m_rownames, m_colnames)) %>%
   setrowtype("Industries") %>% setcoltype("Products")
 
+n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+
 test_that("matrix row selection by name", {
   # Select only the first row (i1)
   expect_equal(select_rows_byname(m, "i1"), 
@@ -177,20 +179,23 @@ test_that("matrix row selection by name", {
                matrix(c(seq(4, 16, by = 4)), nrow = 1, dimnames = list(c("i4"), m_colnames)) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   # Matches nothing.  NULL is returned.
-  expect_true(select_rows_byname(m, c("x")) %>% is.null)
+  expect_null(select_rows_byname(m, c("x")))
   # Matches nothing.  All of m is returned.
   expect_equal(select_rows_byname(m, c("-x")), m)
 })
 
 test_that("matrix row selection by name with inexact matches", {
-  n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
   # Matches first two rows, because partial match is OK.
   expect_equal(select_rows_byname(n, "a", exact = FALSE), 
                n[c(1,2), ] %>% setrowtype(rowtype(n)) %>% setcoltype(coltype(n)))
   # Deletes first two rows, because partial match is OK, and first two row names start with "a".
   expect_equal(select_rows_byname(n, "-a", exact = FALSE), 
                n[c(3,4), ] %>% setrowtype(rowtype(n)) %>% setcoltype(coltype(n)))
-  
+})
+
+test_that("matrix row selection by name with inexact matches and multiple selectors", {
+  # This test currently FAILS!
+  expect_equal(select_rows_byname(n, c("a", "b"), exact = FALSE), n)
 })
 
 test_that("matrix row selection by name in lists", {
