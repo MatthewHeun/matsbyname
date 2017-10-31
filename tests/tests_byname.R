@@ -153,12 +153,12 @@ test_that("differences of matrices in lists and data frames", {
 context("Row and column selection")
 ###########################################################
 
-test_that("row selection by name", {
-  m_rownames <- paste0("i", 1:4)
-  m_colnames <- paste0("p", 1:4)
-  m <- matrix(1:16, ncol = 4, dimnames=list(m_rownames, m_colnames)) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
-  
+m_rownames <- paste0("i", 1:4)
+m_colnames <- paste0("p", 1:4)
+m <- matrix(1:16, ncol = 4, dimnames=list(m_rownames, m_colnames)) %>%
+  setrowtype("Industries") %>% setcoltype("Products")
+
+test_that("matrix row selection by name", {
   # Select only the first row (i1)
   expect_equal(select_rows_byname(m, "i1"), 
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
@@ -180,12 +180,16 @@ test_that("row selection by name", {
   expect_true(select_rows_byname(m, c("x")) %>% is.null)
   # Matches nothing.  All of m is returned.
   expect_equal(select_rows_byname(m, c("-x")), m)
-  
+  # Matches all rows, because partial match is OK, and all row names start with "i".
+  expect_equal(select_rows_byname(m, "i", exact = FALSE), m)
 })
 
-#' select_rows_byname(m, "i", exact = FALSE) # Matches all rows, 
-#'                                           # because partial match is OK, and
-#'                                           # all row names start with "i".
+test_that("matrix row selection by name in lists", {
+  expect_equal(select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3"))), 
+               list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
+                    m[c(2,3), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
+})
+
 #' # Also works for lists
 #' select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
 #' select_rows_byname(list(m,m), row_names = c("i1", "i4"))
