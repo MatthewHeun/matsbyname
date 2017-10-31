@@ -19,6 +19,8 @@ test_that("sums of matrices", {
     setrowtype("Commodities") %>% setcoltype("Industries")
   Y <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
     setrowtype("Commodities") %>% setcoltype("Industries")
+  V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, commoditynames)) %>%
+    setrowtype("Industries") %>% setcoltype("Commodities")
   
   expect_equal(U + Y, 
                # This is a non-sensical test.  Row and column names are not respected. 
@@ -32,13 +34,19 @@ test_that("sums of matrices", {
   expect_equal(sum_byname(U, 100), U + 100)
   expect_equal(sum_byname(200, Y), Y + 200 %>% complete_and_sort())
 
+  expect_equal(U + V,
+               # This is a non-sensical test.  Row and column names are not respected.
+               # Row names, column names, and row and column types come from the first operand (U).
+               matrix(c(2, 4, 6, 8), ncol = 2, dimnames = dimnames(U)) %>% 
+                 setrowtype(rowtype(U)) %>% setcoltype(coltype(U)))
+
+  # We should not be able to add U and V, because their row and column types differ.
+  
+  #' \dontrun{sum_byname(U, V)} # Fails, because row and column types are different
+  
 })
   
   #' 
-  #' V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, commoditynames)) %>%
-  #'   setrowtype("Industries") %>% setcoltype("Commodities")
-  #' U + V # row and column names are non-sensical and blindly taken from first argument (U)
-  #' \dontrun{sum_byname(U, V)} # Fails, because row and column types are different
   #' # This also works with lists
   #' sum_byname(list(U,U), list(G,G))
   #' sum_byname(list(U,U), list(100,100))
