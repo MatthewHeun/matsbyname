@@ -1,7 +1,12 @@
 # Contains tests for the byname package.
 
-library(testthat)
+# Need to put dplyr before testthat.
+# If not, the "matches" function in dplyr overrides the "matches" function in testthat,
+# and tests containing the string "(" don't work as expectged.
+
+library(dplyr)
 library(byname)
+library(testthat)
 
 context("Sums")
 
@@ -41,9 +46,7 @@ test_that("sums of matrices", {
                  setrowtype(rowtype(U)) %>% setcoltype(coltype(U)))
 
   # We should not be able to add U and V, because their row and column types differ.
-  
-  #' \dontrun{sum_byname(U, V)} # Fails, because row and column types are different
-  
+  expect_error(sum_byname(U, V), as.character("rowtype(a) == rowtype(b) is not TRUE"))
 })
   
   #' 
