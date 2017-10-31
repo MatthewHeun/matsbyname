@@ -91,7 +91,15 @@ test_that("sums of matrices in lists and data frames", {
 context("Differences")
 
 test_that("differences of constants", {
-  expect_that(difference_byname(100, 50), 50)
+  # Simple difference of constants
+  expect_equal(difference_byname(100, 50), 50)
+  
+  # If differenced against NULL, return the item.
+  expect_equal(difference_byname(NULL, 1), -1)
+  expect_equal(difference_byname(2, NULL), 2)
+  expect_equal(difference_byname(list(NULL, 1), list(1, 1)), list(-1, 0))
+  # If summed against NA, return NA
+  expect_equal(difference_byname(2, NA), NA_integer_)
 })
   
 
