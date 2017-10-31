@@ -9,20 +9,22 @@ library(parallel)
 library(byname)
 library(testthat)
 
+###########################################################
 context("Sums")
+###########################################################
 
-# Define some matrices with commodity and industry names and types
+# Define some matrices with product and industry names and types
 # These matrices will be used in the tests below.
-commoditynames <- c("c1", "c2")
+productnames <- c("p1", "p2")
 industrynames <- c("i1", "i2")
-U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
-  setrowtype("Commodities") %>% setcoltype("Industries")
-V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, commoditynames)) %>%
-  setrowtype("Industries") %>% setcoltype("Commodities")
-Y <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
-  setrowtype("Commodities") %>% setcoltype("Industries")
-Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
-  setrowtype("Commodities") %>% setcoltype("Industries")
+U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+  setrowtype("Products") %>% setcoltype("Industries")
+V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, productnames)) %>%
+  setrowtype("Industries") %>% setcoltype("Products")
+Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+  setrowtype("Products") %>% setcoltype("Industries")
+Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+  setrowtype("Products") %>% setcoltype("Industries")
 
 UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
   setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
@@ -92,7 +94,9 @@ test_that("sums of matrices in lists and data frames", {
   expect_equal(DF %>% mutate(sums = sum_byname(U, Y)), DF %>% mutate(sums = list(UplusY, UplusY)))
 })
 
+###########################################################
 context("Differences")
+###########################################################
 
 test_that("differences of constants", {
   # Simple difference of constants
@@ -141,6 +145,51 @@ test_that("differences of matrices in lists and data frames", {
   expect_equal(difference_byname(list(100, 100), list(50, 50)), list(50, 50))
   expect_equal(difference_byname(list(U, U), list(Z, Z)), list(UminusZ, UminusZ))
   expect_equal(difference_byname(DF$U, DF$Z), list(UminusZ, UminusZ))
-  expect_equal(difference_byname(DF %>% mutate(diffs = difference_byname(U, Z))), DF %>% mutate(diffs = list(UminusZ)))
+  expect_equal(difference_byname(DF %>% mutate(diffs = difference_byname(U, Z))), 
+               DF %>% mutate(diffs = list(UminusZ)))
+})
+
+###########################################################
+context("Row and column selection")
+###########################################################
+
+test_that("row selection by name", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames=list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  
+  # Select only the first row (i1)
+  expect_equal(select_rows_byname(m, "i1"), 
+               matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Select rows 1 and 4 (i1, i4)
+  expect_equal(select_rows_byname(m, c("i1", "i4")), 
+               m[c(1, 4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Eliminate row 3 (i3)
+  expect_equal(select_rows_byname(m, c("-i3")), 
+               m[-3, ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Eliminate rows 1 and 3
+  expect_equal(select_rows_byname(m, c("-i1", "-i3")), 
+               m[c(-1,-3), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Keep row 4.  Keeping has precedence.
+  expect_equal(select_rows_byname(m, c("-i1", "-i3", "i4")), 
+               matrix(c(seq(4, 16, by = 4)), nrow = 1, dimnames = list(c("i4"), m_colnames)) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Matches nothing.  NULL is returned.
+  expect_true(select_rows_byname(m, c("x")) %>% is.null)
+  # Matches nothing.  All of m is returned.
+  expect_equal(select_rows_byname(m, c("-x")), m)
   
 })
+
+#' select_rows_byname(m, "i", exact = FALSE) # Matches all rows, 
+#'                                           # because partial match is OK, and
+#'                                           # all row names start with "i".
+#' # Also works for lists
+#' select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
+#' select_rows_byname(list(m,m), row_names = c("i1", "i4"))
+#' # Test inexact matches
+#' n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+#' select_rows_byname(n, "a", exact = FALSE)
+#' select_rows_byname(n, "-a", exact = FALSE)
