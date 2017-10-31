@@ -1,6 +1,6 @@
-library("parallel")
-library("magrittr")
-library("dplyr")
+library(parallel)
+library(magrittr)
+library(dplyr)
 
 #' Name-wise addition of matrices.
 #' 
