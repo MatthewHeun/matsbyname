@@ -454,8 +454,9 @@ select_rows_byname <- function(m, row_names, exact = TRUE){
     row_names <- make_list(row_names, n = length(m))
     return(mcMap(select_rows_byname, m = m, row_names = row_names))
   }
-  retain <- retain_remove(row_names)[["retain_names"]]
-  remove <- retain_remove(row_names)[["remove_names"]]
+  rr <- retain_remove(row_names)
+  retain <- rr[["retain_names"]]
+  remove <- rr[["remove_names"]]
   retain_indices <- if (exact) {
     which(rownames(m) %in% retain)
   } else {
