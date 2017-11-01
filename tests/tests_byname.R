@@ -33,7 +33,7 @@ UminusZ <- matrix(0, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
 
 Uplus100 <- U + 100
 
-test_that("sums of constants", {
+test_that("sums of constants works as expected", {
   # Simple sum of constants
   expect_equal(sum_byname(2, 3), 5)
   
@@ -45,7 +45,7 @@ test_that("sums of constants", {
   expect_equal(sum_byname(2, NA), NA_integer_)
 })
 
-test_that("sums of matrices", {
+test_that("sums of matrices works as expected", {
   # If only one argument, return it.
   expect_equal(sum_byname(U), U)
   
@@ -76,7 +76,7 @@ test_that("sums of matrices", {
   expect_error(sum_byname(U, V), "rowtype")
 })
 
-test_that("sums of matrices in lists and data frames", {
+test_that("sums of matrices in lists and data frames works as expected", {
   # Define a data frame to be used with testing below.
   DF <- data.frame(U = I(list()), Y = I(list()))
   DF[[1,"U"]] <- U
@@ -98,7 +98,7 @@ test_that("sums of matrices in lists and data frames", {
 context("Differences")
 ###########################################################
 
-test_that("differences of constants", {
+test_that("differences of constants works as expected", {
   # Simple difference of constants
   expect_equal(difference_byname(100, 50), 50)
   
@@ -110,7 +110,7 @@ test_that("differences of constants", {
   expect_equal(difference_byname(2, NA), NA_integer_)
 })
 
-test_that("differences of matrices", {
+test_that("differences of matrices works as expected", {
   # If only one argument, return it.
   expect_equal(difference_byname(U), U)
   
@@ -134,7 +134,7 @@ test_that("differences of matrices", {
   expect_equal(difference_byname(subtrahend = Z), elementproduct_byname(-1, Z))
 })
   
-test_that("differences of matrices in lists and data frames", {
+test_that("differences of matrices in lists and data frames works as expected", {
   # Define a data frame to be used with testing below.
   DF <- data.frame(U = I(list()), Z = I(list()))
   DF[[1,"U"]] <- U
@@ -160,12 +160,16 @@ m <- matrix(1:16, ncol = 4, dimnames=list(m_rownames, m_colnames)) %>%
 
 n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
 
-test_that("matrix row selection by name with exact matches (^name$)", {
+test_that("matrix row selection by name with exact matches (^name$) works as expected", {
   # Select only the first row (i1)
   # expect_equal(select_rows_byname(m, "i1"), 
   #              matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
   #                setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   expect_equal(select_rows_byname(m, retain_pattern = "^i1$"), 
+               matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Try same test using the make_pattern utility function.
+  expect_equal(select_rows_byname(m, retain_pattern = make_pattern(row_col_names = "i1", pattern_type = "exact")), 
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   # Select rows 1 and 4 (i1, i4)
@@ -187,7 +191,7 @@ test_that("matrix row selection by name with exact matches (^name$)", {
   expect_equal(select_rows_byname(m, remove_pattern = "^x$"), m)
 })
 
-test_that("matrix row selection by name with inexact matches", {
+test_that("matrix row selection by name with inexact matches works as expected", {
   # Matches first two rows, because partial match is OK.
   expect_equal(select_rows_byname(n, retain_pattern = "^a"), 
                n[c(1,2), ] %>% setrowtype(rowtype(n)) %>% setcoltype(coltype(n)))
@@ -203,7 +207,7 @@ test_that("matrix row selection by name with inexact matches and multiple select
   expect_equal(select_rows_byname(n, retain_pattern = "^a|^b"), n)
 })
 
-test_that("matrix row selection by name in lists", {
+test_that("matrix row selection by name in lists works as expected", {
   # Use different row names for each item in the list
   expect_equal(select_rows_byname(list(m,m), retain_pattern = list("^i1$|^i4$", "^i2$|^i3$")), 
                list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
@@ -215,3 +219,13 @@ test_that("matrix row selection by name in lists", {
 })
 
 
+###########################################################
+context("Utilities")
+###########################################################
+
+test_that("make_pattern works as expected", {
+  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "exact"), "^a$|^b$")
+  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "leading"), "^a|^b")
+  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "trailing"), "a$|b$")
+  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "anywhere"), "a|b")
+})

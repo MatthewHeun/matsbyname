@@ -9,14 +9,20 @@ select_rows_byname(m, retain_pattern = "$^", remove_pattern = "$^")
 \arguments{
 \item{m}{a matrix or a list of matrices}
 
-\item{row_names}{a vector of Strings containing the row names to keep
-or delete (if names are preceded by a \code{-}).}
+\item{retain_pattern}{an extended regex or list of extended regexes that specifies which rows of \code{m} to retain}
 
-\item{exact}{If \code{TRUE}, an exact match of row names is required.
-If \code{FALSE}, \code{startsWith} will determine matches.
+\item{remove_pattern}{an extended regex or list of extended regexes that specifies which rows of \code{m} to remove
+Patterns are compared against row names using extended regex.
 Retaining rows takes precedence over removing rows.
-If \code{m} contains none of the requested rows to be retained, \code{NULL} is returned.
-If \code{m} contains none of the requested rows to be removed, \code{m} is returned.}
+If \code{m} contains none of the rows requested to be retained, \code{NULL} is returned.
+If \code{m} contains none of the rows requested to be removed, \code{m} is returned.
+
+Some typical patterns are:
+* "^Electricity$|^Oil$": row names that are EXACTLY "Electricity" or "Oil"
+* "^Electricity|^Oil": row names that START WITH "Electricity" or "Oil"
+* "Electricity|Oil": row names that CONTAIN "Electricity" or "Oil" anywhere within them.
+
+Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.}
 }
 \value{
 a matrix that is a subset of \code{m} with rows selected by \code{row_names}.
