@@ -4,7 +4,7 @@
 \alias{select_rows_byname}
 \title{Select rows of a matrix (or list of matrices) by name}
 \usage{
-select_rows_byname(m, row_names, exact = TRUE)
+select_rows_byname(m, retain_pattern = "$^", remove_pattern = "$^")
 }
 \arguments{
 \item{m}{a matrix or a list of matrices}

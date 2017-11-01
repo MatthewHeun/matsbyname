@@ -507,7 +507,7 @@ identize_byname <- function(m){
 #   )
 # }
 select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
-  # Note default patterns retain nothing and remove nothing.
+  # Note default patterns ("$^") retain nothing and remove nothing, because $ means end of line and ^ means beginning of line
   if (is.list(m)){
     retain_pattern <- make_list(retain_pattern, n = length(m))
     remove_pattern <- make_list(remove_pattern, n = length(m))
@@ -519,13 +519,15 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
     # Nothing to be retained, so try removing columns
     if (length(remove_indices) == 0){
       # Nothing to be retained and nothing to be removed.
-      # If the caller wanted to retain something, don't retain anything.
+      # If the caller wanted to retain something, 
+      # which is indicated a non-default retain_pattern,
+      # don't retain anything.
       # Do this first, because retain takes precedence.
-      if (length(retain_indices) > 0){
+      if (retain_pattern != "$^"){
         return(NULL)
       }
       # If the caller wanted to remove something, don't remove anything; return m
-      if (length(remove_indices) > 0){
+      if (remove_pattern != "$^"){
         return(m)
       }
       # Neither retain nor remove had any items.

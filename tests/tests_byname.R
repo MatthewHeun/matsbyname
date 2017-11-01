@@ -160,7 +160,7 @@ m <- matrix(1:16, ncol = 4, dimnames=list(m_rownames, m_colnames)) %>%
 
 n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
 
-test_that("matrix row selection by name", {
+test_that("matrix row selection by name with exact matches (^name$)", {
   # Select only the first row (i1)
   # expect_equal(select_rows_byname(m, "i1"), 
   #              matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
@@ -189,25 +189,27 @@ test_that("matrix row selection by name", {
 
 test_that("matrix row selection by name with inexact matches", {
   # Matches first two rows, because partial match is OK.
-  expect_equal(select_rows_byname(n, "a", exact = FALSE), 
+  expect_equal(select_rows_byname(n, retain_pattern = "^a"), 
                n[c(1,2), ] %>% setrowtype(rowtype(n)) %>% setcoltype(coltype(n)))
   # Deletes first two rows, because partial match is OK, and first two row names start with "a".
-  expect_equal(select_rows_byname(n, "-a", exact = FALSE), 
+  expect_equal(select_rows_byname(n, remove_pattern = "^a"), 
                n[c(3,4), ] %>% setrowtype(rowtype(n)) %>% setcoltype(coltype(n)))
 })
 
 test_that("matrix row selection by name with inexact matches and multiple selectors", {
-  # This test currently FAILS!
-  # expect_equal(select_rows_byname(n, c("a", "b"), exact = FALSE), n)
+  # The retain_pattern selects all rows whose names start with "a" or "b".
+  # This approach should retain rows with names "a1", "a2", "b1", and "b2", i.e.,
+  # all rows in n.
+  expect_equal(select_rows_byname(n, retain_pattern = "^a|^b"), n)
 })
 
 test_that("matrix row selection by name in lists", {
   # Use different row names for each item in the list
-  expect_equal(select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3"))), 
+  expect_equal(select_rows_byname(list(m,m), retain_pattern = list("^i1$|^i4$", "^i2$|$i3$")), 
                list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
                     m[c(2,3), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
   # Use same row names for each item in the list
-  expect_equal(select_rows_byname(list(m,m), row_names = c("i1", "i4")),
+  expect_equal(select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$"),
                list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
                     m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
 })
