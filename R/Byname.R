@@ -449,35 +449,83 @@ identize_byname <- function(m){
 #' n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
 #' select_rows_byname(n, "a", exact = FALSE)
 #' select_rows_byname(n, "-a", exact = FALSE)
-select_rows_byname <- function(m, row_names, exact = TRUE){
+# select_rows_byname <- function(m, row_names, exact = TRUE){
+#   if (is.list(m)){
+#     row_names <- make_list(row_names, n = length(m))
+#     return(mcMap(select_rows_byname, m = m, row_names = row_names))
+#   }
+#   rr <- retain_remove(row_names)
+#   retain <- rr[["retain_names"]]
+#   remove <- rr[["remove_names"]]
+#   retain_indices <- if (exact) {
+#     which(rownames(m) %in% retain)
+#   } else {
+#     which(startsWith(rownames(m), retain))
+#   }
+#   remove_indices <- if (exact) {
+#     which(rownames(m) %in% remove)
+#   } else {
+#     which(startsWith(rownames(m), remove))
+#   }
+#   if (length(retain_indices) == 0){
+#     # Nothing to be retained, so try removing columns
+#     if (length(remove_indices) == 0){
+#       # Nothing to be retained and nothing to be removed.
+#       # If the caller wanted to retain something, don't retain anything.
+#       # Do this first, because retain takes precedence.
+#       if (length(retain) > 0){
+#         return(NULL)
+#       }
+#       # If the caller wanted to remove something, don't remove anything; return m
+#       if (length(remove) > 0){
+#         return(m)
+#       }
+#       # Neither retain nor remove had any items.
+#       # This is almost surely an error.
+#       stop("remove and retain are empty in select_rows_byname.")
+#     }
+#     # Remove
+#     return(m[-remove_indices , ] %>% 
+#              # When only 1 row is selected, the natural result will be a numeric vector
+#              # We want to ensure that the return value is a matrix
+#              # with correct rowtype and coltype.
+#              # Thus, we need to take these additional steps.
+#              matrix(nrow = nrow(m) - length(remove_indices),
+#                     dimnames = list(dimnames(m)[[1]][setdiff(1:nrow(m), remove_indices)], 
+#                                     dimnames(m)[[2]])) %>% 
+#              setrowtype(rowtype(m)) %>% 
+#              setcoltype(coltype(m))
+#     )
+#   }
+#   # Retain
+#   return(m[retain_indices , ] %>% 
+#            matrix(nrow = length(retain_indices),
+#                   dimnames = list(dimnames(m)[[1]][retain_indices], 
+#                                   dimnames(m)[[2]])) %>% 
+#     setrowtype(rowtype(m)) %>% 
+#     setcoltype(coltype(m))
+#   )
+# }
+select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
+  # Note default patterns retain nothing and remove nothing.
   if (is.list(m)){
-    row_names <- make_list(row_names, n = length(m))
-    return(mcMap(select_rows_byname, m = m, row_names = row_names))
+    retain_pattern <- make_list(retain_pattern, n = length(m))
+    remove_pattern <- make_list(remove_pattern, n = length(m))
+    return(mcMap(select_rows_byname, m = m, retain_pattern = retain_pattern, remove_pattern = remove_pattern))
   }
-  rr <- retain_remove(row_names)
-  retain <- rr[["retain_names"]]
-  remove <- rr[["remove_names"]]
-  retain_indices <- if (exact) {
-    which(rownames(m) %in% retain)
-  } else {
-    which(startsWith(rownames(m), retain))
-  }
-  remove_indices <- if (exact) {
-    which(rownames(m) %in% remove)
-  } else {
-    which(startsWith(rownames(m), remove))
-  }
+  retain_indices <- grep(pattern = retain_pattern, x = rownames(m))
+  remove_indices <- grep(pattern = remove_pattern, x = rownames(m))
   if (length(retain_indices) == 0){
     # Nothing to be retained, so try removing columns
     if (length(remove_indices) == 0){
       # Nothing to be retained and nothing to be removed.
       # If the caller wanted to retain something, don't retain anything.
       # Do this first, because retain takes precedence.
-      if (length(retain) > 0){
+      if (length(retain_indices) > 0){
         return(NULL)
       }
       # If the caller wanted to remove something, don't remove anything; return m
-      if (length(remove) > 0){
+      if (length(remove_indices) > 0){
         return(m)
       }
       # Neither retain nor remove had any items.
@@ -502,8 +550,8 @@ select_rows_byname <- function(m, row_names, exact = TRUE){
            matrix(nrow = length(retain_indices),
                   dimnames = list(dimnames(m)[[1]][retain_indices], 
                                   dimnames(m)[[2]])) %>% 
-    setrowtype(rowtype(m)) %>% 
-    setcoltype(coltype(m))
+           setrowtype(rowtype(m)) %>% 
+           setcoltype(coltype(m))
   )
 }
 

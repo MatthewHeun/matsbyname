@@ -20,4 +20,14 @@ grepl(pattern = "^a1$|^a2$", x = x)
 
 # Then, grepl on the vector of row or column names
 
+paste0(x, collapse = "|")
 
+
+exact <- FALSE
+if (exact){
+  paste0("^", x, "$")
+} else {
+  paste0("^", x) 
+} %>% paste0(collapse = "|")
+
+grep(pattern = "$^", x = x)
