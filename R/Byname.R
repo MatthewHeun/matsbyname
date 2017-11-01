@@ -442,7 +442,6 @@ identize_byname <- function(m){
 #' select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
-#' 
 select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   # Note default patterns ("$^") retain nothing and remove nothing, because $ means end of line and ^ means beginning of line
   if (is.list(m)){

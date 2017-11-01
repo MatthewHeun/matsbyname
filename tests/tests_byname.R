@@ -221,8 +221,8 @@ test_that("matrix row selection by name in lists works as expected", {
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
   DF <- DF %>% mutate(trimmed = select_rows_byname(.$m, 
-                                                           retain_pattern = make_pattern(row_col_names = c("i1", "i2"), 
-                                                                                         pattern_type = "exact")))
+                                                   retain_pattern = make_pattern(row_col_names = c("i1", "i2"), 
+                                                                                 pattern_type = "exact")))
   DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
   DF_expected[[1,"m"]] <- m
   DF_expected[[2,"m"]] <- m
@@ -231,7 +231,6 @@ test_that("matrix row selection by name in lists works as expected", {
   # Need to use "expect_equivalent" because attributes are different 
   # because DF_expected was made differently from how the mutated data fram was made.
   expect_equivalent(DF, DF_expected)
-  
 })
 
 
