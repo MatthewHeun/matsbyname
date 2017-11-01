@@ -21,7 +21,7 @@ a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern
 \description{
 Arguments indicate which rows are to be retained and which are to be removed.
 For maximum flexibility, arguments are extended regex patterns
-that are matched against row names within the function.
+that are matched against row names.
 }
 \details{
 Patterns are compared against row names using extended regex.
