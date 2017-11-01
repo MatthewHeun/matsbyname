@@ -9,6 +9,7 @@ library(parallel)
 library(byname)
 library(testthat)
 
+
 ###########################################################
 context("Sums")
 ###########################################################
@@ -94,6 +95,7 @@ test_that("sums of matrices in lists and data frames works as expected", {
   expect_equal(DF %>% mutate(sums = sum_byname(U, Y)), DF %>% mutate(sums = list(UplusY, UplusY)))
 })
 
+
 ###########################################################
 context("Differences")
 ###########################################################
@@ -149,8 +151,9 @@ test_that("differences of matrices in lists and data frames works as expected", 
                DF %>% mutate(diffs = list(UminusZ)))
 })
 
+
 ###########################################################
-context("Row and column selection")
+context("Row selection")
 ###########################################################
 
 m_rownames <- paste0("i", 1:4)
@@ -230,6 +233,11 @@ test_that("matrix row selection by name in lists works as expected", {
   # because DF_expected was made differently from how the mutated data fram was made.
   expect_equivalent(DF, DF_expected)
 })
+
+
+###########################################################
+context("Column selection")
+###########################################################
 
 test_that("matrix column selection by name with exact matches (^name$) works as expected", {
   # Select only the first column (p1)
