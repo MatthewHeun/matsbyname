@@ -417,8 +417,10 @@ identize_byname <- function(m){
 #' Select rows of a matrix (or list of matrices) by name
 #'
 #' @param m a matrix or a list of matrices
-#' @param retain_pattern an extended regex or list of extended regexes that specifies which rows of \code{m} to retain
+#' @param retain_pattern an extended regex or list of extended regexes that specifies which rows of \code{m} to retain.
+#' Default pattern (\code{$^}) retains nothing.
 #' @param remove_pattern an extended regex or list of extended regexes that specifies which rows of \code{m} to remove
+#' Default pattern (\code{$^}) removes nothing.
 #' Patterns are compared against row names using extended regex.
 #' If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
@@ -443,7 +445,10 @@ identize_byname <- function(m){
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
-  # Note default patterns ("$^") retain nothing and remove nothing, because $ means end of line and ^ means beginning of line
+  # Note default patterns ("$^") retain nothing and remove nothing, 
+  # because $ means end of line and ^ means beginning of line.
+  # The default pattern would match lines where the beginning of the line is the end of the line.
+  # That is impossible, so nothing is matched.
   if (is.list(m)){
     retain_pattern <- make_list(retain_pattern, n = length(m))
     remove_pattern <- make_list(remove_pattern, n = length(m))
