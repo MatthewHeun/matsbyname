@@ -448,7 +448,7 @@ identize_byname <- function(m){
 #' @export
 #'
 #' @examples
-#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
+#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
 #' select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
@@ -510,6 +510,116 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   )
 }
 
+#' @title 
+#' Select columns of a matrix (or list of matrices) by name
+#' 
+#' @description 
+#' Arguments indicate which columns are to be retained and which are to be removed.
+#' For maximum flexibility, arguments are extended regex patterns
+#' that are matched against column names.
+#' 
+#' @details 
+#' Patterns are compared against column names using extended regex.
+#' If no column names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
+#' If no column names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
+#' 
+#' Retaining columns takes precedence over removing columns, always.
+#' 
+#' Some typical patterns are:
+#' \itemize{
+#'   \item{\code{^Electricity$|^Oil$}: column names that are EXACTLY \code{Electricity} or \code{Oil}.}
+#'   \item{\code{^Electricity|^Oil}: column names that START WITH \code{Electricity} or \code{Oil}.}
+#'   \item{\code{Electricity|Oil}: column names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
+#' }
+#' 
+#' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
+#'
+#' @param m a matrix or a list of matrices
+#' @param retain_pattern an extended regex or list of extended regexes that specifies which columns of \code{m} to retain.
+#' Default pattern (\code{$^}) retains nothing.
+#' @param remove_pattern an extended regex or list of extended regexes that specifies which columns of \code{m} to remove
+#' Default pattern (\code{$^}) removes nothing.
+#'   
+#' @return a matrix that is a subset of \code{m} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
+#' @export
+#'
+#' @examples
+#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' select_cols_byname(m, retain_pattern = make_pattern(c("p1", "p4"), pattern_type = "exact"))
+#' select_cols_byname(m, remove_pattern = make_pattern(c("p1", "p3"), pattern_type = "exact"))
+#' # Also works for lists and data frames
+#' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
+select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
+  # Note default patterns ("$^") retain nothing and remove nothing, 
+  # because $ means end of line and ^ means beginning of line.
+  # The default pattern would match lines where the beginning of the line is the end of the line.
+  # That is impossible, so nothing is matched.
+  if (is.list(m)){
+    retain_pattern <- make_list(retain_pattern, n = length(m))
+    remove_pattern <- make_list(remove_pattern, n = length(m))
+    return(mcMap(select_rows_byname, m = m, retain_pattern = retain_pattern, remove_pattern = remove_pattern))
+  }
+  retain_indices <- grep(pattern = retain_pattern, x = colnames(m))
+  remove_indices <- grep(pattern = remove_pattern, x = colnames(m))
+  if (length(retain_indices) == 0){
+    # Nothing to be retained, so try removing columns
+    if (length(remove_indices) == 0){
+      # Nothing to be retained and nothing to be removed.
+      # If the caller wanted to retain something, 
+      # which is indicated by a non-default retain_pattern,
+      # don't retain anything.
+      # Do this first, because retain takes precedence.
+      if (retain_pattern != "$^"){
+        return(NULL)
+      }
+      # If the caller wanted to remove something, 
+      # which is indicated by a non-default remove_pattern,
+      # don't remove anything. Simply return m.
+      if (remove_pattern != "$^"){
+        return(m)
+      }
+      # Neither retain_pattern nor remove_pattern is different from the default.
+      # This is almost surely an error.
+      stop("neither retain_pattern nor remove_pattern are differnt from default.")
+    }
+    # Remove
+    return(m[ , -remove_indices] %>% 
+             # When only 1 row is selected, the natural result will be a numeric vector
+             # We want to ensure that the return value is a matrix
+             # with correct rowtype and coltype.
+             # Thus, we need to take these additional steps.
+             matrix(ncol = ncol(m) - length(remove_indices),
+                    dimnames = list(dimnames(m)[[1]], 
+                                    dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>% 
+             setrowtype(rowtype(m)) %>% 
+             setcoltype(coltype(m))
+    )
+  }
+  # Retain
+  return(m[ , retain_indices] %>% 
+           matrix(ncol = length(retain_indices),
+                  dimnames = list(dimnames(m)[[1]], 
+                                  dimnames(m)[[2]][retain_indices])) %>% 
+           setrowtype(rowtype(m)) %>% 
+           setcoltype(coltype(m))
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #' Select columns of a matrix (or list of matrices) by name
 #'
 #' @param m a matrix or a list of matrices
@@ -539,64 +649,74 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' n <- setcolnames_byname(m, c("d1", "d2", "e1", "e2"))
 #' select_cols_byname(n, "d", exact = FALSE)
 #' select_cols_byname(n, "-d", exact = FALSE)
-select_cols_byname <- function(m, col_names, exact = TRUE){
-  if (is.list(m)){
-    col_names <- make_list(col_names, n = length(m))
-    return(mcMap(select_cols_byname, m = m, col_names = col_names))
-  }
-  retain <- retain_remove(col_names)[["retain_names"]]
-  remove <- retain_remove(col_names)[["remove_names"]]
-  # retain_indices <- which(colnames(m) %in% retain)
-  # remove_indices <- which(colnames(m) %in% remove)
-  retain_indices <- if (exact) {
-    which(colnames(m) %in% retain)
-  } else {
-    which(startsWith(colnames(m), retain))
-  }
-  remove_indices <- if (exact) {
-    which(colnames(m) %in% remove)
-  } else {
-    which(startsWith(colnames(m), remove))
-  }
-  if (length(retain_indices) == 0){
-    # Nothing to be retained, so try removing columns
-    if (length(remove_indices) == 0){
-      # Nothing to be retained and nothing to be removed.
-      # If the caller wanted to retain something, don't retain anything.
-      # Do this first, because retain takes precedence.
-      if (length(retain) > 0){
-        return(NULL)
-      }
-      # If the caller wanted to remove something, don't remove anything; return m
-      if (length(remove) > 0){
-        return(m)
-      }
-      # Neither retain nor remove had any items.
-      # This is almost surely an error.
-      stop("remove and retain are empty in select_cols_byname.")
-    }
-    # Remove
-    return(m[ , -remove_indices] %>% 
-             # When only 1 column is selected, the natural result will be a numeric vector
-             # We want to ensure that the return value is a matrix
-             # with correct rowtype and coltype.
-             # Thus, we need to take these additional steps.
-             matrix(ncol = ncol(m) - length(remove_indices),
-                    dimnames = list(dimnames(m)[[1]], 
-                                    dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>% 
-             setrowtype(rowtype(m)) %>% 
-             setcoltype(coltype(m))
-    )
-  }
-  # Retain
-  return(m[ , retain_indices] %>% 
-           matrix(ncol = length(retain_indices),
-                  dimnames = list(dimnames(m)[[1]], 
-                                  dimnames(m)[[2]][retain_indices])) %>% 
-           setrowtype(rowtype(m)) %>% 
-           setcoltype(coltype(m))
-  )
-}
+# select_cols_byname <- function(m, col_names, exact = TRUE){
+#   if (is.list(m)){
+#     col_names <- make_list(col_names, n = length(m))
+#     return(mcMap(select_cols_byname, m = m, col_names = col_names))
+#   }
+#   retain <- retain_remove(col_names)[["retain_names"]]
+#   remove <- retain_remove(col_names)[["remove_names"]]
+#   # retain_indices <- which(colnames(m) %in% retain)
+#   # remove_indices <- which(colnames(m) %in% remove)
+#   retain_indices <- if (exact) {
+#     which(colnames(m) %in% retain)
+#   } else {
+#     which(startsWith(colnames(m), retain))
+#   }
+#   remove_indices <- if (exact) {
+#     which(colnames(m) %in% remove)
+#   } else {
+#     which(startsWith(colnames(m), remove))
+#   }
+#   if (length(retain_indices) == 0){
+#     # Nothing to be retained, so try removing columns
+#     if (length(remove_indices) == 0){
+#       # Nothing to be retained and nothing to be removed.
+#       # If the caller wanted to retain something, don't retain anything.
+#       # Do this first, because retain takes precedence.
+#       if (length(retain) > 0){
+#         return(NULL)
+#       }
+#       # If the caller wanted to remove something, don't remove anything; return m
+#       if (length(remove) > 0){
+#         return(m)
+#       }
+#       # Neither retain nor remove had any items.
+#       # This is almost surely an error.
+#       stop("remove and retain are empty in select_cols_byname.")
+#     }
+#     # Remove
+#     return(m[ , -remove_indices] %>% 
+#              # When only 1 column is selected, the natural result will be a numeric vector
+#              # We want to ensure that the return value is a matrix
+#              # with correct rowtype and coltype.
+#              # Thus, we need to take these additional steps.
+#              matrix(ncol = ncol(m) - length(remove_indices),
+#                     dimnames = list(dimnames(m)[[1]], 
+#                                     dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>% 
+#              setrowtype(rowtype(m)) %>% 
+#              setcoltype(coltype(m))
+#     )
+#   }
+#   # Retain
+#   return(m[ , retain_indices] %>% 
+#            matrix(ncol = length(retain_indices),
+#                   dimnames = list(dimnames(m)[[1]], 
+#                                   dimnames(m)[[2]][retain_indices])) %>% 
+#            setrowtype(rowtype(m)) %>% 
+#            setcoltype(coltype(m))
+#   )
+# }
+
+
+
+
+
+
+
+
+
+
 
 #' Decides which columns to retain and remove.
 #' 
