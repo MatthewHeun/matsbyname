@@ -13,9 +13,9 @@ select_rows_byname(m, retain_pattern = "$^", remove_pattern = "$^")
 
 \item{remove_pattern}{an extended regex or list of extended regexes that specifies which rows of \code{m} to remove
 Patterns are compared against row names using extended regex.
-Retaining rows takes precedence over removing rows.
-If \code{m} contains none of the rows requested to be retained, \code{NULL} is returned.
-If \code{m} contains none of the rows requested to be removed, \code{m} is returned.
+If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
+If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
+Retaining rows takes precedence over removing rows, always.
 
 Some typical patterns are:
 * "^Electricity$|^Oil$": row names that are EXACTLY "Electricity" or "Oil"
@@ -33,22 +33,9 @@ Select rows of a matrix (or list of matrices) by name
 \examples{
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
-select_rows_byname(m, "i1")
-select_rows_byname(m, c("i1"))
-select_rows_byname(m, c("i1", "i4"))
-select_rows_byname(m, c("-i3"))
-select_rows_byname(m, c("-i1", "-i3"))
-select_rows_byname(m, c("-i1", "-i3", "i4")) # Keeping has precedence.
-select_rows_byname(m, c("x")) # Matches nothing.  NULL is returned.
-select_rows_byname(m, c("-x")) # Matches nothing.  All of m is returned.
-select_rows_byname(m, "i", exact = FALSE) # Matches all rows, 
-                                          # because partial match is OK, and
-                                          # all row names start with "i".
-# Also works for lists
-select_rows_byname(list(m,m), row_names = list(c("i1", "i4"), c("i2", "i3")))
-select_rows_byname(list(m,m), row_names = c("i1", "i4"))
-# Test inexact matches
-n <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
-select_rows_byname(n, "a", exact = FALSE)
-select_rows_byname(n, "-a", exact = FALSE)
+select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
+select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
+# Also works for lists and data frames
+select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
+
 }

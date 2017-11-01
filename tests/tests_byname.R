@@ -216,6 +216,21 @@ test_that("matrix row selection by name in lists works as expected", {
   expect_equal(select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$"),
                list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
                     m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
+  # Using data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"trimmed"]] <- select_rows_byname(m, retain_pattern = "^i1$|^i2$")
+  DF_expected[[2,"trimmed"]] <- select_rows_byname(m, retain_pattern = "^i1$|^i2$")
+  # Need to use "expect_equivalent" because attributes are different du to the way DF_expected was made
+  expect_equivalent(DF %>% mutate(trimmed = select_rows_byname(.$m, 
+                                                          retain_pattern = make_pattern(row_col_names = c("i1", "i2"), 
+                                                                                        pattern_type = "exact"))), 
+               DF_expected)
+  
 })
 
 
@@ -229,3 +244,4 @@ test_that("make_pattern works as expected", {
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "trailing"), "a$|b$")
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "anywhere"), "a|b")
 })
+  
