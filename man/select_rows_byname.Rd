@@ -9,26 +9,35 @@ select_rows_byname(m, retain_pattern = "$^", remove_pattern = "$^")
 \arguments{
 \item{m}{a matrix or a list of matrices}
 
-\item{retain_pattern}{an extended regex or list of extended regexes that specifies which rows of \code{m} to retain}
+\item{retain_pattern}{an extended regex or list of extended regexes that specifies which rows of \code{m} to retain.
+Default pattern (\code{$^}) retains nothing.}
 
 \item{remove_pattern}{an extended regex or list of extended regexes that specifies which rows of \code{m} to remove
+Default pattern (\code{$^}) removes nothing.}
+}
+\value{
+a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
+}
+\description{
+Arguments indicate which rows are to be retained and which are to be removed.
+For maximum flexibility, arguments are extended regex patterns
+that are matched against row names within the function.
+}
+\details{
 Patterns are compared against row names using extended regex.
 If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
+
 Retaining rows takes precedence over removing rows, always.
 
 Some typical patterns are:
-* "^Electricity$|^Oil$": row names that are EXACTLY "Electricity" or "Oil"
-* "^Electricity|^Oil": row names that START WITH "Electricity" or "Oil"
-* "Electricity|Oil": row names that CONTAIN "Electricity" or "Oil" anywhere within them.
+\itemize{
+  \item{\code{^Electricity$|^Oil$}: row names that are EXACTLY \code{Electricity} or \code{Oil}.}
+  \item{\code{^Electricity|^Oil}: row names that START WITH \code{Electricity} or \code{Oil}.}
+  \item{\code{Electricity|Oil}: row names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
+}
 
-Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.}
-}
-\value{
-a matrix that is a subset of \code{m} with rows selected by \code{row_names}.
-}
-\description{
-Select rows of a matrix (or list of matrices) by name
+Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
 }
 \examples{
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
@@ -37,5 +46,4 @@ select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type 
 select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
 # Also works for lists and data frames
 select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
-
 }
