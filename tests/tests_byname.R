@@ -205,7 +205,7 @@ test_that("matrix row selection by name with inexact matches and multiple select
 
 test_that("matrix row selection by name in lists", {
   # Use different row names for each item in the list
-  expect_equal(select_rows_byname(list(m,m), retain_pattern = list("^i1$|^i4$", "^i2$|$i3$")), 
+  expect_equal(select_rows_byname(list(m,m), retain_pattern = list("^i1$|^i4$", "^i2$|^i3$")), 
                list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
                     m[c(2,3), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
   # Use same row names for each item in the list
