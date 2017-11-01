@@ -558,7 +558,7 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   if (is.list(m)){
     retain_pattern <- make_list(retain_pattern, n = length(m))
     remove_pattern <- make_list(remove_pattern, n = length(m))
-    return(mcMap(select_rows_byname, m = m, retain_pattern = retain_pattern, remove_pattern = remove_pattern))
+    return(mcMap(select_cols_byname, m = m, retain_pattern = retain_pattern, remove_pattern = remove_pattern))
   }
   retain_indices <- grep(pattern = retain_pattern, x = colnames(m))
   remove_indices <- grep(pattern = remove_pattern, x = colnames(m))
