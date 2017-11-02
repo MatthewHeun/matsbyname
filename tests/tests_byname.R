@@ -190,6 +190,15 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
   expect_null(select_rows_byname(m, retain_pattern = "^x$"))
   # Matches nothing.  All of m is returned.
   expect_equal(select_rows_byname(m, remove_pattern = "^x$"), m)
+  
+  # Here is a pathological case where the row name contains ( and ).
+  # ( and ) need to be escaped properly for use in regex.
+  crazymat <- matrix(1, nrow = 2, ncol = 2, 
+                     dimnames = list(c("i (1)", "i (2)"), c("p (1)", "p (2)"))) %>% 
+    setrowtype("Industries") %>% setcoltype("Prodcuts")
+  expect_equal(select_rows_byname(crazymat, retain_pattern = make_pattern(row_col_names = "i (1)", pattern_type = "exact")), 
+               matrix(1, nrow = 1, ncol = 2, dimnames = list("i (1)", c("p (1)", "p (2)"))) %>% 
+                 setrowtype(rowtype(crazymat)) %>% setcoltype(coltype(crazymat)))
 })
 
 test_that("matrix row selection by name with inexact matches works as expected", {
@@ -319,5 +328,6 @@ test_that("make_pattern works as expected", {
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "leading"), "^a|^b")
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "trailing"), "a$|b$")
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "anywhere"), "a|b")
+  expect_equal(make_pattern(row_col_names = "Non-specified (industry)", pattern_type = "exact"), "^Non-specified \\(industry\\)$")
 })
   
