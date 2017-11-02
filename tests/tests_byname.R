@@ -320,6 +320,32 @@ test_that("matrix column selection by name in lists works as expected", {
 
 
 ###########################################################
+context("Matrix cleaning")
+###########################################################
+
+test_that("matrix cleaning works as expected", {
+  # Clean on rows
+  mat1 <- matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
+    setrowtype("Rows") %>% setcoltype("Cols")
+  # Now clean in rows Should eliminate row 1.
+  expect_equal(mat1 %>% clean_byname(margin = 1, clean_value = 0), 
+               matrix(1, nrow = 1, ncol = 2, dimnames = list("r (2)", c("c (1)", "c (2)"))) %>% 
+                 setrowtype("Rows") %>% setcoltype("Cols"))
+  # No column consists of all zeroes. So nothing to clean in columns Should get "mat1" back.
+  expect_equal(mat1 %>% clean_byname(margin = 2, clean_value = 0), mat1)
+  # Clean on columns
+  mat2 <- matrix(c(0,0,1,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
+    setrowtype("Rows") %>% setcoltype("Cols")
+  # No row consists of all zeroes. So nothing to clean in rows. Should get "mat2" back.
+  expect_equal(mat2 %>% clean_byname(margin = 1, clean_value = 0), mat2)
+  # Now clean in columns. Should eliminate column 1.
+  expect_equal(mat2 %>% clean_byname(margin = 2, clean_value = 0), 
+               matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r (1)", "r (2)"), "c (2)")) %>% 
+                 setrowtype("Rows") %>% setcoltype("Cols"))
+})
+
+
+###########################################################
 context("Utilities")
 ###########################################################
 

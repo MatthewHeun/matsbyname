@@ -871,7 +871,7 @@ Iminus_byname <- function(m){
 #' DF2[[1, "m2"]] <- m2
 #' DF2[[2, "m2"]] <- m2
 #' DF2 %>% clean_byname(margin = c(1,2), clean_value = -20)
-clean_byname <- function(m, margin, clean_value = 0){
+clean_byname <- function(m, margin = c(1,2), clean_value = 0){
   if (1 %in% margin & 2 %in% margin){
     # Clean both dimensions of m.
     cleaned1 <- clean_byname(m, margin = 1, clean_value = clean_value)
@@ -892,7 +892,7 @@ clean_byname <- function(m, margin, clean_value = 0){
   }
   keepcols <- apply(a, 2, function(x) {!all(x == clean_value)})
   keepcolnames <- names(which(keepcols))
-  b <- select_cols_byname(m = a, col_names = keepcolnames)
+  b <- select_cols_byname(m = a, retain_pattern = make_pattern(row_col_names = keepcolnames, pattern_type = "exact"))
   if (margin == 1){
     return(transpose_byname(b))
   } else if (margin == 2){
