@@ -40,7 +40,7 @@ Some typical patterns are:
 Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
 }
 \examples{
-m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
+m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
 select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))

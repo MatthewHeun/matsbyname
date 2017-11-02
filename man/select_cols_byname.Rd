@@ -4,39 +4,46 @@
 \alias{select_cols_byname}
 \title{Select columns of a matrix (or list of matrices) by name}
 \usage{
-select_cols_byname(m, col_names, exact = TRUE)
+select_cols_byname(m, retain_pattern = "$^", remove_pattern = "$^")
 }
 \arguments{
 \item{m}{a matrix or a list of matrices}
 
-\item{col_names}{a vector of Strings containing the column names to keep
-or delete (if names are preceded by a \code{-}).}
+\item{retain_pattern}{an extended regex or list of extended regexes that specifies which columns of \code{m} to retain.
+Default pattern (\code{$^}) retains nothing.}
 
-\item{exact}{If \code{TRUE}, an exact match of column names is required.
-If \code{FALSE}, \code{startsWith} will determine matches.
-Retaining columns takes precedence over removing columns.
-If \code{m} contains none of the requested columns to be retained, \code{NULL} is returned.
-If \code{m} contains none of the requested columns to be removed, \code{m} is returned.}
+\item{remove_pattern}{an extended regex or list of extended regexes that specifies which columns of \code{m} to remove
+Default pattern (\code{$^}) removes nothing.}
 }
 \value{
-a matrix that is a subset of \code{m} with columns selected according to \code{col_names}.
+a matrix that is a subset of \code{m} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
 }
 \description{
-Select columns of a matrix (or list of matrices) by name
+Arguments indicate which columns are to be retained and which are to be removed.
+For maximum flexibility, arguments are extended regex patterns
+that are matched against column names.
+}
+\details{
+Patterns are compared against column names using extended regex.
+If no column names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
+If no column names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
+
+Retaining columns takes precedence over removing columns, always.
+
+Some typical patterns are:
+\itemize{
+  \item{\code{^Electricity$|^Oil$}: column names that are EXACTLY \code{Electricity} or \code{Oil}.}
+  \item{\code{^Electricity|^Oil}: column names that START WITH \code{Electricity} or \code{Oil}.}
+  \item{\code{Electricity|Oil}: column names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
+}
+
+Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 }
 \examples{
-m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
+m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
-select_cols_byname(m, "c2")
-select_cols_byname(m, c("c1", "c4"))
-select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4")) # Retain take precedence over remove.
-select_cols_byname(m, "x") # Matches nothing. NULL is returned
-select_cols_byname(m, "-x") # Matches nothing. m is returned
-# Also works for lists
-select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
-select_cols_byname(list(m,m), col_names = c("c1", "c4"))
-# Test inexact matches
-n <- setcolnames_byname(m, c("d1", "d2", "e1", "e2"))
-select_cols_byname(n, "d", exact = FALSE)
-select_cols_byname(n, "-d", exact = FALSE)
+select_cols_byname(m, retain_pattern = make_pattern(c("p1", "p4"), pattern_type = "exact"))
+select_cols_byname(m, remove_pattern = make_pattern(c("p1", "p3"), pattern_type = "exact"))
+# Also works for lists and data frames
+select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 }
