@@ -606,118 +606,6 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   )
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#' Select columns of a matrix (or list of matrices) by name
-#'
-#' @param m a matrix or a list of matrices
-#' @param col_names a vector of Strings containing the column names to keep
-#' or delete (if names are preceded by a \code{-}).
-#' @param exact If \code{TRUE}, an exact match of column names is required.
-#' If \code{FALSE}, \code{startsWith} will determine matches.
-#' Retaining columns takes precedence over removing columns.
-#' If \code{m} contains none of the requested columns to be retained, \code{NULL} is returned.
-#' If \code{m} contains none of the requested columns to be removed, \code{m} is returned.
-#'
-#' @return a matrix that is a subset of \code{m} with columns selected according to \code{col_names}.
-#' @export
-#'
-#' @examples
-#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
-#'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_cols_byname(m, "c2")
-#' select_cols_byname(m, c("c1", "c4"))
-#' select_cols_byname(m, c("-c1", "-c4", "-----c3", "c2", "c4", "c4")) # Retain take precedence over remove.
-#' select_cols_byname(m, "x") # Matches nothing. NULL is returned
-#' select_cols_byname(m, "-x") # Matches nothing. m is returned
-#' # Also works for lists
-#' select_cols_byname(list(m,m), col_names = list(c("c1", "c4"), c("c2", "c3")))
-#' select_cols_byname(list(m,m), col_names = c("c1", "c4"))
-#' # Test inexact matches
-#' n <- setcolnames_byname(m, c("d1", "d2", "e1", "e2"))
-#' select_cols_byname(n, "d", exact = FALSE)
-#' select_cols_byname(n, "-d", exact = FALSE)
-# select_cols_byname <- function(m, col_names, exact = TRUE){
-#   if (is.list(m)){
-#     col_names <- make_list(col_names, n = length(m))
-#     return(mcMap(select_cols_byname, m = m, col_names = col_names))
-#   }
-#   retain <- retain_remove(col_names)[["retain_names"]]
-#   remove <- retain_remove(col_names)[["remove_names"]]
-#   # retain_indices <- which(colnames(m) %in% retain)
-#   # remove_indices <- which(colnames(m) %in% remove)
-#   retain_indices <- if (exact) {
-#     which(colnames(m) %in% retain)
-#   } else {
-#     which(startsWith(colnames(m), retain))
-#   }
-#   remove_indices <- if (exact) {
-#     which(colnames(m) %in% remove)
-#   } else {
-#     which(startsWith(colnames(m), remove))
-#   }
-#   if (length(retain_indices) == 0){
-#     # Nothing to be retained, so try removing columns
-#     if (length(remove_indices) == 0){
-#       # Nothing to be retained and nothing to be removed.
-#       # If the caller wanted to retain something, don't retain anything.
-#       # Do this first, because retain takes precedence.
-#       if (length(retain) > 0){
-#         return(NULL)
-#       }
-#       # If the caller wanted to remove something, don't remove anything; return m
-#       if (length(remove) > 0){
-#         return(m)
-#       }
-#       # Neither retain nor remove had any items.
-#       # This is almost surely an error.
-#       stop("remove and retain are empty in select_cols_byname.")
-#     }
-#     # Remove
-#     return(m[ , -remove_indices] %>% 
-#              # When only 1 column is selected, the natural result will be a numeric vector
-#              # We want to ensure that the return value is a matrix
-#              # with correct rowtype and coltype.
-#              # Thus, we need to take these additional steps.
-#              matrix(ncol = ncol(m) - length(remove_indices),
-#                     dimnames = list(dimnames(m)[[1]], 
-#                                     dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>% 
-#              setrowtype(rowtype(m)) %>% 
-#              setcoltype(coltype(m))
-#     )
-#   }
-#   # Retain
-#   return(m[ , retain_indices] %>% 
-#            matrix(ncol = length(retain_indices),
-#                   dimnames = list(dimnames(m)[[1]], 
-#                                   dimnames(m)[[2]][retain_indices])) %>% 
-#            setrowtype(rowtype(m)) %>% 
-#            setcoltype(coltype(m))
-#   )
-# }
-
-
-
-
-
-
-
-
-
-
-
 #' Decides which columns to retain and remove.
 #' 
 #' This is a helper function for \code{select_rows_byname} and \code{select_cols_byname}.
@@ -983,7 +871,7 @@ Iminus_byname <- function(m){
 #' DF2[[1, "m2"]] <- m2
 #' DF2[[2, "m2"]] <- m2
 #' DF2 %>% clean_byname(margin = c(1,2), clean_value = -20)
-clean_byname <- function(m, margin, clean_value = 0){
+clean_byname <- function(m, margin = c(1,2), clean_value = 0){
   if (1 %in% margin & 2 %in% margin){
     # Clean both dimensions of m.
     cleaned1 <- clean_byname(m, margin = 1, clean_value = clean_value)
@@ -1004,7 +892,7 @@ clean_byname <- function(m, margin, clean_value = 0){
   }
   keepcols <- apply(a, 2, function(x) {!all(x == clean_value)})
   keepcolnames <- names(which(keepcols))
-  b <- select_cols_byname(m = a, col_names = keepcolnames)
+  b <- select_cols_byname(m = a, retain_pattern = make_pattern(row_col_names = keepcolnames, pattern_type = "exact"))
   if (margin == 1){
     return(transpose_byname(b))
   } else if (margin == 2){
@@ -1400,17 +1288,35 @@ organize_args <- function(a, b){
 }
 
 
-#' Create regex patterns for row and column name selection
+#' @title 
+#' Create regex patterns for row and column selection by name
 #'
+#' @description 
+#' This function is intended for use with the \code{select_rows_byname}
+#' and \code{select_cols_byname} functions. 
+#' \code{make_pattern} correctly escapes special characters in \code{row_col_names},
+#' such as \code{(} and \code{)}, as needed.
+#' Thus, it is highly recommended that \code{make_pattern} be used when 
+#' constructing patterns for row and column selections with 
+#' \code{select_rows_byname}
+#' and \code{select_cols_byname}.
+#' 
+#' @details 
+#' \code{pattern_type} controls the type of pattern created:
+#' \itemize{
+#'   \item{\code{exact} produces a pattern that selects row or column names by exact match.}
+#'   \item{\code{leading} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+#'         the beginnings of row or column names.}
+#'   \item{\code{trailing} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+#'         the ends of row or column names.}
+#'   \item{\code{anywhere} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+#'         any substring of row or column names.}
+#' }
+#' 
 #' @param row_col_names a vector of row and column names
 #' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}.
-#' \code{exact} produces a pattern that selects row or column names by exact match.
-#' \code{leading} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
-#' the beginning of the row or column name.
-#' \code{trailing} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
-#' the end of the row or column name.
-#' \code{anywhere} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
-#' any substring of the row or column name.
+#' 
+#' 
 #'
 #' @return an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
 #' @export
@@ -1420,11 +1326,18 @@ organize_args <- function(a, b){
 make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere")){
   match.arg(pattern_type)
   out <- row_col_names
+  # Add leading caret if needed
   if (pattern_type %in% c("exact", "leading")){
     out <- paste0("^", out)
   }
+  # Add trailing dollar sign if needed
   if (pattern_type %in% c("exact", "trailing")){
     out <- paste0(out, "$")
   }
+  # Escape parentheses if needed, but it is tricky.
+  # Use unicode for the replacement.
+  out <- out %>% 
+    gsub(pattern = "\\(", replacement = "\U005c\U005c\U0028") %>% 
+    gsub(pattern = "\\)", replacement = "\U005c\U005c\U0029")
   paste0(out, collapse = "|")
 }

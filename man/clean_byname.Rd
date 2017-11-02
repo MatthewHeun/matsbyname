@@ -4,7 +4,7 @@
 \alias{clean_byname}
 \title{Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}}
 \usage{
-clean_byname(m, margin, clean_value = 0)
+clean_byname(m, margin = c(1, 2), clean_value = 0)
 }
 \arguments{
 \item{m}{the matrix to be cleaned}

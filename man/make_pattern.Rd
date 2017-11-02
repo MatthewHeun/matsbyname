@@ -2,7 +2,7 @@
 % Please edit documentation in R/Byname.R
 \name{make_pattern}
 \alias{make_pattern}
-\title{Create regex patterns for row and column name selection}
+\title{Create regex patterns for row and column selection by name}
 \usage{
 make_pattern(row_col_names, pattern_type = c("exact", "leading", "trailing",
   "anywhere"))
@@ -10,20 +10,32 @@ make_pattern(row_col_names, pattern_type = c("exact", "leading", "trailing",
 \arguments{
 \item{row_col_names}{a vector of row and column names}
 
-\item{pattern_type}{one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}.
-\code{exact} produces a pattern that selects row or column names by exact match.
-\code{leading} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
-the beginning of the row or column name.
-\code{trailing} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
-the end of the row or column name.
-\code{anywhere} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
-any substring of the row or column name.}
+\item{pattern_type}{one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}.}
 }
 \value{
 an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
 }
 \description{
-Create regex patterns for row and column name selection
+This function is intended for use with the \code{select_rows_byname}
+and \code{select_cols_byname} functions. 
+\code{make_pattern} correctly escapes special characters in \code{row_col_names},
+such as \code{(} and \code{)}, as needed.
+Thus, it is highly recommended that \code{make_pattern} be used when 
+constructing patterns for row and column selections with 
+\code{select_rows_byname}
+and \code{select_cols_byname}.
+}
+\details{
+\code{pattern_type} controls the type of pattern created:
+\itemize{
+  \item{\code{exact} produces a pattern that selects row or column names by exact match.}
+  \item{\code{leading} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+        the beginnings of row or column names.}
+  \item{\code{trailing} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+        the ends of row or column names.}
+  \item{\code{anywhere} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+        any substring of row or column names.}
+}
 }
 \examples{
 make_pattern(row_col_names = c("a", "b"), pattern_type = "exact")
