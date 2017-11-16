@@ -1210,13 +1210,17 @@ list_of_rows_or_cols <- function(m, margin){
   } else {
     out <- m
   }
-  lapply(seq_len(ncol(out)), function(i) m[,i])
-  
-  
-  
+  lapply(seq_len(ncol(out)), function(i){
+      matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>% 
+      setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
+    }) %>%
+    set_names(colnames(out))
   
 
 }
+
+
+
 
 #' Test whether this is the zero matrix
 #'

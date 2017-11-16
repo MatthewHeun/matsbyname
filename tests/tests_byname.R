@@ -7,6 +7,7 @@
 library(dplyr)
 library(parallel)
 library(byname)
+library(magrittr)
 library(testthat)
 
 
@@ -358,8 +359,21 @@ test_that("make_pattern works as expected", {
 })
   
 test_that("list_of_rows_or_cols works as expected", {
-  m <- matrix(data = c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-    setrowtype(rowtype = "ROWS") %>% setcoltype(coltype = "COLS")
-  list_of_rows_or_cols(m, margin = 1)
-  expect_equal(list_of_rows_or_cols(m, margin = 1), list(r1 = matrix(c(1:2), nrow = 2, ncol = 1, dimnames = list())))
+  m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
+    setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
+  expect_equal(list_of_rows_or_cols(m, margin = 1), 
+               expected = list(p1 = matrix(seq(1, 5, by = 2), nrow = 3, ncol = 1, dimnames = list(c("i1", "i2", "i3"), "p1")) %>% 
+                                 setrowtype("Industries") %>% setcoltype("Products"),
+                               p2 = matrix(seq(2, 6, by = 2), nrow = 3, ncol = 1, dimnames = list(c("i1", "i2", "i3"), "p2")) %>% 
+                                 setrowtype("Industries") %>% setcoltype("Products"))
+  )
+  expect_equal(list_of_rows_or_cols(m, margin = 2), 
+               expected = list(i1 = matrix(1:2, nrow = 2, ncol = 1, dimnames = list(c("p1", "p2"), "i1")) %>% 
+                                 setrowtype("Products") %>% setcoltype("Industries"),
+                               i2 = matrix(3:4, nrow = 2, ncol = 1, dimnames = list(c("p1", "p2"), "i2")) %>% 
+                                 setrowtype("Products") %>% setcoltype("Industries"),
+                               i3 = matrix(5:6, nrow = 2, ncol = 1, dimnames = list(c("p1", "p2"), "i3")) %>% 
+                                 setrowtype("Products") %>% setcoltype("Industries"))
+  )
+  
 })
