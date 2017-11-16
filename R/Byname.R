@@ -1186,6 +1186,8 @@ equal_byname <- function(a, b) {
 }
 
 #' Named list of rows or columns of matrices
+#' 
+#' Extraction gives column vectors, regardless of margin.
 #'
 #' @param m a matrix or list of matrices (say, from a column of a data frame)
 #' @param margin the dimension of the matrices to be extracted (1 = rows, 2 = columns)

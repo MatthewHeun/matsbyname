@@ -7,7 +7,7 @@
 list_of_rows_or_cols(m, margin)
 }
 \arguments{
-\item{m}{a matrix or list of matrices (say, from a column in a data frame)}
+\item{m}{a matrix or list of matrices (say, from a column of a data frame)}
 
 \item{margin}{the dimension of the matrices to be extracted (1 = rows, 2 = columns)}
 }
@@ -15,5 +15,11 @@ list_of_rows_or_cols(m, margin)
 a named list of rows or columns extracted from \code{m}
 }
 \description{
-Named list of rows or columns of matrices
+Extraction gives column vectors, regardless of margin.
+}
+\examples{
+m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) \%>\% 
+setrowtype(rowtype = "Products") \%>\% setcoltype(coltype = "Industries")
+list_of_rows_or_cols(m, margin = 1)
+list_of_rows_or_cols(m, margin = 2)
 }
