@@ -1185,6 +1185,39 @@ equal_byname <- function(a, b) {
   return(isTRUE(all.equal(m1, m2)))
 }
 
+
+#' Named list of rows or columns of matrices
+#'
+#' @param m a matrix or list of matrices (say, from a column in a data frame)
+#' @param margin the dimension of the matrices to be extracted (1 = rows, 2 = columns)
+#'
+#' @return a named list of rows or columns extracted from \code{m}
+#' @export
+#'
+#' @examples
+list_of_rows_or_cols <- function(m, margin){
+  stopifnot(length(margin) == 1)
+  stopifnot(margin %in% c(1,2))
+  if (is.list(m)){
+    return(mcMap(list_of_rows_or_cols, m, margin))
+  }
+  stopifnot("matrix" %in% class(m))
+  # Strategy: perform all operations with margin to be split into a list in columns.
+  if (margin == 1){
+    # Caller requested rows to be split into list items. 
+    # Transpose so operations will be easier.
+    out <- transpose_byname(m)
+  } else {
+    out <- m
+  }
+  lapply(seq_len(ncol(out)), function(i) m[,i])
+  
+  
+  
+  
+
+}
+
 #' Test whether this is the zero matrix
 #'
 #' @param m a matrix of list of matrices

@@ -357,3 +357,9 @@ test_that("make_pattern works as expected", {
   expect_equal(make_pattern(row_col_names = "Non-specified (industry)", pattern_type = "exact"), "^Non-specified \\(industry\\)$")
 })
   
+test_that("list_of_rows_or_cols works as expected", {
+  m <- matrix(data = c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype(rowtype = "ROWS") %>% setcoltype(coltype = "COLS")
+  list_of_rows_or_cols(m, margin = 1)
+  expect_equal(list_of_rows_or_cols(m, margin = 1), list(r1 = matrix(c(1:2), nrow = 2, ncol = 1, dimnames = list())))
+})
