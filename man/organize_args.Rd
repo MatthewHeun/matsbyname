@@ -12,15 +12,16 @@ organize_args(a, b)
 \item{b}{the second argument to be organized}
 }
 \value{
-a list with two elements (\code{a} and \code{b}) containing organized versions of the arguments
+a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments
 }
 \description{
-In service of binary \code{_byname} functions, 
-this function organizes their arguments.
+Organizes arguments of binary (2 arguments) \code{_byname} functions.
 Actions performed are:
-* if only one argument is a list, make the other argument also a list of equal length.
-* if both arguments are lists, ensure that they are same length.
-* if one argument is a matrix and the other is a constant, make the constant into a matrix.
-* ensures that row and column types match
-* completes and sorts the matrices
+\itemize{
+ \item{if only one argument is a list, make the other argument also a list of equal length.}
+ \item{if both arguments are lists, ensure that they are same length.}
+ \item{if one argument is a matrix and the other is a constant, make the constant into a matrix.}
+ \item{ensures that row and column types match.}
+ \item{completes and sorts the matrices.}
+}
 }

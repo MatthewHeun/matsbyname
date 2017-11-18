@@ -177,6 +177,14 @@ difference_byname <- function(minuend, subtrahend){
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
 matrixproduct_byname <- function(multiplicand, multiplier){
+  
+  # Probably need to do this:
+  # args <- organize_args(multiplicand, multiplier)
+  # multiplicand <- args$a
+  # multiplier <- args$b
+  # 
+  # And comment the "stopifnot(length(multiplicand) == length(multiplier))" line below.
+  
   if (is.list(multiplicand) & is.list(multiplier)){
     stopifnot(length(multiplicand) == length(multiplier))
     return(mcMap(matrixproduct_byname, multiplicand, multiplier))
@@ -1257,19 +1265,20 @@ iszero_byname <- function(m, tol = 1e-6){
 
 #' Organize binary arguments
 #' 
-#' In service of binary \code{_byname} functions, 
-#' this function organizes their arguments.
+#' Organizes arguments of binary (2 arguments) \code{_byname} functions.
 #' Actions performed are:
-#' * if only one argument is a list, make the other argument also a list of equal length.
-#' * if both arguments are lists, ensure that they are same length.
-#' * if one argument is a matrix and the other is a constant, make the constant into a matrix.
-#' * ensures that row and column types match
-#' * completes and sorts the matrices
+#' \itemize{
+#'  \item{if only one argument is a list, make the other argument also a list of equal length.}
+#'  \item{if both arguments are lists, ensure that they are same length.}
+#'  \item{if one argument is a matrix and the other is a constant, make the constant into a matrix.}
+#'  \item{ensures that row and column types match.}
+#'  \item{completes and sorts the matrices.}
+#' }
 #'
 #' @param a the first argument to be organized
 #' @param b the second argument to be organized
 #'
-#' @return a list with two elements (\code{a} and \code{b}) containing organized versions of the arguments
+#' @return a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments
 organize_args <- function(a, b){
   if (missing(a)){
     stop("Missing argument a in organize_args.")
