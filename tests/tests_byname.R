@@ -385,3 +385,19 @@ test_that("list_of_rows_or_cols works as expected", {
   expect_equal(DF$extracted_rows, list(expected_margin_1, expected_margin_1))
   expect_equal(DF$extracted_cols, list(expected_margin_2, expected_margin_2))
 })
+
+test_that("organize_args works as expected", {
+  # If only one argument is a list, make the other argument also a list of equal length.
+  expect_equal(byname:::organize_args(a = list(1,2), b = 3), list(a = list(1,2), b = list(3,3)))
+  expect_equal(byname:::organize_args(a = 3, b = list(1,2)), list(a = list(3,3), b = list(1,2)))
+  
+  # If both arguments are lists, ensure that they are same length.
+  expect_equal(byname:::organize_args(a = list(1,2,3), b = list(4,5,6)), list(a = list(1,2,3), b = list(4,5,6)))
+  expect_error(byname:::organize_args(a = list(1,2,3), b = list(4,5,6,7)), "length\\(a\\) == length\\(b\\) is not TRUE") 
+  
+  # If one argument is a matrix and the other is a constant, make the constant into a matrix.
+  m <- matrix(c(1,2,3,4), nrow = 2)
+  expect_equal(byname:::organize_args(a = m, b = 2), 
+               list(a = m, b = matrix(2, nrow = 2, ncol = 2)))
+  
+})
