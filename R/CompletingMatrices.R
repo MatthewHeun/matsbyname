@@ -220,7 +220,7 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' complete_and_sort(m1, m2, colorder = c("c4", "c3")) # Drops un-specified columns
 #' complete_and_sort(m1, m2, margin = 1)
 #' complete_and_sort(m1, m2, margin = 2)
-#' complete_and_sort(m1, t(m2),)
+#' complete_and_sort(m1, t(m2))
 #' complete_and_sort(m1, t(m2), margin = 1)
 #' complete_and_sort(m1, t(m2), margin = 2)
 #' v <- matrix(1:6, ncol=2, dimnames=list(c("r3", "r1", "r2"), c("c2", "c1")))
