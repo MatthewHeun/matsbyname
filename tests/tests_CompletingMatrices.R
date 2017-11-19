@@ -177,6 +177,18 @@ test_that("complete_and_sort works as expected", {
   m_bare <- matrix(c(1:4), nrow = 2)
   expect_error(complete_and_sort(m_bare, margin = 1), "NULL dimnames for margin = 1")
   expect_error(complete_and_sort(m_bare, margin = 2), "NULL dimnames for margin = 2")
+  m_rownames <- matrix(c(1:4), nrow = 2, dimnames = list(c("r2", "r1"), NULL))
+  expect_equal(complete_and_sort(m_rownames, m1, margin = 1), 
+               list(m1 = matrix(c(1,3,
+                                  2,4,
+                                  0,0),
+                                nrow = 3, ncol = 2, byrow = TRUE,
+                                dimnames = list(c("r1", "r2", "r3"), NULL)),
+                    m2 = matrix(c(1,4,
+                                  2,5,
+                                  3,6),
+                                nrow = 3, ncol = 2, byrow = TRUE,
+                                dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))))
 })
 
 
