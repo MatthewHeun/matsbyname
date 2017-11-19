@@ -72,6 +72,17 @@ complete_rows_cols <- function(x, matrix = NA, names = dimnames(matrix), fill = 
     margin <- make_list(margin, length(x))
     return(mcMap(complete_rows_cols, x = x, matrix = matrix, names = names, fill = fill, margin = margin))
   }
+  # Check that row or column names are available for the margin to be completed
+  if (1 %in% margin){
+    if (is.null(dimnames(x)[[1]])){
+      stop("NULL dimnames for margin = 1")
+    }
+  }
+  if (2 %in% margin){
+    if (is.null(dimnames(x)[[2]])){
+      stop("NULL dimnames for margin = 2")
+    }
+  }
   if (any(is.na(names))){
     # No other names were provided, nor was there a matrix from which names could be extracted.
     # Instead, complete x relative to itself. The easy way is to complete x relative to its transpose.
