@@ -6,6 +6,7 @@
 
 library(dplyr)
 library(byname)
+library(parallel)
 library(testthat)
 
 
@@ -167,7 +168,7 @@ expect_equal(complete_and_sort(v, v),
 
 # Also works with lists
 expect_equal(complete_and_sort(list(m1,m1), list(m2,m2)), 
-             list(m1 = list(m1m2_completed, m1m2_completed), m2 = list(m1m2_completed, m1m2_completed)))
+             list(m1 = list(m1m2_completed$m1, m1m2_completed$m1), m2 = list(m1m2_completed$m2, m1m2_completed$m2)))
 
 
 
