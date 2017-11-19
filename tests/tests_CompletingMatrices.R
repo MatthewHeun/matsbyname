@@ -189,6 +189,13 @@ test_that("complete_and_sort works as expected", {
                                   3,6),
                                 nrow = 3, ncol = 2, byrow = TRUE,
                                 dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))))
+  m_colnames <- matrix(c(1:6), nrow = 2, dimnames = list(NULL, c("c3", "c2", "c1")))
+  expect_equal(complete_and_sort(m_colnames, m1, margin = 2),
+               list(m1 = matrix(c(5,3,1,
+                                6,4,2),
+                                nrow = 2, ncol = 3, byrow = TRUE,
+                                dimnames = list(c("r1", "r2", "r3"), NULL))))
+
 })
 
 
