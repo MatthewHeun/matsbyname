@@ -13,7 +13,6 @@ library(testthat)
 ###########################################################
 context("complete_and_sort")
 ###########################################################
-###########################################################
 
 test_that("complete_and_sort works as expected", {
   m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
@@ -179,8 +178,8 @@ test_that("complete_and_sort works as expected", {
   expect_error(complete_and_sort(m_bare, margin = 2), "NULL dimnames for margin = 2")
   m_rownames <- matrix(c(1:4), nrow = 2, dimnames = list(c("r2", "r1"), NULL))
   expect_equal(complete_and_sort(m_rownames, m1, margin = 1), 
-               list(m1 = matrix(c(1,3,
-                                  2,4,
+               list(m1 = matrix(c(2,4,
+                                  1,3,
                                   0,0),
                                 nrow = 3, ncol = 2, byrow = TRUE,
                                 dimnames = list(c("r1", "r2", "r3"), NULL)),
@@ -192,10 +191,15 @@ test_that("complete_and_sort works as expected", {
   m_colnames <- matrix(c(1:6), nrow = 2, dimnames = list(NULL, c("c3", "c2", "c1")))
   expect_equal(complete_and_sort(m_colnames, m1, margin = 2),
                list(m1 = matrix(c(5,3,1,
-                                6,4,2),
+                                  6,4,2),
                                 nrow = 2, ncol = 3, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3"), NULL))))
-
+                                dimnames = list(NULL, c("c1", "c2", "c3"))),
+                    m2 = matrix(c(4,1,0,
+                                  5,2,0,
+                                  6,3,0),
+                                nrow = 3, ncol = 3, byrow = TRUE,
+                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))))
+  
 })
 
 
