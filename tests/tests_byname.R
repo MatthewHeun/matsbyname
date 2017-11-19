@@ -154,6 +154,44 @@ test_that("differences of matrices in lists and data frames works as expected", 
 
 
 ###########################################################
+context("Matrix products")
+###########################################################
+
+test_that("matrixproduct_byname works as expected", {
+  V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("p1", "p2", "p3"))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  Y <- matrix(1:4, ncol = 2, dimnames = list(c("p2", "p1"), c("s2", "s1"))) %>%
+    setrowtype("Products") %>% setcoltype("Sectors")
+  VY <- matrix(c(13,5,
+                 20,8),
+               nrow = 2, ncol = 2, byrow = TRUE,
+               dimnames = list(c("i1", "i2"), c("s1", "s2"))) %>% 
+    setrowtype("Industries") %>% setcoltype("Sectors")
+  # Fails. 3 columns of V cannot be matrix multiplied into 2 rows of Y.  Y lacks a row named p3.
+  expect_error(V %*% Y, "non-conformable arguments")
+  # Succeeds because Y is completed to include a row named p3 (that contains zeroes).
+  # Furthermore, rows and columns of Y are sorted to be in alphabetical order.
+  expect_equal(matrixproduct_byname(V, Y), VY)
+               
+  # This also works with lists
+  expect_equal(matrixproduct_byname(list(V,V), list(Y,Y)), list(VY, VY))
+  # And data frames (whose columns are lists)
+  DF <- data.frame(V = I(list()), Y = I(list()))
+  DF[[1,"V"]] <- V
+  DF[[2,"V"]] <- V
+  DF[[1,"Y"]] <- Y
+  DF[[2,"Y"]] <- Y
+  expect_equal(matrixproduct_byname(DF$V, DF$Y), list(VY, VY))
+  expect_equal(DF %>% mutate(matprods = matrixproduct_byname(V, Y)), 
+               data.frame(V = list(V, V), Y = list(Y, Y), matprods = list(VY, VY))
+  )
+  
+})
+
+
+
+
+###########################################################
 context("Row selection")
 ###########################################################
 
@@ -396,37 +434,47 @@ test_that("organize_args works as expected", {
   expect_error(byname:::organize_args(a = list(1,2,3), b = list(4,5,6,7)), "length\\(a\\) == length\\(b\\) is not TRUE") 
   
   # If one argument is a matrix and the other is a constant, make the constant into a matrix.
-  m <- matrix(c(1,2,3,4), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
+  m <- matrix(c(1,2,3,4), nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
   expect_equal(byname:::organize_args(a = m, b = 2), 
-               list(a = m, b = matrix(2, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-                      setrowtype("rows") %>% setcoltype("cols")))
+               list(a = m, b = matrix(2, nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+                      setrowtype("Products") %>% setcoltype("Industries")))
   
   # Ensures that row and column types match
   # Completes and sorts the matrices
-  n <- matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))) %>% 
+  n <- matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   # Neither row nor column types match, but error will say column types are mismatched.
-  expect_error(byname:::organize_args(a = m, b = n), "rowtype\\(a\\) == rowtype\\(b\\) is not TRUE")
+  expect_error(byname:::organize_args(a = m %>% setrowtype("rows"), b = n), "rowtype\\(a\\) == rowtype\\(b\\) is not TRUE")
   # By setting the rowtype to match, the error should shift to mismatched column types
-  expect_error(byname:::organize_args(a = m, b = n %>% setrowtype("rows")), "coltype\\(a\\) == coltype\\(b\\) is not TRUE")
-  # This should work
-  expect_equal(byname:::organize_args(a = m, b = n %>% setrowtype("rows") %>% setcoltype("cols")), 
+  expect_error(byname:::organize_args(a = m, b = n %>% setcoltype("cols")), "coltype\\(a\\) == coltype\\(b\\) is not TRUE")
+  # This should work, because the rowtype and coltype are now same for both
+  expect_equal(byname:::organize_args(a = m, b = n), 
                list(a = matrix(c(1,3,
                                  2,4,
                                  0,0),
                                nrow = 3, ncol = 2, byrow = TRUE,
-                               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))) %>% 
-                      setrowtype("rows") %>% setcoltype("cols"), 
+                               dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
+                      setrowtype("Products") %>% setcoltype("Industries"), 
                     b = matrix(c(1,4,
                                  2,5,
                                  3,6),
                                nrow = 3, ncol = 2, byrow = TRUE,
-                               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))) %>% 
-                      setrowtype("rows") %>% setcoltype("cols")))
+                               dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
+                      setrowtype("Products") %>% setcoltype("Industries")))
   
   # If one argument is a list and the other argument is a matrix, duplicate the matrix to match the length of the list
   expect_equal(byname:::organize_args(a = list(1, 2), b = m), list(a = list(1, 2), b = list(m, m)))
   expect_equal(byname:::organize_args(a = n, b = list(m, m)), list(a = list(n, n), b = list(m, m)))
+  
+  # Test the match_type argument
+  p <- transpose_byname(n)
+  # If we don't specify match_type = "matmult", 
+  # organize_args will try to ensure that rows of m and rows of p are same type. 
+  # organize_args will also try to ensure that cols of m and cols of p are same type.
+  # These aren't true, so this will error.
+  expect_error(byname:::organize_args(a = m, b = p), "rowtype\\(a\\) == rowtype\\(b\\) is not TRUE")
+  # When we say match_type = "matmult", we indicate that the columns of a and the rows of b must match.
+  expect_equal(byname:::organize_args(a = m, b = p, match_type = "matmult"), list(a = m, b = p))
   
 })
