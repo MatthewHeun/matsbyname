@@ -396,8 +396,15 @@ test_that("organize_args works as expected", {
   expect_error(byname:::organize_args(a = list(1,2,3), b = list(4,5,6,7)), "length\\(a\\) == length\\(b\\) is not TRUE") 
   
   # If one argument is a matrix and the other is a constant, make the constant into a matrix.
-  m <- matrix(c(1,2,3,4), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  m <- matrix(c(1,2,3,4), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
   expect_equal(byname:::organize_args(a = m, b = 2), 
-               list(a = m, b = matrix(2, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))))
+               list(a = m, b = matrix(2, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+                      setrowtype("rows") %>% setcoltype("cols")))
   
+  # Ensures that row and column types match
+  n <- matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_error(byname:::organize_args(a = m, b = n), "rowtype\\(a\\) == rowtype\\(b\\) is not TRUE")
+  expect_error(byname:::organize_args(a = m, b = n %>% setrowtype("rows")), "coltype\\(a\\) == coltype\\(b\\) is not TRUE")
 })
