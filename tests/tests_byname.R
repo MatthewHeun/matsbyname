@@ -396,8 +396,8 @@ test_that("organize_args works as expected", {
   expect_error(byname:::organize_args(a = list(1,2,3), b = list(4,5,6,7)), "length\\(a\\) == length\\(b\\) is not TRUE") 
   
   # If one argument is a matrix and the other is a constant, make the constant into a matrix.
-  m <- matrix(c(1,2,3,4), nrow = 2)
+  m <- matrix(c(1,2,3,4), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   expect_equal(byname:::organize_args(a = m, b = 2), 
-               list(a = m, b = matrix(2, nrow = 2, ncol = 2)))
+               list(a = m, b = matrix(2, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))))
   
 })
