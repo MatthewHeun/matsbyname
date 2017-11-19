@@ -11,7 +11,7 @@ complete_and_sort(m1, m2, margin = c(1, 2), roworder = NA, colorder = NA)
 
 \item{m2}{The second matrix}
 
-\item{margin}{Specifies the subscript(s) in \code{x} over which cmpleting and sorting will occur}
+\item{margin}{Specifies the dimension(s) of \code{m1} and \code{m2} over which completing and sorting will occur}
 
 \item{roworder}{Specifies a custom ordering for rows of returned matrices. 
 Unspecified rows are dropped.}
@@ -29,18 +29,14 @@ Missing rows and columns (relative to the other matrix)
 are filled with zeroes.
 Thereafter, sorts the rows and columns of the matrices
 such that they are in the same order (by name).
+To complete rows of \code{m1} relative to columns of \code{m2},
+set the \code{m2} argument to \code{transpose_byname(m2)}.
 }
 \details{
 \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
 For rows only, give \code{1}; 
 for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.
-If \code{transpose = TRUE}, margin applies to \code{m1} directly
-and is transposed for \code{m2}.
-So, for example, if \code{margin = 1} and \code{transpose = TRUE},
-the rows of \code{m1} and columns of \code{m2} will be completed and sorted relative to each other.
-If \code{margin = 2} and \code{transpose = TRUE}, 
-the columns of \code{m1} and rows of \code{m2} will be completed and sorted relative to each other.
 }
 \examples{
 m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))

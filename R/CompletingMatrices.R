@@ -200,20 +200,16 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' are filled with zeroes.
 #' Thereafter, sorts the rows and columns of the matrices
 #' such that they are in the same order (by name).
+#' To complete rows of \code{m1} relative to columns of \code{m2},
+#' set the \code{m2} argument to \code{transpose_byname(m2)}.
 #' 
 #' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
 #' For rows only, give \code{1}; 
 #' for columns only, give \code{2};
 #' for both rows and columns, give \code{c(1,2)}, the default value.
-#' If \code{transpose = TRUE}, margin applies to \code{m1} directly
-#' and is transposed for \code{m2}.
-#' So, for example, if \code{margin = 1} and \code{transpose = TRUE},
-#' the rows of \code{m1} and columns of \code{m2} will be completed and sorted relative to each other.
-#' If \code{margin = 2} and \code{transpose = TRUE}, 
-#' the columns of \code{m1} and rows of \code{m2} will be completed and sorted relative to each other.
 #' @param m1 The first matrix
 #' @param m2 The second matrix
-#' @param margin Specifies the subscript(s) in \code{x} over which cmpleting and sorting will occur 
+#' @param margin Specifies the dimension(s) of \code{m1} and \code{m2} over which completing and sorting will occur 
 #' @param roworder Specifies a custom ordering for rows of returned matrices. 
 #' Unspecified rows are dropped.
 #' @param colorder Specifies a custom ordering for columns of returned matrices.
