@@ -403,6 +403,7 @@ test_that("organize_args works as expected", {
                       setrowtype("rows") %>% setcoltype("cols")))
   
   # Ensures that row and column types match
+  # Completes and sorts the matrices
   n <- matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   # Neither row nor column types match, but error will say column types are mismatched.
@@ -423,7 +424,5 @@ test_that("organize_args works as expected", {
                                nrow = 3, ncol = 2, byrow = TRUE,
                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))) %>% 
                       setrowtype("rows") %>% setcoltype("cols")))
-  
-  # Completes and sorts the matrices
   
 })
