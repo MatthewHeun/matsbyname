@@ -182,10 +182,20 @@ test_that("matrixproduct_byname works as expected", {
   DF[[1,"Y"]] <- Y
   DF[[2,"Y"]] <- Y
   expect_equal(matrixproduct_byname(DF$V, DF$Y), list(VY, VY))
-  expect_equal(DF %>% mutate(matprods = matrixproduct_byname(V, Y)), 
-               data.frame(V = list(V, V), Y = list(Y, Y), matprods = list(VY, VY))
-  )
   
+  # And it works with the tidyverse functions
+  DF_expected <- data.frame(V = I(list()), Y = I(list()), matprods = I(list()))
+  DF_expected[[1, "V"]] <- V
+  DF_expected[[2, "V"]] <- V
+  DF_expected[[1, "Y"]] <- Y
+  DF_expected[[2, "Y"]] <- Y
+  DF_expected[[1, "matprods"]] <- VY
+  DF_expected[[2, "matprods"]] <- VY
+  # Because DF_expected$matprods is created with I(list()), its class is "AsIs".
+  # Because DF$matprods is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$matprods to NULL to get a match.
+  attr(DF_expected$matprods, which = "class") <- NULL
+  expect_equal(DF %>% mutate(matprods = matrixproduct_byname(V, Y)), DF_expected)
 })
 
 
