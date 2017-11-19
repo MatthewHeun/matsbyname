@@ -427,5 +427,6 @@ test_that("organize_args works as expected", {
   
   # If one argument is a list and the other argument is a matrix, duplicate the matrix to match the length of the list
   expect_equal(byname:::organize_args(a = list(1, 2), b = m), list(a = list(1, 2), b = list(m, m)))
+  expect_equal(byname:::organize_args(a = n, b = list(m, m)), list(a = list(n, n), b = list(m, m)))
   
 })
