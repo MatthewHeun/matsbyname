@@ -493,5 +493,17 @@ test_that("organize_args works as expected", {
   expect_error(byname:::organize_args(a = m, b = p), "rowtype\\(a\\) == rowtype\\(b\\) is not TRUE")
   # When we say match_type = "matmult", we indicate that the columns of a and the rows of b must match.
   expect_equal(byname:::organize_args(a = m, b = p, match_type = "matmult"), list(a = m, b = p))
+})
+
+test_that("apply_byname works as expected", {
+  m <- matrix(c(-1:2), nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2")))
+  m_expected <- matrix(c(0,0,1,2), nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) 
+  zap_negs <- function(e){
+    ifelse(e < 0, 0, e)
+  }
+  # Eliminates negative elements in the matrix.
+  expect_equal(apply_byname(X = m, MARGIN = c(1,2), FUN = zap_negs), m_expected)
   
+  # Also works with lists
+  apply_byname(X = list(m, m), MARGIN = c(1,2), FUN = zap_negs)
 })
