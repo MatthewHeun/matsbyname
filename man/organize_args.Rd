@@ -4,12 +4,20 @@
 \alias{organize_args}
 \title{Organize binary arguments}
 \usage{
-organize_args(a, b)
+organize_args(a, b, match_type = "all")
 }
 \arguments{
 \item{a}{the first argument to be organized}
 
 \item{b}{the second argument to be organized}
+
+\item{match_type}{one of \code{"all"} or \code{"matmult"}.
+When both \code{a} and \code{b} are matrices,
+\code{"all"} (the default) indicates that 
+rowtypes of \code{a} must match rowtypes of \code{b} and
+coltypes of \code{a} must match coltypes of \code{b}.
+If \code{"matmult"},
+coltypes of \code{a} must match rowtypes of \code{b}.}
 }
 \value{
 a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments
@@ -21,7 +29,7 @@ Actions performed are:
  \item{if only one argument is a list, make the other argument also a list of equal length.}
  \item{if both arguments are lists, ensure that they are same length.}
  \item{if one argument is a matrix and the other is a constant, make the constant into a matrix.}
- \item{ensures that row and column types match.}
+ \item{ensures that row and column types match for \code{typematch_margins}.}
  \item{completes and sorts the matrices.}
 }
 }

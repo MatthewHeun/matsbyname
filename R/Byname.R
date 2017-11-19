@@ -177,23 +177,22 @@ difference_byname <- function(minuend, subtrahend){
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
 matrixproduct_byname <- function(multiplicand, multiplier){
-  
-  # Probably need to do this:
-  # args <- organize_args(multiplicand, multiplier)
-  # multiplicand <- args$a
-  # multiplier <- args$b
-  # 
-  # And comment the "stopifnot(length(multiplicand) == length(multiplier))" line below.
-  
+
+  args <- organize_args(multiplicand, multiplier, match_type = "matmult")
+  multiplicand <- args$a
+  multiplier <- args$b
+
   if (is.list(multiplicand) & is.list(multiplier)){
     stopifnot(length(multiplicand) == length(multiplier))
     return(mcMap(matrixproduct_byname, multiplicand, multiplier))
   }
-  # Check that multiplicand columns and multiplier rows are same type
-  stopifnot(coltype(multiplicand) == rowtype(multiplier))
-  matrices <- complete_and_sort(multiplicand, transpose_byname(multiplier), margin = 2)
-  matrices$m2 <- transpose_byname(matrices$m2) # Need to re-transpose, because of transpose_byname above.
-  matrices$m1 %*% matrices$m2 %>%
+  
+  
+  # Check that multiplicand columns and multiplier rows are same type 
+  # and cols of multiplicand and rows of multiplier have same names.
+  # matrices <- complete_and_sort(multiplicand, transpose_byname(multiplier), margin = 2)
+  # matrices$m2 <- transpose_byname(matrices$m2) # Need to re-transpose, because of transpose_byname above.
+  multiplicand %*% multiplier %>%
     setrowtype(rowtype(multiplicand)) %>% 
     setcoltype(coltype(multiplier))
 }
@@ -1271,15 +1270,22 @@ iszero_byname <- function(m, tol = 1e-6){
 #'  \item{if only one argument is a list, make the other argument also a list of equal length.}
 #'  \item{if both arguments are lists, ensure that they are same length.}
 #'  \item{if one argument is a matrix and the other is a constant, make the constant into a matrix.}
-#'  \item{ensures that row and column types match.}
+#'  \item{ensures that row and column types match for \code{typematch_margins}.}
 #'  \item{completes and sorts the matrices.}
 #' }
 #'
 #' @param a the first argument to be organized
 #' @param b the second argument to be organized
+#' @param match_type one of \code{"all"} or \code{"matmult"}.
+#' When both \code{a} and \code{b} are matrices,
+#' \code{"all"} (the default) indicates that 
+#' rowtypes of \code{a} must match rowtypes of \code{b} and
+#' coltypes of \code{a} must match coltypes of \code{b}.
+#' If \code{"matmult"},
+#' coltypes of \code{a} must match rowtypes of \code{b}.
 #'
 #' @return a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments
-organize_args <- function(a, b){
+organize_args <- function(a, b, match_type = "all"){
   if (missing(a)){
     stop("Missing argument a in organize_args.")
   }
@@ -1307,11 +1313,13 @@ organize_args <- function(a, b){
     # Now return the lists.
     return(list(a = a, b = b))
   }
+  
   # Neither a nor b are lists.
   if (! is.matrix(a) & ! is.matrix(b)){
     # Neither a nor b are matrices. Assume we have two constants. Return the constants in a vector.
     return(list(a = a, b = b))
   }
+  
   # Neither a nor b are lists.
   # We don't know if one or both a and b is a matrix. 
   # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
@@ -1322,14 +1330,33 @@ organize_args <- function(a, b){
     b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a)) %>% 
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
+  
   # Assume that both a and b are now matrices.
-  # Verify that row and column types are same for a and b.
-  stopifnot(rowtype(a) == rowtype(b))
-  stopifnot(coltype(a) == coltype(b))
-  # Ensure that matrices have same row and column names and are in same order.
-  matrices <- complete_and_sort(a, b)
-  outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
-  outb <- matrices$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  # Verify that row and column types are appropriate.
+  if (match_type == "all"){
+    stopifnot(rowtype(a) == rowtype(b))
+    stopifnot(coltype(a) == coltype(b))
+  } else if (match_type == "matmult") {
+    stopifnot(coltype(a) == rowtype(b))
+  } else {
+    stop(paste("Unknown match_type", match_type, "in organize_args."))
+  }
+  
+  # Ensure that matrices have correct row and column names and are in same order.
+  if (match_type == "all"){
+    matrices <- complete_and_sort(a, b)
+    outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+    outb <- matrices$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  }
+  if (match_type == "matmult"){
+    # When the match_type is "matmult", we need to ensure that the columns of a match the rows of b.
+    # To do so, we transpose b prior to completing and sorting, and we complete and sort on columns.
+    matrices <- complete_and_sort(a, transpose_byname(b), margin = 2)
+    outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+    # Before sending back, we need to re-transpose b.
+    outb <- matrices$m2 %>% transpose_byname %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  }
+  # Reset row and column types.
   return(list(a = outa, b = outb))
 }
 
