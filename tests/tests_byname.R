@@ -196,6 +196,13 @@ test_that("matrixproduct_byname works as expected", {
   # Need to set the class of DF_expected$matprods to NULL to get a match.
   attr(DF_expected$matprods, which = "class") <- NULL
   expect_equal(DF %>% mutate(matprods = matrixproduct_byname(V, Y)), DF_expected)
+  
+  # Test whether this works with a column of matrices multiplied by a single matrix.
+  # In other words, we want a single matrix to multiply several matrices.
+  # M is a single matrix. 
+  # Should obtain same results as above.
+  M <- Y
+  expect_equal(DF %>% mutate(matprods = matrixproduct_byname(V, M)), DF_expected)
 })
 
 
