@@ -1412,36 +1412,3 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
     gsub(pattern = "\\)", replacement = "\U005c\U005c\U0029")
   paste0(out, collapse = "|")
 }
-
-
-#' Apply an arbitrary function in the byname framework
-#' 
-#' Allows an arbitrary function (\code{FUN}) to be applied in the byname framework.
-#'
-#' @param X an object (usually a list or a matrix) over which \code{FUN} should be applied
-#' @param MARGIN the margin of a matrix over which \code{FUN} should be applied. 
-#' \code{1} for rows, \code{2} for columns, \code{1,2} for both columns and rows.
-#' @param FUN the function to be applied to \code{X}
-#'
-#' @return if \code{X} is a list, a list same length as \code{X} that is the results of applying \code{FUN} to each element of \code{X}.
-#' if \code{X} is a matrix, the result of applying \code{FUN} to that matrix on the \code{MARGIN}.
-#' @export
-#'
-#' @examples
-#' m <- matrix(c(-1:2), nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2")))
-#' apply_byname(m, c(1,2), function(e){ifelse(e < 0, 0, e)})
-apply_byname <- function(X, MARGIN, FUN){
-  # if (is.list(X) & !is.list(MARGIN)){
-  #   MARGIN <- list()
-  # }
-  # args <- organize_args(a = X, b = MARGIN)
-  # X <- args$a
-  # MARGIN <- args$b
-  if (is.list(X)){
-    # mclapply(X = X, FUN = apply_byname, MARGIN = MARGIN)
-    mclapply(X = X, f = apply_byname, MARGIN = MARGIN)
-  }
-  print(X)
-  print(MARGIN)
-  apply(X, MARGIN, FUN)
-}
