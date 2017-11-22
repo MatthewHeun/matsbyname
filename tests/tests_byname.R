@@ -375,6 +375,32 @@ test_that("matrix column selection by name in lists works as expected", {
 })
 
 
+
+###########################################################
+context("Row and column naming")
+###########################################################
+
+test_that("setting row col names works as expected", {
+  mat1 <- matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)")))
+  mat1_rrenamed <- mat1 %>% setrownames_byname(c("r1", "r2"))
+  expect_equal(rownames(mat1_rrenamed), c("r1", "r2"))
+  
+  mat1_crenamed <- mat1 %>% setcolnames_byname(c("c1", "c2"))
+  expect_equal(colnames(mat1_crenamed), c("c1", "c2"))
+
+  # Also works with lists in data frames.
+  DF <- data.frame(m = I(list()))
+  DF[[1, "m"]] <- mat1
+  DF[[2, "m"]] <- mat1
+  
+  DF_renamed <- DF %>% 
+    mutate(
+      m_renamed = m %>% setrownames_byname(c())
+    )
+    
+})
+
+
 ###########################################################
 context("Matrix cleaning")
 ###########################################################
