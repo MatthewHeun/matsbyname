@@ -395,7 +395,7 @@ test_that("setting row col names works as expected", {
   
   DF_renamed <- DF %>% 
     mutate(
-      m_renamed = m %>% setrownames_byname(c())
+      m_renamed = m %>% setrownames_byname(c("r1", "r2")) %>% setcolnames_byname(c("c1", "c2"))
     )
     
 })
