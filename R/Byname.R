@@ -960,10 +960,18 @@ getcolnames_byname <- function(m){
 
 #' Sets row names
 #'
-#' Sets row names in a way that is amenable to use in chaining operations in a functional programming way
+#' Sets row names in a way that is amenable to use in chaining operations in a functional programming way.
+#' If \code{m} is a matrix, \code{rownames} should be a vector of new row names
+#' that is as long as the number of rows in \code{m}.
+#' If \code{m} is a list of matrices, 
+#' \code{rownames} can also be a list, and it should be as long \code{m}.
+#' Or \code{rownames} can be a vector of row names which will be applied to every matrix in
+#' the list of \code{m}.
+#' Each item in the list should be a vector containing row names for the corresponding 
+#' matrix in \code{m}.
 #'
-#' @param m The matrix or data frame from which row names are to be set
-#' @param rownames The new row names
+#' @param m A matrix or a list of matrices in which row names are to be set
+#' @param rownames A vector of new row names or a list of vectors of new row names
 #'
 #' @return a copy of \code{m} with new row names
 #' @export
@@ -988,12 +996,62 @@ setrownames_byname <- function(m, rownames){
   if (is.list(m) & is.list(rownames)){
     return(mcMap(setrownames_byname, m, rownames))
   }
+  if (is.list(m) & is.vector(rownames)){
+    # rownames is a vector of names to be applied 
+    # to each matrix in m.
+    # Thus, we should replicatate it to be same length as m
+    rownames <- make_list(rownames, n = length(m), lenx = 1)
+    return(setrownames_byname(m, rownames))
+  }
   out <- m
   if (is.null(rownames) || is.na(rownames)){
     # replace with default row names
     rownames(out) <- paste0("[", 1:nrow(out),",]")
   } else {
     rownames(out) <- rownames
+  }
+  return(out)
+}
+
+#' Sets column names
+#'
+#' Sets column names in a way that is amenable to use in chaining operations in a functional programming way.
+#' If \code{m} is a matrix, \code{colnames} should be a vector of new column names
+#' that is as long as the number of columns in \code{m}.
+#' If \code{m} is a list of matrices, 
+#' \code{colnames} can also be a list, and it should be as long \code{m}.
+#' Or \code{colnames} can be a vector of column names which will be applied to every matrix in
+#' the list of \code{m}.
+#' Each item in the list should be a vector containing column names for the corresponding 
+#' matrix in \code{m}.
+#'
+#' @param m A matrix or a list of matrices in which column names are to be set
+#' @param colnames A vector of new column names or a list of vectors of new column names
+#'
+#' @return a copy of \code{m} with new column names
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' setcolnames_byname(m, c("a", "b", "c"))
+setcolnames_byname <- function(m, colnames){
+  if (is.list(m) & is.list(colnames)){
+    return(mcMap(setcolnames_byname, m, colnames))
+  }
+  if (is.list(m) & is.vector(colnames)){
+    # colnames is a vector of names to be applied 
+    # to each matrix in m.
+    # Thus, we should replicatate it to be same length as m
+    colnames <- make_list(colnames, n = length(m), lenx = 1)
+    return(setcolnames_byname(m, colnames))
+  }
+  out <- m
+  if (is.null(colnames) || is.na(colnames)){
+    # replace with default row names
+    colnames(out) <- paste0("[,", 1:ncol(out), "]")
+  } else {
+    colnames(out) <- colnames
   }
   return(out)
 }
@@ -1024,20 +1082,20 @@ setrownames_byname <- function(m, rownames){
 #' DF <- DF %>% mutate(m = setcolnames_byname(m, list(c("cnew1", "cnew2", "cnew3"))))
 #' DF$m[[1]]
 #' DF$m[[2]]
-setcolnames_byname <- function(m, colnames) {
-  if (is.list(m) & is.list(colnames)){
-    return(mcMap(setcolnames_byname, m, colnames))
-  }
-  out <- m
-  if (is.null(colnames) || is.na(colnames)){
-    # replace with default column names
-    colnames(out) <- paste0("[,", 1:ncol(out), "]")
-  } else {
-    colnames(out) <- colnames
-  }
-  return(out)
-}
-#'
+# setcolnames_byname <- function(m, colnames) {
+#   if (is.list(m) & is.list(colnames)){
+#     return(mcMap(setcolnames_byname, m, colnames))
+#   }
+#   out <- m
+#   if (is.null(colnames) || is.na(colnames)){
+#     # replace with default column names
+#     colnames(out) <- paste0("[,", 1:ncol(out), "]")
+#   } else {
+#     colnames(out) <- colnames
+#   }
+#   return(out)
+# }
+
 #' Sets row type for a matrix or a list of matrices
 #'
 #' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
@@ -1358,7 +1416,6 @@ organize_args <- function(a, b, match_type = "all"){
   # Reset row and column types.
   return(list(a = outa, b = outb))
 }
-
 
 #' @title
 #' Create regex patterns for row and column selection by name
