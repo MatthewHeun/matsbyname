@@ -7,15 +7,23 @@
 setrownames_byname(m, rownames)
 }
 \arguments{
-\item{m}{The matrix or data frame from which row names are to be set}
+\item{m}{A matrix or a list of matrices in which row names are to be set}
 
-\item{rownames}{The new row names}
+\item{rownames}{A vector of new row names or a list of vectors of new row names}
 }
 \value{
 a copy of \code{m} with new row names
 }
 \description{
-Sets row names in a way that is amenable to use in chaining operations in a functional programming way
+Sets row names in a way that is amenable to use in chaining operations in a functional programming way.
+If \code{m} is a matrix, \code{rownames} should be a vector of new row names
+that is as long as the number of rows in \code{m}.
+If \code{m} is a list of matrices, 
+\code{rownames} can also be a list, and it should be as long \code{m}.
+Or \code{rownames} can be a vector of row names which will be applied to every matrix in
+the list of \code{m}.
+Each item in the list should be a vector containing row names for the corresponding 
+matrix in \code{m}.
 }
 \examples{
 m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) \%>\%

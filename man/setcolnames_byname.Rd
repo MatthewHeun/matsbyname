@@ -7,30 +7,26 @@
 setcolnames_byname(m, colnames)
 }
 \arguments{
-\item{m}{The matrix or data frame on which column names are to be set}
+\item{m}{A matrix or a list of matrices in which column names are to be set}
 
-\item{colnames}{The new column names. If \code{NULL} or \code{NA}, names are reset to default: "[,j]".}
+\item{colnames}{A vector of new column names or a list of vectors of new column names}
 }
 \value{
 a copy of \code{m} with new column names
 }
 \description{
-Sets column names in a way that is amenable to use in chaining operations in a functional programming way
+Sets column names in a way that is amenable to use in chaining operations in a functional programming way.
+If \code{m} is a matrix, \code{colnames} should be a vector of new column names
+that is as long as the number of columns in \code{m}.
+If \code{m} is a list of matrices, 
+\code{colnames} can also be a list, and it should be as long \code{m}.
+Or \code{colnames} can be a vector of column names which will be applied to every matrix in
+the list of \code{m}.
+Each item in the list should be a vector containing column names for the corresponding 
+matrix in \code{m}.
 }
 \examples{
 m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) \%>\%
-  setrowtype("Industries") \%>\% setcoltype("Commodity")
+  setrowtype("Industries") \%>\% setcoltype("Commodities")
 setcolnames_byname(m, c("a", "b", "c"))
-setcolnames_byname(m, NULL) # Returns to default columns names "[,j]"
-setcolnames_byname(m, NA) # Returns to default columns names "[,j]"
-# This also works for lists
-setcolnames_byname(list(m,m), list(c("a", "b", "c"), c("d", "e", "f")))
-DF <- data.frame(m = I(list()))
-DF[[1,"m"]] <- m
-DF[[2,"m"]] <- m
-setcolnames_byname(DF$m, list(c("cnew1", "cnew2", "cnew3")))
-setcolnames_byname(DF$m, list(c("a", "b", "c"), c("d", "e", "f")))
-DF <- DF \%>\% mutate(m = setcolnames_byname(m, list(c("cnew1", "cnew2", "cnew3"))))
-DF$m[[1]]
-DF$m[[2]]
 }
