@@ -380,24 +380,68 @@ test_that("matrix column selection by name in lists works as expected", {
 context("Row and column naming")
 ###########################################################
 
-test_that("setting row col names works as expected", {
-  mat1 <- matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)")))
-  mat1_rrenamed <- mat1 %>% setrownames_byname(c("r1", "r2"))
-  expect_equal(rownames(mat1_rrenamed), c("r1", "r2"))
-  
-  mat1_crenamed <- mat1 %>% setcolnames_byname(c("c1", "c2"))
-  expect_equal(colnames(mat1_crenamed), c("c1", "c2"))
-
-  # Also works with lists in data frames.
-  DF <- data.frame(m = I(list()))
-  DF[[1, "m"]] <- mat1
-  DF[[2, "m"]] <- mat1
-  
-  DF_renamed <- DF %>% 
+test_that("setting row names works as expected", {
+  m1 <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
+    setrowtype("Industries") %>% setcoltype("Commodities")
+  m2 <- setrownames_byname(m1, c("a", "b"))
+  expect_equal(rownames(m2), c("a", "b"))
+  m3 <- setrownames_byname(m1 %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("c", "d"))
+  expect_equal(rownames(m3), c("c", "d"))
+  m4 <- m1 %>% setrownames_byname(NULL)
+  expect_equal(rownames(m4), c("[1,]", "[2,]"))
+  m5 <- m1 %>% setrownames_byname(NA)
+  expect_equal(rownames(m5), c("[1,]", "[2,]"))
+  # This also works for lists
+  l1 <- list(m1,m1)
+  l2 <- setrownames_byname(l1, list(c("a", "b"), c("c", "d")))
+  expect_equal(list(rownames(l2[[1]]), rownames(l2[[2]])), list(c("a", "b"), c("c", "d")))
+  # This also works with data frames
+  DF1 <- data.frame(mcol = I(list()))
+  DF1[[1,"mcol"]] <- m1
+  DF1[[2,"mcol"]] <- m1
+  DF2 <- DF1 %>% 
     mutate(
-      m_renamed = m %>% setrownames_byname(c("r1", "r2")) %>% setcolnames_byname(c("c1", "c2"))
+      mcol2 = setrownames_byname(mcol, c("r1", "r2"))
     )
-    
+  expect_equal(rownames(DF2$mcol2[[1]]), c("r1", "r2"))
+  expect_equal(rownames(DF2$mcol2[[2]]), c("r1", "r2"))
+  DF3 <- DF1 %>% 
+    mutate(
+      mcol2 = setrownames_byname(mcol, list(c("r1", "r2"), c("r3", "r4")))
+    )
+  expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r1", "r2"), c("r3", "r4")))
+})
+
+test_that("setting col names works as expected", {
+  m1 <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
+    setrowtype("Industries") %>% setcoltype("Commodities")
+  m2 <- setcolnames_byname(m1, c("a", "b", "c"))
+  expect_equal(colnames(m2), c("a", "b", "c"))
+  m3 <- setcolnames_byname(m1 %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("d", "e", "f"))
+  expect_equal(colnames(m3), c("d", "e", "f"))
+  m4 <- m1 %>% setcolnames_byname(NULL)
+  expect_equal(colnames(m4), c("[,1]", "[,2]", "[,3]"))
+  m5 <- m1 %>% setcolnames_byname(NA)
+  expect_equal(colnames(m5), c("[,1]", "[,2]", "[,3]"))
+  # This also works for lists
+  l1 <- list(m1,m1)
+  l2 <- setcolnames_byname(l1, list(c("a", "b", "c"), c("d", "e", "f")))
+  expect_equal(list(colnames(l2[[1]]), colnames(l2[[2]])), list(c("a", "b", "c"), c("d", "e", "f")))
+  # This also works with data frames
+  DF1 <- data.frame(mcol = I(list()))
+  DF1[[1,"mcol"]] <- m1
+  DF1[[2,"mcol"]] <- m1
+  DF2 <- DF1 %>% 
+    mutate(
+      mcol2 = setcolnames_byname(mcol, c("c1", "c2", "c3"))
+    )
+  expect_equal(colnames(DF2$mcol2[[1]]), c("c1", "c2", "c3"))
+  expect_equal(colnames(DF2$mcol2[[2]]), c("c1", "c2", "c3"))
+  DF3 <- DF1 %>% 
+    mutate(
+      mcol2 = setcolnames_byname(mcol, list(c("c1", "c2", "c3"), c("c4", "c5", "c6")))
+    )
+  expect_equal(list(colnames(DF3$mcol2[[1]]), colnames(DF3$mcol2[[2]])), list(c("c1", "c2", "c3"), c("c4", "c5", "c6")))
 })
 
 
