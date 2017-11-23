@@ -10,11 +10,11 @@ Iminus_byname(m)
 \item{m}{the matrix to be subtracted from \code{I}}
 }
 \value{
-The difference between an identity matrix (\code{I}) and \code{m} 
+The difference between an identity matrix (\code{I}) and \code{m}
 (whose rows and columns have been completed and sorted)
 }
 \description{
-The order of rows and columns of \code{m} may change before subtracting from \code{I}, 
+The order of rows and columns of \code{m} may change before subtracting from \code{I},
 because the rows and columns are sorted by name prior to subtracting from \code{I}.
 Furthermore, if \code{m} is not square, it will be made square
 before subtracting from \code{I} by calling \code{complete_and_sort}.
@@ -28,7 +28,7 @@ Iminus_byname(m) # Rows and columns of A are sorted prior to subtracting from th
 Iminus_byname(list(m,m))
 # If the m is not square before subtracting from I,
 # it will be made square by the function complete_and_sort.
-m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) \%>\% 
+m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 Iminus_byname(m2)
 }

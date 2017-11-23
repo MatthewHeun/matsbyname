@@ -13,16 +13,16 @@ matrixproduct_byname(multiplicand, multiplier)
 
 Performs a union and sorting of multiplicand rows and multiplier columns by name prior to multiplication.
 Zeroes are inserted for missing matrix elements.
-Doing so ensures that 
+Doing so ensures that
 the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
 I.e., the number of columns in \code{multiplicand}
 will equal the number of rows in \code{multiplier},
-so long as the column names of multiplicand are unique and 
+so long as the column names of multiplicand are unique and
 the row names of multiplier are unique.
-If column type of \code{multiplicand} is not same as 
-row type of \code{multiplier}, 
+If column type of \code{multiplicand} is not same as
+row type of \code{multiplier},
 the function will fail.
-The result is matrix product 
+The result is matrix product
 with row names from \code{multiplicand} and column names from \code{multiplier}.}
 }
 \value{
@@ -32,7 +32,7 @@ A matrix representing the name-wise product of \code{multiplicand} and \code{mul
 Name-wise matrix multiplication
 }
 \examples{
-V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) \%>\% 
+V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("g2", "g1"))) \%>\%
   setrowtype("Commodities") \%>\% setcoltype("Industries")

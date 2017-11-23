@@ -10,7 +10,7 @@ identize_byname(m)
 \item{m}{The matrix whose names and dimensions are to be preserved in an identity matrix.}
 }
 \value{
-A square identity matrix with ones on the diagonal. 
+A square identity matrix with ones on the diagonal.
 Row and column names are taken from row and column
 names of \code{m}.
 Row and column names are sorted.

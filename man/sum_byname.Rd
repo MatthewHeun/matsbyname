@@ -24,7 +24,7 @@ Name-wise addition of matrices.
 sum_byname(2, 2)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")
-U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) \%>\% 
+U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) \%>\%
   setrowtype("Commodities") \%>\% setcoltype("Industries")
 G <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) \%>\%
   setrowtype("Commodities") \%>\% setcoltype("Industries")

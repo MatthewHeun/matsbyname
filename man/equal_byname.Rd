@@ -12,7 +12,7 @@ equal_byname(a, b)
 \item{b}{the second matrix to be compared}
 }
 \value{
-\code{TRUE} iff row and column types are same \code{and} 
+\code{TRUE} iff row and column types are same \code{and}
 row and column names are same \code{and}
 all entries in the matrix are same.
 }

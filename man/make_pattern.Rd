@@ -17,11 +17,11 @@ an extended regex pattern suitable for use with \code{select_rows_byname} or \co
 }
 \description{
 This function is intended for use with the \code{select_rows_byname}
-and \code{select_cols_byname} functions. 
+and \code{select_cols_byname} functions.
 \code{make_pattern} correctly escapes special characters in \code{row_col_names},
 such as \code{(} and \code{)}, as needed.
-Thus, it is highly recommended that \code{make_pattern} be used when 
-constructing patterns for row and column selections with 
+Thus, it is highly recommended that \code{make_pattern} be used when
+constructing patterns for row and column selections with
 \code{select_rows_byname}
 and \code{select_cols_byname}.
 }

@@ -18,7 +18,7 @@ a copy of \code{m} with new column names
 Sets column names in a way that is amenable to use in chaining operations in a functional programming way
 }
 \examples{
-m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) \%>\% 
+m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodity")
 setcolnames_byname(m, c("a", "b", "c"))
 setcolnames_byname(m, NULL) # Returns to default columns names "[,j]"

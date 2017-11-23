@@ -14,6 +14,11 @@ setrowtype(x, rowtype)
 \value{
 a copy of \code{x} with \code{rowtype} attribute set
 }
+\description{
+This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
+in a functional way.
+Row types are strings stored in the \code{rowtype} attribute.
+}
 \examples{
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")

@@ -3,21 +3,21 @@ library(magrittr)
 library(dplyr)
 
 #' Name-wise addition of matrices.
-#' 
+#'
 #' @param augend Addend matrix or constant
 #' @param addend Augend matrix or constant
-#' 
+#'
 #' Performs a union and sorting of row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
 #'
 #' @return A matrix representing the name-wise sum of \code{addend} and \code{augend}
 #' @export
-#' 
+#'
 #' @examples
 #' sum_byname(2, 2)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
-#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>% 
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' G <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
@@ -80,16 +80,16 @@ sum_byname <- function(augend, addend){
 }
 
 #' Name-wise subtraction of matrices.
-#' 
+#'
 #' @param minuend Minuend matrix or constant
 #' @param subtrahend Subtrahend matrix or constant
-#' 
+#'
 #' Performs a union and sorting of row and column names prior to differentiation.
 #' Zeroes are inserted for missing matrix elements.
 #'
 #' @return A matrix representing the name-wise difference between \code{minuend} and \code{subtrahend}
 #' @export
-#' 
+#'
 #' @examples
 #' difference_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
@@ -139,29 +139,29 @@ difference_byname <- function(minuend, subtrahend){
 }
 
 #' Name-wise matrix multiplication
-#' 
+#'
 #' @param multiplicand Multiplicand matrix
 #' @param multiplier Multiplier matrix
-#' 
+#'
 #' Performs a union and sorting of multiplicand rows and multiplier columns by name prior to multiplication.
 #' Zeroes are inserted for missing matrix elements.
-#' Doing so ensures that 
+#' Doing so ensures that
 #' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
 #' I.e., the number of columns in \code{multiplicand}
 #' will equal the number of rows in \code{multiplier},
-#' so long as the column names of multiplicand are unique and 
+#' so long as the column names of multiplicand are unique and
 #' the row names of multiplier are unique.
-#' If column type of \code{multiplicand} is not same as 
-#' row type of \code{multiplier}, 
+#' If column type of \code{multiplicand} is not same as
+#' row type of \code{multiplier},
 #' the function will fail.
-#' The result is matrix product 
+#' The result is matrix product
 #' with row names from \code{multiplicand} and column names from \code{multiplier}.
 #'
 #' @return A matrix representing the name-wise product of \code{multiplicand} and \code{multiplier}
 #' @export
 #'
 #' @examples
-#' V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) %>% 
+#' V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("g2", "g1"))) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
@@ -186,26 +186,26 @@ matrixproduct_byname <- function(multiplicand, multiplier){
     stopifnot(length(multiplicand) == length(multiplier))
     return(mcMap(matrixproduct_byname, multiplicand, multiplier))
   }
-  
-  
-  # Check that multiplicand columns and multiplier rows are same type 
+
+
+  # Check that multiplicand columns and multiplier rows are same type
   # and cols of multiplicand and rows of multiplier have same names.
   # matrices <- complete_and_sort(multiplicand, transpose_byname(multiplier), margin = 2)
   # matrices$m2 <- transpose_byname(matrices$m2) # Need to re-transpose, because of transpose_byname above.
   multiplicand %*% multiplier %>%
-    setrowtype(rowtype(multiplicand)) %>% 
+    setrowtype(rowtype(multiplicand)) %>%
     setcoltype(coltype(multiplier))
 }
 
 #' Name-wise matrix element multiplication
-#' 
+#'
 #' @param multiplicand Multiplicand matrix or constant
 #' @param multiplier Multiplier matrix or constant
-#' 
+#'
 #' Performs a union and sorting of names of rows and columns for both \code{multiplicand} and \code{multiplier}
 #' prior to element multiplication.
 #' Zeroes are inserted for missing matrix elements.
-#' Doing so ensures that 
+#' Doing so ensures that
 #' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
 #'
 #' @return A matrix representing the name-wise element product of \code{multiplicand} and \code{multiplier}
@@ -245,14 +245,14 @@ elementproduct_byname <- function(multiplicand, multiplier){
 }
 
 #' Name-wise matrix element division
-#' 
+#'
 #' @param dividend Dividend matrix or constant
 #' @param divisor Divisor matrix or constant
-#' 
+#'
 #' Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
 #' prior to element division.
 #' Zeroes are inserted for missing matrix elements.
-#' Doing so ensures that 
+#' Doing so ensures that
 #' the dimensions of the \code{dividend} and \code{divisor} will be conformable.
 #'
 #' @return A matrix representing the name-wise element quotient of \code{dividend} and \code{divisor}
@@ -296,10 +296,10 @@ elementquotient_byname <- function(dividend, divisor){
 #' Invert a matrix
 #'
 #' This function transposes row and column names as well as row and column types.
-#' 
+#'
 #' @param m the matrix to be inverted. \code{m} must be square.
 #'
-#' @return the inversion 
+#' @return the inversion
 #' @export
 #'
 #' @examples
@@ -345,7 +345,7 @@ transpose_byname <- function(m){
 #' Creates a diagonal "hat" matrix from a vector.
 #'
 #' @param v The vector from which a "hat" matrix is to be created.
-#' 
+#'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
 #' \code{v} must be a matrix with at least one dimension of length 1 (a vector).
@@ -388,10 +388,10 @@ hatize_byname <- function(v){
 #'
 #' Creates an identity matrix (I) with ones on the diagonal with same size and names as \code{m}.
 #' \code{m} must be square.
-#' 
+#'
 #' @param m The matrix whose names and dimensions are to be preserved in an identity matrix.
 #'
-#' @return A square identity matrix with ones on the diagonal. 
+#' @return A square identity matrix with ones on the diagonal.
 #' Row and column names are taken from row and column
 #' names of \code{m}.
 #' Row and column names are sorted.
@@ -417,32 +417,32 @@ identize_byname <- function(m){
     hatize_byname %>%
     setrownames_byname(rownames(n)) %>%
     setcolnames_byname(colnames(n)) %>%
-    setrowtype(rowtype(m)) %>% 
+    setrowtype(rowtype(m)) %>%
     setcoltype(coltype(m))
 }
 
-#' @title 
+#' @title
 #' Select rows of a matrix (or list of matrices) by name
-#' 
-#' @description 
+#'
+#' @description
 #' Arguments indicate which rows are to be retained and which are to be removed.
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against row names.
-#' 
-#' @details 
+#'
+#' @details
 #' Patterns are compared against row names using extended regex.
 #' If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
-#' 
+#'
 #' Retaining rows takes precedence over removing rows, always.
-#' 
+#'
 #' Some typical patterns are:
 #' \itemize{
 #'   \item{\code{^Electricity$|^Oil$}: row names that are EXACTLY \code{Electricity} or \code{Oil}.}
 #'   \item{\code{^Electricity|^Oil}: row names that START WITH \code{Electricity} or \code{Oil}.}
 #'   \item{\code{Electricity|Oil}: row names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
 #' }
-#' 
+#'
 #' Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
 #'
 #' @param m a matrix or a list of matrices
@@ -450,7 +450,7 @@ identize_byname <- function(m){
 #' Default pattern (\code{$^}) retains nothing.
 #' @param remove_pattern an extended regex or list of extended regexes that specifies which rows of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
-#'   
+#'
 #' @return a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
 #' @export
 #'
@@ -462,7 +462,7 @@ identize_byname <- function(m){
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
-  # Note default patterns ("$^") retain nothing and remove nothing, 
+  # Note default patterns ("$^") retain nothing and remove nothing,
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
@@ -477,14 +477,14 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
     # Nothing to be retained, so try removing columns
     if (length(remove_indices) == 0){
       # Nothing to be retained and nothing to be removed.
-      # If the caller wanted to retain something, 
+      # If the caller wanted to retain something,
       # which is indicated by a non-default retain_pattern,
       # don't retain anything.
       # Do this first, because retain takes precedence.
       if (retain_pattern != "$^"){
         return(NULL)
       }
-      # If the caller wanted to remove something, 
+      # If the caller wanted to remove something,
       # which is indicated by a non-default remove_pattern,
       # don't remove anything. Simply return m.
       if (remove_pattern != "$^"){
@@ -495,50 +495,50 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
       stop("neither retain_pattern nor remove_pattern are differnt from default.")
     }
     # Remove
-    return(m[-remove_indices , ] %>% 
+    return(m[-remove_indices , ] %>%
              # When only 1 row is selected, the natural result will be a numeric vector
              # We want to ensure that the return value is a matrix
              # with correct rowtype and coltype.
              # Thus, we need to take these additional steps.
              matrix(nrow = nrow(m) - length(remove_indices),
-                    dimnames = list(dimnames(m)[[1]][setdiff(1:nrow(m), remove_indices)], 
-                                    dimnames(m)[[2]])) %>% 
-             setrowtype(rowtype(m)) %>% 
+                    dimnames = list(dimnames(m)[[1]][setdiff(1:nrow(m), remove_indices)],
+                                    dimnames(m)[[2]])) %>%
+             setrowtype(rowtype(m)) %>%
              setcoltype(coltype(m))
     )
   }
   # Retain
-  return(m[retain_indices , ] %>% 
+  return(m[retain_indices , ] %>%
            matrix(nrow = length(retain_indices),
-                  dimnames = list(dimnames(m)[[1]][retain_indices], 
-                                  dimnames(m)[[2]])) %>% 
-           setrowtype(rowtype(m)) %>% 
+                  dimnames = list(dimnames(m)[[1]][retain_indices],
+                                  dimnames(m)[[2]])) %>%
+           setrowtype(rowtype(m)) %>%
            setcoltype(coltype(m))
   )
 }
 
-#' @title 
+#' @title
 #' Select columns of a matrix (or list of matrices) by name
-#' 
-#' @description 
+#'
+#' @description
 #' Arguments indicate which columns are to be retained and which are to be removed.
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against column names.
-#' 
-#' @details 
+#'
+#' @details
 #' Patterns are compared against column names using extended regex.
 #' If no column names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no column names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
-#' 
+#'
 #' Retaining columns takes precedence over removing columns, always.
-#' 
+#'
 #' Some typical patterns are:
 #' \itemize{
 #'   \item{\code{^Electricity$|^Oil$}: column names that are EXACTLY \code{Electricity} or \code{Oil}.}
 #'   \item{\code{^Electricity|^Oil}: column names that START WITH \code{Electricity} or \code{Oil}.}
 #'   \item{\code{Electricity|Oil}: column names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
 #' }
-#' 
+#'
 #' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 #'
 #' @param m a matrix or a list of matrices
@@ -546,7 +546,7 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' Default pattern (\code{$^}) retains nothing.
 #' @param remove_pattern an extended regex or list of extended regexes that specifies which columns of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
-#'   
+#'
 #' @return a matrix that is a subset of \code{m} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
 #' @export
 #'
@@ -558,7 +558,7 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
-  # Note default patterns ("$^") retain nothing and remove nothing, 
+  # Note default patterns ("$^") retain nothing and remove nothing,
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
@@ -573,14 +573,14 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
     # Nothing to be retained, so try removing columns
     if (length(remove_indices) == 0){
       # Nothing to be retained and nothing to be removed.
-      # If the caller wanted to retain something, 
+      # If the caller wanted to retain something,
       # which is indicated by a non-default retain_pattern,
       # don't retain anything.
       # Do this first, because retain takes precedence.
       if (retain_pattern != "$^"){
         return(NULL)
       }
-      # If the caller wanted to remove something, 
+      # If the caller wanted to remove something,
       # which is indicated by a non-default remove_pattern,
       # don't remove anything. Simply return m.
       if (remove_pattern != "$^"){
@@ -591,40 +591,40 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
       stop("neither retain_pattern nor remove_pattern are differnt from default.")
     }
     # Remove
-    return(m[ , -remove_indices] %>% 
+    return(m[ , -remove_indices] %>%
              # When only 1 row is selected, the natural result will be a numeric vector
              # We want to ensure that the return value is a matrix
              # with correct rowtype and coltype.
              # Thus, we need to take these additional steps.
              matrix(ncol = ncol(m) - length(remove_indices),
-                    dimnames = list(dimnames(m)[[1]], 
-                                    dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>% 
-             setrowtype(rowtype(m)) %>% 
+                    dimnames = list(dimnames(m)[[1]],
+                                    dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>%
+             setrowtype(rowtype(m)) %>%
              setcoltype(coltype(m))
     )
   }
   # Retain
-  return(m[ , retain_indices] %>% 
+  return(m[ , retain_indices] %>%
            matrix(ncol = length(retain_indices),
-                  dimnames = list(dimnames(m)[[1]], 
-                                  dimnames(m)[[2]][retain_indices])) %>% 
-           setrowtype(rowtype(m)) %>% 
+                  dimnames = list(dimnames(m)[[1]],
+                                  dimnames(m)[[2]][retain_indices])) %>%
+           setrowtype(rowtype(m)) %>%
            setcoltype(coltype(m))
   )
 }
 
 #' Decides which columns to retain and remove.
-#' 
+#'
 #' This is a helper function for \code{select_rows_byname} and \code{select_cols_byname}.
 #' Specify removal by a leading \code{-}.
 #' Names without a leading \code{-} will be retained.
 #' Any number of leading \code{-} will be ignored when deciding the names of columns to be removed.
 #'
-#' @param row_col_names names of rows or columns to be retained or removed. 
+#' @param row_col_names names of rows or columns to be retained or removed.
 #'
 #' @return a list with two items: \code{retain_names} and \code{remove_names}.
 #'
-#' @examples 
+#' @examples
 #' retain_remove("c1")
 #' retain_remove("-c1")
 #' retain_remove(c("c1", "-c1")) # Retain takes precedence.
@@ -642,16 +642,16 @@ retain_remove <- function(row_col_names){
   # Remove common names from those columns that are to be deleted.
   # This step means that keeping takes precedence over removing.
   remove_names <- setdiff(remove_names, common_names)
-  return(list(retain_names = retain_names, remove_names = remove_names))  
+  return(list(retain_names = retain_names, remove_names = remove_names))
 }
 
 #' Row sums, sorted by name
 #'
 #' @param m a matrix or data frame from which row sums are desired.
 #' @param colname name of the output column containing row sums
-#' 
+#'
 #' Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
-#' In contrast to \code{rowSums} (which returns a \code{numeric} result), 
+#' In contrast to \code{rowSums} (which returns a \code{numeric} result),
 #' the return value from \code{rowsums_byname} is a matrix.
 #' An optional \code{colname} for the resulting column vector can be supplied.
 #'
@@ -711,9 +711,9 @@ rowsums_byname <- function(m, colname = NA){
 #'
 #' @param m a matrix or data frame from which column sums are desired.
 #' @param rowname name of the output row containing column sums
-#' 
+#'
 #' Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
-#' In contrast to \code{colSums} (which returns a \code{numeric} result), 
+#' In contrast to \code{colSums} (which returns a \code{numeric} result),
 #' the return value from \code{colsums_byname} is a matrix.
 #' An optional \code{rowname} for the resulting row vector can be supplied.
 #'
@@ -773,8 +773,8 @@ colsums_byname <- function(m, rowname = NA){
 }
 
 #' Sum of all elements in a matrix
-#' 
-#' This is functionally equivalent to \code{m %>% rowsum_byname %>% colsum_byname},
+#'
+#' This function is equivalent to \code{m \%>\% rowsum_byname() \%>\% colsum_byname()},
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
 #' @param m the matrix whose elements are to be summed
@@ -809,15 +809,15 @@ sumall_byname <- function(m){
 }
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
-#' 
-#' The order of rows and columns of \code{m} may change before subtracting from \code{I}, 
+#'
+#' The order of rows and columns of \code{m} may change before subtracting from \code{I},
 #' because the rows and columns are sorted by name prior to subtracting from \code{I}.
 #' Furthermore, if \code{m} is not square, it will be made square
 #' before subtracting from \code{I} by calling \code{complete_and_sort}.
 #'
 #' @param m the matrix to be subtracted from \code{I}
 #'
-#' @return The difference between an identity matrix (\code{I}) and \code{m} 
+#' @return The difference between an identity matrix (\code{I}) and \code{m}
 #' (whose rows and columns have been completed and sorted)
 #' @export
 #'
@@ -830,29 +830,28 @@ sumall_byname <- function(m){
 #' Iminus_byname(list(m,m))
 #' # If the m is not square before subtracting from I,
 #' # it will be made square by the function complete_and_sort.
-#' m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) %>% 
+#' m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' Iminus_byname(m2)
 Iminus_byname <- function(m){
   if (is.list(m)){
     return(mcMap(Iminus_byname, m))
   }
-  # sort_rows_cols(m) %>% 
-  complete_and_sort(m) %>% 
-    setrowtype(rowtype(m)) %>% 
-    setcoltype(coltype(m)) %>% 
+  # sort_rows_cols(m) %>%
+  complete_and_sort(m) %>%
+    setrowtype(rowtype(m)) %>%
+    setcoltype(coltype(m)) %>%
     difference_byname(identize_byname(.), .)
 }
-
 
 #' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
 #'
 #' @param m the matrix to be cleaned
-#' @param margin the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns, 
+#' @param margin the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
 #' or \code{c(1,2)} for both rows and columns.
 #' @param clean_value the undesirable value
-#' 
-#' When a row (when \code{margin = 1}) or a column (when \code{margin = 2}) 
+#'
+#' When a row (when \code{margin = 1}) or a column (when \code{margin = 2})
 #' contains exclusively \code{clean_value}, the row or column is deleted from the matrix.
 #'
 #' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{clean_value}.
@@ -870,7 +869,7 @@ Iminus_byname <- function(m){
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
 #' DF %>% clean_byname(margin = 1, clean_value = -20)
-#' m2 <- matrix(c(-20, -20, 0, -20, -20, 0, -20, -20, -20), nrow = 3, 
+#' m2 <- matrix(c(-20, -20, 0, -20, -20, 0, -20, -20, -20), nrow = 3,
 #'              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")) )
 #' m2
 #' clean_byname(m2, margin = c(1,2), clean_value = -20)
@@ -908,7 +907,7 @@ clean_byname <- function(m, margin = c(1,2), clean_value = 0){
 }
 
 #' Gets row names
-#' 
+#'
 #' Gets row names in a way that is amenable to use in chaining operations in a functional programming way
 #'
 #' @param m The matrix or data frame on which row names are to be retrieved
@@ -934,7 +933,7 @@ getrownames_byname <- function(m){
 }
 
 #' Gets column names
-#' 
+#'
 #' Gets column names in a way that is amenable to use in chaining operations in a functional programming way
 #'
 #' @param m The matrix or data frame from which column names are to be retrieved
@@ -960,7 +959,7 @@ getcolnames_byname <- function(m){
 }
 
 #' Sets row names
-#' 
+#'
 #' Sets row names in a way that is amenable to use in chaining operations in a functional programming way
 #'
 #' @param m The matrix or data frame from which row names are to be set
@@ -1000,7 +999,7 @@ setrownames_byname <- function(m, rownames){
 }
 
 #' Sets column names
-#' 
+#'
 #' Sets column names in a way that is amenable to use in chaining operations in a functional programming way
 #'
 #' @param m The matrix or data frame on which column names are to be set
@@ -1010,7 +1009,7 @@ setrownames_byname <- function(m, rownames){
 #' @export
 #'
 #' @examples
-#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>% 
+#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodity")
 #' setcolnames_byname(m, c("a", "b", "c"))
 #' setcolnames_byname(m, NULL) # Returns to default columns names "[,j]"
@@ -1038,10 +1037,10 @@ setcolnames_byname <- function(m, colnames) {
   }
   return(out)
 }
-
+#'
 #' Sets row type for a matrix or a list of matrices
-#' 
-#' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{%>%})
+#'
+#' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
 #' in a functional way.
 #' Row types are strings stored in the \code{rowtype} attribute.
 #'
@@ -1075,8 +1074,8 @@ setrowtype <- function(x, rowtype){
 }
 
 #' Sets column type for a matrix or a list of matrices
-#' 
-#' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{%>%})
+#'
+#' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
 #' in a functional way.
 #' Column types are strings stored in the \code{coltype} attribute.
 #'
@@ -1112,7 +1111,7 @@ setcoltype <- function(x, coltype){
 #' Row type
 #'
 #' Extracts row type of \code{x}.
-#' 
+#'
 #' @param x the object from which you want to extract row types
 #'
 #' @return the row type of \code{x}
@@ -1121,7 +1120,7 @@ setcoltype <- function(x, coltype){
 #' @examples
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
-#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>% 
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
 #'   setrowtype(rowtype = "Commodities") %>% setcoltype("Industries")
 #' rowtype(U)
 #' # This also works for lists
@@ -1136,7 +1135,7 @@ rowtype <- function(x){
 #' Column type
 #'
 #' Extracts column type of \code{x}.
-#' 
+#'
 #' @param x the object from which you want to extract column types
 #'
 #' @return the column type of \code{x}
@@ -1145,7 +1144,7 @@ rowtype <- function(x){
 #' @examples
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
-#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>% 
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
 #'   setrowtype(rowtype = "Commodities") %>% setcoltype("Industries")
 #' coltype(U)
 #' # This also works for lists
@@ -1164,7 +1163,7 @@ coltype <- function(x){
 #' @param a the first matrix to be compared
 #' @param b the second matrix to be compared
 #'
-#' @return \code{TRUE} iff row and column types are same \code{and} 
+#' @return \code{TRUE} iff row and column types are same \code{and}
 #' row and column names are same \code{and}
 #' all entries in the matrix are same.
 #' @export
@@ -1193,7 +1192,7 @@ equal_byname <- function(a, b) {
 }
 
 #' Named list of rows or columns of matrices
-#' 
+#'
 #' Extraction gives column vectors, regardless of margin.
 #'
 #' @param m a matrix or list of matrices (say, from a column of a data frame)
@@ -1203,7 +1202,7 @@ equal_byname <- function(a, b) {
 #' @export
 #'
 #' @examples
-#' m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
+#' m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>%
 #' setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
@@ -1216,14 +1215,14 @@ list_of_rows_or_cols <- function(m, margin){
   stopifnot("matrix" %in% class(m))
   # Strategy: perform all operations with margin to be split into a list in columns.
   if (margin == 1){
-    # Caller requested rows to be split into list items. 
+    # Caller requested rows to be split into list items.
     # Transpose so operations will be easier.
     out <- transpose_byname(m)
   } else {
     out <- m
   }
   lapply(seq_len(ncol(out)), function(i){
-      matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>% 
+      matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>%
       setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
     }) %>%
     set_names(colnames(out))
@@ -1263,7 +1262,7 @@ iszero_byname <- function(m, tol = 1e-6){
 }
 
 #' Organize binary arguments
-#' 
+#'
 #' Organizes arguments of binary (2 arguments) \code{_byname} functions.
 #' Actions performed are:
 #' \itemize{
@@ -1278,7 +1277,7 @@ iszero_byname <- function(m, tol = 1e-6){
 #' @param b the second argument to be organized
 #' @param match_type one of \code{"all"} or \code{"matmult"}.
 #' When both \code{a} and \code{b} are matrices,
-#' \code{"all"} (the default) indicates that 
+#' \code{"all"} (the default) indicates that
 #' rowtypes of \code{a} must match rowtypes of \code{b} and
 #' coltypes of \code{a} must match coltypes of \code{b}.
 #' If \code{"matmult"},
@@ -1313,24 +1312,24 @@ organize_args <- function(a, b, match_type = "all"){
     # Now return the lists.
     return(list(a = a, b = b))
   }
-  
+
   # Neither a nor b are lists.
   if (! is.matrix(a) & ! is.matrix(b)){
     # Neither a nor b are matrices. Assume we have two constants. Return the constants in a vector.
     return(list(a = a, b = b))
   }
-  
+
   # Neither a nor b are lists.
-  # We don't know if one or both a and b is a matrix. 
+  # We don't know if one or both a and b is a matrix.
   # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
   if (! is.matrix(a) & is.matrix(b)){
-    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b)) %>% 
+    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b)) %>%
       setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
   } else if (is.matrix(a) & ! is.matrix(b)){
-    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a)) %>% 
+    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a)) %>%
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
-  
+
   # Assume that both a and b are now matrices.
   # Verify that row and column types are appropriate.
   if (match_type == "all"){
@@ -1341,7 +1340,7 @@ organize_args <- function(a, b, match_type = "all"){
   } else {
     stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
-  
+
   # Ensure that matrices have correct row and column names and are in same order.
   if (match_type == "all"){
     matrices <- complete_and_sort(a, b)
@@ -1361,20 +1360,20 @@ organize_args <- function(a, b, match_type = "all"){
 }
 
 
-#' @title 
+#' @title
 #' Create regex patterns for row and column selection by name
 #'
-#' @description 
+#' @description
 #' This function is intended for use with the \code{select_rows_byname}
-#' and \code{select_cols_byname} functions. 
+#' and \code{select_cols_byname} functions.
 #' \code{make_pattern} correctly escapes special characters in \code{row_col_names},
 #' such as \code{(} and \code{)}, as needed.
-#' Thus, it is highly recommended that \code{make_pattern} be used when 
-#' constructing patterns for row and column selections with 
+#' Thus, it is highly recommended that \code{make_pattern} be used when
+#' constructing patterns for row and column selections with
 #' \code{select_rows_byname}
 #' and \code{select_cols_byname}.
-#' 
-#' @details 
+#'
+#' @details
 #' \code{pattern_type} controls the type of pattern created:
 #' \itemize{
 #'   \item{\code{exact} produces a pattern that selects row or column names by exact match.}
@@ -1385,14 +1384,14 @@ organize_args <- function(a, b, match_type = "all"){
 #'   \item{\code{anywhere} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
 #'         any substring of row or column names.}
 #' }
-#' 
+#'
 #' @param row_col_names a vector of row and column names
 #' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}.
-#' 
+#'
 #' @return an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
 #' @export
 #'
-#' @examples 
+#' @examples
 #' make_pattern(row_col_names = c("a", "b"), pattern_type = "exact")
 make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere")){
   match.arg(pattern_type)
@@ -1407,8 +1406,8 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
   }
   # Escape parentheses if needed, but it is tricky.
   # Use unicode for the replacement.
-  out <- out %>% 
-    gsub(pattern = "\\(", replacement = "\U005c\U005c\U0028") %>% 
+  out <- out %>%
+    gsub(pattern = "\\(", replacement = "\U005c\U005c\U0028") %>%
     gsub(pattern = "\\)", replacement = "\U005c\U005c\U0029")
   paste0(out, collapse = "|")
 }

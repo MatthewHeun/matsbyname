@@ -14,7 +14,7 @@ elementquotient_byname(dividend, divisor)
 Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
 prior to element division.
 Zeroes are inserted for missing matrix elements.
-Doing so ensures that 
+Doing so ensures that
 the dimensions of the \code{dividend} and \code{divisor} will be conformable.}
 }
 \value{

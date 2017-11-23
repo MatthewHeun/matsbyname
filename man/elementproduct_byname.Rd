@@ -14,7 +14,7 @@ elementproduct_byname(multiplicand, multiplier)
 Performs a union and sorting of names of rows and columns for both \code{multiplicand} and \code{multiplier}
 prior to element multiplication.
 Zeroes are inserted for missing matrix elements.
-Doing so ensures that 
+Doing so ensures that
 the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.}
 }
 \value{
