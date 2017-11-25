@@ -375,6 +375,57 @@ test_that("transpose_byname works as expected", {
 })
 
 
+###########################################################
+context("Hatize")
+###########################################################
+
+test_that("hatize_byname works as expected", {
+  v <- matrix(1:10, ncol = 1, dimnames=list(c(paste0("i", 1:10)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  orderedRowNames <- c("i1", "i10", paste0("i", 2:9))
+  v_hat_expected <- matrix(c(1,0,0,0,0,0,0,0,0,0,
+                             0,10,0,0,0,0,0,0,0,0,
+                             0,0,2,0,0,0,0,0,0,0,
+                             0,0,0,3,0,0,0,0,0,0,
+                             0,0,0,0,4,0,0,0,0,0,
+                             0,0,0,0,0,5,0,0,0,0,
+                             0,0,0,0,0,0,6,0,0,0,
+                             0,0,0,0,0,0,0,7,0,0,
+                             0,0,0,0,0,0,0,0,8,0,
+                             0,0,0,0,0,0,0,0,0,9),
+                           nrow = 10, 
+                           dimnames = list(orderedRowNames, orderedRowNames)) %>% 
+    setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
+  r <- matrix(1:5, nrow = 1, dimnames=list("i1", paste0("p", 1:5))) %>%
+    setrowtype(NA) %>% setcoltype("Commodities")
+  orderedColNames <- paste0("p", 1:5)
+  r_hat_expected <- matrix(c(1,0,0,0,0,
+                             0,2,0,0,0,
+                             0,0,3,0,0,
+                             0,0,0,4,0,
+                             0,0,0,0,5),
+                           nrow = 5, 
+                           dimnames = list(orderedColNames, orderedColNames)) %>% 
+    setrowtype(coltype(r)) %>% setcoltype(coltype(r))
+  expect_equal(hatize_byname(r), r_hat_expected)
+  # This also works with lists.
+  expect_equal(hatize_byname(list(v, v)), list(v_hat_expected, v_hat_expected))
+  # And it works with data frames.
+  DF <- data.frame(v = I(list()))
+  DF[[1,"v"]] <- v
+  DF[[2,"v"]] <- v
+  expect_equal(hatize_byname(DF$v), list(v_hat_expected, v_hat_expected))
+  DF_expected <- data.frame(v = I(list()), v_hat = I(list()))
+  DF_expected[[1,"v"]] <- v
+  DF_expected[[2,"v"]] <- v
+  DF_expected[[1,"v_hat"]] <- v_hat_expected
+  DF_expected[[2,"v_hat"]] <- v_hat_expected
+  # Because DF_expected$v_hat is created with I(list()), its class is "AsIs".
+  # Because DF$v_hat is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$v_hat to NULL to get a match.
+  attr(DF_expected$v_hat, which = "class") <- NULL
+  expect_equal(DF %>% mutate(v_hat = hatize_byname(v)), DF_expected)
+})
 
 
 ###########################################################
