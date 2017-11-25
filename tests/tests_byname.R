@@ -512,7 +512,6 @@ test_that("matrix column selection by name in lists works as expected", {
 })
 
 
-
 ###########################################################
 context("Row and column naming")
 ###########################################################
