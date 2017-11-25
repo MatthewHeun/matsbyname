@@ -308,6 +308,44 @@ test_that("elementquotient_byname works as expected", {
 
 
 ###########################################################
+context("Inversion")
+###########################################################
+
+test_that("invert_byname works as expected", {
+  m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  # For matrix inversion, rows become columns and columns become rows.
+  # Furthermore, the types on rows and columns are flipped.
+  minv <- matrix(c(0.1, 0, 0, 0.01), nrow = 2, dimnames = list(colnames(m), rownames(m))) %>% 
+    setrowtype(coltype(m)) %>% setcoltype(rowtype(m))
+  expect_equal(invert_byname(m), minv)
+  expect_equal(matrixproduct_byname(m, invert_byname(m)), 
+               matrix(c(1,0,0,1), nrow = 2, dimnames = list(rownames(m), rownames(m))) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(rowtype(m)))
+  expect_equal(matrixproduct_byname(invert_byname(m), m), 
+               matrix(c(1,0,0,1), nrow = 2, dimnames = list(colnames(m), colnames(m))) %>% 
+                 setrowtype(coltype(m)) %>% setcoltype(coltype(m)))
+  # Also works for lists
+  expect_equal(invert_byname(list(m,m)), list(minv, minv))
+  # Also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1, "m"]] <- m
+  DF[[2, "m"]] <- m
+  expect_equal(invert_byname(DF$m), list(minv, minv))
+  DF_expected <- data.frame(m = I(list()), minv = I(list()))
+  DF_expected[[1, "m"]] <- m
+  DF_expected[[2, "m"]] <- m
+  DF_expected[[1, "minv"]] <- minv
+  DF_expected[[2, "minv"]] <- minv
+  # Because DF_expected$minv is created with I(list()), its class is "AsIs".
+  # Because DF$minv is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$minv to NULL to get a match.
+  attr(DF_expected$minv, which = "class") <- NULL
+  expect_equal(DF %>% mutate(minv = invert_byname(m)), DF_expected)
+})
+
+
+###########################################################
 context("Row selection")
 ###########################################################
 
