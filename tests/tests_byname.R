@@ -313,7 +313,7 @@ context("Inversion")
 
 test_that("invert_byname works as expected", {
   m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
-    setrowtype("Industry") %>% setcoltype("Product")
+    setrowtype("Industries") %>% setcoltype("Products")
   # For matrix inversion, rows become columns and columns become rows.
   # Furthermore, the types on rows and columns are flipped.
   minv <- matrix(c(0.1, 0, 0, 0.01), nrow = 2, dimnames = list(colnames(m), rownames(m))) %>% 
@@ -343,6 +343,38 @@ test_that("invert_byname works as expected", {
   attr(DF_expected$minv, which = "class") <- NULL
   expect_equal(DF %>% mutate(minv = invert_byname(m)), DF_expected)
 })
+
+
+###########################################################
+context("Transpose")
+###########################################################
+
+test_that("transpose_byname works as expected", {
+  m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  mT <- matrix(c(11, 12, 21, 22, 31, 32), nrow = 2, dimnames = list(paste0("p", 1:2), paste0("i", 1:3))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(transpose_byname(m), mT)
+  # Works for lists
+  expect_equal(transpose_byname(list(m,m)), list(mT, mT))
+  # Works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(transpose_byname(DF$m), list(mT, mT))
+  DF_expected <- data.frame(m = I(list()), mT = I(list()))
+  DF_expected[[1, "m"]] <- m
+  DF_expected[[2, "m"]] <- m
+  DF_expected[[1, "mT"]] <- mT
+  DF_expected[[2, "mT"]] <- mT
+  # Because DF_expected$mT is created with I(list()), its class is "AsIs".
+  # Because DF$mT is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$mT to NULL to get a match.
+  attr(DF_expected$mT, which = "class") <- NULL
+  expect_equal(DF %>% mutate(mT = transpose_byname(m)), DF_expected)
+})
+
+
 
 
 ###########################################################
