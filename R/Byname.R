@@ -386,7 +386,7 @@ hatize_byname <- function(v){
 
 #' Named identity matrix
 #'
-#' Creates an identity matrix (I) with ones on the diagonal with same size and names as \code{m}.
+#' Creates an identity matrix (I) with ones on the diagonal of same size and with same names as \code{m}.
 #' \code{m} must be square.
 #'
 #' @param m The matrix whose names and dimensions are to be preserved in an identity matrix.

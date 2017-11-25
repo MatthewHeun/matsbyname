@@ -16,7 +16,7 @@ names of \code{m}.
 Row and column names are sorted.
 }
 \description{
-Creates an identity matrix (I) with ones on the diagonal with same size and names as \code{m}.
+Creates an identity matrix (I) with ones on the diagonal of same size and with same names as \code{m}.
 \code{m} must be square.
 }
 \examples{

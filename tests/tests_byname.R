@@ -429,6 +429,40 @@ test_that("hatize_byname works as expected", {
 
 
 ###########################################################
+context("Identize")
+###########################################################
+
+test_that("identize_byname works as expected", {
+  m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  mI_expected <- matrix(c(1,0,0,0,
+                          0,1,0,0,
+                          0,0,1,0,
+                          0,0,0,1),
+                        nrow = 4, 
+                        dimnames = dimnames(m)) %>% 
+    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
+  expect_equal(identize_byname(m), mI_expected)
+  # This also works with lists
+  expect_equal(identize_byname(list(m, m)), list(mI_expected, mI_expected))
+  # This also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(identize_byname(DF$m), list(mI_expected, mI_expected))
+  DF_expected <- data.frame(m = I(list()), mI = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"mI"]] <- mI_expected
+  DF_expected[[2,"mI"]] <- mI_expected
+  # Because DF_expected$mI is created with I(list()), its class is "AsIs".
+  # Because DF$mI is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$mI to NULL to get a match.
+  attr(DF_expected$mI, which = "class") <- NULL
+  expect_equal(DF %>% mutate(mI = identize_byname(m)), DF_expected)
+})
+
+###########################################################
 context("Row selection")
 ###########################################################
 
