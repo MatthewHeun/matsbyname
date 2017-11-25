@@ -154,7 +154,7 @@ test_that("differences of matrices in lists and data frames works as expected", 
 
 
 ###########################################################
-context("Matrix products")
+context("Products")
 ###########################################################
 
 test_that("matrixproduct_byname works as expected", {
@@ -205,7 +205,50 @@ test_that("matrixproduct_byname works as expected", {
   expect_equal(DF %>% mutate(matprods = matrixproduct_byname(V, M)), DF_expected)
 })
 
-
+test_that("elementproduct_byname works as expected", {
+  expect_equal(elementproduct_byname(2, 2), 4)
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  # Not what is desired, because names aren't aligned
+  expect_equal(U * Y, 
+               matrix(c(1,4,9,16), nrow = 2, dimnames = dimnames(U)) %>% 
+                 setrowtype("Products") %>% setcoltype("Industries"))
+  UY_expected <- matrix(c(4,6,6,4), nrow = 2, dimnames = dimnames(U)) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(elementproduct_byname(U, Y), UY_expected)
+  expect_equal(elementproduct_byname(U, 0), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
+                 setrowtype("Products") %>% setcoltype("Industries"))
+  # Use dimnames(U), because after performing elementproduct_byname, 
+  # the rows and columns will be sorted alphabetically by name. 
+  # U has rows and columns that are sorted by name.
+  expect_equal(elementproduct_byname(0, Y), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
+                 setrowtype("Products") %>% setcoltype("Industries"))
+  # This also works with lists
+  expect_equal(elementproduct_byname(list(U, U), list(Y, Y)), list(UY_expected, UY_expected))
+  # And it works with data frames 
+  DF <- data.frame(U = I(list()), Y = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"Y"]] <- Y
+  DF[[2,"Y"]] <- Y
+  expect_equal(elementproduct_byname(DF$U, DF$Y), list(UY_expected, UY_expected))
+  DF_expected <- data.frame(U = I(list()), Y = I(list()), elementprods = I(list()))
+  DF_expected[[1, "U"]] <- U
+  DF_expected[[2, "U"]] <- U
+  DF_expected[[1, "Y"]] <- Y
+  DF_expected[[2, "Y"]] <- Y
+  DF_expected[[1, "elementprods"]] <- UY_expected
+  DF_expected[[2, "elementprods"]] <- UY_expected
+  # Because DF_expected$elementprods is created with I(list()), its class is "AsIs".
+  # Because DF$elementprods is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$elementprods to NULL to get a match.
+  attr(DF_expected$elementprods, which = "class") <- NULL
+  expect_equal(DF %>% mutate(elementprods = elementproduct_byname(U, Y)), DF_expected)
+})
 
 
 ###########################################################
