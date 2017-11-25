@@ -631,7 +631,7 @@ test_that("matrix column selection by name in lists works as expected", {
 
 
 ###########################################################
-context("Row and column sums")
+context("Row, column, and all sums")
 ###########################################################
 
 test_that("rowsums_byname works as expected", {
@@ -693,6 +693,32 @@ test_that("colsums_byname works as expected", {
   # Need to set the class of DF_expected$iTm to NULL to get a match.
   attr(DF_expected$iTm, which = "class") <- NULL
   expect_equal(DF %>% mutate(iTm = colsums_byname(m)), DF_expected)
+})
+
+test_that("sumall_byname works as expected", {
+  m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Commodity")
+  expect_equal(sumall_byname(m), 8)
+  expect_equal(m %>% rowsums_byname %>% colsums_byname, 
+               matrix(8, nrow = 1, ncol = 1, dimnames = list(rowtype(m), coltype(m))) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Also works for lists
+  expect_equal(sumall_byname(list(m,m)), list(8, 8))
+  # Also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(sumall_byname(DF$m), list(8,8))
+  DF_expected <- data.frame(m = I(list()), summ = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m  
+  DF_expected[[1,"summ"]] <- 8
+  DF_expected[[2,"summ"]] <- 8
+  # Because DF_expected$summ is created with I(list()), its class is "AsIs".
+  # Because DF$summ is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$summ to NULL to get a match.
+  attr(DF_expected$summ, which = "class") <- NULL
+  expect_equal(DF %>% mutate(summ = sumall_byname(m)), DF_expected)
 })
 
 
