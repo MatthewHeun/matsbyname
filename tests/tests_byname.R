@@ -637,6 +637,7 @@ context("Row and column sums")
 test_that("rowsums_byname works as expected", {
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
+  # Note, columns are sorted by name after rowsums_byname
   rowsumsm_expected <- matrix(c(9, 7, 5), nrow = 3, dimnames = list(paste0("i", 1:3), coltype(m))) %>% 
     setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
   expect_equal(rowsums_byname(m), rowsumsm_expected)
@@ -665,7 +666,33 @@ test_that("rowsums_byname works as expected", {
 })
 
 test_that("colsums_byname works as expected", {
-  
+  m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  colsumsm_expected <- matrix(c(6, 15), nrow = 1, dimnames = list(rowtype(m), colnames(m))) %>% 
+    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
+  expect_equal(colsums_byname(m), colsumsm_expected)
+  expect_equal(colsums_byname(m, "E.ktoe"), colsumsm_expected %>% setrownames_byname("E.ktoe"))
+  # This also works with lists
+  expect_equal(colsums_byname(list(m, m)), list(colsumsm_expected, colsumsm_expected))
+  expect_equal(colsums_byname(list(m, m), "E.ktoe"), 
+               list(colsumsm_expected %>% setrownames_byname("E.ktoe"), 
+                    colsumsm_expected %>% setrownames_byname("E.ktoe")))
+  expect_equal(colsums_byname(list(m, m), NULL), list(colsumsm_expected, colsumsm_expected))
+  # Also works with data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(colsums_byname(DF$m), list(colsumsm_expected, colsumsm_expected))
+  DF_expected <- data.frame(m = I(list()), iTm = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"iTm"]] <- colsumsm_expected
+  DF_expected[[2,"iTm"]] <- colsumsm_expected
+  # Because DF_expected$iTm is created with I(list()), its class is "AsIs".
+  # Because DF$iTm is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$iTm to NULL to get a match.
+  attr(DF_expected$iTm, which = "class") <- NULL
+  expect_equal(DF %>% mutate(iTm = colsums_byname(m)), DF_expected)
 })
 
 
