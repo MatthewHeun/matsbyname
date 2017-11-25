@@ -723,6 +723,53 @@ test_that("sumall_byname works as expected", {
 
 
 ###########################################################
+context("Iminus")
+###########################################################
+
+test_that("Iminus_byname works as expected", {
+  m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  Iminus_expected <- matrix(c(11, 12, 
+                              21, 22),
+                            nrow = 2, byrow = TRUE, dimnames = list(c("a", "b"), c("a", "b"))) %>% 
+    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
+  # Rows and columns of m are unsorted
+  expect_equal(diag(1, nrow = 2) - m, matrix(c(22, 12, 21, 11), nrow = 2, dimnames = dimnames(m)) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Rows and columns of m are sorted prior to subtracting from the identity matrix
+  expect_equal(Iminus_byname(m), Iminus_expected)
+  # This also works with lists
+  expect_equal(Iminus_byname(list(m,m)), list(Iminus_expected, Iminus_expected))
+  # Also works with data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(Iminus_byname(DF$m), list(Iminus_expected, Iminus_expected))
+  DF_expected <- data.frame(m = I(list()), Iminusm = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"Iminusm"]] <- Iminus_expected
+  DF_expected[[2,"Iminusm"]] <- Iminus_expected
+  # Because DF_expected$Iminusm is created with I(list()), its class is "AsIs".
+  # Because DF$Iminusm is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$Iminusm to NULL to get a match.
+  attr(DF_expected$Iminusm, which = "class") <- NULL
+  expect_equal(DF %>% mutate(Iminusm = Iminus_byname(m)), DF_expected)
+
+  # If m is not square before subtracting from I,
+  # it will be made square by the function complete_and_sort.
+  m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  expect_equal(Iminus_byname(m2), 
+               matrix(c(0, -4, 0, 
+                        -2, -4, 0, 
+                        -3, -6, 1), 
+                      nrow = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c"))) %>% 
+                 setrowtype(rowtype(m2)) %>% setcoltype(coltype(m2)))
+})
+
+
+###########################################################
 context("Row and column naming")
 ###########################################################
 
