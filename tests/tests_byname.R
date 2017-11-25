@@ -770,8 +770,60 @@ test_that("Iminus_byname works as expected", {
 
 
 ###########################################################
+context("Matrix cleaning")
+###########################################################
+
+test_that("matrix cleaning works as expected", {
+  # Clean on rows
+  mat1 <- matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
+    setrowtype("Rows") %>% setcoltype("Cols")
+  # Now clean in rows Should eliminate row 1.
+  expect_equal(mat1 %>% clean_byname(margin = 1, clean_value = 0), 
+               matrix(1, nrow = 1, ncol = 2, dimnames = list("r (2)", c("c (1)", "c (2)"))) %>% 
+                 setrowtype("Rows") %>% setcoltype("Cols"))
+  # No column consists of all zeroes. So nothing to clean in columns Should get "mat1" back.
+  expect_equal(mat1 %>% clean_byname(margin = 2, clean_value = 0), mat1)
+  # Clean on columns
+  mat2 <- matrix(c(0,0,1,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
+    setrowtype("Rows") %>% setcoltype("Cols")
+  # No row consists of all zeroes. So nothing to clean in rows. Should get "mat2" back.
+  expect_equal(mat2 %>% clean_byname(margin = 1, clean_value = 0), mat2)
+  # Now clean in columns. Should eliminate column 1.
+  expect_equal(mat2 %>% clean_byname(margin = 2, clean_value = 0), 
+               matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r (1)", "r (2)"), "c (2)")) %>% 
+                 setrowtype("Rows") %>% setcoltype("Cols"))
+})
+
+
+###########################################################
 context("Row and column naming")
 ###########################################################
+
+test_that("getting row names works as expected", {
+  m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  expect_equal(getrownames_byname(m), c("i1", "i2"))
+  # This also works for lists
+  expect_equal(getrownames_byname(list(m,m)), list(c("i1", "i2"), c("i1", "i2")))
+  # Also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(getrownames_byname(DF$m), list(c("i1", "i2"), c("i1", "i2")))
+})
+  
+test_that("getting column names works as expected", {
+  m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  expect_equal(getcolnames_byname(m), c("p1", "p2", "p3"))
+  # This also works for lists
+  expect_equal(getcolnames_byname(list(m,m)), list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+  # Also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(getcolnames_byname(DF$m), list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+})
 
 test_that("setting row names works as expected", {
   m1 <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
@@ -835,32 +887,6 @@ test_that("setting col names works as expected", {
       mcol2 = setcolnames_byname(mcol, list(c("c1", "c2", "c3"), c("c4", "c5", "c6")))
     )
   expect_equal(list(colnames(DF3$mcol2[[1]]), colnames(DF3$mcol2[[2]])), list(c("c1", "c2", "c3"), c("c4", "c5", "c6")))
-})
-
-
-###########################################################
-context("Matrix cleaning")
-###########################################################
-
-test_that("matrix cleaning works as expected", {
-  # Clean on rows
-  mat1 <- matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
-    setrowtype("Rows") %>% setcoltype("Cols")
-  # Now clean in rows Should eliminate row 1.
-  expect_equal(mat1 %>% clean_byname(margin = 1, clean_value = 0), 
-               matrix(1, nrow = 1, ncol = 2, dimnames = list("r (2)", c("c (1)", "c (2)"))) %>% 
-                 setrowtype("Rows") %>% setcoltype("Cols"))
-  # No column consists of all zeroes. So nothing to clean in columns Should get "mat1" back.
-  expect_equal(mat1 %>% clean_byname(margin = 2, clean_value = 0), mat1)
-  # Clean on columns
-  mat2 <- matrix(c(0,0,1,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
-    setrowtype("Rows") %>% setcoltype("Cols")
-  # No row consists of all zeroes. So nothing to clean in rows. Should get "mat2" back.
-  expect_equal(mat2 %>% clean_byname(margin = 1, clean_value = 0), mat2)
-  # Now clean in columns. Should eliminate column 1.
-  expect_equal(mat2 %>% clean_byname(margin = 2, clean_value = 0), 
-               matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r (1)", "r (2)"), "c (2)")) %>% 
-                 setrowtype("Rows") %>% setcoltype("Cols"))
 })
 
 
