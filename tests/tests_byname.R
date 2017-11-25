@@ -224,7 +224,7 @@ test_that("elementproduct_byname works as expected", {
                  setrowtype("Products") %>% setcoltype("Industries"))
   # Use dimnames(U), because after performing elementproduct_byname, 
   # the rows and columns will be sorted alphabetically by name. 
-  # U has rows and columns that are sorted by name.
+  # U has rows and columns that are sorted alphabetically by name.
   expect_equal(elementproduct_byname(0, Y), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
                  setrowtype("Products") %>% setcoltype("Industries"))
   # This also works with lists
@@ -248,6 +248,62 @@ test_that("elementproduct_byname works as expected", {
   # Need to set the class of DF_expected$elementprods to NULL to get a match.
   attr(DF_expected$elementprods, which = "class") <- NULL
   expect_equal(DF %>% mutate(elementprods = elementproduct_byname(U, Y)), DF_expected)
+})
+
+
+###########################################################
+context("Quotients")
+###########################################################
+
+test_that("elementquotient_byname works as expected", {
+  expect_equal(elementquotient_byname(100, 50), 2)
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Y <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  # Non-sensical.  Names aren't aligned
+  expect_equal(U/Y, 
+               matrix(c(0.25, 2/3, 1.5, 4), nrow = 2, dimnames = dimnames(U)) %>% 
+                 setrowtype("Products") %>% setcoltype("Industries"))
+  UoverY_expected <- matrix(c(1,1,1,1), nrow = 2, dimnames = dimnames(U)) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(elementquotient_byname(U, Y), UoverY_expected)
+  expect_equal(elementquotient_byname(U, 10), 
+               matrix(c(0.1, 0.2, 0.3, 0.4), nrow = 2, dimnames = dimnames(U)) %>% 
+                 setrowtype("Products") %>% setcoltype("Industries"))
+  tenoverY_expected <- matrix(c(10, 5, 10/3, 2.5), nrow = 2, dimnames = dimnames(U)) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(elementquotient_byname(10, Y), tenoverY_expected)
+  # This also works with lists
+  expect_equal(elementquotient_byname(10, list(Y,Y)), list(tenoverY_expected, tenoverY_expected))
+  # Use dimnames(U), because after performing elementquotient_byname, 
+  # the rows and columns will be sorted alphabetically by name. 
+  # U has rows and columns that are sorted alphabetically by name.
+  Yover10_expected <- matrix(c(0.1, 0.2, 0.3, 0.4), nrow = 2, dimnames = dimnames(U)) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(elementquotient_byname(list(Y,Y), 10), list(Yover10_expected, Yover10_expected))
+  expect_equal(elementquotient_byname(list(U, U), list(Y, Y)), list(UoverY_expected, UoverY_expected))
+  # Also works with data frames.
+  DF <- data.frame(U = I(list()), Y = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"Y"]] <- Y
+  DF[[2,"Y"]] <- Y
+  expect_equal(elementquotient_byname(DF$U, DF$Y), list(UoverY_expected, UoverY_expected))
+  DF_expected <- data.frame(U = I(list()), Y = I(list()), elementquotients = I(list()))
+  DF_expected[[1, "U"]] <- U
+  DF_expected[[2, "U"]] <- U
+  DF_expected[[1, "Y"]] <- Y
+  DF_expected[[2, "Y"]] <- Y
+  DF_expected[[1, "elementquotients"]] <- UoverY_expected
+  DF_expected[[2, "elementquotients"]] <- UoverY_expected
+  # Because DF_expected$elementquotients is created with I(list()), its class is "AsIs".
+  # Because DF$elementquotients is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$elementquotients to NULL to get a match.
+  attr(DF_expected$elementquotients, which = "class") <- NULL
+  expect_equal(DF %>% mutate(elementquotients = elementquotient_byname(U, Y)), DF_expected)
 })
 
 
