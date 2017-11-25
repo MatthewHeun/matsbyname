@@ -13,7 +13,7 @@ A "hat" matrix is one in which the only non-zero elements are stored on the diag
 To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
 \code{v} must be a matrix with at least one dimension of length 1 (a vector).
 The names of both dimensions of the hatized matrix are the same and taken from \code{v}.
-Note that the vector names are sorted prior to forming the "hat" matrix}
+Note that the vector names are sorted prior to forming the "hat" matrix.}
 }
 \value{
 A square "hat" matrix with size equal to the length of \code{v}.
