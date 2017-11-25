@@ -891,6 +891,43 @@ test_that("setting col names works as expected", {
 
 
 ###########################################################
+context("Row and column types")
+###########################################################
+
+test_that("setrowtype_byname works as expected", {
+  commoditynames <- c("c1", "c2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>% setrowtype("Commodities")
+  expect_equal(rowtype(U), "Commodities")
+  # This also works for lists
+  Ul <- setrowtype(list(U,U), rowtype = "Products")
+  expect_equal(rowtype(Ul), list("Products", "Products"))
+  Ul2 <- setrowtype(list(U,U), rowtype = list("Products", "Junk"))
+  expect_equal(rowtype(Ul2), list("Products", "Junk"))
+  # Also works for data frames
+  DF <- data.frame(U = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF2 <- setrowtype(DF$U, "Products")
+  expect_equal(rowtype(DF2), list("Products", "Products"))
+  DF3 <- DF %>% mutate(newcol = setrowtype(U, "Products"))
+  expect_equal(DF3$newcol %>% rowtype, list("Products", "Products"))
+})
+
+test_that("setcoltype_byname works as expected", {
+  
+})
+
+test_that("rowtype works as expected", {
+  
+})
+
+test_that("coltype works as expected", {
+  
+})
+
+
+###########################################################
 context("Utilities")
 ###########################################################
 

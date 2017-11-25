@@ -1060,46 +1060,6 @@ setcolnames_byname <- function(m, colnames){
   return(out)
 }
 
-#' Sets column names
-#'
-#' Sets column names in a way that is amenable to use in chaining operations in a functional programming way
-#'
-#' @param m The matrix or data frame on which column names are to be set
-#' @param colnames The new column names. If \code{NULL} or \code{NA}, names are reset to default: "[,j]".
-#'
-#' @return a copy of \code{m} with new column names
-#' @export
-#'
-#' @examples
-#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
-#'   setrowtype("Industries") %>% setcoltype("Commodity")
-#' setcolnames_byname(m, c("a", "b", "c"))
-#' setcolnames_byname(m, NULL) # Returns to default columns names "[,j]"
-#' setcolnames_byname(m, NA) # Returns to default columns names "[,j]"
-#' # This also works for lists
-#' setcolnames_byname(list(m,m), list(c("a", "b", "c"), c("d", "e", "f")))
-#' DF <- data.frame(m = I(list()))
-#' DF[[1,"m"]] <- m
-#' DF[[2,"m"]] <- m
-#' setcolnames_byname(DF$m, list(c("cnew1", "cnew2", "cnew3")))
-#' setcolnames_byname(DF$m, list(c("a", "b", "c"), c("d", "e", "f")))
-#' DF <- DF %>% mutate(m = setcolnames_byname(m, list(c("cnew1", "cnew2", "cnew3"))))
-#' DF$m[[1]]
-#' DF$m[[2]]
-# setcolnames_byname <- function(m, colnames) {
-#   if (is.list(m) & is.list(colnames)){
-#     return(mcMap(setcolnames_byname, m, colnames))
-#   }
-#   out <- m
-#   if (is.null(colnames) || is.na(colnames)){
-#     # replace with default column names
-#     colnames(out) <- paste0("[,", 1:ncol(out), "]")
-#   } else {
-#     colnames(out) <- colnames
-#   }
-#   return(out)
-# }
-
 #' Sets row type for a matrix or a list of matrices
 #'
 #' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
