@@ -462,6 +462,7 @@ test_that("identize_byname works as expected", {
   expect_equal(DF %>% mutate(mI = identize_byname(m)), DF_expected)
 })
 
+
 ###########################################################
 context("Row selection")
 ###########################################################
@@ -626,6 +627,45 @@ test_that("matrix column selection by name in lists works as expected", {
   # Need to use "expect_equivalent" because attributes are different 
   # because DF_expected was made differently from how the mutated data fram was made.
   expect_equivalent(DF, DF_expected)
+})
+
+
+###########################################################
+context("Row and column sums")
+###########################################################
+
+test_that("rowsums_byname works as expected", {
+  m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  rowsumsm_expected <- matrix(c(9, 7, 5), nrow = 3, dimnames = list(paste0("i", 1:3), coltype(m))) %>% 
+    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
+  expect_equal(rowsums_byname(m), rowsumsm_expected)
+  expect_equal(rowsums_byname(m, "E.ktoe"), rowsumsm_expected %>% setcolnames_byname("E.ktoe"))
+  # This also works with lists
+  expect_equal(rowsums_byname(list(m, m)), list(rowsumsm_expected, rowsumsm_expected))
+  expect_equal(rowsums_byname(list(m, m), "E.ktoe"), 
+               list(rowsumsm_expected %>% setcolnames_byname("E.ktoe"), 
+                    rowsumsm_expected %>% setcolnames_byname("E.ktoe")))
+  expect_equal(rowsums_byname(list(m, m), NULL), list(rowsumsm_expected, rowsumsm_expected))
+  # Also works with data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(rowsums_byname(DF$m), list(rowsumsm_expected, rowsumsm_expected))
+  DF_expected <- data.frame(m = I(list()), mi = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"mi"]] <- rowsumsm_expected
+  DF_expected[[2,"mi"]] <- rowsumsm_expected
+  # Because DF_expected$mi is created with I(list()), its class is "AsIs".
+  # Because DF$mi is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$mi to NULL to get a match.
+  attr(DF_expected$mi, which = "class") <- NULL
+  expect_equal(DF %>% mutate(mi = rowsums_byname(m)), DF_expected)
+})
+
+test_that("colsums_byname works as expected", {
+  
 })
 
 

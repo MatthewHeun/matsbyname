@@ -9,18 +9,18 @@ rowsums_byname(m, colname = NA)
 \arguments{
 \item{m}{a matrix or data frame from which row sums are desired.}
 
-\item{colname}{name of the output column containing row sums
-
-Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
-In contrast to \code{rowSums} (which returns a \code{numeric} result),
-the return value from \code{rowsums_byname} is a matrix.
-An optional \code{colname} for the resulting column vector can be supplied.}
+\item{colname}{name of the output column containing row sums}
 }
 \value{
 a column vector of type \code{matrix} containing the row sums of \code{m}
 }
 \description{
-Row sums, sorted by name
+Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
+In contrast to \code{rowSums} (which returns a \code{numeric} result),
+the return value from \code{rowsums_byname} is a matrix.
+An optional \code{colname} for the resulting column vector can be supplied.
+If \code{colname} is \code{NULL} or \code{NA} (the default),
+the column name is set to the column type as given by \code{coltype(m)}.
 }
 \examples{
 m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) \%>\%

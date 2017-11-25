@@ -647,13 +647,15 @@ retain_remove <- function(row_col_names){
 
 #' Row sums, sorted by name
 #'
-#' @param m a matrix or data frame from which row sums are desired.
-#' @param colname name of the output column containing row sums
-#'
 #' Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
 #' In contrast to \code{rowSums} (which returns a \code{numeric} result),
 #' the return value from \code{rowsums_byname} is a matrix.
 #' An optional \code{colname} for the resulting column vector can be supplied.
+#' If \code{colname} is \code{NULL} or \code{NA} (the default),
+#' the column name is set to the column type as given by \code{coltype(m)}.
+#'
+#' @param m a matrix or data frame from which row sums are desired.
+#' @param colname name of the output column containing row sums
 #'
 #' @return a column vector of type \code{matrix} containing the row sums of \code{m}
 #' @export
@@ -709,13 +711,15 @@ rowsums_byname <- function(m, colname = NA){
 
 #' Column sums, sorted by name
 #'
-#' @param m a matrix or data frame from which column sums are desired.
-#' @param rowname name of the output row containing column sums
-#'
 #' Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
 #' In contrast to \code{colSums} (which returns a \code{numeric} result),
 #' the return value from \code{colsums_byname} is a matrix.
 #' An optional \code{rowname} for the resulting row vector can be supplied.
+#' If \code{rowname} is \code{NULL} or \code{NA} (the default),
+#' the row name is set to the row type as given by \code{rowtype(m)}.
+#'
+#' @param m a matrix or data frame from which column sums are desired.
+#' @param rowname name of the output row containing column sums
 #'
 #' @return a row vector of type \code{matrix} containing the column sums of \code{m}.
 #' @export
