@@ -940,9 +940,21 @@ context("Equal_byname")
 ###########################################################
 
 test_that("equal_byname works as expected", {
-  
+  a <- matrix(1:4, nrow = 2)
+  b <- matrix(1:4, nrow = 2)
+  expect_true(equal_byname(a, b))
+  a <- a %>% setrowtype("Industries") %>% setcoltype("Products")
+  # FALSE because a has row and column types, but b does not.
+  expect_false(equal_byname(a, b))
+  b <- b %>% setrowtype("Industries") %>% setcoltype("Products")
+  equal_byname(a, b)
+  dimnames(a) <- list(c("i1", "i2"), c("p1", "p2"))
+  dimnames(b) <- list(c("p1", "p2"), c("i1", "i2"))
+  # FALSE, because row and column names are not equal
+  expect_false(equal_byname(a, b)) 
+  dimnames(b) <- dimnames(a)
+  expect_true(equal_byname(a, b))
 })
-
 
 
 ###########################################################
