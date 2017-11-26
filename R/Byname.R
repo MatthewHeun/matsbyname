@@ -841,7 +841,6 @@ Iminus_byname <- function(m){
   if (is.list(m)){
     return(mcMap(Iminus_byname, m))
   }
-  # sort_rows_cols(m) %>%
   complete_and_sort(m) %>%
     setrowtype(rowtype(m)) %>%
     setcoltype(coltype(m)) %>%
@@ -1185,8 +1184,8 @@ coltype <- function(x){
 #' @param a the first matrix to be compared
 #' @param b the second matrix to be compared
 #'
-#' @return \code{TRUE} iff row and column types are same \code{and}
-#' row and column names are same \code{and}
+#' @return \code{TRUE} iff row and column types are same \emph{and}
+#' row and column names are same \emph{and}
 #' all entries in the matrix are same.
 #' @export
 #'
@@ -1207,7 +1206,14 @@ equal_byname <- function(a, b) {
   if (is.list(a) & is.list(b)){
     return(mcMap(equal_byname, a, b))
   }
-  mats <- complete_and_sort(a, b)
+  # If names are present on the dimensions of the matrix, try to complete and sort the matrices.
+  mats <- list(m1 = a, m2 = b)
+  for (margin in 1:2) {
+    if (!is.null(names(a)[[margin]]) & ! is.null(names(b)[[margin]])){
+      # We have names for margin. Complete and sort on this margin.
+      mats <- complete_and_sort(mats$m1, mats$m2, margin = margin)
+    }
+  }
   m1 <- mats$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   m2 <- mats$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
   return(isTRUE(all.equal(m1, m2)))

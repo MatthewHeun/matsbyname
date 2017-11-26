@@ -9,19 +9,21 @@ library("parallel")
 #' Note that \code{complete_rows_cols(mat1, mat2)} and \code{complete_rows_cols(mat2, mat1)} are 
 #' not guaranteed to have the same order for rows and columns.
 #' (Nor are the values in the matrix guaranteed to have the same positions, of course.)
-#' This function assumes that both \code{x} and \code{matrix} have named rows and columns.  
+#' If either \code{x} or \code{matrix} are missing names on a margin (row or column),
+#' an error is given.
 #' If both \code{matrix} and \code{names} are missing,
 #' \code{x} will be completed relative to itself. 
 #' I.e., \code{x} will be made square, and will contain the union of row and column names from \code{x} itself.
-#'
-#' @param x A matrix or data frame to be completed
-#' @param matrix Instead of supplying \code{names} directly, a \code{matrix} can be supplied
-#' from which \code{dimnames} will be extracted. If \code{matrix} is \code{NULL} (the default), 
+#' If \code{matrix} is \code{NULL} (the default), 
 #' \code{x} will be completed relative to itself.
-#' @param names The names of rows and columns to be completed in \code{x}, with 
-#' the same structure as the value of \code{dimnames(matrix)}.
-#' @param fill Rows and columns added to \code{x} will contain \code{fill}
-#' @param margin Specifies the subscript(s) in \code{x} over which completion will occur. 
+#'
+#' @param x a matrix or data frame to be completed
+#' @param matrix instead of supplying \code{names} directly, a \code{matrix} can be supplied
+#' from which \code{dimnames} will be extracted
+#' @param names the names of rows and columns to be completed in \code{x}, with 
+#' the same structure as the value of \code{dimnames(matrix)}
+#' @param fill rows and columns added to \code{x} will contain \code{fill}
+#' @param margin specifies the subscript(s) in \code{x} over which completion will occur
 #' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
 #' For rows only, give \code{1}; 
 #' for columns only, give \code{2};
@@ -72,15 +74,11 @@ complete_rows_cols <- function(x, matrix = NA, names = dimnames(matrix), fill = 
     margin <- make_list(margin, length(x))
     return(mcMap(complete_rows_cols, x = x, matrix = matrix, names = names, fill = fill, margin = margin))
   }
-  # Check that row or column names are available for the margin to be completed
-  if (1 %in% margin){
-    if (is.null(dimnames(x)[[1]])){
-      stop("NULL dimnames for margin = 1")
-    }
-  }
-  if (2 %in% margin){
-    if (is.null(dimnames(x)[[2]])){
-      stop("NULL dimnames for margin = 2")
+  for (mar in margin) {
+    # Check that row or column names are available for the margin to be completed.
+    # If not, this is almost certainly an unintended error by the caller.
+    if (is.null(dimnames(x)[[mar]])){
+      stop(paste("NULL dimnames for margin =", mar, "on x"))
     }
   }
   if (any(is.na(names))){

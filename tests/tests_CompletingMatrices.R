@@ -7,7 +7,107 @@
 library(dplyr)
 library(byname)
 library(parallel)
+library(magrittr)
 library(testthat)
+
+###########################################################
+context("complete_rows_cols")
+###########################################################
+
+test_that("complete_rows_cols works as expected", {
+  m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  m2 <- matrix(c(7:12), ncol=3, dimnames = list(c("r2", "r3"), c("c2", "c3", "c4")))
+  complete_m1_m2 <- matrix(c(1,4,0,0,
+                             2,5,0,0,
+                             3,6,0,0),
+                           nrow = 3, byrow = TRUE, 
+                           dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4")))
+  # Adds empty columns c3 and c4
+  expect_equal(complete_rows_cols(m1, m2), complete_m1_m2)
+  # Creates columns r2, r3; rows c2, c3, c4
+  expect_equal(complete_rows_cols(m1, t(m2)),
+               matrix(c(1,4,0,0,
+                        2,5,0,0,
+                        3,6,0,0,
+                        0,0,0,0,
+                        0,0,0,0,
+                        0,0,0,0), 
+                      nrow = 6, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2", "r3", "c2", "c3", "c4"), c("c1", "c2", "r2", "r3"))))
+  # No changes because r2 and r3 already present in m1
+  expect_equal(complete_rows_cols(m1, m2, margin = 1), m1)
+  # Adds empty columns c3 and c4
+  expect_equal(complete_rows_cols(m1, m2, margin = 2), 
+               matrix(c(1,4,0,0,
+                        2,5,0,0,
+                        3,6,0,0),
+                      nrow = 3, byrow = TRUE,
+                      dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4"))))
+  # Adds empty rows c2, c3, c4
+  expect_equal(complete_rows_cols(m1, t(m2), margin = 1), 
+               matrix(c(1,4,
+                        2,5,
+                        3,6,
+                        0,0,
+                        0,0,
+                        0,0), 
+                      nrow = 6, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2", "r3", "c2", "c3", "c4"), c("c1", "c2"))))
+  # Adds columns c3 and c4 with 100's
+  expect_equal(complete_rows_cols(m1, m2, fill = 100), 
+               matrix(c(1,4,100,100,
+                        2,5,100,100,
+                        3,6,100,100),
+                      nrow = 3, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4"))))
+  # Also works with data frames
+  expect_equal(complete_rows_cols(data.frame(m1), data.frame(m2)), 
+               data.frame(c1 = c(1,2,3), c2 = c(4,5,6), c3 = c(0,0,0), c4 = c(0,0,0)) %>% 
+                 set_rownames(c("r1", "r2", "r3")))
+  # Nothing added, because everything already present
+  expect_equal(complete_rows_cols(m1, m1), m1)
+  # Adds empty rows c1, c2 ; Adds empty columns r1, r2, r3 
+  expect_equal(complete_rows_cols(m1, t(m1)), 
+               matrix(c(1,4,0,0,0,
+                        2,5,0,0,0,
+                        3,6,0,0,0,
+                        0,0,0,0,0,
+                        0,0,0,0,0),
+                      nrow = 5, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2", "r3", "c1", "c2"), c("c1", "c2", "r1", "r2", "r3"))))
+  # Same as previous. With missing matrix, complete relative to transpose of x.
+  expect_equal(complete_rows_cols(m1), 
+               matrix(c(1,4,0,0,0,
+                        2,5,0,0,0,
+                        3,6,0,0,0,
+                        0,0,0,0,0,
+                        0,0,0,0,0),
+                      nrow = 5, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2", "r3", "c1", "c2"), c("c1", "c2", "r1", "r2", "r3"))))
+  # Adds rows r10, r11; cols c10, c11
+  complete_m1_m2_new_names <- matrix(c(1,4,0,0,
+                                       2,5,0,0,
+                                       3,6,0,0,
+                                       0,0,0,0,
+                                       0,0,0,0),
+                                     nrow = 5, byrow = TRUE,
+                                     dimnames = list(c("r1", "r2", "r3", "r10", "r11"), c("c1", "c2", "c10", "c11")))
+  expect_equal(complete_rows_cols(m1, names = list(c("r10", "r11"), c("c10", "c11"))), complete_m1_m2_new_names)
+  # Also works with lists
+  complete_rows_cols(x = list(m1,m1))
+  expect_equal(complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2)), list(complete_m1_m2, complete_m1_m2))
+  # No changes because r2, r3 already present in m1
+  expect_equal(complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 1), list(m1, m1))
+  expect_equal(complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 2), list(complete_m1_m2, complete_m1_m2))
+  expect_equal(complete_rows_cols(x = list(m1,m1), names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1)), 
+               list(complete_m1_m2_new_names, complete_m1_m2_new_names))
+  
+  # Test that an error is given when matrices are missing row or column names or both.
+  a <- matrix(1:4, nrow = 2)
+  b <- matrix(1:4, nrow = 2)
+  expect_error(complete_rows_cols(a), "NULL dimnames for margin = 1 on x")
+  # expect_error(complete_rows_cols(a %>% set_rownames(c("r1", "r2")) %>% set_colnames(c("c1", "c2")), b), "NULL dimnames for margin = 1 on matrix")
+})
 
 
 ###########################################################
@@ -199,7 +299,10 @@ test_that("complete_and_sort works as expected", {
                                   6,3,0),
                                 nrow = 3, ncol = 3, byrow = TRUE,
                                 dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))))
-  
+  # Now try with matrices that have no dimnames
+  a <- matrix(1:4, nrow = 2)
+  b <- matrix(1:4, nrow = 2)
+  expect_error(complete_and_sort(a, b), "NULL dimnames for margin = 1 on x")
 })
 
 

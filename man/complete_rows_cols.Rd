@@ -8,18 +8,17 @@ complete_rows_cols(x, matrix = NA, names = dimnames(matrix), fill = 0,
   margin = c(1, 2))
 }
 \arguments{
-\item{x}{A matrix or data frame to be completed}
+\item{x}{a matrix or data frame to be completed}
 
-\item{matrix}{Instead of supplying \code{names} directly, a \code{matrix} can be supplied
-from which \code{dimnames} will be extracted. If \code{matrix} is \code{NULL} (the default), 
-\code{x} will be completed relative to itself.}
+\item{matrix}{instead of supplying \code{names} directly, a \code{matrix} can be supplied
+from which \code{dimnames} will be extracted}
 
-\item{names}{The names of rows and columns to be completed in \code{x}, with 
-the same structure as the value of \code{dimnames(matrix)}.}
+\item{names}{the names of rows and columns to be completed in \code{x}, with 
+the same structure as the value of \code{dimnames(matrix)}}
 
-\item{fill}{Rows and columns added to \code{x} will contain \code{fill}}
+\item{fill}{rows and columns added to \code{x} will contain \code{fill}}
 
-\item{margin}{Specifies the subscript(s) in \code{x} over which completion will occur. 
+\item{margin}{specifies the subscript(s) in \code{x} over which completion will occur
 \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
 For rows only, give \code{1}; 
 for columns only, give \code{2};
@@ -35,10 +34,13 @@ with missing data represented by the value for \code{fill} (0, by default).
 Note that \code{complete_rows_cols(mat1, mat2)} and \code{complete_rows_cols(mat2, mat1)} are 
 not guaranteed to have the same order for rows and columns.
 (Nor are the values in the matrix guaranteed to have the same positions, of course.)
-This function assumes that both \code{x} and \code{matrix} have named rows and columns.  
+If either \code{x} or \code{matrix} are missing names on a margin (row or column),
+an error is given.
 If both \code{matrix} and \code{names} are missing,
 \code{x} will be completed relative to itself. 
 I.e., \code{x} will be made square, and will contain the union of row and column names from \code{x} itself.
+If \code{matrix} is \code{NULL} (the default), 
+\code{x} will be completed relative to itself.
 }
 \examples{
 m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))

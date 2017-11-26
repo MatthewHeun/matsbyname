@@ -2,7 +2,7 @@
 % Please edit documentation in R/Byname.R
 \name{setrowtype}
 \alias{setrowtype}
-\title{Sets column names}
+\title{Sets row type for a matrix or a list of matrices}
 \usage{
 setrowtype(x, rowtype)
 }
@@ -10,41 +10,16 @@ setrowtype(x, rowtype)
 \item{x}{the matrix on which row type is to be set}
 
 \item{rowtype}{the type of item stored in rows}
-
-\item{m}{The matrix or data frame on which column names are to be set}
-
-\item{colnames}{The new column names. If \code{NULL} or \code{NA}, names are reset to default: "[,j]".}
 }
 \value{
-a copy of \code{m} with new column names
-
 a copy of \code{x} with \code{rowtype} attribute set
 }
 \description{
-Sets column names in a way that is amenable to use in chaining operations in a functional programming way
+This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
+in a functional way.
+Row types are strings stored in the \code{rowtype} attribute.
 }
 \examples{
-m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) \%>\%
-  setrowtype("Industries") \%>\% setcoltype("Commodity")
-setcolnames_byname(m, c("a", "b", "c"))
-setcolnames_byname(m, NULL) # Returns to default columns names "[,j]"
-setcolnames_byname(m, NA) # Returns to default columns names "[,j]"
-# This also works for lists
-setcolnames_byname(list(m,m), list(c("a", "b", "c"), c("d", "e", "f")))
-DF <- data.frame(m = I(list()))
-DF[[1,"m"]] <- m
-DF[[2,"m"]] <- m
-setcolnames_byname(DF$m, list(c("cnew1", "cnew2", "cnew3")))
-setcolnames_byname(DF$m, list(c("a", "b", "c"), c("d", "e", "f")))
-DF <- DF \%>\% mutate(m = setcolnames_byname(m, list(c("cnew1", "cnew2", "cnew3"))))
-DF$m[[1]]
-DF$m[[2]]
-Sets row type for a matrix or a list of matrices
-
-This function is a wrapper for \\code{attr} so setting can be accomplished by the chain operator (\\code{\\\%>\\\%})
-in a functional way.
-Row types are strings stored in the \\code{rowtype} attribute.
-
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames))

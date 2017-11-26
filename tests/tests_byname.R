@@ -947,7 +947,8 @@ test_that("equal_byname works as expected", {
   # FALSE because a has row and column types, but b does not.
   expect_false(equal_byname(a, b))
   b <- b %>% setrowtype("Industries") %>% setcoltype("Products")
-  equal_byname(a, b)
+  # TRUE because b now has same row and column types as a.
+  expect_true(equal_byname(a, b))
   dimnames(a) <- list(c("i1", "i2"), c("p1", "p2"))
   dimnames(b) <- list(c("p1", "p2"), c("i1", "i2"))
   # FALSE, because row and column names are not equal
