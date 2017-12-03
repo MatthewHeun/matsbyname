@@ -248,6 +248,15 @@ test_that("elementproduct_byname works as expected", {
   # Need to set the class of DF_expected$elementprods to NULL to get a match.
   attr(DF_expected$elementprods, which = "class") <- NULL
   expect_equal(DF %>% mutate(elementprods = elementproduct_byname(U, Y)), DF_expected)
+  # Test with a constant multipliying a colum of the DF
+  DF_expected_2 <- DF %>% 
+    mutate(
+      constant = 10,
+      A = elementproduct_byname(constant, U)
+    )
+  for (i in c(1:2)){
+    expect_equal(DF_expected_2$A[[i]], DF$U[[i]]*10)
+  }
 })
 
 
