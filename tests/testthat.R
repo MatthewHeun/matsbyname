@@ -1,4 +1,4 @@
 library(testthat)
 library(byname)
 
-test_check("byname")
+test_check("matsindf")
