@@ -14,8 +14,6 @@ Description: An implementation of matrix mathematics operations that respects
     This package also provides the capability to provide "types" for the data 
     in rows and columns. 
     For example, rows might contain industries and columns might contain products.
-    The functions contained in this package simplify
-    matrix mathematics in situations where operand matrices are from different data sources.
 License: MIT + file LICENSE
 RoxygenNote: 6.0.1
 Imports:
