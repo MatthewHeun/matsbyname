@@ -13,7 +13,6 @@
 The DESCRIPTION file:
 \packageDESCRIPTION{byname}
 \packageIndices{byname}
-~~ An overview of how to use the package, including the most important functions ~~
 }
 \author{
 \packageAuthor{byname}
@@ -21,15 +20,31 @@ The DESCRIPTION file:
 Maintainer: \packageMaintainer{byname}
 }
 \references{
-~~ Literature or other references for background information ~~
 }
-\keyword{ package 
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation directory ~~
+\keyword{
 }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+The
+\code{\link[byname:byname-package]{byname}} 
+package is used extensively by the
+\code{\link[matsindf:matsindf-package]{matsindf}}
+package.
 }
 \examples{
-~~ simple examples of the most important functions ~~
+productnames <- c("p1", "p2")
+industrynames <- c("i1", "i2")
+U <- matrix(1:4, ncol = 2, 
+            dimnames = list(productnames, 
+                            industrynames)) \%>\%
+            setrowtype("Commodities") \%>\% 
+            setcoltype("Industries")
+G <- matrix(1:4, ncol = 2, 
+            dimnames = list(rev(commoditynames), 
+                            rev(industrynames))) \%>\%
+            setrowtype("Commodities") \%>\% 
+            setcoltype("Industries")
+# Non-sensical.  Row and column names not respected.
+U + G 
+# Row and column names respected.
+sum_byname(U, G)
 }
