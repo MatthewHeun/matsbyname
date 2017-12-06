@@ -482,6 +482,80 @@ test_that("identize_byname works as expected", {
 
 
 ###########################################################
+context("Fractionize")
+###########################################################
+
+test_that("fractionze_byname works as expected", {
+  M <- matrix(c(1, 5,
+                4, 5),
+              nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setcoltype("Products") %>% setrowtype("Industries")
+  expectedM_rows <- matrix(c(1/6, 5/6,
+                             4/9, 5/9),
+                           nrow = 2, ncol = 2, byrow = TRUE,
+                           dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setcoltype("Products") %>% setrowtype("Industries")
+  expectedM_cols <- matrix(c(1/5, 5/10,
+                             4/5, 5/10),
+                           nrow = 2, ncol = 2, byrow = TRUE,
+                           dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setcoltype("Products") %>% setrowtype("Industries")
+  expectedM_sumall <- matrix(c(1/15, 5/15,
+                               4/15, 5/15),
+                             nrow = 2, ncol = 2, byrow = TRUE,
+                             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setcoltype("Products") %>% setrowtype("Industries")
+  
+  # Test for errors
+  expect_error(fractionize_byname(M, margin = c(2,2,1,1,0)), "margin should contain unique integers in fractionize_byname")
+  expect_error(fractionize_byname(M, margin = c(2,2,1,1)), "margin should contain unique integers in fractionize_byname")
+  expect_error(fractionize_byname(M, margin = c(1,1)), "margin should contain unique integers in fractionize_byname")
+  expect_error(fractionize_byname(M, margin = c(2,2)), "margin should contain unique integers in fractionize_byname")
+  expect_error(fractionize_byname(M, margin = c(1,2,3)), "margin should have length 1 or 2 in fractionize_byname")
+  expect_error(fractionize_byname(M, margin = 3), "Unknown margin 3 in fractionize_byname")
+  expect_error(fractionize_byname(M, margin = c(3,4)), "Unknown margin")
+  expect_error(fractionize_byname(M, margin = -1), "Unknown margin")
+  
+  # Test with a single number
+  expect_equal(fractionize_byname(2, margin = 1), 1) 
+  expect_equal(fractionize_byname(-1, margin = 2), 1) 
+  expect_equal(fractionize_byname(-5000, margin = c(1,2)), 1) 
+  expect_true(is.nan(fractionize_byname(0, margin = 1)))
+  
+  # Test dividing by row sums
+  expect_equal(fractionize_byname(M, margin = 1), expectedM_rows)
+
+  # Test dividing by column sums
+  expect_equal(fractionize_byname(M, margin = 2), expectedM_cols)
+  
+  # Test dividing by sum of all entries
+  expect_equal(fractionize_byname(M, margin = c(1,2)), expectedM_sumall)
+  expect_equal(fractionize_byname(M, margin = c(2,1)), expectedM_sumall)
+  
+  # Should also work for lists
+  expect_equal(fractionize_byname(list(M,M), margin = 1), list(expectedM_rows, expectedM_rows))
+  
+  # Should also work for data frames
+  DF <- data.frame(case = I(list()), M = I(list()))
+  DF[[1, "case"]] <- 1
+  DF[[1, "case"]] <- 2
+  DF[[1, "M"]] <- M
+  DF[[2, "M"]] <- M
+  DF2 <- DF %>% 
+    mutate(
+      F_row = fractionize_byname(M, margin = 1),
+      F_col = fractionize_byname(M, margin = 2),
+      F_tot = fractionize_byname(M, margin = c(2,1))
+    )
+
+  expect_equal(DF2$F_row, list(expectedM_rows, expectedM_rows))
+  expect_equal(DF2$F_col, list(expectedM_cols, expectedM_cols))
+  expect_equal(DF2$F_tot, list(expectedM_sumall, expectedM_sumall))
+})
+
+
+###########################################################
 context("Row selection")
 ###########################################################
 

@@ -421,6 +421,68 @@ identize_byname <- function(m){
     setcoltype(coltype(m))
 }
 
+#' Compute fractions of matrix entries
+#' 
+#' This function divides all entries in \strong{M} by the specified sum,
+#' thereby "fractionizing" the matrix.
+#'
+#' @param M the matrix to be fractionized
+#' @param margin If \code{1} (rows), each entry in \strong{M} is divided by its row's sum.
+#' If \code{2}, each entry in \strong{M} is divided by its column's sum.
+#' If \code{c(1,2)}, each entry in \strong{M} is divided by the sum of all entries in \strong{M}.
+#'
+#' @return a fractionized matrix of same dimensions as \strong{M} 
+#' @export
+#'
+#' @examples
+#' M <- matrix(c(1, 5,
+#'               4, 5),
+#'             nrow = 2, ncol = 2, byrow = TRUE, 
+#'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+#'             setcoltype("Products") %>% setrowtype("Industries")
+#' fractionize_byname(M, margin = c(1,2))
+#' fractionize_byname(M, margin = 1)
+#' fractionize_byname(M, margin = 2)
+fractionize_byname <- function(M, margin){
+  if (is.list(M)){
+    margin <- make_list(margin, n = length(M))
+    return(mcMap(fractionize_byname, M, margin))
+  }
+  if (! "matrix" %in% class(M) && ! "data.frame" %in% class(M)){
+      # Assume we have a single number here
+      # By dividing M by itself, we could throw a division by zero error,
+      # which we would want to do.
+      return(M/M)
+  }
+  if (length(margin) != length(unique(margin))){
+    stop("margin should contain unique integers in fractionize_byname")
+  }
+  if (! length(margin) %in% c(1,2)){
+    stop("margin should have length 1 or 2 in fractionize_byname")
+  }
+  
+  if (length(margin) == 2 && all(margin %in% c(1,2))){
+    return(M/sumall_byname(M))
+  }
+  
+  if (length(margin) != 1 || ! margin %in% c(1,2)){
+    stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
+  }
+  
+  if (margin == 1){
+    # Divide each entry by its row sum
+    # Do this with (M*i)_hat_inv * M
+    return(matrixproduct_byname(M %>% rowsums_byname %>% hatize_byname %>% invert_byname, M))
+  }
+  if (margin == 2){
+    # Divide each entry by its column sum
+    # Do this with M * (i^T * M)_hat_inv
+    return(matrixproduct_byname(M, colsums_byname(M) %>% hatize_byname %>% invert_byname))
+  } 
+  # Should never get here, but just in case:
+  stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
+}
+
 #' @title
 #' Select rows of a matrix (or list of matrices) by name
 #'
@@ -824,6 +886,10 @@ sumall_byname <- function(m){
 #' @return The difference between an identity matrix (\code{I}) and \code{m}
 #' (whose rows and columns have been completed and sorted)
 #' @export
+#' 
+#' @importFrom parallel mcMap
+#' @import magrittr
+#' @import dplyr
 #'
 #' @examples
 #' m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
