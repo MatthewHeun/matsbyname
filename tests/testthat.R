@@ -1,4 +1,5 @@
 library(testthat)
 library(byname)
+library(parallel)
 
-test_check("matsindf")
+test_check("byname")
