@@ -384,41 +384,83 @@ hatize_byname <- function(v){
   return(out)
 }
 
-#' Named identity matrix
+#' Named identity matrix or vector
 #'
-#' Creates an identity matrix (I) with ones on the diagonal of same size and with same names as \code{m}.
-#' \code{m} must be square.
+#' Creates an identity matrix (I) or vector (i) of same size and with same names as \strong{M}.
+#' if \code{margin = 1}, makes a column matrix filled with \code{1}s. 
+#' Row names and type are taken from row names and type of \strong{M}.
+#' Column name and type are same as column type of \strong{M}.
+#' If \code{margin = 2}, make a row matrix filled with \code{1}s.
+#' Column names and type are taken from column name and type of \strong{M}.
+#' Row name and type are same as row type of \strong{M}.
+#' If \code{c(1,2)}, make an identity matrix with \code{1}s on the diagonal.
 #'
-#' @param m The matrix whose names and dimensions are to be preserved in an identity matrix.
+#' @param M the matrix whose names and dimensions are to be preserved in an identity matrix or vector
+#' @param margin determines whether an identity vector or matrix is returned
 #'
-#' @return A square identity matrix with ones on the diagonal.
+#' @return An identity matrix or vector
 #' Row and column names are taken from row and column
-#' names of \code{m}.
+#' names of \code{M}.
 #' Row and column names are sorted.
 #' @export
 #'
 #' @examples
-#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
+#' M <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' identize_byname(m)
-#' n <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
+#' identize_byname(M)
+#' identize_byname(M, margin = c(1,2))
+#' identize_byname(M, margin = 1)
+#' identize_byname(M, margin = 2)
+#' N <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' identize_byname(n)
+#' identize_byname(N)
 #' # This also works with lists
-#' identize_byname(list(m, m))
-identize_byname <- function(m){
-  if (is.list(m)){
-    return(mcMap(identize_byname, m))
+#' identize_byname(list(M, M))
+identize_byname <- function(M, margin = c(1,2)){
+  if (is.list(M)){
+    margin <- make_list(margin, n = length(M))
+    return(mcMap(identize_byname, M, margin))
   }
-  stopifnot(nrow(m) == ncol(m))
-  n <- sort_rows_cols(m)
-  rep_len(1, length.out = nrow(n)) %>%
-    matrix(ncol = 1, dimnames = list(paste0("r", 1:nrow(n)), c("c1"))) %>%
-    hatize_byname %>%
-    setrownames_byname(rownames(n)) %>%
-    setcolnames_byname(colnames(n)) %>%
-    setrowtype(rowtype(m)) %>%
-    setcoltype(coltype(m))
+  if (class(M) == "numeric"){
+    # Assume we have a single number here
+    # Thus, we return 1.
+    return(1)
+  }
+  
+  if (! length(margin) %in% c(1,2)){
+    stop("margin should have length 1 or 2 in fractionize_byname")
+  }
+  
+  if (length(margin) == 2 && all(margin %in% c(1,2))){
+    # M is a matrix. 
+    # Return the identity matrix with 1's on diagonal,
+    # of same dimensions as M
+    # and same names and types as M.
+    stopifnot(nrow(M) == ncol(M))
+    return(diag(nrow(M)) %>% 
+             setrownames_byname(rownames(M)) %>% setcolnames_byname(colnames(M)) %>% 
+             sort_rows_cols() %>% 
+             setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+  }
+  
+  if (length(margin) != 1 || ! margin %in% c(1,2)){
+    stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
+  }
+  
+  if (margin == 1){
+    # Return a column vector containing 1's
+    return(matrix(rep_len(1, nrow(M)), nrow = nrow(M), ncol = 1) %>% 
+             setrownames_byname(rownames(M)) %>% setcolnames_byname(coltype(M)) %>% 
+             setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+  }
+  if (margin == 2){
+    # Return a row vector containing 1's
+    return(matrix(rep_len(1, ncol(M)), nrow = 1, ncol = ncol(M)) %>% 
+             setrownames_byname(rowtype(M)) %>% setcolnames_byname(colnames(M)) %>% 
+             setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+  } 
+  # Should never get here, but just in case:
+  stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
 }
 
 #' Compute fractions of matrix entries

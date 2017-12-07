@@ -2,30 +2,41 @@
 % Please edit documentation in R/Byname.R
 \name{identize_byname}
 \alias{identize_byname}
-\title{Named identity matrix}
+\title{Named identity matrix or vector}
 \usage{
-identize_byname(m)
+identize_byname(M, margin = c(1, 2))
 }
 \arguments{
-\item{m}{The matrix whose names and dimensions are to be preserved in an identity matrix.}
+\item{M}{the matrix whose names and dimensions are to be preserved in an identity matrix or vector}
+
+\item{margin}{determines whether an identity vector or matrix is returned}
 }
 \value{
-A square identity matrix with ones on the diagonal.
+An identity matrix or vector
 Row and column names are taken from row and column
-names of \code{m}.
+names of \code{M}.
 Row and column names are sorted.
 }
 \description{
-Creates an identity matrix (I) with ones on the diagonal of same size and with same names as \code{m}.
-\code{m} must be square.
+Creates an identity matrix (I) or vector (i) of same size and with same names as \strong{M}.
+if \code{margin = 1}, makes a column matrix filled with \code{1}s. 
+Row names and type are taken from row names and type of \strong{M}.
+Column name and type are same as column type of \strong{M}.
+If \code{margin = 2}, make a row matrix filled with \code{1}s.
+Column names and type are taken from column name and type of \strong{M}.
+Row name and type are same as row type of \strong{M}.
+If \code{c(1,2)}, make an identity matrix with \code{1}s on the diagonal.
 }
 \examples{
-m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
+M <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
-identize_byname(m)
-n <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) \%>\%
+identize_byname(M)
+identize_byname(M, margin = c(1,2))
+identize_byname(M, margin = 1)
+identize_byname(M, margin = 2)
+N <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
-identize_byname(n)
+identize_byname(N)
 # This also works with lists
-identize_byname(list(m, m))
+identize_byname(list(M, M))
 }

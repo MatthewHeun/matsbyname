@@ -481,7 +481,29 @@ test_that("identize_byname works as expected", {
                         nrow = 4, 
                         dimnames = dimnames(m)) %>% 
     setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
+  # Test for errors
+  expect_error(identize_byname(m, margin = c(1,2,3,4)), "margin should have length 1 or 2 in fractionize_byname")
+  expect_error(identize_byname(m, margin = c(3)), "Unknown margin 3 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
+  expect_error(identize_byname(m, margin = c(-1)), "Unknown margin -1 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
+  expect_error(identize_byname(m, margin = c(1,1,2,2)), "margin should have length 1 or 2 in fractionize_byname")
+
+  # Test for column vector
+  expect_equal(identize_byname(m, margin = 1), 
+               matrix(1, nrow = nrow(m), ncol = 1) %>% 
+                 setrownames_byname(rownames(m)) %>% setcolnames_byname(coltype(m)) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m))) 
+  
+  # Test for row vector
+  expect_equal(identize_byname(m, margin = 2), 
+               matrix(1, nrow = 1, ncol = ncol(m)) %>% 
+                 setrownames_byname(rowtype(m)) %>% setcolnames_byname(colnames(m)) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m))) 
+  
+  # Test for identity matrix
   expect_equal(identize_byname(m), mI_expected)
+  expect_equal(identize_byname(m, margin = c(1,2)), mI_expected)
+  expect_equal(identize_byname(m, margin = c(2,1)), mI_expected)
+  
   # This also works with lists
   expect_equal(identize_byname(list(m, m)), list(mI_expected, mI_expected))
   # This also works for data frames
@@ -489,6 +511,8 @@ test_that("identize_byname works as expected", {
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
   expect_equal(identize_byname(DF$m), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = c(1,2)), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = c(2,1)), list(mI_expected, mI_expected))
   DF_expected <- data.frame(m = I(list()), mI = I(list()))
   DF_expected[[1,"m"]] <- m
   DF_expected[[2,"m"]] <- m
