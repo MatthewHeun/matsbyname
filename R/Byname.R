@@ -386,22 +386,21 @@ hatize_byname <- function(v){
 
 #' Named identity matrix or vector
 #'
-#' Creates an identity matrix (I) or vector (i) of same size and with same names as \strong{M}.
-#' if \code{margin = 1}, makes a column matrix filled with \code{1}s. 
+#' Creates an identity matrix (\strong{I}) or vector (\strong{i}) of same size and with same names and types as \strong{M}.
+#' If \code{margin = 1}, makes a column matrix filled with \code{1}s. 
 #' Row names and type are taken from row names and type of \strong{M}.
 #' Column name and type are same as column type of \strong{M}.
 #' If \code{margin = 2}, make a row matrix filled with \code{1}s.
 #' Column names and type are taken from column name and type of \strong{M}.
 #' Row name and type are same as row type of \strong{M}.
-#' If \code{c(1,2)}, make an identity matrix with \code{1}s on the diagonal.
+#' If \code{c(1,2)} (the default), make an identity matrix with \code{1}s on the diagonal.
+#' Row and column names are sorted on output.
 #'
 #' @param M the matrix whose names and dimensions are to be preserved in an identity matrix or vector
 #' @param margin determines whether an identity vector or matrix is returned
 #'
-#' @return An identity matrix or vector
-#' Row and column names are taken from row and column
-#' names of \code{M}.
-#' Row and column names are sorted.
+#' @return An identity matrix or vector.
+#' 
 #' @export
 #'
 #' @examples
