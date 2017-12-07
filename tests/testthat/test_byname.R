@@ -172,6 +172,27 @@ test_that("matrixproduct_byname works as expected", {
   # Succeeds because Y is completed to include a row named p3 (that contains zeroes).
   # Furthermore, rows and columns of Y are sorted to be in alphabetical order.
   expect_equal(matrixproduct_byname(V, Y), VY)
+  
+  M <- matrix(c(11, 12,
+                21, 22),
+              nrow = 2, ncol = 2, byrow = TRUE) %>% 
+    setrownames_byname(c("C", "D")) %>% setcolnames_byname(c("A", "B"))
+  I <- identize_byname(M) %>%
+    setrownames_byname(c("A", "B")) %>% setcolnames_byname(c("E", "F"))
+  expect_equal(matrixproduct_byname(M, I), M %>% setcolnames_byname(colnames(I)))
+  I2 <- I %>% setrownames_byname(c("G", "H"))
+  # Next line produces results you would expect if you respect 
+  # names for the columns of M and the rows of I2.
+  expect_equal(matrixproduct_byname(M, I2), 
+               matrix(c(0,0,
+                        0,0),
+                      nrow = 2, ncol = 2, byrow = TRUE) %>% 
+                 setrownames_byname(c("C", "D")) %>% 
+                 setcolnames_byname(c("E", "F")))
+  
+  # This works, but does not respect the fact that column names of M
+  # are different from the row names of I2.
+  expect_equal(M %*% I2, M %>% setrownames_byname(c("C", "D")) %>% setcolnames_byname(c("E", "F")))
                
   # This also works with lists
   expect_equal(matrixproduct_byname(list(V,V), list(Y,Y)), list(VY, VY))
