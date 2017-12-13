@@ -287,6 +287,16 @@ test_that("elementproduct_byname works as expected", {
     expect_equal(DF_3$B[[i]], DF$U[[i]]*20)
   }
   
+  # Try with a list of matrices and a single value.
+  Ux2_expected <- matrix(c(2, 4, 6, 8), nrow = 2, ncol = 2, dimnames = dimnames(DF$U[[1]])) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(elementproduct_byname(DF$U, 2), list(Ux2_expected, Ux2_expected))
+  # Try with a list of matrices and a single matrix
+  expect_equal(elementproduct_byname(DF$U, 
+                                     matrix(c(2,2,2,2), nrow = 2, ncol = 2, dimnames = dimnames(Ux2_expected))), 
+               list(Ux2_expected, Ux2_expected))
+  
+  
 })
 
 
