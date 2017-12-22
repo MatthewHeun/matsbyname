@@ -1468,10 +1468,16 @@ organize_args <- function(a, b, match_type = "all"){
   # Assume that both a and b are now matrices.
   # Verify that row and column types are appropriate.
   if (match_type == "all"){
-    stopifnot(rowtype(a) == rowtype(b))
-    stopifnot(coltype(a) == coltype(b))
+    if (rowtype(a) != rowtype(b)){
+      stop(paste0("rowtype(a) (", rowtype(a), ") != rowtype(b) (", rowtype(b),")."))
+    }
+    if (coltype(a) != coltype(b)){
+      stop(paste0("coltype(a) (", coltype(a), ") != coltype(b) (", coltype(b),")."))
+    }
   } else if (match_type == "matmult") {
-    stopifnot(coltype(a) == rowtype(b))
+    if (coltype(a) != rowtype(b)){
+      stop(paste0("coltype(a) (", coltype(a), ") != rowtype(b) (", rowtype(b),")."))
+    }
   } else {
     stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
