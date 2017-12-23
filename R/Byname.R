@@ -1466,21 +1466,36 @@ organize_args <- function(a, b, match_type = "all"){
   }
 
   # Assume that both a and b are now matrices.
-  # Verify that row and column types are appropriate.
-  if (match_type == "all"){
-    if (rowtype(a) != rowtype(b)){
-      stop(paste0("rowtype(a) (", rowtype(a), ") != rowtype(b) (", rowtype(b),")."))
-    }
-    if (coltype(a) != coltype(b)){
-      stop(paste0("coltype(a) (", coltype(a), ") != coltype(b) (", coltype(b),")."))
-    }
-  } else if (match_type == "matmult") {
-    if (coltype(a) != rowtype(b)){
-      stop(paste0("coltype(a) (", coltype(a), ") != rowtype(b) (", rowtype(b),")."))
-    }
-  } else {
+  # Need to check whether matchtype is a known type.
+  if (! match_type %in% c("all", "matmult")){
     stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
+  
+  # Verify that row and column types are appropriate.
+  if (match_type == "all"){
+    # If neither rowtype nor coltype are set,
+    # skip these tests
+    if (!is.null(rowtype(a)) & !is.null(coltype(a)) & !is.null(rowtype(b)) & !is.null(coltype(b))){
+      # Verify that the row type of a and b are the same.
+      if (rowtype(a) != rowtype(b)){
+        stop(paste0("rowtype(a) (", rowtype(a), ") != rowtype(b) (", rowtype(b),")."))
+      }
+      # Verify that the column type of a and b are the same.
+      if (coltype(a) != coltype(b)){
+        stop(paste0("coltype(a) (", coltype(a), ") != coltype(b) (", coltype(b),")."))
+      }
+    }
+  } 
+  if (match_type == "matmult") {
+    # If neither coltype(a) nor rowtype(b) are set,
+    # skip this test
+    if (!is.null(coltype(a)) & !is.null(rowtype(b))){
+      # Verify that the column type of a and the row type of b are the same.
+      if (coltype(a) != rowtype(b)){
+        stop(paste0("coltype(a) (", coltype(a), ") != rowtype(b) (", rowtype(b),")."))
+      }
+    }
+  } 
 
   # Ensure that matrices have correct row and column names and are in same order.
   if (match_type == "all"){
