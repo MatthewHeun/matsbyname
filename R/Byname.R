@@ -11,6 +11,7 @@ library(dplyr)
 #' Zeroes are inserted for missing matrix elements.
 #'
 #' @return A matrix representing the name-wise sum of \code{addend} and \code{augend}
+#' 
 #' @export
 #'
 #' @examples

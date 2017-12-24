@@ -22,6 +22,7 @@ Maintainer: \packageMaintainer{byname}
 \references{
 }
 \keyword{
+array
 }
 \seealso{
 The
