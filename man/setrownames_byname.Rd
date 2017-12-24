@@ -26,6 +26,8 @@ Each item in the list should be a vector containing row names for the correspond
 matrix in \code{m}.
 }
 \examples{
+library(magrittr)
+library(dplyr)
 m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 setrownames_byname(m, c("a", "b"))

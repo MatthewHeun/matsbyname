@@ -31,6 +31,7 @@ package is used extensively by the
 package.
 }
 \examples{
+library(magrittr)
 productnames <- c("p1", "p2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, 
@@ -39,7 +40,7 @@ U <- matrix(1:4, ncol = 2,
             setrowtype("Commodities") \%>\% 
             setcoltype("Industries")
 G <- matrix(1:4, ncol = 2, 
-            dimnames = list(rev(commoditynames), 
+            dimnames = list(rev(productnames), 
                             rev(industrynames))) \%>\%
             setrowtype("Commodities") \%>\% 
             setcoltype("Industries")

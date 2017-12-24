@@ -24,6 +24,8 @@ A matrix representing the name-wise element product of \code{multiplicand} and \
 Name-wise matrix element multiplication
 }
 \examples{
+library(magrittr)
+library(dplyr)
 elementproduct_byname(2, 2)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")

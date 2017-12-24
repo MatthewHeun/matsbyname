@@ -22,6 +22,7 @@ A square "hat" matrix with size equal to the length of \code{v}.
 Creates a diagonal "hat" matrix from a vector.
 }
 \examples{
+library(magrittr)
 v <- matrix(1:10, ncol = 1, dimnames=list(c(paste0("i", 1:10)), c("c1"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype(NA)
 r <- matrix(1:5, nrow = 1, dimnames=list(c("r1"), c(paste0("c", 1:5)))) \%>\%

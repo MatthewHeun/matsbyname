@@ -16,6 +16,7 @@ the inversion
 This function transposes row and column names as well as row and column types.
 }
 \examples{
+library(magrittr)
 m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
 invert_byname(m)

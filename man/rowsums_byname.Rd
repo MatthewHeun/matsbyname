@@ -23,6 +23,8 @@ If \code{colname} is \code{NULL} or \code{NA} (the default),
 the column name is set to the column type as given by \code{coltype(m)}.
 }
 \examples{
+library(magrittr)
+library(dplyr)
 m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 rowsums_byname(m)
@@ -40,5 +42,6 @@ rowsums_byname(DF$m)
 ans <- DF \%>\% mutate(rs = rowsums_byname(m))
 ans
 ans$rs[[1]]
-rowsums_byname(NULL)
+# Nonsensical
+\dontrun{rowsums_byname(NULL)}
 }

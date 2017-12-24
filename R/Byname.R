@@ -14,6 +14,8 @@ library(dplyr)
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' sum_byname(2, 2)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
@@ -56,22 +58,22 @@ library(dplyr)
 #' DF3$sums[[1]]
 #' DF3$sums[[2]]
 sum_byname <- function(augend, addend){
-  if (missing(addend)){
+  if (missing(addend)) {
     return(augend)
   }
-  if (is.null(addend)){
+  if (is.null(addend)) {
     return(augend)
   }
-  if (missing(augend)){
+  if (missing(augend)) {
     return(addend)
   }
-  if (is.null(augend)){
+  if (is.null(augend)) {
     return(addend)
   }
   args <- organize_args(augend, addend)
   augend <- args$a
   addend <- args$b
-  if (is.list(augend) & is.list(addend)){
+  if (is.list(augend) & is.list(addend)) {
     return(mcMap(sum_byname, augend, addend))
   }
   (augend + addend) %>%
@@ -91,6 +93,8 @@ sum_byname <- function(augend, addend){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' difference_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
@@ -115,16 +119,16 @@ sum_byname <- function(augend, addend){
 #' difference_byname(DF$U, DF$G)
 #' DF %>% mutate(diffs = difference_byname(U, G))
 difference_byname <- function(minuend, subtrahend){
-  if (missing(minuend)){
+  if (missing(minuend)) {
     return(elementproduct_byname(-1, subtrahend))
   }
-  if (is.null(minuend)){
+  if (is.null(minuend)) {
     return(elementproduct_byname(-1, subtrahend))
   }
-  if (missing(subtrahend)){
+  if (missing(subtrahend)) {
     return(minuend)
   }
-  if (is.null(subtrahend)){
+  if (is.null(subtrahend))  {
     return(minuend)
   }
   args <- organize_args(minuend, subtrahend)
@@ -143,7 +147,8 @@ difference_byname <- function(minuend, subtrahend){
 #' @param multiplicand Multiplicand matrix
 #' @param multiplier Multiplier matrix
 #'
-#' Performs a union and sorting of multiplicand rows and multiplier columns by name prior to multiplication.
+#' Performs a union and sorting of multiplicand rows and multiplier columns by name 
+#' prior to multiplication.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
 #' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
@@ -161,11 +166,14 @@ difference_byname <- function(minuend, subtrahend){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("g2", "g1"))) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
-#' matrixproduct_byname(V, G) # Succeeds because G is completed to include a row named c3 (that contains zeroes).
+#' # Succeeds because G is completed to include a row named c3 (that contains zeroes).
+#' matrixproduct_byname(V, G) 
 #' \dontrun{V %*% G} # Fails because E lacks a row named c3.
 #' # This also works with lists
 #' matrixproduct_byname(list(V,V), list(G,G))
@@ -182,7 +190,7 @@ matrixproduct_byname <- function(multiplicand, multiplier){
   multiplicand <- args$a
   multiplier <- args$b
 
-  if (is.list(multiplicand) & is.list(multiplier)){
+  if (is.list(multiplicand) & is.list(multiplier)) {
     stopifnot(length(multiplicand) == length(multiplier))
     return(mcMap(matrixproduct_byname, multiplicand, multiplier))
   }
@@ -212,6 +220,8 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' elementproduct_byname(2, 2)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
@@ -236,7 +246,7 @@ elementproduct_byname <- function(multiplicand, multiplier){
   args <- organize_args(multiplicand, multiplier)
   multiplicand <- args$a
   multiplier <- args$b
-  if (is.list(multiplicand) & is.list(multiplier)){
+  if (is.list(multiplicand) & is.list(multiplier)) {
     return(mcMap(elementproduct_byname, multiplicand, multiplier))
   }
   (multiplicand * multiplier) %>%
@@ -259,6 +269,8 @@ elementproduct_byname <- function(multiplicand, multiplier){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' elementquotient_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
@@ -285,7 +297,7 @@ elementquotient_byname <- function(dividend, divisor){
   args <- organize_args(dividend, divisor)
   dividend <- args$a
   divisor <- args$b
-  if (is.list(dividend) & is.list(divisor)){
+  if (is.list(dividend) & is.list(divisor)) {
     return(mcMap(elementquotient_byname, dividend, divisor))
   }
   (dividend / divisor) %>%
@@ -303,6 +315,7 @@ elementquotient_byname <- function(dividend, divisor){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' invert_byname(m)
@@ -310,7 +323,7 @@ elementquotient_byname <- function(dividend, divisor){
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
 invert_byname <- function(m){
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(invert_byname, m))
   }
   stopifnot(nrow(m) == ncol(m))
@@ -328,12 +341,13 @@ invert_byname <- function(m){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
 transpose_byname <- function(m){
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(transpose_byname, m))
   }
   sort_rows_cols(m) %>%
@@ -356,6 +370,7 @@ transpose_byname <- function(m){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' v <- matrix(1:10, ncol = 1, dimnames=list(c(paste0("i", 1:10)), c("c1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
 #' r <- matrix(1:5, nrow = 1, dimnames=list(c("r1"), c(paste0("c", 1:5)))) %>%
@@ -404,6 +419,7 @@ hatize_byname <- function(v){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' M <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' identize_byname(M)
@@ -416,21 +432,21 @@ hatize_byname <- function(v){
 #' # This also works with lists
 #' identize_byname(list(M, M))
 identize_byname <- function(M, margin = c(1,2)){
-  if (is.list(M)){
+  if (is.list(M)) {
     margin <- make_list(margin, n = length(M))
     return(mcMap(identize_byname, M, margin))
   }
-  if (class(M) == "numeric"){
+  if (class(M) == "numeric") {
     # Assume we have a single number here
     # Thus, we return 1.
     return(1)
   }
   
-  if (! length(margin) %in% c(1,2)){
+  if (!length(margin) %in% c(1,2)) {
     stop("margin should have length 1 or 2 in fractionize_byname")
   }
   
-  if (length(margin) == 2 && all(margin %in% c(1,2))){
+  if (length(margin) == 2 && all(margin %in% c(1,2))) {
     # M is a matrix. 
     # Return the identity matrix with 1's on diagonal,
     # of same dimensions as M
@@ -442,17 +458,17 @@ identize_byname <- function(M, margin = c(1,2)){
              setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
   }
   
-  if (length(margin) != 1 || ! margin %in% c(1,2)){
+  if (length(margin) != 1 || !margin %in% c(1,2)) {
     stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
   }
   
-  if (margin == 1){
+  if (margin == 1)  {
     # Return a column vector containing 1's
     return(matrix(rep_len(1, nrow(M)), nrow = nrow(M), ncol = 1) %>% 
              setrownames_byname(rownames(M)) %>% setcolnames_byname(coltype(M)) %>% 
              setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
   }
-  if (margin == 2){
+  if (margin == 2) {
     # Return a row vector containing 1's
     return(matrix(rep_len(1, ncol(M)), nrow = 1, ncol = ncol(M)) %>% 
              setrownames_byname(rowtype(M)) %>% setcolnames_byname(colnames(M)) %>% 
@@ -476,6 +492,7 @@ identize_byname <- function(M, margin = c(1,2)){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' M <- matrix(c(1, 5,
 #'               4, 5),
 #'             nrow = 2, ncol = 2, byrow = TRUE, 
@@ -485,24 +502,24 @@ identize_byname <- function(M, margin = c(1,2)){
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(M, margin){
-  if (is.list(M)){
+  if (is.list(M)) {
     margin <- make_list(margin, n = length(M))
     return(mcMap(fractionize_byname, M, margin))
   }
-  if (! "matrix" %in% class(M) && ! "data.frame" %in% class(M)){
+  if (!"matrix" %in% class(M) && !"data.frame" %in% class(M)) {
       # Assume we have a single number here
       # By dividing M by itself, we could throw a division by zero error,
       # which we would want to do.
       return(M/M)
   }
-  if (length(margin) != length(unique(margin))){
+  if (length(margin) != length(unique(margin))) {
     stop("margin should contain unique integers in fractionize_byname")
   }
-  if (! length(margin) %in% c(1,2)){
+  if (!length(margin) %in% c(1,2)) {
     stop("margin should have length 1 or 2 in fractionize_byname")
   }
   
-  if (length(margin) == 2 && all(margin %in% c(1,2))){
+  if (length(margin) == 2 && all(margin %in% c(1,2))) {
     return(M/sumall_byname(M))
   }
   
@@ -558,6 +575,7 @@ fractionize_byname <- function(M, margin){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
@@ -569,28 +587,28 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
-  if (is.list(m)){
+  if (is.list(m)) {
     retain_pattern <- make_list(retain_pattern, n = length(m))
     remove_pattern <- make_list(remove_pattern, n = length(m))
     return(mcMap(select_rows_byname, m = m, retain_pattern = retain_pattern, remove_pattern = remove_pattern))
   }
   retain_indices <- grep(pattern = retain_pattern, x = rownames(m))
   remove_indices <- grep(pattern = remove_pattern, x = rownames(m))
-  if (length(retain_indices) == 0){
+  if (length(retain_indices) == 0) {
     # Nothing to be retained, so try removing columns
-    if (length(remove_indices) == 0){
+    if (length(remove_indices) == 0) {
       # Nothing to be retained and nothing to be removed.
       # If the caller wanted to retain something,
       # which is indicated by a non-default retain_pattern,
       # don't retain anything.
       # Do this first, because retain takes precedence.
-      if (retain_pattern != "$^"){
+      if (retain_pattern != "$^") {
         return(NULL)
       }
       # If the caller wanted to remove something,
       # which is indicated by a non-default remove_pattern,
       # don't remove anything. Simply return m.
-      if (remove_pattern != "$^"){
+      if (remove_pattern != "$^") {
         return(m)
       }
       # Neither retain_pattern nor remove_pattern is different from the default.
@@ -654,6 +672,7 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_cols_byname(m, retain_pattern = make_pattern(c("p1", "p4"), pattern_type = "exact"))
@@ -665,28 +684,28 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
-  if (is.list(m)){
+  if (is.list(m)) {
     retain_pattern <- make_list(retain_pattern, n = length(m))
     remove_pattern <- make_list(remove_pattern, n = length(m))
     return(mcMap(select_cols_byname, m = m, retain_pattern = retain_pattern, remove_pattern = remove_pattern))
   }
   retain_indices <- grep(pattern = retain_pattern, x = colnames(m))
   remove_indices <- grep(pattern = remove_pattern, x = colnames(m))
-  if (length(retain_indices) == 0){
+  if (length(retain_indices) == 0) {
     # Nothing to be retained, so try removing columns
-    if (length(remove_indices) == 0){
+    if (length(remove_indices) == 0) {
       # Nothing to be retained and nothing to be removed.
       # If the caller wanted to retain something,
       # which is indicated by a non-default retain_pattern,
       # don't retain anything.
       # Do this first, because retain takes precedence.
-      if (retain_pattern != "$^"){
+      if (retain_pattern != "$^") {
         return(NULL)
       }
       # If the caller wanted to remove something,
       # which is indicated by a non-default remove_pattern,
       # don't remove anything. Simply return m.
-      if (remove_pattern != "$^"){
+      if (remove_pattern != "$^") {
         return(m)
       }
       # Neither retain_pattern nor remove_pattern is different from the default.
@@ -727,11 +746,15 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #'
 #' @return a list with two items: \code{retain_names} and \code{remove_names}.
 #'
+#' @export
+#'
 #' @examples
 #' retain_remove("c1")
 #' retain_remove("-c1")
-#' retain_remove(c("c1", "-c1")) # Retain takes precedence.
-#' names <- c("-c1", "-c4", "-----c3", "c2", "c4", "c4") # Multiple "-" ignored.
+#' # Retain takes precedence.
+#' retain_remove(c("c1", "-c1")) 
+#' # Multiple "-" ignored.
+#' names <- c("-c1", "-c4", "-----c3", "c2", "c4", "c4") 
 #' retain_remove(names)
 retain_remove <- function(row_col_names){
   # Get the indices in col_names of columns to be removed and retained
@@ -764,6 +787,8 @@ retain_remove <- function(row_col_names){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' rowsums_byname(m)
@@ -781,10 +806,11 @@ retain_remove <- function(row_col_names){
 #' ans <- DF %>% mutate(rs = rowsums_byname(m))
 #' ans
 #' ans$rs[[1]]
-#' rowsums_byname(NULL)
+#' # Nonsensical
+#' \dontrun{rowsums_byname(NULL)}
 rowsums_byname <- function(m, colname = NA){
-  if (is.list(m)){
-    if (is.null(colname)){
+  if (is.list(m)) {
+    if (is.null(colname)) {
       colname <- NA
     }
     return(mcMap(rowsums_byname, m, colname))
@@ -793,11 +819,11 @@ rowsums_byname <- function(m, colname = NA){
   #   # Set the column name to the column type, since we added all items of coltype together.
   #   colname <- coltype(m)
   # }
-  if (is.null(colname)){
+  if (is.null(colname)) {
     # Set the column name to the column type, since we added all items of coltype together.
     colname <- coltype(m)
   }
-  if (is.na(colname)){
+  if (is.na(colname)) {
     colname <- coltype(m)
   }
   rowSums(m) %>%
@@ -828,6 +854,8 @@ rowsums_byname <- function(m, colname = NA){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' colsums_byname(m)
@@ -850,8 +878,8 @@ rowsums_byname <- function(m, colname = NA){
 #' )
 #' res$cs2
 colsums_byname <- function(m, rowname = NA){
-  if (is.list(m)){
-    if (is.null(rowname)){
+  if (is.list(m)) {
+    if (is.null(rowname)) {
       rowname <- NA
     }
     return(mcMap(colsums_byname, m, rowname))
@@ -860,11 +888,11 @@ colsums_byname <- function(m, rowname = NA){
   #   # Set the column name to the column type, since we added all items of coltype together.
   #   rowname <- rowtype(m)
   # }
-  if (is.null(rowname)){
+  if (is.null(rowname)) {
     # Set the column name to the column type, since we added all items of coltype together.
     rowname <- rowtype(m)
   }
-  if (is.na(rowname)){
+  if (is.na(rowname)) {
     rowname <- rowtype(m)
   }
   colSums(m) %>%
@@ -890,6 +918,8 @@ colsums_byname <- function(m, rowname = NA){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' sumall_byname(m)
@@ -906,7 +936,7 @@ colsums_byname <- function(m, rowname = NA){
 #' )
 #' res$sums
 sumall_byname <- function(m){
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(sumall_byname, m))
   }
   m %>%
@@ -933,10 +963,13 @@ sumall_byname <- function(m){
 #' @import dplyr
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' diag(1, nrow = 2) - m # Rows and columns of A are unsorted
-#' Iminus_byname(m) # Rows and columns of A are sorted prior to subtracting from the identity matrix
+#' # Rows and columns are unsorted
+#' diag(1, nrow = 2) - m 
+#' # Rows and columns are sorted prior to subtracting from the identity matrix
+#' Iminus_byname(m) 
 #' # This also works with lists
 #' Iminus_byname(list(m,m))
 #' # If the m is not square before subtracting from I,
@@ -945,13 +978,14 @@ sumall_byname <- function(m){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' Iminus_byname(m2)
 Iminus_byname <- function(m){
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(Iminus_byname, m))
   }
-  complete_and_sort(m) %>%
+  
+  A <- complete_and_sort(m) %>%
     setrowtype(rowtype(m)) %>%
-    setcoltype(coltype(m)) %>%
-    difference_byname(identize_byname(.), .)
+    setcoltype(coltype(m))
+  difference_byname(identize_byname(A), A) 
 }
 
 #' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
@@ -968,10 +1002,12 @@ Iminus_byname <- function(m){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(c(-20, 1, -20, 2), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
 #' m
 #' m %>% clean_byname(margin = 1, clean_value = -20) # Eliminates -20, -20 row
-#' m %>% clean_byname(margin = 2) # Nothing cleaned, because no columns contain all 0's (the default clean_value).
+#' # Nothing cleaned, because no columns contain all 0's (the default clean_value).
+#' m %>% clean_byname(margin = 2) 
 #' # Also works with lists
 #' list(m, m) %>% clean_byname(margin = 1, clean_value = -20)
 #' # Also works with data frames
@@ -988,20 +1024,20 @@ Iminus_byname <- function(m){
 #' DF2[[2, "m2"]] <- m2
 #' DF2 %>% clean_byname(margin = c(1,2), clean_value = -20)
 clean_byname <- function(m, margin = c(1,2), clean_value = 0){
-  if (1 %in% margin & 2 %in% margin){
+  if (1 %in% margin & 2 %in% margin) {
     # Clean both dimensions of m.
     cleaned1 <- clean_byname(m, margin = 1, clean_value = clean_value)
     cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
     return(cleaned2)
   }
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(clean_byname, m = m, margin = margin, clean_value = clean_value))
   }
-  if (margin == 1){
+  if (margin == 1) {
     # Want to clean rows. Code below assumes want to clean columns.
     # Transpose and then transpose again before returning.
     a <- transpose_byname(m)
-  } else if (margin == 2){
+  } else if (margin == 2) {
     a <- m
   } else {
     stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
@@ -1009,9 +1045,9 @@ clean_byname <- function(m, margin = c(1,2), clean_value = 0){
   keepcols <- apply(a, 2, function(x) {!all(x == clean_value)})
   keepcolnames <- names(which(keepcols))
   b <- select_cols_byname(m = a, retain_pattern = make_pattern(row_col_names = keepcolnames, pattern_type = "exact"))
-  if (margin == 1){
+  if (margin == 1) {
     return(transpose_byname(b))
-  } else if (margin == 2){
+  } else if (margin == 2) {
     return(b)
   }
 }
@@ -1026,6 +1062,7 @@ clean_byname <- function(m, margin = c(1,2), clean_value = 0){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' getrownames_byname(m)
@@ -1036,7 +1073,7 @@ clean_byname <- function(m, margin = c(1,2), clean_value = 0){
 #' DF[[2,"m"]] <- m
 #' getrownames_byname(DF$m)
 getrownames_byname <- function(m){
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(getrownames_byname, m))
   }
   return(rownames(m))
@@ -1052,6 +1089,7 @@ getrownames_byname <- function(m){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' getcolnames_byname(m)
@@ -1062,7 +1100,7 @@ getrownames_byname <- function(m){
 #' DF[[2,"m"]] <- m
 #' getcolnames_byname(DF$m)
 getcolnames_byname <- function(m){
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(getcolnames_byname, m))
   }
   return(colnames(m))
@@ -1087,6 +1125,8 @@ getcolnames_byname <- function(m){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' setrownames_byname(m, c("a", "b"))
@@ -1103,10 +1143,10 @@ getcolnames_byname <- function(m){
 #' DF <- DF %>% mutate(m = setrownames_byname(m, list(c("r1", "r2"))))
 #' DF$m[[1]]
 setrownames_byname <- function(m, rownames){
-  if (is.list(m) & is.list(rownames)){
+  if (is.list(m) & is.list(rownames)) {
     return(mcMap(setrownames_byname, m, rownames))
   }
-  if (is.list(m) & is.vector(rownames)){
+  if (is.list(m) & is.vector(rownames)) {
     # rownames is a vector of names to be applied 
     # to each matrix in m.
     # Thus, we should replicatate it to be same length as m
@@ -1114,7 +1154,7 @@ setrownames_byname <- function(m, rownames){
     return(setrownames_byname(m, rownames))
   }
   out <- m
-  if (is.null(rownames) || is.na(rownames)){
+  if (is.null(rownames) || is.na(rownames)) {
     # replace with default row names
     rownames(out) <- paste0("[", 1:nrow(out),",]")
   } else {
@@ -1142,14 +1182,15 @@ setrownames_byname <- function(m, rownames){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' setcolnames_byname(m, c("a", "b", "c"))
 setcolnames_byname <- function(m, colnames){
-  if (is.list(m) & is.list(colnames)){
+  if (is.list(m) & is.list(colnames)) {
     return(mcMap(setcolnames_byname, m, colnames))
   }
-  if (is.list(m) & is.vector(colnames)){
+  if (is.list(m) & is.vector(colnames)) {
     # colnames is a vector of names to be applied 
     # to each matrix in m.
     # Thus, we should replicatate it to be same length as m
@@ -1157,7 +1198,7 @@ setcolnames_byname <- function(m, colnames){
     return(setcolnames_byname(m, colnames))
   }
   out <- m
-  if (is.null(colnames) || is.na(colnames)){
+  if (is.null(colnames) || is.na(colnames)) {
     # replace with default row names
     colnames(out) <- paste0("[,", 1:ncol(out), "]")
   } else {
@@ -1179,6 +1220,8 @@ setcolnames_byname <- function(m, colnames){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames))
@@ -1194,7 +1237,7 @@ setcolnames_byname <- function(m, colnames){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setrowtype <- function(x, rowtype){
-  if (is.list(x)){
+  if (is.list(x)) {
     return(mcMap(setrowtype, x, rowtype))
   }
   attr(x, "rowtype") <- rowtype
@@ -1214,6 +1257,8 @@ setrowtype <- function(x, rowtype){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames))
@@ -1229,7 +1274,7 @@ setrowtype <- function(x, rowtype){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setcoltype <- function(x, coltype){
-  if (is.list(x)){
+  if (is.list(x)) {
     return(mcMap(setcoltype, x, coltype))
   }
   attr(x, "coltype") <- coltype
@@ -1246,6 +1291,8 @@ setcoltype <- function(x, coltype){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
+#' library(dplyr)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -1254,7 +1301,7 @@ setcoltype <- function(x, coltype){
 #' # This also works for lists
 #' rowtype(list(U,U))
 rowtype <- function(x){
-  if (is.list(x)){
+  if (is.list(x)) {
     return(mcMap(rowtype, x))
   }
   return(attr(x, "rowtype"))
@@ -1270,6 +1317,7 @@ rowtype <- function(x){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -1278,7 +1326,7 @@ rowtype <- function(x){
 #' # This also works for lists
 #' coltype(list(U,U))
 coltype <- function(x){
-  if (is.list(x)){
+  if (is.list(x)) {
     return(mcMap(coltype, x))
   }
   return(attr(x, "coltype"))
@@ -1297,6 +1345,7 @@ coltype <- function(x){
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' a <- matrix(1:4, nrow = 2)
 #' b <- matrix(1:4, nrow = 2)
 #' equal_byname(a, b)
@@ -1310,13 +1359,13 @@ coltype <- function(x){
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
 equal_byname <- function(a, b) {
-  if (is.list(a) & is.list(b)){
+  if (is.list(a) & is.list(b)) {
     return(mcMap(equal_byname, a, b))
   }
   # If names are present on the dimensions of the matrix, try to complete and sort the matrices.
   mats <- list(m1 = a, m2 = b)
   for (margin in 1:2) {
-    if (!is.null(names(a)[[margin]]) & ! is.null(names(b)[[margin]])){
+    if (!is.null(names(a)[[margin]]) & !is.null(names(b)[[margin]])) {
       # We have names for margin. Complete and sort on this margin.
       mats <- complete_and_sort(mats$m1, mats$m2, margin = margin)
     }
@@ -1337,19 +1386,22 @@ equal_byname <- function(a, b) {
 #' @export
 #'
 #' @examples
-#' m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>%
+#' library(magrittr)
+#' m <- matrix(data = c(1:6), 
+#'             nrow = 2, ncol = 3, 
+#'             dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>%
 #' setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
 list_of_rows_or_cols <- function(m, margin){
   stopifnot(length(margin) == 1)
   stopifnot(margin %in% c(1,2))
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(list_of_rows_or_cols, m, margin))
   }
   stopifnot("matrix" %in% class(m))
   # Strategy: perform all operations with margin to be split into a list in columns.
-  if (margin == 1){
+  if (margin == 1) {
     # Caller requested rows to be split into list items.
     # Transpose so operations will be easier.
     out <- transpose_byname(m)
@@ -1389,7 +1441,7 @@ list_of_rows_or_cols <- function(m, margin){
 #' iszero_byname(matrix(1e-10, nrow = 2))
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
 iszero_byname <- function(m, tol = 1e-6){
-  if (is.list(m)){
+  if (is.list(m)) {
     return(mcMap(iszero_byname, m, tol))
   }
   test <- abs(m) < tol
@@ -1420,28 +1472,28 @@ iszero_byname <- function(m, tol = 1e-6){
 #'
 #' @return a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments
 organize_args <- function(a, b, match_type = "all"){
-  if (missing(a)){
+  if (missing(a)) {
     stop("Missing argument a in organize_args.")
   }
-  if (is.null(a)){
+  if (is.null(a)) {
     stop("Null argument a in organize_args.")
   }
-  if (missing(b)){
+  if (missing(b)) {
     stop("Missing argument b in organize_args.")
   }
-  if (is.null(b)){
+  if (is.null(b)) {
     stop("Null argument b in organize_args.")
   }
-  if (is.list(a) | is.list(b)){
+  if (is.list(a) | is.list(b)) {
     # One is a list and the other is not.  Make the other into a list.
-    if (! is.list(a)){
+    if (!is.list(a)) {
       a <- make_list(a, n = length(b))
     }
-    if (! is.list(b)){
+    if (!is.list(b)) {
       b <- make_list(b, n = length(a))
     }
   }
-  if (is.list(a) & is.list(b)){
+  if (is.list(a) & is.list(b)) {
     # Both a and b are lists. Ensure they're the same length.
     stopifnot(length(a) == length(b))
     # Now return the lists.
@@ -1449,7 +1501,7 @@ organize_args <- function(a, b, match_type = "all"){
   }
 
   # Neither a nor b are lists.
-  if (! is.matrix(a) & ! is.matrix(b)){
+  if (!is.matrix(a) & !is.matrix(b)) {
     # Neither a nor b are matrices. Assume we have two constants. Return the constants in a vector.
     return(list(a = a, b = b))
   }
@@ -1457,31 +1509,31 @@ organize_args <- function(a, b, match_type = "all"){
   # Neither a nor b are lists.
   # We don't know if one or both a and b is a matrix.
   # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
-  if (! is.matrix(a) & is.matrix(b)){
+  if (!is.matrix(a) & is.matrix(b)) {
     a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b)) %>%
       setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
-  } else if (is.matrix(a) & ! is.matrix(b)){
+  } else if (is.matrix(a) & !is.matrix(b)) {
     b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a)) %>%
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
 
   # Assume that both a and b are now matrices.
   # Need to check whether matchtype is a known type.
-  if (! match_type %in% c("all", "matmult")){
+  if (!match_type %in% c("all", "matmult"))  {
     stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
   
   # Verify that row and column types are appropriate.
-  if (match_type == "all"){
+  if (match_type == "all") {
     # If neither rowtype nor coltype are set,
     # skip these tests
-    if (!is.null(rowtype(a)) & !is.null(coltype(a)) & !is.null(rowtype(b)) & !is.null(coltype(b))){
+    if (!is.null(rowtype(a)) & !is.null(coltype(a)) & !is.null(rowtype(b)) & !is.null(coltype(b))) {
       # Verify that the row type of a and b are the same.
-      if (rowtype(a) != rowtype(b)){
+      if (rowtype(a) != rowtype(b)) {
         stop(paste0("rowtype(a) (", rowtype(a), ") != rowtype(b) (", rowtype(b),")."))
       }
       # Verify that the column type of a and b are the same.
-      if (coltype(a) != coltype(b)){
+      if (coltype(a) != coltype(b)) {
         stop(paste0("coltype(a) (", coltype(a), ") != coltype(b) (", coltype(b),")."))
       }
     }
@@ -1489,21 +1541,21 @@ organize_args <- function(a, b, match_type = "all"){
   if (match_type == "matmult") {
     # If neither coltype(a) nor rowtype(b) are set,
     # skip this test
-    if (!is.null(coltype(a)) & !is.null(rowtype(b))){
+    if (!is.null(coltype(a)) & !is.null(rowtype(b))) {
       # Verify that the column type of a and the row type of b are the same.
-      if (coltype(a) != rowtype(b)){
+      if (coltype(a) != rowtype(b)) {
         stop(paste0("coltype(a) (", coltype(a), ") != rowtype(b) (", rowtype(b),")."))
       }
     }
   } 
 
   # Ensure that matrices have correct row and column names and are in same order.
-  if (match_type == "all"){
+  if (match_type == "all") {
     matrices <- complete_and_sort(a, b)
     outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     outb <- matrices$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
   }
-  if (match_type == "matmult"){
+  if (match_type == "matmult") {
     # When the match_type is "matmult", we need to ensure that the columns of a match the rows of b.
     # To do so, we transpose b prior to completing and sorting, and we complete and sort on columns.
     matrices <- complete_and_sort(a, transpose_byname(b), margin = 2)
@@ -1552,11 +1604,11 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
   match.arg(pattern_type)
   out <- row_col_names
   # Add leading caret if needed
-  if (pattern_type %in% c("exact", "leading")){
+  if (pattern_type %in% c("exact", "leading")) {
     out <- paste0("^", out)
   }
   # Add trailing dollar sign if needed
-  if (pattern_type %in% c("exact", "trailing")){
+  if (pattern_type %in% c("exact", "trailing")) {
     out <- paste0(out, "$")
   }
   # Escape parentheses if needed, but it is tricky.

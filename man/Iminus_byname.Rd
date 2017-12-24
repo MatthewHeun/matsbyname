@@ -20,10 +20,13 @@ Furthermore, if \code{m} is not square, it will be made square
 before subtracting from \code{I} by calling \code{complete_and_sort}.
 }
 \examples{
+library(magrittr)
 m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
-diag(1, nrow = 2) - m # Rows and columns of A are unsorted
-Iminus_byname(m) # Rows and columns of A are sorted prior to subtracting from the identity matrix
+# Rows and columns are unsorted
+diag(1, nrow = 2) - m 
+# Rows and columns are sorted prior to subtracting from the identity matrix
+Iminus_byname(m) 
 # This also works with lists
 Iminus_byname(list(m,m))
 # If the m is not square before subtracting from I,

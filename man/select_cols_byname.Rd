@@ -40,6 +40,7 @@ Some typical patterns are:
 Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 }
 \examples{
+library(magrittr)
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 select_cols_byname(m, retain_pattern = make_pattern(c("p1", "p4"), pattern_type = "exact"))

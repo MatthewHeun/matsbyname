@@ -50,5 +50,7 @@ sort_rows_cols(list(m,m)) # Sorts rows and columns for both m's.
 # Row order is applied to all m's.  Column order is natural.
 sort_rows_cols(x = list(m,m), margin = list(1, c(1,2)), roworder = c("r5", "r3", "r1")) 
 # Different roworders given for each m.
-sort_rows_cols(x = list(m,m), margin = list(1, c(1,2)), roworder = list(c("r1", "r3", "r5"), c("r5", "r3", "r1"))) 
+sort_rows_cols(x = list(m,m), 
+               margin = list(1, c(1,2)), 
+               roworder = list(c("r1", "r3", "r5"), c("r5", "r3", "r1"))) 
 }

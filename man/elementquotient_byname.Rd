@@ -24,6 +24,8 @@ A matrix representing the name-wise element quotient of \code{dividend} and \cod
 Name-wise matrix element division
 }
 \examples{
+library(magrittr)
+library(dplyr)
 elementquotient_byname(100, 50)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")

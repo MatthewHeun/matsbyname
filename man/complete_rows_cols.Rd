@@ -55,12 +55,16 @@ complete_rows_cols(m1, m2, fill = 100) # Adds columns c3 and c4 with 100's
 complete_rows_cols(data.frame(m1), data.frame(m2)) # Also works with data frames
 complete_rows_cols(m1, m1) # Nothing added, because everything already present
 complete_rows_cols(m1, t(m1)) # Adds empty c1, c2 rows; Adds empty r1, r2, r3 columns
-complete_rows_cols(m1) # Same as previous. With missing matrix, complete relative to transpose of x.
-complete_rows_cols(m1, names = list(c("r10", "r11"), c("c10", "c11"))) # Adds rows r10, r11; cols c10, c11
+# Same as previous. With missing matrix, complete relative to transpose of x.
+complete_rows_cols(m1) 
+# Adds rows r10, r11; cols c10, c11
+complete_rows_cols(m1, names = list(c("r10", "r11"), c("c10", "c11"))) 
 # Also works with lists
 complete_rows_cols(x = list(m1,m1))
 complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2))
-complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 1) # No changes because r2, r3 already present in m1
+# No changes because r2, r3 already present in m1
+complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 1) 
 complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 2)
-complete_rows_cols(x = list(m1,m1), names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
+complete_rows_cols(x = list(m1,m1), 
+                   names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
 }

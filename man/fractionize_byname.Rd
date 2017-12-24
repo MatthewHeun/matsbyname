@@ -21,6 +21,7 @@ This function divides all entries in \strong{M} by the specified sum,
 thereby "fractionizing" the matrix.
 }
 \examples{
+library(magrittr)
 M <- matrix(c(1, 5,
               4, 5),
             nrow = 2, ncol = 2, byrow = TRUE, 

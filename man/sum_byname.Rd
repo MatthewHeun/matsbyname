@@ -21,6 +21,8 @@ A matrix representing the name-wise sum of \code{addend} and \code{augend}
 Name-wise addition of matrices.
 }
 \examples{
+library(magrittr)
+library(dplyr)
 sum_byname(2, 2)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")

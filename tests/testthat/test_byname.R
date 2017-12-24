@@ -907,8 +907,8 @@ test_that("Iminus_byname works as expected", {
     setrowtype("Industries") %>% setcoltype("Products")
   expect_equal(Iminus_byname(m2), 
                matrix(c(0, -4, 0, 
-                        -2, -4, 0, 
-                        -3, -6, 1), 
+                       -2, -4, 0, 
+                       -3, -6, 1), 
                       nrow = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c"))) %>% 
                  setrowtype(rowtype(m2)) %>% setcoltype(coltype(m2)))
 })

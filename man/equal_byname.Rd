@@ -20,6 +20,7 @@ all entries in the matrix are same.
 Matries are completed and sorted relative to one another before comparison
 }
 \examples{
+library(magrittr)
 a <- matrix(1:4, nrow = 2)
 b <- matrix(1:4, nrow = 2)
 equal_byname(a, b)

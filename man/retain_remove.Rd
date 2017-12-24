@@ -21,7 +21,9 @@ Any number of leading \code{-} will be ignored when deciding the names of column
 \examples{
 retain_remove("c1")
 retain_remove("-c1")
-retain_remove(c("c1", "-c1")) # Retain takes precedence.
-names <- c("-c1", "-c4", "-----c3", "c2", "c4", "c4") # Multiple "-" ignored.
+# Retain takes precedence.
+retain_remove(c("c1", "-c1")) 
+# Multiple "-" ignored.
+names <- c("-c1", "-c4", "-----c3", "c2", "c4", "c4") 
 retain_remove(names)
 }

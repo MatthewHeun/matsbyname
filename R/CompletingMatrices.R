@@ -44,32 +44,36 @@ library("parallel")
 #' complete_rows_cols(data.frame(m1), data.frame(m2)) # Also works with data frames
 #' complete_rows_cols(m1, m1) # Nothing added, because everything already present
 #' complete_rows_cols(m1, t(m1)) # Adds empty c1, c2 rows; Adds empty r1, r2, r3 columns
-#' complete_rows_cols(m1) # Same as previous. With missing matrix, complete relative to transpose of x.
-#' complete_rows_cols(m1, names = list(c("r10", "r11"), c("c10", "c11"))) # Adds rows r10, r11; cols c10, c11
+#' # Same as previous. With missing matrix, complete relative to transpose of x.
+#' complete_rows_cols(m1) 
+#' # Adds rows r10, r11; cols c10, c11
+#' complete_rows_cols(m1, names = list(c("r10", "r11"), c("c10", "c11"))) 
 #' # Also works with lists
 #' complete_rows_cols(x = list(m1,m1))
 #' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2))
-#' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 1) # No changes because r2, r3 already present in m1
+#' # No changes because r2, r3 already present in m1
+#' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 1) 
 #' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 2)
-#' complete_rows_cols(x = list(m1,m1), names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
+#' complete_rows_cols(x = list(m1,m1), 
+#'                    names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
 complete_rows_cols <- function(x, matrix = NA, names = dimnames(matrix), fill = 0, margin = c(1,2)){
-  if (is.null(matrix)){
+  if (is.null(matrix)) {
     matrix <- NA
   }
-  if (any(is.null(names))){
+  if (any(is.null(names))) {
     names <- NA
   }
-  if (is.null(fill)){
+  if (is.null(fill)) {
     fill <- NA
   }
-  if (is.list(x) & !is.data.frame(x)){
-    if (any(is.na(matrix))){
+  if (is.list(x) & !is.data.frame(x)) {
+    if (any(is.na(matrix))) {
       matrix <- make_list(NA, length(x))
     }
-    if (any(is.na(names))){
+    if (any(is.na(names))) {
       names <- lapply(matrix, dimnames)
     }
-    if (is.na(fill)){
+    if (is.na(fill)) {
       fill <- make_list(NA, length(x))
     }
     margin <- make_list(margin, length(x))
@@ -78,23 +82,25 @@ complete_rows_cols <- function(x, matrix = NA, names = dimnames(matrix), fill = 
   for (mar in margin) {
     # Check that row or column names are available for the margin to be completed.
     # If not, this is almost certainly an unintended error by the caller.
-    if (is.null(dimnames(x)[[mar]])){
+    if (is.null(dimnames(x)[[mar]])) {
       stop(paste("NULL dimnames for margin =", mar, "on x"))
     }
   }
-  if (any(is.na(names))){
+  if (any(is.na(names))) {
     # No other names were provided, nor was there a matrix from which names could be extracted.
     # Instead, complete x relative to itself. The easy way is to complete x relative to its transpose.
     return(complete_rows_cols(x, t(x), margin = margin))
   }
-  if (1 %in% margin){
+  if (1 %in% margin) {
     zerorownames <- setdiff(names[[1]], rownames(x))
-    zerorows <- matrix(fill, ncol=ncol(x), nrow=length(zerorownames), dimnames = list(zerorownames, colnames(x)))
+    zerorows <- matrix(fill, ncol = ncol(x), nrow = length(zerorownames), 
+                       dimnames = list(zerorownames, colnames(x)))
     x <- rbind(x, zerorows)
   }
-  if (2 %in% margin){
+  if (2 %in% margin) {
     zerocolnames <- setdiff(names[[2]], colnames(x))
-    zerocols <- matrix(fill, ncol=length(zerocolnames), nrow=nrow(x), dimnames = list(rownames(x), zerocolnames))
+    zerocols <- matrix(fill, ncol = length(zerocolnames), nrow = nrow(x), 
+                       dimnames = list(rownames(x), zerocolnames))
     x <- cbind(x, zerocols)
   }
   return(x)
@@ -139,20 +145,22 @@ complete_rows_cols <- function(x, matrix = NA, names = dimnames(matrix), fill = 
 #' # Row order is applied to all m's.  Column order is natural.
 #' sort_rows_cols(x = list(m,m), margin = list(1, c(1,2)), roworder = c("r5", "r3", "r1")) 
 #' # Different roworders given for each m.
-#' sort_rows_cols(x = list(m,m), margin = list(1, c(1,2)), roworder = list(c("r1", "r3", "r5"), c("r5", "r3", "r1"))) 
+#' sort_rows_cols(x = list(m,m), 
+#'                margin = list(1, c(1,2)), 
+#'                roworder = list(c("r1", "r3", "r5"), c("r5", "r3", "r1"))) 
 sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
-  if (is.list(x) & !is.data.frame(x)){
+  if (is.list(x) & !is.data.frame(x)) {
     margin <- make_list(margin, n = length(x))
     roworder <- make_list(roworder, n = length(x))
     colorder <- make_list(colorder, n = length(x))
     return(mcMap(sort_rows_cols, x = x, margin = margin, roworder = roworder, colorder = colorder))
   }
-  if (any(is.na(roworder))){
-    if (! is.null(rownames(x))){
+  if (any(is.na(roworder))) {
+    if (!is.null(rownames(x))) {
       roworder <- sort(rownames(x))
     } else {
       # Can't sort on rows, because they are not named.
-      if (2 %in% margin){
+      if (2 %in% margin) {
         # Remove 1 from margin, if it is there.
         margin <- 2
       } else {
@@ -161,8 +169,8 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
       }
     }
   }
-  if (any(is.na(colorder))){
-    if (! is.null(colnames(x))){
+  if (any(is.na(colorder))) {
+    if (! is.null(colnames(x))) {
       colorder <- sort(colnames(x))
     } else {
       # Can't sort on columns, because they are not named.

@@ -11,7 +11,8 @@ matrixproduct_byname(multiplicand, multiplier)
 
 \item{multiplier}{Multiplier matrix
 
-Performs a union and sorting of multiplicand rows and multiplier columns by name prior to multiplication.
+Performs a union and sorting of multiplicand rows and multiplier columns by name 
+prior to multiplication.
 Zeroes are inserted for missing matrix elements.
 Doing so ensures that
 the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
@@ -32,11 +33,14 @@ A matrix representing the name-wise product of \code{multiplicand} and \code{mul
 Name-wise matrix multiplication
 }
 \examples{
+library(magrittr)
+library(dplyr)
 V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("g2", "g1"))) \%>\%
   setrowtype("Commodities") \%>\% setcoltype("Industries")
-matrixproduct_byname(V, G) # Succeeds because G is completed to include a row named c3 (that contains zeroes).
+# Succeeds because G is completed to include a row named c3 (that contains zeroes).
+matrixproduct_byname(V, G) 
 \dontrun{V \%*\% G} # Fails because E lacks a row named c3.
 # This also works with lists
 matrixproduct_byname(list(V,V), list(G,G))
