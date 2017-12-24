@@ -4,16 +4,20 @@ Title: Matrix mathematics that respects dimnames and provides row and column
     types
 Version: 0.1
 Date: 2017-01-29
-Author: Matthew Kuperus Heun
+Author: Matthew Kuperus Heun <matthew.heun@me.com>
 Maintainer: Matthew Kuperus Heun <matthew.heun@me.com>
-Description: An implementation of matrix mathematics operations that respects 
+Description: An implementation of matrix mathematics that respects 
     names for rows and columns. 
     For example, when two matrices with different row and column names are summed, 
-    the value of the sum contains the union of rows and columns of both matrices,
+    the sum contains the union of rows and columns of both matrices,
     with missing rows and columns inserted as zeroes prior to the sum operation.
     This package also provides the capability to provide "types" for the data 
     in rows and columns. 
-    For example, rows might contain industries and columns might contain products.
+    For example, rows might contain \code{industries} and 
+    columns might contain \code{products}.
+    Finally, the functions in this package work equally well with individual matrices
+    and with lists of matrices, 
+    thereby allowing use in \code{dplyr}-style programming.
 License: MIT + file LICENSE
 RoxygenNote: 6.0.1
 Imports:
