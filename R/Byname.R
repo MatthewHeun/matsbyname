@@ -746,6 +746,8 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #'
 #' @return a list with two items: \code{retain_names} and \code{remove_names}.
 #'
+#' @importFrom rlang .data
+#' 
 #' @export
 #'
 #' @examples
@@ -761,7 +763,8 @@ retain_remove <- function(row_col_names){
   remove_indices <- which(startsWith(row_col_names, "-"))
   retain_indices <- setdiff(1:length(row_col_names), remove_indices)
   # Get the names of columns to be removed and retained
-  remove_names <- row_col_names[remove_indices] %>% sub("^-*", "", .) %>% unique # removes any number of leading "-"
+  # The next line removes any number of leading "-"
+  remove_names <- sub("^-*", "", row_col_names[remove_indices]) %>% unique
   retain_names <- row_col_names[retain_indices] %>% unique
   # Get the names of columns that are in both remove and retain
   common_names <- intersect(remove_names, retain_names)
@@ -959,9 +962,8 @@ sumall_byname <- function(m){
 #' @export
 #' 
 #' @importFrom parallel mcMap
-#' @import magrittr
-#' @import dplyr
-#'
+#' @importFrom magrittr %>%
+#' 
 #' @examples
 #' library(magrittr)
 #' m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
@@ -1384,6 +1386,7 @@ equal_byname <- function(a, b) {
 #'
 #' @return a named list of rows or columns extracted from \code{m}
 #' @export
+#' @importFrom magrittr set_names
 #'
 #' @examples
 #' library(magrittr)

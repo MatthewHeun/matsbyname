@@ -20,4 +20,7 @@ Imports:
     dplyr,
     magrittr,
     OpenMx,
-    parallel
+    parallel,
+    rlang
+Suggests:
+    testthat

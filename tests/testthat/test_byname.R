@@ -614,7 +614,7 @@ context("Row selection")
 
 m_rownames <- paste0("i", 1:4)
 m_colnames <- paste0("p", 1:4)
-m <- matrix(1:16, ncol = 4, dimnames=list(m_rownames, m_colnames)) %>%
+m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
   setrowtype("Industries") %>% setcoltype("Products")
 
 n1 <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
