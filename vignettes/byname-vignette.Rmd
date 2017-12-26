@@ -1,5 +1,5 @@
 ---
-title: "Matrix operations performed *byname*"
+title: "<tt>byname</tt> Vignette"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
