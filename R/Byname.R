@@ -39,8 +39,8 @@ library(dplyr)
 #' DF <- data.frame(U = I(list()), Y = I(list()))
 #' DF[[1,"U"]] <- U
 #' DF[[2,"U"]] <- U
-#' DF[[1,"G"]] <- Y
-#' DF[[2,"G"]] <- Y
+#' DF[[1,"Y"]] <- Y
+#' DF[[2,"Y"]] <- Y
 #' sum_byname(DF$U, DF$Y)
 #' DF %>% mutate(sums = sum_byname(U, Y))
 #' sum_byname(U) # If only one argument, return it.
