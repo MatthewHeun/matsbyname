@@ -9,7 +9,6 @@
 \packageDescription{byname}
 }
 \details{
-
 The DESCRIPTION file:
 \packageDESCRIPTION{byname}
 \packageIndices{byname}
@@ -17,19 +16,20 @@ The DESCRIPTION file:
 \author{
 \packageAuthor{byname}
 
-Maintainer: \packageMaintainer{byname}
-}
-\references{
+\strong{Maintainer}: \packageMaintainer{byname}
 }
 \keyword{
 array
 }
 \seealso{
 The
-\code{\link[byname:byname-package]{byname}} 
-package is used extensively by the
 \code{\link[matsindf:matsindf-package]{matsindf}}
-package.
+package is useful to create data frames containing 
+columns of matrices.
+Functions in this package
+(\code{\link[byname:byname-package]{byname}}) 
+can operate on data frames created by 
+\code{\link[matsindf:matsindf-package]{matsindf}}.
 }
 \examples{
 library(magrittr)

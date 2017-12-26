@@ -3,8 +3,8 @@ Type: Package
 Title: Matrix mathematics that respects dimnames and provides row and column
     types
 Version: 0.1
-Date: 2017-01-29
-Author: Matthew Kuperus Heun <matthew.heun@me.com>
+Date: 2017-12-25
+Author: Matthew Kuperus Heun \email{matthew.heun@me.com}
 Maintainer: Matthew Kuperus Heun <matthew.heun@me.com>
 Description: An implementation of matrix mathematics that respects 
     names for rows and columns. 
@@ -17,7 +17,7 @@ Description: An implementation of matrix mathematics that respects
     columns might contain \code{products}.
     Finally, the functions in this package work equally well with individual matrices
     and with lists of matrices, 
-    thereby allowing use in \code{dplyr}-style programming.
+    thereby allowing use in \code{\link[dplyr:dplyr-package]{dplyr}}-style programming.
 License: MIT + file LICENSE
 RoxygenNote: 6.0.1
 Imports:
