@@ -18,18 +18,18 @@ library(dplyr)
 #' library(magrittr)
 #' library(dplyr)
 #' sum_byname(2, 2)
-#' commoditynames <- c("c1", "c2")
+#' productnames <- c("p1", "p2")
 #' industrynames <- c("i1", "i2")
-#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
-#'   setrowtype("Commodities") %>% setcoltype("Industries")
-#' Y <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
-#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+#'   setrowtype("Products") %>% setcoltype("Industries")
 #' U + Y # Non-sensical.  Row and column names not respected.
 #' sum_byname(U, Y)
 #' sum_byname(U, 100)
 #' sum_byname(200, Y)
-#' V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, commoditynames)) %>%
-#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, productnames)) %>%
+#'   setrowtype("Industries") %>% setcoltype("Products")
 #' U + V # row and column names are non-sensical and blindly taken from first argument (U)
 #' \dontrun{sum_byname(U, V)} # Fails, because row and column types are different
 #' # This also works with lists

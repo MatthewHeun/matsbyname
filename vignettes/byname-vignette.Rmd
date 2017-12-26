@@ -4,7 +4,7 @@ author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{byname Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,7 +14,107 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library(magrittr)
+library(dplyr)
+library(byname)
 ```
+
+
+## Introduction: The need for <tt>byname</tt>
+
+Built-in functions for matrix operations in <tt>R</tt>
+(and other languages) do not respect <tt>dimnames</tt>.
+
+```{r}
+productnames <- c("p1", "p2")
+industrynames <- c("i1", "i2")
+U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames))
+U
+Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames)))
+Y
+# Non-sensical.  Row and column names not respected.
+U + Y 
+```
+
+Analysts performing matrix operations must maintain strict order of 
+rows and columns across all calculations.
+
+```{r}
+# Make a new version of Y (Y2), this time with dimnames in same order as U
+Y2 <- matrix(4:1, ncol = 2, dimnames = list(productnames, industrynames))
+Y2
+# Now the sum is sensible. Row and column names are respected.
+U + Y2
+```
+
+The required bookkeeping can be both cumbersome and problematic.
+
+The bookkeeping becomes cumbersome when analyses span many years (for example),
+requiring the analyst to know *a-priori* 
+the set of all rows and columns present in **all** years. 
+
+```{r}
+Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
+Y3
+# Non-sensical. Row and column names not respected. Both "p3" and "ie" are missing from sum.
+U + Y3
+# Rather, need to insert missing rows in both U and Y before summing.
+U_2000 <- matrix(c(1, 3, 0,
+                   2, 4, 0,
+                   0, 0, 0),
+                 ncol = 3, byrow = TRUE, 
+                 dimnames = list(c("p1", "p2", "p3"), c("i1", "i2", "i3")))
+Y_2000 <- matrix(c(5, 0, 7,
+                   0, 0, 0, 
+                   6, 0, 8),
+                 ncol = 3, byrow = TRUE,
+                 dimnames = list(c("p1", "p2", "p3"), c("i1", "i2", "i3")))
+U_2000
+Y_2000
+U_2000 + Y_2000
+```
+
+The bookkeeping becomes problematic when rows or columns of zeroes are added
+and an inversion operation is needed.
+
+```{r}
+solve(U)
+tryCatch(solve(U_2000), error = function(err){print(err)})
+```
+
+For ease of programming,
+these operations should be performed <tt>byname</tt>
+such that missing rows or columns are inserted automatically
+or zero rows or columns can be removed
+prior to performing matrix algebra operations. 
+
+
+## <tt>byname</tt> is the answer
+
+The <tt>byname</tt> package provids an implementation of 
+matrix mathematics that respects dimnames and allows
+removal of zer0 rows or columns as needed.
+The previous problems can be solved without intervention by the programmer
+as shown below.
+
+```{r}
+# Same as U + Y2
+sum_byname(U, Y)
+# Same as U_2000 + Y_2000
+sum_byname(U, Y3)
+# Same as solve(U)
+# TODO Eliminate zero rows/cols before solving.
+Y_2000
+```
+
+
+for the purposes of obtaining consistent rows or columns 
+prior to performing any matrix operations
+
+
+problematic if matrices for different years contain different rows and columns.
+especially if analyses span many years
+
 
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
