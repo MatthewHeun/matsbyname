@@ -5,7 +5,9 @@ knitr::opts_chunk$set(
 )
 library(magrittr)
 library(dplyr)
+library(tidyr)
 library(byname)
+library(matsindf)
 
 ## ------------------------------------------------------------------------
 productnames <- c("p1", "p2")
@@ -51,8 +53,87 @@ tryCatch(solve(U_2000), error = function(err){print(err)})
 ## ------------------------------------------------------------------------
 # Same as U + Y2, without needing to create Y2.
 sum_byname(U, Y)
-# Same as U_2000 + Y_2000, without needing to modify U and Y3.
+# Same as U_2000 + Y_2000, but U and Y3 are unmodified.
 sum_byname(U, Y3)
-# Eliminate Same result as solve(U)
-U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve
+# Eliminate zero-filled rows and columns. Same result as solve(U).
+U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve()
+
+## ------------------------------------------------------------------------
+A <- matrix(1:4, nrow = 2, ncol = 2) %>% 
+  setrownames_byname(productnames) %>% setcolnames_byname(industrynames) %>% 
+  setrowtype("Products") %>% setcoltype("Industries")
+A
+B <- matrix(8:5, nrow = 2, ncol = 2) %>% 
+  setrownames_byname(productnames) %>% setcolnames_byname(industrynames) %>% 
+  setrowtype("Products") %>% setcoltype("Industries")
+B
+C <- matrix(1:4, nrow = 2, ncol = 2) %>% 
+  setcolnames_byname(productnames) %>% setrownames_byname(industrynames) %>% 
+  setrowtype("Industries") %>% setcoltype("Products")
+C
+
+## ------------------------------------------------------------------------
+sum_byname(A, B)
+
+## ------------------------------------------------------------------------
+tryCatch(sum_byname(A, C), error = function(err){print(err)})
+
+## ------------------------------------------------------------------------
+sum_byname(A, transpose_byname(C))
+
+## ------------------------------------------------------------------------
+elementproduct_byname(A, B)
+elementquotient_byname(A, B)
+
+## ------------------------------------------------------------------------
+matrixproduct_byname(A, C)
+
+## ------------------------------------------------------------------------
+tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
+
+## ------------------------------------------------------------------------
+sum_byname(A, list(B, B))
+elementproduct_byname(list(A, A), B)
+matrixproduct_byname(list(A, A), list(C, C))
+
+## ------------------------------------------------------------------------
+tidy <- data.frame(
+  matrix = c("A", "A", "A", "A", "B", "B", "B", "B"),
+  row = c("p1", "p1", "p2", "p2", "p1", "p1", "p2", "p2"),
+  col = c("i1", "i2", "i1", "i2", "i1", "i2", "i1", "i2"),
+  vals = c(1, 3, 2, 4, 8, 6, 7, 5)
+) %>% 
+  mutate(
+    rowtype = "Industries",
+    coltype  = "Products"
+  ) %>% 
+  group_by(matrix)
+tidy
+mats <- tidy %>% 
+  collapse_to_matrices(matnames = "matrix", values = "vals", 
+                       rownames = "row", colnames = "col", 
+                       rowtypes = "rowtype", coltypes = "coltype") %>% 
+  rename(
+    matrix.name = matrix,
+    matrix = vals
+  )
+mats
+mats$matrix[[1]]
+mats$matrix[[2]]
+
+## ------------------------------------------------------------------------
+result <- mats %>% 
+  spread(key = matrix.name, value = matrix) %>% 
+  rbind(., .) %>% 
+  mutate(
+    c = 1:2,
+    # Sums all rows of mats with a single instruction.
+    sum = sum_byname(A, B),
+    product = elementproduct_byname(c, sum)
+  )
+result
+result$sum[[1]]
+result$sum[[2]]
+result$product[[1]]
+result$product[[2]]
 
