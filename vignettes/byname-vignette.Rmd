@@ -56,6 +56,8 @@ The required bookkeeping can be both cumbersome and problematic.
 The bookkeeping is cumbersome when analyses span many years (for example),
 requiring the analyst to know *a-priori* 
 the set of all rows and columns present in **all** years. 
+Indeed, in this example, tracking the emergence and disappearance of products and industries
+over many years should be done by the data itself, not the analyst.
 
 ```{r}
 Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
@@ -92,8 +94,11 @@ tryCatch(solve(U_2000), error = function(err){print(err)})
 For ease of programming,
 matrix operations should be performed *byname*,
 without analyst intervention,
-such that missing rows or columns are inserted automatically
-or zero rows or columns can be removed as needed
+such that 
+
+* missing rows or columns are inserted automatically and only as needed and
+* zero rows or columns can be removed as needed
+
 prior to performing matrix algebra operations. 
 
 
@@ -103,7 +108,7 @@ The <tt>byname</tt> package implements
 matrix mathematics in a way that 
 respects row and column names and 
 allows removal of zero-filled rows or columns as needed.
-The challenges shown above can be solved
+The challenges described above can be solved
 with the <tt>byname</tt> package.
 
 ```{r}
@@ -115,7 +120,7 @@ sum_byname(U, Y3)
 U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve()
 ```
 
-In addition to <tt>sum_byname</tt>,
+In addition to <tt>sum_byname</tt> and <tt>clean_byname</tt>,
 the <tt>byname</tt> package contains many additional 
 matrix algebra functions 
 that respect the names of rows and columns. 
@@ -128,14 +133,14 @@ Commonly-used functions are:
 * <tt>elementquotient_byname</tt>
 * <tt>rowsums_byname</tt>
 * <tt>colsums_byname</tt>
-* <tt>invert_byname</tt>
-* <tt>transpose_byname</tt>
+* <tt>invert_byname</tt>, and 
+* <tt>transpose_byname</tt>.
 
 
 ## Additional features
 
 The <tt>byname</tt> package has several additional features
-to assist the analyst.
+that both simplify analyses and ensure their correctness.
 
 
 ### Setting row and column names
@@ -159,7 +164,8 @@ In addition,
 Data types are character strings stored
 as attributes of the matrix object.
 The <tt>byname</tt> functions ensure correctness
-of row and column types, 
+of matrix operations by checking
+row and column types, 
 throwing errors if needed.
 Consider matrices **A**, **B**, and **C**:
 
@@ -227,8 +233,19 @@ are different.
 tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
 ```
 
+The analogy is this:
+Row and column types are to matrices in matrix algebra as 
+units are to scalars in scalar algebra.
+As careful tracking of units is a necessary but not sufficient condition to achieve
+correctness of scalar calculations,
+so careful tracking of row and column types is a necessary but not sufficient condition to achieve
+correctness of matrix algebra calculations.
+Because <tt>byname</tt> keeps track of row and column types automatically,
+much of the burden of dealing with row and column types is removed from the analyst.
 Analysts are encouraged to set row and column types on matrices,
-thereby allowing <tt>byname</tt> to ensure correctness of matrix operations.
+thereby taking advantage of <tt>byname</tt>'s
+type-tracking feature 
+to improve their matrix-based analyses.
 
 
 ### <tt>byname</tt> functions also work with lists
@@ -248,7 +265,8 @@ matrixproduct_byname(list(A, A), list(C, C))
 ### <tt>byname</tt> works well with <tt>matsindf</tt>
 
 The <tt>matsindf</tt> package provides functions that convert
-tidy data frames of matrix elements into data frames of matrices.
+tidy^[See http://tidyr.tidyverse.org/articles/tidy-data.html.] data frames
+of matrix elements into data frames of matrices.
 (For details, see the <tt>matsindf</tt> vignette.)
 The following example demonstrates an approach to creating a data frame of matrices.
 
@@ -262,10 +280,10 @@ tidy <- data.frame(
   mutate(
     rowtype = "Industries",
     coltype  = "Products"
-  ) %>% 
-  group_by(matrix)
+  )
 tidy
 mats <- tidy %>% 
+  group_by(matrix) %>% 
   collapse_to_matrices(matnames = "matrix", values = "vals", 
                        rownames = "row", colnames = "col", 
                        rowtypes = "rowtype", coltypes = "coltype") %>% 
@@ -281,7 +299,7 @@ mats$matrix[[2]]
 Data frames of matrices, 
 such as those created by <tt>matsindf</tt>,
 are like magic spreadsheets 
-in which cells contain entire matrices.
+in which single cells contain entire matrices.
 
 
 ## Putting it all together
@@ -291,10 +309,12 @@ Because
 * the <tt>matsindf</tt> package can create data frames of matrices and
 * data frame columns are implemented as lists and
 * <tt>byname</tt> works well with lists and 
-* the <tt>tidyr</tt> and <tt>dplyr</tt> packages are designed to work with data frames,
+* the [<tt>tidyr</tt>](http://tidyr.tidyverse.org) and 
+[<tt>dplyr</tt>](http://dplyr.tidyverse.org) packages work with data frames,
 
 <tt>byname</tt> functions can be used with 
-<tt>tidyr</tt> and <tt>dplyr</tt> functions 
+[<tt>tidyr</tt>](http://tidyr.tidyverse.org) and 
+[<tt>dplyr</tt>](http://dplyr.tidyverse.org) functions 
 (such as
 <tt>spread</tt> and <tt>mutate</tt>)
 to perform matrix algebra within data frames
@@ -313,6 +333,7 @@ result <- mats %>%
     c = 1:2,
     # Sums all rows of mats with a single instruction.
     sum = sum_byname(A, B),
+    # Multiplies matrices in the sum column by corresponding constants in the c column.
     product = elementproduct_byname(c, sum)
   )
 result
@@ -323,6 +344,30 @@ result$product[[2]]
 ```
 
 
+## Suggested workflow
+
+A suggested analysis workflow is as follows:
+
+* Munge data into tidy data frame with columns for matrix name, 
+row name, column name, row type, column type, and element value,
+similar to <tt>tidy</tt> above.
+* Use <tt>matsindf::collapse_to_matrices</tt>
+to create a data frame of matrices with columns for matrix names and 
+matrices themselves,
+similar to <tt>mats</tt> above.
+* <tt>tidyr::spread</tt> the matrices to obtain a data frame with columns for each matrix,
+similar to <tt>results</tt> above.
+* Perform matrix algebra operations on the columns of matrices
+using <tt>byname</tt> functions.
+* <tt>tidyr::gather</tt> the columns to obtain a tidy data frame of matrices.
+* Usse <tt>matsindf::expand_to_tidy</tt> to create a tidy data frame of matrix elements.
+* <tt>tidyr::spread</tt> the data as necessary.
+* Graph or perform other manipulations of the data.
+
+For additional details and an example of this workflow, 
+see the <tt>matsindf</tt> vignette.
+
+
 ## Summary
 
 The <tt>byname</tt> package simplifies analyses 
@@ -330,5 +375,8 @@ in which row and column names ought to be respected.
 It provides optional row and column types, thereby
 ensuring that only valid matrix operations are performed.
 Finally, <tt>byname</tt> functions work equally well with lists
-to allow use of <tt>byname</tt> functions with <tt>tidyr</tt> and <tt>dplyr</tt> 
+to allow use of <tt>byname</tt> functions with 
+[<tt>tidyr</tt>](http://tidyr.tidyverse.org)
+and 
+[<tt>dplyr</tt>](http://dplyr.tidyverse.org)
 approaches to manipulating data.
