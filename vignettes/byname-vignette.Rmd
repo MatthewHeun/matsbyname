@@ -16,14 +16,17 @@ knitr::opts_chunk$set(
 )
 library(magrittr)
 library(dplyr)
+library(tidyr)
 library(byname)
+library(matsindf)
 ```
 
 
 ## Introduction: The need for <tt>byname</tt>
 
 Built-in functions to perform matrix operations in <tt>R</tt>
-(and other languages) do not respect <tt>dimnames</tt>.
+(and other languages) do not respect the names of rows and columns
+(<tt>dimnames</tt> in <tt>R</tt>).
 
 ```{r}
 productnames <- c("p1", "p2")
@@ -36,7 +39,8 @@ Y
 U + Y 
 ```
 
-Analysts performing matrix operations must maintain strict order of 
+As a result, 
+analysts performing matrix operations must maintain strict order of 
 rows and columns across all calculations.
 
 ```{r}
@@ -83,7 +87,8 @@ tryCatch(solve(U_2000), error = function(err){print(err)})
 ```
 
 For ease of programming,
-matrix operations should be performed <tt>byname</tt>
+matrix operations should be performed *byname*,
+without analyst intervention,
 such that missing rows or columns are inserted automatically
 or zero rows or columns can be removed as needed
 prior to performing matrix algebra operations. 
@@ -91,22 +96,24 @@ prior to performing matrix algebra operations.
 
 ## <tt>byname</tt> is the answer
 
-The <tt>byname</tt> package provids an implementation of 
-matrix mathematics that respects dimnames and allows
-removal of zero-filled rows or columns as needed.
+The <tt>byname</tt> package implements
+matrix mathematics in a way that 
+respects row and column names and 
+allows removal of zero-filled rows or columns as needed.
 The challenges shown above can be solved without intervention
-as shown below.
+with the <tt>byname</tt> package.
 
 ```{r}
 # Same as U + Y2, without needing to create Y2.
 sum_byname(U, Y)
-# Same as U_2000 + Y_2000, without needing to modify U and Y3.
+# Same as U_2000 + Y_2000, but U and Y3 are unmodified.
 sum_byname(U, Y3)
-# Eliminate Same result as solve(U)
-U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve
+# Eliminate zero-filled rows and columns. Same result as solve(U).
+U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve()
 ```
 
-The <tt>byname</tt> package contains matrix algebra functions 
+In addition to <tt>sum_byname</tt>,
+the <tt>byname</tt> package contains matrix algebra functions 
 that respect the names of rows and columns. 
 Commonly-used functions are:
 
@@ -117,9 +124,14 @@ Commonly-used functions are:
 * <tt>elementquotient_byname</tt>
 * <tt>rowsums_byname</tt>
 * <tt>colsums_byname</tt>
+* <tt>invert_byname</tt>
+* <tt>transpose_byname</tt>
 
 
-## Other features
+## Additional features
+
+The <tt>byname</tt> package has several additional features.
+
 
 ### Row and column names and types
 
@@ -130,41 +142,163 @@ However, <tt>byname</tt> provides the
 functions to perform the same tasks.
 
 In addition, 
-<tt>byname</tt> provides the option to specify a type for matrix rows and columns.
-Row and column types are stored as attributes on the matrix object.
-When combined with the <tt>byname</tt> functions, 
-row and column types ensure with the correctness of matrix operations.
+<tt>byname</tt> provides the option to specify a data type for matrix rows and columns.
+The data types are character strings stored
+as attributes of the matrix object.
+The <tt>byname</tt> functions ensure correctness
+of row and column types, 
+throwing errors when appropriate.
 As an example, consider matrices **A**, **B**, and **C**:
 
 ```{r}
-A <- matrix(c(1:4), nrow = 2, ncol = 2) %>% 
+A <- matrix(1:4, nrow = 2, ncol = 2) %>% 
   setrownames_byname(productnames) %>% setcolnames_byname(industrynames) %>% 
   setrowtype("Products") %>% setcoltype("Industries")
 A
-B <- matrix(c(8:5), nrow = 2, ncol = 2) %>% 
+B <- matrix(8:5, nrow = 2, ncol = 2) %>% 
   setrownames_byname(productnames) %>% setcolnames_byname(industrynames) %>% 
   setrowtype("Products") %>% setcoltype("Industries")
 B
-
+C <- matrix(1:4, nrow = 2, ncol = 2) %>% 
+  setcolnames_byname(productnames) %>% setrownames_byname(industrynames) %>% 
+  setrowtype("Industries") %>% setcoltype("Products")
+C
 ```
 
+**B** can be added to **A**, because
+row and column types are identical.
+
+```{r}
+sum_byname(A, B)
+```
+However, **C** cannot be added to **A** (or **B**),
+because row and column types disagree.
+
+```{r}
+tryCatch(sum_byname(A, C), error = function(err){print(err)})
+```
+
+In this case, a sum is possible if 
+**C** is transposed prior to adding to **A**,
+because row and column types of **A** and **C**^T^ are identical.
+
+```{r}
+sum_byname(A, transpose_byname(C))
+```
+
+Matrices **A** and **B** can be element-multiplied and element-divided
+for the same reason they can be summed: 
+row and column types agree.
+
+```{r}
+elementproduct_byname(A, B)
+elementquotient_byname(A, B)
+```
+
+Note that **A** and **C** can be matrix-multiplied,
+because the column type of **A** and the row type of **C** 
+are identical (<tt>Industries</tt>).
+The result is a <tt>Products</tt>-by-<tt>Products</tt>
+matrix.
+
+```{r}
+matrixproduct_byname(A, C)
+```
+
+However, **A** and **B** cannot be matrix-multiplied,
+because the column type and **A** and the row type of **B** are different,
+<tt>Industries</tt> and <tt>Products</tt>, respectively.
+
+```{r}
+tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
+```
 
 
 ### <tt>byname</tt> functions also work with lists
 
+The functions in the <tt>byname</tt> package 
+work equally well when lists of matrices are arguments,
+returning lists as appropriate.
+
+```{r}
+sum_byname(A, list(B, B))
+elementproduct_byname(list(A, A), B)
+matrixproduct_byname(list(A, A), list(C, C))
+```
 
 
-### Works well with <tt>matsindf</tt>
+### <tt>byname</tt> works well with <tt>matsindf</tt>
 
+The <tt>matsindf</tt> package provides functions that convert
+tidy data frames of matrix elements into data frames of matrices.
+(For details, see the <tt>matsindf</tt> vignette.)
+The following example demonstrates an approach to creating a data frame of matrices.
+
+```{r}
+tidy <- data.frame(
+  matrix = c("A", "A", "A", "A", "B", "B", "B", "B"),
+  row = c("p1", "p1", "p2", "p2", "p1", "p1", "p2", "p2"),
+  col = c("i1", "i2", "i1", "i2", "i1", "i2", "i1", "i2"),
+  vals = c(1, 3, 2, 4, 8, 6, 7, 5)
+) %>% 
+  mutate(
+    rowtype = "Industries",
+    coltype  = "Products"
+  ) %>% 
+  group_by(matrix)
+tidy
+mats <- tidy %>% 
+  collapse_to_matrices(matnames = "matrix", values = "vals", 
+                       rownames = "row", colnames = "col", 
+                       rowtypes = "rowtype", coltypes = "coltype") %>% 
+  rename(
+    matrix.name = matrix,
+    matrix = vals
+  )
+mats
+mats$matrix[[1]]
+mats$matrix[[2]]
+```
 
 
 ## Putting it all together
 
+Data frames of matrices are like spreadsheets 
+with magic cells 
+that can contain entire matrices.
+Because data frame columns are lists and
+because <tt>byname</tt> works well with lists,
+<tt>byname</tt> functions can be used with 
+<tt>tidyr</tt> and <tt>dplyr</tt> functions such as
+<tt>spread</tt> and <tt>mutate</tt>.
+
+```{r}
+result <- mats %>% 
+  spread(key = matrix.name, value = matrix) %>% 
+  rbind(., .) %>% 
+  mutate(
+    c = 1:2,
+    # Sums all rows of mats with a single instruction.
+    sum = sum_byname(A, B),
+    product = elementproduct_byname(c, sum)
+  )
+result
+result$sum[[1]]
+result$sum[[2]]
+result$product[[1]]
+result$product[[2]]
+```
 
 
+## Summary
 
-
-
+The <tt>byname</tt> package simplifies analyses 
+in which row and column names ought to be respected.
+It provides optional row and column types, thereby
+ensuring that only valid matrix operations are performed.
+Finally, <tt>byname</tt> functions work equally well with lists
+to allow use with <tt>tidyr</tt> and <tt>dplyr</tt> 
+approaches to manipulating data.
 
 
 
