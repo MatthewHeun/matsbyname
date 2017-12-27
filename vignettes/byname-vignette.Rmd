@@ -102,9 +102,8 @@ as shown below.
 sum_byname(U, Y)
 # Same as U_2000 + Y_2000
 sum_byname(U, Y3)
-# Same as solve(U)
-# TODO Eliminate zero rows/cols before solving.
-Y_2000
+# Same result as solve(U)
+U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve
 ```
 
 
