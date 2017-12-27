@@ -98,21 +98,23 @@ The previous problems can be solved without intervention by the programmer
 as shown below.
 
 ```{r}
-# Same as U + Y2
+# Same as U + Y2, without needing to create Y2.
 sum_byname(U, Y)
-# Same as U_2000 + Y_2000
+# Same as U_2000 + Y_2000, without needing to modify U and Y3.
 sum_byname(U, Y3)
-# Same result as solve(U)
+# Eliminate Same result as solve(U)
 U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve
 ```
 
 
-for the purposes of obtaining consistent rows or columns 
-prior to performing any matrix operations
 
 
-problematic if matrices for different years contain different rows and columns.
-especially if analyses span many years
+
+
+
+
+
+
 
 
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
