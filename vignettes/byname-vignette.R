@@ -16,14 +16,14 @@ U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames))
 U
 Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames)))
 Y
-# Non-sensical.  Row and column names not respected.
+# This sum is nonsensical.  Neither row nor column names are respected.
 U + Y 
 
 ## ------------------------------------------------------------------------
 # Make a new version of Y (Y2), this time with dimnames in same order as U
 Y2 <- matrix(4:1, ncol = 2, dimnames = list(productnames, industrynames))
 Y2
-# Now the sum is sensible. Neither row nor column names are respected.
+# Now the sum is sensible. Both row and column names are respected.
 U + Y2
 
 ## ------------------------------------------------------------------------
@@ -47,7 +47,10 @@ Y_2000
 U_2000 + Y_2000
 
 ## ------------------------------------------------------------------------
+# The original U matrix is invertible.
 solve(U)
+# The version of U that contains zero rows and columns (U_2000)
+# is singular and cannot be inverted.
 tryCatch(solve(U_2000), error = function(err){print(err)})
 
 ## ------------------------------------------------------------------------
@@ -59,16 +62,21 @@ sum_byname(U, Y3)
 U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve()
 
 ## ------------------------------------------------------------------------
-A <- matrix(1:4, nrow = 2, ncol = 2) %>% 
+U_2 <- matrix(1:4, ncol = 2) %>% 
+  setrownames_byname(productnames) %>% setcolnames_byname(industrynames)
+U_2
+
+## ------------------------------------------------------------------------
+A <- matrix(1:4, ncol = 2) %>% 
   setrownames_byname(productnames) %>% setcolnames_byname(industrynames) %>% 
   setrowtype("Products") %>% setcoltype("Industries")
 A
-B <- matrix(8:5, nrow = 2, ncol = 2) %>% 
+B <- matrix(8:5, ncol = 2) %>% 
   setrownames_byname(productnames) %>% setcolnames_byname(industrynames) %>% 
   setrowtype("Products") %>% setcoltype("Industries")
 B
-C <- matrix(1:4, nrow = 2, ncol = 2) %>% 
-  setcolnames_byname(productnames) %>% setrownames_byname(industrynames) %>% 
+C <- matrix(1:4, ncol = 2) %>% 
+  setrownames_byname(industrynames) %>% setcolnames_byname(productnames) %>% 
   setrowtype("Industries") %>% setcoltype("Products")
 C
 
@@ -106,10 +114,10 @@ tidy <- data.frame(
   mutate(
     rowtype = "Industries",
     coltype  = "Products"
-  ) %>% 
-  group_by(matrix)
+  )
 tidy
 mats <- tidy %>% 
+  group_by(matrix) %>% 
   collapse_to_matrices(matnames = "matrix", values = "vals", 
                        rownames = "row", colnames = "col", 
                        rowtypes = "rowtype", coltypes = "coltype") %>% 
@@ -124,11 +132,14 @@ mats$matrix[[2]]
 ## ------------------------------------------------------------------------
 result <- mats %>% 
   spread(key = matrix.name, value = matrix) %>% 
+  # Duplicate the row to demonstrate byname operating simultaneously 
+  # on all rows of the data frame.
   rbind(., .) %>% 
   mutate(
     c = 1:2,
     # Sums all rows of mats with a single instruction.
     sum = sum_byname(A, B),
+    # Multiplies matrices in the sum column by corresponding constants in the c column.
     product = elementproduct_byname(c, sum)
   )
 result
