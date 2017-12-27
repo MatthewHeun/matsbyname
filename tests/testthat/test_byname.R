@@ -9,6 +9,8 @@ library(parallel)
 library(byname)
 library(magrittr)
 library(testthat)
+library(matsindf)
+library(tidyr)
 
 
 ###########################################################
@@ -1205,3 +1207,51 @@ test_that("organize_args works as expected", {
   # When we say match_type = "matmult", we indicate that the columns of a and the rows of b must match.
   expect_equal(byname:::organize_args(a = m, b = p, match_type = "matmult"), list(a = m, b = p))
 })
+
+
+###########################################################
+context("testing in a data frame")
+###########################################################
+
+test_that("matrix multiplied by a constant in a data frame works", {
+  mats <- data.frame(
+    matrix = c("A", "A", "A", "A"),
+    row = c("p1", "p1", "p2", "p2"),
+    col = c("i1", "i2", "i1", "i2"),
+    vals = c(1, 3, 2, 4)
+  ) %>% 
+    mutate(
+      rowtype = "Industries",
+      coltype  = "Products"
+    ) %>% 
+    group_by(matrix) %>% 
+    collapse_to_matrices(matnames = "matrix", values = "vals", 
+                         rownames = "row", colnames = "col", 
+                         rowtypes = "rowtype", coltypes = "coltype") %>% 
+    rename(
+      matrix.name = matrix,
+      matrix = vals
+    ) %>% 
+    spread(key = matrix.name, value = matrix) %>% 
+    # Duplicate the row to demonstrate byname operating simultaneously 
+    # on all rows of the data frame.
+    rbind(., .) %>% 
+    mutate(
+      constant = make_list(x = 1:2, n = 2, lenx = 2),
+      # Multiplies matrices in the sum column by corresponding constants in the c column.
+      product = elementproduct_byname(constant, A)
+    )
+  expect_equal(mats$product[[1]], matrix(c(1, 3,
+                                           2, 4),
+                                         nrow = 2, byrow = TRUE) %>% 
+                 setrownames_byname(c("p1", "p2")) %>% setcolnames_byname(c("i1", "i2")) %>% 
+                 setrowtype("Industries") %>% setcoltype("Products"))
+  expect_equal(mats$product[[2]], matrix(c(2, 6,
+                                           4, 8),
+                                         nrow = 2, byrow = TRUE) %>% 
+                 setrownames_byname(c("p1", "p2")) %>% setcolnames_byname(c("i1", "i2")) %>% 
+                 setrowtype("Industries") %>% setcoltype("Products"))
+})
+
+
+

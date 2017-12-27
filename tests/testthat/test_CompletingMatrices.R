@@ -15,8 +15,8 @@ context("complete_rows_cols")
 ###########################################################
 
 test_that("complete_rows_cols works as expected", {
-  m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
-  m2 <- matrix(c(7:12), ncol=3, dimnames = list(c("r2", "r3"), c("c2", "c3", "c4")))
+  m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  m2 <- matrix(c(7:12), ncol = 3, dimnames = list(c("r2", "r3"), c("c2", "c3", "c4")))
   complete_m1_m2 <- matrix(c(1,4,0,0,
                              2,5,0,0,
                              3,6,0,0),
@@ -115,8 +115,8 @@ context("complete_and_sort")
 ###########################################################
 
 test_that("complete_and_sort works as expected", {
-  m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
-  m2 <- matrix(c(7:12), ncol=3, dimnames = list(c("r3", "r4"), c("c2", "c3", "c4")))
+  m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
+  m2 <- matrix(c(7:12), ncol = 3, dimnames = list(c("r3", "r4"), c("c2", "c3", "c4")))
   m1_completed <- matrix(c(0,0,0,0,0,
                            0,0,0,0,0,
                            4,1,0,0,0,
@@ -255,7 +255,7 @@ test_that("complete_and_sort works as expected", {
                                 nrow = 3, ncol = 4, byrow = TRUE,
                                 dimnames = list(c("c2", "c3", "c4"), c("c1", "c2", "r3", "r4")))))
   
-  v <- matrix(1:6, ncol=2, dimnames=list(c("r3", "r1", "r2"), c("c2", "c1")))
+  v <- matrix(1:6, ncol = 2, dimnames = list(c("r3", "r1", "r2"), c("c2", "c1")))
   expect_equal(complete_and_sort(v, v), 
                list(m1 = matrix(c(5,2,
                                   6,3,
@@ -311,7 +311,7 @@ context("utilities")
 ###########################################################
 
 test_that("make_list works as expected", {
-  m <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
+  m <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
 
   expect_equal(make_list(m, n = 1), list(m))
   expect_equal(make_list(m, n = 2), list(m, m))
