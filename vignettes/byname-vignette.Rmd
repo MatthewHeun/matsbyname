@@ -330,6 +330,7 @@ result <- mats %>%
   # on all rows of the data frame.
   rbind(., .) %>% 
   mutate(
+    # Create a column of constants.
     c = make_list(x = 1:2, n = 2, lenx = 2),
     # Sums all rows of mats with a single instruction.
     sum = sum_byname(A, B),
@@ -360,7 +361,7 @@ similar to <tt>results</tt> above.
 * Perform matrix algebra operations on the columns of matrices
 using <tt>byname</tt> functions.
 * <tt>tidyr::gather</tt> the columns to obtain a tidy data frame of matrices.
-* Usse <tt>matsindf::expand_to_tidy</tt> to create a tidy data frame of matrix elements.
+* Use <tt>matsindf::expand_to_tidy</tt> to create a tidy data frame of matrix elements.
 * <tt>tidyr::spread</tt> the data as necessary.
 * Graph or perform other manipulations of the data.
 
