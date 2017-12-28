@@ -136,7 +136,7 @@ result <- mats %>%
   # on all rows of the data frame.
   rbind(., .) %>% 
   mutate(
-    c = 1:2,
+    c = make_list(x = 1:2, n = 2, lenx = 2),
     # Sums all rows of mats with a single instruction.
     sum = sum_byname(A, B),
     # Multiplies matrices in the sum column by corresponding constants in the c column.
