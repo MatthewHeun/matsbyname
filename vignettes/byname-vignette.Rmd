@@ -102,7 +102,7 @@ such that
 prior to performing matrix algebra operations. 
 
 
-## <tt>byname</tt> is the answer
+## <tt>byname</tt> is the answer!
 
 The <tt>byname</tt> package implements
 matrix mathematics in a way that 
