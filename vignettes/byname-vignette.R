@@ -138,9 +138,9 @@ result <- mats %>%
   mutate(
     # Create a column of constants.
     c = make_list(x = 1:2, n = 2, lenx = 2),
-    # Sums all rows of mats with a single instruction.
+    # Sum all rows of the data frame with a single instruction.
     sum = sum_byname(A, B),
-    # Multiplies matrices in the sum column by corresponding constants in the c column.
+    # Multiply matrices in the sum column by corresponding constants in the c column.
     product = elementproduct_byname(c, sum)
   )
 result

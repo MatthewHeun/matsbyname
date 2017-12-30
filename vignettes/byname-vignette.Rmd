@@ -57,7 +57,8 @@ The bookkeeping is cumbersome when analyses span many years (for example),
 requiring the analyst to know *a-priori* 
 the set of all rows and columns present in **all** years. 
 Indeed, in this example, tracking the emergence and disappearance of products and industries
-over many years should be done by the data itself, not the analyst.
+over many years should be done by matrix algebra functions, 
+not by the analyst.
 
 ```{r}
 Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
@@ -109,7 +110,7 @@ matrix mathematics in a way that
 respects row and column names and 
 allows removal of zero-filled rows or columns as needed.
 The challenges described above can be solved
-with the <tt>byname</tt> package.
+as follows:
 
 ```{r}
 # Same as U + Y2, without needing to create Y2.
@@ -136,6 +137,9 @@ Commonly-used functions are:
 * <tt>invert_byname</tt>, and 
 * <tt>transpose_byname</tt>.
 
+The full list of functions can be found with <tt>?byname</tt>
+and clicking the <tt>Index</tt> link.
+
 
 ## Additional features
 
@@ -149,7 +153,8 @@ In the preceding examples, row and column names were provided by the
 <tt>dimnames</tt> argument to the <tt>matrix</tt> function. 
 However, <tt>byname</tt> provides the
 <tt>setcolnames_byname</tt> and <tt>setrownames_byname</tt>
-functions to perform the same tasks.
+functions to perform the same tasks
+using the pipe operator (<tt>%>%</tt>).
 
 ```{r}
 U_2 <- matrix(1:4, ncol = 2) %>% 
@@ -265,9 +270,8 @@ matrixproduct_byname(list(A, A), list(C, C))
 ### <tt>byname</tt> works well with <tt>matsindf</tt>
 
 The <tt>matsindf</tt> package provides functions that convert
-tidy^[See http://tidyr.tidyverse.org/articles/tidy-data.html.] data frames
+[tidy](http://tidyr.tidyverse.org/articles/tidy-data.html) data frames
 of matrix elements into data frames of matrices.
-(For details, see the <tt>matsindf</tt> vignette.)
 The following example demonstrates an approach to creating a data frame of matrices.
 
 ```{r}
@@ -332,9 +336,9 @@ result <- mats %>%
   mutate(
     # Create a column of constants.
     c = make_list(x = 1:2, n = 2, lenx = 2),
-    # Sums all rows of mats with a single instruction.
+    # Sum all rows of the data frame with a single instruction.
     sum = sum_byname(A, B),
-    # Multiplies matrices in the sum column by corresponding constants in the c column.
+    # Multiply matrices in the sum column by corresponding constants in the c column.
     product = elementproduct_byname(c, sum)
   )
 result
@@ -349,8 +353,10 @@ result$product[[2]]
 
 A suggested analysis workflow is as follows:
 
-* Munge data into tidy data frame with columns for matrix name, 
-row name, column name, row type, column type, and element value,
+* Munge data into tidy data frame with columns for 
+matrix name, element value,
+row name, column name, 
+row type, and column type,
 similar to <tt>tidy</tt> above.
 * Use <tt>matsindf::collapse_to_matrices</tt>
 to create a data frame of matrices with columns for matrix names and 
@@ -365,8 +371,8 @@ using <tt>byname</tt> functions.
 * <tt>tidyr::spread</tt> the data as necessary.
 * Graph or perform other manipulations of the data.
 
-For additional details and an example of this workflow, 
-see the <tt>matsindf</tt> vignette.
+For more information and a detailed example of this workflow, 
+see <tt>vignette("matsindf")</tt>.
 
 
 ## Summary
