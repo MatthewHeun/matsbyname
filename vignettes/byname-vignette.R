@@ -29,7 +29,8 @@ U + Y2
 ## ------------------------------------------------------------------------
 Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
 Y3
-# Non-sensical. Neither row nor column names are respected. Both "p3" and "i3" are missing from sum.
+# Nonsensical because neither row nor column names are respected. 
+# Both "p3" and "i3" are missing from sum.
 U + Y3
 # Rather, need to insert missing rows in both U and Y before summing.
 U_2000 <- matrix(c(1, 3, 0,

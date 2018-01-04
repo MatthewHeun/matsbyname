@@ -22,11 +22,39 @@ library(matsindf)
 ```
 
 
-## Introduction: The need for <tt>byname</tt>
+## Introduction
 
-Built-in functions to perform matrix operations in <tt>R</tt>
-(and other languages) do not respect the names of rows and columns
+Matrices are important mathematical objects, 
+and they often describe networks of flows among nodes. 
+Example networks are given in the following table.
+
+| System type   | Flows      | Nodes
+|:--------------|:-----------|:---------
+| Ecological    | nutrients  | organisms
+| Manufacturing | materials  | factories
+| Economic      | money      | economic sectors
+
+The power of matrices lies in their ability 
+to organize network-wide calculations,
+thereby simplifying the work of analysts who study entire systems.
+However, three problems arise when performing matrix operations
+in <tt>R</tt> and other languages.
+
+
+### Problem 1
+
+Although built-in matrix functions
+ensure size conformity of operands,
+they do not respect the names of rows and columns
 (known as <tt>dimnames</tt> in <tt>R</tt>).
+In the following example, 
+**U** represents a "use" matrix
+that contains the quantity of each product used by each industry,
+and 
+**Y** represents a "final demand" matrix
+that contains the quantity of each product consumed by industries in final demand.
+If the rows and columns are not in the same order, 
+the sum of the matrices is nonsensical.
 
 ```{r}
 productnames <- c("p1", "p2")
@@ -51,19 +79,20 @@ Y2
 U + Y2
 ```
 
-The required bookkeeping can be both cumbersome and problematic.
 
-The bookkeeping is cumbersome when analyses span many years (for example),
-requiring the analyst to know *a-priori* 
-the set of all rows and columns present in **all** years. 
-Indeed, in this example, tracking the emergence and disappearance of products and industries
-over many years should be done by matrix algebra functions, 
-not by the analyst.
+### Problem 2
+
+Matrices may have different numbers or different names of rows or columns
+if, for example, 
+the products or industries changes across time periods. 
+When performing matrix operations, rows or columns of zeros must be added 
+to ensure conformity. 
 
 ```{r}
 Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
 Y3
-# Non-sensical. Neither row nor column names are respected. Both "p3" and "i3" are missing from sum.
+# Nonsensical because neither row nor column names are respected. 
+# Both "p3" and "i3" are missing from sum.
 U + Y3
 # Rather, need to insert missing rows in both U and Y before summing.
 U_2000 <- matrix(c(1, 3, 0,
@@ -81,8 +110,11 @@ Y_2000
 U_2000 + Y_2000
 ```
 
-The bookkeeping is problematic when matrix inversion is required after 
-rows or columns of zeroes are added.
+The analyst's burden is cumbersome, 
+but worse problems await.
+The solution (adding rows and columns of zeroes) 
+can lead to an inability to invert matrices downstream, 
+as shown in the following example.
 
 ```{r}
 # The original U matrix is invertible.
@@ -92,25 +124,27 @@ solve(U)
 tryCatch(solve(U_2000), error = function(err){print(err)})
 ```
 
-For ease of programming,
-matrix operations should be performed *byname*,
-without analyst intervention,
-such that 
 
-* missing rows or columns are inserted automatically and only as needed and
-* zero rows or columns can be removed as needed
+### Problem 3
 
-prior to performing matrix algebra operations. 
+Matrix functions provided by <tt>R</tt> do not ensure type conformity for matrix operands
+to matrix algebra functions. 
+For example, columns of one matrix must represent the same entity 
+as the rows of another matrix for matrix multiplication. 
+If the columns of **A** represent countries, 
+then the rows of **B** must also be countries
+(and in the same order)
+if **A** <tt>%*%</tt> **B** is to make sense. 
 
 
-## <tt>byname</tt> is the answer!
+## <tt>byname</tt>
 
-The <tt>byname</tt> package implements
-matrix mathematics in a way that 
-respects row and column names and 
-allows removal of zero-filled rows or columns as needed.
-The challenges described above can be solved
-as follows:
+The <tt>byname</tt> package performs smart matrix operations that
+
+* respect row and column names in matrix operations 
+    + by inserting rows and columns of zeroes as necessary
+    + by re-ordering rows and columns so that operands conform, and
+* optionally provide row and column types and enforce type conformity for matrix operations. 
 
 ```{r}
 # Same as U + Y2, without needing to create Y2.
@@ -140,10 +174,27 @@ Commonly-used functions are:
 The full list of functions can be found with <tt>?byname</tt>
 and clicking the <tt>Index</tt> link.
 
+Furthermore, <tt>byname</tt> works well with its sister package, <tt>matsindf</tt>.
+<tt>matsindf</tt> creates data frames
+whose entries are not numbers but entire matrices, thereby
+enabling the use of <tt>byname</tt> functions in 
+[<tt>tidyverse</tt>](http://www.tidyverse.org)
+functional programming.
 
-## Additional features
+When used together, <tt>byname</tt> and <tt>matsindf</tt> 
+allow analysts to wield the power of both 
+[matrix mathematics](https://en.wikipedia.org/wiki/Matrix_(mathematics))
+and 
+[<tt>tidyverse</tt>](http://www.tidyverse.org) 
+functional programming simultaneously.
 
-The <tt>byname</tt> package has several additional features
+This vignette demonstrates the power of matrix mathematics
+performed <tt>byname</tt>.
+
+
+## <tt>byname</tt> features
+
+The <tt>byname</tt> package has several features
 that both simplify analyses and ensure their correctness.
 
 
