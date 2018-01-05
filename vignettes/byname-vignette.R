@@ -30,7 +30,9 @@ U + Y2
 Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
 Y3
 # Nonsensical because neither row nor column names are respected. 
-# Both "p3" and "i3" are missing from sum.
+# The "p3" rows and "i3" columns of Y3 have been added to 
+# "p2" rows and "i2" columns of U.
+# Row and column names for the sum are taken from the first operand (U).
 U + Y3
 # Rather, need to insert missing rows in both U and Y before summing.
 U_2000 <- matrix(c(1, 3, 0,
