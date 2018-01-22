@@ -819,10 +819,6 @@ rowsums_byname <- function(m, colname = NA){
     }
     return(mcMap(rowsums_byname, m, colname))
   }
-  # if (is.na(colname) | is.null(colname)){
-  #   # Set the column name to the column type, since we added all items of coltype together.
-  #   colname <- coltype(m)
-  # }
   if (is.null(colname)) {
     # Set the column name to the column type, since we added all items of coltype together.
     colname <- coltype(m)
@@ -907,6 +903,67 @@ colsums_byname <- function(m, rowname = NA){
     # But sort the result on names
     sort_rows_cols %>%
     setrownames_byname(rowname) %>%
+    setrowtype(rowtype(m)) %>%
+    setcoltype(coltype(m))
+}
+
+#' Row products, sorted by name
+#'
+#' Calculates row products (the product of all elements in a row) for a matrix.
+#' An optional \code{colname} for the resulting column vector can be supplied.
+#' If \code{colname} is \code{NULL} or \code{NA} (the default),
+#' the column name is set to the column type as given by \code{coltype(m)}.
+#'
+#' @param m a matrix or data frame from which row products are desired.
+#' @param colname name of the output column containing row products
+#'
+#' @return a column vector of type \code{matrix} containing the row products of \code{m}
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' library(dplyr)
+#' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Products")
+#' rowprods_byname(m)
+#' rowprods_byname(m, "E.ktoe")
+#' # This also works with lists
+#' rowprods_byname(list(m, m))
+#' rowprods_byname(list(m, m), "E.ktoe")
+#' rowprods_byname(list(m, m), NA)
+#' rowprods_byname(list(m, m), NULL)
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' rowprods_byname(DF$m[[1]])
+#' rowprods_byname(DF$m)
+#' ans <- DF %>% mutate(rs = rowprods_byname(m))
+#' ans
+#' ans$rs[[1]]
+#' # Nonsensical
+#' \dontrun{rowprods_byname(NULL)}
+rowprods_byname <- function(m, colname = NA){
+  if (is.list(m)) {
+    if (is.null(colname)) {
+      colname <- NA
+    }
+    return(mcMap(rowprods_byname, m, colname))
+  }
+  if (is.null(colname)) {
+    # Set the column name to the column type, since we multiplied all items of coltype together.
+    colname <- coltype(m)
+  }
+  if (is.na(colname)) {
+    colname <- coltype(m)
+  }
+  apply(m, MARGIN = 1, FUN = prod) %>%
+    # Preserve matrix structure (i.e., result will be a column vector of type matrix)
+    matrix(byrow = TRUE) %>%
+    # Preserve row names
+    setrownames_byname(rownames(m)) %>%
+    # But sort the result on names
+    sort_rows_cols %>%
+    setcolnames_byname(colname) %>%
     setrowtype(rowtype(m)) %>%
     setcoltype(coltype(m))
 }
