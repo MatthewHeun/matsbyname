@@ -946,60 +946,60 @@ sumall_byname <- function(m){
 #' Calculates row products (the product of all elements in a row) for a matrix.
 #' An optional \code{colname} for the resulting column vector can be supplied.
 #' If \code{colname} is \code{NULL} or \code{NA} (the default),
-#' the column name is set to the column type as given by \code{coltype(m)}.
+#' the column name is set to the column type as given by \code{coltype(M)}.
 #'
-#' @param m a matrix or data frame from which row products are desired.
+#' @param M a matrix or data frame from which row products are desired.
 #' @param colname name of the output column containing row products
 #'
-#' @return a column vector of type \code{matrix} containing the row products of \code{m}
+#' @return a column vector of type \code{matrix} containing the row products of \code{M}
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
-#' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
+#' M <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Products")
-#' rowprods_byname(m)
-#' rowprods_byname(m, "E.ktoe")
+#' rowprods_byname(M)
+#' rowprods_byname(M, "E.ktoe")
 #' # This also works with lists
-#' rowprods_byname(list(m, m))
-#' rowprods_byname(list(m, m), "E.ktoe")
-#' rowprods_byname(list(m, m), NA)
-#' rowprods_byname(list(m, m), NULL)
-#' DF <- data.frame(m = I(list()))
-#' DF[[1,"m"]] <- m
-#' DF[[2,"m"]] <- m
-#' rowprods_byname(DF$m[[1]])
-#' rowprods_byname(DF$m)
-#' ans <- DF %>% mutate(rs = rowprods_byname(m))
+#' rowprods_byname(list(M, M))
+#' rowprods_byname(list(M, M), "E.ktoe")
+#' rowprods_byname(list(M, M), NA)
+#' rowprods_byname(list(M, M), NULL)
+#' DF <- data.frame(M = I(list()))
+#' DF[[1,"M"]] <- M
+#' DF[[2,"M"]] <- M
+#' rowprods_byname(DF$M[[1]])
+#' rowprods_byname(DF$M)
+#' ans <- DF %>% mutate(rs = rowprods_byname(M))
 #' ans
 #' ans$rs[[1]]
 #' # Nonsensical
 #' \dontrun{rowprods_byname(NULL)}
-rowprods_byname <- function(m, colname = NA){
-  if (is.list(m)) {
+rowprods_byname <- function(M, colname = NA){
+  if (is.list(M)) {
     if (is.null(colname)) {
       colname <- NA
     }
-    return(mcMap(rowprods_byname, m, colname))
+    return(mcMap(rowprods_byname, M, colname))
   }
   if (is.null(colname)) {
     # Set the column name to the column type, since we multiplied all items of coltype together.
-    colname <- coltype(m)
+    colname <- coltype(M)
   }
   if (is.na(colname)) {
-    colname <- coltype(m)
+    colname <- coltype(M)
   }
-  apply(m, MARGIN = 1, FUN = prod) %>%
+  apply(M, MARGIN = 1, FUN = prod) %>%
     # Preserve matrix structure (i.e., result will be a column vector of type matrix)
     matrix(byrow = TRUE) %>%
     # Preserve row names
-    setrownames_byname(rownames(m)) %>%
+    setrownames_byname(rownames(M)) %>%
     # But sort the result on names
     sort_rows_cols %>%
     setcolnames_byname(colname) %>%
-    setrowtype(rowtype(m)) %>%
-    setcoltype(coltype(m))
+    setrowtype(rowtype(M)) %>%
+    setcoltype(coltype(M))
 }
 
 #' Column products, sorted by name
@@ -1007,97 +1007,97 @@ rowprods_byname <- function(m, colname = NA){
 #' Calculates column products (the product of all elements in a column) for a matrix.
 #' An optional \code{rowname} for the resulting row vector can be supplied.
 #' If \code{rowname} is \code{NULL} or \code{NA} (the default),
-#' the row name is set to the row type as given by \code{rowtype(m)}.
+#' the row name is set to the row type as given by \code{rowtype(M)}.
 #'
-#' @param m a matrix or data frame from which column products are desired.
+#' @param M a matrix or data frame from which column products are desired.
 #' @param rowname name of the output row containing column products.
 #'
-#' @return a row vector of type \code{matrix} containing the column products of \code{m}.
+#' @return a row vector of type \code{matrix} containing the column products of \strong{\code{M}}.
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
-#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
+#' M <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' colprods_byname(m)
-#' colprods_byname(m, rowname = "E.ktoe")
-#' m %>% colprods_byname %>% rowprods_byname
+#' colprods_byname(M)
+#' colprods_byname(M, rowname = "E.ktoe")
+#' M %>% colprods_byname %>% rowprods_byname
 #' # This also works with lists
-#' colprods_byname(list(m, m))
-#' colprods_byname(list(m, m), rowname = "E.ktoe")
-#' colprods_byname(list(m, m), rowname = NA)
-#' colprods_byname(list(m, m), rowname = NULL)
-#' DF <- data.frame(m = I(list()))
-#' DF[[1,"m"]] <- m
-#' DF[[2,"m"]] <- m
-#' colprods_byname(DF$m[[1]])
-#' colprods_byname(DF$m)
-#' colprods_byname(DF$m, "prods")
+#' colprods_byname(list(M, M))
+#' colprods_byname(list(M, M), rowname = "E.ktoe")
+#' colprods_byname(list(M, M), rowname = NA)
+#' colprods_byname(list(M, M), rowname = NULL)
+#' DF <- data.frame(M = I(list()))
+#' DF[[1,"M"]] <- M
+#' DF[[2,"M"]] <- M
+#' colprods_byname(DF$M[[1]])
+#' colprods_byname(DF$M)
+#' colprods_byname(DF$M, "prods")
 #' res <- DF %>% mutate(
-#'   cs = colprods_byname(m),
-#'   cs2 = colprods_byname(m, rowname = "prod")
+#'   cs = colprods_byname(M),
+#'   cs2 = colprods_byname(M, rowname = "prod")
 #' )
 #' res$cs2
-colprods_byname <- function(m, rowname = NA){
-  if (is.list(m)) {
+colprods_byname <- function(M, rowname = NA){
+  if (is.list(M)) {
     if (is.null(rowname)) {
       rowname <- NA
     }
-    return(mcMap(colprods_byname, m, rowname))
+    return(mcMap(colprods_byname, M, rowname))
   }
   if (is.null(rowname)) {
     # Set the row name to the row type, since we added all items of rowtype together.
-    rowname <- rowtype(m)
+    rowname <- rowtype(M)
   }
   if (is.na(rowname)) {
-    rowname <- rowtype(m)
+    rowname <- rowtype(M)
   }
-  apply(m, MARGIN = 2, FUN = prod) %>%
+  apply(M, MARGIN = 2, FUN = prod) %>%
     # Preserve matrix structure (i.e., result will be a row vector of type matrix)
     matrix(nrow = 1) %>%
     # Preserve column names
-    setcolnames_byname(colnames(m)) %>%
+    setcolnames_byname(colnames(M)) %>%
     # But sort the result on names
     sort_rows_cols() %>%
     setrownames_byname(rowname) %>%
-    setrowtype(rowtype(m)) %>%
-    setcoltype(coltype(m))
+    setrowtype(rowtype(M)) %>%
+    setcoltype(coltype(M))
 }
 
 #' Product of all elements in a matrix
 #'
-#' This function is equivalent to \code{m \%>\% rowprods_byname() \%>\% colprods_byname()},
+#' This function is equivalent to \code{M \%>\% rowprods_byname() \%>\% colprods_byname()},
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
-#' @param m the matrix whose elements are to be multiplied
+#' @param M the matrix whose elements are to be multiplied
 #'
-#' @return the product of all elements in \code{m} as a numeric.
+#' @return the product of all elements in \strong{\code{M}} as a numeric.
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
-#' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#' M <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Product")
-#' prodall_byname(m)
-#' rowprods_byname(m) %>% colprods_byname
+#' prodall_byname(M)
+#' rowprods_byname(M) %>% colprods_byname
 #' # Also works for lists
-#' prodall_byname(list(m,m))
-#' DF <- data.frame(m = I(list()))
-#' DF[[1,"m"]] <- m
-#' DF[[2,"m"]] <- m
-#' prodall_byname(DF$m[[1]])
-#' prodall_byname(DF$m)
+#' prodall_byname(list(M,M))
+#' DF <- data.frame(M = I(list()))
+#' DF[[1,"M"]] <- M
+#' DF[[2,"M"]] <- M
+#' prodall_byname(DF$M[[1]])
+#' prodall_byname(DF$M)
 #' res <- DF %>% mutate(
-#'   prods = prodall_byname(m)
+#'   prods = prodall_byname(M)
 #' )
 #' res$prods
-prodall_byname <- function(m){
-  if (is.list(m)) {
-    return(mcMap(prodall_byname, m))
+prodall_byname <- function(M){
+  if (is.list(M)) {
+    return(mcMap(prodall_byname, M))
   }
-  m %>%
+  M %>%
     rowprods_byname %>%
     colprods_byname %>%
     as.numeric

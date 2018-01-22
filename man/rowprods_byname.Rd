@@ -4,40 +4,40 @@
 \alias{rowprods_byname}
 \title{Row products, sorted by name}
 \usage{
-rowprods_byname(m, colname = NA)
+rowprods_byname(M, colname = NA)
 }
 \arguments{
-\item{m}{a matrix or data frame from which row products are desired.}
+\item{M}{a matrix or data frame from which row products are desired.}
 
 \item{colname}{name of the output column containing row products}
 }
 \value{
-a column vector of type \code{matrix} containing the row products of \code{m}
+a column vector of type \code{matrix} containing the row products of \code{M}
 }
 \description{
 Calculates row products (the product of all elements in a row) for a matrix.
 An optional \code{colname} for the resulting column vector can be supplied.
 If \code{colname} is \code{NULL} or \code{NA} (the default),
-the column name is set to the column type as given by \code{coltype(m)}.
+the column name is set to the column type as given by \code{coltype(M)}.
 }
 \examples{
 library(magrittr)
 library(dplyr)
-m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) \%>\%
+M <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Products")
-rowprods_byname(m)
-rowprods_byname(m, "E.ktoe")
+rowprods_byname(M)
+rowprods_byname(M, "E.ktoe")
 # This also works with lists
-rowprods_byname(list(m, m))
-rowprods_byname(list(m, m), "E.ktoe")
-rowprods_byname(list(m, m), NA)
-rowprods_byname(list(m, m), NULL)
-DF <- data.frame(m = I(list()))
-DF[[1,"m"]] <- m
-DF[[2,"m"]] <- m
-rowprods_byname(DF$m[[1]])
-rowprods_byname(DF$m)
-ans <- DF \%>\% mutate(rs = rowprods_byname(m))
+rowprods_byname(list(M, M))
+rowprods_byname(list(M, M), "E.ktoe")
+rowprods_byname(list(M, M), NA)
+rowprods_byname(list(M, M), NULL)
+DF <- data.frame(M = I(list()))
+DF[[1,"M"]] <- M
+DF[[2,"M"]] <- M
+rowprods_byname(DF$M[[1]])
+rowprods_byname(DF$M)
+ans <- DF \%>\% mutate(rs = rowprods_byname(M))
 ans
 ans$rs[[1]]
 # Nonsensical

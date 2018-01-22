@@ -4,44 +4,44 @@
 \alias{colprods_byname}
 \title{Column products, sorted by name}
 \usage{
-colprods_byname(m, rowname = NA)
+colprods_byname(M, rowname = NA)
 }
 \arguments{
-\item{m}{a matrix or data frame from which column products are desired.}
+\item{M}{a matrix or data frame from which column products are desired.}
 
 \item{rowname}{name of the output row containing column products.}
 }
 \value{
-a row vector of type \code{matrix} containing the column products of \code{m}.
+a row vector of type \code{matrix} containing the column products of \strong{\code{M}}.
 }
 \description{
 Calculates column products (the product of all elements in a column) for a matrix.
 An optional \code{rowname} for the resulting row vector can be supplied.
 If \code{rowname} is \code{NULL} or \code{NA} (the default),
-the row name is set to the row type as given by \code{rowtype(m)}.
+the row name is set to the row type as given by \code{rowtype(M)}.
 }
 \examples{
 library(magrittr)
 library(dplyr)
-m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) \%>\%
+M <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
-colprods_byname(m)
-colprods_byname(m, rowname = "E.ktoe")
-m \%>\% colprods_byname \%>\% rowprods_byname
+colprods_byname(M)
+colprods_byname(M, rowname = "E.ktoe")
+M \%>\% colprods_byname \%>\% rowprods_byname
 # This also works with lists
-colprods_byname(list(m, m))
-colprods_byname(list(m, m), rowname = "E.ktoe")
-colprods_byname(list(m, m), rowname = NA)
-colprods_byname(list(m, m), rowname = NULL)
-DF <- data.frame(m = I(list()))
-DF[[1,"m"]] <- m
-DF[[2,"m"]] <- m
-colprods_byname(DF$m[[1]])
-colprods_byname(DF$m)
-colprods_byname(DF$m, "prods")
+colprods_byname(list(M, M))
+colprods_byname(list(M, M), rowname = "E.ktoe")
+colprods_byname(list(M, M), rowname = NA)
+colprods_byname(list(M, M), rowname = NULL)
+DF <- data.frame(M = I(list()))
+DF[[1,"M"]] <- M
+DF[[2,"M"]] <- M
+colprods_byname(DF$M[[1]])
+colprods_byname(DF$M)
+colprods_byname(DF$M, "prods")
 res <- DF \%>\% mutate(
-  cs = colprods_byname(m),
-  cs2 = colprods_byname(m, rowname = "prod")
+  cs = colprods_byname(M),
+  cs2 = colprods_byname(M, rowname = "prod")
 )
 res$cs2
 }
