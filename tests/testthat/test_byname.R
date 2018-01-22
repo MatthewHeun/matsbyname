@@ -451,6 +451,26 @@ test_that("geometricmean_byname works as expected", {
   expect_equal(DF %>% mutate(geomeans = geometricmean_byname(U, G)), DF_expected)
 })
 
+test_that("logmean works as expected", {
+  # The logmean function is an internal helper function that should also be tested.
+  expect_equal(logmean(0, 0), 0)
+  expect_equal(logmean(0, 1), 0)
+  expect_equal(logmean(1, 0), 0)
+  expect_equal(logmean(1, 1), 1)
+  expect_equal(logmean(2, 1), 1.442695, tolerance = 1e-6)
+  # commutative!
+  expect_equal(logmean(1, 2), 1.442695, tolerance = 1e-6)
+  # base = exp(1), the default
+  expect_equal(logmean(1, 10), 3.90865, tolerance = 1e-6)
+  expect_equal(logmean(1, 10, base = 10), 9)
+})
+
+test_that("logarithmicmean_byname works as expected", {
+  m1 <- matrix(c(1:6), nrow = 3, ncol = 2) %>% 
+    setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+})
+
 
 ###########################################################
 context("Inversion")

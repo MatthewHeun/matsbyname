@@ -466,7 +466,49 @@ geometricmean_byname <- function(X1, X2){
 #' difference_byname(DF$U, DF$G)
 #' DF %>% mutate(diffs = difference_byname(U, G))
 logarithmicmean_byname <- function(X1, X2, base = exp(1)){
+  args <- organize_args(X1, X2)
+  X1 <- args$a
+  X2 <- args$b
+  if (is.list(X1) & is.list(X2)) {
+    return(mcMap(logarithmicmean_byname, X1, X2, base))
+  }
   
+}
+
+#' Logarithmic mean of two numbers
+#' 
+#' Calculates the logarithmic mean of two numbers.
+#' 
+#' This is an internal helper function for \code{logarithmicmean_byname}.
+#'
+#' @param x1 the first operand (must be non-negative)
+#' @param x2 the second operand (must be non-negative)
+#' @param base the base of the logarithm used in this calculation
+#'
+#' @return \code{0} if \code{x1 = 0} or \code{x2 = 0}; \code{x1} if \code{x1 == x2}; and
+#'         \code{(x1 - x2) / log(x1/x2, base = base)} 
+#'         for all other values of \code{x1} and \code{x2}
+#'
+#' @examples
+#' logmean(0, 0) # 0
+#' logmean(0, 1) # 0
+#' logmean(1, 0) # 0
+#' logmean(1, 1) # 1
+#' logmean(2, 1)
+#' logmean(1, 2) # commutative
+#' logmean(1, 10) # base = exp(1), the default
+#' logmean(1, 10, base = 10)
+logmean <- function(x1, x2, base = exp(1)){
+  if (x1 == 0) {
+    return(0)
+  }
+  if (x2 == 0) {
+    return(0)
+  }
+  if (x1 == x2) {
+    return(x1)
+  }
+  (x1 - x2) / log(x1 / x2, base = base)
 }
 
 #' Invert a matrix

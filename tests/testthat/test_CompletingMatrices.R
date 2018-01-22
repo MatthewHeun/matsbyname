@@ -11,7 +11,7 @@ library(magrittr)
 library(testthat)
 
 ###########################################################
-context("complete_rows_cols")
+context("Completing rows and columns")
 ###########################################################
 
 test_that("complete_rows_cols works as expected", {
@@ -111,7 +111,7 @@ test_that("complete_rows_cols works as expected", {
 
 
 ###########################################################
-context("complete_and_sort")
+context("Completing and sorting matrices")
 ###########################################################
 
 test_that("complete_and_sort works as expected", {
