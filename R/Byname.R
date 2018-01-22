@@ -87,7 +87,7 @@ sum_byname <- function(augend, addend){
 #' @param minuend Minuend matrix or constant
 #' @param subtrahend Subtrahend matrix or constant
 #'
-#' Performs a union and sorting of row and column names prior to differentiation.
+#' Performs a union and sorting of row and column names prior to differencing.
 #' Zeroes are inserted for missing matrix elements.
 #'
 #' @return A matrix representing the name-wise difference between \code{minuend} and \code{subtrahend}
@@ -135,7 +135,7 @@ difference_byname <- function(minuend, subtrahend){
   args <- organize_args(minuend, subtrahend)
   minuend <- args$a
   subtrahend <- args$b
-  if (is.list(minuend) & is.list(subtrahend)){
+  if (is.list(minuend) & is.list(subtrahend)) {
     return(mcMap(difference_byname, minuend, subtrahend))
   }
   (minuend - subtrahend) %>%
@@ -304,6 +304,114 @@ elementquotient_byname <- function(dividend, divisor){
   (dividend / divisor) %>%
     setrowtype(rowtype(dividend)) %>%
     setcoltype(coltype(dividend))
+}
+
+#' Name- and element-wise arithmetic mean of matrices.
+#'
+#' Gives the arithmatic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
+#' 
+#' This function performs a union and sorting of row and column names 
+#' prior to performing arithmetic mean.
+#' Zeroes are inserted for missing matrix elements.
+#' 
+#' @param X1 first operand (a matrix or constant value or lists of same)
+#' @param X2 second operand (a matrix or constant value or lists of same)
+#'
+#' @return A matrix representing the name-wise arithmetic mean 
+#'         of \strong{\code{X1}} and \strong{\code{X2}}.
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' library(dplyr)
+#' mean_byname(100, 50)
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' G <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' (U + G) / 2 # Non-sensical. Row and column names not respected.
+#' mean_byname(U, G) # Row and column names respected! Should be 1, 2, 3, and 4. 
+#' mean_byname(100, U)
+#' mean_byname(10, G)
+#' # This also works with lists
+#' mean_byname(list(100, 100), list(50, 50))
+#' mean_byname(list(U,U), list(G,G))
+#' DF <- data.frame(U = I(list()), G = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' DF[[1,"G"]] <- G
+#' DF[[2,"G"]] <- G
+#' mean_byname(DF$U, DF$G)
+#' DF %>% mutate(means = mean_byname(U, G))
+mean_byname <- function(X1, X2){
+  args <- organize_args(X1, X2)
+  X1 <- args$a
+  X2 <- args$b
+  if (is.list(X1) & is.list(X2)) {
+    return(mcMap(mean_byname, X1, X2))
+  }
+  sum_byname(X1, X2) %>%
+    elementquotient_byname(2)
+}
+
+#' Name- and element-wise logarithmic mean of matrices.
+#'
+#' The logarithmic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}} is 
+#' \code{0} if \code{x1 = 0} or \code{x2 = 0}, 
+#' \code{x1} if \code{x1 = x2}, or
+#' \code{(x2 - x1) / (log(x2) - log(x1))} otherwise.
+#' 
+#' This function performs a union and sorting of row and column names 
+#' prior to performing logarithmic mean.
+#' Zeroes are inserted for missing matrix elements.
+#' 
+#' Internally, the third condition is implemented as 
+#' \code{(y - x) / log(y/x)}.
+#' 
+#' Note that \code{(x2 - x1) / log(x2/x1) = (x1 - x2) / log(x1/x2)},
+#' so logarithmic mean is commutative;
+#' the order of arguments \strong{\code{X1}} and \strong{\code{X2}}
+#' does not change the result.
+#' 
+#' @param X1 first operand (a matrix or constant value or lists of same).
+#' @param X2 second operand (a matrix or constant value or lists of same).
+#' @param base the base of the logarithm used when computing the logarithmic mean.
+#'        (Default is \code{base = exp(1)}.)
+#'
+#' @return A matrix representing the name-wise logarithmic mean 
+#'         of \strong{\code{X1}} and \strong{\code{X2}}.
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' library(dplyr)
+#' difference_byname(100, 50)
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' G <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' U - G # Non-sensical. Row and column names not respected.
+#' difference_byname(U, G) # Row and column names respected! Should be all zeroes.
+#' difference_byname(100, U)
+#' difference_byname(10, G)
+#' difference_byname(G) # When subtrahend is missing, return minuend (in this case, G).
+#' difference_byname(subtrahend = G) # When minuend is missing, return - subtrahend (in this case, -G)
+#' # This also works with lists
+#' difference_byname(list(100, 100), list(50, 50))
+#' difference_byname(list(U,U), list(G,G))
+#' DF <- data.frame(U = I(list()), G = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' DF[[1,"G"]] <- G
+#' DF[[2,"G"]] <- G
+#' difference_byname(DF$U, DF$G)
+#' DF %>% mutate(diffs = difference_byname(U, G))
+logmean_byname <- function(X1, X2, base = exp(1)){
+  
 }
 
 #' Invert a matrix

@@ -357,6 +357,56 @@ test_that("elementquotient_byname works as expected", {
 
 
 ###########################################################
+context("Means")
+###########################################################
+
+test_that("mean_byname works as expected", {
+  expect_equal(mean_byname(100, 50), 75)
+  commoditynames <- c("c1", "c2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  G <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  UGavg <- matrix(1:4, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  # Non-sensical. Row and column names not respected.
+  expect_equal((U + G) / 2, 
+               matrix(2.5, nrow = 2, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  # Row and column names respected! Should be 1, 2, 3, and 4.
+  expect_equal(mean_byname(U, G), UGavg)
+  expect_equal(mean_byname(100, U), 
+               matrix((100 + 1:4)/2, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  expect_equal(mean_byname(10, G), 
+               matrix((10 + 1:4)/2, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  # This also works with lists
+  expect_equal(mean_byname(list(100, 100), list(50, 50)), list(75, 75))
+  expect_equal(mean_byname(list(U,U), list(G,G)), list(UGavg, UGavg))
+  DF <- data.frame(U = I(list()), G = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"G"]] <- G
+  DF[[2,"G"]] <- G
+  expect_equal(mean_byname(DF$U, DF$G), list(UGavg, UGavg))
+  DF_expected <- data.frame(U = I(list()), G = I(list()), means = I(list()))
+  DF_expected[[1, "U"]] <- U
+  DF_expected[[2, "U"]] <- U
+  DF_expected[[1, "G"]] <- G
+  DF_expected[[2, "G"]] <- G
+  DF_expected[[1, "means"]] <- UGavg
+  DF_expected[[2, "means"]] <- UGavg
+  # Because DF_expected$means is created with I(list()), its class is "AsIs".
+  # Because DF$means is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$means to NULL to get a match.
+  attr(DF_expected$means, which = "class") <- NULL
+  expect_equal(DF %>% mutate(means = mean_byname(U, G)), DF_expected)
+})
+
+
+###########################################################
 context("Inversion")
 ###########################################################
 
@@ -429,7 +479,7 @@ context("Hatize")
 ###########################################################
 
 test_that("hatize_byname works as expected", {
-  v <- matrix(1:10, ncol = 1, dimnames=list(c(paste0("i", 1:10)), c("p1"))) %>%
+  v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
     setrowtype("Industries") %>% setcoltype(NA)
   orderedRowNames <- c("i1", "i10", paste0("i", 2:9))
   v_hat_expected <- matrix(c(1,0,0,0,0,0,0,0,0,0,
@@ -445,7 +495,7 @@ test_that("hatize_byname works as expected", {
                            nrow = 10, 
                            dimnames = list(orderedRowNames, orderedRowNames)) %>% 
     setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
-  r <- matrix(1:5, nrow = 1, dimnames=list("i1", paste0("p", 1:5))) %>%
+  r <- matrix(1:5, nrow = 1, dimnames = list("i1", paste0("p", 1:5))) %>%
     setrowtype(NA) %>% setcoltype("Commodities")
   orderedColNames <- paste0("p", 1:5)
   r_hat_expected <- matrix(c(1,0,0,0,0,
@@ -482,7 +532,7 @@ context("Identize")
 ###########################################################
 
 test_that("identize_byname works as expected", {
-  m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
+  m <- matrix(1:16, ncol = 4, dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   mI_expected <- matrix(c(1,0,0,0,
                           0,1,0,0,
