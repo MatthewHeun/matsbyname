@@ -489,7 +489,7 @@ identize_byname <- function(M, margin = c(1,2)){
 #' If \code{2}, each entry in \strong{M} is divided by its column's sum.
 #' If \code{c(1,2)}, each entry in \strong{M} is divided by the sum of all entries in \strong{M}.
 #'
-#' @return a fractionized matrix of same dimensions as \strong{M} 
+#' @return a fractionized matrix of same dimensions and types as \strong{M}.
 #' @export
 #'
 #' @examples

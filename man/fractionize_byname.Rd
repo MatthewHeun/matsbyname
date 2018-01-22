@@ -14,7 +14,7 @@ If \code{2}, each entry in \strong{M} is divided by its column's sum.
 If \code{c(1,2)}, each entry in \strong{M} is divided by the sum of all entries in \strong{M}.}
 }
 \value{
-a fractionized matrix of same dimensions as \strong{M}
+a fractionized matrix of same dimensions and types as \strong{M}.
 }
 \description{
 This function divides all entries in \strong{M} by the specified sum,
