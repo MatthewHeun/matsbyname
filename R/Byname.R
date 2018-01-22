@@ -356,6 +356,61 @@ mean_byname <- function(X1, X2){
     elementquotient_byname(2)
 }
 
+#' Name- and element-wise geometric mean of two matrices.
+#'
+#' Gives the geometric mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
+#' 
+#' This function performs a union and sorting of row and column names 
+#' prior to performing geometric mean.
+#' Zeroes are inserted for missing matrix elements.
+#' 
+#' @param X1 first operand (a matrix or constant value or lists of same)
+#' @param X2 second operand (a matrix or constant value or lists of same)
+#'
+#' @return A matrix representing the name-wise geometric mean 
+#'         of \strong{\code{X1}} and \strong{\code{X2}}.
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' library(dplyr)
+#' geometricmean_byname(10, 1000)
+#' commoditynames <- c("c1", "c2")
+#' industrynames <- "i1"
+#' U <- matrix(c(10, 1000), ncol = 1, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' G <- matrix(c(1e3, 1e5), ncol = 1, nrow = 2, 
+#'             dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+#'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' # Non-sensical. Row and column names not respected.
+#' sqrt(U*G)
+#' # Row and column names respected!
+#' geometricmean_byname(U, G)
+#' geometricmean_byname(1000, U)
+#' geometricmean_byname(10, G)
+#' # This also works with lists
+#' geometricmean_byname(list(10, 1000), list(1000, 10))
+#' geometricmean_byname(list(U,U), list(G,G))
+#' DF <- data.frame(U = I(list()), G = I(list()))
+#' DF[[1,"U"]] <- U
+#' DF[[2,"U"]] <- U
+#' DF[[1,"G"]] <- G
+#' DF[[2,"G"]] <- G
+#' geometricmean_byname(DF$U, DF$G)
+#' DF %>% mutate(geomeans = geometricmean_byname(U, G))
+geometricmean_byname <- function(X1, X2){
+  args <- organize_args(X1, X2)
+  X1 <- args$a
+  X2 <- args$b
+  if (is.list(X1) & is.list(X2)) {
+    return(mcMap(geometricmean_byname, X1, X2))
+  }
+  elementproduct_byname(X1, X2) %>% 
+    sqrt() %>% 
+    setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1)) %>% 
+    setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
+}
+
 #' Name- and element-wise logarithmic mean of matrices.
 #'
 #' The logarithmic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}} is 
@@ -410,7 +465,7 @@ mean_byname <- function(X1, X2){
 #' DF[[2,"G"]] <- G
 #' difference_byname(DF$U, DF$G)
 #' DF %>% mutate(diffs = difference_byname(U, G))
-logmean_byname <- function(X1, X2, base = exp(1)){
+logarithmicmean_byname <- function(X1, X2, base = exp(1)){
   
 }
 
@@ -1373,7 +1428,7 @@ getcolnames_byname <- function(m){
 
 #' Sets row names
 #'
-#' Sets row names in a way that is amenable to use in chaining operations in a functional programming way.
+#' Sets row names in a way that is amenable to use in piping operations in a functional programming way.
 #' If \code{m} is a matrix, \code{rownames} should be a vector of new row names
 #' that is as long as the number of rows in \code{m}.
 #' If \code{m} is a list of matrices, 
@@ -1398,6 +1453,7 @@ getcolnames_byname <- function(m){
 #' setrownames_byname(m %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("c", "d"))
 #' m %>% setrownames_byname(NULL)
 #' m %>% setrownames_byname(NA)
+#' 2 %>% setrownames_byname("row")
 #' # This also works for lists
 #' setrownames_byname(list(m,m), list(c("a", "b"), c("c", "d")))
 #' DF <- data.frame(m = I(list()))
@@ -1418,10 +1474,16 @@ setrownames_byname <- function(m, rownames){
     rownames <- make_list(rownames, n = length(m), lenx = 1)
     return(setrownames_byname(m, rownames))
   }
-  out <- m
+  if (is.null(dim(m))) {
+    # m has no dimensions. It is a constant.
+    # Turn it into a matrix and set the row names.
+    out <- matrix(m, nrow = 1, ncol = 1)
+  } else {
+    out <- m
+  }
   if (is.null(rownames) || is.na(rownames)) {
     # replace with default row names
-    rownames(out) <- paste0("[", 1:nrow(out),",]")
+    rownames(out) <- NULL
   } else {
     rownames(out) <- rownames
   }
@@ -1430,7 +1492,7 @@ setrownames_byname <- function(m, rownames){
 
 #' Sets column names
 #'
-#' Sets column names in a way that is amenable to use in chaining operations in a functional programming way.
+#' Sets column names in a way that is amenable to use in piping operations in a functional programming way.
 #' If \code{m} is a matrix, \code{colnames} should be a vector of new column names
 #' that is as long as the number of columns in \code{m}.
 #' If \code{m} is a list of matrices, 
@@ -1462,10 +1524,16 @@ setcolnames_byname <- function(m, colnames){
     colnames <- make_list(colnames, n = length(m), lenx = 1)
     return(setcolnames_byname(m, colnames))
   }
-  out <- m
+  if (is.null(dim(m))) {
+    # m has no dimensions. It is a constant.
+    # Turn it into a matrix and set the row names.
+    out <- matrix(m, nrow = 1, ncol = 1)
+  } else {
+    out <- m
+  }
   if (is.null(colnames) || is.na(colnames)) {
     # replace with default row names
-    colnames(out) <- paste0("[,", 1:ncol(out), "]")
+    colnames(out) <- NULL
   } else {
     colnames(out) <- colnames
   }

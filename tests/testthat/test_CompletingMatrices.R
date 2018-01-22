@@ -307,7 +307,7 @@ test_that("complete_and_sort works as expected", {
 
 
 ###########################################################
-context("utilities")
+context("Utilities")
 ###########################################################
 
 test_that("make_list works as expected", {

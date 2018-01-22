@@ -15,7 +15,7 @@ setrownames_byname(m, rownames)
 a copy of \code{m} with new row names
 }
 \description{
-Sets row names in a way that is amenable to use in chaining operations in a functional programming way.
+Sets row names in a way that is amenable to use in piping operations in a functional programming way.
 If \code{m} is a matrix, \code{rownames} should be a vector of new row names
 that is as long as the number of rows in \code{m}.
 If \code{m} is a list of matrices, 
@@ -34,6 +34,7 @@ setrownames_byname(m, c("a", "b"))
 setrownames_byname(m \%>\% setrowtype("Industries") \%>\% setcoltype("Commodities"), c("c", "d"))
 m \%>\% setrownames_byname(NULL)
 m \%>\% setrownames_byname(NA)
+2 \%>\% setrownames_byname("row")
 # This also works for lists
 setrownames_byname(list(m,m), list(c("a", "b"), c("c", "d")))
 DF <- data.frame(m = I(list()))

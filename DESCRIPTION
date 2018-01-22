@@ -1,7 +1,7 @@
 Package: byname
 Type: Package
 Title: An Implementation of Matrix Mathematics
-Version: 0.1.1
+Version: 0.1.2
 Date: 2017-12-25
 Author: Matthew Kuperus Heun \email{matthew.heun@me.com}
 Maintainer: Matthew Kuperus Heun <matthew.heun@me.com>

@@ -15,7 +15,7 @@ setcolnames_byname(m, colnames)
 a copy of \code{m} with new column names
 }
 \description{
-Sets column names in a way that is amenable to use in chaining operations in a functional programming way.
+Sets column names in a way that is amenable to use in piping operations in a functional programming way.
 If \code{m} is a matrix, \code{colnames} should be a vector of new column names
 that is as long as the number of columns in \code{m}.
 If \code{m} is a list of matrices, 

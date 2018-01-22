@@ -405,6 +405,52 @@ test_that("mean_byname works as expected", {
   expect_equal(DF %>% mutate(means = mean_byname(U, G)), DF_expected)
 })
 
+test_that("geometricmean_byname works as expected", {
+  expect_equal(geometricmean_byname(10, 1000), matrix(100, nrow = 1, ncol = 1))
+  commoditynames <- c("c1", "c2")
+  industrynames <- "i1"
+  U <- matrix(c(10, 1000), ncol = 1, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  G <- matrix(c(1e3, 1e5), ncol = 1, nrow = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  UGgeomean <- matrix(c(1000, 1000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  # Non-sensical. Row and column names not respected.
+  expect_equal(sqrt(U*G), 
+               matrix(c(100, 10000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  # Row and column names respected!
+  expect_equal(geometricmean_byname(U, G), UGgeomean)
+  expect_equal(geometricmean_byname(1000, U), 
+               matrix(c(100, 1000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  expect_equal(geometricmean_byname(10, G), 
+               matrix(c(1000, 100), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  # This also works with lists
+  expect_equal(geometricmean_byname(list(10, 1000), list(1000, 10)), 
+               list(matrix(100, nrow = 1, ncol = 1), matrix(100, nrow = 1, ncol = 1)))
+  expect_equal(geometricmean_byname(list(U,U), list(G,G)), list(UGgeomean, UGgeomean))
+  DF <- data.frame(U = I(list()), G = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"G"]] <- G
+  DF[[2,"G"]] <- G
+  expect_equal(geometricmean_byname(DF$U, DF$G), list(UGgeomean, UGgeomean))
+  DF_expected <- data.frame(U = I(list()), G = I(list()), geomeans = I(list()))
+  DF_expected[[1, "U"]] <- U
+  DF_expected[[2, "U"]] <- U
+  DF_expected[[1, "G"]] <- G
+  DF_expected[[2, "G"]] <- G
+  DF_expected[[1, "geomeans"]] <- UGgeomean
+  DF_expected[[2, "geomeans"]] <- UGgeomean
+  # Because DF_expected$geomeans is created with I(list()), its class is "AsIs".
+  # Because DF$geomeans is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$geomeans to NULL to get a match.
+  attr(DF_expected$geomeans, which = "class") <- NULL
+  expect_equal(DF %>% mutate(geomeans = geometricmean_byname(U, G)), DF_expected)
+})
+
 
 ###########################################################
 context("Inversion")
@@ -1122,9 +1168,9 @@ test_that("setting row names works as expected", {
   m3 <- setrownames_byname(m1 %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("c", "d"))
   expect_equal(rownames(m3), c("c", "d"))
   m4 <- m1 %>% setrownames_byname(NULL)
-  expect_equal(rownames(m4), c("[1,]", "[2,]"))
+  expect_null(rownames(m4))
   m5 <- m1 %>% setrownames_byname(NA)
-  expect_equal(rownames(m5), c("[1,]", "[2,]"))
+  expect_null(rownames(m5))
   # This also works for lists
   l1 <- list(m1,m1)
   l2 <- setrownames_byname(l1, list(c("a", "b"), c("c", "d")))
@@ -1154,9 +1200,9 @@ test_that("setting col names works as expected", {
   m3 <- setcolnames_byname(m1 %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("d", "e", "f"))
   expect_equal(colnames(m3), c("d", "e", "f"))
   m4 <- m1 %>% setcolnames_byname(NULL)
-  expect_equal(colnames(m4), c("[,1]", "[,2]", "[,3]"))
+  expect_null(colnames(m4))
   m5 <- m1 %>% setcolnames_byname(NA)
-  expect_equal(colnames(m5), c("[,1]", "[,2]", "[,3]"))
+  expect_null(colnames(m5))
   # This also works for lists
   l1 <- list(m1,m1)
   l2 <- setcolnames_byname(l1, list(c("a", "b", "c"), c("d", "e", "f")))
@@ -1352,7 +1398,39 @@ test_that("organize_args works as expected", {
 
 
 ###########################################################
-context("testing in a data frame")
+context("Row and column names")
+###########################################################
+
+test_that("setrownames_byname works as expected", {
+  m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
+    setrowtype("Industries") %>% setcoltype("Commodities")
+  m2 <- setrownames_byname(m, c("a", "b"))
+  expect_equal(m %>% setrownames_byname(c("a", "b")) %>% rownames(), 
+               c("a", "b"))
+  expect_equal(m %>% setrownames_byname(c("c", "d")) %>% rownames(), c("c", "d"))
+  expect_null(m %>% setrownames_byname(NULL) %>% rownames())
+  expect_null(m %>% setrownames_byname(NA) %>% rownames())
+  # The function should convert the constant to a matrix and apply the row name
+  expect_equal(2 %>% setrownames_byname("row"), 
+               matrix(2, nrow = 1, ncol = 1, dimnames = list(c("row"), NULL)))
+})
+
+test_that("setcolnames_byname works as expected", {
+  m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
+    setrowtype("Industries") %>% setcoltype("Commodities")
+  expect_equal(m %>% setcolnames_byname(c("a", "b", "c")) %>% colnames(), 
+               c("a", "b", "c"))
+  expect_equal(m %>% setcolnames_byname(c("d", "e", "f")) %>% colnames(), c("d", "e", "f"))
+  expect_null(m %>% setcolnames_byname(NULL) %>% colnames())
+  expect_null(m %>% setcolnames_byname(NA) %>% colnames())
+  # The function should convert the constant to a matrix and apply the col name
+  expect_equal(2 %>% setcolnames_byname("col"), 
+               matrix(2, nrow = 1, ncol = 1, dimnames = list(NULL, c("col"))))
+})
+
+
+###########################################################
+context("Testing in a data frame")
 ###########################################################
 
 test_that("matrix multiplied by a constant in a data frame works", {
