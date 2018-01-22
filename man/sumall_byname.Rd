@@ -13,7 +13,7 @@ sumall_byname(m)
 the sum of all elements in \code{m} as a numeric
 }
 \description{
-This function is equivalent to \code{m \%>\% rowsum_byname() \%>\% colsum_byname()},
+This function is equivalent to \code{m \%>\% rowsums_byname() \%>\% colsums_byname()},
 but returns a single numeric value instead of a 1x1 matrix.
 }
 \examples{

@@ -905,7 +905,7 @@ colsums_byname <- function(m, rowname = NA){
 
 #' Sum of all elements in a matrix
 #'
-#' This function is equivalent to \code{m \%>\% rowsum_byname() \%>\% colsum_byname()},
+#' This function is equivalent to \code{m \%>\% rowsums_byname() \%>\% colsums_byname()},
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
 #' @param m the matrix whose elements are to be summed
@@ -1063,6 +1063,44 @@ colprods_byname <- function(m, rowname = NA){
     setrownames_byname(rowname) %>%
     setrowtype(rowtype(m)) %>%
     setcoltype(coltype(m))
+}
+
+#' Product of all elements in a matrix
+#'
+#' This function is equivalent to \code{m \%>\% rowprods_byname() \%>\% colprods_byname()},
+#' but returns a single numeric value instead of a 1x1 matrix.
+#'
+#' @param m the matrix whose elements are to be multiplied
+#'
+#' @return the product of all elements in \code{m} as a numeric.
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' library(dplyr)
+#' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Product")
+#' prodall_byname(m)
+#' rowprods_byname(m) %>% colprods_byname
+#' # Also works for lists
+#' prodall_byname(list(m,m))
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' prodall_byname(DF$m[[1]])
+#' prodall_byname(DF$m)
+#' res <- DF %>% mutate(
+#'   prods = prodall_byname(m)
+#' )
+#' res$prods
+prodall_byname <- function(m){
+  if (is.list(m)) {
+    return(mcMap(prodall_byname, m))
+  }
+  m %>%
+    rowprods_byname %>%
+    colprods_byname %>%
+    as.numeric
 }
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})

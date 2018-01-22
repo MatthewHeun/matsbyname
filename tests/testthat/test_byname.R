@@ -934,6 +934,32 @@ test_that("colprods_byname works as expected", {
   expect_equal(DF %>% mutate(iTm = colprods_byname(m)), DF_expected)
 })
 
+test_that("prodall_byname works as expected", {
+  m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  expect_equal(prodall_byname(m), 16)
+  expect_equal(m %>% rowprods_byname %>% colprods_byname, 
+               matrix(16, nrow = 1, ncol = 1, dimnames = list(rowtype(m), coltype(m))) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Also works for lists
+  expect_equal(prodall_byname(list(m,m)), list(16, 16))
+  # Also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(prodall_byname(DF$m), list(16, 16))
+  DF_expected <- data.frame(m = I(list()), prodm = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m  
+  DF_expected[[1,"prodm"]] <- 16
+  DF_expected[[2,"prodm"]] <- 16
+  # Because DF_expected$summ is created with I(list()), its class is "AsIs".
+  # Because DF$summ is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$summ to NULL to get a match.
+  attr(DF_expected$prodm, which = "class") <- NULL
+  expect_equal(DF %>% mutate(prodm = prodall_byname(m)), DF_expected)
+})
+
 
 ###########################################################
 context("Iminus")
