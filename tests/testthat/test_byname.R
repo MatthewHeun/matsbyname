@@ -904,6 +904,36 @@ test_that("rowprods_byname works as expected", {
   expect_equal(DF %>% mutate(mi = rowprods_byname(m)), DF_expected)
 })
 
+test_that("colprods_byname works as expected", {
+  m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  colprodsm_expected <- matrix(c(6, 120), nrow = 1, dimnames = list(rowtype(m), colnames(m))) %>% 
+    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
+  expect_equal(colprods_byname(m), colprodsm_expected)
+  expect_equal(colprods_byname(m, "E.ktoe"), colprodsm_expected %>% setrownames_byname("E.ktoe"))
+  # This also works with lists
+  expect_equal(colprods_byname(list(m, m)), list(colprodsm_expected, colprodsm_expected))
+  expect_equal(colprods_byname(list(m, m), "E.ktoe"), 
+               list(colprodsm_expected %>% setrownames_byname("E.ktoe"), 
+                    colprodsm_expected %>% setrownames_byname("E.ktoe")))
+  expect_equal(colprods_byname(list(m, m), NULL), list(colprodsm_expected, colprodsm_expected))
+  # Also works with data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(colprods_byname(DF$m), list(colprodsm_expected, colprodsm_expected))
+  DF_expected <- data.frame(m = I(list()), iTm = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"iTm"]] <- colprodsm_expected
+  DF_expected[[2,"iTm"]] <- colprodsm_expected
+  # Because DF_expected$iTm is created with I(list()), its class is "AsIs".
+  # Because DF$iTm is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$iTm to NULL to get a match.
+  attr(DF_expected$iTm, which = "class") <- NULL
+  expect_equal(DF %>% mutate(iTm = colprods_byname(m)), DF_expected)
+})
+
 
 ###########################################################
 context("Iminus")

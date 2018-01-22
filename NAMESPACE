@@ -2,6 +2,7 @@
 
 export(Iminus_byname)
 export(clean_byname)
+export(colprods_byname)
 export(colsums_byname)
 export(coltype)
 export(complete_and_sort)

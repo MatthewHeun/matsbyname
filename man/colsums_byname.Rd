@@ -9,7 +9,7 @@ colsums_byname(m, rowname = NA)
 \arguments{
 \item{m}{a matrix or data frame from which column sums are desired.}
 
-\item{rowname}{name of the output row containing column sums}
+\item{rowname}{name of the output row containing column sums.}
 }
 \value{
 a row vector of type \code{matrix} containing the column sums of \code{m}.

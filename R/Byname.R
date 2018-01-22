@@ -848,7 +848,7 @@ rowsums_byname <- function(m, colname = NA){
 #' the row name is set to the row type as given by \code{rowtype(m)}.
 #'
 #' @param m a matrix or data frame from which column sums are desired.
-#' @param rowname name of the output row containing column sums
+#' @param rowname name of the output row containing column sums.
 #'
 #' @return a row vector of type \code{matrix} containing the column sums of \code{m}.
 #' @export
@@ -884,12 +884,8 @@ colsums_byname <- function(m, rowname = NA){
     }
     return(mcMap(colsums_byname, m, rowname))
   }
-  # if (is.null(rowname) | is.na(rowname)){
-  #   # Set the column name to the column type, since we added all items of coltype together.
-  #   rowname <- rowtype(m)
-  # }
   if (is.null(rowname)) {
-    # Set the column name to the column type, since we added all items of coltype together.
+    # Set the row name to the row type, since we added all items of rowtype together.
     rowname <- rowtype(m)
   }
   if (is.na(rowname)) {
@@ -905,6 +901,44 @@ colsums_byname <- function(m, rowname = NA){
     setrownames_byname(rowname) %>%
     setrowtype(rowtype(m)) %>%
     setcoltype(coltype(m))
+}
+
+#' Sum of all elements in a matrix
+#'
+#' This function is equivalent to \code{m \%>\% rowsum_byname() \%>\% colsum_byname()},
+#' but returns a single numeric value instead of a 1x1 matrix.
+#'
+#' @param m the matrix whose elements are to be summed
+#'
+#' @return the sum of all elements in \code{m} as a numeric
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' library(dplyr)
+#' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' sumall_byname(m)
+#' rowsums_byname(m) %>% colsums_byname
+#' # Also works for lists
+#' sumall_byname(list(m,m))
+#' DF <- data.frame(m = I(list()))
+#' DF[[1,"m"]] <- m
+#' DF[[2,"m"]] <- m
+#' sumall_byname(DF$m[[1]])
+#' sumall_byname(DF$m)
+#' res <- DF %>% mutate(
+#'   sums = sumall_byname(m)
+#' )
+#' res$sums
+sumall_byname <- function(m){
+  if (is.list(m)) {
+    return(mcMap(sumall_byname, m))
+  }
+  m %>%
+    rowsums_byname %>%
+    colsums_byname %>%
+    as.numeric
 }
 
 #' Row products, sorted by name
@@ -968,42 +1002,67 @@ rowprods_byname <- function(m, colname = NA){
     setcoltype(coltype(m))
 }
 
-#' Sum of all elements in a matrix
+#' Column products, sorted by name
 #'
-#' This function is equivalent to \code{m \%>\% rowsum_byname() \%>\% colsum_byname()},
-#' but returns a single numeric value instead of a 1x1 matrix.
+#' Calculates column products (the product of all elements in a column) for a matrix.
+#' An optional \code{rowname} for the resulting row vector can be supplied.
+#' If \code{rowname} is \code{NULL} or \code{NA} (the default),
+#' the row name is set to the row type as given by \code{rowtype(m)}.
 #'
-#' @param m the matrix whose elements are to be summed
+#' @param m a matrix or data frame from which column products are desired.
+#' @param rowname name of the output row containing column products.
 #'
-#' @return the sum of all elements in \code{m} as a numeric
+#' @return a row vector of type \code{matrix} containing the column products of \code{m}.
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
-#' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
-#'   setrowtype("Industry") %>% setcoltype("Commodity")
-#' sumall_byname(m)
-#' rowsums_byname(m) %>% colsums_byname
-#' # Also works for lists
-#' sumall_byname(list(m,m))
+#' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' colprods_byname(m)
+#' colprods_byname(m, rowname = "E.ktoe")
+#' m %>% colprods_byname %>% rowprods_byname
+#' # This also works with lists
+#' colprods_byname(list(m, m))
+#' colprods_byname(list(m, m), rowname = "E.ktoe")
+#' colprods_byname(list(m, m), rowname = NA)
+#' colprods_byname(list(m, m), rowname = NULL)
 #' DF <- data.frame(m = I(list()))
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
-#' sumall_byname(DF$m[[1]])
-#' sumall_byname(DF$m)
+#' colprods_byname(DF$m[[1]])
+#' colprods_byname(DF$m)
+#' colprods_byname(DF$m, "prods")
 #' res <- DF %>% mutate(
-#'   sums = sumall_byname(m)
+#'   cs = colprods_byname(m),
+#'   cs2 = colprods_byname(m, rowname = "prod")
 #' )
-#' res$sums
-sumall_byname <- function(m){
+#' res$cs2
+colprods_byname <- function(m, rowname = NA){
   if (is.list(m)) {
-    return(mcMap(sumall_byname, m))
+    if (is.null(rowname)) {
+      rowname <- NA
+    }
+    return(mcMap(colprods_byname, m, rowname))
   }
-  m %>%
-    rowsums_byname %>%
-    colsums_byname %>%
-    as.numeric
+  if (is.null(rowname)) {
+    # Set the row name to the row type, since we added all items of rowtype together.
+    rowname <- rowtype(m)
+  }
+  if (is.na(rowname)) {
+    rowname <- rowtype(m)
+  }
+  apply(m, MARGIN = 2, FUN = prod) %>%
+    # Preserve matrix structure (i.e., result will be a row vector of type matrix)
+    matrix(nrow = 1) %>%
+    # Preserve column names
+    setcolnames_byname(colnames(m)) %>%
+    # But sort the result on names
+    sort_rows_cols() %>%
+    setrownames_byname(rowname) %>%
+    setrowtype(rowtype(m)) %>%
+    setcoltype(coltype(m))
 }
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
