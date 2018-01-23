@@ -442,6 +442,22 @@ geometricmean_byname <- function(X1, X2){
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
+#' m1 <- matrix(c(1:6), nrow = 3, ncol = 2) %>% 
+#'   setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
+#'   setrowtype("row") %>% setcoltype("col")
+#' m2 <- matrix(c(7:12), nrow = 3, ncol = 2) %>% 
+#'   setrownames_byname(c("r2", "r3", "r4")) %>% setcolnames_byname(c("c2", "c3")) %>% 
+#'   setrowtype("row") %>% setcoltype("col")
+#' logarithmicmean_byname(m1, m2)
+#' # This also works with lists
+#' logarithmicmean_byname(list(m1, m1), list(m2, m2))
+#' DF <- data.frame(m1 = I(list()), m2 = I(list()))
+#' DF[[1,"m1"]] <- m1
+#' DF[[2,"m1"]] <- m1
+#' DF[[1,"m2"]] <- m2
+#' DF[[2,"m2"]] <- m2
+#' logarithmicmean_byname(DF$m1, DF$m2)
+#' DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2))
 logarithmicmean_byname <- function(X1, X2, base = exp(1)){
   args <- organize_args(X1, X2)
   X1 <- args$a
@@ -451,6 +467,8 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
   }
   # Unwrap each matrix and mcMap logmean to all elements.
   Map(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
+    # Map produces a list, but we need a numeric vector.
+    as.numeric() %>% 
     # Rewrap the matrix
     matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
     setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1)) %>% 
@@ -473,14 +491,14 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
 #'         for all other values of \code{x1} and \code{x2}
 #'
 #' @examples
-#' logmean(0, 0) # 0
-#' logmean(0, 1) # 0
-#' logmean(1, 0) # 0
-#' logmean(1, 1) # 1
-#' logmean(2, 1)
-#' logmean(1, 2) # commutative
-#' logmean(1, 10) # base = exp(1), the default
-#' logmean(1, 10, base = 10)
+#' byname:::logmean(0, 0) # 0
+#' byname:::logmean(0, 1) # 0
+#' byname:::logmean(1, 0) # 0
+#' byname:::logmean(1, 1) # 1
+#' byname:::logmean(2, 1)
+#' byname:::logmean(1, 2) # commutative
+#' byname:::logmean(1, 10) # base = exp(1), the default
+#' byname:::logmean(1, 10, base = 10)
 logmean <- function(x1, x2, base = exp(1)){
   # Take care of pathological cases.
   if (x1 == 0) {
