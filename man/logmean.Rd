@@ -26,12 +26,12 @@ Calculates the logarithmic mean of two numbers.
 This is an internal helper function for \code{logarithmicmean_byname}.
 }
 \examples{
-logmean(0, 0) # 0
-logmean(0, 1) # 0
-logmean(1, 0) # 0
-logmean(1, 1) # 1
-logmean(2, 1)
-logmean(1, 2) # commutative
-logmean(1, 10) # base = exp(1), the default
-logmean(1, 10, base = 10)
+byname:::logmean(0, 0) # 0
+byname:::logmean(0, 1) # 0
+byname:::logmean(1, 0) # 0
+byname:::logmean(1, 1) # 1
+byname:::logmean(2, 1)
+byname:::logmean(1, 2) # commutative
+byname:::logmean(1, 10) # base = exp(1), the default
+byname:::logmean(1, 10, base = 10)
 }
