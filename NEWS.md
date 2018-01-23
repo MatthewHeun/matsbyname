@@ -1,12 +1,12 @@
 # byname 0.1.2 (2018-01-23)
 
 * Added the following functions:
-   + `mean_byname`: Gives the arithmetic mean of corresponding entries of two matrices
-   + `logarithmicmean_byname`: Gives the logarithmic mean of corresponding entries of two matrices
-   + `geometricmean_byname`: Gives the geometric mean of corresponding entries of two matrices
-* Miscellaneous improvements to documentation.
+   + `mean_byname`: returns the arithmetic mean of corresponding entries of two matrices
+   + `geometricmean_byname`: returns the geometric mean of corresponding entries of two matrices
+   + `logarithmicmean_byname`: returns the logarithmic mean of corresponding entries of two matrices
 * Fixed a bug whereby calling `setrownames_byname` and `setcolnames_byname` on a constant would fail.
   It now produces a 1x1 matrix with named rows or columns.
+* Miscellaneous improvements to documentation of many functions.
    
 
 # byname 0.1.1 (2018-01-21)
