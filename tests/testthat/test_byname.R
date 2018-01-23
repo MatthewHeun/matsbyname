@@ -473,22 +473,33 @@ test_that("logarithmicmean_byname works as expected", {
     setrownames_byname(c("r2", "r3", "r4")) %>% setcolnames_byname(c("c2", "c3")) %>% 
     setrowtype("row") %>% setcoltype("col")
   logmean <- logarithmicmean_byname(m1, m2)
-  expect_equal(rownames(logmean), c("r1", "r2", "r3", "r4"))
-  expect_equal(colnames(logmean), c("c1", "c2", "c3"))
-  expect_equal(rowtype(logmean), "row")
-  expect_equal(coltype(logmean), "col")
-  expect_equal(logmean[["r1", "c1"]], 0)
-  expect_equal(logmean[["r1", "c2"]], 0)
-  expect_equal(logmean[["r1", "c3"]], 0)
-  expect_equal(logmean[["r2", "c1"]], 0)
-  expect_equal(logmean[["r2", "c2"]], 5.944026824)
-  expect_equal(logmean[["r2", "c3"]], 0)
-  expect_equal(logmean[["r3", "c1"]], 0)
-  expect_equal(logmean[["r3", "c2"]], 6.952118994)
-  expect_equal(logmean[["r3", "c3"]], 0)
-  expect_equal(logmean[["r4", "c1"]], 0)
-  expect_equal(logmean[["r4", "c2"]], 0)
-  expect_equal(logmean[["r4", "c3"]], 0)
+  expectedlm <- matrix(c(0, 0, 0, 
+                         0, 5.944026824, 0,
+                         0, 6.952118994, 0,
+                         0, 0, 0), nrow = 4, ncol = 3, byrow = TRUE) %>% 
+    setrownames_byname(c("r1", "r2", "r3", "r4")) %>% setcolnames_byname(c("c1", "c2", "c3")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_equal(logmean, expectedlm)
+  # This also works with lists
+  expect_equal(logarithmicmean_byname(list(m1, m1), list(m2, m2)), list(expectedlm, expectedlm))
+  DF <- data.frame(m1 = I(list()), m2 = I(list()))
+  DF[[1,"m1"]] <- m1
+  DF[[2,"m1"]] <- m1
+  DF[[1,"m2"]] <- m2
+  DF[[2,"m2"]] <- m2
+  expect_equal(logarithmicmean_byname(DF$m1, DF$m2), list(expectedlm, expectedlm))
+  DF_expected <- data.frame(m1 = I(list()), m2 = I(list()), logmeans = I(list()))
+  DF_expected[[1, "m1"]] <- m1
+  DF_expected[[2, "m1"]] <- m1
+  DF_expected[[1, "m2"]] <- m2
+  DF_expected[[2, "m2"]] <- m2
+  DF_expected[[1, "logmeans"]] <- logmean
+  DF_expected[[2, "logmeans"]] <- logmean
+  # Because DF_expected$geomeans is created with I(list()), its class is "AsIs".
+  # Because DF$geomeans is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$geomeans to NULL to get a match.
+  attr(DF_expected$logmeans, which = "class") <- NULL
+  expect_equal(DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2)), DF_expected)
 })
 
 
