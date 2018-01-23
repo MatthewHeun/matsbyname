@@ -1,4 +1,4 @@
-# byname 0.1.2 (2018-01-22)
+# byname 0.1.2 (2018-01-23)
 
 * Added the following functions:
    + `mean_byname`: Gives the arithmetic mean of corresponding entries of two matrices

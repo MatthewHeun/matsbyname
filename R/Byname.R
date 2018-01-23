@@ -1660,7 +1660,7 @@ setcoltype <- function(x, coltype){
 #' # This also works for lists
 #' rowtype(list(U,U))
 rowtype <- function(x){
-  if (is.list(x)) {
+  if (is.list(x) & !is.matrix(x)) {
     return(mcMap(rowtype, x))
   }
   return(attr(x, "rowtype"))
@@ -1685,7 +1685,7 @@ rowtype <- function(x){
 #' # This also works for lists
 #' coltype(list(U,U))
 coltype <- function(x){
-  if (is.list(x)) {
+  if (is.list(x) & !is.matrix(x)) {
     return(mcMap(coltype, x))
   }
   return(attr(x, "coltype"))
