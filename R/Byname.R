@@ -472,7 +472,12 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
   if (is.list(X1) & is.list(X2)) {
     return(mcMap(logarithmicmean_byname, X1, X2, base))
   }
-  
+  # Unwrap each matrix and mcMap logmean to all elements.
+  Map(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
+    # Rewrap the matrix
+    matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
+    setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1)) %>% 
+    setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
 }
 
 #' Logarithmic mean of two numbers
@@ -483,10 +488,11 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
 #'
 #' @param x1 the first operand (must be non-negative)
 #' @param x2 the second operand (must be non-negative)
-#' @param base the base of the logarithm used in this calculation
+#' @param base the base of the logarithm used in this calculation. 
+#'        (Default is \code{exp(1)}.)
 #'
 #' @return \code{0} if \code{x1 = 0} or \code{x2 = 0}; \code{x1} if \code{x1 == x2}; and
-#'         \code{(x1 - x2) / log(x1/x2, base = base)} 
+#'         \code{(x1 - x2) / (log(x1, base = base) - log(x2, base = base))} 
 #'         for all other values of \code{x1} and \code{x2}
 #'
 #' @examples
@@ -499,6 +505,7 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
 #' logmean(1, 10) # base = exp(1), the default
 #' logmean(1, 10, base = 10)
 logmean <- function(x1, x2, base = exp(1)){
+  # Take care of pathological cases.
   if (x1 == 0) {
     return(0)
   }
@@ -508,7 +515,7 @@ logmean <- function(x1, x2, base = exp(1)){
   if (x1 == x2) {
     return(x1)
   }
-  (x1 - x2) / log(x1 / x2, base = base)
+  (x1 - x2) / (log(x1, base = base) - log(x2, base = base))
 }
 
 #' Invert a matrix
@@ -1509,7 +1516,7 @@ setrownames_byname <- function(m, rownames){
   if (is.list(m) & is.list(rownames)) {
     return(mcMap(setrownames_byname, m, rownames))
   }
-  if (is.list(m) & is.vector(rownames)) {
+  if (is.list(m) & !is.matrix(m) & is.vector(rownames)) {
     # rownames is a vector of names to be applied 
     # to each matrix in m.
     # Thus, we should replicatate it to be same length as m
@@ -1559,7 +1566,7 @@ setcolnames_byname <- function(m, colnames){
   if (is.list(m) & is.list(colnames)) {
     return(mcMap(setcolnames_byname, m, colnames))
   }
-  if (is.list(m) & is.vector(colnames)) {
+  if (is.list(m) & !is.matrix(m) & is.vector(colnames)) {
     # colnames is a vector of names to be applied 
     # to each matrix in m.
     # Thus, we should replicatate it to be same length as m
@@ -1612,7 +1619,7 @@ setcolnames_byname <- function(m, colnames){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setrowtype <- function(x, rowtype){
-  if (is.list(x)) {
+  if (is.list(x) & !is.matrix(x)) {
     return(mcMap(setrowtype, x, rowtype))
   }
   attr(x, "rowtype") <- rowtype
@@ -1649,7 +1656,7 @@ setrowtype <- function(x, rowtype){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setcoltype <- function(x, coltype){
-  if (is.list(x)) {
+  if (is.list(x) & !is.matrix(x)) {
     return(mcMap(setcoltype, x, coltype))
   }
   attr(x, "coltype") <- coltype

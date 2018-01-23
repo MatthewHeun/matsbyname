@@ -457,11 +457,11 @@ test_that("logmean works as expected", {
   expect_equal(logmean(0, 1), 0)
   expect_equal(logmean(1, 0), 0)
   expect_equal(logmean(1, 1), 1)
-  expect_equal(logmean(2, 1), 1.442695, tolerance = 1e-6)
+  expect_equal(logmean(2, 1), 1.442695041)
   # commutative!
-  expect_equal(logmean(1, 2), 1.442695, tolerance = 1e-6)
+  expect_equal(logmean(1, 2), 1.442695041)
   # base = exp(1), the default
-  expect_equal(logmean(1, 10), 3.90865, tolerance = 1e-6)
+  expect_equal(logmean(1, 10), 3.908650337)
   expect_equal(logmean(1, 10, base = 10), 9)
 })
 
@@ -469,6 +469,26 @@ test_that("logarithmicmean_byname works as expected", {
   m1 <- matrix(c(1:6), nrow = 3, ncol = 2) %>% 
     setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
     setrowtype("row") %>% setcoltype("col")
+  m2 <- matrix(c(7:12), nrow = 3, ncol = 2) %>% 
+    setrownames_byname(c("r2", "r3", "r4")) %>% setcolnames_byname(c("c2", "c3")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  logmean <- logarithmicmean_byname(m1, m2)
+  expect_equal(rownames(logmean), c("r1", "r2", "r3", "r4"))
+  expect_equal(colnames(logmean), c("c1", "c2", "c3"))
+  expect_equal(rowtype(logmean), "row")
+  expect_equal(coltype(logmean), "col")
+  expect_equal(logmean[["r1", "c1"]], 0)
+  expect_equal(logmean[["r1", "c2"]], 0)
+  expect_equal(logmean[["r1", "c3"]], 0)
+  expect_equal(logmean[["r2", "c1"]], 0)
+  expect_equal(logmean[["r2", "c2"]], 5.944026824)
+  expect_equal(logmean[["r2", "c3"]], 0)
+  expect_equal(logmean[["r3", "c1"]], 0)
+  expect_equal(logmean[["r3", "c2"]], 6.952118994)
+  expect_equal(logmean[["r3", "c3"]], 0)
+  expect_equal(logmean[["r4", "c1"]], 0)
+  expect_equal(logmean[["r4", "c2"]], 0)
+  expect_equal(logmean[["r4", "c3"]], 0)
 })
 
 
@@ -1427,6 +1447,7 @@ test_that("setrownames_byname works as expected", {
   m2 <- setrownames_byname(m, c("a", "b"))
   expect_equal(m %>% setrownames_byname(c("a", "b")) %>% rownames(), 
                c("a", "b"))
+  expect_equal(m %>% setrownames_byname(rownames(m2)) %>% rownames(), c("a", "b"))
   expect_equal(m %>% setrownames_byname(c("c", "d")) %>% rownames(), c("c", "d"))
   expect_null(m %>% setrownames_byname(NULL) %>% rownames())
   expect_null(m %>% setrownames_byname(NA) %>% rownames())
