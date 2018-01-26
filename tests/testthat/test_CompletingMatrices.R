@@ -19,30 +19,31 @@ test_that("complete_rows_cols works as expected", {
   # x is NULL, names is NULL, matrix is NULL.  Error.
   expect_error(complete_rows_cols(x = NULL), "All of x, names, and matrix are NULL in complete_rows_cols.")
    
-  expected_mat <- matrix(42, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
-  
   # x is NULL, names is a nxn list, matrix is NULL.  Create a fill-matrix with names.
-  expect_equal(complete_rows_cols(x = NULL, names = dimnames(expected_mat), fill = 42), expected_mat)
+  expect_equal(complete_rows_cols(x = NULL, names = dimnames(expected_mat), fill = 42), 
+               matrix(42, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))))
    
   # x is NULL, names is NULL, matrix is present.  
   # Create a matrix of same size as matrix with names of matrix and values equal to fill.
-  expect_equal(complete_rows_cols(x = NULL, matrix = expected_mat, fill = 42), expected_mat)
+  expect_equal(complete_rows_cols(x = NULL, matrix = expected_mat, fill = 42), 
+               matrix(42, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))))
   
   # x is a single number, names is NULL, matrix is NULL.  x is returned.
   expect_equal(complete_rows_cols(x = 42), 42)
   
   # x is a single number, names is a list of length 2, and each item has length 1.  
   # This should fail. 
+  # There is no way to know which row or column names are already present.
+  # Therefore, there is now way to know how to complete the number x.
+  expect_error(complete_rows_cols(x = 42, names = list("row", "col")))
+  
   # If you want to take a single number and convert it to 
   # a matrix with named rows and columns, use
   # complete_rows_cols(x = NULL, names = list("row", "col"), fill = <<your number>>).
-  expect_error(complete_rows_cols(x = 42, names = list("row", "col")))
-  
-  # In fact, let's try that one.
   expect_equal(complete_rows_cols(x = NULL, names = list("row", "col"), fill = 42), 
                matrix(42, nrow = 1, ncol = 1, dimnames = list("row", "col")))
   
-  # Or, specify instaed with a matrix.
+  # Or, specify instead with a matrix.
   expect_equal(complete_rows_cols(x = NULL, 
                                   matrix = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col")), 
                                   fill = 42), 
@@ -68,36 +69,37 @@ test_that("complete_rows_cols works as expected", {
                "Can't complete x that is missing dimnames with non-NULL names.")
    
   # x is a matrix with dimnames, names is NULL, matrix is NULL.  x is returned.
-  expect_equal(complete_rows_cols(x = expected_mat), expected_mat)
+  expect_equal(complete_rows_cols(x = matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))), 
+               matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1")))
   
   # x is a matrix with dimnames, names is present as a list, but matrix is NULL.  Apply names to complete x.
-  
-  
-  
-  
-  
-  
-  
+  x <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  # Should add zero row named "r4" and zero column named "c3"
+  expect_equal(complete_rows_cols(x, names = list("r4", "c3")), 
+               matrix(c(1, 4, 0, 
+                        2, 5, 0,
+                        3, 6, 0,
+                        0, 0, 0), nrow = 4, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3"))))
+
   # x is a matrix with dimnames, names is NULL, but matrix is present.  Take names from matrix to complete x.
-  # 
-  # 
-  # 
-  # 
-  # 
-  # In this example, m2 has no row or column names.
-  # It throws an error.
+  expect_equal(complete_rows_cols(x, matrix = matrix(42, nrow = 4, ncol = 3, 
+                                                     dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3")))), 
+               matrix(c(1, 4, 0, 
+                        2, 5, 0,
+                        3, 6, 0,
+                        0, 0, 0), nrow = 4, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3"))))
+
+  # In this example, x is non-NULL and has dimnames.
+  # But we have no names. 
+  # There is no "names" argument, and matrix has no row or column names.
+  # So there is no way to know how to complete x.
+  # So we return x.
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   m2 <- matrix(c(7:12), ncol = 3)
-  expect_equal(complete_rows_cols(m1, m2), 
-               matrix(c(1, 4, 0, 0, 0, 
-                        2, 5, 0, 0, 0, 
-                        3, 6, 0, 0, 0, 
-                        0, 0, 0, 0, 0, 
-                        0, 0, 0, 0, 0),
-                      byrow = TRUE, nrow = 5, ncol = 5,
-                      dimnames = list(c("r1", "r2", "r3", "c1", "c2"), c("c1", "c2", "r1", "r2", "r3")))
-               )
-  
+  expect_equal(complete_rows_cols(x = m1, matrix = m2), m1)
+
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   m2 <- matrix(c(7:12), ncol = 3, dimnames = list(c("r2", "r3"), c("c2", "c3", "c4")))
   complete_m1_m2 <- matrix(c(1,4,0,0,
