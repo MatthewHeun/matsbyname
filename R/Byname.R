@@ -405,9 +405,12 @@ geometricmean_byname <- function(X1, X2){
   if (is.list(X1) & is.list(X2)) {
     return(mcMap(geometricmean_byname, X1, X2))
   }
-  elementproduct_byname(X1, X2) %>% 
+  if ((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0)) {
+    stop(paste0("X1 and X2 must have same sign in geometricmean_byname: X1 = ", X1, ", X2 = ", X2, "."))
+  } 
+  out <- elementproduct_byname(X1, X2) %>% 
     sqrt() %>% 
-    setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1)) %>% 
+    # rownames and colnames should already be set (if needed) in elementproduct_byname.
     setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
 }
 
@@ -466,7 +469,7 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
     return(mcMap(logarithmicmean_byname, X1, X2, base))
   }
   # Unwrap each matrix and mcMap logmean to all elements.
-  Map(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
+  mcMap(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
     # Map produces a list, but we need a numeric vector.
     as.numeric() %>% 
     # Rewrap the matrix
@@ -474,6 +477,24 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
     setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1)) %>% 
     setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
 }
+
+# apply_byname <- function(FUN, ...){
+#   # dots <- quos(...)
+#   dots <- !!! as.name(...)
+#   print(dots %>% class)
+#   print((!!! dots) %>% class)
+#   if (all(as.logical(lapply(X = dots, FUN = is.list)))) {
+#     # ... contains all lists.
+#     # We shall Map FUN across each of the items in the lists
+#     print("all lists")
+#     # Map(FUN, !!!dots)
+#     # return(Map(FUN, dots))
+#   }
+#   # When we get here, we no longer have lists.
+#   # Apply FUN to all of the arguments.
+#   # FUN(dots)
+#   print("not all lists")
+# }
 
 #' Logarithmic mean of two numbers
 #' 
@@ -1473,6 +1494,7 @@ getcolnames_byname <- function(m){
 #' Sets row names
 #'
 #' Sets row names in a way that is amenable to use in piping operations in a functional programming way.
+#' If \code{m} is a constant, it is converted to a matrix and \code{rownames} are applied.
 #' If \code{m} is a matrix, \code{rownames} should be a vector of new row names
 #' that is as long as the number of rows in \code{m}.
 #' If \code{m} is a list of matrices, 
@@ -1537,6 +1559,7 @@ setrownames_byname <- function(m, rownames){
 #' Sets column names
 #'
 #' Sets column names in a way that is amenable to use in piping operations in a functional programming way.
+#' If \code{m} is a constant, it is converted to a matrix and \code{colnames} are applied.
 #' If \code{m} is a matrix, \code{colnames} should be a vector of new column names
 #' that is as long as the number of columns in \code{m}.
 #' If \code{m} is a list of matrices, 
@@ -1586,14 +1609,18 @@ setcolnames_byname <- function(m, colnames){
 
 #' Sets row type for a matrix or a list of matrices
 #'
-#' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
-#' in a functional way.
+#' This function is a wrapper for \code{attr} so that 
+#' setting can be accomplished by the pipe operator (\code{\%>\%}).
 #' Row types are strings stored in the \code{rowtype} attribute.
+#' 
+#' If \code{is.null(rowtype)}, the rowtype attribute is deleted
+#' and subsequent calls to \code{rowtype} will return \code{NULL}.
 #'
 #' @param x the matrix on which row type is to be set
 #' @param rowtype the type of item stored in rows
 #'
-#' @return a copy of \code{x} with \code{rowtype} attribute set
+#' @return \code{x} with rowtype attribute set to \code{rowtype}.
+#' 
 #' @export
 #'
 #' @examples
@@ -1617,20 +1644,28 @@ setrowtype <- function(x, rowtype){
   if (is.list(x) & !is.matrix(x)) {
     return(mcMap(setrowtype, x, rowtype))
   }
+  # Only set the rowtype if it is non-null.
+  # if (!is.null(rowtype)) {
+  #   attr(x, "rowtype") <- rowtype
+  # }
   attr(x, "rowtype") <- rowtype
   return(x)
 }
 
 #' Sets column type for a matrix or a list of matrices
 #'
-#' This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
-#' in a functional way.
+#' This function is a wrapper for \code{attr} so that 
+#' setting can be accomplished by the pipe operator (\code{\%>\%}).
 #' Column types are strings stored in the \code{coltype} attribute.
+#' 
+#' #' If \code{is.null(coltype)}, the coltype attribute is deleted
+#' and subsequent calls to \code{coltype} will return \code{NULL}.
 #'
 #' @param x the matrix on which column type is to be set
 #' @param coltype the type of item stored in columns
 #'
-#' @return a copy of \code{x} with \code{coltype} attribute set
+#' @return \code{x} with \code{coltype} attribute set.
+#' 
 #' @export
 #'
 #' @examples
@@ -1653,7 +1688,10 @@ setrowtype <- function(x, rowtype){
 setcoltype <- function(x, coltype){
   if (is.list(x) & !is.matrix(x)) {
     return(mcMap(setcoltype, x, coltype))
-  }
+  }  
+  # if (!is.null(coltype)) {
+  #   attr(x, "coltype") <- coltype
+  # }
   attr(x, "coltype") <- coltype
   return(x)
 }

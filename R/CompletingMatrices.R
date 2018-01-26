@@ -7,31 +7,36 @@ library("parallel")
 #' "Complete"-ing rows and columns means that \code{x} contains a union of rows and columns
 #' between \code{x} and \code{m},
 #' with missing data represented by the value for \code{fill} (0, by default).
+#' 
 #' Note that \code{complete_rows_cols(mat1, mat2)} and \code{complete_rows_cols(mat2, mat1)} are 
 #' not guaranteed to have the same order for rows and columns.
-#' (Nor are the values in the matrix guaranteed to have the same positions, of course.)
+#' (Nor are the values in the matrix guaranteed to have the same positions.)
+#' If \code{names} is NULL, \code{x} is returned unmodified.
 #' If either \code{x} or \code{matrix} are missing names on a margin (row or column),
 #' an error is given.
-#' If both \code{matrix} and \code{names} are missing,
+#' If both \code{is.na(matrix)} and \code{any(is.null(names))},
 #' \code{x} will be completed relative to itself. 
 #' I.e., \code{x} will be made square, and will contain the union of row and column names from \code{x} itself.
-#' If \code{matrix} is \code{NULL} (the default), 
-#' \code{x} will be completed relative to itself.
 #'
 #' @param x a matrix or data frame to be completed
 #' @param matrix instead of supplying \code{names} directly, a \code{matrix} can be supplied
-#' from which \code{dimnames} will be extracted
-#' @param names the names of rows and columns to be completed in \code{x}, with 
-#' the same structure as the value of \code{dimnames(matrix)}
+#'        from which \code{dimnames} will be extracted
+#' @param names the names of rows and columns to be completed in \code{x}. 
+#'        \code{names} should be a list of two string vectors;
+#'        the containing row names and the second containing column names.
+#'        If \code{names} is NULL, \code{dimnames(matrix)} will be used instead.
 #' @param fill rows and columns added to \code{x} will contain \code{fill}
 #' @param margin specifies the subscript(s) in \code{x} over which completion will occur
-#' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
-#' For rows only, give \code{1}; 
-#' for columns only, give \code{2};
-#' for both rows and columns, give \code{c(1,2)}, the default value.
+#'        \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
+#'        For rows only, give \code{1}; 
+#'        for columns only, give \code{2};
+#'        for both rows and columns, give \code{c(1,2)}, the default value.
+#'        
 #' @export
+#' 
 #' @return A modified version of \code{x} possibly containing additional rows and columns 
 #' whose names are obtained from \code{matrix}
+#' 
 #' @examples
 #' m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
 #' m2 <- matrix(c(7:12), ncol=3, dimnames = list(c("r2", "r3"), c("c2", "c3", "c4")))
@@ -56,40 +61,100 @@ library("parallel")
 #' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 2)
 #' complete_rows_cols(x = list(m1,m1), 
 #'                    names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
-complete_rows_cols <- function(x, matrix = NA, names = dimnames(matrix), fill = 0, margin = c(1,2)){
-  if (is.null(matrix)) {
-    matrix <- NA
+complete_rows_cols <- function(x = NULL, matrix = NULL, names = NULL, fill = 0, margin = c(1,2)){
+  if (is.null(x) & is.null(names) & is.null(matrix)) {
+    stop("All of x, names, and matrix are NULL in complete_rows_cols.")
   }
-  if (any(is.null(names))) {
-    names <- NA
-  }
-  if (is.null(fill)) {
-    fill <- NA
-  }
-  if (is.list(x) & !is.data.frame(x)) {
-    if (any(is.na(matrix))) {
+  # if (is.null(matrix)) {
+  #   matrix <- NA
+  # }
+  # if (any(is.null(names))) {
+  #   names <- NA
+  # }
+  # if (is.null(fill)) {
+  #   fill <- NA
+  # }
+  if (is.list(x) & !is.data.frame(x) & !is.matrix(x)) {
+    # Assume we have a list of matrices, not a single matrix, for x.
+    # Double-check that we have what we need in the matrix argument.
+    # if (any(is.na(matrix))) {
+    if (is.na(matrix)) {
+      # matrix is a single NA value.  But we need a list of
+      # NA values for the Map function.
+      # Make a list of same length as the list of x.
+      # Each value is NA.
       matrix <- make_list(NA, length(x))
+    } else if (is.matrix(matrix)) {
+      # We have a single matrix for matrix.
+      # Duplicate it to be a list with same length as x.
+      matrix <- make_list(matrix, length(x))
     }
-    if (any(is.na(names))) {
-      names <- lapply(matrix, dimnames)
+    # if (any(is.na(names))) {
+    if (is.na(names)) {
+      # names is NA.  
+      # But we need a list of names that is same length as the list in the x argument
+      # for the Map function.
+      # Make names into a list of NAs with length the same as the length of x.
+      names <- make_list(NA, length(x))
     }
     if (is.na(fill)) {
+      # fill is NA.
+      # But we need a list of fill that is same length as the list in the x argument
+      # for the Map function.
+      # Make fill into a list of NAs with length the same as the length of x.
       fill <- make_list(NA, length(x))
     }
+    # Ensure that margin is a list with same length as argument x.
     margin <- make_list(margin, length(x))
+    # Now we can Map everything!
     return(mcMap(complete_rows_cols, x = x, matrix = matrix, names = names, fill = fill, margin = margin))
   }
+  
+  # When we get here, we should not have lists for any of the matrices.
+  # If present, we should have single matrices for x and matrix. 
+  # If present, we should have a list of two items for names.
+  
+  if (is.null(names)) {
+    # When names is NULL, try to gather row and column names from matrix.
+    names <- dimnames(matrix)
+  }
+
+  if (is.null(names)) {
+    # names is null, even after trying to gether row and column names from matrix.  
+    # Just return x.
+    return(x)
+  }
+    
+  rt <- rowtype(matrix)
+  ct <- coltype(matrix)
+  if (is.null(x) & length(names) == 2) {
+    # x is NULL, names is a nxn list.  Create a fill-matrix with names.
+    return(matrix(fill, nrow = length(names[[1]]), ncol = length(names[[2]]), dimnames = names) %>% 
+             setrowtype(rt) %>% setcoltype(ct))
+  }
+
+  # If we get here, we could have x without dimnames and non-NULL names.
+  # This is a degenerate case.
+  # We don't know what row and column names are already present in x.
+  # So we can't know how to complete x with the items in names.
+  # Give an error.
+  if (is.null(dimnames(x)) & !is.null(names)) {
+    stop("Can't complete x that is missing dimnames with non-NULL names.  How can we know which names are already present in x?")
+  }
+  
+  
+  # At this point, we should have 
+  #   * a single matrix x,
+  #   * names with which to complete the dimnames of x,
+  #   * a single fill value, and 
+  #   * an indication of which margin(s) over which to complete the names.
+  
   for (mar in margin) {
     # Check that row or column names are available for the margin to be completed.
     # If not, this is almost certainly an unintended error by the caller.
     if (is.null(dimnames(x)[[mar]])) {
       stop(paste("NULL dimnames for margin =", mar, "on x"))
     }
-  }
-  if (any(is.na(names))) {
-    # No other names were provided, nor was there a matrix from which names could be extracted.
-    # Instead, complete x relative to itself. The easy way is to complete x relative to its transpose.
-    return(complete_rows_cols(x, t(x), margin = margin))
   }
   if (1 %in% margin) {
     zerorownames <- setdiff(names[[1]], rownames(x))
@@ -205,7 +270,7 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' both matrices have same row and column names. 
 #' Missing rows and columns (relative to the other matrix)
 #' are filled with zeroes.
-#' Thereafter, sorts the rows and columns of the matrices
+#' Thereafter, rows and columns of the matrices are sorted
 #' such that they are in the same order (by name).
 #' To complete rows of \code{m1} relative to columns of \code{m2},
 #' set the \code{m2} argument to \code{transpose_byname(m2)}.
@@ -214,13 +279,21 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' For rows only, give \code{1}; 
 #' for columns only, give \code{2};
 #' for both rows and columns, give \code{c(1,2)}, the default value.
+#' 
+#' If only \code{m1} is specified, rows of \code{m1} are completed and sorted 
+#' relative to columns of \code{m1}.
+#' If neither \code{m1} nor \code{m2} have dimnames, 
+#' \code{m1} and \code{m2} are returned unmodified.
+#' If only one of \code{m1} or \code{m2} has dimnames, an error is thrown.
+#' 
 #' @param m1 The first matrix
-#' @param m2 The second matrix
-#' @param margin Specifies the dimension(s) of \code{m1} and \code{m2} over which completing and sorting will occur 
+#' @param m2 The second (optional) matrix.
+#' @param margin Specifies the dimension(s) of \code{m1} and \code{m2} over which 
+#'        completing and sorting will occur 
 #' @param roworder Specifies a custom ordering for rows of returned matrices. 
-#' Unspecified rows are dropped.
+#'        Unspecified rows are dropped.
 #' @param colorder Specifies a custom ordering for columns of returned matrices.
-#' Unspecified columns are dropped.
+#'        Unspecified columns are dropped.
 #'
 #' @return A named list containing completed and sorted versions of \code{m1} and \code{m2}.
 #' @export
@@ -242,7 +315,7 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' # Also works with lists
 #' complete_and_sort(list(m1,m1), list(m2,m2))
 complete_and_sort <- function(m1, m2, margin=c(1,2), roworder = NA, colorder = NA){
-  if (missing(m2)){
+  if (missing(m2)) {
     m1 <- complete_rows_cols(m1, margin = margin)
     m1 <- sort_rows_cols(m1, roworder = roworder, colorder = colorder)
     return(m1)
@@ -253,7 +326,7 @@ complete_and_sort <- function(m1, m2, margin=c(1,2), roworder = NA, colorder = N
   m2 <- m2 %>% 
     complete_rows_cols(m1, margin = margin) %>% 
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
-  return(list(m1=m1, m2=m2))
+  return(list(m1 = m1, m2 = m2))
 }
 
 #' Makes a list of items in x, regardless of x's type

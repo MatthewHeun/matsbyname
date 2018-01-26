@@ -16,6 +16,7 @@ a copy of \code{m} with new row names
 }
 \description{
 Sets row names in a way that is amenable to use in piping operations in a functional programming way.
+If \code{m} is a constant, it is converted to a matrix and \code{rownames} are applied.
 If \code{m} is a matrix, \code{rownames} should be a vector of new row names
 that is as long as the number of rows in \code{m}.
 If \code{m} is a list of matrices, 

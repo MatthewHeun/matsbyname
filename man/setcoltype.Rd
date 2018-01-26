@@ -12,12 +12,16 @@ setcoltype(x, coltype)
 \item{coltype}{the type of item stored in columns}
 }
 \value{
-a copy of \code{x} with \code{coltype} attribute set
+\code{x} with \code{coltype} attribute set.
 }
 \description{
-This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
-in a functional way.
+This function is a wrapper for \code{attr} so that 
+setting can be accomplished by the pipe operator (\code{\%>\%}).
 Column types are strings stored in the \code{coltype} attribute.
+}
+\details{
+#' If \code{is.null(coltype)}, the coltype attribute is deleted
+and subsequent calls to \code{coltype} will return \code{NULL}.
 }
 \examples{
 library(magrittr)

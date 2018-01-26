@@ -9,9 +9,10 @@ complete_and_sort(m1, m2, margin = c(1, 2), roworder = NA, colorder = NA)
 \arguments{
 \item{m1}{The first matrix}
 
-\item{m2}{The second matrix}
+\item{m2}{The second (optional) matrix.}
 
-\item{margin}{Specifies the dimension(s) of \code{m1} and \code{m2} over which completing and sorting will occur}
+\item{margin}{Specifies the dimension(s) of \code{m1} and \code{m2} over which 
+completing and sorting will occur}
 
 \item{roworder}{Specifies a custom ordering for rows of returned matrices. 
 Unspecified rows are dropped.}
@@ -27,7 +28,7 @@ Completes each matrix relative to each other, thereby assuring that
 both matrices have same row and column names. 
 Missing rows and columns (relative to the other matrix)
 are filled with zeroes.
-Thereafter, sorts the rows and columns of the matrices
+Thereafter, rows and columns of the matrices are sorted
 such that they are in the same order (by name).
 To complete rows of \code{m1} relative to columns of \code{m2},
 set the \code{m2} argument to \code{transpose_byname(m2)}.
@@ -37,6 +38,12 @@ set the \code{m2} argument to \code{transpose_byname(m2)}.
 For rows only, give \code{1}; 
 for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.
+
+If only \code{m1} is specified, rows of \code{m1} are completed and sorted 
+relative to columns of \code{m1}.
+If neither \code{m1} nor \code{m2} have dimnames, 
+\code{m1} and \code{m2} are returned unmodified.
+If only one of \code{m1} or \code{m2} has dimnames, an error is thrown.
 }
 \examples{
 m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))

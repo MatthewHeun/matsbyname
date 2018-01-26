@@ -12,12 +12,16 @@ setrowtype(x, rowtype)
 \item{rowtype}{the type of item stored in rows}
 }
 \value{
-a copy of \code{x} with \code{rowtype} attribute set
+\code{x} with rowtype attribute set to \code{rowtype}.
 }
 \description{
-This function is a wrapper for \code{attr} so setting can be accomplished by the chain operator (\code{\%>\%})
-in a functional way.
+This function is a wrapper for \code{attr} so that 
+setting can be accomplished by the pipe operator (\code{\%>\%}).
 Row types are strings stored in the \code{rowtype} attribute.
+}
+\details{
+If \code{is.null(rowtype)}, the rowtype attribute is deleted
+and subsequent calls to \code{rowtype} will return \code{NULL}.
 }
 \examples{
 library(magrittr)

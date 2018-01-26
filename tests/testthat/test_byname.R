@@ -230,6 +230,9 @@ test_that("matrixproduct_byname works as expected", {
 
 test_that("elementproduct_byname works as expected", {
   expect_equal(elementproduct_byname(2, 2), 4)
+  expect_equal(elementproduct_byname(matrix(c(10, 10), nrow = 2, ncol = 1), 1000), 
+               matrix(c(10000, 10000), nrow = 2, ncol = 1))
+  
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
@@ -285,7 +288,7 @@ test_that("elementproduct_byname works as expected", {
     mutate(
       B = elementproduct_byname(constant, U)
     )
-  for (i in c(1:2)){
+  for (i in c(1:2)) {
     expect_equal(DF_3$B[[i]], DF$U[[i]]*20)
   }
   
@@ -362,6 +365,9 @@ context("Means")
 
 test_that("mean_byname works as expected", {
   expect_equal(mean_byname(100, 50), 75)
+  expect_equal(mean_byname(0, 0), 0)
+  expect_equal(mean_byname(-2, -4), -3)
+  expect_equal(mean_byname(-10, 10), 0)
   commoditynames <- c("c1", "c2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -406,7 +412,13 @@ test_that("mean_byname works as expected", {
 })
 
 test_that("geometricmean_byname works as expected", {
-  expect_equal(geometricmean_byname(10, 1000), matrix(100, nrow = 1, ncol = 1))
+  expect_equal(geometricmean_byname(0, 0), 0)
+  expect_equal(geometricmean_byname(10, 20), sqrt(10*20))
+  expect_error(geometricmean_byname(-10, 10), "X1 and X2 must have same sign in geometricmean_byname")
+  expect_equal(geometricmean_byname(10, 1000), 100)
+  expect_equal(geometricmean_byname(matrix(c(10, 10), nrow = 2, ncol = 1), 1000), 
+               matrix(c(100, 100), nrow = 2, ncol = 1))
+  
   commoditynames <- c("c1", "c2")
   industrynames <- "i1"
   U <- matrix(c(10, 1000), ncol = 1, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -466,6 +478,17 @@ test_that("logmean works as expected", {
 })
 
 test_that("logarithmicmean_byname works as expected", {
+  # Should work with single numbers.
+  expect_equal(logarithmicmean_byname(0, 0), 0)
+  expect_equal(logmean(0, 1), 0)
+  expect_equal(logmean(1, 0), 0)
+  expect_equal(logmean(1, 1), 1)
+  expect_equal(logmean(2, 1), 1.442695041)
+  # commutative!
+  expect_equal(logmean(1, 2), 1.442695041)
+  # base = exp(1), the default
+  expect_equal(logmean(1, 10), 3.908650337)
+  expect_equal(logmean(1, 10, base = 10), 9)
   m1 <- matrix(c(1:6), nrow = 3, ncol = 2) %>% 
     setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
     setrowtype("row") %>% setcoltype("col")
@@ -1280,10 +1303,11 @@ test_that("setting col names works as expected", {
 context("Row and column types")
 ###########################################################
 
-test_that("setrowtype_byname and rowtype works as expected", {
+test_that("setrowtype and rowtype works as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products")
+  expect_null(U %>% setrowtype(NULL) %>% rowtype())
   expect_equal(rowtype(U), "Products")
   # This also works for lists
   Ul <- setrowtype(list(U,U), rowtype = "Products")
@@ -1300,10 +1324,11 @@ test_that("setrowtype_byname and rowtype works as expected", {
   expect_equal(DF3$newcol %>% rowtype, list("Products", "Products"))
 })
 
-test_that("setcoltype_byname and coltype works as expected", {
+test_that("setcoltype and coltype works as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setcoltype("Industries")
+  expect_null(U %>% setcoltype(NULL) %>% coltype())
   expect_equal(coltype(U), "Industries")
   # This also works for lists
   Ul <- setcoltype(list(U,U), coltype = "Industries")
@@ -1526,4 +1551,10 @@ test_that("matrix multiplied by a constant in a data frame works", {
 })
 
 
+###########################################################
+# context("Apply")
+###########################################################
 
+# test_that("apply_byname works as expected", {
+#   apply_byname(FUN = sum, c1 = list(1, 2, 3), c2 = list(4,5,6))
+# })
