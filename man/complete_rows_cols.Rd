@@ -4,21 +4,15 @@
 \alias{complete_rows_cols}
 \title{Complete rows and columns in one matrix relative to another}
 \usage{
-complete_rows_cols(x = NULL, matrix = NULL, names = NULL, fill = 0,
-  margin = c(1, 2))
+complete_rows_cols(x = NULL, mat = NULL, fill = 0, margin = c(1, 2))
 }
 \arguments{
 \item{x}{a matrix or data frame to be completed}
 
-\item{matrix}{instead of supplying \code{names} directly, a \code{matrix} can be supplied
-from which \code{dimnames} will be extracted}
+\item{mat}{a \code{matrix} can be supplied from which \code{dimnames} will be extracted
+for the purposes of completing \code{x} with respect to \code{mat}.}
 
-\item{names}{the names of rows and columns to be completed in \code{x}. 
-\code{names} should be a list of two string vectors;
-the containing row names and the second containing column names.
-If \code{names} is NULL, \code{dimnames(matrix)} will be used instead.}
-
-\item{fill}{rows and columns added to \code{x} will contain \code{fill}}
+\item{fill}{rows and columns added to \code{x} will contain \code{fill}. (a double)}
 
 \item{margin}{specifies the subscript(s) in \code{x} over which completion will occur
 \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
@@ -42,9 +36,16 @@ not guaranteed to have the same order for rows and columns.
 If \code{names} is NULL, \code{x} is returned unmodified.
 If either \code{x} or \code{matrix} are missing names on a margin (row or column),
 an error is given.
-If both \code{is.na(matrix)} and \code{any(is.null(names))},
-\code{x} will be completed relative to itself. 
-I.e., \code{x} will be made square, and will contain the union of row and column names from \code{x} itself.
+Matrices can be completed relative to themselves,
+meaning that \code{x} will be made square,  
+containing the union of row and column names from \code{x} itself.
+All added rows and columns will be created with the value of \code{fill}.
+Self-completion occurs if \code{x} is non-NULL and 
+both \code{is.null(matrix)} and \code{is.null(names)}.
+Under these conditions, no warning is given.
+If \code{is.null(names)} and dimnames of \code{matrix} cannot be determined
+(because, for example, \code{matrix} doesn't have any dimnames),
+\code{x} is completed relative to itself and a warning is given.
 }
 \examples{
 m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
@@ -64,10 +65,10 @@ complete_rows_cols(m1)
 complete_rows_cols(m1, names = list(c("r10", "r11"), c("c10", "c11"))) 
 # Also works with lists
 complete_rows_cols(x = list(m1,m1))
-complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2))
+complete_rows_cols(x = list(m1,m1), mat = list(m2,m2))
 # No changes because r2, r3 already present in m1
-complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 1) 
-complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 2)
+complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 1) 
+complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 2)
 complete_rows_cols(x = list(m1,m1), 
                    names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
 }
