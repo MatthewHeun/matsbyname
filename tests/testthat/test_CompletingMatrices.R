@@ -35,7 +35,7 @@ test_that("complete_rows_cols works as expected", {
   
   # If you want to take a single number and convert it to 
   # a matrix with named rows and columns, use
-  # complete_rows_cols(x = NULL, matrix = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"), fill = <<your number>>).
+  # complete_rows_cols(x = NULL, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"), fill = <<your number>>).
   expect_equal(complete_rows_cols(x = NULL, 
                                   mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col")), 
                                   fill = 42), 

@@ -58,10 +58,10 @@ library("parallel")
 #' complete_rows_cols(m1, names = list(c("r10", "r11"), c("c10", "c11"))) 
 #' # Also works with lists
 #' complete_rows_cols(x = list(m1,m1))
-#' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2))
+#' complete_rows_cols(x = list(m1,m1), mat = list(m2,m2))
 #' # No changes because r2, r3 already present in m1
-#' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 1) 
-#' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 2)
+#' complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 1) 
+#' complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 2)
 #' complete_rows_cols(x = list(m1,m1), 
 #'                    names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
 complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
@@ -85,7 +85,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     # Double-check that we have what we need for the margin argument.
     margin <- make_list(margin, length(x))
     # Now we can Map everything!
-    return(mcMap(complete_rows_cols, x = x, matrix = mat, fill = fill, margin = margin))
+    return(mcMap(complete_rows_cols, x = x, mat = mat, fill = fill, margin = margin))
   }
   if (is.null(x) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
     # x is NULL, and assume we have a list of matrices in the matrix argument.
@@ -95,7 +95,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     x = make_list(NULL, length(mat))
     margin <- make_list(margin, length(mat))
     # Now we can Map everything!
-    return(mcMap(complete_rows_cols, x = x, matrix = mat, fill = fill, margin = margin))
+    return(mcMap(complete_rows_cols, x = x, mat = mat, fill = fill, margin = margin))
   }
 
   # When we get here, we should not have lists for any of the arguments.
