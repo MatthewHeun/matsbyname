@@ -100,7 +100,7 @@ test_that("complete_rows_cols works as expected", {
   m2 <- matrix(c(7:12), ncol = 3)
   expect_equal(complete_rows_cols(x = m1, matrix = m2), m1)
 
-  m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  # Now give m2 some dimnames.
   m2 <- matrix(c(7:12), ncol = 3, dimnames = list(c("r2", "r3"), c("c2", "c3", "c4")))
   complete_m1_m2 <- matrix(c(1,4,0,0,
                              2,5,0,0,
