@@ -28,11 +28,7 @@ library("parallel")
 #' @param x a matrix or data frame to be completed
 #' @param matrix instead of supplying \code{names} directly, a \code{matrix} can be supplied
 #'        from which \code{dimnames} will be extracted
-#' @param names the names of rows and columns to be completed in \code{x}. 
-#'        \code{names} should be a list of two string vectors;
-#'        the containing row names and the second containing column names.
-#'        If \code{names} is NULL, \code{dimnames(matrix)} will be used instead.
-#' @param fill rows and columns added to \code{x} will contain \code{fill}
+#' @param fill rows and columns added to \code{x} will contain \code{fill}. (a double) 
 #' @param margin specifies the subscript(s) in \code{x} over which completion will occur
 #'        \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
 #'        For rows only, give \code{1}; 
@@ -68,64 +64,45 @@ library("parallel")
 #' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 2)
 #' complete_rows_cols(x = list(m1,m1), 
 #'                    names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
-complete_rows_cols <- function(x = NULL, matrix = NULL, names = NULL, fill = 0, margin = c(1,2)){
-  if (is.null(x) & is.null(names) & is.null(matrix)) {
-    stop("All of x, names, and matrix are NULL in complete_rows_cols.")
+complete_rows_cols <- function(x = NULL, matrix = NULL, fill = 0, margin = c(1,2)){
+  if (is.null(x) & is.null(matrix)) {
+    stop("Both x and matrix are NULL in complete_rows_cols.")
   }
-  # if (is.null(matrix)) {
-  #   matrix <- NA
-  # }
-  # if (any(is.null(names))) {
-  #   names <- NA
-  # }
-  # if (is.null(fill)) {
-  #   fill <- NA
-  # }
   if (is.list(x) & !is.data.frame(x) & !is.matrix(x)) {
-    # Assume we have a list of matrices, not a single matrix, for x.
+    # Assume we have a list of matrices for x, not a single matrix.
     # Double-check that we have what we need in the matrix argument.
-    # if (any(is.na(matrix))) {
-    if (is.na(matrix)) {
-      # matrix is a single NA value.  But we need a list of
-      # NA values for the Map function.
+    if (is.null(matrix)) {
+      # matrix is a single NULL value.  But we need a list of
+      # NULL values for the Map function.
       # Make a list of same length as the list of x.
       # Each value is NA.
-      matrix <- make_list(NA, length(x))
+      matrix <- make_list(NULL, length(x))
     } else if (is.matrix(matrix)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as x.
       matrix <- make_list(matrix, length(x))
     }
-    # if (any(is.na(names))) {
-    if (is.na(names)) {
-      # names is NA.  
-      # But we need a list of names that is same length as the list in the x argument
-      # for the Map function.
-      # Make names into a list of NAs with length the same as the length of x.
-      names <- make_list(NA, length(x))
-    }
-    if (is.na(fill)) {
-      # fill is NA.
-      # But we need a list of fill that is same length as the list in the x argument
-      # for the Map function.
-      # Make fill into a list of NAs with length the same as the length of x.
-      fill <- make_list(NA, length(x))
-    }
-    # Ensure that margin is a list with same length as argument x.
+    # Double-check that we have what we need for the margin argument.
     margin <- make_list(margin, length(x))
     # Now we can Map everything!
-    return(mcMap(complete_rows_cols, x = x, matrix = matrix, names = names, fill = fill, margin = margin))
+    return(Map(complete_rows_cols, x = x, matrix = matrix, fill = fill, margin = margin))
   }
-  
-  # When we get here, we should not have lists for any of the arguments.
-  # If present, we should have single matrices for x and matrix. 
-  # If present, we should have a list of two items for names.
-  
-  if (is.null(names)) {
-    # When names is NULL, try to gather row and column names from matrix.
-    names <- dimnames(matrix)
+  if (is.null(x) & is.list(matrix) & !is.data.frame(matrix) & !is.matrix(matrix)) {
+    # x is NULL, and assume we have a list of matrices in the matrix argument.
+    # Under these conditions, we return matrices with same row and column names as each matrix, but
+    # filled with the "fill" value.
+    # For that to work, we need to ensure that each of the other arguments are lists.
+    x = make_list(NULL, length(matrix))
+    margin <- make_list(margin, length(matrix))
+    # Now we can Map everything!
+    return(Map(complete_rows_cols, x = x, matrix = matrix, fill = fill, margin = margin))
   }
 
+  # When we get here, we should not have lists for any of the arguments.
+  # We should have single matrices for x and/or matrix. 
+
+  names <- dimnames(matrix)
+  
   if (is.null(names)) {
     # names is null, even after trying to gether row and column names from matrix.  
     # If x is a matrix with names, complete it relative to itself.
@@ -139,7 +116,7 @@ complete_rows_cols <- function(x = NULL, matrix = NULL, names = NULL, fill = 0, 
       }
       return(complete_rows_cols(x, matrix = t(x)))
     }
-    # x is a matrix without names.  Just return x.
+    # x is a matrix without dimnames.  Just return x.
     return(x)
   }
     
@@ -151,10 +128,10 @@ complete_rows_cols <- function(x = NULL, matrix = NULL, names = NULL, fill = 0, 
              setrowtype(rt) %>% setcoltype(ct))
   }
 
-  # If we get here, we could have x without dimnames and non-NULL names.
+  # If we get here, we could have x without dimnames and non-NULL dimnames on matrix
   # This is a degenerate case.
   # We don't know what row and column names are already present in x.
-  # So we can't know how to complete x with the items in names.
+  # So we can't know how to complete x with the names from matrix.
   # Give an error.
   if (is.null(dimnames(x)) & !is.null(names)) {
     stop("Can't complete x that is missing dimnames with non-NULL names.  How can we know which names are already present in x?")
@@ -164,8 +141,8 @@ complete_rows_cols <- function(x = NULL, matrix = NULL, names = NULL, fill = 0, 
   # At this point, we should have 
   #   * a single matrix x,
   #   * names with which to complete the dimnames of x,
-  #   * a single fill value, and 
-  #   * an indication of which margin(s) over which to complete the names.
+  #   * a single fill value (in the fill argument), and 
+  #   * an indication of which margin(s) over which to complete the names (in the margin argument).
   
   for (mar in margin) {
     # Check that row or column names are available for the margin to be completed.
