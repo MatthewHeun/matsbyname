@@ -26,8 +26,8 @@ library("parallel")
 #' \code{x} is completed relative to itself and a warning is given.
 #'
 #' @param x a matrix or data frame to be completed
-#' @param matrix instead of supplying \code{names} directly, a \code{matrix} can be supplied
-#'        from which \code{dimnames} will be extracted
+#' @param mat a \code{matrix} can be supplied from which \code{dimnames} will be extracted
+#'        for the purposes of completing \code{x} with respect to \code{mat}.
 #' @param fill rows and columns added to \code{x} will contain \code{fill}. (a double) 
 #' @param margin specifies the subscript(s) in \code{x} over which completion will occur
 #'        \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
@@ -64,64 +64,64 @@ library("parallel")
 #' complete_rows_cols(x = list(m1,m1), matrix = list(m2,m2), margin = 2)
 #' complete_rows_cols(x = list(m1,m1), 
 #'                    names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
-complete_rows_cols <- function(x = NULL, matrix = NULL, fill = 0, margin = c(1,2)){
-  if (is.null(x) & is.null(matrix)) {
+complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
+  if (is.null(x) & is.null(mat)) {
     stop("Both x and matrix are NULL in complete_rows_cols.")
   }
   if (is.list(x) & !is.data.frame(x) & !is.matrix(x)) {
     # Assume we have a list of matrices for x, not a single matrix.
     # Double-check that we have what we need in the matrix argument.
-    if (is.null(matrix)) {
+    if (is.null(mat)) {
       # matrix is a single NULL value.  But we need a list of
       # NULL values for the Map function.
       # Make a list of same length as the list of x.
       # Each value is NA.
-      matrix <- make_list(NULL, length(x))
-    } else if (is.matrix(matrix)) {
+      mat <- make_list(NULL, length(x))
+    } else if (is.matrix(mat)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as x.
-      matrix <- make_list(matrix, length(x))
+      mat <- make_list(mat, length(x))
     }
     # Double-check that we have what we need for the margin argument.
     margin <- make_list(margin, length(x))
     # Now we can Map everything!
-    return(Map(complete_rows_cols, x = x, matrix = matrix, fill = fill, margin = margin))
+    return(mcMap(complete_rows_cols, x = x, matrix = mat, fill = fill, margin = margin))
   }
-  if (is.null(x) & is.list(matrix) & !is.data.frame(matrix) & !is.matrix(matrix)) {
+  if (is.null(x) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
     # x is NULL, and assume we have a list of matrices in the matrix argument.
     # Under these conditions, we return matrices with same row and column names as each matrix, but
     # filled with the "fill" value.
     # For that to work, we need to ensure that each of the other arguments are lists.
-    x = make_list(NULL, length(matrix))
-    margin <- make_list(margin, length(matrix))
+    x = make_list(NULL, length(mat))
+    margin <- make_list(margin, length(mat))
     # Now we can Map everything!
-    return(Map(complete_rows_cols, x = x, matrix = matrix, fill = fill, margin = margin))
+    return(mcMap(complete_rows_cols, x = x, matrix = mat, fill = fill, margin = margin))
   }
 
   # When we get here, we should not have lists for any of the arguments.
   # We should have single matrices for x and/or matrix. 
 
-  names <- dimnames(matrix)
+  names <- dimnames(mat)
   
   if (is.null(names)) {
     # names is null, even after trying to gether row and column names from matrix.  
     # If x is a matrix with names, complete it relative to itself.
     if (is.matrix(x) & !is.null(dimnames(x))) {
-      if (!is.null(matrix)) {
+      if (!is.null(mat)) {
         # If we get here but matrix is not NULL, the user was probably trying
         # to complete x relative to matrix.
         # But matrix doens't have any dimnames.
         # Warn that we're going to complete x relative to itself.
         warning("NULL names in complete_rows_cols, despite matrix being specified. Completing x relative to itself.")
       }
-      return(complete_rows_cols(x, matrix = t(x)))
+      return(complete_rows_cols(x, mat = t(x)))
     }
     # x is a matrix without dimnames.  Just return x.
     return(x)
   }
     
-  rt <- rowtype(matrix)
-  ct <- coltype(matrix)
+  rt <- rowtype(mat)
+  ct <- coltype(mat)
   if (is.null(x) & length(names) == 2) {
     # x is NULL, names is a nxn list.  Create a fill-matrix with names.
     return(matrix(fill, nrow = length(names[[1]]), ncol = length(names[[2]]), dimnames = names) %>% 
