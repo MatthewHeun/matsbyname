@@ -14,9 +14,16 @@ library("parallel")
 #' If \code{names} is NULL, \code{x} is returned unmodified.
 #' If either \code{x} or \code{matrix} are missing names on a margin (row or column),
 #' an error is given.
-#' If both \code{is.na(matrix)} and \code{any(is.null(names))},
-#' \code{x} will be completed relative to itself. 
-#' I.e., \code{x} will be made square, and will contain the union of row and column names from \code{x} itself.
+#' Matrices can be completed relative to themselves,
+#' meaning that \code{x} will be made square,  
+#' containing the union of row and column names from \code{x} itself.
+#' All added rows and columns will be created with the value of \code{fill}.
+#' Self-completion occurs if \code{x} is non-NULL and 
+#' both \code{is.null(matrix)} and \code{is.null(names)}.
+#' Under these conditions, no warning is given.
+#' If \code{is.null(names)} and dimnames of \code{matrix} cannot be determined
+#' (because, for example, \code{matrix} doesn't have any dimnames),
+#' \code{x} is completed relative to itself and a warning is given.
 #'
 #' @param x a matrix or data frame to be completed
 #' @param matrix instead of supplying \code{names} directly, a \code{matrix} can be supplied
@@ -110,7 +117,7 @@ complete_rows_cols <- function(x = NULL, matrix = NULL, names = NULL, fill = 0, 
     return(mcMap(complete_rows_cols, x = x, matrix = matrix, names = names, fill = fill, margin = margin))
   }
   
-  # When we get here, we should not have lists for any of the matrices.
+  # When we get here, we should not have lists for any of the arguments.
   # If present, we should have single matrices for x and matrix. 
   # If present, we should have a list of two items for names.
   
@@ -121,7 +128,18 @@ complete_rows_cols <- function(x = NULL, matrix = NULL, names = NULL, fill = 0, 
 
   if (is.null(names)) {
     # names is null, even after trying to gether row and column names from matrix.  
-    # Just return x.
+    # If x is a matrix with names, complete it relative to itself.
+    if (is.matrix(x) & !is.null(dimnames(x))) {
+      if (!is.null(matrix)) {
+        # If we get here but matrix is not NULL, the user was probably trying
+        # to complete x relative to matrix.
+        # But matrix doens't have any dimnames.
+        # Warn that we're going to complete x relative to itself.
+        warning("NULL names in complete_rows_cols, despite matrix being specified. Completing x relative to itself.")
+      }
+      return(complete_rows_cols(x, matrix = t(x)))
+    }
+    # x is a matrix without names.  Just return x.
     return(x)
   }
     
