@@ -405,7 +405,7 @@ geometricmean_byname <- function(X1, X2){
   if (is.list(X1) & is.list(X2)) {
     return(mcMap(geometricmean_byname, X1, X2))
   }
-  if ((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0)) {
+  if (any((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0))) {
     stop(paste0("X1 and X2 must have same sign in geometricmean_byname: X1 = ", X1, ", X2 = ", X2, "."))
   } 
   out <- elementproduct_byname(X1, X2) %>% 
