@@ -376,16 +376,28 @@ test_that("detailed example of elementquotient_byname works as expected", {
              226.8281467), nrow = 2, ncol = 1)) %>% 
     setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor")
   LV <- list(123.3151731, 208.1079558, 285.6464036)
-  expect_equal(elementquotient_byname(Lv, LV), 
-               list(matrix(c(0.295256197,
-                             0.701955001), nrow = 2, ncol = 1), 
-                    matrix(c(0.29781893, 
-                             0.700476938), nrow = 2, ncol = 1),
-                    matrix(c(0.198540181, 
-                             0.794087179), nrow = 2, ncol = 1)) %>% 
-                 setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor"))
-               
-  
+  expected <- list(matrix(c(0.295256197,
+                            0.701955001), nrow = 2, ncol = 1), 
+                   matrix(c(0.29781893, 
+                            0.700476938), nrow = 2, ncol = 1),
+                   matrix(c(0.198540181, 
+                            0.794087179), nrow = 2, ncol = 1)) %>% 
+    setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor")
+  expect_equal(elementquotient_byname(Lv, LV), expected)
+
+  # Now try these in a data frame
+  DF <- data.frame(Lv = I(list()), LV = I(list()))
+  DF[[1,"Lv"]] <- Lv[[1]]
+  DF[[2,"Lv"]] <- Lv[[2]]
+  DF[[3,"Lv"]] <- Lv[[3]]
+  DF[[1,"LV"]] <- LV[[1]]
+  DF[[2,"LV"]] <- LV[[2]]
+  DF[[3,"LV"]] <- LV[[3]]
+  DF2 <- DF %>% 
+    mutate(
+      wv = elementquotient_byname(Lv, LV)
+    )
+  expect_equal(DF2$wv, expected)
 })
 
 
