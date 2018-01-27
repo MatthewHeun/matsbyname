@@ -440,8 +440,7 @@ test_that("geometricmean_byname works as expected", {
                matrix(c(1000, 100), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
                  setrowtype("Commodities") %>% setcoltype("Industries"))
   # This also works with lists
-  expect_equal(geometricmean_byname(list(10, 1000), list(1000, 10)), 
-               list(matrix(100, nrow = 1, ncol = 1), matrix(100, nrow = 1, ncol = 1)))
+  expect_equal(geometricmean_byname(list(10, 1000), list(1000, 10)), list(100, 100))
   expect_equal(geometricmean_byname(list(U,U), list(G,G)), list(UGgeomean, UGgeomean))
   DF <- data.frame(U = I(list()), G = I(list()))
   DF[[1,"U"]] <- U

@@ -468,13 +468,26 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
   if (is.list(X1) & is.list(X2)) {
     return(mcMap(logarithmicmean_byname, X1, X2, base))
   }
+  # At this point, our list is gone.  
+  # X1 and X2 are single matrices or single numbers. 
+  # Furthermore, X1 and X2 should have 
+  #   * exact same dimensions, 
+  #   * same row and column names, and 
+  #   * same rowtype and column type.
+  # We exploit these facts in the code below.
   # Unwrap each matrix and mcMap logmean to all elements.
-  mcMap(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
+  out <- mcMap(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
     # Map produces a list, but we need a numeric vector.
-    as.numeric() %>% 
-    # Rewrap the matrix
-    matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
-    setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1)) %>% 
+    as.numeric()
+  if (is.matrix(X1)) {
+    # If X1 and X2 are originally matrices, make out into a matrix
+    # by rewrapping it. 
+    out <- out %>% 
+      matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
+      # Add the row and column names to it.
+      setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1))
+  }
+  out %>%  
     setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
 }
 
