@@ -335,8 +335,8 @@ test_that("elementquotient_byname works as expected", {
                list(tenoverY_expected, tenoverY_expected, tenoverY_expected))
   mat12 <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
   mat34 <- matrix(c(3, 4), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
-  expect_equal(elementquotient_byname(list(mat12, mat34), list(1, 2)), 
-               list(mat12 / 1, mat34 / 2))
+  expect_equal(elementquotient_byname(list(mat12, mat34), list(2, 4)), 
+               list(mat12 / 2, mat34 / 4))
   
   # Use dimnames(U), because after performing elementquotient_byname, 
   # the rows and columns will be sorted alphabetically by name. 
@@ -364,6 +364,28 @@ test_that("elementquotient_byname works as expected", {
   # Need to set the class of DF_expected$elementquotients to NULL to get a match.
   attr(DF_expected$elementquotients, which = "class") <- NULL
   expect_equal(DF %>% mutate(elementquotients = elementquotient_byname(U, Y)), DF_expected)
+})
+
+test_that("detailed example of elementquotient_byname works as expected", {
+  Lv <- list(
+    matrix(c(36.40956907, 
+             86.56170245), nrow = 2, ncol = 1), 
+    matrix(c(61.97848865, 
+             145.7748236), nrow = 2, ncol = 1),
+    matrix(c(56.71228867,
+             226.8281467), nrow = 2, ncol = 1)) %>% 
+    setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor")
+  LV <- list(123.3151731, 208.1079558, 285.6464036)
+  expect_equal(elementquotient_byname(Lv, LV), 
+               list(matrix(c(0.295256197,
+                             0.701955001), nrow = 2, ncol = 1), 
+                    matrix(c(0.29781893, 
+                             0.700476938), nrow = 2, ncol = 1),
+                    matrix(c(0.198540181, 
+                             0.794087179), nrow = 2, ncol = 1)) %>% 
+                 setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor"))
+               
+  
 })
 
 
