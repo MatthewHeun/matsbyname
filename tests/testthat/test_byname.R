@@ -501,18 +501,19 @@ test_that("logarithmicmean_byname works as expected", {
   m1 <- matrix(c(1:6), nrow = 3, ncol = 2) %>% 
     setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
     setrowtype("row") %>% setcoltype("col")
-  expect_equal(logarithmicmean_byname(m1, 2), 
-               matrix(c(1.442695041, 2.885390082, 
-                        2, 3.274070004, 
-                        2.466303462, 3.640956907), byrow = TRUE,
-                      nrow = 3, ncol = 2, dimnames = dimnames(m1)) %>% 
-                 setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1)))
-  expect_equal(logarithmicmean_byname(2, m1), 
-               matrix(c(1.442695041, 2.885390082, 
-                        2, 3.274070004, 
-                        2.466303462, 3.640956907), byrow = TRUE,
-                      nrow = 3, ncol = 2, dimnames = dimnames(m1)) %>% 
-                 setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1)))
+  expected_lmm12 <- matrix(c(1.442695041, 2.885390082, 
+                             2, 3.274070004, 
+                             2.466303462, 3.640956907), byrow = TRUE,
+                           nrow = 3, ncol = 2, dimnames = dimnames(m1)) %>% 
+    setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1))
+  expect_equal(logarithmicmean_byname(m1, 2), expected_lmm12)
+  expect_equal(logarithmicmean_byname(2, m1), expected_lmm12) 
+  # Try with a matrix and a constant in lists
+  expect_equal(logarithmicmean_byname(list(m1, m1), list(2, 2)), list(expected_lmm12, expected_lmm12))
+  expect_equal(logarithmicmean_byname(list(2, 2), list(m1, m1)), list(expected_lmm12, expected_lmm12))
+  expect_equal(logarithmicmean_byname(list(m1, m1), 2), list(expected_lmm12, expected_lmm12))
+  expect_equal(logarithmicmean_byname(2, list(m1, m1)), list(expected_lmm12, expected_lmm12))
+  
   # Try with two matrices
   m2 <- matrix(c(7:12), nrow = 3, ncol = 2) %>% 
     setrownames_byname(c("r2", "r3", "r4")) %>% setcolnames_byname(c("c2", "c3")) %>% 
