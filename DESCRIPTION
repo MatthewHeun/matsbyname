@@ -2,8 +2,10 @@ Package: byname
 Type: Package
 Title: An Implementation of Matrix Mathematics
 Version: 0.1.2
-Date: 2017-12-25
-Author: Matthew Kuperus Heun \email{matthew.heun@me.com}
+Date: 2018-01-27
+Authors@R: c(person("Matthew", "Heun", role = c("aut", "cre"),
+                     email = "matthew.heun@me.com"))
+Author: Matthew Heun [aut, cre]
 Maintainer: Matthew Kuperus Heun <matthew.heun@me.com>
 Description: An implementation of matrix mathematics wherein operations are performed "by name."
 License: MIT + file LICENSE
