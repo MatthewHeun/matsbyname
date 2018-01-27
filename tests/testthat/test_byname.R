@@ -374,7 +374,8 @@ test_that("detailed example of elementquotient_byname works as expected", {
              145.7748236), nrow = 2, ncol = 1),
     matrix(c(56.71228867,
              226.8281467), nrow = 2, ncol = 1)) %>% 
-    setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor")
+    setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor") %>% 
+    setrowtype("subcat") %>% setcoltype("factor")
   LV <- list(123.3151731, 208.1079558, 285.6464036)
   expected <- list(matrix(c(0.295256197,
                             0.701955001), nrow = 2, ncol = 1), 
@@ -382,14 +383,23 @@ test_that("detailed example of elementquotient_byname works as expected", {
                             0.700476938), nrow = 2, ncol = 1),
                    matrix(c(0.198540181, 
                             0.794087179), nrow = 2, ncol = 1)) %>% 
-    setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor")
+    setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor") %>% 
+    setrowtype("subcat") %>% setcoltype("factor")
   expect_equal(elementquotient_byname(Lv, LV), expected)
+  
+  # This is the failure mode.
+  # LV is not maintained as a list. 
+  # It comes in as a numeric vector.
+  # Then, organize_args turns it into a funky list.
+  LV2 <- c(123.3151731, 208.1079558, 285.6464036)
+  expect_equal(elementquotient_byname(Lv, LV2), expected)
 
   # Now try these in a data frame
   DF <- data.frame(Lv = I(list()), LV = I(list()))
   DF[[1,"Lv"]] <- Lv[[1]]
   DF[[2,"Lv"]] <- Lv[[2]]
   DF[[3,"Lv"]] <- Lv[[3]]
+  
   DF[[1,"LV"]] <- LV[[1]]
   DF[[2,"LV"]] <- LV[[2]]
   DF[[3,"LV"]] <- LV[[3]]
