@@ -491,24 +491,6 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
     setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
 }
 
-# apply_byname <- function(FUN, ...){
-#   # dots <- quos(...)
-#   dots <- !!! as.name(...)
-#   print(dots %>% class)
-#   print((!!! dots) %>% class)
-#   if (all(as.logical(lapply(X = dots, FUN = is.list)))) {
-#     # ... contains all lists.
-#     # We shall Map FUN across each of the items in the lists
-#     print("all lists")
-#     # Map(FUN, !!!dots)
-#     # return(Map(FUN, dots))
-#   }
-#   # When we get here, we no longer have lists.
-#   # Apply FUN to all of the arguments.
-#   # FUN(dots)
-#   print("not all lists")
-# }
-
 #' Logarithmic mean of two numbers
 #' 
 #' Calculates the logarithmic mean of two numbers.
@@ -521,7 +503,7 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
 #'        (Default is \code{exp(1)}.)
 #'
 #' @return \code{0} if \code{x1 = 0} or \code{x2 = 0}; \code{x1} if \code{x1 == x2}; and
-#'         \code{(x1 - x2) / (log(x1, base = base) - log(x2, base = base))} 
+#'         \code{(x1 - x2) / log(x1/x2, base = base)} 
 #'         for all other values of \code{x1} and \code{x2}
 #'
 #' @examples
@@ -544,7 +526,7 @@ logmean <- function(x1, x2, base = exp(1)){
   if (x1 == x2) {
     return(x1)
   }
-  (x1 - x2) / (log(x1, base = base) - log(x2, base = base))
+  (x1 - x2) / log(x1/x2, base = base)
 }
 
 #' Invert a matrix

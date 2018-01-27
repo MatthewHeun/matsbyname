@@ -16,7 +16,7 @@ logmean(x1, x2, base = exp(1))
 }
 \value{
 \code{0} if \code{x1 = 0} or \code{x2 = 0}; \code{x1} if \code{x1 == x2}; and
-        \code{(x1 - x2) / (log(x1, base = base) - log(x2, base = base))} 
+        \code{(x1 - x2) / log(x1/x2, base = base)} 
         for all other values of \code{x1} and \code{x2}
 }
 \description{

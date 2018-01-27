@@ -474,23 +474,46 @@ test_that("logmean works as expected", {
   # base = exp(1), the default
   expect_equal(logmean(1, 10), 3.908650337)
   expect_equal(logmean(1, 10, base = 10), 9)
+  # Try negative numbers. 
+  # These work, because the denominator is implemented as a ratio.
+  expect_equal(logmean(-1, -2), -1.442695041)
+  expect_equal(logmean(-2, -1), -1.442695041)
+  # These fail, because the denominator will be negative.
+  expect_warning(val1 <- logmean(-1, 2), "NaNs produced")
+  expect_true(is.nan(val1))
+  expect_warning(val2 <- logmean(1, -2), "NaNs produced")
+  expect_true(is.nan(val2))
 })
 
 test_that("logarithmicmean_byname works as expected", {
   # Should work with single numbers.
   expect_equal(logarithmicmean_byname(0, 0), 0)
-  expect_equal(logmean(0, 1), 0)
-  expect_equal(logmean(1, 0), 0)
-  expect_equal(logmean(1, 1), 1)
-  expect_equal(logmean(2, 1), 1.442695041)
+  expect_equal(logarithmicmean_byname(0, 1), 0)
+  expect_equal(logarithmicmean_byname(1, 0), 0)
+  expect_equal(logarithmicmean_byname(1, 1), 1)
+  expect_equal(logarithmicmean_byname(2, 1), 1.442695041)
   # commutative!
-  expect_equal(logmean(1, 2), 1.442695041)
+  expect_equal(logarithmicmean_byname(1, 2), 1.442695041)
   # base = exp(1), the default
-  expect_equal(logmean(1, 10), 3.908650337)
-  expect_equal(logmean(1, 10, base = 10), 9)
+  expect_equal(logarithmicmean_byname(1, 10), 3.908650337)
+  expect_equal(logarithmicmean_byname(1, 10, base = 10), 9)
+  # Try with a matrix and a constant.
   m1 <- matrix(c(1:6), nrow = 3, ncol = 2) %>% 
     setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
     setrowtype("row") %>% setcoltype("col")
+  expect_equal(logarithmicmean_byname(m1, 2), 
+               matrix(c(1.442695041, 2.885390082, 
+                        2, 3.274070004, 
+                        2.466303462, 3.640956907), byrow = TRUE,
+                      nrow = 3, ncol = 2, dimnames = dimnames(m1)) %>% 
+                 setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1)))
+  expect_equal(logarithmicmean_byname(2, m1), 
+               matrix(c(1.442695041, 2.885390082, 
+                        2, 3.274070004, 
+                        2.466303462, 3.640956907), byrow = TRUE,
+                      nrow = 3, ncol = 2, dimnames = dimnames(m1)) %>% 
+                 setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1)))
+  # Try with two matrices
   m2 <- matrix(c(7:12), nrow = 3, ncol = 2) %>% 
     setrownames_byname(c("r2", "r3", "r4")) %>% setcolnames_byname(c("c2", "c3")) %>% 
     setrowtype("row") %>% setcoltype("col")
