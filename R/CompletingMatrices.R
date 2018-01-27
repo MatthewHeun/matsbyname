@@ -55,7 +55,8 @@ library("parallel")
 #' # Same as previous. With missing matrix, complete relative to transpose of x.
 #' complete_rows_cols(m1) 
 #' # Adds rows r10, r11; cols c10, c11
-#' complete_rows_cols(m1, names = list(c("r10", "r11"), c("c10", "c11"))) 
+#' complete_rows_cols(m1, matrix(0, nrow = 2, ncol = 2, 
+#'                               dimnames = list(c("r10", "r11"), c("c10", "c11")))) 
 #' # Also works with lists
 #' complete_rows_cols(x = list(m1,m1))
 #' complete_rows_cols(x = list(m1,m1), mat = list(m2,m2))
@@ -63,7 +64,9 @@ library("parallel")
 #' complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 1) 
 #' complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 2)
 #' complete_rows_cols(x = list(m1,m1), 
-#'                    names = make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1))
+#'                    mat = make_list(matrix(0, nrow = 2, ncol = 2, 
+#'                                           dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
+#'                                    n = 2, lenx = 1))
 complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
   if (is.null(x) & is.null(mat)) {
     stop("Both x and matrix are NULL in complete_rows_cols.")
