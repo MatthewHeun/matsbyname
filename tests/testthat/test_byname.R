@@ -330,6 +330,14 @@ test_that("elementquotient_byname works as expected", {
   expect_equal(elementquotient_byname(10, Y), tenoverY_expected)
   # This also works with lists
   expect_equal(elementquotient_byname(10, list(Y,Y)), list(tenoverY_expected, tenoverY_expected))
+  # Try more-complicated lists
+  expect_equal(elementquotient_byname(list(10, 10, 10), list(Y, Y, Y)), 
+               list(tenoverY_expected, tenoverY_expected, tenoverY_expected))
+  mat12 <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
+  mat34 <- matrix(c(3, 4), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
+  expect_equal(elementquotient_byname(list(mat12, mat34), list(1, 2)), 
+               list(mat12 / 1, mat34 / 2))
+  
   # Use dimnames(U), because after performing elementquotient_byname, 
   # the rows and columns will be sorted alphabetically by name. 
   # U has rows and columns that are sorted alphabetically by name.
