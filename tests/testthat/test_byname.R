@@ -133,8 +133,8 @@ test_that("differences of matrices works as expected", {
   # So we expect the dimnames of the difference to be the same as the dimnames of U (which has sorted dimnames).
   expect_equal(difference_byname(10, Z), matrix(c(9, 8, 7, 6), ncol = 2, dimnames = dimnames(U)) %>% 
                                         setrowtype(rowtype(Z)) %>% setcoltype(coltype(Z)))
-  # When subtrahend is missing, return minuend (in this case, Z).
-  expect_equal(difference_byname(Z), Z)
+  # When subtrahend is missing, return minuend (in this case, Z) with sorted rows and columns.
+  expect_equal(difference_byname(Z), sort_rows_cols(Z))
   # When minuend is missing, return - subtrahend (in this case, -Z)
   expect_equal(difference_byname(subtrahend = Z), elementproduct_byname(-1, Z))
 })
