@@ -352,14 +352,12 @@ elementquotient_byname <- function(dividend, divisor){
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
 mean_byname <- function(X1, X2){
-  args <- organize_args(X1, X2)
-  X1 <- args$a
-  X2 <- args$b
-  if (is.list(X1) & is.list(X2)) {
-    return(mcMap(mean_byname, X1, X2))
-  }
-  sum_byname(X1, X2) %>%
-    elementquotient_byname(2)
+  binaryapply_byname(
+    function(X1, X2){
+      sum_byname(X1, X2) %>%
+        elementquotient_byname(2)
+    }, 
+    X1, X2)
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -405,19 +403,15 @@ mean_byname <- function(X1, X2){
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
 geometricmean_byname <- function(X1, X2){
-  args <- organize_args(X1, X2)
-  X1 <- args$a
-  X2 <- args$b
-  if (is.list(X1) & is.list(X2)) {
-    return(mcMap(geometricmean_byname, X1, X2))
-  }
-  if (any((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0))) {
-    stop(paste0("X1 and X2 must have same sign in geometricmean_byname: X1 = ", X1, ", X2 = ", X2, "."))
-  } 
-  out <- elementproduct_byname(X1, X2) %>% 
-    sqrt() %>% 
-    # rownames and colnames should already be set (if needed) in elementproduct_byname.
-    setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
+  binaryapply_byname(
+    function(X1, X2){
+      if (any((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0))) {
+        stop(paste0("X1 and X2 must have same sign in geometricmean_byname: X1 = ", X1, ", X2 = ", X2, "."))
+      } 
+      elementproduct_byname(X1, X2) %>% sqrt()
+    }, 
+    X1, X2
+  )
 }
 
 #' Name- and element-wise logarithmic mean of matrices.
@@ -754,16 +748,16 @@ fractionize_byname <- function(M, margin){
     return(M/sumall_byname(M))
   }
   
-  if (length(margin) != 1 || ! margin %in% c(1,2)){
+  if (length(margin) != 1 || !margin %in% c(1,2)) {
     stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
   
-  if (margin == 1){
+  if (margin == 1) {
     # Divide each entry by its row sum
     # Do this with (M*i)_hat_inv * M
     return(matrixproduct_byname(M %>% rowsums_byname %>% hatize_byname %>% invert_byname, M))
   }
-  if (margin == 2){
+  if (margin == 2) {
     # Divide each entry by its column sum
     # Do this with M * (i^T * M)_hat_inv
     return(matrixproduct_byname(M, colsums_byname(M) %>% hatize_byname %>% invert_byname))
@@ -772,15 +766,12 @@ fractionize_byname <- function(M, margin){
   stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
 }
 
-#' @title
 #' Select rows of a matrix (or list of matrices) by name
 #'
-#' @description
 #' Arguments indicate which rows are to be retained and which are to be removed.
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against row names.
 #'
-#' @details
 #' Patterns are compared against row names using extended regex.
 #' If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
