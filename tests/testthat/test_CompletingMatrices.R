@@ -16,6 +16,55 @@ context("Sorting rows and columns")
 
 test_that("sort_rows_cols works as expected", {
   m <- matrix(c(1:6), nrow = 3, dimnames = list(c("r3", "r5", "r1"), c("c4", "c2")))
+  expect_equal(sort_rows_cols(m), 
+               matrix(c(6, 3,
+                        4, 1,
+                        5, 2), byrow = TRUE, nrow = 3, 
+                      dimnames = list(c("r1", "r3", "r5"), c("c2", "c4"))))
+  expect_equal(sort_rows_cols(t(m)), 
+               matrix(c(6, 4, 5,
+                        3, 1, 2), byrow = TRUE, nrow = 2, 
+                      dimnames = list(c("c2", "c4"), c("r1", "r3", "r5"))))
+  # Sort rows only
+  expect_equal(sort_rows_cols(m, margin = 1), 
+               matrix(c(3, 6,
+                        1, 4,
+                        2, 5), byrow = TRUE, nrow = 3,
+                      dimnames = list(c("r1", "r3", "r5"), c("c4", "c2"))))
+  # Sort columns only
+  expect_equal(sort_rows_cols(m, margin = 2), 
+               matrix(c(4, 1,
+                        5, 2,
+                        6, 3), byrow = TRUE, nrow = 3,
+                      dimnames = list(c("r3", "r5", "r1"), c("c2", "c4"))))
+  # Try with a column vector
+  v <- matrix(c(1:5), ncol = 1, dimnames = list(rev(paste0("r", 1:5)), "c1"))
+  sortedv <- matrix(c(5, 
+                      4, 
+                      3, 
+                      2, 
+                      1), byrow = TRUE, nrow = 5, 
+                    dimnames = list(c("r1", "r2", "r3", "r4", "r5"), "c1"))
+  expect_equal(sort_rows_cols(v), sortedv)
+  expect_equal(sort_rows_cols(v, margin = 1), sortedv)
+  # No effect: only one column
+  expect_equal(sort_rows_cols(v, margin = 2), v) 
+  # Now try with a row vector
+  r <- matrix(c(1:4), nrow = 1, dimnames = list("r1", rev(paste0("c", 1:4)))) 
+  sortedr <- matrix(c(4:1), byrow = TRUE, nrow = 1, dimnames = list(c("r1"), c("c1", "c2", "c3", "c4")))
+  # Sorts columns
+  expect_equal(sort_rows_cols(r), sortedr)
+  # No row name
+  n <- matrix(c(1,2), nrow = 1, dimnames = list(NULL, c("c2", "c1"))) 
+  # Sorts columns, because only one row.
+  expect_equal(sort_rows_cols(n), matrix(2:1, nrow = 1, dimnames = list(NULL, c("c1", "c2"))))
+  # Also works with lists
+  # Sorts rows and columns for both m's.
+  sortedm <- matrix(c(6, 3,
+                      4, 1,
+                      5, 2), byrow = TRUE, nrow = 3, dimnames = list(c("r1", "r3", "r5"), c("c2", "c4")))
+  expect_equal(sort_rows_cols(list(m,m)), list(sortedm, sortedm))
+  # Sort only row with a special order.
   sorted1 <- matrix(c(2, 5, 
                       1, 4,
                       3, 6), byrow = TRUE, nrow = 3, dimnames = list(c("r5", "r3", "r1"), c("c4", "c2")))
