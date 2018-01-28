@@ -280,7 +280,7 @@ test_that("elementproduct_byname works as expected", {
       c = 10,
       A = elementproduct_byname(c, U)
     )
-  for (i in c(1:2)){
+  for (i in c(1:2)) {
     expect_equal(DF_2$A[[i]], DF$U[[i]]*10)
   }
   constant <- 20
@@ -298,7 +298,11 @@ test_that("elementproduct_byname works as expected", {
   expect_equal(elementproduct_byname(DF$U, 2), list(Ux2_expected, Ux2_expected))
   # Try with a list of matrices and a single matrix
   expect_equal(elementproduct_byname(DF$U, 
-                                     matrix(c(2,2,2,2), nrow = 2, ncol = 2, dimnames = dimnames(Ux2_expected))), 
+                                     matrix(c(2,2,
+                                              2,2), 
+                                            nrow = 2, ncol = 2, 
+                                            dimnames = dimnames(Ux2_expected)) %>% 
+                                       setrowtype("Products") %>% setcoltype("Industries")), 
                list(Ux2_expected, Ux2_expected))
 })
 
