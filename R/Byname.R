@@ -240,17 +240,7 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
 elementproduct_byname <- function(multiplicand, multiplier){
-  # args <- organize_args(multiplicand, multiplier)
-  # multiplicand <- args$a
-  # multiplier <- args$b
-  # if (is.list(multiplicand) & is.list(multiplier)) {
-  #   return(mcMap(elementproduct_byname, multiplicand, multiplier))
-  # }
-  # (multiplicand * multiplier) %>%
-  #   setrowtype(rowtype(multiplicand)) %>%
-  #   setcoltype(coltype(multiplicand))
   binaryapply_byname(`*`, multiplicand, multiplier)
-  
 }
 
 #' Name-wise matrix element division
@@ -293,15 +283,7 @@ elementproduct_byname <- function(multiplicand, multiplier){
 #' elementquotient_byname(DF$U, DF$G)
 #' DF %>% mutate(elementquotients = elementquotient_byname(U, G))
 elementquotient_byname <- function(dividend, divisor){
-  args <- organize_args(dividend, divisor)
-  dividend <- args$a
-  divisor <- args$b
-  if (is.list(dividend) & is.list(divisor)) {
-    return(mcMap(elementquotient_byname, dividend, divisor))
-  }
-  (dividend / divisor) %>%
-    setrowtype(rowtype(dividend)) %>%
-    setcoltype(coltype(dividend))
+  binaryapply_byname(`/`, dividend, divisor)
 }
 
 #' Name- and element-wise arithmetic mean of matrices.
