@@ -10,6 +10,13 @@ library(dplyr)
 #' @param FUN a binary function to be applied "byname" to \code{a} and \code{b}.
 #' @param a the first argument to \code{FUN}.
 #' @param b the second argument to \code{FUN}.
+#' @param match_type one of \code{"all"} or \code{"matmult"}.
+#' When both \code{a} and \code{b} are matrices,
+#' "\code{all}" (the default) indicates that
+#' rowtypes of \code{a} must match rowtypes of \code{b} and
+#' coltypes of \code{a} must match coltypes of \code{b}.
+#' If "\code{matmult}",
+#' coltypes of \code{a} must match rowtypes of \code{b}.
 #'
 #' @return the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
 #' 
@@ -25,12 +32,12 @@ library(dplyr)
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
-binaryapply_byname <- function(FUN, a, b){
-  args <- organize_args(a, b, fill = 0)
+binaryapply_byname <- function(FUN, a, b, match_type = "all"){
+  args <- organize_args(a, b, fill = 0, match_type = match_type)
   a <- args$a
   b <- args$b
   if (is.list(a) & is.list(b)) {
-    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), a, b))
+    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), a, b, match_type = match_type))
   }
   FUN(a, b) %>%
     setrowtype(rowtype(a)) %>%
@@ -95,27 +102,6 @@ binaryapply_byname <- function(FUN, a, b){
 #' DF3$sums[[1]]
 #' DF3$sums[[2]]
 sum_byname <- function(augend, addend){
-  if (missing(addend)) {
-    addend <- 0
-  }
-  if (is.null(addend)) {
-    addend <- 0
-  }
-  if (missing(augend)) {
-    augend <- 0
-  }
-  if (is.null(augend)) {
-    augend <- 0
-  }
-  # args <- organize_args(augend, addend)
-  # augend <- args$a
-  # addend <- args$b
-  # if (is.list(augend) & is.list(addend)) {
-  #   return(Map(sum_byname, augend, addend))
-  # }
-  # (augend + addend) %>%
-  #   setrowtype(rowtype(augend)) %>%
-  #   setcoltype(coltype(augend))
   binaryapply_byname(`+`, augend, addend)
 }
 
@@ -128,6 +114,7 @@ sum_byname <- function(augend, addend){
 #' Zeroes are inserted for missing matrix elements.
 #'
 #' @return A matrix representing the name-wise difference between \code{minuend} and \code{subtrahend}
+#' 
 #' @export
 #'
 #' @examples
@@ -157,31 +144,6 @@ sum_byname <- function(augend, addend){
 #' difference_byname(DF$U, DF$G)
 #' DF %>% mutate(diffs = difference_byname(U, G))
 difference_byname <- function(minuend, subtrahend){
-  if (missing(minuend)) {
-    # return(elementproduct_byname(-1, subtrahend))
-    minuend <- 0
-  }
-  if (is.null(minuend)) {
-    # return(elementproduct_byname(-1, subtrahend))
-    minuend <- 0
-  }
-  if (missing(subtrahend)) {
-    # return(minuend)
-    subtrahend <- 0
-  }
-  if (is.null(subtrahend))  {
-    # return(minuend)
-    subtrahend <- 0
-  }
-  # args <- organize_args(minuend, subtrahend)
-  # minuend <- args$a
-  # subtrahend <- args$b
-  # if (is.list(minuend) & is.list(subtrahend)) {
-  #   return(mcMap(difference_byname, minuend, subtrahend))
-  # }
-  # (minuend - subtrahend) %>%
-  #   setrowtype(rowtype(minuend)) %>%
-  #   setcoltype(coltype(minuend))
   binaryapply_byname(`-`, minuend, subtrahend)
 }
 
@@ -206,6 +168,7 @@ difference_byname <- function(minuend, subtrahend){
 #' with row names from \code{multiplicand} and column names from \code{multiplier}.
 #'
 #' @return A matrix representing the name-wise product of \code{multiplicand} and \code{multiplier}
+#' 
 #' @export
 #'
 #' @examples
@@ -228,24 +191,7 @@ difference_byname <- function(minuend, subtrahend){
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
 matrixproduct_byname <- function(multiplicand, multiplier){
-
-  args <- organize_args(multiplicand, multiplier, match_type = "matmult")
-  multiplicand <- args$a
-  multiplier <- args$b
-
-  if (is.list(multiplicand) & is.list(multiplier)) {
-    stopifnot(length(multiplicand) == length(multiplier))
-    return(mcMap(matrixproduct_byname, multiplicand, multiplier))
-  }
-
-
-  # Check that multiplicand columns and multiplier rows are same type
-  # and cols of multiplicand and rows of multiplier have same names.
-  # matrices <- complete_and_sort(multiplicand, transpose_byname(multiplier), margin = 2)
-  # matrices$m2 <- transpose_byname(matrices$m2) # Need to re-transpose, because of transpose_byname above.
-  multiplicand %*% multiplier %>%
-    setrowtype(rowtype(multiplicand)) %>%
-    setcoltype(coltype(multiplier))
+  binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult")
 }
 
 #' Name-wise matrix element multiplication
@@ -1917,10 +1863,10 @@ iszero_byname <- function(m, tol = 1e-6){
 #' @param b the second argument to be organized
 #' @param match_type one of \code{"all"} or \code{"matmult"}.
 #' When both \code{a} and \code{b} are matrices,
-#' \code{"all"} (the default) indicates that
+#' "\code{all}" (the default) indicates that
 #' rowtypes of \code{a} must match rowtypes of \code{b} and
 #' coltypes of \code{a} must match coltypes of \code{b}.
-#' If \code{"matmult"},
+#' If "\code{matmult}",
 #' coltypes of \code{a} must match rowtypes of \code{b}.
 #' @param fill a replacement value for \code{a} or \code{b} if either is missing or \code{NULL}.
 #'

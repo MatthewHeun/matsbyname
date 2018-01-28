@@ -13,10 +13,10 @@ organize_args(a, b, match_type = "all", fill)
 
 \item{match_type}{one of \code{"all"} or \code{"matmult"}.
 When both \code{a} and \code{b} are matrices,
-\code{"all"} (the default) indicates that
+"\code{all}" (the default) indicates that
 rowtypes of \code{a} must match rowtypes of \code{b} and
 coltypes of \code{a} must match coltypes of \code{b}.
-If \code{"matmult"},
+If "\code{matmult}",
 coltypes of \code{a} must match rowtypes of \code{b}.}
 
 \item{fill}{a replacement value for \code{a} or \code{b} if either is missing or \code{NULL}.}

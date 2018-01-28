@@ -4,7 +4,7 @@
 \alias{binaryapply_byname}
 \title{Apply a binary function byname}
 \usage{
-binaryapply_byname(FUN, a, b)
+binaryapply_byname(FUN, a, b, match_type = "all")
 }
 \arguments{
 \item{FUN}{a binary function to be applied "byname" to \code{a} and \code{b}.}
@@ -12,6 +12,14 @@ binaryapply_byname(FUN, a, b)
 \item{a}{the first argument to \code{FUN}.}
 
 \item{b}{the second argument to \code{FUN}.}
+
+\item{match_type}{one of \code{"all"} or \code{"matmult"}.
+When both \code{a} and \code{b} are matrices,
+"\code{all}" (the default) indicates that
+rowtypes of \code{a} must match rowtypes of \code{b} and
+coltypes of \code{a} must match coltypes of \code{b}.
+If "\code{matmult}",
+coltypes of \code{a} must match rowtypes of \code{b}.}
 }
 \value{
 the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
