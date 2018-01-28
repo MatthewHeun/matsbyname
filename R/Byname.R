@@ -40,6 +40,14 @@ binaryapply_byname <- function(FUN, a, b, match_type = "all"){
     return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), a, b, match_type = match_type))
   }
   FUN(a, b) %>%
+    # Either match_type is 
+    #   "all" 
+    #     in which case rowtype(a) == rowtype(b) and coltype(a) == coltype(b), 
+    #     and setting rowtype to rowtype(a) and coltype to coltype(b) works fine, or
+    #   "matmult"
+    #     in which case coltype(a) == rowtype(b) and the result of FUN is
+    #     a matrix with rowtype == rowtype(a) and coltype == coltype(b).
+    # Given those options, we set rowtype to rowtype(a) and coltype to coltype(b).
     setrowtype(rowtype(a)) %>%
     setcoltype(coltype(b))
 }
@@ -232,15 +240,17 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
 elementproduct_byname <- function(multiplicand, multiplier){
-  args <- organize_args(multiplicand, multiplier)
-  multiplicand <- args$a
-  multiplier <- args$b
-  if (is.list(multiplicand) & is.list(multiplier)) {
-    return(mcMap(elementproduct_byname, multiplicand, multiplier))
-  }
-  (multiplicand * multiplier) %>%
-    setrowtype(rowtype(multiplicand)) %>%
-    setcoltype(coltype(multiplicand))
+  # args <- organize_args(multiplicand, multiplier)
+  # multiplicand <- args$a
+  # multiplier <- args$b
+  # if (is.list(multiplicand) & is.list(multiplier)) {
+  #   return(mcMap(elementproduct_byname, multiplicand, multiplier))
+  # }
+  # (multiplicand * multiplier) %>%
+  #   setrowtype(rowtype(multiplicand)) %>%
+  #   setcoltype(coltype(multiplicand))
+  binaryapply_byname(`*`, multiplicand, multiplier)
+  
 }
 
 #' Name-wise matrix element division
