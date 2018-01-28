@@ -4,7 +4,7 @@
 \alias{organize_args}
 \title{Organize binary arguments}
 \usage{
-organize_args(a, b, match_type = "all")
+organize_args(a, b, match_type = "all", fill)
 }
 \arguments{
 \item{a}{the first argument to be organized}
@@ -18,6 +18,8 @@ rowtypes of \code{a} must match rowtypes of \code{b} and
 coltypes of \code{a} must match coltypes of \code{b}.
 If \code{"matmult"},
 coltypes of \code{a} must match rowtypes of \code{b}.}
+
+\item{fill}{a replacement value for \code{a} or \code{b} if either is missing or \code{NULL}.}
 }
 \value{
 a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments

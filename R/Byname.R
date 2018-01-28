@@ -3,6 +3,9 @@ library(magrittr)
 library(dplyr)
 
 #' Apply a binary function byname
+#' 
+#' If either \code{a} or \code{b} is missing or \code{NULL}, 
+#' \code{0} is passed to \code{FUN} in its place.
 #'
 #' @param FUN a binary function to be applied "byname" to \code{a} and \code{b}.
 #' @param a the first argument to \code{FUN}.
@@ -23,7 +26,7 @@ library(dplyr)
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
 binaryapply_byname <- function(FUN, a, b){
-  args <- organize_args(a, b)
+  args <- organize_args(a, b, fill = 0)
   a <- args$a
   b <- args$b
   if (is.list(a) & is.list(b)) {
@@ -104,12 +107,12 @@ sum_byname <- function(augend, addend){
   if (is.null(augend)) {
     augend <- 0
   }
-  args <- organize_args(augend, addend)
-  augend <- args$a
-  addend <- args$b
-  if (is.list(augend) & is.list(addend)) {
-    return(Map(sum_byname, augend, addend))
-  }
+  # args <- organize_args(augend, addend)
+  # augend <- args$a
+  # addend <- args$b
+  # if (is.list(augend) & is.list(addend)) {
+  #   return(Map(sum_byname, augend, addend))
+  # }
   # (augend + addend) %>%
   #   setrowtype(rowtype(augend)) %>%
   #   setcoltype(coltype(augend))
@@ -1914,20 +1917,37 @@ iszero_byname <- function(m, tol = 1e-6){
 #' coltypes of \code{a} must match coltypes of \code{b}.
 #' If \code{"matmult"},
 #' coltypes of \code{a} must match rowtypes of \code{b}.
+#' @param fill a replacement value for \code{a} or \code{b} if either is missing or \code{NULL}.
 #'
 #' @return a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments
-organize_args <- function(a, b, match_type = "all"){
+organize_args <- function(a, b, match_type = "all", fill){
   if (missing(a)) {
-    stop("Missing argument a in organize_args.")
+    if (missing(fill)) {
+      stop("Missing argument a with no fill in organize_args.")
+    } else {
+      a <- fill
+    }
   }
   if (is.null(a)) {
-    stop("Null argument a in organize_args.")
+    if (missing(fill)) {
+      stop("Null argument a with no fill in organize_args.")
+    } else {
+      a <- fill
+    }
   }
   if (missing(b)) {
-    stop("Missing argument b in organize_args.")
+    if (missing(fill)) {
+      stop("Missing argument b with no fill in organize_args.")
+    } else {
+      b <- fill
+    }
   }
   if (is.null(b)) {
-    stop("Null argument b in organize_args.")
+    if (missing(fill)) {
+      stop("Null argument b with no fill in organize_args.")
+    } else {
+      b <- fill
+    }
   }
   if (is.list(a) | is.list(b)) {
     if (!is.list(a)) {

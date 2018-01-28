@@ -1547,6 +1547,12 @@ test_that("organize_args works as expected", {
                "rowtype\\(a\\) \\(Products\\) != rowtype\\(b\\) \\(Industries\\).")
   # When we say match_type = "matmult", we indicate that the columns of a and the rows of b must match.
   expect_equal(byname:::organize_args(a = m, b = p, match_type = "matmult"), list(a = m, b = p))
+  
+  # Test that values are filled appropriately.
+  expect_equal(byname:::organize_args(a = NULL, b = 5, fill = 42), list(a = 42, b = 5))
+  expect_equal(byname:::organize_args(b = 5, fill = 42), list(a = 42, b = 5))
+  expect_equal(byname:::organize_args(a = 3, b = NULL, fill = 42), list(a = 3, b = 42))
+  expect_equal(byname:::organize_args(a = 3, fill = 42), list(a = 3, b = 42))
 })
 
 

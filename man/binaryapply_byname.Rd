@@ -17,7 +17,8 @@ binaryapply_byname(FUN, a, b)
 the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
 }
 \description{
-Apply a binary function byname
+If either \code{a} or \code{b} is missing or \code{NULL}, 
+\code{0} is passed to \code{FUN} in its place.
 }
 \examples{
 library(magrittr)
