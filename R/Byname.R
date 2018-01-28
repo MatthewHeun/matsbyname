@@ -2,6 +2,32 @@ library(parallel)
 library(magrittr)
 library(dplyr)
 
+#' Apply a unary function byname
+#'
+#' @param FUN a unary function to be applied "byname" to \code{a}.
+#' @param a the argument to \code{FUN}.
+#'
+#' @return the result of applying \code{FUN} "byname" to \code{a}.
+#' 
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' difference_byname(0, U)
+#' unaryapply_byname(`-`, U)
+unaryapply_byname <- function(FUN, a){
+  if (is.list(a)) {
+    return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a))
+  }
+  FUN(a) %>%
+    setrowtype(rowtype(a)) %>%
+    setcoltype(coltype(a))
+}
+
 #' Apply a binary function byname
 #' 
 #' If either \code{a} or \code{b} is missing or \code{NULL}, 
@@ -531,6 +557,7 @@ invert_byname <- function(m){
     return(mcMap(invert_byname, m))
   }
   stopifnot(nrow(m) == ncol(m))
+  # Do we need to sort here?
   sort_rows_cols(m) %>%
     solve %>%
     setrowtype(coltype(m)) %>%
