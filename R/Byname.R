@@ -352,12 +352,11 @@ elementquotient_byname <- function(dividend, divisor){
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
 mean_byname <- function(X1, X2){
-  binaryapply_byname(
-    function(X1, X2){
+  binaryapply_byname(a = X1, b = X2,
+    FUN = function(X1, X2){
       sum_byname(X1, X2) %>%
         elementquotient_byname(2)
-    }, 
-    X1, X2)
+    })
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -403,15 +402,13 @@ mean_byname <- function(X1, X2){
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
 geometricmean_byname <- function(X1, X2){
-  binaryapply_byname(
-    function(X1, X2){
+  binaryapply_byname(a = X1, b = X2,
+    FUN = function(X1, X2){
       if (any((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0))) {
         stop(paste0("X1 and X2 must have same sign in geometricmean_byname: X1 = ", X1, ", X2 = ", X2, "."))
       } 
       elementproduct_byname(X1, X2) %>% sqrt()
-    }, 
-    X1, X2
-  )
+    })
 }
 
 #' Name- and element-wise logarithmic mean of matrices.
@@ -462,33 +459,30 @@ geometricmean_byname <- function(X1, X2){
 #' logarithmicmean_byname(DF$m1, DF$m2)
 #' DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2))
 logarithmicmean_byname <- function(X1, X2, base = exp(1)){
-  args <- organize_args(X1, X2)
-  X1 <- args$a
-  X2 <- args$b
-  if (is.list(X1) & is.list(X2)) {
-    return(mcMap(logarithmicmean_byname, X1, X2, base))
-  }
-  # At this point, our list is gone.  
-  # X1 and X2 are single matrices or single numbers. 
-  # Furthermore, X1 and X2 should have 
-  #   * exact same dimensions, 
-  #   * same row and column names, and 
-  #   * same rowtype and column type.
-  # We exploit these facts in the code below.
-  # Unwrap each matrix and mcMap logmean to all elements.
-  out <- mcMap(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
-    # Map produces a list, but we need a numeric vector.
-    as.numeric()
-  if (is.matrix(X1)) {
-    # If X1 and X2 are originally matrices, make out into a matrix
-    # by rewrapping it. 
-    out <- out %>% 
-      matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
-      # Add the row and column names to it.
-      setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1))
-  }
-  out %>%  
-    setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
+  binaryapply_byname(a = X1, b = X2,
+    FUN = function(X1, X2) {
+      # At this point, our list is gone.  
+      # X1 and X2 are single matrices or single numbers. 
+      # Furthermore, X1 and X2 should have 
+      #   * exact same dimensions, 
+      #   * same row and column names, and 
+      #   * same rowtype and column type.
+      # We exploit these facts in the code below.
+      # Unwrap each matrix and mcMap logmean to all elements.
+      out <- mcMap(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
+        # Map produces a list, but we need a numeric vector.
+        as.numeric()
+      if (is.matrix(X1)) {
+        # If X1 and X2 are originally matrices, make out into a matrix
+        # by rewrapping it. 
+        out <- out %>% 
+          matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
+          # Add the row and column names to it.
+          setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1))
+      }
+      out %>%  
+        setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
+    })
 }
 
 #' Logarithmic mean of two numbers
