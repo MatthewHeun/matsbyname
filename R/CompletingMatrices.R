@@ -357,33 +357,33 @@ complete_and_sort <- function(m1, m2, margin=c(1,2), roworder = NA, colorder = N
 #' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1) # Fix by setting lenx = 1
 # make_list <- function(x, n, lenx = ifelse(is.list(x), length(x), 1)){
 make_list <- function(x, n, lenx = ifelse(is.vector(x), length(x), 1)){
-  out <- vector(mode="list", length=n)
+  out <- vector(mode = "list", length = n)
   reptimes <- as.integer(n / lenx)
-  if (n %% lenx != 0 & lenx != 1){
+  if (n %% lenx != 0 & lenx != 1) {
     warning("n not evenly divisible by length(x)")
   }
-  if (lenx == 1){
+  if (lenx == 1) {
     return(
       lapply(X = 1:n, FUN = function(i){
         out[[i]] <- x
       })
     )
   }
-  if (n < lenx){
+  if (n < lenx) {
     # Fewer items than length of x is desired
     return(x[[1:n]])
   }
-  for (cycle in 1:reptimes){
-    for (xindex in 1:lenx){
-      outindex <- (cycle-1)*lenx + (xindex)
+  for (cycle in 1:reptimes) {
+    for (xindex in 1:lenx) {
+      outindex <- (cycle - 1)*lenx + (xindex)
       out[[outindex]] <- x[[xindex]]
     }
   }
-  if (n %% length(x) == 0){
+  if (n %% length(x) == 0) {
     # Had an even number of cycles
     return(out)
   }
-  for (outindex in (reptimes*lenx + 1):n){
+  for (outindex in (reptimes*lenx + 1):n) {
     xindex <- outindex - reptimes*lenx
     out[[outindex]] <- x[[xindex]]
   }
