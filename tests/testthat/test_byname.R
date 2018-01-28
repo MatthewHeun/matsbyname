@@ -44,7 +44,7 @@ test_that("sums of constants works as expected", {
   # If summed against NULL, return the item.
   expect_equal(sum_byname(NULL, 1), 1)
   expect_equal(sum_byname(2, NULL), 2)
-  expect_equal(sum_byname(list(NULL, 1), list(1, 1)), list(1, 2))
+  expect_equal(sum_byname(list(NULL, 1), list(2, 3)), list(2, 4))
   # If summed against NA, return NA
   expect_equal(sum_byname(2, NA), NA_integer_)
 })
@@ -1632,6 +1632,7 @@ test_that("matrix multiplied by a constant in a data frame works", {
 # context("Apply")
 ###########################################################
 
-# test_that("apply_byname works as expected", {
-#   apply_byname(FUN = sum, c1 = list(1, 2, 3), c2 = list(4,5,6))
-# })
+test_that("binaryapply_byname works as expected", {
+  expect_equal(binaryapply_byname(FUN = sum, a = list(1, 2, 3), b = list(4,5,6)), 
+               list(5, 7, 9))
+})

@@ -2,6 +2,38 @@ library(parallel)
 library(magrittr)
 library(dplyr)
 
+#' Apply a binary function byname
+#'
+#' @param FUN a binary function to be applied "byname" to \code{a} and \code{b}.
+#' @param a the first argument to \code{FUN}.
+#' @param b the second argument to \code{FUN}.
+#'
+#' @return the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
+#' 
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' sum_byname(U, Y)
+#' binaryapply_byname(`+`, U, Y)
+binaryapply_byname <- function(FUN, a, b){
+  args <- organize_args(a, b)
+  a <- args$a
+  b <- args$b
+  if (is.list(a) & is.list(b)) {
+    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), a, b))
+  }
+  FUN(a, b) %>%
+    setrowtype(rowtype(a)) %>%
+    setcoltype(coltype(b))
+}
+
 #' Name-wise addition of matrices.
 #'
 #' @param augend Addend matrix or constant
@@ -9,6 +41,7 @@ library(dplyr)
 #'
 #' Performs a union and sorting of row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
+#' Treats missing or \code{NULL} \code{augend} and \code{addend} as \code{0}.
 #'
 #' @return A matrix representing the name-wise sum of \code{addend} and \code{augend}
 #' 
@@ -60,26 +93,27 @@ library(dplyr)
 #' DF3$sums[[2]]
 sum_byname <- function(augend, addend){
   if (missing(addend)) {
-    return(augend)
+    addend <- 0
   }
   if (is.null(addend)) {
-    return(augend)
+    addend <- 0
   }
   if (missing(augend)) {
-    return(addend)
+    augend <- 0
   }
   if (is.null(augend)) {
-    return(addend)
+    augend <- 0
   }
   args <- organize_args(augend, addend)
   augend <- args$a
   addend <- args$b
   if (is.list(augend) & is.list(addend)) {
-    return(mcMap(sum_byname, augend, addend))
+    return(Map(sum_byname, augend, addend))
   }
-  (augend + addend) %>%
-    setrowtype(rowtype(augend)) %>%
-    setcoltype(coltype(augend))
+  # (augend + addend) %>%
+  #   setrowtype(rowtype(augend)) %>%
+  #   setcoltype(coltype(augend))
+  binaryapply_byname(`+`, augend, addend)
 }
 
 #' Name-wise subtraction of matrices.

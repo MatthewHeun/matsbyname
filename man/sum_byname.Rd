@@ -12,7 +12,8 @@ sum_byname(augend, addend)
 \item{addend}{Augend matrix or constant
 
 Performs a union and sorting of row and column names prior to summation.
-Zeroes are inserted for missing matrix elements.}
+Zeroes are inserted for missing matrix elements.
+Treats missing or \code{NULL} \code{augend} and \code{addend} as \code{0}.}
 }
 \value{
 A matrix representing the name-wise sum of \code{addend} and \code{augend}
