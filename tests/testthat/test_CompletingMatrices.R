@@ -11,6 +11,32 @@ library(magrittr)
 library(testthat)
 
 ###########################################################
+context("Sorting rows and columns")
+###########################################################
+
+test_that("sort_rows_cols works as expected", {
+  m <- matrix(c(1:6), nrow = 3, dimnames = list(c("r3", "r5", "r1"), c("c4", "c2")))
+  sorted1 <- matrix(c(2, 5, 
+                      1, 4,
+                      3, 6), byrow = TRUE, nrow = 3, dimnames = list(c("r5", "r3", "r1"), c("c4", "c2")))
+  expect_equal(sort_rows_cols(x = list(m,m), margin = 1, roworder = c("r5", "r3", "r1")), 
+               list(sorted1, sorted1))
+  # Columns are sorted as default, because no colorder is given.
+  sorted2 <- matrix(c(4, 1, 
+                      5, 2,
+                      6, 3), byrow = TRUE, nrow = 3, dimnames = list(c("r3", "r5", "r1"), c("c2", "c4")))
+  expect_equal(sort_rows_cols(x = list(m,m), margin = 2, roworder = c("r5", "r3", "r1")), 
+               list(sorted2, sorted2))
+  # Both columns and rows sorted, rows by the list, columns in natural order.
+  sorted3 <- matrix(c(5, 2,
+                      4, 1,
+                      6, 3), byrow = TRUE, nrow = 3, dimnames = list(c("r5", "r3", "r1"), c("c2", "c4")))
+  expect_equal(sort_rows_cols(x = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1")), 
+               list(sorted3, sorted3))
+})
+
+
+###########################################################
 context("Completing rows and columns")
 ###########################################################
 
@@ -433,5 +459,11 @@ test_that("make_list works as expected", {
   l3 <- list(c("r10", "r11"), c("c10", "c11"))
   expect_equal(make_list(l3, n = 2), l3) # Confused by x being a list
   expect_equal(make_list(l3, n = 2, lenx = 1), list(l3, l3)) # Fix by setting lenx = 1
+  
+  margin <- c(1, 2)
+  # This approach spreads 1, 2 to the two items in the list.
+  expect_equal(make_list(margin, n = 2), list(1, 2))
+  # This approach considers c(1,2) to be the item to be repeated.
+  expect_equal(make_list(margin, n = 2, lenx = 1), list(c(1,2), c(1,2)))
 })
   

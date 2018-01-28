@@ -4,7 +4,7 @@
 \alias{make_list}
 \title{Makes a list of items in x, regardless of x's type}
 \usage{
-make_list(x, n, lenx = ifelse(is.list(x), length(x), 1))
+make_list(x, n, lenx = ifelse(is.vector(x), length(x), 1))
 }
 \arguments{
 \item{x}{the object to be duplicated}

@@ -86,7 +86,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
       mat <- make_list(mat, length(x))
     }
     # Double-check that we have what we need for the margin argument.
-    margin <- make_list(margin, length(x))
+    margin <- make_list(margin, length(x), lenx = 1)
     # Now we can Map everything!
     return(mcMap(complete_rows_cols, x = x, mat = mat, fill = fill, margin = margin))
   }
@@ -96,7 +96,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     # filled with the "fill" value.
     # For that to work, we need to ensure that each of the other arguments are lists.
     x = make_list(NULL, length(mat))
-    margin <- make_list(margin, length(mat))
+    margin <- make_list(margin, length(mat), lenx = 1)
     # Now we can Map everything!
     return(mcMap(complete_rows_cols, x = x, mat = mat, fill = fill, margin = margin))
   }
@@ -182,9 +182,9 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
 #' For rows only, give \code{1}; 
 #' for columns only, give \code{2};
 #' for both rows and columns, give \code{c(1,2)}, the default value.
-#' @param roworder specifies the order for rows with default sort(rownames(x)). 
+#' @param roworder specifies the order for rows with default \code{sort(rownames(x))}. 
 #' If \code{NULL}, default is used. Unspecified rows are dropped.
-#' @param colorder specifies the order for rows with default sort(colnames(x))
+#' @param colorder specifies the order for rows with default \code{sort(colnames(x))}.
 #' If \code{NULL}, default is used. Unspecified columns are dropped.
 #' @return A modified version of \code{x} with sorted rows and columns
 #' @export
@@ -206,16 +206,17 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
 #' sort_rows_cols(list(m,m)) # Sorts rows and columns for both m's.
 #' # Sort rows only for first one, sort rows and columns for second one.  
 #' # Row order is applied to all m's.  Column order is natural.
-#' sort_rows_cols(x = list(m,m), margin = list(1, c(1,2)), roworder = c("r5", "r3", "r1")) 
-#' # Different roworders given for each m.
-#' sort_rows_cols(x = list(m,m), 
-#'                margin = list(1, c(1,2)), 
-#'                roworder = list(c("r1", "r3", "r5"), c("r5", "r3", "r1"))) 
+#' sort_rows_cols(x = list(m,m), margin = 1, roworder = c("r5", "r3", "r1"))
+#' # Columns are sorted as default, because no colorder is given.
+#' # roworder is ignored. 
+#' sort_rows_cols(x = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
+#' # Both columns and rows sorted, rows by the list, columns in natural order.
+#' sort_rows_cols(x = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
 sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
   if (is.list(x) & !is.data.frame(x)) {
-    margin <- make_list(margin, n = length(x))
-    roworder <- make_list(roworder, n = length(x))
-    colorder <- make_list(colorder, n = length(x))
+    margin <- make_list(margin, n = length(x), lenx = 1)
+    roworder <- make_list(roworder, n = length(x), lenx = 1)
+    colorder <- make_list(colorder, n = length(x), lenx = 1)
     return(mcMap(sort_rows_cols, x = x, margin = margin, roworder = roworder, colorder = colorder))
   }
   if (any(is.na(roworder))) {
@@ -233,11 +234,11 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
     }
   }
   if (any(is.na(colorder))) {
-    if (! is.null(colnames(x))) {
+    if (!is.null(colnames(x))) {
       colorder <- sort(colnames(x))
     } else {
       # Can't sort on columns, because they are not named.
-      if (1 %in% margin){
+      if (1 %in% margin) {
         # Remove 2 from margin, if it is there.
         margin <- 1
       } else {
@@ -246,15 +247,15 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
       }
     }
   }
-  if (1 %in% margin & nrow(x) > 1){
+  if (1 %in% margin & nrow(x) > 1) {
     # Sort rows
-    if (length(unique(rownames(x))) != length(rownames(x))){
+    if (length(unique(rownames(x))) != length(rownames(x))) {
       stop("Row names not unique.")
     }
     x <- x[roworder, , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
   }
-  if (2 %in% margin & ncol(x) > 1){
-    if (length(unique(colnames(x))) != length(colnames(x))){
+  if (2 %in% margin & ncol(x) > 1) {
+    if (length(unique(colnames(x))) != length(colnames(x))) {
       stop("Column names not unique.")
     }
     x <- x[ , colorder, drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
@@ -354,7 +355,8 @@ complete_and_sort <- function(m1, m2, margin=c(1,2), roworder = NA, colorder = N
 #' make_list(l, n = 5) # Warning because length(l) (i.e., 2) not evenly divisible by 5
 #' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2) # Confused by x being a list
 #' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1) # Fix by setting lenx = 1
-make_list <- function(x, n, lenx = ifelse(is.list(x), length(x), 1)){
+# make_list <- function(x, n, lenx = ifelse(is.list(x), length(x), 1)){
+make_list <- function(x, n, lenx = ifelse(is.vector(x), length(x), 1)){
   out <- vector(mode="list", length=n)
   reptimes <- as.integer(n / lenx)
   if (n %% lenx != 0 & lenx != 1){

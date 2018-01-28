@@ -15,10 +15,10 @@ For rows only, give \code{1};
 for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.}
 
-\item{roworder}{specifies the order for rows with default sort(rownames(x)). 
+\item{roworder}{specifies the order for rows with default \code{sort(rownames(x))}. 
 If \code{NULL}, default is used. Unspecified rows are dropped.}
 
-\item{colorder}{specifies the order for rows with default sort(colnames(x))
+\item{colorder}{specifies the order for rows with default \code{sort(colnames(x))}.
 If \code{NULL}, default is used. Unspecified columns are dropped.}
 }
 \value{
@@ -48,9 +48,10 @@ sort_rows_cols(n) # Sorts columns, because only one row.
 sort_rows_cols(list(m,m)) # Sorts rows and columns for both m's.
 # Sort rows only for first one, sort rows and columns for second one.  
 # Row order is applied to all m's.  Column order is natural.
-sort_rows_cols(x = list(m,m), margin = list(1, c(1,2)), roworder = c("r5", "r3", "r1")) 
-# Different roworders given for each m.
-sort_rows_cols(x = list(m,m), 
-               margin = list(1, c(1,2)), 
-               roworder = list(c("r1", "r3", "r5"), c("r5", "r3", "r1"))) 
+sort_rows_cols(x = list(m,m), margin = 1, roworder = c("r5", "r3", "r1"))
+# Columns are sorted as default, because no colorder is given.
+# roworder is ignored. 
+sort_rows_cols(x = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
+# Both columns and rows sorted, rows by the list, columns in natural order.
+sort_rows_cols(x = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
 }

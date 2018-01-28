@@ -388,11 +388,11 @@ test_that("detailed example of elementquotient_byname works as expected", {
   expect_equal(elementquotient_byname(Lv, LV), expected)
   
   # This is the failure mode.
-  # LV is not maintained as a list. 
+  # Somehow, LV is not maintained as a list. 
   # It comes in as a numeric vector.
   # Then, organize_args turns it into a funky list.
-  LV2 <- c(123.3151731, 208.1079558, 285.6464036)
-  expect_equal(elementquotient_byname(Lv, LV2), expected)
+  LVnumeric <- c(123.3151731, 208.1079558, 285.6464036)
+  expect_equal(elementquotient_byname(Lv, LVnumeric), expected)
 
   # Now try these in a data frame
   DF <- data.frame(Lv = I(list()), LV = I(list()))

@@ -657,8 +657,8 @@ hatize_byname <- function(v){
 #' identize_byname(list(M, M))
 identize_byname <- function(M, margin = c(1,2)){
   if (is.list(M)) {
-    margin <- make_list(margin, n = length(M))
-    return(mcMap(identize_byname, M, margin))
+    margin <- make_list(margin, n = length(M), lenx = 1)
+    return(Map(identize_byname, M, margin))
   }
   if (class(M) == "numeric") {
     # Assume we have a single number here
@@ -727,7 +727,7 @@ identize_byname <- function(M, margin = c(1,2)){
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(M, margin){
   if (is.list(M)) {
-    margin <- make_list(margin, n = length(M))
+    margin <- make_list(margin, n = length(M), lenx = 1)
     return(mcMap(fractionize_byname, M, margin))
   }
   if (!"matrix" %in% class(M) && !"data.frame" %in% class(M)) {
@@ -1896,11 +1896,12 @@ organize_args <- function(a, b, match_type = "all"){
     stop("Null argument b in organize_args.")
   }
   if (is.list(a) | is.list(b)) {
-    # One is a list and the other is not.  Make the other into a list.
     if (!is.list(a)) {
+      # b is a list, but a is not.  Make a into a list.
       a <- make_list(a, n = length(b))
     }
     if (!is.list(b)) {
+      # a is a list, but b is not.  Make b into a list.
       b <- make_list(b, n = length(a))
     }
   }
