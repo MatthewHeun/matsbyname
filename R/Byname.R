@@ -158,26 +158,31 @@ sum_byname <- function(augend, addend){
 #' DF %>% mutate(diffs = difference_byname(U, G))
 difference_byname <- function(minuend, subtrahend){
   if (missing(minuend)) {
-    return(elementproduct_byname(-1, subtrahend))
+    # return(elementproduct_byname(-1, subtrahend))
+    minuend <- 0
   }
   if (is.null(minuend)) {
-    return(elementproduct_byname(-1, subtrahend))
+    # return(elementproduct_byname(-1, subtrahend))
+    minuend <- 0
   }
   if (missing(subtrahend)) {
-    return(minuend)
+    # return(minuend)
+    subtrahend <- 0
   }
   if (is.null(subtrahend))  {
-    return(minuend)
+    # return(minuend)
+    subtrahend <- 0
   }
-  args <- organize_args(minuend, subtrahend)
-  minuend <- args$a
-  subtrahend <- args$b
-  if (is.list(minuend) & is.list(subtrahend)) {
-    return(mcMap(difference_byname, minuend, subtrahend))
-  }
-  (minuend - subtrahend) %>%
-    setrowtype(rowtype(minuend)) %>%
-    setcoltype(coltype(minuend))
+  # args <- organize_args(minuend, subtrahend)
+  # minuend <- args$a
+  # subtrahend <- args$b
+  # if (is.list(minuend) & is.list(subtrahend)) {
+  #   return(mcMap(difference_byname, minuend, subtrahend))
+  # }
+  # (minuend - subtrahend) %>%
+  #   setrowtype(rowtype(minuend)) %>%
+  #   setcoltype(coltype(minuend))
+  binaryapply_byname(`-`, minuend, subtrahend)
 }
 
 #' Name-wise matrix multiplication
