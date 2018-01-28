@@ -16,11 +16,11 @@ context("Sorting rows and columns")
 
 test_that("sort_rows_cols works as expected", {
   m <- matrix(c(1:6), nrow = 3, dimnames = list(c("r3", "r5", "r1"), c("c4", "c2")))
-  expect_equal(sort_rows_cols(m), 
-               matrix(c(6, 3,
-                        4, 1,
-                        5, 2), byrow = TRUE, nrow = 3, 
-                      dimnames = list(c("r1", "r3", "r5"), c("c2", "c4"))))
+  msorted <- matrix(c(6, 3,
+                      4, 1,
+                      5, 2), byrow = TRUE, nrow = 3, 
+                    dimnames = list(c("r1", "r3", "r5"), c("c2", "c4")))
+  expect_equal(sort_rows_cols(m), msorted)
   expect_equal(sort_rows_cols(t(m)), 
                matrix(c(6, 4, 5,
                         3, 1, 2), byrow = TRUE, nrow = 2, 
@@ -82,6 +82,10 @@ test_that("sort_rows_cols works as expected", {
                       6, 3), byrow = TRUE, nrow = 3, dimnames = list(c("r5", "r3", "r1"), c("c2", "c4")))
   expect_equal(sort_rows_cols(x = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1")), 
                list(sorted3, sorted3))
+  
+  # Ensure that rowtypes and coltypes, if present, are maintained
+  mtypes <- m %>% setrowtype("row") %>% setcoltype("col")
+  expect_equal(sort_rows_cols(mtypes), msorted %>% setrowtype("row") %>% setcoltype("col"))
 })
 
 
