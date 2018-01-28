@@ -150,7 +150,7 @@ test_that("differences of matrices in lists and data frames works as expected", 
   expect_equal(difference_byname(list(100, 100), list(50, 50)), list(50, 50))
   expect_equal(difference_byname(list(U, U), list(Z, Z)), list(UminusZ, UminusZ))
   expect_equal(difference_byname(DF$U, DF$Z), list(UminusZ, UminusZ))
-  expect_equal(difference_byname(DF %>% mutate(diffs = difference_byname(U, Z))), 
+  expect_equal(DF %>% mutate(diffs = difference_byname(U, Z)), 
                DF %>% mutate(diffs = list(UminusZ)))
 })
 
