@@ -219,6 +219,9 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
     colorder <- make_list(colorder, n = length(x), lenx = 1)
     return(mcMap(sort_rows_cols, x = x, margin = margin, roworder = roworder, colorder = colorder))
   }
+  # Gather rowtype and coltype so we can apply those later.
+  rt <- rowtype(x)
+  ct <- coltype(x)
   if (any(is.na(roworder))) {
     if (!is.null(rownames(x))) {
       roworder <- sort(rownames(x))
@@ -260,7 +263,7 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
     }
     x <- x[ , colorder, drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
   }
-  return(x)
+  return(x %>% setrowtype(rt) %>% setcoltype(ct))
 }
 
 #' Complete matrices relative to one another and sort into same row, column order
