@@ -1,7 +1,7 @@
 Package: byname
 Type: Package
 Title: An Implementation of Matrix Mathematics
-Version: 0.1.2
+Version: 0.1.3
 Date: 2018-01-27
 Authors@R: c(person("Matthew", "Heun", role = c("aut", "cre"),
                      email = "matthew.heun@me.com"))

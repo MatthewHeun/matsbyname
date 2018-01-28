@@ -604,16 +604,16 @@ transpose_byname <- function(m){
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
-  if (is.list(v)){
+  if (is.list(v)) {
     return(mcMap(hatize_byname, v))
   }
   v_sorted <- sort_rows_cols(v) %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
   out <- OpenMx::vec2diag(v_sorted)
-  if (ncol(v) == 1){
+  if (ncol(v) == 1) {
     rownames(out) <- rownames(v_sorted)
     colnames(out) <- rownames(v_sorted)
     out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
-  } else if (nrow(v) == 1){
+  } else if (nrow(v) == 1) {
     rownames(out) <- colnames(v)
     colnames(out) <- colnames(v)
     out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
@@ -658,7 +658,7 @@ hatize_byname <- function(v){
 identize_byname <- function(M, margin = c(1,2)){
   if (is.list(M)) {
     margin <- make_list(margin, n = length(M), lenx = 1)
-    return(Map(identize_byname, M, margin))
+    return(mcMap(identize_byname, M, margin))
   }
   if (class(M) == "numeric") {
     # Assume we have a single number here
