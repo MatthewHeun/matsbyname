@@ -555,16 +555,6 @@ logmean <- function(x1, x2, base = exp(1)){
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
 invert_byname <- function(m){
-  # if (is.list(m)) {
-  #   return(mcMap(invert_byname, m))
-  # }
-  # stopifnot(nrow(m) == ncol(m))
-  # # Do we need to sort here?
-  # sort_rows_cols(m) %>%
-  #   solve %>%
-  #   setrowtype(coltype(m)) %>%
-  #   setcoltype(rowtype(m))
-  
   unaryapply_byname(a = m, trans_types = TRUE,
                     FUN = function(m){
                       stopifnot(nrow(m) == ncol(m))
