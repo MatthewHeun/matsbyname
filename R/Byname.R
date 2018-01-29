@@ -577,13 +577,7 @@ invert_byname <- function(m){
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
 transpose_byname <- function(m){
-  if (is.list(m)) {
-    return(mcMap(transpose_byname, m))
-  }
-  sort_rows_cols(m) %>%
-    t %>%
-    setrowtype(coltype(m)) %>%
-    setcoltype(rowtype(m))
+  unaryapply_byname(FUN = t, a = m, trans_types = TRUE)
 }
 
 #' Creates a diagonal "hat" matrix from a vector.
