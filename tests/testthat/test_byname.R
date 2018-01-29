@@ -796,22 +796,22 @@ test_that("fractionze_byname works as expected", {
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
               dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setcoltype("Products") %>% setrowtype("Industries")
+    setrowtype("Industries") %>% setcoltype("Products")
   expectedM_rows <- matrix(c(1/6, 5/6,
                              4/9, 5/9),
                            nrow = 2, ncol = 2, byrow = TRUE,
                            dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setcoltype("Products") %>% setrowtype("Industries")
+    setrowtype("Industries") %>% setcoltype("Products")
   expectedM_cols <- matrix(c(1/5, 5/10,
                              4/5, 5/10),
                            nrow = 2, ncol = 2, byrow = TRUE,
                            dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setcoltype("Products") %>% setrowtype("Industries")
+    setrowtype("Industries") %>% setcoltype("Products")
   expectedM_sumall <- matrix(c(1/15, 5/15,
                                4/15, 5/15),
                              nrow = 2, ncol = 2, byrow = TRUE,
                              dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setcoltype("Products") %>% setrowtype("Industries")
+    setrowtype("Industries") %>% setcoltype("Products")
   
   # Test for errors
   expect_error(fractionize_byname(M, margin = c(2,2,1,1,0)), "margin should contain unique integers in fractionize_byname")
@@ -1647,7 +1647,7 @@ test_that("unaryapply_byname works as expected", {
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(unaryapply_byname(`-`, U), difference_byname(0, U))
+  expect_equal(unaryapply_byname(`-`, U, types = "all"), difference_byname(0, U))
 })
 
 test_that("binaryapply_byname works as expected", {

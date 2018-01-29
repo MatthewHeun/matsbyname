@@ -6,7 +6,17 @@ library(dplyr)
 #'
 #' @param FUN a unary function to be applied "byname" to \code{a}.
 #' @param a the argument to \code{FUN}.
-#' @param trans_types tells whether row and column types should be transposed.
+#' @param types a string that tells how to transfer row and column types of \code{a} to output. 
+#'        Options are:
+#'        \itemize{
+#'          \item{\code{all}: transfer both row and column types of \code{a} directly to output.}
+#'          \item{\code{transpose}: rowtype of \code{a} becomes coltype of output;
+#'                                  coltype of \code{a} becomes rowtype of output.}
+#'          \item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
+#'          \item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
+#'          \item{\code{none}: rowtype and coltype not set by this function. 
+#'                             Rather, \code{FUN} will rowtype and coltype.}
+#'        }
 #'
 #' @return the result of applying \code{FUN} "byname" to \code{a}.
 #' 
@@ -20,22 +30,34 @@ library(dplyr)
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' difference_byname(0, U)
 #' unaryapply_byname(`-`, U)
-unaryapply_byname <- function(FUN, a, trans_types = FALSE){
+unaryapply_byname <- function(FUN, a, types = c("all", "transpose", "row", "col", "none")){
+  types <- match.arg(types)
   if (is.list(a)) {
-    return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, trans_types = trans_types))
+    return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, types = types))
   }
   out <- a %>% 
     sort_rows_cols() %>% 
     FUN()
-  if (trans_types) {
-    out <- out %>%
-      setrowtype(coltype(a)) %>%
-      setcoltype(rowtype(a))
-  } else {
-    # trans_types is FALSE
+  if (types == "all") {
     out <- out %>%
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
+  } else if (types == "transpose") {
+    out <- out %>%
+      setrowtype(coltype(a)) %>%
+      setcoltype(rowtype(a))
+  } else if (types == "row") {
+    out <- out %>%
+      setrowtype(rowtype(a)) %>%
+      setcoltype(rowtype(a))
+  } else if (types == "col") {
+    out <- out %>%
+      setrowtype(coltype(a)) %>%
+      setcoltype(coltype(a))
+  } else if (types == "none") {
+    # Do nothing. rowtype and coltype should have been set by FUN.
+  } else {
+    stop(paste("Unknown types argument in unaryapply_byname:", types))
   }
   return(out)
 }
@@ -555,7 +577,7 @@ logmean <- function(x1, x2, base = exp(1)){
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
 invert_byname <- function(m){
-  unaryapply_byname(a = m, trans_types = TRUE,
+  unaryapply_byname(a = m, types = "transpose",
                     FUN = function(m){
                       stopifnot(nrow(m) == ncol(m))
                       sort_rows_cols(m) %>%
@@ -577,7 +599,7 @@ invert_byname <- function(m){
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
 transpose_byname <- function(m){
-  unaryapply_byname(FUN = t, a = m, trans_types = TRUE)
+  unaryapply_byname(FUN = t, a = m, types = "transpose")
 }
 
 #' Creates a diagonal "hat" matrix from a vector.
@@ -604,23 +626,46 @@ transpose_byname <- function(m){
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
-  if (is.list(v)) {
-    return(mcMap(hatize_byname, v))
-  }
-  v_sorted <- sort_rows_cols(v) %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
-  out <- OpenMx::vec2diag(v_sorted)
-  if (ncol(v) == 1) {
-    rownames(out) <- rownames(v_sorted)
-    colnames(out) <- rownames(v_sorted)
-    out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
-  } else if (nrow(v) == 1) {
-    rownames(out) <- colnames(v)
-    colnames(out) <- colnames(v)
-    out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
-  } else {
-    stop("matrix v must have at least one dimension of length 1 in hatize")
-  }
-  return(out)
+  # if (is.list(v)) {
+  #   return(mcMap(hatize_byname, v))
+  # }
+  # v_sorted <- sort_rows_cols(v) %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
+  # out <- OpenMx::vec2diag(v_sorted)
+  # if (ncol(v) == 1) {
+  #   rownames(out) <- rownames(v_sorted)
+  #   colnames(out) <- rownames(v_sorted)
+  #   out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
+  # } else if (nrow(v) == 1) {
+  #   rownames(out) <- colnames(v)
+  #   colnames(out) <- colnames(v)
+  #   out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
+  # } else {
+  #   stop("matrix v must have at least one dimension of length 1 in hatize")
+  # }
+  # return(out)
+  
+  unaryapply_byname(a = v,
+                    types = "none",
+    FUN = function(v){
+      v_sorted <- sort_rows_cols(v) # %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
+      out <- OpenMx::vec2diag(v_sorted)
+      if (ncol(v) == 1) {
+        rownames(out) <- rownames(v_sorted)
+        colnames(out) <- rownames(v_sorted)
+        # This function does not rely on unaryapply_byname to set row and column types.
+        # So, we must do so here.
+        out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
+      } else if (nrow(v) == 1) {
+        rownames(out) <- colnames(v)
+        colnames(out) <- colnames(v)
+        # This function does not rely on unaryapply_byname to set row and column types.
+        # So, we must do so here.
+        out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
+      } else {
+        stop("matrix v must have at least one dimension of length 1 in hatize")
+      }
+      return(out)
+    })
 }
 
 #' Named identity matrix or vector
