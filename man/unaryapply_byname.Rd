@@ -4,12 +4,14 @@
 \alias{unaryapply_byname}
 \title{Apply a unary function byname}
 \usage{
-unaryapply_byname(FUN, a)
+unaryapply_byname(FUN, a, trans_types = FALSE)
 }
 \arguments{
 \item{FUN}{a unary function to be applied "byname" to \code{a}.}
 
 \item{a}{the argument to \code{FUN}.}
+
+\item{trans_types}{tells whether row and column types should be transposed.}
 }
 \value{
 the result of applying \code{FUN} "byname" to \code{a}.

@@ -14,6 +14,7 @@ the inversion
 }
 \description{
 This function transposes row and column names as well as row and column types.
+Rows and columns of \code{m} are sorted prior to inverting.
 }
 \examples{
 library(magrittr)

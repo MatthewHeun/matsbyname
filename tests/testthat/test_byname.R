@@ -1642,6 +1642,14 @@ test_that("matrix multiplied by a constant in a data frame works", {
 # context("Apply")
 ###########################################################
 
+test_that("unaryapply_byname works as expected", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(unaryapply_byname(`-`, U), difference_byname(0, U))
+})
+
 test_that("binaryapply_byname works as expected", {
   expect_equal(binaryapply_byname(FUN = sum, a = list(1, 2, 3), b = list(4,5,6)), 
                list(5, 7, 9))

@@ -6,6 +6,7 @@ library(dplyr)
 #'
 #' @param FUN a unary function to be applied "byname" to \code{a}.
 #' @param a the argument to \code{FUN}.
+#' @param trans_types tells whether row and column types should be transposed.
 #'
 #' @return the result of applying \code{FUN} "byname" to \code{a}.
 #' 
@@ -19,13 +20,24 @@ library(dplyr)
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' difference_byname(0, U)
 #' unaryapply_byname(`-`, U)
-unaryapply_byname <- function(FUN, a){
+unaryapply_byname <- function(FUN, a, trans_types = FALSE){
   if (is.list(a)) {
-    return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a))
+    return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, trans_types = trans_types))
   }
-  FUN(a) %>%
-    setrowtype(rowtype(a)) %>%
-    setcoltype(coltype(a))
+  out <- a %>% 
+    sort_rows_cols() %>% 
+    FUN()
+  if (trans_types) {
+    out <- out %>%
+      setrowtype(coltype(a)) %>%
+      setcoltype(rowtype(a))
+  } else {
+    # trans_types is FALSE
+    out <- out %>%
+      setrowtype(rowtype(a)) %>%
+      setcoltype(coltype(a))
+  }
+  return(out)
 }
 
 #' Apply a binary function byname
@@ -526,10 +538,12 @@ logmean <- function(x1, x2, base = exp(1)){
 #' Invert a matrix
 #'
 #' This function transposes row and column names as well as row and column types.
+#' Rows and columns of \code{m} are sorted prior to inverting.
 #'
 #' @param m the matrix to be inverted. \code{m} must be square.
 #'
 #' @return the inversion
+#' 
 #' @export
 #'
 #' @examples
@@ -541,15 +555,22 @@ logmean <- function(x1, x2, base = exp(1)){
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
 invert_byname <- function(m){
-  if (is.list(m)) {
-    return(mcMap(invert_byname, m))
-  }
-  stopifnot(nrow(m) == ncol(m))
-  # Do we need to sort here?
-  sort_rows_cols(m) %>%
-    solve %>%
-    setrowtype(coltype(m)) %>%
-    setcoltype(rowtype(m))
+  # if (is.list(m)) {
+  #   return(mcMap(invert_byname, m))
+  # }
+  # stopifnot(nrow(m) == ncol(m))
+  # # Do we need to sort here?
+  # sort_rows_cols(m) %>%
+  #   solve %>%
+  #   setrowtype(coltype(m)) %>%
+  #   setcoltype(rowtype(m))
+  
+  unaryapply_byname(a = m, trans_types = TRUE,
+                    FUN = function(m){
+                      stopifnot(nrow(m) == ncol(m))
+                      sort_rows_cols(m) %>%
+                        solve()
+                    })
 }
 
 #' Transpose a matrix by name
