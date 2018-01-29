@@ -706,7 +706,6 @@ identize_byname <- function(M, margin = c(1,2)){
         stopifnot(nrow(M) == ncol(M))
         return(diag(nrow(M)) %>% 
                  setrownames_byname(rownames(M)) %>% setcolnames_byname(colnames(M)) %>% 
-                 # sort_rows_cols() %>% 
                  setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
       }
       
@@ -759,39 +758,42 @@ fractionize_byname <- function(M, margin){
     margin <- make_list(margin, n = length(M), lenx = 1)
     return(mcMap(fractionize_byname, M, margin))
   }
-  if (!"matrix" %in% class(M) && !"data.frame" %in% class(M)) {
-      # Assume we have a single number here
-      # By dividing M by itself, we could throw a division by zero error,
-      # which we would want to do.
-      return(M/M)
-  }
-  if (length(margin) != length(unique(margin))) {
-    stop("margin should contain unique integers in fractionize_byname")
-  }
-  if (!length(margin) %in% c(1,2)) {
-    stop("margin should have length 1 or 2 in fractionize_byname")
-  }
-  
-  if (length(margin) == 2 && all(margin %in% c(1,2))) {
-    return(M/sumall_byname(M))
-  }
-  
-  if (length(margin) != 1 || !margin %in% c(1,2)) {
-    stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
-  }
-  
-  if (margin == 1) {
-    # Divide each entry by its row sum
-    # Do this with (M*i)_hat_inv * M
-    return(matrixproduct_byname(M %>% rowsums_byname %>% hatize_byname %>% invert_byname, M))
-  }
-  if (margin == 2) {
-    # Divide each entry by its column sum
-    # Do this with M * (i^T * M)_hat_inv
-    return(matrixproduct_byname(M, colsums_byname(M) %>% hatize_byname %>% invert_byname))
-  } 
-  # Should never get here, but just in case:
-  stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
+  unaryapply_byname(a = M, types = "all", 
+    FUN = function(M){
+      if (!"matrix" %in% class(M) && !"data.frame" %in% class(M)) {
+        # Assume we have a single number here
+        # By dividing M by itself, we could throw a division by zero error,
+        # which we would want to do.
+        return(M/M)
+      }
+      if (length(margin) != length(unique(margin))) {
+        stop("margin should contain unique integers in fractionize_byname")
+      }
+      if (!length(margin) %in% c(1,2)) {
+        stop("margin should have length 1 or 2 in fractionize_byname")
+      }
+      
+      if (length(margin) == 2 && all(margin %in% c(1,2))) {
+        return(M/sumall_byname(M))
+      }
+      
+      if (length(margin) != 1 || !margin %in% c(1,2)) {
+        stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
+      }
+      
+      if (margin == 1) {
+        # Divide each entry by its row sum
+        # Do this with (M*i)_hat_inv * M
+        return(matrixproduct_byname(M %>% rowsums_byname %>% hatize_byname %>% invert_byname, M))
+      }
+      if (margin == 2) {
+        # Divide each entry by its column sum
+        # Do this with M * (i^T * M)_hat_inv
+        return(matrixproduct_byname(M, colsums_byname(M) %>% hatize_byname %>% invert_byname))
+      } 
+      # Should never get here, but just in case:
+      stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
+    })
 }
 
 #' Select rows of a matrix (or list of matrices) by name
