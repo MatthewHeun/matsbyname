@@ -626,26 +626,7 @@ transpose_byname <- function(m){
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
-  # if (is.list(v)) {
-  #   return(mcMap(hatize_byname, v))
-  # }
-  # v_sorted <- sort_rows_cols(v) %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
-  # out <- OpenMx::vec2diag(v_sorted)
-  # if (ncol(v) == 1) {
-  #   rownames(out) <- rownames(v_sorted)
-  #   colnames(out) <- rownames(v_sorted)
-  #   out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
-  # } else if (nrow(v) == 1) {
-  #   rownames(out) <- colnames(v)
-  #   colnames(out) <- colnames(v)
-  #   out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
-  # } else {
-  #   stop("matrix v must have at least one dimension of length 1 in hatize")
-  # }
-  # return(out)
-  
-  unaryapply_byname(a = v,
-                    types = "none",
+  unaryapply_byname(a = v, types = "none",
     FUN = function(v){
       v_sorted <- sort_rows_cols(v) # %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
       out <- OpenMx::vec2diag(v_sorted)
@@ -705,46 +686,49 @@ identize_byname <- function(M, margin = c(1,2)){
     margin <- make_list(margin, n = length(M), lenx = 1)
     return(mcMap(identize_byname, M, margin))
   }
-  if (class(M) == "numeric") {
-    # Assume we have a single number here
-    # Thus, we return 1.
-    return(1)
-  }
-  
-  if (!length(margin) %in% c(1,2)) {
-    stop("margin should have length 1 or 2 in fractionize_byname")
-  }
-  
-  if (length(margin) == 2 && all(margin %in% c(1,2))) {
-    # M is a matrix. 
-    # Return the identity matrix with 1's on diagonal,
-    # of same dimensions as M
-    # and same names and types as M.
-    stopifnot(nrow(M) == ncol(M))
-    return(diag(nrow(M)) %>% 
-             setrownames_byname(rownames(M)) %>% setcolnames_byname(colnames(M)) %>% 
-             sort_rows_cols() %>% 
-             setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
-  }
-  
-  if (length(margin) != 1 || !margin %in% c(1,2)) {
-    stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
-  }
-  
-  if (margin == 1)  {
-    # Return a column vector containing 1's
-    return(matrix(rep_len(1, nrow(M)), nrow = nrow(M), ncol = 1) %>% 
-             setrownames_byname(rownames(M)) %>% setcolnames_byname(coltype(M)) %>% 
-             setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
-  }
-  if (margin == 2) {
-    # Return a row vector containing 1's
-    return(matrix(rep_len(1, ncol(M)), nrow = 1, ncol = ncol(M)) %>% 
-             setrownames_byname(rowtype(M)) %>% setcolnames_byname(colnames(M)) %>% 
-             setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
-  } 
-  # Should never get here, but just in case:
-  stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
+  unaryapply_byname(a = M, types = "none", 
+    FUN = function(M){
+      if (class(M) == "numeric" & length(M) == 1) {
+        # Assume we have a single number here
+        # Thus, we return 1.
+        return(1)
+      }
+      
+      if (!length(margin) %in% c(1,2)) {
+        stop("margin should have length 1 or 2 in fractionize_byname")
+      }
+      
+      if (length(margin) == 2 && all(margin %in% c(1,2))) {
+        # M is a matrix. 
+        # Return the identity matrix with 1's on diagonal,
+        # of same dimensions as M
+        # and same names and types as M.
+        stopifnot(nrow(M) == ncol(M))
+        return(diag(nrow(M)) %>% 
+                 setrownames_byname(rownames(M)) %>% setcolnames_byname(colnames(M)) %>% 
+                 # sort_rows_cols() %>% 
+                 setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+      }
+      
+      if (length(margin) != 1 || !margin %in% c(1,2)) {
+        stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
+      }
+      
+      if (margin == 1)  {
+        # Return a column vector containing 1's
+        return(matrix(rep_len(1, nrow(M)), nrow = nrow(M), ncol = 1) %>% 
+                 setrownames_byname(rownames(M)) %>% setcolnames_byname(coltype(M)) %>% 
+                 setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+      }
+      if (margin == 2) {
+        # Return a row vector containing 1's
+        return(matrix(rep_len(1, ncol(M)), nrow = 1, ncol = ncol(M)) %>% 
+                 setrownames_byname(rowtype(M)) %>% setcolnames_byname(colnames(M)) %>% 
+                 setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+      } 
+      # Should never get here, but just in case:
+      stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
+    })
 }
 
 #' Compute fractions of matrix entries
