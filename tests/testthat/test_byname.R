@@ -4,6 +4,7 @@
 # If not, the "matches" function in dplyr overrides the "matches" function in testthat,
 # and tests containing the string "(" don't work as expectged.
 
+library(Hmisc)
 library(dplyr)
 library(parallel)
 library(byname)
@@ -1469,6 +1470,9 @@ test_that("make_pattern works as expected", {
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "trailing"), "a$|b$")
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "anywhere"), "a|b")
   expect_equal(make_pattern(row_col_names = "Non-specified (industry)", pattern_type = "exact"), "^Non-specified \\(industry\\)$")
+  # Check with a list and parentheses
+  expect_equal(make_pattern(row_col_names = c("a(1)", "a(2)"), pattern_type = "exact"), 
+               "^a\\(1\\)$|^a\\(2\\)$")
 })
   
 test_that("list_of_rows_or_cols works as expected", {

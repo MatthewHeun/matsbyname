@@ -2018,13 +2018,16 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}.
 #'
 #' @return an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
+#' 
+#' @importFrom Hmisc escapeRegex
+#' 
 #' @export
 #'
 #' @examples
 #' make_pattern(row_col_names = c("a", "b"), pattern_type = "exact")
 make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere")){
-  pattern.type <- match.arg(pattern_type)
-  out <- row_col_names
+  pattern_type <- match.arg(pattern_type)
+  out <- Hmisc::escapeRegex(row_col_names)
   # Add leading caret if needed
   if (pattern_type %in% c("exact", "leading")) {
     out <- paste0("^", out)
@@ -2033,10 +2036,6 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
   if (pattern_type %in% c("exact", "trailing")) {
     out <- paste0(out, "$")
   }
-  # Escape parentheses if needed, but it is tricky.
-  # Use unicode for the replacement.
-  out <- out %>%
-    gsub(pattern = "\\(", replacement = "\U005c\U005c\U0028") %>%
-    gsub(pattern = "\\)", replacement = "\U005c\U005c\U0029")
   paste0(out, collapse = "|")
 }
+
