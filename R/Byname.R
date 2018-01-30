@@ -85,6 +85,10 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #' coltypes of \code{a} must match coltypes of \code{b}.
 #' If "\code{matmult}",
 #' coltypes of \code{a} must match rowtypes of \code{b}.
+#' @param rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
+#'        to the output. 
+#'        The default (\code{TRUE}) means that row and column types are applied to the output.
+#'        If \code{FALSE}, row and column types are \emph{not} applied to the output.
 #'
 #' @return the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
 #' 
@@ -100,31 +104,32 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
-binaryapply_byname <- function(FUN, a, b, ..., match_type = c("all", "matmult")){
+binaryapply_byname <- function(FUN, a, b, ..., match_type = c("all", "matmult"), rowcoltypes = TRUE){
   match_type <- match.arg(match_type)
   args <- organize_args(a, b, fill = 0, match_type = match_type)
   a <- args$a
   b <- args$b
   if (is.list(a) & is.list(b)) {
     return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), 
-               a, b, ..., match_type = match_type))
+               a, b, ..., match_type = match_type, rowcoltypes = rowcoltypes))
   }
   if (length(list(...)) == 0) {
     out <- FUN(a, b)
   } else {
     out <- FUN(a, b, ...)
   }
-  # Either match_type is 
-  #   "all" 
-  #     in which case rowtype(a) == rowtype(b) and coltype(a) == coltype(b), 
-  #     and setting rowtype to rowtype(a) and coltype to coltype(b) works fine, or
-  #   "matmult"
-  #     in which case coltype(a) == rowtype(b) and the result of FUN is
-  #     a matrix with rowtype == rowtype(a) and coltype == coltype(b).
-  # Given those options, we set rowtype to rowtype(a) and coltype to coltype(b).
-  out %>% 
-    setrowtype(rowtype(a)) %>%
-    setcoltype(coltype(b))
+  if (rowcoltypes) {
+    # Either match_type is 
+    #   "all" 
+    #     in which case rowtype(a) == rowtype(b) and coltype(a) == coltype(b), 
+    #     and setting rowtype to rowtype(a) and coltype to coltype(b) works fine, or
+    #   "matmult"
+    #     in which case coltype(a) == rowtype(b) and the result of FUN is
+    #     a matrix with rowtype == rowtype(a) and coltype == coltype(b).
+    # Given those options, we set rowtype to rowtype(a) and coltype to coltype(b).
+    return(out %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(b)))
+  }
+  return(out)
 }
 
 #' Name-wise addition of matrices.
@@ -1758,20 +1763,27 @@ coltype <- function(x){
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
 equal_byname <- function(a, b) {
-  if (is.list(a) & is.list(b)) {
-    return(mcMap(equal_byname, a, b))
+  # if (is.list(a) & is.list(b)) {
+  #   return(mcMap(equal_byname, a, b))
+  # }
+  # # If names are present on the dimensions of the matrix, try to complete and sort the matrices.
+  # mats <- list(m1 = a, m2 = b)
+  # for (margin in 1:2) {
+  #   if (!is.null(names(a)[[margin]]) & !is.null(names(b)[[margin]])) {
+  #     # We have names for margin. Complete and sort on this margin.
+  #     mats <- complete_and_sort(mats$m1, mats$m2, margin = margin)
+  #   }
+  # }
+  # m1 <- mats$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+  # m2 <- mats$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  # return(isTRUE(all.equal(m1, m2)))
+  # 
+  # 
+  equal.func <- function(a, b){
+    mats <- complete_and_sort(a, b)
+    return(isTRUE(all.equal(mats$m1, mats$m2)))
   }
-  # If names are present on the dimensions of the matrix, try to complete and sort the matrices.
-  mats <- list(m1 = a, m2 = b)
-  for (margin in 1:2) {
-    if (!is.null(names(a)[[margin]]) & !is.null(names(b)[[margin]])) {
-      # We have names for margin. Complete and sort on this margin.
-      mats <- complete_and_sort(mats$m1, mats$m2, margin = margin)
-    }
-  }
-  m1 <- mats$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
-  m2 <- mats$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
-  return(isTRUE(all.equal(m1, m2)))
+  binaryapply_byname(equal.func, a = a, b = b, match_type = "all", rowcoltypes = FALSE)
 }
 
 #' Named list of rows or columns of matrices

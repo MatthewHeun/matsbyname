@@ -4,7 +4,8 @@
 \alias{binaryapply_byname}
 \title{Apply a binary function byname}
 \usage{
-binaryapply_byname(FUN, a, b, ..., match_type = c("all", "matmult"))
+binaryapply_byname(FUN, a, b, ..., match_type = c("all", "matmult"),
+  rowcoltypes = TRUE)
 }
 \arguments{
 \item{FUN}{a binary function to be applied "byname" to \code{a} and \code{b}.}
@@ -20,6 +21,11 @@ rowtypes of \code{a} must match rowtypes of \code{b} and
 coltypes of \code{a} must match coltypes of \code{b}.
 If "\code{matmult}",
 coltypes of \code{a} must match rowtypes of \code{b}.}
+
+\item{rowcoltypes}{tells whether to apply row and column types from \code{a} and \code{b}
+to the output. 
+The default (\code{TRUE}) means that row and column types are applied to the output.
+If \code{FALSE}, row and column types are \emph{not} applied to the output.}
 }
 \value{
 the result of applying \code{FUN} "byname" to \code{a} and \code{b}.

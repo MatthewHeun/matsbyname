@@ -1453,6 +1453,9 @@ test_that("equal_byname works as expected", {
   expect_false(equal_byname(a, b)) 
   dimnames(b) <- dimnames(a)
   expect_true(equal_byname(a, b))
+  
+  # Try with lists.
+  expect_equal(equal_byname(list(a, a), list(b, b)), list(TRUE, TRUE))
 })
 
 
