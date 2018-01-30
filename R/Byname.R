@@ -1476,10 +1476,6 @@ getrownames_byname <- function(m){
 #' DF[[2,"m"]] <- m
 #' getcolnames_byname(DF$m)
 getcolnames_byname <- function(m){
-  # if (is.list(m)) {
-  #   return(mcMap(getcolnames_byname, m))
-  # }
-  # return(colnames(m))
   unaryapply_byname(colnames, a = m, rowcoltypes = "none")
 }
 
@@ -1522,30 +1518,29 @@ getcolnames_byname <- function(m){
 #' DF <- DF %>% mutate(m = setrownames_byname(m, list(c("r1", "r2"))))
 #' DF$m[[1]]
 setrownames_byname <- function(m, rownames){
-  if (is.list(m) & is.list(rownames)) {
-    return(mcMap(setrownames_byname, m, rownames))
-  }
-  if (is.list(m) & !is.matrix(m) & is.vector(rownames)) {
-    # rownames is a vector of names to be applied 
+  if (is.list(m) & !is.matrix(m) & is.vector(rownames) & !is.list(rownames)) {
+    # rownames is a vector of names (and not a list) to be applied 
     # to each matrix in m.
     # Thus, we should replicatate it to be same length as m
     rownames <- make_list(rownames, n = length(m), lenx = 1)
-    return(setrownames_byname(m, rownames))
   }
-  if (is.null(dim(m))) {
-    # m has no dimensions. It is a constant.
-    # Turn it into a matrix and set the row names.
-    out <- matrix(m, nrow = 1, ncol = 1)
-  } else {
-    out <- m
+  rowname.func <- function(m, rownames){
+    if (is.null(dim(m))) {
+      # m has no dimensions. It is a constant.
+      # Turn it into a matrix and set the row names.
+      out <- matrix(m, nrow = 1, ncol = 1)
+    } else {
+      out <- m
+    }
+    if (is.null(rownames) || is.na(rownames)) {
+      # replace with default row names
+      rownames(out) <- NULL
+    } else {
+      rownames(out) <- rownames
+    }
+    return(out)
   }
-  if (is.null(rownames) || is.na(rownames)) {
-    # replace with default row names
-    rownames(out) <- NULL
-  } else {
-    rownames(out) <- rownames
-  }
-  return(out)
+  unaryapply_byname(rowname.func, a = m, rownames = rownames, rowcoltypes = "all")
 }
 
 #' Sets column names

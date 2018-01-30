@@ -1336,13 +1336,13 @@ test_that("setting row names works as expected", {
   DF1[[2,"mcol"]] <- m1
   DF2 <- DF1 %>% 
     mutate(
-      mcol2 = setrownames_byname(mcol, c("r1", "r2"))
+      mcol2 = setrownames_byname(mcol, make_list(c("r1", "r2"), n = nrow(DF1), lenx = 1))
     )
   expect_equal(rownames(DF2$mcol2[[1]]), c("r1", "r2"))
   expect_equal(rownames(DF2$mcol2[[2]]), c("r1", "r2"))
   DF3 <- DF1 %>% 
     mutate(
-      mcol2 = setrownames_byname(mcol, list(c("r1", "r2"), c("r3", "r4")))
+      mcol2 = setrownames_byname(mcol, make_list(list(c("r1", "r2"), c("r3", "r4")), n = nrow(DF1), lenx = 2))
     )
   expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r1", "r2"), c("r3", "r4")))
 })
