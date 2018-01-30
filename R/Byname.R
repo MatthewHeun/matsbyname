@@ -1452,10 +1452,7 @@ clean_byname <- function(m, margin = c(1, 2), clean_value = 0){
 #' DF[[2,"m"]] <- m
 #' getrownames_byname(DF$m)
 getrownames_byname <- function(m){
-  if (is.list(m)) {
-    return(mcMap(getrownames_byname, m))
-  }
-  return(rownames(m))
+  unaryapply_byname(rownames, a = m, rowcoltypes = "none")
 }
 
 #' Gets column names
@@ -1479,10 +1476,11 @@ getrownames_byname <- function(m){
 #' DF[[2,"m"]] <- m
 #' getcolnames_byname(DF$m)
 getcolnames_byname <- function(m){
-  if (is.list(m)) {
-    return(mcMap(getcolnames_byname, m))
-  }
-  return(colnames(m))
+  # if (is.list(m)) {
+  #   return(mcMap(getcolnames_byname, m))
+  # }
+  # return(colnames(m))
+  unaryapply_byname(colnames, a = m, rowcoltypes = "none")
 }
 
 #' Sets row names
