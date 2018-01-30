@@ -1638,17 +1638,10 @@ setcolnames_byname <- function(m, colnames){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setrowtype <- function(x, rowtype){
-  # if (is.list(x) & !is.matrix(x)) {
-  #   return(mcMap(setrowtype, x, rowtype))
-  # }
-  # attr(x, "rowtype") <- rowtype
-  # return(x)
-  
   rt.func <- function(x, rowtype){
     attr(x, "rowtype") <- rowtype
     return(x)
   }
-  
   unaryapply_byname(rt.func, a = x, rowtype = rowtype, rowcoltypes = "none")
 }
 
@@ -1686,14 +1679,11 @@ setrowtype <- function(x, rowtype){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setcoltype <- function(x, coltype){
-  if (is.list(x) & !is.matrix(x)) {
-    return(mcMap(setcoltype, x, coltype))
-  }  
-  # if (!is.null(coltype)) {
-  #   attr(x, "coltype") <- coltype
-  # }
-  attr(x, "coltype") <- coltype
-  return(x)
+  ct.func <- function(x, coltype){
+    attr(x, "coltype") <- coltype
+    return(x)
+  }
+  unaryapply_byname(ct.func, a = x, coltype = coltype, rowcoltypes = "none")
 }
 
 #' Row type
