@@ -1063,7 +1063,7 @@ rowsums_byname <- function(m, colname = NA){
       setrowtype(rowtype(m)) %>%
       setcoltype(coltype(m))
   }
-  unaryapply_byname(rowsum.func, a = m, colname = colname, rowcoltypes = "all")
+  unaryapply_byname(rowsum.func, a = m, colname = colname, rowcoltypes = "none")
 }
 
 #' Column sums, sorted by name
@@ -1125,7 +1125,7 @@ colsums_byname <- function(m, rowname = NA){
       setrowtype(rowtype(m)) %>%
       setcoltype(coltype(m))
   }
-  unaryapply_byname(colsum.func, a = m, rowname = rowname, rowcoltypes = "all")
+  unaryapply_byname(colsum.func, a = m, rowname = rowname, rowcoltypes = "none")
 }
 
 #' Sum of all elements in a matrix
@@ -1202,29 +1202,26 @@ sumall_byname <- function(m){
 #' # Nonsensical
 #' \dontrun{rowprods_byname(NULL)}
 rowprods_byname <- function(M, colname = NA){
-  if (is.list(M)) {
-    if (is.null(colname)) {
-      colname <- NA
-    }
-    return(mcMap(rowprods_byname, M, colname))
-  }
   if (is.null(colname)) {
-    # Set the column name to the column type, since we multiplied all items of coltype together.
-    colname <- coltype(M)
+    # Set the column name to NA so we can change it in the function.
+    colname <- NA_character_
   }
-  if (is.na(colname)) {
-    colname <- coltype(M)
+  rowprod.func <- function(M, colname){
+    if (is.na(colname)) {
+      colname <- coltype(M)
+    }
+    apply(M, MARGIN = 1, FUN = prod) %>%
+      # Preserve matrix structure (i.e., result will be a column vector of type matrix)
+      matrix(byrow = TRUE) %>%
+      # Preserve row names
+      setrownames_byname(rownames(M)) %>%
+      # But sort the result on names
+      sort_rows_cols %>%
+      setcolnames_byname(colname) %>%
+      setrowtype(rowtype(M)) %>%
+      setcoltype(coltype(M))
   }
-  apply(M, MARGIN = 1, FUN = prod) %>%
-    # Preserve matrix structure (i.e., result will be a column vector of type matrix)
-    matrix(byrow = TRUE) %>%
-    # Preserve row names
-    setrownames_byname(rownames(M)) %>%
-    # But sort the result on names
-    sort_rows_cols %>%
-    setcolnames_byname(colname) %>%
-    setrowtype(rowtype(M)) %>%
-    setcoltype(coltype(M))
+  unaryapply_byname(rowprod.func, a = M, colname = colname, rowcoltypes = "none")
 }
 
 #' Column products, sorted by name
@@ -1265,29 +1262,26 @@ rowprods_byname <- function(M, colname = NA){
 #' )
 #' res$cs2
 colprods_byname <- function(M, rowname = NA){
-  if (is.list(M)) {
-    if (is.null(rowname)) {
-      rowname <- NA
-    }
-    return(mcMap(colprods_byname, M, rowname))
-  }
   if (is.null(rowname)) {
-    # Set the row name to the row type, since we added all items of rowtype together.
-    rowname <- rowtype(M)
+    # Set the row name to NA so we can change it in the function.
+    rowname <- NA_character_
   }
-  if (is.na(rowname)) {
-    rowname <- rowtype(M)
+  colprod.func <- function(M, rowname){
+    if (is.na(rowname)) {
+      rowname <- rowtype(M)
+    }
+    apply(M, MARGIN = 2, FUN = prod) %>%
+      # Preserve matrix structure (i.e., result will be a row vector of type matrix)
+      matrix(nrow = 1) %>%
+      # Preserve column names
+      setcolnames_byname(colnames(M)) %>%
+      # But sort the result on names
+      sort_rows_cols() %>%
+      setrownames_byname(rowname) %>%
+      setrowtype(rowtype(M)) %>%
+      setcoltype(coltype(M))
   }
-  apply(M, MARGIN = 2, FUN = prod) %>%
-    # Preserve matrix structure (i.e., result will be a row vector of type matrix)
-    matrix(nrow = 1) %>%
-    # Preserve column names
-    setcolnames_byname(colnames(M)) %>%
-    # But sort the result on names
-    sort_rows_cols() %>%
-    setrownames_byname(rowname) %>%
-    setrowtype(rowtype(M)) %>%
-    setcoltype(coltype(M))
+  unaryapply_byname(colprod.func, a = M, rowname = rowname, rowcoltypes = "none")
 }
 
 #' Product of all elements in a matrix
@@ -1319,13 +1313,17 @@ colprods_byname <- function(M, rowname = NA){
 #' )
 #' res$prods
 prodall_byname <- function(M){
-  if (is.list(M)) {
-    return(mcMap(prodall_byname, M))
+  # if (is.list(M)) {
+  #   return(mcMap(prodall_byname, M))
+  # }
+  # 
+  prodall.func <- function(M){
+    M %>%
+      rowprods_byname() %>%
+      colprods_byname() %>%
+      as.numeric()
   }
-  M %>%
-    rowprods_byname %>%
-    colprods_byname %>%
-    as.numeric
+  unaryapply_byname(prodall.func, a = M, rowcoltypes = "none")
 }
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
