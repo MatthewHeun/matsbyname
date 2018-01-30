@@ -4,7 +4,7 @@
 \alias{binaryapply_byname}
 \title{Apply a binary function byname}
 \usage{
-binaryapply_byname(FUN, a, b, match_type = "all")
+binaryapply_byname(FUN, a, b, match_type = c("all", "matmult"))
 }
 \arguments{
 \item{FUN}{a binary function to be applied "byname" to \code{a} and \code{b}.}

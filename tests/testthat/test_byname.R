@@ -1647,7 +1647,7 @@ test_that("unaryapply_byname works as expected", {
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(unaryapply_byname(`-`, U, types = "all"), difference_byname(0, U))
+  expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "all"), difference_byname(0, U))
 })
 
 test_that("binaryapply_byname works as expected", {

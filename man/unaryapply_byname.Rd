@@ -4,14 +4,17 @@
 \alias{unaryapply_byname}
 \title{Apply a unary function byname}
 \usage{
-unaryapply_byname(FUN, a, types = c("all", "transpose", "row", "col", "none"))
+unaryapply_byname(FUN, a, ..., rowcoltypes = c("all", "transpose", "row",
+  "col", "none"))
 }
 \arguments{
 \item{FUN}{a unary function to be applied "byname" to \code{a}.}
 
 \item{a}{the argument to \code{FUN}.}
 
-\item{types}{a string that tells how to transfer row and column types of \code{a} to output. 
+\item{...}{other arguments to be passed to \code{FUN}.}
+
+\item{rowcoltypes}{a string that tells how to transfer row and column types of \code{a} to output. 
 Options are:
 \itemize{
   \item{\code{all}: transfer both row and column types of \code{a} directly to output.}

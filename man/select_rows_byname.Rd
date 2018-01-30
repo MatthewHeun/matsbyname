@@ -27,14 +27,15 @@ that are matched against row names.
 Patterns are compared against row names using extended regex.
 If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
+Note that the default patterns ("$^") retain nothing and remove nothing.
 
 Retaining rows takes precedence over removing rows, always.
 
 Some typical patterns are:
 \itemize{
-  \item{\code{^Electricity$|^Oil$}: row names that are EXACTLY \code{Electricity} or \code{Oil}.}
-  \item{\code{^Electricity|^Oil}: row names that START WITH \code{Electricity} or \code{Oil}.}
-  \item{\code{Electricity|Oil}: row names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
+  \item{\code{^Electricity$|^Oil$}: row names that are EXACTLY \code{Electricity} or EXACTLY \code{Oil}.}
+  \item{\code{^Electricity|^Oil}: row names that START WITH \code{Electricity} or START WITH \code{Oil}.}
+  \item{\code{Electricity|Oil}: row names that CONTAIN \code{Electricity} or CONTAIN \code{Oil} anywhere within them.}
 }
 
 Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
