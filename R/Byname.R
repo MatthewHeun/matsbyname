@@ -1157,13 +1157,13 @@ colsums_byname <- function(m, rowname = NA){
 #' )
 #' res$sums
 sumall_byname <- function(m){
-  if (is.list(m)) {
-    return(mcMap(sumall_byname, m))
+  sum.func <- function(m){
+    m %>%
+      rowsums_byname %>%
+      colsums_byname %>%
+      as.numeric
   }
-  m %>%
-    rowsums_byname %>%
-    colsums_byname %>%
-    as.numeric
+  unaryapply_byname(sum.func, a = m, rowcoltypes = "none")
 }
 
 #' Row products, sorted by name
