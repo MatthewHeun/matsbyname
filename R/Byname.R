@@ -1358,14 +1358,13 @@ prodall_byname <- function(M){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' Iminus_byname(m2)
 Iminus_byname <- function(m){
-  if (is.list(m)) {
-    return(mcMap(Iminus_byname, m))
+  iminus.func <- function(m){
+    A <- complete_and_sort(m) %>%
+      setrowtype(rowtype(m)) %>%
+      setcoltype(coltype(m))
+    difference_byname(identize_byname(A), A)
   }
-  
-  A <- complete_and_sort(m) %>%
-    setrowtype(rowtype(m)) %>%
-    setcoltype(coltype(m))
-  difference_byname(identize_byname(A), A) 
+  unaryapply_byname(iminus.func, a = m, rowcoltypes = "all")
 }
 
 #' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
