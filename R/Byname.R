@@ -36,12 +36,16 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
   if (is.list(a)) {
     return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, ..., rowcoltypes = rowcoltypes))
   }
+  # if (length(list(...)) == 0) {
+  #   out <- FUN(sort_rows_cols(a))
+  # } else {
+  #   out <- FUN(sort_rows_cols(a), ...)
+  # }
   if (length(list(...)) == 0) {
-    out <- FUN(sort_rows_cols(a))
+    out <- FUN(a)
   } else {
-    out <- FUN(sort_rows_cols(a), ...)
+    out <- FUN(a, ...)
   }
-  # out <- FUN(sort_rows_cols(a), ...)
   if (rowcoltypes == "all") {
     out <- out %>%
       setrowtype(rowtype(a)) %>%
@@ -102,7 +106,8 @@ binaryapply_byname <- function(FUN, a, b, ..., match_type = c("all", "matmult"))
   a <- args$a
   b <- args$b
   if (is.list(a) & is.list(b)) {
-    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), a, b, ..., match_type = match_type))
+    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), 
+               a, b, ..., match_type = match_type))
   }
   if (length(list(...)) == 0) {
     out <- FUN(a, b)
@@ -269,7 +274,13 @@ difference_byname <- function(minuend, subtrahend){
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
 matrixproduct_byname <- function(multiplicand, multiplier){
-  binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult")
+  binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
+    # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
+    # are completed and sorted, but rows and cols of the output are not guaranteed 
+    # to be sorted.
+    # Becase _byname assures that all rows and columns are sorted, 
+    # we sort them here before returning. 
+    sort_rows_cols()
 }
 
 #' Name-wise matrix element multiplication
@@ -1627,15 +1638,18 @@ setcolnames_byname <- function(m, colnames){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setrowtype <- function(x, rowtype){
-  if (is.list(x) & !is.matrix(x)) {
-    return(mcMap(setrowtype, x, rowtype))
-  }
-  # Only set the rowtype if it is non-null.
-  # if (!is.null(rowtype)) {
-  #   attr(x, "rowtype") <- rowtype
+  # if (is.list(x) & !is.matrix(x)) {
+  #   return(mcMap(setrowtype, x, rowtype))
   # }
-  attr(x, "rowtype") <- rowtype
-  return(x)
+  # attr(x, "rowtype") <- rowtype
+  # return(x)
+  
+  rt.func <- function(x, rowtype){
+    attr(x, "rowtype") <- rowtype
+    return(x)
+  }
+  
+  unaryapply_byname(rt.func, a = x, rowtype = rowtype, rowcoltypes = "none")
 }
 
 #' Sets column type for a matrix or a list of matrices
