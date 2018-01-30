@@ -528,8 +528,8 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
     #   * same row and column names, and 
     #   * same rowtype and column type.
     # We exploit these facts in the code below.
-    # Unwrap each matrix and mcMap logmean to all elements.
-    out <- mcMap(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
+    # Unwrap each matrix and Map logmean to all elements.
+    out <- Map(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
       # Map produces a list, but we need a numeric vector.
       as.numeric()
     if (is.matrix(X1)) {
@@ -839,6 +839,9 @@ fractionize_byname <- function(M, margin){
 #' }
 #'
 #' Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
+#' \code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
+#' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
+#' suitably escaped.
 #'
 #' @param m a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regexes that specifies which rows of \code{m} to retain.
@@ -941,8 +944,14 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' }
 #'
 #' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
+#' 
+#' #' \code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
+#' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
+#' suitably escaped.
+#' 
 #' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
 #' retain nothing and remove nothing.
+#' 
 #'
 #' @param m a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regexes that specifies which columns of \code{m} to retain.
@@ -1329,10 +1338,6 @@ colprods_byname <- function(M, rowname = NA){
 #' )
 #' res$prods
 prodall_byname <- function(M){
-  # if (is.list(M)) {
-  #   return(mcMap(prodall_byname, M))
-  # }
-  # 
   prodall.func <- function(M){
     M %>%
       rowprods_byname() %>%

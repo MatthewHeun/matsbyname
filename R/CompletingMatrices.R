@@ -217,53 +217,55 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
     margin <- make_list(margin, n = length(x), lenx = 1)
     roworder <- make_list(roworder, n = length(x), lenx = 1)
     colorder <- make_list(colorder, n = length(x), lenx = 1)
-    return(mcMap(sort_rows_cols, x = x, margin = margin, roworder = roworder, colorder = colorder))
   }
-  # Gather rowtype and coltype so we can apply those later.
-  rt <- rowtype(x)
-  ct <- coltype(x)
-  if (any(is.na(roworder))) {
-    if (!is.null(rownames(x))) {
-      roworder <- sort(rownames(x))
-    } else {
-      # Can't sort on rows, because they are not named.
-      if (2 %in% margin) {
-        # Remove 1 from margin, if it is there.
-        margin <- 2
+  sort.func <- function(x, margin, roworder, colorder){
+    # Gather rowtype and coltype so we can apply those later.
+    rt <- rowtype(x)
+    ct <- coltype(x)
+    if (any(is.na(roworder))) {
+      if (!is.null(rownames(x))) {
+        roworder <- sort(rownames(x))
       } else {
-        # Nothing to be done
-        return(x)
+        # Can't sort on rows, because they are not named.
+        if (2 %in% margin) {
+          # Remove 1 from margin, if it is there.
+          margin <- 2
+        } else {
+          # Nothing to be done
+          return(x)
+        }
       }
     }
-  }
-  if (any(is.na(colorder))) {
-    if (!is.null(colnames(x))) {
-      colorder <- sort(colnames(x))
-    } else {
-      # Can't sort on columns, because they are not named.
-      if (1 %in% margin) {
-        # Remove 2 from margin, if it is there.
-        margin <- 1
+    if (any(is.na(colorder))) {
+      if (!is.null(colnames(x))) {
+        colorder <- sort(colnames(x))
       } else {
-        # Nothing to be done
-        return(x)
+        # Can't sort on columns, because they are not named.
+        if (1 %in% margin) {
+          # Remove 2 from margin, if it is there.
+          margin <- 1
+        } else {
+          # Nothing to be done
+          return(x)
+        }
       }
     }
-  }
-  if (1 %in% margin & nrow(x) > 1) {
-    # Sort rows
-    if (length(unique(rownames(x))) != length(rownames(x))) {
-      stop("Row names not unique.")
+    if (1 %in% margin & nrow(x) > 1) {
+      # Sort rows
+      if (length(unique(rownames(x))) != length(rownames(x))) {
+        stop("Row names not unique.")
+      }
+      x <- x[roworder, , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
     }
-    x <- x[roworder, , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
-  }
-  if (2 %in% margin & ncol(x) > 1) {
-    if (length(unique(colnames(x))) != length(colnames(x))) {
-      stop("Column names not unique.")
+    if (2 %in% margin & ncol(x) > 1) {
+      if (length(unique(colnames(x))) != length(colnames(x))) {
+        stop("Column names not unique.")
+      }
+      x <- x[ , colorder, drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
     }
-    x <- x[ , colorder, drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
+    return(x %>% setrowtype(rt) %>% setcoltype(ct))
   }
-  return(x %>% setrowtype(rt) %>% setcoltype(ct))
+  unaryapply_byname(sort.func, a = x, margin = margin, roworder = roworder, colorder = colorder)
 }
 
 #' Complete matrices relative to one another and sort into same row, column order
