@@ -38,6 +38,8 @@ Some typical patterns are:
 }
 
 Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
+Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
+retain nothing and remove nothing.
 }
 \examples{
 library(magrittr)

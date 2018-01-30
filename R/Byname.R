@@ -96,23 +96,28 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
-binaryapply_byname <- function(FUN, a, b, match_type = c("all", "matmult")){
+binaryapply_byname <- function(FUN, a, b, ..., match_type = c("all", "matmult")){
   match_type <- match.arg(match_type)
   args <- organize_args(a, b, fill = 0, match_type = match_type)
   a <- args$a
   b <- args$b
   if (is.list(a) & is.list(b)) {
-    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), a, b, match_type = match_type))
+    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), a, b, ..., match_type = match_type))
   }
-  FUN(a, b) %>%
-    # Either match_type is 
-    #   "all" 
-    #     in which case rowtype(a) == rowtype(b) and coltype(a) == coltype(b), 
-    #     and setting rowtype to rowtype(a) and coltype to coltype(b) works fine, or
-    #   "matmult"
-    #     in which case coltype(a) == rowtype(b) and the result of FUN is
-    #     a matrix with rowtype == rowtype(a) and coltype == coltype(b).
-    # Given those options, we set rowtype to rowtype(a) and coltype to coltype(b).
+  if (length(list(...)) == 0) {
+    out <- FUN(a, b)
+  } else {
+    out <- FUN(a, b, ...)
+  }
+  # Either match_type is 
+  #   "all" 
+  #     in which case rowtype(a) == rowtype(b) and coltype(a) == coltype(b), 
+  #     and setting rowtype to rowtype(a) and coltype to coltype(b) works fine, or
+  #   "matmult"
+  #     in which case coltype(a) == rowtype(b) and the result of FUN is
+  #     a matrix with rowtype == rowtype(a) and coltype == coltype(b).
+  # Given those options, we set rowtype to rowtype(a) and coltype to coltype(b).
+  out %>% 
     setrowtype(rowtype(a)) %>%
     setcoltype(coltype(b))
 }
@@ -391,11 +396,11 @@ elementquotient_byname <- function(dividend, divisor){
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
 mean_byname <- function(X1, X2){
-  binaryapply_byname(a = X1, b = X2,
-    FUN = function(X1, X2){
-      sum_byname(X1, X2) %>%
-        elementquotient_byname(2)
-    })
+  mean.func <- function(X1, X2){
+    sum_byname(X1, X2) %>%
+      elementquotient_byname(2)
+  }
+  binaryapply_byname(mean.func, a = X1, b = X2)
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -441,13 +446,14 @@ mean_byname <- function(X1, X2){
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
 geometricmean_byname <- function(X1, X2){
-  binaryapply_byname(a = X1, b = X2,
-    FUN = function(X1, X2){
-      if (any((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0))) {
-        stop(paste0("X1 and X2 must have same sign in geometricmean_byname: X1 = ", X1, ", X2 = ", X2, "."))
-      } 
-      elementproduct_byname(X1, X2) %>% sqrt()
-    })
+  geomean.func <- function(X1, X2){
+    if (any((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0))) {
+      stop(paste0("X1 and X2 must have same sign in geometricmean_byname: X1 = ", X1, ", X2 = ", X2, "."))
+    } 
+    elementproduct_byname(X1, X2) %>% 
+      sqrt()
+  }
+  binaryapply_byname(geomean.func, a = X1, b = X2)
 }
 
 #' Name- and element-wise logarithmic mean of matrices.
@@ -498,30 +504,30 @@ geometricmean_byname <- function(X1, X2){
 #' logarithmicmean_byname(DF$m1, DF$m2)
 #' DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2))
 logarithmicmean_byname <- function(X1, X2, base = exp(1)){
-  binaryapply_byname(a = X1, b = X2,
-    FUN = function(X1, X2) {
-      # At this point, our list is gone.  
-      # X1 and X2 are single matrices or single numbers. 
-      # Furthermore, X1 and X2 should have 
-      #   * exact same dimensions, 
-      #   * same row and column names, and 
-      #   * same rowtype and column type.
-      # We exploit these facts in the code below.
-      # Unwrap each matrix and mcMap logmean to all elements.
-      out <- mcMap(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
-        # Map produces a list, but we need a numeric vector.
-        as.numeric()
-      if (is.matrix(X1)) {
-        # If X1 and X2 are originally matrices, make out into a matrix
-        # by rewrapping it. 
-        out <- out %>% 
-          matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
-          # Add the row and column names to it.
-          setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1))
-      }
-      out %>%  
-        setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
-    })
+  logmean.func <- function(X1, X2, base) {
+    # At this point, our list is gone.  
+    # X1 and X2 are single matrices or single numbers. 
+    # Furthermore, X1 and X2 should have 
+    #   * exact same dimensions, 
+    #   * same row and column names, and 
+    #   * same rowtype and column type.
+    # We exploit these facts in the code below.
+    # Unwrap each matrix and mcMap logmean to all elements.
+    out <- mcMap(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
+      # Map produces a list, but we need a numeric vector.
+      as.numeric()
+    if (is.matrix(X1)) {
+      # If X1 and X2 are originally matrices, make out into a matrix
+      # by rewrapping it. 
+      out <- out %>% 
+        matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
+        # Add the row and column names to it.
+        setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1))
+    }
+    out %>%  
+      setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
+  }
+  binaryapply_byname(logmean.func, a = X1, b = X2, base = base)
 }
 
 #' Logarithmic mean of two numbers
@@ -582,12 +588,7 @@ logmean <- function(x1, x2, base = exp(1)){
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
 invert_byname <- function(m){
-  unaryapply_byname(a = m, rowcoltypes = "transpose",
-                    FUN = function(m){
-                      stopifnot(nrow(m) == ncol(m))
-                      sort_rows_cols(m) %>%
-                        solve()
-                    })
+  unaryapply_byname(solve, a = m, rowcoltypes = "transpose")
 }
 
 #' Transpose a matrix by name
@@ -604,7 +605,7 @@ invert_byname <- function(m){
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
 transpose_byname <- function(m){
-  unaryapply_byname(FUN = t, a = m, rowcoltypes = "transpose")
+  unaryapply_byname(t, a = m, rowcoltypes = "transpose")
 }
 
 #' Creates a diagonal "hat" matrix from a vector.
@@ -631,27 +632,27 @@ transpose_byname <- function(m){
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
-  unaryapply_byname(a = v, rowcoltypes = "none",
-    FUN = function(v){
-      v_sorted <- sort_rows_cols(v) # %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
-      out <- OpenMx::vec2diag(v_sorted)
-      if (ncol(v) == 1) {
-        rownames(out) <- rownames(v_sorted)
-        colnames(out) <- rownames(v_sorted)
-        # This function does not rely on unaryapply_byname to set row and column types.
-        # So, we must do so here.
-        out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
-      } else if (nrow(v) == 1) {
-        rownames(out) <- colnames(v)
-        colnames(out) <- colnames(v)
-        # This function does not rely on unaryapply_byname to set row and column types.
-        # So, we must do so here.
-        out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
-      } else {
-        stop("matrix v must have at least one dimension of length 1 in hatize")
-      }
-      return(out)
-    })
+  hatize.func <- function(v){
+    v_sorted <- sort_rows_cols(v) # %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
+    out <- OpenMx::vec2diag(v_sorted)
+    if (ncol(v) == 1) {
+      rownames(out) <- rownames(v_sorted)
+      colnames(out) <- rownames(v_sorted)
+      # This function does not rely on unaryapply_byname to set row and column types.
+      # So, we must do so here.
+      out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
+    } else if (nrow(v) == 1) {
+      rownames(out) <- colnames(v)
+      colnames(out) <- colnames(v)
+      # This function does not rely on unaryapply_byname to set row and column types.
+      # So, we must do so here.
+      out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
+    } else {
+      stop("matrix v must have at least one dimension of length 1 in hatize")
+    }
+    return(out)
+  }
+  unaryapply_byname(hatize.func, a = v, rowcoltypes = "none")
 }
 
 #' Named identity matrix or vector
@@ -690,50 +691,49 @@ hatize_byname <- function(v){
 identize_byname <- function(M, margin = c(1,2)){
   if (is.list(M)) {
     margin <- make_list(margin, n = length(M), lenx = 1)
-    return(mcMap(identize_byname, M, margin))
   }
-  unaryapply_byname(a = M, rowcoltypes = "none", 
-    FUN = function(M){
-      if (class(M) == "numeric" & length(M) == 1) {
-        # Assume we have a single number here
-        # Thus, we return 1.
-        return(1)
-      }
-      
-      if (!length(margin) %in% c(1,2)) {
-        stop("margin should have length 1 or 2 in fractionize_byname")
-      }
-      
-      if (length(margin) == 2 && all(margin %in% c(1,2))) {
-        # M is a matrix. 
-        # Return the identity matrix with 1's on diagonal,
-        # of same dimensions as M
-        # and same names and types as M.
-        stopifnot(nrow(M) == ncol(M))
-        return(diag(nrow(M)) %>% 
-                 setrownames_byname(rownames(M)) %>% setcolnames_byname(colnames(M)) %>% 
-                 setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
-      }
-      
-      if (length(margin) != 1 || !margin %in% c(1,2)) {
-        stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
-      }
-      
-      if (margin == 1)  {
-        # Return a column vector containing 1's
-        return(matrix(rep_len(1, nrow(M)), nrow = nrow(M), ncol = 1) %>% 
-                 setrownames_byname(rownames(M)) %>% setcolnames_byname(coltype(M)) %>% 
-                 setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
-      }
-      if (margin == 2) {
-        # Return a row vector containing 1's
-        return(matrix(rep_len(1, ncol(M)), nrow = 1, ncol = ncol(M)) %>% 
-                 setrownames_byname(rowtype(M)) %>% setcolnames_byname(colnames(M)) %>% 
-                 setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
-      } 
-      # Should never get here, but just in case:
+  identize.func <- function(M, margin){
+    if (class(M) == "numeric" & length(M) == 1) {
+      # Assume we have a single number here
+      # Thus, we return 1.
+      return(1)
+    }
+    
+    if (!length(margin) %in% c(1,2)) {
+      stop("margin should have length 1 or 2 in fractionize_byname")
+    }
+    
+    if (length(margin) == 2 && all(margin %in% c(1,2))) {
+      # M is a matrix. 
+      # Return the identity matrix with 1's on diagonal,
+      # of same dimensions as M
+      # and same names and types as M.
+      stopifnot(nrow(M) == ncol(M))
+      return(diag(nrow(M)) %>% 
+               setrownames_byname(rownames(M)) %>% setcolnames_byname(colnames(M)) %>% 
+               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+    }
+    
+    if (length(margin) != 1 || !margin %in% c(1,2)) {
       stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
-    })
+    }
+    
+    if (margin == 1)  {
+      # Return a column vector containing 1's
+      return(matrix(rep_len(1, nrow(M)), nrow = nrow(M), ncol = 1) %>% 
+               setrownames_byname(rownames(M)) %>% setcolnames_byname(coltype(M)) %>% 
+               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+    }
+    if (margin == 2) {
+      # Return a row vector containing 1's
+      return(matrix(rep_len(1, ncol(M)), nrow = 1, ncol = ncol(M)) %>% 
+               setrownames_byname(rowtype(M)) %>% setcolnames_byname(colnames(M)) %>% 
+               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+    } 
+    # Should never get here, but just in case:
+    stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
+  }
+  unaryapply_byname(identize.func, a = M, margin = margin, rowcoltypes = "none")
 }
 
 #' Compute fractions of matrix entries
@@ -760,42 +760,45 @@ identize_byname <- function(M, margin = c(1,2)){
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(M, margin){
-  unaryapply_byname(a = M, rowcoltypes = "all", 
-    FUN = function(M){
-      if (!"matrix" %in% class(M) && !"data.frame" %in% class(M)) {
-        # Assume we have a single number here
-        # By dividing M by itself, we could throw a division by zero error,
-        # which we would want to do.
-        return(M/M)
-      }
-      if (length(margin) != length(unique(margin))) {
-        stop("margin should contain unique integers in fractionize_byname")
-      }
-      if (!length(margin) %in% c(1,2)) {
-        stop("margin should have length 1 or 2 in fractionize_byname")
-      }
-      
-      if (length(margin) == 2 && all(margin %in% c(1,2))) {
-        return(M/sumall_byname(M))
-      }
-      
-      if (length(margin) != 1 || !margin %in% c(1,2)) {
-        stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
-      }
-      
-      if (margin == 1) {
-        # Divide each entry by its row sum
-        # Do this with (M*i)_hat_inv * M
-        return(matrixproduct_byname(M %>% rowsums_byname %>% hatize_byname %>% invert_byname, M))
-      }
-      if (margin == 2) {
-        # Divide each entry by its column sum
-        # Do this with M * (i^T * M)_hat_inv
-        return(matrixproduct_byname(M, colsums_byname(M) %>% hatize_byname %>% invert_byname))
-      } 
-      # Should never get here, but just in case:
+  if (is.list(M)) {
+    margin <- make_list(margin, n = length(M), lenx = 1)
+  }
+  fractionize.func <- function(M, margin){
+    if (!"matrix" %in% class(M) && !"data.frame" %in% class(M)) {
+      # Assume we have a single number here
+      # By dividing M by itself, we could throw a division by zero error,
+      # which we would want to do.
+      return(M/M)
+    }
+    if (length(margin) != length(unique(margin))) {
+      stop("margin should contain unique integers in fractionize_byname")
+    }
+    if (!length(margin) %in% c(1,2)) {
+      stop("margin should have length 1 or 2 in fractionize_byname")
+    }
+    
+    if (length(margin) == 2 && all(margin %in% c(1,2))) {
+      return(M/sumall_byname(M))
+    }
+    
+    if (length(margin) != 1 || !margin %in% c(1,2)) {
       stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
-    })
+    }
+    
+    if (margin == 1) {
+      # Divide each entry by its row sum
+      # Do this with (M*i)_hat_inv * M
+      return(matrixproduct_byname(M %>% rowsums_byname %>% hatize_byname %>% invert_byname, M))
+    }
+    if (margin == 2) {
+      # Divide each entry by its column sum
+      # Do this with M * (i^T * M)_hat_inv
+      return(matrixproduct_byname(M, colsums_byname(M) %>% hatize_byname %>% invert_byname))
+    } 
+    # Should never get here, but just in case:
+    stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
+  }
+  unaryapply_byname(fractionize.func, a = M, margin = margin, rowcoltypes = "all")
 }
 
 #' Select rows of a matrix (or list of matrices) by name
@@ -807,7 +810,8 @@ fractionize_byname <- function(M, margin){
 #' Patterns are compared against row names using extended regex.
 #' If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
-#' Note that the default patterns ("$^") retain nothing and remove nothing.
+#' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
+#' retain nothing and remove nothing.
 #'
 #' Retaining rows takes precedence over removing rows, always.
 #'
@@ -842,120 +846,60 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
-  # if (is.list(m)) {
-  #   retain_pattern <- make_list(retain_pattern, n = length(m))
-  #   remove_pattern <- make_list(remove_pattern, n = length(m))
-  #   return(mcMap(select_rows_byname, m = m, retain_pattern = retain_pattern, remove_pattern = remove_pattern))
-  # }
-  # retain_indices <- grep(pattern = retain_pattern, x = rownames(m))
-  # remove_indices <- grep(pattern = remove_pattern, x = rownames(m))
-  # if (length(retain_indices) == 0) {
-  #   # Nothing to be retained, so try removing columns
-  #   if (length(remove_indices) == 0) {
-  #     # Nothing to be retained and nothing to be removed.
-  #     # If the caller wanted to retain something,
-  #     # which is indicated by a non-default retain_pattern,
-  #     # don't retain anything.
-  #     # Do this first, because retain takes precedence.
-  #     if (retain_pattern != "$^") {
-  #       return(NULL)
-  #     }
-  #     # If the caller wanted to remove something,
-  #     # which is indicated by a non-default remove_pattern,
-  #     # don't remove anything. Simply return m.
-  #     if (remove_pattern != "$^") {
-  #       return(m)
-  #     }
-  #     # Neither retain_pattern nor remove_pattern is different from the default.
-  #     # This is almost surely an error.
-  #     stop("neither retain_pattern nor remove_pattern are differnt from default.")
-  #   }
-  #   # Remove
-  #   return(m[-remove_indices , ] %>%
-  #            # When only 1 row is selected, the natural result will be a numeric vector
-  #            # We want to ensure that the return value is a matrix
-  #            # with correct rowtype and coltype.
-  #            # Thus, we need to take these additional steps.
-  #            matrix(nrow = nrow(m) - length(remove_indices),
-  #                   dimnames = list(dimnames(m)[[1]][setdiff(1:nrow(m), remove_indices)],
-  #                                   dimnames(m)[[2]])) %>%
-  #            setrowtype(rowtype(m)) %>%
-  #            setcoltype(coltype(m))
-  #   )
-  # }
-  # # Retain
-  # return(m[retain_indices , ] %>%
-  #          matrix(nrow = length(retain_indices),
-  #                 dimnames = list(dimnames(m)[[1]][retain_indices],
-  #                                 dimnames(m)[[2]])) %>%
-  #          setrowtype(rowtype(m)) %>%
-  #          setcoltype(coltype(m))
-  # )
-  
-  
-  
-  
-  
-  # Note default patterns ("$^") retain nothing and remove nothing,
-  # because $ means end of line and ^ means beginning of line.
-  # The default pattern would match lines where the beginning of the line is the end of the line.
-  # That is impossible, so nothing is matched.
-  
   if (is.list(m)) {
     # If m is a list, we need to ensure that the patterns are also lists. 
     retain_pattern <- make_list(retain_pattern, n = length(m))
     remove_pattern <- make_list(remove_pattern, n = length(m))
   }
-
-  unaryapply_byname(a = m, rowcoltypes = "none", retain_pattern = retain_pattern, remove_pattern = remove_pattern,
-    FUN = function(m, retain_pattern, remove_pattern){
-      retain_indices <- grep(pattern = retain_pattern, x = rownames(m))
-      remove_indices <- grep(pattern = remove_pattern, x = rownames(m))
-      if (length(retain_indices) == 0) {
-        # Nothing to be retained, so try removing columns
-        if (length(remove_indices) == 0) {
-          # Nothing to be retained and nothing to be removed.
-          # If the caller wanted to retain something,
-          # which is indicated by a non-default retain_pattern,
-          # don't retain anything.
-          # Do this first, because retain takes precedence.
-          if (retain_pattern != "$^") {
-            return(NULL)
-          }
-          # If the caller wanted to remove something,
-          # which is indicated by a non-default remove_pattern,
-          # don't remove anything. Simply return m.
-          if (remove_pattern != "$^") {
-            return(m)
-          }
-          # Neither retain_pattern nor remove_pattern is different from the default.
-          # This is almost surely an error.
-          stop("neither retain_pattern nor remove_pattern are differnt from default.")
+  select.func <- function(m, retain_pattern, remove_pattern){
+    retain_indices <- grep(pattern = retain_pattern, x = rownames(m))
+    remove_indices <- grep(pattern = remove_pattern, x = rownames(m))
+    if (length(retain_indices) == 0) {
+      # Nothing to be retained, so try removing columns
+      if (length(remove_indices) == 0) {
+        # Nothing to be retained and nothing to be removed.
+        # If the caller wanted to retain something,
+        # which is indicated by a non-default retain_pattern,
+        # don't retain anything.
+        # Do this first, because retain takes precedence.
+        if (retain_pattern != "$^") {
+          return(NULL)
         }
-        # Remove
-        return(m[-remove_indices , ] %>%
-                 # When only 1 row is selected, the natural result will be a numeric vector
-                 # We want to ensure that the return value is a matrix
-                 # with correct rowtype and coltype.
-                 # Thus, we need to take these additional steps.
-                 matrix(nrow = nrow(m) - length(remove_indices),
-                        dimnames = list(dimnames(m)[[1]][setdiff(1:nrow(m), remove_indices)],
-                                        dimnames(m)[[2]])) %>%
-                 setrowtype(rowtype(m)) %>%
-                 setcoltype(coltype(m))
-        )
+        # If the caller wanted to remove something,
+        # which is indicated by a non-default remove_pattern,
+        # don't remove anything. Simply return m.
+        if (remove_pattern != "$^") {
+          return(m)
+        }
+        # Neither retain_pattern nor remove_pattern is different from the default.
+        # This is almost surely an error.
+        stop("neither retain_pattern nor remove_pattern are differnt from default.")
       }
-      # Retain
-      return(m[retain_indices , ] %>%
-               matrix(nrow = length(retain_indices),
-                      dimnames = list(dimnames(m)[[1]][retain_indices],
+      # Remove
+      return(m[-remove_indices , ] %>%
+               # When only 1 row is selected, the natural result will be a numeric vector
+               # We want to ensure that the return value is a matrix
+               # with correct rowtype and coltype.
+               # Thus, we need to take these additional steps.
+               matrix(nrow = nrow(m) - length(remove_indices),
+                      dimnames = list(dimnames(m)[[1]][setdiff(1:nrow(m), remove_indices)],
                                       dimnames(m)[[2]])) %>%
                setrowtype(rowtype(m)) %>%
                setcoltype(coltype(m))
       )
-      
-    })
-  
+    }
+    # Retain
+    return(m[retain_indices , ] %>%
+             matrix(nrow = length(retain_indices),
+                    dimnames = list(dimnames(m)[[1]][retain_indices],
+                                    dimnames(m)[[2]])) %>%
+             setrowtype(rowtype(m)) %>%
+             setcoltype(coltype(m))
+    )
+  }
+  unaryapply_byname(select.func, a = m, 
+                    retain_pattern = retain_pattern, 
+                    remove_pattern = remove_pattern, rowcoltypes = "none")
 }
 
 #' @title
@@ -981,6 +925,8 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' }
 #'
 #' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
+#' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
+#' retain nothing and remove nothing.
 #'
 #' @param m a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regexes that specifies which columns of \code{m} to retain.
@@ -1007,91 +953,57 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   if (is.list(m)) {
     retain_pattern <- make_list(retain_pattern, n = length(m))
     remove_pattern <- make_list(remove_pattern, n = length(m))
-    return(mcMap(select_cols_byname, m = m, retain_pattern = retain_pattern, remove_pattern = remove_pattern))
   }
-  retain_indices <- grep(pattern = retain_pattern, x = colnames(m))
-  remove_indices <- grep(pattern = remove_pattern, x = colnames(m))
-  if (length(retain_indices) == 0) {
-    # Nothing to be retained, so try removing columns
-    if (length(remove_indices) == 0) {
-      # Nothing to be retained and nothing to be removed.
-      # If the caller wanted to retain something,
-      # which is indicated by a non-default retain_pattern,
-      # don't retain anything.
-      # Do this first, because retain takes precedence.
-      if (retain_pattern != "$^") {
-        return(NULL)
+  select.func <- function(m, retain_pattern, remove_pattern){
+    retain_indices <- grep(pattern = retain_pattern, x = colnames(m))
+    remove_indices <- grep(pattern = remove_pattern, x = colnames(m))
+    if (length(retain_indices) == 0) {
+      # Nothing to be retained, so try removing columns
+      if (length(remove_indices) == 0) {
+        # Nothing to be retained and nothing to be removed.
+        # If the caller wanted to retain something,
+        # which is indicated by a non-default retain_pattern,
+        # don't retain anything.
+        # Do this first, because retain takes precedence.
+        if (retain_pattern != "$^") {
+          return(NULL)
+        }
+        # If the caller wanted to remove something,
+        # which is indicated by a non-default remove_pattern,
+        # don't remove anything. Simply return m.
+        if (remove_pattern != "$^") {
+          return(m)
+        }
+        # Neither retain_pattern nor remove_pattern is different from the default.
+        # This is almost surely an error.
+        stop("neither retain_pattern nor remove_pattern are differnt from default.")
       }
-      # If the caller wanted to remove something,
-      # which is indicated by a non-default remove_pattern,
-      # don't remove anything. Simply return m.
-      if (remove_pattern != "$^") {
-        return(m)
-      }
-      # Neither retain_pattern nor remove_pattern is different from the default.
-      # This is almost surely an error.
-      stop("neither retain_pattern nor remove_pattern are differnt from default.")
+      # Remove
+      return(m[ , -remove_indices] %>%
+               # When only 1 row is selected, the natural result will be a numeric vector
+               # We want to ensure that the return value is a matrix
+               # with correct rowtype and coltype.
+               # Thus, we need to take these additional steps.
+               matrix(ncol = ncol(m) - length(remove_indices),
+                      dimnames = list(dimnames(m)[[1]],
+                                      dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>%
+               setrowtype(rowtype(m)) %>%
+               setcoltype(coltype(m))
+      )
     }
-    # Remove
-    return(m[ , -remove_indices] %>%
-             # When only 1 row is selected, the natural result will be a numeric vector
-             # We want to ensure that the return value is a matrix
-             # with correct rowtype and coltype.
-             # Thus, we need to take these additional steps.
-             matrix(ncol = ncol(m) - length(remove_indices),
+    # Retain
+    return(m[ , retain_indices] %>%
+             matrix(ncol = length(retain_indices),
                     dimnames = list(dimnames(m)[[1]],
-                                    dimnames(m)[[2]][setdiff(1:ncol(m), remove_indices)])) %>%
+                                    dimnames(m)[[2]][retain_indices])) %>%
              setrowtype(rowtype(m)) %>%
              setcoltype(coltype(m))
     )
+    
   }
-  # Retain
-  return(m[ , retain_indices] %>%
-           matrix(ncol = length(retain_indices),
-                  dimnames = list(dimnames(m)[[1]],
-                                  dimnames(m)[[2]][retain_indices])) %>%
-           setrowtype(rowtype(m)) %>%
-           setcoltype(coltype(m))
-  )
-}
-
-#' Decides which columns to retain and remove.
-#'
-#' This is a helper function for \code{select_rows_byname} and \code{select_cols_byname}.
-#' Specify removal by a leading \code{-}.
-#' Names without a leading \code{-} will be retained.
-#' Any number of leading \code{-} will be ignored when deciding the names of columns to be removed.
-#'
-#' @param row_col_names names of rows or columns to be retained or removed.
-#'
-#' @return a list with two items: \code{retain_names} and \code{remove_names}.
-#'
-#' @importFrom rlang .data
-#' 
-#' @export
-#'
-#' @examples
-#' retain_remove("c1")
-#' retain_remove("-c1")
-#' # Retain takes precedence.
-#' retain_remove(c("c1", "-c1")) 
-#' # Multiple "-" ignored.
-#' names <- c("-c1", "-c4", "-----c3", "c2", "c4", "c4") 
-#' retain_remove(names)
-retain_remove <- function(row_col_names){
-  # Get the indices in col_names of columns to be removed and retained
-  remove_indices <- which(startsWith(row_col_names, "-"))
-  retain_indices <- setdiff(1:length(row_col_names), remove_indices)
-  # Get the names of columns to be removed and retained
-  # The next line removes any number of leading "-"
-  remove_names <- sub("^-*", "", row_col_names[remove_indices]) %>% unique
-  retain_names <- row_col_names[retain_indices] %>% unique
-  # Get the names of columns that are in both remove and retain
-  common_names <- intersect(remove_names, retain_names)
-  # Remove common names from those columns that are to be deleted.
-  # This step means that keeping takes precedence over removing.
-  remove_names <- setdiff(remove_names, common_names)
-  return(list(retain_names = retain_names, remove_names = remove_names))
+  unaryapply_byname(select.func, a = m, 
+                    retain_pattern = retain_pattern, 
+                    remove_pattern = remove_pattern, rowcoltypes = "none")
 }
 
 #' Row sums, sorted by name
@@ -1132,29 +1044,26 @@ retain_remove <- function(row_col_names){
 #' # Nonsensical
 #' \dontrun{rowsums_byname(NULL)}
 rowsums_byname <- function(m, colname = NA){
-  if (is.list(m)) {
-    if (is.null(colname)) {
-      colname <- NA
-    }
-    return(mcMap(rowsums_byname, m, colname))
-  }
   if (is.null(colname)) {
-    # Set the column name to the column type, since we added all items of coltype together.
-    colname <- coltype(m)
+    # Set to NA so that we can try setting to coltype in rowsum.func
+    colname <- NA_character_
   }
-  if (is.na(colname)) {
-    colname <- coltype(m)
+  rowsum.func <- function(m, colname){
+    if (is.na(colname)) {
+      colname <- coltype(m)
+    }
+    rowSums(m) %>%
+      # Preserve matrix structure (i.e., result will be a column vector of type matrix)
+      matrix(byrow = TRUE) %>%
+      # Preserve row names
+      setrownames_byname(rownames(m)) %>%
+      # But sort the result on names
+      sort_rows_cols %>%
+      setcolnames_byname(colname) %>%
+      setrowtype(rowtype(m)) %>%
+      setcoltype(coltype(m))
   }
-  rowSums(m) %>%
-    # Preserve matrix structure (i.e., result will be a column vector of type matrix)
-    matrix(byrow = TRUE) %>%
-    # Preserve row names
-    setrownames_byname(rownames(m)) %>%
-    # But sort the result on names
-    sort_rows_cols %>%
-    setcolnames_byname(colname) %>%
-    setrowtype(rowtype(m)) %>%
-    setcoltype(coltype(m))
+  unaryapply_byname(rowsum.func, a = m, colname = colname, rowcoltypes = "all")
 }
 
 #' Column sums, sorted by name
@@ -1197,29 +1106,26 @@ rowsums_byname <- function(m, colname = NA){
 #' )
 #' res$cs2
 colsums_byname <- function(m, rowname = NA){
-  if (is.list(m)) {
-    if (is.null(rowname)) {
-      rowname <- NA
+   if (is.null(rowname)) {
+    # Set to NA so that we can try setting to coltype in rowsum.func
+    rowname <- NA_character_
+  }
+  colsum.func <- function(m, rowname){
+    if (is.na(rowname)) {
+      rowname <- rowtype(m)
     }
-    return(mcMap(colsums_byname, m, rowname))
+    colSums(m) %>%
+      # Preserve matrix structure (i.e., result will be a row vector of type matrix)
+      matrix(nrow = 1) %>%
+      # Preserve column names
+      setcolnames_byname(colnames(m)) %>%
+      # But sort the result on names
+      sort_rows_cols %>%
+      setrownames_byname(rowname) %>%
+      setrowtype(rowtype(m)) %>%
+      setcoltype(coltype(m))
   }
-  if (is.null(rowname)) {
-    # Set the row name to the row type, since we added all items of rowtype together.
-    rowname <- rowtype(m)
-  }
-  if (is.na(rowname)) {
-    rowname <- rowtype(m)
-  }
-  colSums(m) %>%
-    # Preserve matrix structure (i.e., result will be a row vector of type matrix)
-    matrix(nrow = 1) %>%
-    # Preserve column names
-    setcolnames_byname(colnames(m)) %>%
-    # But sort the result on names
-    sort_rows_cols %>%
-    setrownames_byname(rowname) %>%
-    setrowtype(rowtype(m)) %>%
-    setcoltype(coltype(m))
+  unaryapply_byname(colsum.func, a = m, rowname = rowname, rowcoltypes = "all")
 }
 
 #' Sum of all elements in a matrix

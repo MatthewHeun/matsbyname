@@ -27,7 +27,8 @@ that are matched against row names.
 Patterns are compared against row names using extended regex.
 If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
-Note that the default patterns ("$^") retain nothing and remove nothing.
+Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
+retain nothing and remove nothing.
 
 Retaining rows takes precedence over removing rows, always.
 
