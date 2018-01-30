@@ -1401,34 +1401,34 @@ Iminus_byname <- function(m){
 #' DF2 <- data.frame(m2 = I(list()))
 #' DF2[[1, "m2"]] <- m2
 #' DF2[[2, "m2"]] <- m2
-#' DF2 %>% clean_byname(margin = c(1,2), clean_value = -20)
-clean_byname <- function(m, margin = c(1,2), clean_value = 0){
+#' DF2 %>% clean_byname(margin = c(1, 2), clean_value = -20)
+clean_byname <- function(m, margin = c(1, 2), clean_value = 0){
   if (1 %in% margin & 2 %in% margin) {
     # Clean both dimensions of m.
     cleaned1 <- clean_byname(m, margin = 1, clean_value = clean_value)
     cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
     return(cleaned2)
   }
-  if (is.list(m)) {
-    return(mcMap(clean_byname, m = m, margin = margin, clean_value = clean_value))
+  clean.func <- function(m, margin, clean_value){
+    if (margin == 1) {
+      # Want to clean rows. Code below assumes want to clean columns.
+      # Transpose and then transpose again before returning.
+      a <- transpose_byname(m)
+    } else if (margin == 2) {
+      a <- m
+    } else {
+      stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
+    }
+    keepcols <- apply(a, 2, function(x) {!all(x == clean_value)})
+    keepcolnames <- names(which(keepcols))
+    b <- select_cols_byname(m = a, retain_pattern = make_pattern(row_col_names = keepcolnames, pattern_type = "exact"))
+    if (margin == 1) {
+      return(transpose_byname(b))
+    } else if (margin == 2) {
+      return(b)
+    }
   }
-  if (margin == 1) {
-    # Want to clean rows. Code below assumes want to clean columns.
-    # Transpose and then transpose again before returning.
-    a <- transpose_byname(m)
-  } else if (margin == 2) {
-    a <- m
-  } else {
-    stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
-  }
-  keepcols <- apply(a, 2, function(x) {!all(x == clean_value)})
-  keepcolnames <- names(which(keepcols))
-  b <- select_cols_byname(m = a, retain_pattern = make_pattern(row_col_names = keepcolnames, pattern_type = "exact"))
-  if (margin == 1) {
-    return(transpose_byname(b))
-  } else if (margin == 2) {
-    return(b)
-  }
+  unaryapply_byname(clean.func, a = m, margin, clean_value, rowcoltypes = "all")
 }
 
 #' Gets row names
@@ -2029,7 +2029,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' @examples
 #' make_pattern(row_col_names = c("a", "b"), pattern_type = "exact")
 make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere")){
-  match.arg(pattern_type)
+  pattern.type <- match.arg(pattern_type)
   out <- row_col_names
   # Add leading caret if needed
   if (pattern_type %in% c("exact", "leading")) {
