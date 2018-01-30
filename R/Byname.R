@@ -1846,11 +1846,10 @@ list_of_rows_or_cols <- function(m, margin){
 #' iszero_byname(matrix(1e-10, nrow = 2))
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
 iszero_byname <- function(m, tol = 1e-6){
-  if (is.list(m)) {
-    return(mcMap(iszero_byname, m, tol))
+  zero.func <- function(m, tol){
+    all(abs(m) < tol)
   }
-  test <- abs(m) < tol
-  return(all(test))
+  unaryapply_byname(zero.func, a = m, tol = tol, rowcoltypes = "none")
 }
 
 #' Organize binary arguments

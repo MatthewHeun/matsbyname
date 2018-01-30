@@ -9,20 +9,27 @@ list_of_rows_or_cols(m, margin)
 \arguments{
 \item{m}{a matrix or list of matrices (say, from a column of a data frame)}
 
-\item{margin}{the dimension of the matrices to be extracted (1 = rows, 2 = columns)}
+\item{margin}{the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)}
 }
 \value{
 a named list of rows or columns extracted from \code{m}
 }
 \description{
-Extraction gives column vectors, regardless of margin.
+This function takes matrix \code{m} and converts it to a list of 
+single-row (if \code{margin == 1}) or single-column(if \code{margin == 2})
+matrices.
+Each item in the list is named for its row (if \code{margin == 1}) 
+or column (if \code{margin == 2}).
+}
+\details{
+Note that the result provides column vectors, regardless of the value of \code{margin}.
 }
 \examples{
 library(magrittr)
 m <- matrix(data = c(1:6), 
             nrow = 2, ncol = 3, 
             dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) \%>\%
-setrowtype(rowtype = "Products") \%>\% setcoltype(coltype = "Industries")
+  setrowtype(rowtype = "Products") \%>\% setcoltype(coltype = "Industries")
 list_of_rows_or_cols(m, margin = 1)
 list_of_rows_or_cols(m, margin = 2)
 }
