@@ -1568,30 +1568,29 @@ setrownames_byname <- function(m, rownames){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' setcolnames_byname(m, c("a", "b", "c"))
 setcolnames_byname <- function(m, colnames){
-  if (is.list(m) & is.list(colnames)) {
-    return(mcMap(setcolnames_byname, m, colnames))
-  }
-  if (is.list(m) & !is.matrix(m) & is.vector(colnames)) {
-    # colnames is a vector of names to be applied 
+  if (is.list(m) & !is.matrix(m) & is.vector(colnames) & !is.list(colnames)) {
+    # colnames is a vector of names (and not a list) to be applied 
     # to each matrix in m.
     # Thus, we should replicatate it to be same length as m
     colnames <- make_list(colnames, n = length(m), lenx = 1)
-    return(setcolnames_byname(m, colnames))
   }
-  if (is.null(dim(m))) {
-    # m has no dimensions. It is a constant.
-    # Turn it into a matrix and set the row names.
-    out <- matrix(m, nrow = 1, ncol = 1)
-  } else {
-    out <- m
+  colname.func <- function(m, colnames){
+    if (is.null(dim(m))) {
+      # m has no dimensions. It is a constant.
+      # Turn it into a matrix and set the row names.
+      out <- matrix(m, nrow = 1, ncol = 1)
+    } else {
+      out <- m
+    }
+    if (is.null(colnames) || is.na(colnames)) {
+      # replace with default row names
+      colnames(out) <- NULL
+    } else {
+      colnames(out) <- colnames
+    }
+    return(out)
   }
-  if (is.null(colnames) || is.na(colnames)) {
-    # replace with default row names
-    colnames(out) <- NULL
-  } else {
-    colnames(out) <- colnames
-  }
-  return(out)
+  unaryapply_byname(colname.func, a = m, colnames = colnames, rowcoltypes = "all")
 }
 
 #' Sets row type for a matrix or a list of matrices
