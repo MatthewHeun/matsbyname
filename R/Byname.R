@@ -1706,10 +1706,7 @@ setcoltype <- function(x, coltype){
 #' # This also works for lists
 #' rowtype(list(U,U))
 rowtype <- function(x){
-  if (is.list(x) & !is.matrix(x)) {
-    return(mcMap(rowtype, x))
-  }
-  return(attr(x, "rowtype"))
+  unaryapply_byname(attr, a = x, which = "rowtype", rowcoltypes = "none")
 }
 
 #' Column type
@@ -1731,10 +1728,7 @@ rowtype <- function(x){
 #' # This also works for lists
 #' coltype(list(U,U))
 coltype <- function(x){
-  if (is.list(x) & !is.matrix(x)) {
-    return(mcMap(coltype, x))
-  }
-  return(attr(x, "coltype"))
+  unaryapply_byname(attr, a = x, which = "coltype", rowcoltypes = "none")
 }
 
 #' Compare two matrices (byname)
