@@ -1763,22 +1763,6 @@ coltype <- function(x){
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
 equal_byname <- function(a, b) {
-  # if (is.list(a) & is.list(b)) {
-  #   return(mcMap(equal_byname, a, b))
-  # }
-  # # If names are present on the dimensions of the matrix, try to complete and sort the matrices.
-  # mats <- list(m1 = a, m2 = b)
-  # for (margin in 1:2) {
-  #   if (!is.null(names(a)[[margin]]) & !is.null(names(b)[[margin]])) {
-  #     # We have names for margin. Complete and sort on this margin.
-  #     mats <- complete_and_sort(mats$m1, mats$m2, margin = margin)
-  #   }
-  # }
-  # m1 <- mats$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
-  # m2 <- mats$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
-  # return(isTRUE(all.equal(m1, m2)))
-  # 
-  # 
   equal.func <- function(a, b){
     mats <- complete_and_sort(a, b)
     return(isTRUE(all.equal(mats$m1, mats$m2)))
@@ -1787,11 +1771,17 @@ equal_byname <- function(a, b) {
 }
 
 #' Named list of rows or columns of matrices
+#' 
+#' This function takes matrix \code{m} and converts it to a list of 
+#' single-row (if \code{margin == 1}) or single-column(if \code{margin == 2})
+#' matrices.
+#' Each item in the list is named for its row (if \code{margin == 1}) 
+#' or column (if \code{margin == 2}).
 #'
-#' Extraction gives column vectors, regardless of margin.
+#' Note that the result provides column vectors, regardless of the value of \code{margin}.
 #'
 #' @param m a matrix or list of matrices (say, from a column of a data frame)
-#' @param margin the dimension of the matrices to be extracted (1 = rows, 2 = columns)
+#' @param margin the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)
 #'
 #' @return a named list of rows or columns extracted from \code{m}
 #' @export
@@ -1802,29 +1792,32 @@ equal_byname <- function(a, b) {
 #' m <- matrix(data = c(1:6), 
 #'             nrow = 2, ncol = 3, 
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>%
-#' setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
+#'   setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
 list_of_rows_or_cols <- function(m, margin){
-  stopifnot(length(margin) == 1)
-  stopifnot(margin %in% c(1,2))
   if (is.list(m)) {
-    return(mcMap(list_of_rows_or_cols, m, margin))
+    margin <- make_list(margin, n = length(m), lenx = 1)
   }
-  stopifnot("matrix" %in% class(m))
-  # Strategy: perform all operations with margin to be split into a list in columns.
-  if (margin == 1) {
-    # Caller requested rows to be split into list items.
-    # Transpose so operations will be easier.
-    out <- transpose_byname(m)
-  } else {
-    out <- m
-  }
-  lapply(seq_len(ncol(out)), function(i){
+  lrc.func <- function(m, margin){
+    stopifnot(length(margin) == 1)
+    stopifnot(margin %in% c(1,2))
+    stopifnot("matrix" %in% class(m))
+    # Strategy: perform all operations with margin to be split into a list in columns.
+    if (margin == 1) {
+      # Caller requested rows to be split into list items.
+      # Transpose so operations will be easier.
+      out <- transpose_byname(m)
+    } else {
+      out <- m
+    }
+    lapply(seq_len(ncol(out)), function(i){
       matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>%
-      setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
+        setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
     }) %>%
-    set_names(colnames(out))
+      set_names(colnames(out))
+  }
+  unaryapply_byname(lrc.func, a = m, margin = margin, rowcoltypes = "none")
 }
 
 #' Test whether this is the zero matrix
