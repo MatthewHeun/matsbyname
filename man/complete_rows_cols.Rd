@@ -56,7 +56,6 @@ complete_rows_cols(m1, m2, margin = 1) # No changes because r2 and r3 already pr
 complete_rows_cols(m1, m2, margin = 2) # Adds empty columns c3 and c4
 complete_rows_cols(m1, t(m2), margin = 1) # Adds empty rows c2, c3, c4
 complete_rows_cols(m1, m2, fill = 100) # Adds columns c3 and c4 with 100's
-complete_rows_cols(data.frame(m1), data.frame(m2)) # Also works with data frames
 complete_rows_cols(m1, m1) # Nothing added, because everything already present
 complete_rows_cols(m1, t(m1)) # Adds empty c1, c2 rows; Adds empty r1, r2, r3 columns
 # Same as previous. With missing matrix, complete relative to transpose of x.

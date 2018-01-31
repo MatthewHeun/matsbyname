@@ -78,6 +78,7 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #' @param FUN a binary function to be applied "byname" to \code{a} and \code{b}.
 #' @param a the first argument to \code{FUN}.
 #' @param b the second argument to \code{FUN}.
+#' @param ... additional named arguments passed to \code{FUN}.
 #' @param match_type one of \code{"all"} or \code{"matmult"}.
 #'        When both \code{a} and \code{b} are matrices,
 #'        "\code{all}" (the default) indicates that

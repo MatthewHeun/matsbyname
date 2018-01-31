@@ -1,5 +1,18 @@
 # News for `byname`
 
+## byname 0.1.4 (2018-01-31)
+
+* New functions `unaryapply_byname` and `binaryapply_byname`.
+  These functions have a `FUN` argument that allows an arbitrary function to be 
+  applied `_byname` to matrices or data frames containing matrices.
+   + `unaryapply_byname` is for unary functions such as `rowsums_byname`.
+   + `binaryapply_byname` is for binary functinos such as `sum_byname`.
+* `unaryapply_byname` and `binaryapply_byname` are used by all `_byname` functions internally.
+* Now conducting 412 tests across the entire package. 
+  All tests are passing, indicating that the `unaryapply` and `binaryapply` functions are 
+  very solid.
+
+
 ## byname 0.1.3 (2018-01-27)
 
 * Fixed a vector vs. list bug that caused failure of binary `_byname` functions when one argument

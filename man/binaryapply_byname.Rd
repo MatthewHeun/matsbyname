@@ -14,6 +14,8 @@ binaryapply_byname(FUN, a, b, ..., match_type = c("all", "matmult"),
 
 \item{b}{the second argument to \code{FUN}.}
 
+\item{...}{additional named arguments passed to \code{FUN}.}
+
 \item{match_type}{one of \code{"all"} or \code{"matmult"}.
 When both \code{a} and \code{b} are matrices,
 "\code{all}" (the default) indicates that
