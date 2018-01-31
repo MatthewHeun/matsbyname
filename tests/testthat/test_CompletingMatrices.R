@@ -213,10 +213,9 @@ test_that("complete_rows_cols works as expected", {
                         3,6,100,100),
                       nrow = 3, byrow = TRUE, 
                       dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4"))))
-  # Also works with data frames
-  expect_equal(complete_rows_cols(data.frame(m1), data.frame(m2)), 
-               data.frame(c1 = c(1,2,3), c2 = c(4,5,6), c3 = c(0,0,0), c4 = c(0,0,0)) %>% 
-                 set_rownames(c("r1", "r2", "r3")))
+  # Doesn't work with data frames.  Need a matrix.
+  expect_error(complete_rows_cols(data.frame(m1), data.frame(m2)), 
+               "x cannot be a data frame in complete_rows_cols.")
   # Nothing added, because everything already present
   expect_equal(complete_rows_cols(m1, m1), m1)
   # Adds empty rows c1, c2 ; Adds empty columns r1, r2, r3 

@@ -79,16 +79,20 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #' @param a the first argument to \code{FUN}.
 #' @param b the second argument to \code{FUN}.
 #' @param match_type one of \code{"all"} or \code{"matmult"}.
-#' When both \code{a} and \code{b} are matrices,
-#' "\code{all}" (the default) indicates that
-#' rowtypes of \code{a} must match rowtypes of \code{b} and
-#' coltypes of \code{a} must match coltypes of \code{b}.
-#' If "\code{matmult}",
-#' coltypes of \code{a} must match rowtypes of \code{b}.
+#'        When both \code{a} and \code{b} are matrices,
+#'        "\code{all}" (the default) indicates that
+#'        rowtypes of \code{a} must match rowtypes of \code{b} and
+#'        coltypes of \code{a} must match coltypes of \code{b}.
+#'        If "\code{matmult}",
+#'        coltypes of \code{a} must match rowtypes of \code{b}.
 #' @param rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
 #'        to the output. 
 #'        The default (\code{TRUE}) means that row and column types are applied to the output.
 #'        If \code{FALSE}, row and column types are \emph{not} applied to the output.
+#' @param .organize a boolean that tells whether or not to automatically 
+#'        complete \code{a} and \code{b} relative to each other and
+#'        sort the rows and columns of the completed matrices.
+#'        Normally, this should be \code{TRUE} (the default).
 #'
 #' @return the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
 #' 
@@ -104,14 +108,17 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
-binaryapply_byname <- function(FUN, a, b, ..., match_type = c("all", "matmult"), rowcoltypes = TRUE){
+binaryapply_byname <- function(FUN, a, b, ..., 
+                               match_type = c("all", "matmult"), rowcoltypes = TRUE, .organize = TRUE){
   match_type <- match.arg(match_type)
-  args <- organize_args(a, b, fill = 0, match_type = match_type)
-  a <- args$a
-  b <- args$b
+  if (.organize) {
+    args <- organize_args(a, b, fill = 0, match_type = match_type)
+    a <- args$a
+    b <- args$b
+  }
   if (is.list(a) & is.list(b)) {
     return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), 
-               a, b, ..., match_type = match_type, rowcoltypes = rowcoltypes))
+               a, b, ..., match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize))
   }
   if (length(list(...)) == 0) {
     out <- FUN(a, b)

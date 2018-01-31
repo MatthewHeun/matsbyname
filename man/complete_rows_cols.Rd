@@ -7,12 +7,12 @@
 complete_rows_cols(x = NULL, mat = NULL, fill = 0, margin = c(1, 2))
 }
 \arguments{
-\item{x}{a matrix or data frame to be completed}
+\item{x}{a matrix or list of matrices to be completed.}
 
-\item{mat}{a \code{matrix} can be supplied from which \code{dimnames} will be extracted
+\item{mat}{a \code{matrix} from which \code{dimnames} will be extracted
 for the purposes of completing \code{x} with respect to \code{mat}.}
 
-\item{fill}{rows and columns added to \code{x} will contain \code{fill}. (a double)}
+\item{fill}{rows and columns added to \code{x} will contain the value \code{fill}. (a double)}
 
 \item{margin}{specifies the subscript(s) in \code{x} over which completion will occur
 \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}

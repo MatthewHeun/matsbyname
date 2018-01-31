@@ -5,7 +5,7 @@
 \title{Apply a binary function byname}
 \usage{
 binaryapply_byname(FUN, a, b, ..., match_type = c("all", "matmult"),
-  rowcoltypes = TRUE)
+  rowcoltypes = TRUE, .organize = TRUE)
 }
 \arguments{
 \item{FUN}{a binary function to be applied "byname" to \code{a} and \code{b}.}
@@ -26,6 +26,11 @@ coltypes of \code{a} must match rowtypes of \code{b}.}
 to the output. 
 The default (\code{TRUE}) means that row and column types are applied to the output.
 If \code{FALSE}, row and column types are \emph{not} applied to the output.}
+
+\item{.organize}{a boolean that tells whether or not to automatically 
+complete \code{a} and \code{b} relative to each other and
+sort the rows and columns of the completed matrices.
+Normally, this should be \code{TRUE} (the default).}
 }
 \value{
 the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
