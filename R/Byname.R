@@ -36,11 +36,6 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
   if (is.list(a)) {
     return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, ..., rowcoltypes = rowcoltypes))
   }
-  # if (length(list(...)) == 0) {
-  #   out <- FUN(sort_rows_cols(a))
-  # } else {
-  #   out <- FUN(sort_rows_cols(a), ...)
-  # }
   if (length(list(...)) == 0) {
     out <- FUN(a)
   } else {
