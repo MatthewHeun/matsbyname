@@ -563,16 +563,18 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
 #' @return \code{0} if \code{x1 = 0} or \code{x2 = 0}; \code{x1} if \code{x1 == x2}; and
 #'         \code{(x1 - x2) / log(x1/x2, base = base)} 
 #'         for all other values of \code{x1} and \code{x2}
+#'         
+#' @export
 #'
 #' @examples
-#' byname:::logmean(0, 0) # 0
-#' byname:::logmean(0, 1) # 0
-#' byname:::logmean(1, 0) # 0
-#' byname:::logmean(1, 1) # 1
-#' byname:::logmean(2, 1)
-#' byname:::logmean(1, 2) # commutative
-#' byname:::logmean(1, 10) # base = exp(1), the default
-#' byname:::logmean(1, 10, base = 10)
+#' logmean(0, 0) # 0
+#' logmean(0, 1) # 0
+#' logmean(1, 0) # 0
+#' logmean(1, 1) # 1
+#' logmean(2, 1)
+#' logmean(1, 2) # commutative
+#' logmean(1, 10) # base = exp(1), the default
+#' logmean(1, 10, base = 10)
 logmean <- function(x1, x2, base = exp(1)){
   # Take care of pathological cases.
   if (x1 == 0) {
