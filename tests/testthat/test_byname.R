@@ -1504,22 +1504,28 @@ test_that("equal_byname works as expected", {
 context("Utilities")
 ###########################################################
 
-test_that("same_structure works as expected", {
+test_that("same_structure_byname works as expected", {
+  expect_true(same_structure_byname(2, 2))
+  expect_false(same_structure_byname(2, 2 %>% setrowtype("row")))
+  expect_false(same_structure_byname(2 %>% setrowtype("row"), 2))
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
   V <- matrix(5:8, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_true(same_structure(U, U))
-  expect_true(same_structure(U, V))
-  expect_true(same_structure(V, U))
-  expect_false(same_structure(U, U %>% setrowtype("row")))
-  expect_false(same_structure(U %>% setcoltype("col"), U))
+  expect_true(same_structure_byname(U, U))
+  expect_true(same_structure_byname(U, V))
+  expect_true(same_structure_byname(V, U))
+  expect_false(same_structure_byname(U, U %>% setrowtype("row")))
+  expect_false(same_structure_byname(U %>% setcoltype("col"), U))
+  expect_false(same_structure_byname(U, U %>% setrownames_byname(c("a", "b"))))
+  expect_false(same_structure_byname(U, U %>% setcolnames_byname(c("a", "b"))))
+  expect_true(same_structure_byname(U, U))
   # Also works for lists
-  expect_true(all(same_structure(list(U, U)) %>% as.logical()))
-  expect_true(all(same_structure(list(U, V)) %>% as.logical()))
-  expect_true(all(same_structure(list(V, U)) %>% as.logical()))
+  expect_true(all(same_structure_byname(list(U, U), list(U, U)) %>% as.logical()))
+  expect_true(all(same_structure_byname(list(U, U), list(V, V)) %>% as.logical()))
+  expect_true(all(same_structure_byname(list(V, V), list(U, U)) %>% as.logical()))
 })
 
 test_that("make_pattern works as expected", {
