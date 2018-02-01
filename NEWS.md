@@ -1,5 +1,10 @@
 # News for `byname`
 
+## byname 0.1.5 (2018-02-01)
+
+* New functions `elementlog_byname` and `elementexp_byname`.
+
+
 ## byname 0.1.4 (2018-01-31)
 
 * New functions `unaryapply_byname` and `binaryapply_byname`.
