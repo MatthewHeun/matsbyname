@@ -587,6 +587,52 @@ logmean <- function(x1, x2, base = exp(1)){
   (x1 - x2) / log(x1/x2, base = base)
 }
 
+
+#' Logarithm of matrix elements
+#' 
+#' Specify the base of the log with \code{base} argument.
+#'
+#' @param M a matrix of list of matrices 
+#' @param base the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)
+#'
+#' @return M with each element replaced by its base \code{base} logarithm
+#' .
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' elementlog_byname(exp(1))
+#' m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' elementlog_byname(m)
+#' elementlog_byname(m, base = 10)
+elementlog_byname <- function(M, base = exp(1)){
+  unaryapply_byname(log, a = M, base = base)
+}
+
+
+#' Exponential of matrix elements
+#' 
+#' Gives the exponential of all elements of a matrix or list of matrices
+#'
+#' @param M a matrix of list of matrices 
+#'
+#' @return M with each element replaced by its exponential
+#' .
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' elementexp_byname(1)
+#' m <- matrix(c(log(10),log(1),log(1),log(100)), 
+#'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' elementexp_byname(m)
+elementexp_byname <- function(M){
+  unaryapply_byname(exp, a = M)
+}
+
+
 #' Invert a matrix
 #'
 #' This function transposes row and column names as well as row and column types.

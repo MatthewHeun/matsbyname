@@ -417,6 +417,45 @@ test_that("detailed example of elementquotient_byname works as expected", {
 
 
 ###########################################################
+context("Element log and exp")
+###########################################################
+
+test_that("elementlog_byname works as expected", {
+  expect_equal(elementlog_byname(exp(1)), 1)
+  m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+     setrowtype("Industry") %>% setcoltype("Product")
+
+  expect_equal(elementlog_byname(m), 
+               matrix(c(2.302585, 0, 
+                        0, 4.60517), byrow = TRUE, nrow = 2, ncol = 2,
+                      dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+                 setrowtype("Industry") %>% setcoltype("Product"), 
+               tolerance = 1e-7)
+  expected_log10 <- matrix(c(1, 0, 
+                             0, 2), byrow = TRUE, nrow = 2, ncol = 2,
+                           dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+    setrowtype("Industry") %>% setcoltype("Product")
+  expect_equal(elementlog_byname(m, base = 10), expected_log10)
+  # Also works with lists
+  expect_equal(elementlog_byname(list(m, m), base = 10), list(expected_log10, expected_log10))
+})
+
+test_that("elementexp_byname works as expected", {
+  expect_equal(elementexp_byname(1), exp(1))
+  m <- matrix(c(log(10),log(1),log(1),log(100)), 
+              nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  expected <- matrix(c(10, 1,
+                       1, 100), byrow = TRUE, nrow = 2, ncol = 2, 
+                       dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+    setrowtype("Industry") %>% setcoltype("Product")
+  expect_equal(elementexp_byname(m), expected)
+  # Also works for lists.
+  expect_equal(elementexp_byname(list(m, m)), list(expected, expected))
+})
+
+
+###########################################################
 context("Means")
 ###########################################################
 
