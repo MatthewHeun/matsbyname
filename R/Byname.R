@@ -596,7 +596,7 @@ logmean <- function(x1, x2, base = exp(1)){
 #' @param base the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)
 #'
 #' @return M with each element replaced by its base \code{base} logarithm
-#' .
+#' 
 #' @export
 #'
 #' @examples
@@ -618,7 +618,7 @@ elementlog_byname <- function(M, base = exp(1)){
 #' @param M a matrix of list of matrices 
 #'
 #' @return M with each element replaced by its exponential
-#' .
+#' 
 #' @export
 #'
 #' @examples
