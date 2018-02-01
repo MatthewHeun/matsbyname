@@ -74,13 +74,15 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #' @param a the first argument to \code{FUN}.
 #' @param b the second argument to \code{FUN}.
 #' @param ... additional named arguments passed to \code{FUN}.
-#' @param match_type one of \code{"all"} or \code{"matmult"}.
+#' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
 #'        When both \code{a} and \code{b} are matrices,
 #'        "\code{all}" (the default) indicates that
 #'        rowtypes of \code{a} must match rowtypes of \code{b} and
 #'        coltypes of \code{a} must match coltypes of \code{b}.
 #'        If "\code{matmult}",
 #'        coltypes of \code{a} must match rowtypes of \code{b}.
+#'        If "\code{none}",
+#'        neither coltypes nor rowtypes are checked. 
 #' @param rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
 #'        to the output. 
 #'        The default (\code{TRUE}) means that row and column types are applied to the output.
@@ -105,7 +107,7 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
 binaryapply_byname <- function(FUN, a, b, ..., 
-                               match_type = c("all", "matmult"), rowcoltypes = TRUE, .organize = TRUE){
+                               match_type = c("all", "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE){
   match_type <- match.arg(match_type)
   if (.organize) {
     args <- organize_args(a, b, fill = 0, match_type = match_type)
@@ -121,6 +123,7 @@ binaryapply_byname <- function(FUN, a, b, ...,
   } else {
     out <- FUN(a, b, ...)
   }
+  # if (match_type %in% c("all", "matmult")) {
   if (rowcoltypes) {
     # Either match_type is 
     #   "all" 
@@ -134,6 +137,53 @@ binaryapply_byname <- function(FUN, a, b, ...,
   }
   return(out)
 }
+
+
+#' Test whether two matrices or lists of matrices have same structure
+#' 
+#' Two matrices are said to have the same structure 
+#' if row and column types are identical 
+#' and 
+#' if row and column names are identical.
+#'
+#' @param X1 the first matrix to be tested
+#' @param X2 the second matrix to be tested
+#'
+#' @return \code{TRUE} if \code{X1} and \code{X2} have the same structure, \code{FALSE} otherwise.
+#' 
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' same_structure(2, 2)
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' same_structure(U, U)
+#' same_structure(U, U %>% setrowtype("row"))
+#' same_structure(U %>% setcoltype("col"), U)
+#' # Also works with lists
+#' same_structure(list(U, U))
+same_structure <- function(X1, X2){
+  samestruct.func <- function(X1, X2){
+    if (!all.equal(rownames(X1), rownames(X2))) {
+      return(FALSE)
+    }
+    if (!all.equal(colnames(X1), colnames(X2))) {
+      return(FALSE)
+    }
+    if (!rowtype(X1) == rowtype(X2)) {
+      return(FALSE)
+    }
+    if (!coltype(X1) == coltype(X2)) {
+      return(FALSE)
+    }
+    return(TRUE)
+  }
+  binaryapply_byname(samestruct.func, X1, X2, match_type = "none", rowcoltypes = FALSE)
+}
+
 
 #' Name-wise addition of matrices.
 #'
@@ -1089,7 +1139,7 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' If \code{colname} is \code{NULL} or \code{NA} (the default),
 #' the column name is set to the column type as given by \code{coltype(m)}.
 #'
-#' @param m a matrix or data frame from which row sums are desired.
+#' @param m a matrix or list of matrices from which row sums are desired.
 #' @param colname name of the output column containing row sums
 #'
 #' @return a column vector of type \code{matrix} containing the row sums of \code{m}
@@ -1149,7 +1199,7 @@ rowsums_byname <- function(m, colname = NA){
 #' If \code{rowname} is \code{NULL} or \code{NA} (the default),
 #' the row name is set to the row type as given by \code{rowtype(m)}.
 #'
-#' @param m a matrix or data frame from which column sums are desired.
+#' @param m a matrix or list of matrices from which column sums are desired.
 #' @param rowname name of the output row containing column sums.
 #'
 #' @return a row vector of type \code{matrix} containing the column sums of \code{m}.
@@ -1995,7 +2045,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 
   # Assume that both a and b are now matrices.
   # Need to check whether matchtype is a known type.
-  if (!match_type %in% c("all", "matmult"))  {
+  if (!match_type %in% c("all", "matmult", "none"))  {
     stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
   
@@ -2030,14 +2080,18 @@ organize_args <- function(a, b, match_type = "all", fill){
     matrices <- complete_and_sort(a, b)
     outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     outb <- matrices$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
-  }
-  if (match_type == "matmult") {
+  } else if (match_type == "matmult") {
     # When the match_type is "matmult", we need to ensure that the columns of a match the rows of b.
     # To do so, we transpose b prior to completing and sorting, and we complete and sort on columns.
     matrices <- complete_and_sort(a, transpose_byname(b), margin = 2)
     outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     # Before sending back, we need to re-transpose b.
     outb <- matrices$m2 %>% transpose_byname %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+  } else if (match_type == "none") {
+    outa <- a
+    outb <- b
+  } else {
+    stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
   # Reset row and column types.
   return(list(a = outa, b = outb))

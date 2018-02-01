@@ -1491,6 +1491,7 @@ test_that("equal_byname works as expected", {
   dimnames(b) <- list(c("p1", "p2"), c("i1", "i2"))
   # FALSE, because row and column names are not equal
   expect_false(equal_byname(a, b)) 
+  # Put back the way it was, and it should work.
   dimnames(b) <- dimnames(a)
   expect_true(equal_byname(a, b))
   
@@ -1502,6 +1503,24 @@ test_that("equal_byname works as expected", {
 ###########################################################
 context("Utilities")
 ###########################################################
+
+test_that("same_structure works as expected", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  V <- matrix(5:8, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_true(same_structure(U, U))
+  expect_true(same_structure(U, V))
+  expect_true(same_structure(V, U))
+  expect_false(same_structure(U, U %>% setrowtype("row")))
+  expect_false(same_structure(U %>% setcoltype("col"), U))
+  # Also works for lists
+  expect_true(all(same_structure(list(U, U)) %>% as.logical()))
+  expect_true(all(same_structure(list(U, V)) %>% as.logical()))
+  expect_true(all(same_structure(list(V, U)) %>% as.logical()))
+})
 
 test_that("make_pattern works as expected", {
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "exact"), "^a$|^b$")

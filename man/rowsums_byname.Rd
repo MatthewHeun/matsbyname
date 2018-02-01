@@ -7,7 +7,7 @@
 rowsums_byname(m, colname = NA)
 }
 \arguments{
-\item{m}{a matrix or data frame from which row sums are desired.}
+\item{m}{a matrix or list of matrices from which row sums are desired.}
 
 \item{colname}{name of the output column containing row sums}
 }
