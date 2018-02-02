@@ -464,17 +464,17 @@ equal_byname <- function(a, b) {
 #'
 #' @examples
 #' library(magrittr)
-#' same_structure_byname(2, 2)
+#' samestructure_byname(2, 2)
 #' productnames <- c("p1", "p2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
 #'   setrowtype("Products") %>% setcoltype("Industries")
-#' same_structure_byname(U, U)
-#' same_structure_byname(U, U %>% setrowtype("row"))
-#' same_structure_byname(U %>% setcoltype("col"), U)
+#' samestructure_byname(U, U)
+#' samestructure_byname(U, U %>% setrowtype("row"))
+#' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
-#' same_structure_byname(list(U, U))
-same_structure_byname <- function(X1, X2){
+#' samestructure_byname(list(U, U))
+samestructure_byname <- function(X1, X2){
   samestruct.func <- function(X1, X2){
     if (!isTRUE(all.equal(rownames(X1), rownames(X2)))) {
       return(FALSE)
