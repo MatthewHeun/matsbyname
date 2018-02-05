@@ -911,8 +911,23 @@ context("Cumulative sum")
 ###########################################################
 
 test_that("cumulativesum_byname works as expected", {
+  expect_null(cumulativesum_byname(NULL))
+  expect_true(is.na(cumulativesum_byname(NA)))
   expect_equal(cumulativesum_byname(2), 2)
-  expect_equal(cumulativesum_byname(list(1, 2, 3, 4, 5)), list(1, 3, 6, 10, 15))
+  
+  lst <- list(1, 2, 3, 4, 5)
+  lst_expected <- list(1, 3, 6, 10, 15)
+  expect_equal(cumulativesum_byname(lst), lst_expected)
+  # Try in a data frame.
+  DF <- data.frame(l1 = I(lst), l2 = I(lst))
+  CS <- DF %>% 
+    mutate(
+      cs1 = cumulativesum_byname(l1), 
+      cs2 = cumulativesum_byname(l2)
+    )
+  expect_equal(CS$cs1, lst_expected)
+  expect_equal(CS$cs2, lst_expected)
+  
 })
 
 
