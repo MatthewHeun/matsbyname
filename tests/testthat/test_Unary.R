@@ -906,3 +906,13 @@ test_that("setcolnames_byname works as expected", {
 })
 
 
+###########################################################
+context("Cumulative sum")
+###########################################################
+
+test_that("cumulativesum_byname works as expected", {
+  expect_equal(cumulativesum_byname(2), 2)
+  expect_equal(cumulativesum_byname(list(1, 2, 3, 4, 5)), list(1, 3, 6, 10, 15))
+})
+
+
