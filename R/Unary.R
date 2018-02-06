@@ -656,11 +656,12 @@ Iminus_byname <- function(m){
 #'
 #' @return a single number, list of numbers, a single matrix, or a list of matrices,
 #'         depending on the nature of \code{m}
+#'         
 #' @export
 #'
 #' @examples
 #' 
-cumulativesum_byname <- function(m){
+cumsum_byname <- function(m){
   # Check for pathological cases.
   if (length(m) == 0) {
     # Nothing to be done here.

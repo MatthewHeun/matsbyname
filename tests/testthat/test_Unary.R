@@ -910,29 +910,37 @@ test_that("setcolnames_byname works as expected", {
 context("Cumulative sum")
 ###########################################################
 
-test_that("cumulativesum_byname works as expected", {
-  expect_null(cumulativesum_byname(NULL))
-  expect_true(is.na(cumulativesum_byname(NA)))
-  expect_equal(cumulativesum_byname(2), 2)
+test_that("cumsum_byname works as expected", {
+  expect_null(cumsum_byname(NULL))
+  expect_true(is.na(cumsum_byname(NA)))
+  expect_equal(cumsum_byname(2), 2)
   
   lst <- list(1, 2, 3, 4, 5)
   lst_expected <- list(1, 3, 6, 10, 15)
-  expect_equal(cumulativesum_byname(lst), lst_expected)
+  expect_equal(cumsum_byname(lst), lst_expected)
   # Try in a data frame.
   DF <- data.frame(l1 = I(lst), l2 = I(lst))
   CS <- DF %>% 
     mutate(
-      cs1 = cumulativesum_byname(l1), 
-      cs2 = cumulativesum_byname(l2)
+      cs1 = cumsum_byname(l1), 
+      cs2 = cumsum_byname(l2)
     )
   expect_equal(CS$cs1, lst_expected)
   expect_equal(CS$cs2, lst_expected)
   
   # Try with matrices
   rowmat <- matrix(c(1, 2, 3), nrow = 1)
-  expect_equal(cumulativesum_byname(rowmat), rowmat)
+  expect_equal(cumsum_byname(rowmat), rowmat)
   # Test in a list
-  expect_equal(cumulativesum_byname(list(rowmat, rowmat, rowmat)), list(rowmat, 2*rowmat, 3*rowmat))
+  expect_equal(cumsum_byname(list(rowmat, rowmat, rowmat)), list(rowmat, 2*rowmat, 3*rowmat))
+  # Test in a data frame
+  DF2 <- data.frame(m = I(list(rowmat, rowmat, rowmat))) %>% 
+    mutate(
+      m2 = cumsum_byname(m)
+    )
+  expect_equal(DF2$m2, list(rowmat, 2*rowmat, 3*rowmat))
+  
+  
 
 })
 
