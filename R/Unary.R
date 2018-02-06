@@ -647,10 +647,10 @@ Iminus_byname <- function(m){
 #' If \code{m} is a single matrix, \code{m} is returned.
 #' If \code{m} is a list of matrices, a list representing the cumulative sum
 #' of the matrices is returned. 
-#' In this case, each entry in the list is sum "by name," such that row and column names 
-#' of the matrices are respected.
+#' In this case, each entry in the returned list is sum "by name," 
+#' such that row and column names of the matrices are respected.
 #' 
-#' This function respects groups.
+#' This function respects groups if \code{m} is a variable in a data frame.
 #'
 #' @param m a number, list of numbers, matrix or list of matrices for which cumulative sum is desired
 #'
@@ -692,8 +692,62 @@ cumsum_byname <- function(m){
     return(as.list(cumsum(m)))
   }
   # We don't know how to handle anything else.
-  stop("Unknown class(m) in cumulativesum_byname:", class(m))
-
+  stop("Unknown condition for m in cumulativesum_byname.")
 }
 
+#' Cumulative product that respects row and column names
+#'
+#' Provides cumulative products along a list or column of a data frame.
+#' If \code{m} is a single number, \code{m} is returned.
+#' If \code{m} is a list of numbers, a list representing the cumulative product of the numbers is returned.
+#' If \code{m} is a single matrix, \code{m} is returned.
+#' If \code{m} is a list of matrices, a list representing the cumulative product
+#' of the matrices is returned. 
+#' In this case, each entry in the returned list is product "by name," 
+#' such that row and column names of the matrices are respected.
+#' 
+#' This function respects groups if \code{m} is a variable in a data frame.
+#'
+#' @param m a number, list of numbers, matrix or list of matrices for which cumulative sum is desired
+#'
+#' @return a single number, list of numbers, a single matrix, or a list of matrices,
+#'         depending on the nature of \code{m}
+#'         
+#' @export
+#'
+#' @examples
+#' 
+# cumprod_byname <- function(m){
+#   # Check for pathological cases.
+#   if (length(m) == 0) {
+#     # Nothing to be done here.
+#     # Note that length(NULL) == 0, so this tests for m == NULL, too.
+#     return(NULL)
+#   }
+#   if (is.matrix(m)) {
+#     # We have a single matrix. Just return it.
+#     return(m)
+#   }
+#   if (length(m) == 1) {
+#     # Note that length(NA) == 1, so this test captures cases where m == NA.
+#     # Nothing to be done.
+#     return(m)
+#   }
+#   # length(m) > 1
+#   if (all(as.logical(lapply(m, is.matrix)))) {
+#     # Assume we have a list of matrices
+#     out <- list()
+#     out[[1]] <- m[[1]]
+#     for (i in 2:length(m)) {
+#       out[[i]] <- product_byname(m[[i]], out[[i - 1]])
+#     }
+#     return(out)
+#   }
+#   if (all(as.logical(lapply(m, is.numeric)))) {
+#     # This is an easy case!
+#     return(as.list(cumprod(m)))
+#   }
+#   # We don't know how to handle anything else.
+#   stop("Unknown condition for m in cumulativeprod_byname.")
+# }
 

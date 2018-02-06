@@ -20,11 +20,11 @@ If \code{m} is a list of numbers, a list representing the cumulative sum of the 
 If \code{m} is a single matrix, \code{m} is returned.
 If \code{m} is a list of matrices, a list representing the cumulative sum
 of the matrices is returned. 
-In this case, each entry in the list is sum "by name," such that row and column names 
-of the matrices are respected.
+In this case, each entry in the returned list is sum "by name," 
+such that row and column names of the matrices are respected.
 }
 \details{
-This function respects groups.
+This function respects groups if \code{m} is a variable in a data frame.
 }
 \examples{
 

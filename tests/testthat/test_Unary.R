@@ -950,8 +950,23 @@ test_that("cumsum_byname works as expected", {
   expected <- list(m1, sum_byname(m1, m2), sum_byname(m1, m2) %>% sum_byname(m3))
   expect_equal(cumsum_byname(mlist), expected)
   
-  
-
+  # Ensure that groups are respected in the context of mutate.
+  DF3 <- data.frame(grp = c("A", "A", "B"), m = I(mlist)) %>% 
+    group_by(grp) %>% 
+    mutate(
+      m2 = cumsum_byname(m)
+    )
+  expect_equal(DF3$m2, list(m1, sum_byname(m1, m2), m3))
 })
 
+
+###########################################################
+context("Cumulative product")
+###########################################################
+
+test_that("cumprod_byname works as expected", {
+  expect_null(cumprod_byname(NULL))
+  expect_true(is.na(cumprod_byname(NA)))
+  expect_equal(cumprod_byname(2), 2)
+})
 
