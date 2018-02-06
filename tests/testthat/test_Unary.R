@@ -939,6 +939,16 @@ test_that("cumsum_byname works as expected", {
       m2 = cumsum_byname(m)
     )
   expect_equal(DF2$m2, list(rowmat, 2*rowmat, 3*rowmat))
+  # Test with a matrix that will take advantage of the "byname" aspect of sum_byname
+  m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  m2 <- matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  mlist <- list(m1, m2, m3)
+  expected <- list(m1, sum_byname(m1, m2), sum_byname(m1, m2) %>% sum_byname(m3))
+  expect_equal(cumsum_byname(mlist), expected)
   
   
 
