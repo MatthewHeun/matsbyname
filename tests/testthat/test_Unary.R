@@ -964,9 +964,9 @@ test_that("cumsum_byname works as expected", {
 context("Cumulative product")
 ###########################################################
 
-test_that("cumprod_byname works as expected", {
-  expect_null(cumprod_byname(NULL))
-  expect_true(is.na(cumprod_byname(NA)))
-  expect_equal(cumprod_byname(2), 2)
-})
+# test_that("cumprod_byname works as expected", {
+#   expect_null(cumprod_byname(NULL))
+#   expect_true(is.na(cumprod_byname(NA)))
+#   expect_equal(cumprod_byname(2), 2)
+# })
 
