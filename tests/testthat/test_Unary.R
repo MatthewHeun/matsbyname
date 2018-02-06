@@ -928,6 +928,12 @@ test_that("cumulativesum_byname works as expected", {
   expect_equal(CS$cs1, lst_expected)
   expect_equal(CS$cs2, lst_expected)
   
+  # Try with matrices
+  rowmat <- matrix(c(1, 2, 3), nrow = 1)
+  expect_equal(cumulativesum_byname(rowmat), rowmat)
+  # Test in a list
+  expect_equal(cumulativesum_byname(list(rowmat, rowmat, rowmat)), list(rowmat, 2*rowmat, 3*rowmat))
+
 })
 
 

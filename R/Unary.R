@@ -667,18 +667,32 @@ cumulativesum_byname <- function(m){
     # Note that length(NULL) == 0, so this tests for m == NULL, too.
     return(NULL)
   }
+  if (is.matrix(m)) {
+    # We have a single matrix. Just return it.
+    return(m)
+  }
   if (length(m) == 1) {
     # Note that length(NA) == 1, so this test captures cases where m == NA.
     # Nothing to be done.
     return(m)
   }
   # length(m) > 1
-  if (is.matrix(m)) {
-    
+  if (all(as.logical(lapply(m, is.matrix)))) {
+    # Assume we have a list of matrices
+    out <- list()
+    out[[1]] <- m[[1]]
+    for (i in 2:length(m)) {
+      out[[i]] <- sum_byname(m[[i]], out[[i - 1]])
+    }
+    return(out)
   }
-  # If we get here, assume m is a numeric vector.
-  # This is an easy case!
-  return(as.list(cumsum(m)))
+  if (all(as.logical(lapply(m, is.numeric)))) {
+    # This is an easy case!
+    return(as.list(cumsum(m)))
+  }
+  # We don't know how to handle anything else.
+  stop("Unknown class(m) in cumulativesum_byname:", class(m))
+
 }
 
 
