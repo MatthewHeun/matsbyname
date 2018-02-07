@@ -675,42 +675,12 @@ Iminus_byname <- function(m){
 #' data.frame(grp = c("A", "A", "B"), m = I(list(m1, m2, m3))) %>% group_by(grp) %>% 
 #'   mutate(m2 = cumsum_byname(m))
 cumsum_byname <- function(m){
-  # Check for pathological cases.
-  if (length(m) == 0) {
-    # Nothing to be done here.
-    # Note that length(NULL) == 0, so this tests for m == NULL, too.
-    return(NULL)
-  }
-  if (is.matrix(m)) {
-    # We have a single matrix. Just return it.
-    return(m)
-  }
-  if (length(m) == 1) {
-    # Note that length(NA) == 1, so this test captures cases where m == NA.
-    # Nothing to be done.
-    return(m)
-  }
-  # length(m) > 1
-  if (all(as.logical(lapply(m, is.matrix)))) {
-    # Assume we have a list of matrices
-    out <- list()
-    out[[1]] <- m[[1]]
-    for (i in 2:length(m)) {
-      out[[i]] <- sum_byname(m[[i]], out[[i - 1]])
-    }
-    return(out)
-  }
-  if (all(as.logical(lapply(m, is.numeric)))) {
-    # This is an easy case!
-    return(as.list(cumsum(m)))
-  }
-  # We don't know how to handle anything else.
-  stop("Unknown condition for m in cumulativesum_byname.")
+  cumapply_byname(FUN = sum_byname, m)
 }
 
-#' Cumulative product that respects row and column names
+#' Cumulative element-product that respects row and column names
 #'
-#' Provides cumulative products along a list or column of a data frame.
+#' Provides cumulative element-products along a list or column of a data frame.
 #' If \code{m} is a single number, \code{m} is returned.
 #' If \code{m} is a list of numbers, a list representing the cumulative product of the numbers is returned.
 #' If \code{m} is a single matrix, \code{m} is returned.
@@ -721,7 +691,7 @@ cumsum_byname <- function(m){
 #' 
 #' This function respects groups if \code{m} is a variable in a data frame.
 #'
-#' @param m a number, list of numbers, matrix or list of matrices for which cumulative sum is desired
+#' @param m a number, list of numbers, matrix or list of matrices for which cumulative element product is desired
 #'
 #' @return a single number, list of numbers, a single matrix, or a list of matrices,
 #'         depending on the nature of \code{m}
@@ -729,38 +699,17 @@ cumsum_byname <- function(m){
 #' @export
 #'
 #' @examples
-#' 
-# cumprod_byname <- function(m){
-#   # Check for pathological cases.
-#   if (length(m) == 0) {
-#     # Nothing to be done here.
-#     # Note that length(NULL) == 0, so this tests for m == NULL, too.
-#     return(NULL)
-#   }
-#   if (is.matrix(m)) {
-#     # We have a single matrix. Just return it.
-#     return(m)
-#   }
-#   if (length(m) == 1) {
-#     # Note that length(NA) == 1, so this test captures cases where m == NA.
-#     # Nothing to be done.
-#     return(m)
-#   }
-#   # length(m) > 1
-#   if (all(as.logical(lapply(m, is.matrix)))) {
-#     # Assume we have a list of matrices
-#     out <- list()
-#     out[[1]] <- m[[1]]
-#     for (i in 2:length(m)) {
-#       out[[i]] <- product_byname(m[[i]], out[[i - 1]])
-#     }
-#     return(out)
-#   }
-#   if (all(as.logical(lapply(m, is.numeric)))) {
-#     # This is an easy case!
-#     return(as.list(cumprod(m)))
-#   }
-#   # We don't know how to handle anything else.
-#   stop("Unknown condition for m in cumulativeprod_byname.")
-# }
+#' library(magrittr)
+#' cumprod_byname(list(1, 2, 3, 4, 5))
+#' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>%
+#'   setrowtype("row") %>% setcoltype("col")
+#' m2 <- matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>%
+#'   setrowtype("row") %>% setcoltype("col")
+#' m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>%
+#'   setrowtype("row") %>% setcoltype("col")
+#' cumprod_byname(list(m1, m2, m3))
+cumprod_byname <- function(m){
+  cumapply_byname(FUN = elementproduct_byname, m)
+}
+
 

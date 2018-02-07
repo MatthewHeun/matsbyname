@@ -194,6 +194,13 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
 elementproduct_byname <- function(multiplicand, multiplier){
+  # Note that prod(1) returns 1, not 0.
+  # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
+  if (missing(multiplier)) {
+    return(multiplicand)
+  } else if (missing(multiplicand)) {
+    return(multiplier)
+  }
   binaryapply_byname(`*`, multiplicand, multiplier)
 }
 
