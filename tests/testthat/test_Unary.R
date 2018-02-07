@@ -964,9 +964,53 @@ test_that("cumsum_byname works as expected", {
 context("Cumulative product")
 ###########################################################
 
-# test_that("cumprod_byname works as expected", {
-#   expect_null(cumprod_byname(NULL))
-#   expect_true(is.na(cumprod_byname(NA)))
-#   expect_equal(cumprod_byname(2), 2)
-# })
+test_that("cumprod_byname works as expected", {
+  expect_null(cumprod_byname(NULL))
+  expect_true(is.na(cumprod_byname(NA)))
+  expect_equal(cumprod_byname(2), 2)
+
+  lst <- list(1, 2, 3, 4, 5)
+  lst_expected <- list(1, 2, 6, 24, 120)
+  expect_equal(cumprod_byname(lst), lst_expected)
+  # Try in a data frame.
+  DF <- data.frame(l1 = I(lst), l2 = I(lst))
+  CS <- DF %>%
+    mutate(
+      cs1 = cumprod_byname(l1),
+      cs2 = cumprod_byname(l2)
+    )
+  expect_equal(CS$cs1, lst_expected)
+  expect_equal(CS$cs2, lst_expected)
+
+  # Try with matrices
+  rowmat <- matrix(c(1, 2, 3), nrow = 1)
+  expect_equal(cumprod_byname(rowmat), rowmat)
+  # Test in a list
+  expected_powers <- list(rowmat, rowmat*rowmat, rowmat*rowmat*rowmat)
+  expect_equal(cumprod_byname(list(rowmat, rowmat, rowmat)), expected_powers)
+  # Test in a data frame
+  DF2 <- data.frame(m = I(list(rowmat, rowmat, rowmat))) %>%
+    mutate(
+      m2 = cumprod_byname(m)
+    )
+  expect_equal(DF2$m2, expected_powers)
+  # Test with a matrix that will take advantage of the "byname" aspect of sum_byname
+  m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>%
+    setrowtype("row") %>% setcoltype("col")
+  m2 <- matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>%
+    setrowtype("row") %>% setcoltype("col")
+  m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>%
+    setrowtype("row") %>% setcoltype("col")
+  mlist <- list(m1, m2, m3)
+  expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2) %>% sum_byname(m3)) * 0)
+  expect_equal(cumprod_byname(mlist), expected)
+
+  # Ensure that groups are respected in the context of mutate.
+  DF3 <- data.frame(grp = c("A", "A", "B"), m = I(mlist)) %>%
+    group_by(grp) %>%
+    mutate(
+      m2 = cumprod_byname(m)
+    )
+  expect_equal(DF3$m2, list(m1, sum_byname(m1, m2) * 0, m3))
+})
 

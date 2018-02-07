@@ -35,3 +35,13 @@ test_that("binaryapply_byname works as expected", {
   expect_equal(binaryapply_byname(FUN = sum, a = list(1, 2, 3), b = list(4,5,6)), 
                list(5, 7, 9))
 })
+
+
+###########################################################
+# context("Cumulative apply")
+###########################################################
+
+test_that("cumapply_byname works as expected", {
+  expect_equal(cumapply_byname(FUN = `sum`, m = list(1, 2, 3)), list(1, 3, 6))
+  expect_equal(cumapply_byname(FUN = `prod`, m = list(1, 2, 3)), list(1, 2, 6))
+})
