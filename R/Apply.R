@@ -136,3 +136,48 @@ binaryapply_byname <- function(FUN, a, b, ...,
   }
   return(out)
 }
+
+#' Cumulatively apply a function to a list of matrices or numbers
+#' 
+#' \code{FUN} must be a binary function that also accepts a single argument.
+#' The result is a list with first element \code{FUN(m[[1]])}.
+#' For \code{i >= 2}, elements are \code{FUN(m[[i]], m[[i-1]])}.
+#'
+#' @param FUN  the function to be applied
+#' @param   m  the list of matrices or numbers to which \code{FUN} will be applied cumulatively
+#'
+#' @return a list of same length as \code{m} 
+#'         containing the cumulative application of \code{FUN} to \code{m}
+#' 
+#' @export
+#'
+#' @examples
+#' cumapply_byname(sum, list(1, 2, 3, 4))
+#' cumapply_byname(sum_byname, list(1, 2, 3, 4))
+#' cumapply_byname(prod, list(1, 2, 3, 4))
+#' cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
+cumapply_byname <- function(FUN, m){
+  # Check for pathological cases.
+  if (length(m) == 0) {
+    # Nothing to be done here.  Return NULL.
+    # Note that length(NULL) == 0, so this tests for m == NULL, too.
+    return(NULL)
+  }
+  if (is.matrix(m)) {
+    # We have a single matrix. Just return it.
+    return(FUN(m))
+  }
+  if (length(m) == 1) {
+    # Note that length(NA) == 1, so this test captures cases where m == NA.
+    # Nothing to be done.
+    return(FUN(m))
+  }
+  # length(m) > 1
+  # Assume we have a list of matrices or numerics
+  out <- list()
+  out[[1]] <- FUN(m[[1]])
+  for (i in 2:length(m)) {
+    out[[i]] <- FUN(m[[i]], out[[i - 1]])
+  }
+  return(out)
+}

@@ -639,3 +639,77 @@ Iminus_byname <- function(m){
 }
 
 
+#' Cumulative sum that respects row and column names
+#'
+#' Provides cumulative sums along a list or column of a data frame.
+#' If \code{m} is a single number, \code{m} is returned.
+#' If \code{m} is a list of numbers, a list representing the cumulative sum of the numbers is returned.
+#' If \code{m} is a single matrix, \code{m} is returned.
+#' If \code{m} is a list of matrices, a list representing the cumulative sum
+#' of the matrices is returned. 
+#' In this case, each entry in the returned list is sum "by name," 
+#' such that row and column names of the matrices are respected.
+#' 
+#' If cumulative sums are desired in the context of a data frame, 
+#' groups in the data frame are respected if \code{mutate} is used.
+#' See examples.
+#'
+#' @param m a number, list of numbers, matrix or list of matrices for which cumulative sum is desired
+#'
+#' @return a single number, list of numbers, a single matrix, or a list of matrices,
+#'         depending on the nature of \code{m}
+#'         
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' library(dplyr)
+#' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+#'   setrowtype("row") %>% setcoltype("col")
+#' m2 <- matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>% 
+#'   setrowtype("row") %>% setcoltype("col")
+#' m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>% 
+#'   setrowtype("row") %>% setcoltype("col")
+#' cumsum_byname(list(m1, m2, m3))
+#' # Groups are respected in the context of mutate.
+#' data.frame(grp = c("A", "A", "B"), m = I(list(m1, m2, m3))) %>% group_by(grp) %>% 
+#'   mutate(m2 = cumsum_byname(m))
+cumsum_byname <- function(m){
+  cumapply_byname(FUN = sum_byname, m)
+}
+
+#' Cumulative element-product that respects row and column names
+#'
+#' Provides cumulative element-products along a list or column of a data frame.
+#' If \code{m} is a single number, \code{m} is returned.
+#' If \code{m} is a list of numbers, a list representing the cumulative product of the numbers is returned.
+#' If \code{m} is a single matrix, \code{m} is returned.
+#' If \code{m} is a list of matrices, a list representing the cumulative product
+#' of the matrices is returned. 
+#' In this case, each entry in the returned list is product "by name," 
+#' such that row and column names of the matrices are respected.
+#' 
+#' This function respects groups if \code{m} is a variable in a data frame.
+#'
+#' @param m a number, list of numbers, matrix or list of matrices for which cumulative element product is desired
+#'
+#' @return a single number, list of numbers, a single matrix, or a list of matrices,
+#'         depending on the nature of \code{m}
+#'         
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' cumprod_byname(list(1, 2, 3, 4, 5))
+#' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>%
+#'   setrowtype("row") %>% setcoltype("col")
+#' m2 <- matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>%
+#'   setrowtype("row") %>% setcoltype("col")
+#' m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>%
+#'   setrowtype("row") %>% setcoltype("col")
+#' cumprod_byname(list(m1, m2, m3))
+cumprod_byname <- function(m){
+  cumapply_byname(FUN = elementproduct_byname, m)
+}
+
+
