@@ -1,5 +1,11 @@
 # News for `byname`
 
+## byname 0.1.6 (2018-02-08)
+
+* New functions `cumsum_byname`, `cumprod_byname`, and `cumapply_byname`.
+* Miscellaneous improvements to documentation of many functions.
+
+
 ## byname 0.1.5 (2018-02-01)
 
 * New functions `elementlog_byname` and `elementexp_byname`.
