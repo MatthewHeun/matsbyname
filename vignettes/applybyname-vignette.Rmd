@@ -1,0 +1,44 @@
+---
+title: "applybyname-vignette"
+author: "Matthew Kuperus Heun"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+The `byname` package provides many useful functions for "by name" manipulation of
+matrices, lists of matrices, and matrices in columns of data frames.
+However, the built-in functions may not cover all possible needs.
+`byname` provides three functions for these situations:
+
+| Function | Purpose    
+|--:|:------------------------------------
+| `unaryapply_byname` | apply a unary function to a single matrix, a list of matrices, or a column of matrices in a data frame  
+| `binaryapply_byname` | apply a binary function to two matrices or Map a binary function across two lists of matrices or two columns of matrices in a data frame
+| `cumapply_byname` | apply a binary function cumulatively to a singe list of matrices or a column of matrices in a data frame
+
+
+## `unaryapply_byname`
+
+
+
+
+## `binaryapply_byname`
+
+
+
+
+## `cumapply_byname`
+
+
+
+## Summary
