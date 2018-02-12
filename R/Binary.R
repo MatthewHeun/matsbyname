@@ -151,7 +151,7 @@ matrixproduct_byname <- function(multiplicand, multiplier){
     # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
     # are completed and sorted, but rows and cols of the output are not guaranteed 
     # to be sorted.
-    # Becase _byname assures that all rows and columns are sorted, 
+    # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     sort_rows_cols()
 }

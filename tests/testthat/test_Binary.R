@@ -99,6 +99,27 @@ test_that("sums of matrices in lists and data frames works as expected", {
   expect_equal(DF %>% mutate(sums = sum_byname(U, Y)), DF %>% mutate(sums = list(UplusY, UplusY)))
 })
 
+test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
+  ulist <- list(U, U)
+  ylist <- list(Y, Y)
+  DF <- data.frame(Ulist = I(list()), Ylist = I(list()))
+  # Put lists in each cell of the data frame.
+  DF[[1,"Ulist"]] <- ulist
+  DF[[2,"Ulist"]] <- ulist
+  DF[[1,"Ylist"]] <- ylist
+  DF[[2,"Ylist"]] <- ylist
+  
+  # Operate on the lists in each cell of the data frame.
+  res <- DF %>% 
+    mutate(
+      sum = sum_byname(Ulist, Ylist)
+    )
+  expect_equal(res$sum[[1]][[1]], UplusY)
+  expect_equal(res$sum[[1]][[2]], UplusY)
+  expect_equal(res$sum[[2]][[1]], UplusY)
+  expect_equal(res$sum[[2]][[2]], UplusY)
+})
+
 
 ###########################################################
 context("Differences")
