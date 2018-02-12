@@ -118,11 +118,14 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   expect_equal(res$sum[[1]][[2]], UplusY)
   expect_equal(res$sum[[2]][[1]], UplusY)
   expect_equal(res$sum[[2]][[2]], UplusY)
-  
+})
+
+test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
   # Now check to see what happens when one of the operands
   # is a list and the other is not.
   DF2 <- data.frame(Ulist = I(list()), Y = I(list()))
   # Put lists in each cell of the data frame.
+  ulist <- list(U, U)
   DF2[[1,"Ulist"]] <- ulist
   DF2[[2,"Ulist"]] <- ulist
   DF2[[1,"Y"]] <- Y
@@ -136,8 +139,31 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   expect_equal(res2$sum[[2]][[1]], UplusY)
   expect_equal(res2$sum[[2]][[2]], UplusY)
   
-  
-  
+  # Try when the matrix length will not be a multiple of the list length.
+  U3 <- matrix(1:5, nrow = 5, ncol = 1, dimnames = list(c("p1", "p2", "p3", "p4", "p5"), "i1")) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  U3plusY <- sum_byname(U3, Y)
+  ulist <- list(U3, U3, U3)
+  DF3 <- data.frame(Ulist = I(list()), Y = I(list()))
+  DF3[[1,"Ulist"]] <- ulist
+  DF3[[2,"Ulist"]] <- ulist
+  DF3[[3,"Ulist"]] <- ulist
+  DF3[[1,"Y"]] <- Y
+  DF3[[2,"Y"]] <- Y
+  DF3[[3,"Y"]] <- Y
+  res3 <- DF3 %>% 
+    mutate(
+      sum = sum_byname(ulist, Y)
+    )
+  expect_equal(res3$sum[[1]][[1]], U3plusY)
+  expect_equal(res3$sum[[1]][[2]], U3plusY)
+  expect_equal(res3$sum[[1]][[3]], U3plusY)
+  expect_equal(res3$sum[[2]][[1]], U3plusY)
+  expect_equal(res3$sum[[2]][[2]], U3plusY)
+  expect_equal(res3$sum[[2]][[3]], U3plusY)
+  expect_equal(res3$sum[[3]][[1]], U3plusY)
+  expect_equal(res3$sum[[3]][[2]], U3plusY)
+  expect_equal(res3$sum[[3]][[3]], U3plusY)
 })
 
 
