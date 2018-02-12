@@ -123,16 +123,16 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
 test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
   # Now check to see what happens when one of the operands
   # is a list and the other is not.
-  DF2 <- data.frame(Ulist = I(list()), Y = I(list()))
+  DF2 <- data.frame(ulist2_col = I(list()), Y = I(list()))
   # Put lists in each cell of the data frame.
-  ulist <- list(U, U)
-  DF2[[1,"Ulist"]] <- ulist
-  DF2[[2,"Ulist"]] <- ulist
+  ulist2 <- list(U, U)
+  DF2[[1,"ulist2_col"]] <- ulist2
+  DF2[[2,"ulist2_col"]] <- ulist2
   DF2[[1,"Y"]] <- Y
   DF2[[2,"Y"]] <- Y
   res2 <- DF2 %>% 
     mutate(
-      sum = sum_byname(Ulist, Y)
+      sum = sum_byname(ulist2_col, Y)
     )
   expect_equal(res2$sum[[1]][[1]], UplusY)
   expect_equal(res2$sum[[1]][[2]], UplusY)
@@ -143,17 +143,17 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   U3 <- matrix(1:5, nrow = 5, ncol = 1, dimnames = list(c("p1", "p2", "p3", "p4", "p5"), "i1")) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   U3plusY <- sum_byname(U3, Y)
-  ulist <- list(U3, U3, U3)
-  DF3 <- data.frame(Ulist = I(list()), Y = I(list()))
-  DF3[[1,"Ulist"]] <- ulist
-  DF3[[2,"Ulist"]] <- ulist
-  DF3[[3,"Ulist"]] <- ulist
+  ulist3 <- list(U3, U3, U3)
+  DF3 <- data.frame(ulist3_col = I(list()), Y = I(list()))
+  DF3[[1,"ulist3_col"]] <- ulist3
+  DF3[[2,"ulist3_col"]] <- ulist3
+  DF3[[3,"ulist3_col"]] <- ulist3
   DF3[[1,"Y"]] <- Y
   DF3[[2,"Y"]] <- Y
   DF3[[3,"Y"]] <- Y
   res3 <- DF3 %>% 
     mutate(
-      sum = sum_byname(ulist, Y)
+      sum = sum_byname(ulist3_col, Y)
     )
   expect_equal(res3$sum[[1]][[1]], U3plusY)
   expect_equal(res3$sum[[1]][[2]], U3plusY)
