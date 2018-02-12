@@ -118,6 +118,26 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   expect_equal(res$sum[[1]][[2]], UplusY)
   expect_equal(res$sum[[2]][[1]], UplusY)
   expect_equal(res$sum[[2]][[2]], UplusY)
+  
+  # Now check to see what happens when one of the operands
+  # is a list and the other is not.
+  DF2 <- data.frame(Ulist = I(list()), Y = I(list()))
+  # Put lists in each cell of the data frame.
+  DF2[[1,"Ulist"]] <- ulist
+  DF2[[2,"Ulist"]] <- ulist
+  DF2[[1,"Y"]] <- Y
+  DF2[[2,"Y"]] <- Y
+  res2 <- DF2 %>% 
+    mutate(
+      sum = sum_byname(Ulist, Y)
+    )
+  expect_equal(res2$sum[[1]][[1]], UplusY)
+  expect_equal(res2$sum[[1]][[2]], UplusY)
+  expect_equal(res2$sum[[2]][[1]], UplusY)
+  expect_equal(res2$sum[[2]][[2]], UplusY)
+  
+  
+  
 })
 
 
