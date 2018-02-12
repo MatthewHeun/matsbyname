@@ -33,7 +33,14 @@
 unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "row", "col", "none")){
   rowcoltypes <- match.arg(rowcoltypes)
   if (is.list(a)) {
+# print(paste("length(a) =", length(a), "length(...) =", length(list(...))))
+# print(list(...))
     return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, ..., rowcoltypes = rowcoltypes))
+    # return(Map(unaryapply_byname, 
+    #            make_list(FUN, n = length(a)), 
+    #            a, 
+    #            make_list(as.list(substitute(list(...)))[-1L], n = length(a), lenx = 1), 
+    #            rowcoltypes = rowcoltypes))
   }
   if (length(list(...)) == 0) {
     out <- FUN(a)
@@ -114,8 +121,17 @@ binaryapply_byname <- function(FUN, a, b, ...,
     b <- args$b
   }
   if (is.list(a) & is.list(b)) {
-    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), 
-               a, b, ..., match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize))
+# print(paste("length(a) =", length(a), "length(b) =", length(b), "length(...) =", length(list(...))))
+# print(list(...))
+    
+    return(Map(binaryapply_byname, 
+               make_list(FUN, n = max(length(a), length(b))), 
+               a, 
+               b, 
+               ..., 
+               match_type = match_type, 
+               rowcoltypes = rowcoltypes, 
+               .organize = .organize))
   }
   if (length(list(...)) == 0) {
     out <- FUN(a, b)
