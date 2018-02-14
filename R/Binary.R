@@ -147,10 +147,10 @@ difference_byname <- function(minuend, subtrahend){
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
 matrixproduct_byname <- function(multiplicand, multiplier){
+  # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
+  # are completed and sorted, but rows and cols of the output are not guaranteed 
+  # to be sorted.
   binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
-    # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
-    # are completed and sorted, but rows and cols of the output are not guaranteed 
-    # to be sorted.
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     sort_rows_cols()

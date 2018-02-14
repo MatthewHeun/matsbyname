@@ -31,7 +31,7 @@
 #' difference_byname(0, U)
 #' unaryapply_byname(`-`, U)
 # unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "row", "col", "none")){
-unaryapply_byname <- function(FUN, a, .FUNdots, rowcoltypes = c("all", "transpose", "row", "col", "none")){
+unaryapply_byname <- function(FUN, a, .FUNdots = NULL, rowcoltypes = c("all", "transpose", "row", "col", "none")){
   rowcoltypes <- match.arg(rowcoltypes)
   # dots <- list(...)
   # if (is.list(a)) {
