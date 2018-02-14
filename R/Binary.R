@@ -418,7 +418,7 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
     out %>%  
       setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
   }
-  binaryapply_byname(logmean.func, a = X1, b = X2, base = base)
+  binaryapply_byname(logmean.func, a = X1, b = X2, .FUNdots = list(base = base))
 }
 
 #' Compare two matrices (byname)

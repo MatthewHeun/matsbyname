@@ -218,9 +218,9 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
 list_of_rows_or_cols <- function(m, margin){
-  if (is.list(m)) {
-    margin <- make_list(margin, n = length(m), lenx = 1)
-  }
+  # if (is.list(m)) {
+  #   margin <- make_list(margin, n = length(m), lenx = 1)
+  # }
   lrc.func <- function(m, margin){
     stopifnot(length(margin) == 1)
     stopifnot(margin %in% c(1,2))
@@ -239,7 +239,7 @@ list_of_rows_or_cols <- function(m, margin){
     }) %>%
       set_names(colnames(out))
   }
-  unaryapply_byname(lrc.func, a = m, margin = margin, rowcoltypes = "none")
+  unaryapply_byname(lrc.func, a = m, .FUNdots = list(margin = margin), rowcoltypes = "none")
 }
 
 #' Gets row names
