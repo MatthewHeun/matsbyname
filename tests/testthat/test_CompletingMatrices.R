@@ -107,7 +107,10 @@ test_that("sort_rows_cols works with different-length arguments for lists", {
     )
   expect_equal(res$sorted[[1]][[1]], m_sorted)
   expect_equal(res$sorted[[1]][[2]], m_sorted)
-  
+  expect_equal(res$sorted[[2]][[1]], m_sorted)
+  expect_equal(res$sorted[[1]][[2]], m_sorted)
+  expect_equal(res$sorted[[3]][[1]], m_sorted)
+  expect_equal(res$sorted[[1]][[2]], m_sorted)
 })
 
 

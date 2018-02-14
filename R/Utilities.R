@@ -442,7 +442,7 @@ setrowtype <- function(x, rowtype){
     attr(x, "rowtype") <- rowtype
     return(x)
   }
-  unaryapply_byname(rt.func, a = x, rowtype = rowtype, rowcoltypes = "none")
+  unaryapply_byname(rt.func, a = x, .FUNdots = list(rowtype = rowtype), rowcoltypes = "none")
 }
 
 #' Sets column type for a matrix or a list of matrices
@@ -483,7 +483,7 @@ setcoltype <- function(x, coltype){
     attr(x, "coltype") <- coltype
     return(x)
   }
-  unaryapply_byname(ct.func, a = x, coltype = coltype, rowcoltypes = "none")
+  unaryapply_byname(ct.func, a = x, .FUNdots = list(coltype = coltype), rowcoltypes = "none")
 }
 
 #' Row type
@@ -506,7 +506,7 @@ setcoltype <- function(x, coltype){
 #' # This also works for lists
 #' rowtype(list(U,U))
 rowtype <- function(x){
-  unaryapply_byname(attr, a = x, which = "rowtype", rowcoltypes = "none")
+  unaryapply_byname(attr, a = x, .FUNdots = list(which = "rowtype"), rowcoltypes = "none")
 }
 
 #' Column type
@@ -528,7 +528,7 @@ rowtype <- function(x){
 #' # This also works for lists
 #' coltype(list(U,U))
 coltype <- function(x){
-  unaryapply_byname(attr, a = x, which = "coltype", rowcoltypes = "none")
+  unaryapply_byname(attr, a = x, .FUNdots = list(which = "coltype"), rowcoltypes = "none")
 }
 
 #' Select rows of a matrix (or list of matrices) by name

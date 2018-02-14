@@ -30,23 +30,39 @@
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' difference_byname(0, U)
 #' unaryapply_byname(`-`, U)
-unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "row", "col", "none")){
+# unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "row", "col", "none")){
+unaryapply_byname <- function(FUN, a, .FUNdots, rowcoltypes = c("all", "transpose", "row", "col", "none")){
   rowcoltypes <- match.arg(rowcoltypes)
+  # dots <- list(...)
+  # if (is.list(a)) {
+  #   return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, ..., rowcoltypes = rowcoltypes))
+  # }
+  # if (length(list(...)) == 0) {
+  #   out <- FUN(a)
+  # } else {
+  #   out <- FUN(a, ...)
+  # }
+  
   if (is.list(a)) {
-# print(paste("length(a) =", length(a), "length(...) =", length(list(...))))
-# print(list(...))
-    return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, ..., rowcoltypes = rowcoltypes))
-    # return(Map(unaryapply_byname, 
-    #            make_list(FUN, n = length(a)), 
-    #            a, 
-    #            make_list(as.list(substitute(list(...)))[-1L], n = length(a), lenx = 1), 
-    #            rowcoltypes = rowcoltypes))
+    lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
+    # ldots <- make_list(x = list(...), n = length(a), lenx = 1)
+    # ldots <- make_list(x = as.list(substitute(list(...)))[-1L], n = length(a), lenx = 1)
+    # ldots <- make_list(x = dots, n = length(a), lenx = 1)
+    # ldots <- make_list(x = ..., n = length(a), lenx = 1)
+    # ldots <- make_list(x = quos(list(...)), n = length(a), lenx = 1)
+    ldots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+    # return(Map(unaryapply_byname, lfun, a, ..., rowcoltypes = rowcoltypes))
+    return(Map(unaryapply_byname, lfun, a, ldots, rowcoltypes = rowcoltypes))
   }
-  if (length(list(...)) == 0) {
-    out <- FUN(a)
-  } else {
-    out <- FUN(a, ...)
-  }
+  # if (length(dots) == 0) {
+  #   out <- FUN(a)
+  # } else {
+  #   # out <- FUN(a, ...)
+  #   out <- do.call(FUN, c(list(a), dots))
+  # }
+  out <- do.call(FUN, c(list(a), .FUNdots))
+  
+  
   if (rowcoltypes == "all") {
     out <- out %>%
       setrowtype(rowtype(a)) %>%
