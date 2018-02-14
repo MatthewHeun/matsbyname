@@ -30,39 +30,16 @@
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' difference_byname(0, U)
 #' unaryapply_byname(`-`, U)
-# unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "row", "col", "none")){
-unaryapply_byname <- function(FUN, a, .FUNdots = NULL, rowcoltypes = c("all", "transpose", "row", "col", "none")){
+unaryapply_byname <- function(FUN, a, .FUNdots = NULL, 
+                              rowcoltypes = c("all", "transpose", "row", "col", "none")){
   rowcoltypes <- match.arg(rowcoltypes)
-  # dots <- list(...)
-  # if (is.list(a)) {
-  #   return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, ..., rowcoltypes = rowcoltypes))
-  # }
-  # if (length(list(...)) == 0) {
-  #   out <- FUN(a)
-  # } else {
-  #   out <- FUN(a, ...)
-  # }
-  
   if (is.list(a)) {
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
-    # ldots <- make_list(x = list(...), n = length(a), lenx = 1)
-    # ldots <- make_list(x = as.list(substitute(list(...)))[-1L], n = length(a), lenx = 1)
-    # ldots <- make_list(x = dots, n = length(a), lenx = 1)
-    # ldots <- make_list(x = ..., n = length(a), lenx = 1)
-    # ldots <- make_list(x = quos(list(...)), n = length(a), lenx = 1)
     ldots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
-    # return(Map(unaryapply_byname, lfun, a, ..., rowcoltypes = rowcoltypes))
     return(Map(unaryapply_byname, lfun, a, ldots, rowcoltypes = rowcoltypes))
   }
-  # if (length(dots) == 0) {
-  #   out <- FUN(a)
-  # } else {
-  #   # out <- FUN(a, ...)
-  #   out <- do.call(FUN, c(list(a), dots))
-  # }
   out <- do.call(FUN, c(list(a), .FUNdots))
-  
-  
+
   if (rowcoltypes == "all") {
     out <- out %>%
       setrowtype(rowtype(a)) %>%
@@ -128,7 +105,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL, rowcoltypes = c("all", "t
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
-binaryapply_byname <- function(FUN, a, b, ..., 
+binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL, 
                                match_type = c("all", "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE){
   match_type <- match.arg(match_type)
   if (.organize) {
@@ -137,23 +114,17 @@ binaryapply_byname <- function(FUN, a, b, ...,
     b <- args$b
   }
   if (is.list(a) & is.list(b)) {
-# print(paste("length(a) =", length(a), "length(b) =", length(b), "length(...) =", length(list(...))))
-# print(list(...))
-    
-    return(Map(binaryapply_byname, 
-               make_list(FUN, n = max(length(a), length(b))), 
-               a, 
-               b, 
-               ..., 
-               match_type = match_type, 
-               rowcoltypes = rowcoltypes, 
-               .organize = .organize))
+    lfun <- replicate(n = max(length(a), length(b)), expr = FUN, simplify = FALSE)
+    ldots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
+    return(Map(binaryapply_byname, lfun, a, b, ldots,
+               match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize))
   }
-  if (length(list(...)) == 0) {
-    out <- FUN(a, b)
-  } else {
-    out <- FUN(a, b, ...)
-  }
+  # if (length(list(...)) == 0) {
+  #   out <- FUN(a, b)
+  # } else {
+  #   out <- FUN(a, b, ...)
+  # }
+  out <- do.call(FUN, c(list(a), list(b), .FUNdots))
   # if (match_type %in% c("all", "matmult")) {
   if (rowcoltypes) {
     # Either match_type is 

@@ -88,7 +88,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
       mat <- make_list(mat, length(x))
     }
     # Double-check that we have what we need for the margin argument.
-    margin <- make_list(margin, length(x), lenx = 1)
+    # margin <- make_list(margin, length(x), lenx = 1)
   } else if (is.null(x) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
     # x is NULL, and assume we have a list of matrices in the matrix argument.
     # Under these conditions, we return matrices with same row and column names as each matrix, but
@@ -167,7 +167,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     return(x)
   }
   
-  binaryapply_byname(complete.func, a = x, b = mat, fill = fill, margin = margin, 
+  binaryapply_byname(complete.func, a = x, b = mat, .FUNdots = list(fill = fill, margin = margin), 
                      match_type = "all", rowcoltypes = FALSE, .organize = FALSE)
 }
 

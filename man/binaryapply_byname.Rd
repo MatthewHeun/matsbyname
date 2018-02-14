@@ -4,8 +4,8 @@
 \alias{binaryapply_byname}
 \title{Apply a binary function byname}
 \usage{
-binaryapply_byname(FUN, a, b, ..., match_type = c("all", "matmult", "none"),
-  rowcoltypes = TRUE, .organize = TRUE)
+binaryapply_byname(FUN, a, b, .FUNdots = NULL, match_type = c("all",
+  "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE)
 }
 \arguments{
 \item{FUN}{a binary function to be applied "byname" to \code{a} and \code{b}.}
@@ -13,8 +13,6 @@ binaryapply_byname(FUN, a, b, ..., match_type = c("all", "matmult", "none"),
 \item{a}{the first argument to \code{FUN}.}
 
 \item{b}{the second argument to \code{FUN}.}
-
-\item{...}{additional named arguments passed to \code{FUN}.}
 
 \item{match_type}{one of "\code{all}", "\code{matmult}", or "\code{none}".
 When both \code{a} and \code{b} are matrices,
@@ -35,6 +33,8 @@ If \code{FALSE}, row and column types are \emph{not} applied to the output.}
 complete \code{a} and \code{b} relative to each other and
 sort the rows and columns of the completed matrices.
 Normally, this should be \code{TRUE} (the default).}
+
+\item{...}{additional named arguments passed to \code{FUN}.}
 }
 \value{
 the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
