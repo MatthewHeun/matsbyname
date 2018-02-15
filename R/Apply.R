@@ -135,11 +135,12 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   return(out)
 }
 
-#' Cumulatively apply a function to a list of matrices or numbers
+#' Apply a function cumulatively to a list of matrices or numbers
 #' 
 #' \code{FUN} must be a binary function that also accepts a single argument.
 #' The result is a list with first element \code{FUN(m[[1]])}.
-#' For \code{i >= 2}, elements are \code{FUN(m[[i]], m[[i-1]])}.
+#' For \code{i >= 2}, elements are \code{FUN(m[[i]], out[[i-1]])},
+#' where \code{out} is the result list.
 #'
 #' @param FUN  the function to be applied
 #' @param   m  the list of matrices or numbers to which \code{FUN} will be applied cumulatively

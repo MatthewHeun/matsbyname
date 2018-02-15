@@ -113,6 +113,25 @@ binaryapply_byname(`+`, U, Y)
 
 ## `cumapply_byname`
 
+`cumapply_byname` applies `FUN` cumulatively to a list of numbers, 
+a list of matrices, or (if used with `dplyr::mutate`) a column of a data frame.
+`FUN` must be a binary function that also allows a single argument.
+The result is a list with first element `FUN(m[[1]])`.
+For `i >= 2`, elements of the resulting list are `FUN(m[[i]], out[[i-1]])`, 
+where `out` is the result list.
+
+Simple examples follow.
+
+```{r}
+cumapply_byname(sum_byname, list(1, 2, 3, 4))
+cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
+```
 
 
 ## Summary
+
+The various `*apply_byname` functions allow users to extend the functionality of the `byname` 
+package as needed for any problem domain.
+The functions are used extensively in `byname` itself.
+In fact, all `byname` functions utilize the `*apply_byname` functions,
+so they are ready for prime time!
