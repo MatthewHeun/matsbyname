@@ -129,7 +129,7 @@ test_that("transpose_byname works with lists of lists", {
   # Here, we put a list of matrices into subsequent rows of a column of a data frame.
   # The unaryapply_byname function should recursively 
   # work its way down to the point where it finds matrices upon which it operates.
-  listofm <- list(m, m)
+  listofm <- list(a = m, b = m)
   DF <- data.frame(listofm = I(list()))
   DF[[1,"listofm"]] <- listofm
   DF[[2,"listofm"]] <- listofm
@@ -141,6 +141,10 @@ test_that("transpose_byname works with lists of lists", {
   expect_equal(res$listofmT[[1]][[2]], mT)
   expect_equal(res$listofmT[[2]][[1]], mT)
   expect_equal(res$listofmT[[2]][[2]], mT)
+  
+  # Ensure that names of the list are preserved
+  expect_equal(names(res$listofmT[[1]]), c("a", "b"))
+  expect_equal(names(res$listofmT[[2]]), c("a", "b"))
 })
 
 

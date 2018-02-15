@@ -2,7 +2,7 @@
 % Please edit documentation in R/Apply.R
 \name{cumapply_byname}
 \alias{cumapply_byname}
-\title{Cumulatively apply a function to a list of matrices or numbers}
+\title{Apply a function cumulatively to a list of matrices or numbers}
 \usage{
 cumapply_byname(FUN, m)
 }
@@ -18,7 +18,8 @@ a list of same length as \code{m}
 \description{
 \code{FUN} must be a binary function that also accepts a single argument.
 The result is a list with first element \code{FUN(m[[1]])}.
-For \code{i >= 2}, elements are \code{FUN(m[[i]], m[[i-1]])}.
+For \code{i >= 2}, elements are \code{FUN(m[[i]], out[[i-1]])},
+where \code{out} is the result list.
 }
 \examples{
 cumapply_byname(sum, list(1, 2, 3, 4))

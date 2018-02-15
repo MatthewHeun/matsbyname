@@ -1,5 +1,10 @@
 # News for `byname`
 
+## byname 0.1.9 (2018-02-14)
+
+* Now preserving names of list items in `*apply_byname` functions.
+
+
 ## byname 0.1.8 (2018-02-14)
 
 * Added `applybyname` vignette.

@@ -10,6 +10,8 @@
 #'  \item{if both arguments are lists, ensure that they are same length.}
 #'  \item{if one argument is a matrix and the other is a constant, make the constant into a matrix.}
 #'  \item{ensures that row and column types match for \code{typematch_margins}.}
+#'  \item{ensures that list item names match if both \code{a} and \code{b} are lists; 
+#'        no complaints are made if neither \code{a} nor \code{b} has names.}
 #'  \item{completes and sorts the matrices.}
 #' }
 #'
@@ -56,17 +58,21 @@ organize_args <- function(a, b, match_type = "all", fill){
   }
   if (is.list(a) | is.list(b)) {
     if (!is.list(a)) {
-      # b is a list, but a is not.  Make a into a list.
-      a <- make_list(a, n = length(b))
+      # b is a list, but a is not.  Make a into a list and give it same names as b.
+      a <- make_list(a, n = length(b)) %>% set_names(names(b))
     }
     if (!is.list(b)) {
-      # a is a list, but b is not.  Make b into a list.
-      b <- make_list(b, n = length(a))
+      # a is a list, but b is not.  Make b into a list and give it same names as a.
+      b <- make_list(b, n = length(a)) %>% set_names(names(a))
     }
   }
   if (is.list(a) & is.list(b)) {
     # Both a and b are lists. Ensure they're the same length.
     stopifnot(length(a) == length(b))
+    # Ensure that a and b have same length of names
+    stopifnot(length(names(a)) == length(names(b)))
+    # Ensure that a and b have same names if either has names
+    stopifnot(names(a) == names(b))
     # Now return the lists.
     return(list(a = a, b = b))
   }

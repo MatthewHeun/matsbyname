@@ -42,6 +42,8 @@ the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
 \description{
 If either \code{a} or \code{b} is missing or \code{NULL}, 
 \code{0} is passed to \code{FUN} in its place.
+Note that if either \code{a} and \code{b} are lists, elements must be named the same.
+The names of list elements of \code{a} are applied to the output.
 }
 \examples{
 library(magrittr)
