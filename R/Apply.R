@@ -2,6 +2,8 @@
 # matrices or data frames of matrices
 
 #' Apply a unary function byname
+#' 
+#' Note that if \code{a} is a list, the names of \code{a} are applied to the output.
 #'
 #' @param FUN a unary function to be applied "byname" to \code{a}.
 #' @param a the argument to \code{FUN}.
@@ -36,7 +38,9 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   if (is.list(a)) {
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
     ldots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
-    return(Map(unaryapply_byname, lfun, a, ldots, rowcoltypes = rowcoltypes))
+    return(Map(unaryapply_byname, lfun, a, ldots, rowcoltypes = rowcoltypes) %>% 
+             # Preserve names of a (if present) in the outgoing list.
+             set_names(names(a)))
   }
   out <- do.call(FUN, c(list(a), .FUNdots))
 
@@ -68,6 +72,8 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' 
 #' If either \code{a} or \code{b} is missing or \code{NULL}, 
 #' \code{0} is passed to \code{FUN} in its place.
+#' Note that if either \code{a} and \code{b} are lists, elements must be named the same.
+#' The names of list elements of \code{a} are applied to the output.
 #'
 #' @param FUN a binary function to be applied "byname" to \code{a} and \code{b}.
 #' @param a the first argument to \code{FUN}.
@@ -117,7 +123,10 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
     lfun <- replicate(n = max(length(a), length(b)), expr = FUN, simplify = FALSE)
     ldots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
     return(Map(binaryapply_byname, lfun, a, b, ldots,
-               match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize))
+               match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize) %>% 
+             # If a and b have names, organize_args will have ensured that those names are same.
+             # So we can set the names of the outgoing list to the names of a.
+             set_names(names(a)))
   }
   out <- do.call(FUN, c(list(a), list(b), .FUNdots))
   

@@ -10,6 +10,8 @@
 #'  \item{if both arguments are lists, ensure that they are same length.}
 #'  \item{if one argument is a matrix and the other is a constant, make the constant into a matrix.}
 #'  \item{ensures that row and column types match for \code{typematch_margins}.}
+#'  \item{ensures that list item names match if both \code{a} and \code{b} are lists; 
+#'        no complaints are made if neither \code{a} nor \code{b} has names.}
 #'  \item{completes and sorts the matrices.}
 #' }
 #'
@@ -67,6 +69,10 @@ organize_args <- function(a, b, match_type = "all", fill){
   if (is.list(a) & is.list(b)) {
     # Both a and b are lists. Ensure they're the same length.
     stopifnot(length(a) == length(b))
+    # Ensure that a and b have same length of names
+    stopifnot(length(names(a)) == length(names(b)))
+    # Ensure that a and b have same names if either has names
+    stopifnot(names(a) == names(b))
     # Now return the lists.
     return(list(a = a, b = b))
   }

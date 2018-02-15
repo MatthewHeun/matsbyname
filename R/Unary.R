@@ -329,12 +329,14 @@ rowsums_byname <- function(m, colname = NA){
     }
     rowSums(m) %>%
       # Preserve matrix structure (i.e., result will be a column vector of type matrix)
-      matrix(byrow = TRUE) %>%
+      matrix(ncol = 1) %>%
       # Preserve row names
       setrownames_byname(rownames(m)) %>%
-      # But sort the result on names
-      sort_rows_cols %>%
+      # Set column name
       setcolnames_byname(colname) %>%
+      # But sort the result on names
+      sort_rows_cols() %>%
+      # Set types
       setrowtype(rowtype(m)) %>%
       setcoltype(coltype(m))
   }
@@ -394,9 +396,11 @@ colsums_byname <- function(m, rowname = NA){
       matrix(nrow = 1) %>%
       # Preserve column names
       setcolnames_byname(colnames(m)) %>%
-      # But sort the result on names
-      sort_rows_cols %>%
+      # Set row name
       setrownames_byname(rowname) %>%
+      # But sort the result on names
+      sort_rows_cols() %>%
+      # Set types
       setrowtype(rowtype(m)) %>%
       setcoltype(coltype(m))
   }
