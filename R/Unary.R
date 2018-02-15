@@ -382,7 +382,7 @@ rowsums_byname <- function(m, colname = NA){
 #' res$cs2
 colsums_byname <- function(m, rowname = NA){
    if (is.null(rowname)) {
-    # Set to NA so that we can try setting to coltype in rowsum.func
+    # Set to NA so that we can try setting to coltype in colsum.func
     rowname <- NA_character_
   }
   colsum.func <- function(m, rowname){
