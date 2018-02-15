@@ -119,13 +119,8 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
     return(Map(binaryapply_byname, lfun, a, b, ldots,
                match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize))
   }
-  # if (length(list(...)) == 0) {
-  #   out <- FUN(a, b)
-  # } else {
-  #   out <- FUN(a, b, ...)
-  # }
   out <- do.call(FUN, c(list(a), list(b), .FUNdots))
-  # if (match_type %in% c("all", "matmult")) {
+  
   if (rowcoltypes) {
     # Either match_type is 
     #   "all" 

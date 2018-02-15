@@ -1,4 +1,4 @@
-# This file contains several utility functions
+# This file contains several utility functions for the byname package.
 
 
 #' Organize binary arguments
