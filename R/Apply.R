@@ -187,5 +187,7 @@ cumapply_byname <- function(FUN, m){
   for (i in 2:length(m)) {
     out[[i]] <- FUN(m[[i]], out[[i - 1]])
   }
+  # Preserve names of m in the outgoing list.
+  out <- out %>% set_names(names(m))
   return(out)
 }
