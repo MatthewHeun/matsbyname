@@ -11,6 +11,9 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+library(dplyr)
+library(byname)
 ```
 
 ## Introduction
@@ -33,15 +36,15 @@ The `*apply_byname` functions have several arguments.
 
 | Argument | Description
 |--:|:------------------------------
-`FUN` | a unary function in the case of `unaryapply_byname`, a binary function in the case of `binaryapply_byname` and `cumapply_byname`
+`FUN` | a unary function in the case of `unaryapply_byname`, a binary function (that may also accept a single argument) in the case of `binaryapply_byname`, and a binary function (that must also accept only a single argument) in the case of `cumapply_byname`
 `a` | a matrix, a list or matrices, or a column of matrices in a data frame
 `b` | a matrix, a list or matrices, or a column of matrices in a data frame
-`...` | arguments to be passed to `FUN`
+`.FUNdots` | a named list of arguments to be passed to `FUN`
  `rowcoltypes` | tells what to do with row and column types
  `match_type` | tells how row and column types of `a` and `b` arguments must be matched
  `.organize` | tells whether to automatically "complete" `a` and `b` relative to each other and sort the rows and columns of the completed matrices
 
-`FUN` is applied as expected over `a` (in the case of `unaryapply_byname` and `cumapply_byname`) 
+`FUN` is mapped as expected over `a` (in the case of `unaryapply_byname` and `cumapply_byname`) 
 or over `a` and `b` (in the case of `binaryapply_byname`).
 `FUN` should assume that its `a` and/or `b` arguments are single numbers or matrices; 
 `*apply_byname` handles all mapping across lists.
@@ -50,21 +53,85 @@ The following sections describe each `*apply_byname` function.
 
 ## `unaryapply_byname`
 
-`unaryapply_byname` applies `FUN` to a single matrix, a list of matrices, or a column in a data frame
-that contains matrices.
-The `rowcoltypes` argument must be one of 
+`unaryapply_byname` applies `FUN` to a single matrix, a list of matrices, or 
+(if used with `dplyr::mutate`) a column in a data frame that contains matrices.
+The `rowcoltypes` argument must be one of the following:
 
-"all", "transpose", "row", "col", "none"
+| `rowcoltypes` value | Behaviour
+|--:|:---------------------------------
+`"all"` | transfer both row and column types of \code{a} directly to output (the default)
+`"transpose"` | rowtype of \code{a} becomes coltype of output; coltype of \code{a} becomes rowtype of output
+`"row"` | rowtype of \code{a} becomes both rowtype and coltype of output
+`"col"` | coltype of \code{a} becomes both rowtype and coltype of output
+`"none"` | rowtype and coltype not set by this function; \code{FUN} will set rowtype and coltype
 
+A simple example follows.
+
+```{r}
+U <- matrix(1:4, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>%
+  setrowtype("Products") %>% setcoltype("Industries")
+U
+difference_byname(0, U)
+unaryapply_byname(`-`, U)
+```
 
 
 ## `binaryapply_byname`
 
+`binaryapply_byname` applies `FUN` to a pair of matrices, a pair of lists of matrices, or 
+(if used with `dplyr::mutate`) a pair of columns in a data frame that contains matrices.
 
+`match_type` must be one of `"all"`, `"matmult"`, or `"none"`.
 
+| `match_type` value | Behaviour
+|--:|:--------------------------------------------
+`"all"` | rowtypes of `a` must match rowtypes of `b` and coltypes of `a` must match coltypes of `b` (the default)
+`"matmult"` | coltypes of `a` must match rowtypes of `b`
+`"none"` | neither coltypes nor rowtypes are checked
+
+The `rowcoltypes` argument (a boolean) 
+tells whether to apply row and column types from `a` and `b`
+to the output.
+
+The `.organize` argument (a boolean) 
+tells whether to automatically complete `a` and `b` relative to each other and
+sort the rows and columns of the completed matrices.
+Normally, this should be `TRUE` (the default).
+
+A simple example follows.
+
+```{r}
+U <- matrix(1:4, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>%
+  setrowtype("Products") %>% setcoltype("Industries")
+U
+Y <- matrix(1:4, ncol = 2, dimnames = list(c("p2", "p1"), c("i2", "i1"))) %>%
+  setrowtype("Products") %>% setcoltype("Industries")
+Y
+sum_byname(U, Y)
+binaryapply_byname(`+`, U, Y)
+```
 
 ## `cumapply_byname`
 
+`cumapply_byname` applies `FUN` cumulatively to a list of numbers, 
+a list of matrices, or (if used with `dplyr::mutate`) a column of a data frame.
+`FUN` must be a binary function that also allows a single argument.
+The result is a list with first element `FUN(m[[1]])`.
+For `i >= 2`, elements of the resulting list are `FUN(m[[i]], out[[i-1]])`, 
+where `out` is the result list.
+
+Simple examples follow.
+
+```{r}
+cumapply_byname(sum_byname, list(1, 2, 3, 4))
+cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
+```
 
 
 ## Summary
+
+The various `*apply_byname` functions allow users to extend the functionality of the `byname` 
+package as needed for any problem domain.
+The functions are used extensively in `byname` itself.
+In fact, all `byname` functions utilize the `*apply_byname` functions,
+so they are ready for prime time!
