@@ -58,12 +58,12 @@ organize_args <- function(a, b, match_type = "all", fill){
   }
   if (is.list(a) | is.list(b)) {
     if (!is.list(a)) {
-      # b is a list, but a is not.  Make a into a list.
-      a <- make_list(a, n = length(b))
+      # b is a list, but a is not.  Make a into a list and give it same names as b.
+      a <- make_list(a, n = length(b)) %>% set_names(names(b))
     }
     if (!is.list(b)) {
-      # a is a list, but b is not.  Make b into a list.
-      b <- make_list(b, n = length(a))
+      # a is a list, but b is not.  Make b into a list and give it same names as a.
+      b <- make_list(b, n = length(a)) %>% set_names(names(a))
     }
   }
   if (is.list(a) & is.list(b)) {
