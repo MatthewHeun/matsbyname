@@ -44,7 +44,7 @@ The `*apply_byname` functions have several arguments.
  `match_type` | tells how row and column types of `a` and `b` arguments must be matched
  `.organize` | tells whether to automatically "complete" `a` and `b` relative to each other and sort the rows and columns of the completed matrices
 
-`FUN` is applied as expected over `a` (in the case of `unaryapply_byname` and `cumapply_byname`) 
+`FUN` is mapped as expected over `a` (in the case of `unaryapply_byname` and `cumapply_byname`) 
 or over `a` and `b` (in the case of `binaryapply_byname`).
 `FUN` should assume that its `a` and/or `b` arguments are single numbers or matrices; 
 `*apply_byname` handles all mapping across lists.
@@ -59,7 +59,7 @@ The `rowcoltypes` argument must be one of the following:
 
 | `rowcoltypes` value | Behaviour
 |--:|:---------------------------------
-`"all"` | transfer both row and column types of \code{a} directly to output
+`"all"` | transfer both row and column types of \code{a} directly to output (the default)
 `"transpose"` | rowtype of \code{a} becomes coltype of output; coltype of \code{a} becomes rowtype of output
 `"row"` | rowtype of \code{a} becomes both rowtype and coltype of output
 `"col"` | coltype of \code{a} becomes both rowtype and coltype of output
@@ -78,8 +78,38 @@ unaryapply_byname(`-`, U)
 
 ## `binaryapply_byname`
 
+`binaryapply_byname` applies `FUN` to a pair of matrices, a pair of lists of matrices, or 
+(if used with `dplyr::mutate`) a pair of columns in a data frame that contains matrices.
 
+`match_type` must be one of `"all"`, `"matmult"`, or `"none"`.
 
+| `match_type` value | Behaviour
+|--:|:--------------------------------------------
+`"all"` | rowtypes of `a` must match rowtypes of `b` and coltypes of `a` must match coltypes of `b` (the default)
+`"matmult"` | coltypes of `a` must match rowtypes of `b`
+`"none"` | neither coltypes nor rowtypes are checked
+
+The `rowcoltypes` argument (a boolean) 
+tells whether to apply row and column types from `a` and `b`
+to the output.
+
+The `.organize` argument (a boolean) 
+tells whether to automatically complete `a` and `b` relative to each other and
+sort the rows and columns of the completed matrices.
+Normally, this should be `TRUE` (the default).
+
+A simple example follows.
+
+```{r}
+U <- matrix(1:4, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>%
+  setrowtype("Products") %>% setcoltype("Industries")
+U
+Y <- matrix(1:4, ncol = 2, dimnames = list(c("p2", "p1"), c("i2", "i1"))) %>%
+  setrowtype("Products") %>% setcoltype("Industries")
+Y
+sum_byname(U, Y)
+binaryapply_byname(`+`, U, Y)
+```
 
 ## `cumapply_byname`
 
