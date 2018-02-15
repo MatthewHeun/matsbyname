@@ -1,4 +1,4 @@
-# This file contains several utility functions
+# This file contains several utility functions for the byname package.
 
 
 #' Organize binary arguments
@@ -218,9 +218,9 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
 list_of_rows_or_cols <- function(m, margin){
-  if (is.list(m)) {
-    margin <- make_list(margin, n = length(m), lenx = 1)
-  }
+  # if (is.list(m)) {
+  #   margin <- make_list(margin, n = length(m), lenx = 1)
+  # }
   lrc.func <- function(m, margin){
     stopifnot(length(margin) == 1)
     stopifnot(margin %in% c(1,2))
@@ -239,7 +239,7 @@ list_of_rows_or_cols <- function(m, margin){
     }) %>%
       set_names(colnames(out))
   }
-  unaryapply_byname(lrc.func, a = m, margin = margin, rowcoltypes = "none")
+  unaryapply_byname(lrc.func, a = m, .FUNdots = list(margin = margin), rowcoltypes = "none")
 }
 
 #' Gets row names
@@ -320,21 +320,21 @@ getcolnames_byname <- function(m){
 #' m %>% setrownames_byname(NA)
 #' 2 %>% setrownames_byname("row")
 #' # This also works for lists
-#' setrownames_byname(list(m,m), list(c("a", "b"), c("c", "d")))
+#' setrownames_byname(list(m,m), c("a", "b"))
 #' DF <- data.frame(m = I(list()))
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
-#' setrownames_byname(DF$m, list(c("r1", "r2")))
-#' setrownames_byname(DF$m, list(c("a", "b"), c("c", "d")))
-#' DF <- DF %>% mutate(m = setrownames_byname(m, list(c("r1", "r2"))))
+#' setrownames_byname(DF$m, c("r1", "r2"))
+#' setrownames_byname(DF$m, c("c", "d"))
+#' DF <- DF %>% mutate(m = setrownames_byname(m, c("r1", "r2")))
 #' DF$m[[1]]
 setrownames_byname <- function(m, rownames){
-  if (is.list(m) & !is.matrix(m) & is.vector(rownames) & !is.list(rownames)) {
-    # rownames is a vector of names (and not a list) to be applied 
-    # to each matrix in m.
-    # Thus, we should replicatate it to be same length as m
-    rownames <- make_list(rownames, n = length(m), lenx = 1)
-  }
+  # if (is.list(m) & !is.matrix(m) & is.vector(rownames) & !is.list(rownames)) {
+  #   # rownames is a vector of names (and not a list) to be applied 
+  #   # to each matrix in m.
+  #   # Thus, we should replicatate it to be same length as m
+  #   rownames <- make_list(rownames, n = length(m), lenx = 1)
+  # }
   rowname.func <- function(m, rownames){
     if (is.null(dim(m))) {
       # m has no dimensions. It is a constant.
@@ -351,7 +351,7 @@ setrownames_byname <- function(m, rownames){
     }
     return(out)
   }
-  unaryapply_byname(rowname.func, a = m, rownames = rownames, rowcoltypes = "all")
+  unaryapply_byname(rowname.func, a = m, .FUNdots = list(rownames = rownames), rowcoltypes = "all")
 }
 
 #' Sets column names
@@ -379,12 +379,12 @@ setrownames_byname <- function(m, rownames){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' setcolnames_byname(m, c("a", "b", "c"))
 setcolnames_byname <- function(m, colnames){
-  if (is.list(m) & !is.matrix(m) & is.vector(colnames) & !is.list(colnames)) {
-    # colnames is a vector of names (and not a list) to be applied 
-    # to each matrix in m.
-    # Thus, we should replicatate it to be same length as m
-    colnames <- make_list(colnames, n = length(m), lenx = 1)
-  }
+  # if (is.list(m) & !is.matrix(m) & is.vector(colnames) & !is.list(colnames)) {
+  #   # colnames is a vector of names (and not a list) to be applied 
+  #   # to each matrix in m.
+  #   # Thus, we should replicatate it to be same length as m
+  #   colnames <- make_list(colnames, n = length(m), lenx = 1)
+  # }
   colname.func <- function(m, colnames){
     if (is.null(dim(m))) {
       # m has no dimensions. It is a constant.
@@ -401,7 +401,7 @@ setcolnames_byname <- function(m, colnames){
     }
     return(out)
   }
-  unaryapply_byname(colname.func, a = m, colnames = colnames, rowcoltypes = "all")
+  unaryapply_byname(colname.func, a = m, .FUNdots = list(colnames = colnames), rowcoltypes = "all")
 }
 
 #' Sets row type for a matrix or a list of matrices
@@ -442,7 +442,7 @@ setrowtype <- function(x, rowtype){
     attr(x, "rowtype") <- rowtype
     return(x)
   }
-  unaryapply_byname(rt.func, a = x, rowtype = rowtype, rowcoltypes = "none")
+  unaryapply_byname(rt.func, a = x, .FUNdots = list(rowtype = rowtype), rowcoltypes = "none")
 }
 
 #' Sets column type for a matrix or a list of matrices
@@ -483,7 +483,7 @@ setcoltype <- function(x, coltype){
     attr(x, "coltype") <- coltype
     return(x)
   }
-  unaryapply_byname(ct.func, a = x, coltype = coltype, rowcoltypes = "none")
+  unaryapply_byname(ct.func, a = x, .FUNdots = list(coltype = coltype), rowcoltypes = "none")
 }
 
 #' Row type
@@ -506,7 +506,7 @@ setcoltype <- function(x, coltype){
 #' # This also works for lists
 #' rowtype(list(U,U))
 rowtype <- function(x){
-  unaryapply_byname(attr, a = x, which = "rowtype", rowcoltypes = "none")
+  unaryapply_byname(attr, a = x, .FUNdots = list(which = "rowtype"), rowcoltypes = "none")
 }
 
 #' Column type
@@ -528,7 +528,7 @@ rowtype <- function(x){
 #' # This also works for lists
 #' coltype(list(U,U))
 coltype <- function(x){
-  unaryapply_byname(attr, a = x, which = "coltype", rowcoltypes = "none")
+  unaryapply_byname(attr, a = x, .FUNdots = list(which = "coltype"), rowcoltypes = "none")
 }
 
 #' Select rows of a matrix (or list of matrices) by name
@@ -579,11 +579,11 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
-  if (is.list(m)) {
-    # If m is a list, we need to ensure that the patterns are also lists. 
-    retain_pattern <- make_list(retain_pattern, n = length(m))
-    remove_pattern <- make_list(remove_pattern, n = length(m))
-  }
+  # if (is.list(m)) {
+  #   # If m is a list, we need to ensure that the patterns are also lists. 
+  #   retain_pattern <- make_list(retain_pattern, n = length(m))
+  #   remove_pattern <- make_list(remove_pattern, n = length(m))
+  # }
   select.func <- function(m, retain_pattern, remove_pattern){
     retain_indices <- grep(pattern = retain_pattern, x = rownames(m))
     remove_indices <- grep(pattern = remove_pattern, x = rownames(m))
@@ -631,8 +631,8 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
     )
   }
   unaryapply_byname(select.func, a = m, 
-                    retain_pattern = retain_pattern, 
-                    remove_pattern = remove_pattern, rowcoltypes = "none")
+                    .FUNdots = list(retain_pattern = retain_pattern, remove_pattern = remove_pattern), 
+                    rowcoltypes = "none")
 }
 
 #' @title
@@ -689,10 +689,10 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
-  if (is.list(m)) {
-    retain_pattern <- make_list(retain_pattern, n = length(m))
-    remove_pattern <- make_list(remove_pattern, n = length(m))
-  }
+  # if (is.list(m)) {
+  #   retain_pattern <- make_list(retain_pattern, n = length(m))
+  #   remove_pattern <- make_list(remove_pattern, n = length(m))
+  # }
   select.func <- function(m, retain_pattern, remove_pattern){
     retain_indices <- grep(pattern = retain_pattern, x = colnames(m))
     remove_indices <- grep(pattern = remove_pattern, x = colnames(m))
@@ -740,9 +740,10 @@ select_cols_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
     )
     
   }
-  unaryapply_byname(select.func, a = m, 
-                    retain_pattern = retain_pattern, 
-                    remove_pattern = remove_pattern, rowcoltypes = "none")
+  unaryapply_byname(select.func, 
+                    a = m, 
+                    .FUNdots = list(retain_pattern = retain_pattern, remove_pattern = remove_pattern), 
+                    rowcoltypes = "none")
 }
 
 #' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
@@ -806,7 +807,7 @@ clean_byname <- function(m, margin = c(1, 2), clean_value = 0){
       return(b)
     }
   }
-  unaryapply_byname(clean.func, a = m, margin, clean_value, rowcoltypes = "all")
+  unaryapply_byname(clean.func, a = m, .FUNdots = list(margin = margin, clean_value = clean_value), rowcoltypes = "all")
 }
 
 #' Test whether this is the zero matrix
@@ -838,7 +839,7 @@ iszero_byname <- function(m, tol = 1e-6){
   zero.func <- function(m, tol){
     all(abs(m) < tol)
   }
-  unaryapply_byname(zero.func, a = m, tol = tol, rowcoltypes = "none")
+  unaryapply_byname(zero.func, a = m, .FUNdots = list(tol = tol), rowcoltypes = "none")
 }
 
 #' Logarithmic mean of two numbers

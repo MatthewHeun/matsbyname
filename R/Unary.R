@@ -21,7 +21,7 @@ library(dplyr)
 #' elementlog_byname(m)
 #' elementlog_byname(m, base = 10)
 elementlog_byname <- function(M, base = exp(1)){
-  unaryapply_byname(log, a = M, base = base)
+  unaryapply_byname(log, a = M, .FUNdots = list(base = base))
 }
 
 
@@ -168,9 +168,9 @@ hatize_byname <- function(v){
 #' # This also works with lists
 #' identize_byname(list(M, M))
 identize_byname <- function(M, margin = c(1,2)){
-  if (is.list(M)) {
-    margin <- make_list(margin, n = length(M), lenx = 1)
-  }
+  # if (is.list(M)) {
+  #   margin <- make_list(margin, n = length(M), lenx = 1)
+  # }
   identize.func <- function(M, margin){
     if (class(M) == "numeric" & length(M) == 1) {
       # Assume we have a single number here
@@ -212,7 +212,7 @@ identize_byname <- function(M, margin = c(1,2)){
     # Should never get here, but just in case:
     stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(identize.func, a = M, margin = margin, rowcoltypes = "none")
+  unaryapply_byname(identize.func, a = M, .FUNdots = list(margin = margin), rowcoltypes = "none")
 }
 
 #' Compute fractions of matrix entries
@@ -239,9 +239,9 @@ identize_byname <- function(M, margin = c(1,2)){
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(M, margin){
-  if (is.list(M)) {
-    margin <- make_list(margin, n = length(M), lenx = 1)
-  }
+  # if (is.list(M)) {
+  #   margin <- make_list(margin, n = length(M), lenx = 1)
+  # }
   fractionize.func <- function(M, margin){
     if (!"matrix" %in% class(M) && !"data.frame" %in% class(M)) {
       # Assume we have a single number here
@@ -277,7 +277,7 @@ fractionize_byname <- function(M, margin){
     # Should never get here, but just in case:
     stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(fractionize.func, a = M, margin = margin, rowcoltypes = "all")
+  unaryapply_byname(fractionize.func, a = M, .FUNdots = list(margin = margin), rowcoltypes = "all")
 }
 
 
@@ -338,7 +338,7 @@ rowsums_byname <- function(m, colname = NA){
       setrowtype(rowtype(m)) %>%
       setcoltype(coltype(m))
   }
-  unaryapply_byname(rowsum.func, a = m, colname = colname, rowcoltypes = "none")
+  unaryapply_byname(rowsum.func, a = m, .FUNdots = list(colname = colname), rowcoltypes = "none")
 }
 
 #' Column sums, sorted by name
@@ -400,7 +400,7 @@ colsums_byname <- function(m, rowname = NA){
       setrowtype(rowtype(m)) %>%
       setcoltype(coltype(m))
   }
-  unaryapply_byname(colsum.func, a = m, rowname = rowname, rowcoltypes = "none")
+  unaryapply_byname(colsum.func, a = m, .FUNdots = list(rowname = rowname), rowcoltypes = "none")
 }
 
 #' Sum of all elements in a matrix
@@ -496,7 +496,7 @@ rowprods_byname <- function(M, colname = NA){
       setrowtype(rowtype(M)) %>%
       setcoltype(coltype(M))
   }
-  unaryapply_byname(rowprod.func, a = M, colname = colname, rowcoltypes = "none")
+  unaryapply_byname(rowprod.func, a = M, .FUNdots = list(colname = colname), rowcoltypes = "none")
 }
 
 #' Column products, sorted by name
@@ -556,7 +556,7 @@ colprods_byname <- function(M, rowname = NA){
       setrowtype(rowtype(M)) %>%
       setcoltype(coltype(M))
   }
-  unaryapply_byname(colprod.func, a = M, rowname = rowname, rowcoltypes = "none")
+  unaryapply_byname(colprod.func, a = M, .FUNdots = list(rowname = rowname), rowcoltypes = "none")
 }
 
 #' Product of all elements in a matrix
@@ -610,7 +610,6 @@ prodall_byname <- function(M){
 #' (whose rows and columns have been completed and sorted)
 #' @export
 #' 
-#' @importFrom parallel mcMap
 #' @importFrom magrittr %>%
 #' 
 #' @examples

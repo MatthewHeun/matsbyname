@@ -1,5 +1,19 @@
 # News for `byname`
 
+## byname 0.1.7 (2018-02-14)
+
+* `unaryapply_byname` and `binaryapply_byname` now have `.FUNdots` arguments
+  through which arguments to `FUN` should be passed. 
+  Use of the `...` argument is no longer possible.
+  `...` is reserved for future changes to allow an unlimited number of arguments
+  to some functions, such as `sum_byname`.
+* The implementation of the `.FUNdots` argument fixed a bug 
+  where calculations were incorrect when 
+  lists of matrices were stored in cells of a data frame. 
+  Distribution of arguments (such as `margin = c(1, 2)`) across rows of a data frame
+  was not happening propertly.
+
+
 ## byname 0.1.6 (2018-02-08)
 
 * New functions `cumsum_byname`, `cumprod_byname`, and `cumapply_byname`.

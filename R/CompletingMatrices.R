@@ -88,7 +88,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
       mat <- make_list(mat, length(x))
     }
     # Double-check that we have what we need for the margin argument.
-    margin <- make_list(margin, length(x), lenx = 1)
+    # margin <- make_list(margin, length(x), lenx = 1)
   } else if (is.null(x) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
     # x is NULL, and assume we have a list of matrices in the matrix argument.
     # Under these conditions, we return matrices with same row and column names as each matrix, but
@@ -167,7 +167,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     return(x)
   }
   
-  binaryapply_byname(complete.func, a = x, b = mat, fill = fill, margin = margin, 
+  binaryapply_byname(complete.func, a = x, b = mat, .FUNdots = list(fill = fill, margin = margin), 
                      match_type = "all", rowcoltypes = FALSE, .organize = FALSE)
 }
 
@@ -215,11 +215,11 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
 #' # Both columns and rows sorted, rows by the list, columns in natural order.
 #' sort_rows_cols(x = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
 sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
-  if (is.list(x) & !is.data.frame(x)) {
-    margin <- make_list(margin, n = length(x), lenx = 1)
-    roworder <- make_list(roworder, n = length(x), lenx = 1)
-    colorder <- make_list(colorder, n = length(x), lenx = 1)
-  }
+  # if (is.list(x) & !is.data.frame(x)) {
+  #   margin <- make_list(margin, n = length(x), lenx = 1)
+  #   roworder <- make_list(roworder, n = length(x), lenx = 1)
+  #   colorder <- make_list(colorder, n = length(x), lenx = 1)
+  # }
   sort.func <- function(x, margin, roworder, colorder){
     # Gather rowtype and coltype so we can apply those later.
     rt <- rowtype(x)
@@ -267,7 +267,8 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
     }
     return(x %>% setrowtype(rt) %>% setcoltype(ct))
   }
-  unaryapply_byname(sort.func, a = x, margin = margin, roworder = roworder, colorder = colorder)
+  # unaryapply_byname(sort.func, a = x, margin = margin, roworder = roworder, colorder = colorder)
+  unaryapply_byname(sort.func, a = x, .FUNdots = list(margin = margin, roworder = roworder, colorder = colorder))
 }
 
 #' Complete matrices relative to one another and sort into same row, column order
