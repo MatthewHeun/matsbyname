@@ -1,5 +1,10 @@
 # News for `byname`
 
+## byname 0.1.8 (2018-02-14)
+
+* Added `applybyname` vignette.
+
+
 ## byname 0.1.7 (2018-02-14)
 
 * `unaryapply_byname` and `binaryapply_byname` now have `.FUNdots` arguments
@@ -11,7 +16,7 @@
   where calculations were incorrect when 
   lists of matrices were stored in cells of a data frame. 
   Distribution of arguments (such as `margin = c(1, 2)`) across rows of a data frame
-  was not happening propertly.
+  was not happening properly.
 
 
 ## byname 0.1.6 (2018-02-08)
