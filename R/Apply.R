@@ -15,7 +15,7 @@
 #'          \item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
 #'          \item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
 #'          \item{\code{none}: rowtype and coltype not set by this function. 
-#'                             Rather, \code{FUN} will rowtype and coltype.}
+#'                             Rather, \code{FUN} will set rowtype and coltype.}
 #'        }
 #'
 #' @return the result of applying \code{FUN} "byname" to \code{a}.
