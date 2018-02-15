@@ -5,7 +5,7 @@
 #'
 #' @param FUN a unary function to be applied "byname" to \code{a}.
 #' @param a the argument to \code{FUN}.
-#' @param ... other arguments to be passed to \code{FUN}.
+#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
 #' @param rowcoltypes a string that tells how to transfer row and column types of \code{a} to output. 
 #'        Options are:
 #'        \itemize{
@@ -72,7 +72,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' @param FUN a binary function to be applied "byname" to \code{a} and \code{b}.
 #' @param a the first argument to \code{FUN}.
 #' @param b the second argument to \code{FUN}.
-#' @param ... additional named arguments passed to \code{FUN}.
+#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
 #' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
 #'        When both \code{a} and \code{b} are matrices,
 #'        "\code{all}" (the default) indicates that

@@ -12,6 +12,8 @@ unaryapply_byname(FUN, a, .FUNdots = NULL, rowcoltypes = c("all",
 
 \item{a}{the argument to \code{FUN}.}
 
+\item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
+
 \item{rowcoltypes}{a string that tells how to transfer row and column types of \code{a} to output. 
 Options are:
 \itemize{
@@ -23,8 +25,6 @@ Options are:
   \item{\code{none}: rowtype and coltype not set by this function. 
                      Rather, \code{FUN} will rowtype and coltype.}
 }}
-
-\item{...}{other arguments to be passed to \code{FUN}.}
 }
 \value{
 the result of applying \code{FUN} "byname" to \code{a}.
