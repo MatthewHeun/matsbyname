@@ -5,7 +5,7 @@
 #'
 #' @param FUN a unary function to be applied "byname" to \code{a}.
 #' @param a the argument to \code{FUN}.
-#' @param ... other arguments to be passed to \code{FUN}.
+#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
 #' @param rowcoltypes a string that tells how to transfer row and column types of \code{a} to output. 
 #'        Options are:
 #'        \itemize{
@@ -30,16 +30,16 @@
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' difference_byname(0, U)
 #' unaryapply_byname(`-`, U)
-unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "row", "col", "none")){
+unaryapply_byname <- function(FUN, a, .FUNdots = NULL, 
+                              rowcoltypes = c("all", "transpose", "row", "col", "none")){
   rowcoltypes <- match.arg(rowcoltypes)
   if (is.list(a)) {
-    return(Map(unaryapply_byname, make_list(FUN, n = length(a)), a, ..., rowcoltypes = rowcoltypes))
+    lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
+    ldots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+    return(Map(unaryapply_byname, lfun, a, ldots, rowcoltypes = rowcoltypes))
   }
-  if (length(list(...)) == 0) {
-    out <- FUN(a)
-  } else {
-    out <- FUN(a, ...)
-  }
+  out <- do.call(FUN, c(list(a), .FUNdots))
+
   if (rowcoltypes == "all") {
     out <- out %>%
       setrowtype(rowtype(a)) %>%
@@ -72,7 +72,7 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #' @param FUN a binary function to be applied "byname" to \code{a} and \code{b}.
 #' @param a the first argument to \code{FUN}.
 #' @param b the second argument to \code{FUN}.
-#' @param ... additional named arguments passed to \code{FUN}.
+#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
 #' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
 #'        When both \code{a} and \code{b} are matrices,
 #'        "\code{all}" (the default) indicates that
@@ -105,7 +105,7 @@ unaryapply_byname <- function(FUN, a, ..., rowcoltypes = c("all", "transpose", "
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
-binaryapply_byname <- function(FUN, a, b, ..., 
+binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL, 
                                match_type = c("all", "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE){
   match_type <- match.arg(match_type)
   if (.organize) {
@@ -114,15 +114,13 @@ binaryapply_byname <- function(FUN, a, b, ...,
     b <- args$b
   }
   if (is.list(a) & is.list(b)) {
-    return(Map(binaryapply_byname, make_list(FUN, n = max(length(a), length(b))), 
-               a, b, ..., match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize))
+    lfun <- replicate(n = max(length(a), length(b)), expr = FUN, simplify = FALSE)
+    ldots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
+    return(Map(binaryapply_byname, lfun, a, b, ldots,
+               match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize))
   }
-  if (length(list(...)) == 0) {
-    out <- FUN(a, b)
-  } else {
-    out <- FUN(a, b, ...)
-  }
-  # if (match_type %in% c("all", "matmult")) {
+  out <- do.call(FUN, c(list(a), list(b), .FUNdots))
+  
   if (rowcoltypes) {
     # Either match_type is 
     #   "all" 

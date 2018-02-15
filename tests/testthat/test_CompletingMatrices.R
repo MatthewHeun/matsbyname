@@ -88,6 +88,31 @@ test_that("sort_rows_cols works as expected", {
   expect_equal(sort_rows_cols(mtypes), msorted %>% setrowtype("row") %>% setcoltype("col"))
 })
 
+test_that("sort_rows_cols works with different-length arguments for lists", {
+  m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  m_sorted <- matrix(c(2, 1, 4, 3), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  mlist <- list(m, m)
+  expect_equal(sort_rows_cols(mlist, margin = c(1,2), roworder = c("r1", "r2"), colorder = NA), 
+               list(m_sorted, m_sorted))
+  # Now try in a matrix with a list of lists
+  DF <- data.frame(m = I(list()))
+  DF[[1, "m"]] <- mlist
+  DF[[2, "m"]] <- mlist
+  DF[[3, "m"]] <- mlist
+  res <- DF %>% 
+    mutate(
+      sorted = sort_rows_cols(m)
+    )
+  expect_equal(res$sorted[[1]][[1]], m_sorted)
+  expect_equal(res$sorted[[1]][[2]], m_sorted)
+  expect_equal(res$sorted[[2]][[1]], m_sorted)
+  expect_equal(res$sorted[[1]][[2]], m_sorted)
+  expect_equal(res$sorted[[3]][[1]], m_sorted)
+  expect_equal(res$sorted[[1]][[2]], m_sorted)
+})
+
 
 ###########################################################
 context("Completing rows and columns")
@@ -283,6 +308,27 @@ test_that("complete_rows_cols works as expected", {
   B_filled <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
   expect_equal(complete_rows_cols(mat = list(B, B), fill = 42), list(B_filled, B_filled))
+})
+
+test_that("completing works when list is present and lists and ... have different lengths", {
+  m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  m2 <- matrix(c(7:12), ncol = 3, dimnames = list(c("r2", "r3"), c("c2", "c3", "c4")))
+  complete_m1_m2 <- matrix(c(1,4,0,0,
+                             2,5,0,0,
+                             3,6,0,0),
+                           nrow = 3, byrow = TRUE, 
+                           dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4")))
+  # Adds empty columns c3 and c4
+  expect_equal(complete_rows_cols(m1, m2), complete_m1_m2)
+  # Try in a list
+  expect_equal(complete_rows_cols(x = list(m1, m1, m1), 
+                                  mat = list(m2, m2, m2)), 
+                                  list(complete_m1_m2, complete_m1_m2, complete_m1_m2))
+  # Now try with different arguments
+  expect_equal(complete_rows_cols(m1, m2, fill = 0, margin = c(1,2)), complete_m1_m2)
+  # And in a list
+  expect_equal(complete_rows_cols(list(m1, m1, m1), list(m2, m2, m2), fill = 0, margin = c(1,2)), 
+               list(complete_m1_m2, complete_m1_m2, complete_m1_m2))
 })
 
 

@@ -221,7 +221,7 @@ test_that("identize_byname works as expected", {
   expect_equal(identize_byname(m, margin = 1), 
                matrix(1, nrow = nrow(m), ncol = 1) %>% 
                  setrownames_byname(rownames(m)) %>% setcolnames_byname(coltype(m)) %>% 
-                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m))) 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   
   # Test for row vector
   expect_equal(identize_byname(m, margin = 2), 
@@ -396,10 +396,6 @@ test_that("matrix row selection by name with inexact matches and multiple select
 })
 
 test_that("matrix row selection by name in lists works as expected", {
-  # Use different row names for each item in the list
-  expect_equal(select_rows_byname(list(m,m), retain_pattern = list("^i1$|^i4$", "^i2$|^i3$")), 
-               list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
-                    m[c(2,3), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
   # Use same row names for each item in the list
   expect_equal(select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$"),
                list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
@@ -471,10 +467,6 @@ test_that("matrix column selection by name with inexact matches and multiple sel
 })
 
 test_that("matrix column selection by name in lists works as expected", {
-  # Use different column names for each item in the list
-  expect_equal(select_cols_byname(list(m,m), retain_pattern = list("^p1$|^p4$", "^p2$|^p3$")), 
-               list(m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
-                    m[ , c(2,3)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
   # Use same column names for each item in the list
   expect_equal(select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$"),
                list(m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
@@ -797,23 +789,23 @@ test_that("setting row names works as expected", {
   expect_null(rownames(m5))
   # This also works for lists
   l1 <- list(m1,m1)
-  l2 <- setrownames_byname(l1, list(c("a", "b"), c("c", "d")))
-  expect_equal(list(rownames(l2[[1]]), rownames(l2[[2]])), list(c("a", "b"), c("c", "d")))
+  l2 <- setrownames_byname(l1, c("a", "b"))
+  expect_equal(list(rownames(l2[[1]]), rownames(l2[[2]])), list(c("a", "b"), c("a", "b")))
   # This also works with data frames
   DF1 <- data.frame(mcol = I(list()))
   DF1[[1,"mcol"]] <- m1
   DF1[[2,"mcol"]] <- m1
   DF2 <- DF1 %>% 
     mutate(
-      mcol2 = setrownames_byname(mcol, make_list(c("r1", "r2"), n = nrow(DF1), lenx = 1))
+      mcol2 = setrownames_byname(mcol, c("r1", "r2"))
     )
   expect_equal(rownames(DF2$mcol2[[1]]), c("r1", "r2"))
   expect_equal(rownames(DF2$mcol2[[2]]), c("r1", "r2"))
   DF3 <- DF1 %>% 
     mutate(
-      mcol2 = setrownames_byname(mcol, make_list(list(c("r1", "r2"), c("r3", "r4")), n = nrow(DF1), lenx = 2))
+      mcol2 = setrownames_byname(mcol, c("r3", "r4"))
     )
-  expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r1", "r2"), c("r3", "r4")))
+  expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r3", "r4"), c("r3", "r4")))
 })
 
 test_that("setting col names works as expected", {
@@ -829,8 +821,8 @@ test_that("setting col names works as expected", {
   expect_null(colnames(m5))
   # This also works for lists
   l1 <- list(m1,m1)
-  l2 <- setcolnames_byname(l1, list(c("a", "b", "c"), c("d", "e", "f")))
-  expect_equal(list(colnames(l2[[1]]), colnames(l2[[2]])), list(c("a", "b", "c"), c("d", "e", "f")))
+  l2 <- setcolnames_byname(l1, c("a", "b", "c"))
+  expect_equal(list(colnames(l2[[1]]), colnames(l2[[2]])), list(c("a", "b", "c"), c("a", "b", "c")))
   # This also works with data frames
   DF1 <- data.frame(mcol = I(list()))
   DF1[[1,"mcol"]] <- m1
@@ -843,9 +835,9 @@ test_that("setting col names works as expected", {
   expect_equal(colnames(DF2$mcol2[[2]]), c("c1", "c2", "c3"))
   DF3 <- DF1 %>% 
     mutate(
-      mcol2 = setcolnames_byname(mcol, list(c("c1", "c2", "c3"), c("c4", "c5", "c6")))
+      mcol2 = setcolnames_byname(mcol, c("c1", "c2", "c3"))
     )
-  expect_equal(list(colnames(DF3$mcol2[[1]]), colnames(DF3$mcol2[[2]])), list(c("c1", "c2", "c3"), c("c4", "c5", "c6")))
+  expect_equal(list(colnames(DF3$mcol2[[1]]), colnames(DF3$mcol2[[2]])), list(c("c1", "c2", "c3"), c("c1", "c2", "c3")))
 })
 
 
@@ -862,8 +854,8 @@ test_that("setrowtype and rowtype works as expected", {
   # This also works for lists
   Ul <- setrowtype(list(U,U), rowtype = "Products")
   expect_equal(rowtype(Ul), list("Products", "Products"))
-  Ul2 <- setrowtype(list(U,U), rowtype = list("Products", "Junk"))
-  expect_equal(rowtype(Ul2), list("Products", "Junk"))
+  Ul2 <- setrowtype(list(U,U), rowtype = "Junk")
+  expect_equal(rowtype(Ul2), list("Junk", "Junk"))
   # Also works for data frames
   DF <- data.frame(U = I(list()))
   DF[[1,"U"]] <- U
@@ -883,8 +875,8 @@ test_that("setcoltype and coltype works as expected", {
   # This also works for lists
   Ul <- setcoltype(list(U,U), coltype = "Industries")
   expect_equal(coltype(Ul), list("Industries", "Industries"))
-  Ul2 <- setcoltype(list(U,U), coltype = list("Industries", "Junk"))
-  expect_equal(coltype(Ul2), list("Industries", "Junk"))
+  Ul2 <- setcoltype(list(U,U), coltype = "Junk")
+  expect_equal(coltype(Ul2), list("Junk", "Junk"))
   # Also works for data frames
   DF <- data.frame(U = I(list()))
   DF[[1,"U"]] <- U

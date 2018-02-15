@@ -147,10 +147,10 @@ difference_byname <- function(minuend, subtrahend){
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
 matrixproduct_byname <- function(multiplicand, multiplier){
+  # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
+  # are completed and sorted, but rows and cols of the output are not guaranteed 
+  # to be sorted.
   binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
-    # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
-    # are completed and sorted, but rows and cols of the output are not guaranteed 
-    # to be sorted.
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     sort_rows_cols()
@@ -418,7 +418,7 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
     out %>%  
       setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
   }
-  binaryapply_byname(logmean.func, a = X1, b = X2, base = base)
+  binaryapply_byname(logmean.func, a = X1, b = X2, .FUNdots = list(base = base))
 }
 
 #' Compare two matrices (byname)

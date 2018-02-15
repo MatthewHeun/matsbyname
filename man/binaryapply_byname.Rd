@@ -4,8 +4,8 @@
 \alias{binaryapply_byname}
 \title{Apply a binary function byname}
 \usage{
-binaryapply_byname(FUN, a, b, ..., match_type = c("all", "matmult", "none"),
-  rowcoltypes = TRUE, .organize = TRUE)
+binaryapply_byname(FUN, a, b, .FUNdots = NULL, match_type = c("all",
+  "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE)
 }
 \arguments{
 \item{FUN}{a binary function to be applied "byname" to \code{a} and \code{b}.}
@@ -14,7 +14,7 @@ binaryapply_byname(FUN, a, b, ..., match_type = c("all", "matmult", "none"),
 
 \item{b}{the second argument to \code{FUN}.}
 
-\item{...}{additional named arguments passed to \code{FUN}.}
+\item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
 
 \item{match_type}{one of "\code{all}", "\code{matmult}", or "\code{none}".
 When both \code{a} and \code{b} are matrices,
