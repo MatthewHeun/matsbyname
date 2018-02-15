@@ -1,5 +1,10 @@
 # News for `byname`
 
+## byname 0.1.8 (2018-02-14)
+
+* Added `applybyname` vignette.
+
+
 ## byname 0.1.7 (2018-02-14)
 
 * `unaryapply_byname` and `binaryapply_byname` now have `.FUNdots` arguments
