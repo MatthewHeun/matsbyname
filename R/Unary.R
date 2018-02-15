@@ -610,7 +610,6 @@ prodall_byname <- function(M){
 #' (whose rows and columns have been completed and sorted)
 #' @export
 #' 
-#' @importFrom parallel mcMap
 #' @importFrom magrittr %>%
 #' 
 #' @examples
