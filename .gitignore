@@ -25,3 +25,5 @@ vignettes/*.pdf
 .Rproj.user
 .DS_Store
 inst/doc
+# File of comments for CRAN submission
+cran-comments.html
