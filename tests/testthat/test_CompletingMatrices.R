@@ -5,7 +5,7 @@
 # and tests containing the string "(" don't work as expected.
 
 library(dplyr)
-library(byname)
+library(matsbyname)
 library(parallel)
 library(magrittr)
 library(testthat)

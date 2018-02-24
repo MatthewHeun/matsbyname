@@ -7,7 +7,7 @@
 library(Hmisc)
 library(dplyr)
 library(parallel)
-library(byname)
+library(matsbyname)
 library(magrittr)
 library(testthat)
 library(matsindf)

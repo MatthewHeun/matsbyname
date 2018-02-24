@@ -1,5 +1,5 @@
 ---
-title: "applybyname-vignette"
+title: "Writing Custom Functions for <tt>matsbyname</tt>"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -13,15 +13,15 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 library(magrittr)
 library(dplyr)
-library(byname)
+library(matsbyname)
 ```
 
 ## Introduction
 
-The `byname` package provides many useful functions for "by name" manipulation of
+The `matsbyname` package provides many useful functions for "by name" manipulation of
 matrices, lists of matrices, and matrices in columns of data frames.
 However, the built-in functions may not cover all possible needs.
-`byname` provides three functions for these situations:
+`matsbyname` provides three functions for these situations:
 
 | Function | Purpose    
 |--:|:------------------------------------

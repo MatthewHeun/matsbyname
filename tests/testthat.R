@@ -1,5 +1,5 @@
 library(testthat)
-library(byname)
+library(matsbyname)
 library(parallel)
 
-test_check("byname")
+test_check("matsbyname")
