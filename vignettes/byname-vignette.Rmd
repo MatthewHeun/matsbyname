@@ -1,5 +1,5 @@
 ---
-title: "<tt>byname</tt> Vignette"
+title: "Use Cases and Examples for <tt>matsbyname</tt>"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 library(magrittr)
 library(dplyr)
 library(tidyr)
-library(byname)
+library(matsbyname)
 library(matsindf)
 ```
 

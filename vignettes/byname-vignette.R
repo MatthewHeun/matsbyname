@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 library(magrittr)
 library(dplyr)
 library(tidyr)
-library(byname)
+library(matsbyname)
 library(matsindf)
 
 ## ------------------------------------------------------------------------

@@ -866,14 +866,14 @@ iszero_byname <- function(m, tol = 1e-6){
 #' @export
 #'
 #' @examples
-#' byname:::logmean(0, 0) # 0
-#' byname:::logmean(0, 1) # 0
-#' byname:::logmean(1, 0) # 0
-#' byname:::logmean(1, 1) # 1
-#' byname:::logmean(2, 1)
-#' byname:::logmean(1, 2) # commutative
-#' byname:::logmean(1, 10) # base = exp(1), the default
-#' byname:::logmean(1, 10, base = 10)
+#' matsbyname:::logmean(0, 0) # 0
+#' matsbyname:::logmean(0, 1) # 0
+#' matsbyname:::logmean(1, 0) # 0
+#' matsbyname:::logmean(1, 1) # 1
+#' matsbyname:::logmean(2, 1)
+#' matsbyname:::logmean(1, 2) # commutative
+#' matsbyname:::logmean(1, 10) # base = exp(1), the default
+#' matsbyname:::logmean(1, 10, base = 10)
 logmean <- function(x1, x2, base = exp(1)){
   # Take care of pathological cases.
   if (x1 == 0) {
