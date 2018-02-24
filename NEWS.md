@@ -1,5 +1,10 @@
 # News for `byname`
 
+## matsbyname 0.2.0 (2018-02-23)
+
+* Name change to matsbyname.
+
+
 ## byname 0.1.9 (2018-02-14)
 
 * Now preserving names of list items in `*apply_byname` functions.
