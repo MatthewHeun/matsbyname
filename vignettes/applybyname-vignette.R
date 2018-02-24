@@ -2,7 +2,7 @@
 knitr::opts_chunk$set(echo = TRUE)
 library(magrittr)
 library(dplyr)
-library(byname)
+library(matsbyname)
 
 ## ------------------------------------------------------------------------
 U <- matrix(1:4, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>%

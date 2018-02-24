@@ -1,4 +1,4 @@
-Package: byname
+Package: matsbyname
 Type: Package
 Title: An Implementation of Matrix Mathematics
 Version: 0.1.9
