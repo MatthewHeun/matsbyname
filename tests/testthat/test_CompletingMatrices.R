@@ -331,6 +331,13 @@ test_that("completing works when list is present and lists and ... have differen
                list(complete_m1_m2, complete_m1_m2, complete_m1_m2))
 })
 
+test_that("complete_rows_cols works when fillrow is specified.", {
+  a <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  b <- matrix(c(1:6), byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c3", "c4")))
+  complete_rows_cols(a, b, fillrow = fillrow)
+})
+
 
 ###########################################################
 context("Completing and sorting matrices")

@@ -66,12 +66,12 @@ library("parallel")
 #'                    mat = make_list(matrix(0, nrow = 2, ncol = 2, 
 #'                                           dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
 #'                                    n = 2, lenx = 1))
-complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
-  if (is.data.frame(x)) {
-    stop("x cannot be a data frame in complete_rows_cols.")
-  }
+complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, fillrow = NULL, fillcol = NULL, margin = c(1,2)){
   if (is.null(x) & is.null(mat)) {
     stop("Both x and matrix are NULL in complete_rows_cols.")
+  }
+  if (is.data.frame(x)) {
+    stop("x cannot be a data frame in complete_rows_cols.")
   }
   if (is.list(x) & !is.data.frame(x) & !is.matrix(x)) {
     # Assume we have a list of matrices for x, not a single matrix.
@@ -98,7 +98,7 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     margin <- make_list(margin, length(mat), lenx = 1)
   }
 
-  complete.func <- function(x = NULL, mat = NULL, fill, margin){
+  complete.func <- function(x = NULL, mat = NULL, fill, fillrow = NULL, fillcol = NULL, margin){
     # When we get here, we should not have lists for any of the arguments.
     # We should have single matrices for x and/or matrix. 
     
@@ -138,7 +138,6 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
       stop("Can't complete x that is missing dimnames with non-NULL names.  How can we know which names are already present in x?")
     }
     
-    
     # At this point, we should have 
     #   * a single matrix x,
     #   * names with which to complete the dimnames of x,
@@ -153,10 +152,31 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
       }
     }
     if (1 %in% margin) {
-      zerorownames <- setdiff(names[[1]], rownames(x))
-      zerorows <- matrix(fill, ncol = ncol(x), nrow = length(zerorownames), 
-                         dimnames = list(zerorownames, colnames(x)))
-      x <- rbind(x, zerorows)
+      fillrownames <- setdiff(names[[1]], rownames(x))
+      if (is.null(fillrow)) {
+        # Make fill rows from the fill value.
+        fillrows <- matrix(fill, nrow = length(fillrownames), ncol = ncol(x), 
+                          dimnames = list(fillrownames, colnames(x)))
+      } else {
+        # fillrow is present. Ensure fillrows is the right class (matrix) and has the right dimensions (1 by x)
+        if (!is.matrix(fillrow)) {
+          stop("fillrow must be a matrix in complete_rows_cols.")
+        }
+        if (!nrow(fillrow) == 1) {
+          stop("fillrow must be a matrix with one row in complete_rows_cols.")
+        }
+        if (!ncol(fillrow) == ncol(x)) {
+          stop("fillrow must be a row matrix with same number of columns as x.")
+        }
+        if (!colnames(fillrow) == colnames(x)) {
+          stop("column names of fillrow must match column names of x in complete_rows_cols.")
+        }
+        # Make the fillrows matrix from the fillrow row vector
+        fillrows <- matrix(rep.int(fillrow, length(fillrownames)), byrow = TRUE, 
+                           nrow = length(fillrownames), ncol = ncol(x), 
+                           dimnames = list(fillrownames, colnames(x)))
+      }
+      x <- rbind(x, fillrows)
     }
     if (2 %in% margin) {
       zerocolnames <- setdiff(names[[2]], colnames(x))
@@ -167,7 +187,9 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     return(x)
   }
   
-  binaryapply_byname(complete.func, a = x, b = mat, .FUNdots = list(fill = fill, margin = margin), 
+  binaryapply_byname(complete.func, a = x, b = mat, .FUNdots = list(fill = fill, 
+                                                                    fillrow = fillrow, fillcol = fillcol, 
+                                                                    margin = margin), 
                      match_type = "all", rowcoltypes = FALSE, .organize = FALSE)
 }
 

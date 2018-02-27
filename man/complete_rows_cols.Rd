@@ -4,7 +4,8 @@
 \alias{complete_rows_cols}
 \title{Complete rows and columns in one matrix relative to another}
 \usage{
-complete_rows_cols(x = NULL, mat = NULL, fill = 0, margin = c(1, 2))
+complete_rows_cols(x = NULL, mat = NULL, fill = 0, fillrow = NULL,
+  fillcol = NULL, margin = c(1, 2))
 }
 \arguments{
 \item{x}{a matrix or list of matrices to be completed.}
