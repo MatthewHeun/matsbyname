@@ -875,7 +875,8 @@ iszero_byname <- function(m, tol = 1e-6){
 #' matsbyname:::logmean(1, 10) # base = exp(1), the default
 #' matsbyname:::logmean(1, 10, base = 10)
 logmean <- function(x1, x2, base = exp(1)){
-  # Take care of pathological cases.
+  # Take care of pathological cases.  
+  # See https://en.wikipedia.org/wiki/Logarithmic_mean for details.
   if (x1 == 0) {
     return(0)
   }
