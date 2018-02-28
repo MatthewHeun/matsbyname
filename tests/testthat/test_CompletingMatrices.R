@@ -334,8 +334,24 @@ test_that("completing works when list is present and lists and ... have differen
 test_that("complete_rows_cols works when fillrow is specified.", {
   a <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   b <- matrix(c(1:6), byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
-  fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c3", "c4")))
-  complete_rows_cols(a, b, fillrow = fillrow)
+  # Test for problematic cases.
+  # fillrow is not a matrix
+  expect_error(complete_rows_cols(a, b, fillrow = 42), "fillrow must be a matrix in complete_rows_cols.")
+  # Number of rows is greater than 1
+  fillrow_tall <- matrix(c(42, 42), nrow = 2, ncol = 1, dimnames = list(c("r43", "r44"), "c2"))
+  expect_error(complete_rows_cols(a, b, fillrow = fillrow_tall), "fillrow must be a matrix with one row in complete_rows_cols.")
+  # Number of columns doesn't match
+  fillrow_wide <- matrix(42, nrow = 1, ncol = 3, dimnames = list("r42", c("c1", "c2", "c3")))
+  expect_error(complete_rows_cols(a, b, fillrow = fillrow_wide), "fillrow must be a row matrix with same number of columns as x in complete_rows_cols.")
+  # Column names of fillrow don't match column names of x
+  fillrow_badnames <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c3", "c4")))
+  expect_error(complete_rows_cols(x = a, mat = b, fillrow = fillrow_badnames), "column names of fillrow must match column names of x in complete_rows_cols.")
+  # Test a case that should work
+  fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c1", "c2")))
+  expect_equal(complete_rows_cols(x = a, mat = b, fillrow = fillrow), 
+               matrix(c(11, 12,
+                        21, 22,
+                        31, 32), byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))))
 })
 
 

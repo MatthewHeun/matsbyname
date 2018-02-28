@@ -166,9 +166,9 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, fillrow = NULL, f
           stop("fillrow must be a matrix with one row in complete_rows_cols.")
         }
         if (!ncol(fillrow) == ncol(x)) {
-          stop("fillrow must be a row matrix with same number of columns as x.")
+          stop("fillrow must be a row matrix with same number of columns as x in complete_rows_cols.")
         }
-        if (!colnames(fillrow) == colnames(x)) {
+        if (!isTRUE(all.equal(colnames(fillrow), colnames(x)))) {
           stop("column names of fillrow must match column names of x in complete_rows_cols.")
         }
         # Make the fillrows matrix from the fillrow row vector
