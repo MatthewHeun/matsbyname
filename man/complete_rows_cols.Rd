@@ -50,7 +50,9 @@ an error is given.
 Matrices can be completed relative to themselves,
 meaning that \code{x} will be made square,  
 containing the union of row and column names from \code{x} itself.
-All added rows and columns will be created with the value of \code{fill}.
+All added rows and columns will be created from one of the \code{fill*} arguments.
+When conflicts arise, precedence among the \code{fill*} arguments is 
+\code{fillrow} then \code{fillcol} then \code{fill}.
 Self-completion occurs if \code{x} is non-NULL and 
 both \code{is.null(matrix)} and \code{is.null(names)}.
 Under these conditions, no warning is given.
@@ -84,4 +86,12 @@ complete_rows_cols(x = list(m1,m1),
                    mat = make_list(matrix(0, nrow = 2, ncol = 2, 
                                           dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
                                    n = 2, lenx = 1))
+# fillrow or fillcol can be specified
+a <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, 
+            dimnames = list(c("r1", "r2"), c("c1", "c2")))
+b <- matrix(c(1:6), byrow = TRUE, nrow = 3, ncol = 2, 
+            dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, 
+                  dimnames = list("r42", c("c1", "c2")))
+complete_rows_cols(x = a, mat = b, fillrow = fillrow)
 }

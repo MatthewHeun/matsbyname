@@ -1,8 +1,17 @@
 # News for `byname`
 
+## matsbyname 0.2.1 (2018-02-28)
+
+* `complete_rows_cols` now accepts `fillrow` and `fillcol` arguments.
+  These arguments can be used (instead of the `fill` argument) 
+  to specify the values of filled rows and columns when completing a matrix.
+  When conflicts arise, precedence among the `fill*` arguments is 
+  `fillrow` then `fillcol` then `fill`.
+
+
 ## matsbyname 0.2.0 (2018-02-23)
 
-* Name change to matsbyname.
+* Name change to `matsbyname`.
 
 
 ## byname 0.1.9 (2018-02-14)
