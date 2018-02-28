@@ -74,6 +74,14 @@ library("parallel")
 #'                    mat = make_list(matrix(0, nrow = 2, ncol = 2, 
 #'                                           dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
 #'                                    n = 2, lenx = 1))
+#' # fillrow or fillcol can be specified
+#' a <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, 
+#'             dimnames = list(c("r1", "r2"), c("c1", "c2")))
+#' b <- matrix(c(1:6), byrow = TRUE, nrow = 3, ncol = 2, 
+#'             dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+#' fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, 
+#'                   dimnames = list("r42", c("c1", "c2")))
+#' complete_rows_cols(x = a, mat = b, fillrow = fillrow)
 complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, fillrow = NULL, fillcol = NULL, margin = c(1,2)){
   if (is.null(x) & is.null(mat)) {
     stop("Both x and matrix are NULL in complete_rows_cols.")
