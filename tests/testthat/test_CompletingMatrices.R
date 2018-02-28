@@ -346,6 +346,7 @@ test_that("complete_rows_cols works correctly when x is unspecified and fillcol 
   # Try with wrong dimnames
   expect_error(complete_rows_cols(mat = mat, fillcol = matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r3", "r4"), "c42"))), 
                "rownames of fillcol must match rownames of mat in complete_rows_cols.")
+  # Try with correct dimnames
   expect_equal(complete_rows_cols(mat = mat, fillcol = matrix(c(11, 21), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c42"))), 
                matrix(c(11, 11, 
                         21, 21), byrow = TRUE, nrow = 2, ncol = 2, dimnames = dimnames(mat)))
@@ -394,6 +395,15 @@ test_that("complete_rows_cols works correctly when fillcol is specified.", {
   expect_equal(complete_rows_cols(x = a, mat = b, fillcol = fillcol), 
                matrix(c(11, 12, 13,
                         21, 22, 23), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3"))))
+})
+
+test_that("fillrow, fillcol collisions work as expected.", {
+  mat <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  fillrow <- matrix(c(11, 12), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c1", "c2")))
+  fillcol <- matrix(c(11, 21), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c42"))
+  expect_equal(complete_rows_cols(mat = mat, fillrow = fillrow, fillcol = fillcol), 
+               matrix(c(11, 12,
+                        11, 12), byrow = TRUE, nrow = 2, ncol = 2, dimnames = dimnames(mat)))
 })
 
 
