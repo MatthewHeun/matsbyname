@@ -17,7 +17,9 @@ library("parallel")
 #' Matrices can be completed relative to themselves,
 #' meaning that \code{x} will be made square,  
 #' containing the union of row and column names from \code{x} itself.
-#' All added rows and columns will be created with the value of \code{fill}.
+#' All added rows and columns will be created from one of the \code{fill*} arguments.
+#' When conflicts arise, precedence among the \code{fill*} arguments is 
+#' \code{fillrow} then \code{fillcol} then \code{fill}.
 #' Self-completion occurs if \code{x} is non-NULL and 
 #' both \code{is.null(matrix)} and \code{is.null(names)}.
 #' Under these conditions, no warning is given.
@@ -29,6 +31,14 @@ library("parallel")
 #' @param mat a \code{matrix} from which \code{dimnames} will be extracted
 #'        for the purposes of completing \code{x} with respect to \code{mat}.
 #' @param fill rows and columns added to \code{x} will contain the value \code{fill}. (a double) 
+#' @param fillrow a row vector of type \code{matrix} with same column names as \code{x}. 
+#'        Any rows added to \code{x} will be \code{fillrow}.  
+#'        If non-\code{NULL}, \code{fillrow} takes precedence over both \code{fillcol} and \code{fill}
+#'        in the case of conflicts.
+#' @param fillcol a column vector of type \code{matrix} with same row names as \code{x}. 
+#'        Any columns added to \code{x} will be \code{fillcol}.  
+#'        If non-\code{NULL}, \code{fillcol} takes precedence over \code{fill}
+#'        in the case of conflicts.
 #' @param margin specifies the subscript(s) in \code{x} over which completion will occur
 #'        \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
 #'        For rows only, give \code{1}; 
@@ -66,12 +76,20 @@ library("parallel")
 #'                    mat = make_list(matrix(0, nrow = 2, ncol = 2, 
 #'                                           dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
 #'                                    n = 2, lenx = 1))
-complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
-  if (is.data.frame(x)) {
-    stop("x cannot be a data frame in complete_rows_cols.")
-  }
+#' # fillrow or fillcol can be specified
+#' a <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, 
+#'             dimnames = list(c("r1", "r2"), c("c1", "c2")))
+#' b <- matrix(c(1:6), byrow = TRUE, nrow = 3, ncol = 2, 
+#'             dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+#' fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, 
+#'                   dimnames = list("r42", c("c1", "c2")))
+#' complete_rows_cols(x = a, mat = b, fillrow = fillrow)
+complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, fillrow = NULL, fillcol = NULL, margin = c(1,2)){
   if (is.null(x) & is.null(mat)) {
     stop("Both x and matrix are NULL in complete_rows_cols.")
+  }
+  if (is.data.frame(x)) {
+    stop("x cannot be a data frame in complete_rows_cols.")
   }
   if (is.list(x) & !is.data.frame(x) & !is.matrix(x)) {
     # Assume we have a list of matrices for x, not a single matrix.
@@ -98,14 +116,34 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     margin <- make_list(margin, length(mat), lenx = 1)
   }
 
-  complete.func <- function(x = NULL, mat = NULL, fill, margin){
+  complete.func <- function(x = NULL, mat = NULL, fill, fillrow = NULL, fillcol = NULL, margin){
     # When we get here, we should not have lists for any of the arguments.
     # We should have single matrices for x and/or matrix. 
     
-    names <- dimnames(mat)
+    dimnamesmat <- dimnames(mat)
     
-    if (is.null(names)) {
-      # names is null, even after trying to gether row and column names from matrix.  
+    # Check that fillrow, if present, is appropriate
+    if (!is.null(fillrow)) {
+      if (!is.matrix(fillrow)) {
+        stop("fillrow must be a matrix in complete_rows_cols.")
+      }
+      if (!nrow(fillrow) == 1) {
+        stop("fillrow must be a matrix with one row in complete_rows_cols.")
+      }
+    }
+    
+    # Check that fillcol, if present, is appropriate
+    if (!is.null(fillcol)) {
+      if (!is.matrix(fillcol)) {
+        stop("fillcol must be a matrix in complete_rows_cols.")
+      }
+      if (!ncol(fillcol) == 1) {
+        stop("fillcol must be a matrix with one column in complete_rows_cols.")
+      }
+    }
+    
+    if (is.null(dimnamesmat)) {
+      # dimnamesmat is null, even after trying to gether row and column names from mat.  
       # If x is a matrix with names, complete it relative to itself.
       if (is.matrix(x) & !is.null(dimnames(x))) {
         if (!is.null(mat)) {
@@ -123,26 +161,45 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
     
     rt <- rowtype(mat)
     ct <- coltype(mat)
-    if (is.null(x) & length(names) == 2) {
-      # x is NULL, names is a nxn list.  Create a fill-matrix with names.
-      return(matrix(fill, nrow = length(names[[1]]), ncol = length(names[[2]]), dimnames = names) %>% 
+    if (is.null(x) & length(dimnamesmat) == 2) {
+      # x is NULL, dimnamesmat is a nxn list.  We can work with this.
+      # If we have fillcol, make a matrix consisting of repeated fillcols 
+      # and with row and column names of dimnamesmat.
+      if (!is.null(fillcol) & is.null(fillrow)) {
+        # Verify that we have the right size.
+        if (!isTRUE(all.equal(rownames(fillcol), dimnamesmat[[1]]))) {
+          stop("rownames of fillcol must match rownames of mat in complete_rows_cols.")
+        }
+        return(matrix(rep.int(fillcol, times = ncol(mat)), nrow = nrow(mat), ncol = ncol(mat),
+                      dimnames = dimnamesmat) %>% setrowtype(rt) %>% setcoltype(ct))
+      }
+      if (!is.null(fillrow)) {
+        # Verify that we have the right size.
+        if (!isTRUE(all.equal(colnames(fillrow), dimnamesmat[[2]]))) {
+          stop("colnames of fillrow must match colnames of mat in complete_rows_cols.")
+        }
+        return(matrix(rep.int(fillrow, times = nrow(mat)), byrow = TRUE, nrow = nrow(mat), ncol = ncol(mat),
+                      dimnames = dimnamesmat) %>% setrowtype(rt) %>% setcoltype(ct))
+      }
+      # Neither fillrow nor fillcol was specified.  
+      # Make a matrix from fill and return it.
+      return(matrix(fill, nrow = length(dimnamesmat[[1]]), ncol = length(dimnamesmat[[2]]), dimnames = dimnamesmat) %>% 
                setrowtype(rt) %>% setcoltype(ct))
     }
     
-    # If we get here, we could have x without dimnames and non-NULL dimnames on matrix
+    # If we get here, we could have x without dimnames and non-NULL dimnames on mat
     # This is a degenerate case.
     # We don't know what row and column names are already present in x.
-    # So we can't know how to complete x with the names from matrix.
+    # So we can't know how to complete x with the dimnames from mat.
     # Give an error.
-    if (is.null(dimnames(x)) & !is.null(names)) {
-      stop("Can't complete x that is missing dimnames with non-NULL names.  How can we know which names are already present in x?")
+    if (is.null(dimnames(x)) & !is.null(dimnamesmat)) {
+      stop("Can't complete x that is missing dimnames with non-NULL dimnames on mat.  How can we know which names are already present in x?")
     }
-    
     
     # At this point, we should have 
     #   * a single matrix x,
-    #   * names with which to complete the dimnames of x,
-    #   * a single fill value (in the fill argument), and 
+    #   * names with which to complete the dimnames of x (dimnamesmat),
+    #   * a single fill value (in the fill argument) or fillrow or fillcol, and 
     #   * an indication of which margin(s) over which to complete the names (in the margin argument).
     
     for (mar in margin) {
@@ -152,22 +209,52 @@ complete_rows_cols <- function(x = NULL, mat = NULL, fill = 0, margin = c(1,2)){
         stop(paste("NULL dimnames for margin =", mar, "on x"))
       }
     }
-    if (1 %in% margin) {
-      zerorownames <- setdiff(names[[1]], rownames(x))
-      zerorows <- matrix(fill, ncol = ncol(x), nrow = length(zerorownames), 
-                         dimnames = list(zerorownames, colnames(x)))
-      x <- rbind(x, zerorows)
-    }
+    
+    # We do margin 2 (columns) first, because margin 1 (rows) should win 
+    # if there is a conflict between fillrow and fillcol.
     if (2 %in% margin) {
-      zerocolnames <- setdiff(names[[2]], colnames(x))
-      zerocols <- matrix(fill, ncol = length(zerocolnames), nrow = nrow(x), 
-                         dimnames = list(rownames(x), zerocolnames))
-      x <- cbind(x, zerocols)
+      fillcolnames <- setdiff(dimnamesmat[[2]], colnames(x))
+      if (is.null(fillcol)) {
+        # Make fill cols from the fill value.
+        fillcols <- matrix(fill, ncol = length(fillcolnames), nrow = nrow(x), 
+                           dimnames = list(rownames(x), fillcolnames))
+      } else {
+        # fillcol is present. Ensure that row names on fillcol are identical to rownames in x
+        if (!isTRUE(all.equal(rownames(fillcol), rownames(x)))) {
+          stop("row names of fillcol must match row names of x in complete_rows_cols.")
+        }
+        # Make the fillcols matrix from the fillcol row vector
+        fillcols <- matrix(rep.int(fillcol, length(fillcolnames)), 
+                           ncol = length(fillcolnames), nrow = nrow(x), 
+                           dimnames = list(rownames(x), fillcolnames))
+      }
+      x <- cbind(x, fillcols)
+    }
+
+    if (1 %in% margin) {
+      fillrownames <- setdiff(dimnamesmat[[1]], rownames(x))
+      if (is.null(fillrow)) {
+        # Make fill rows from the fill value.
+        fillrows <- matrix(fill, nrow = length(fillrownames), ncol = ncol(x), 
+                          dimnames = list(fillrownames, colnames(x)))
+      } else {
+        # fillrow is present. Ensure fillrows is the right class (matrix) and has the right dimensions (1 by x)
+        if (!isTRUE(all.equal(colnames(fillrow), colnames(x)))) {
+          stop("column names of fillrow must match column names of x in complete_rows_cols.")
+        }
+        # Make the fillrows matrix from the fillrow row vector
+        fillrows <- matrix(rep.int(fillrow, length(fillrownames)), byrow = TRUE, 
+                           nrow = length(fillrownames), ncol = ncol(x), 
+                           dimnames = list(fillrownames, colnames(x)))
+      }
+      x <- rbind(x, fillrows)
     }
     return(x)
   }
   
-  binaryapply_byname(complete.func, a = x, b = mat, .FUNdots = list(fill = fill, margin = margin), 
+  binaryapply_byname(complete.func, a = x, b = mat, .FUNdots = list(fill = fill, 
+                                                                    fillrow = fillrow, fillcol = fillcol, 
+                                                                    margin = margin), 
                      match_type = "all", rowcoltypes = FALSE, .organize = FALSE)
 }
 
