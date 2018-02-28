@@ -17,7 +17,9 @@ library("parallel")
 #' Matrices can be completed relative to themselves,
 #' meaning that \code{x} will be made square,  
 #' containing the union of row and column names from \code{x} itself.
-#' All added rows and columns will be created with the value of \code{fill}.
+#' All added rows and columns will be created from one of the \code{fill*} arguments.
+#' When conflicts arise, precedence among the \code{fill*} arguments is 
+#' \code{fillrow} then \code{fillcol} then \code{fill}.
 #' Self-completion occurs if \code{x} is non-NULL and 
 #' both \code{is.null(matrix)} and \code{is.null(names)}.
 #' Under these conditions, no warning is given.
