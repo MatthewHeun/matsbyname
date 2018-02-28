@@ -29,6 +29,14 @@ library("parallel")
 #' @param mat a \code{matrix} from which \code{dimnames} will be extracted
 #'        for the purposes of completing \code{x} with respect to \code{mat}.
 #' @param fill rows and columns added to \code{x} will contain the value \code{fill}. (a double) 
+#' @param fillrow a row vector of type \code{matrix} with same column names as \code{x}. 
+#'        Any rows added to \code{x} will be \code{fillrow}.  
+#'        If non-\code{NULL}, \code{fillrow} takes precedence over both \code{fillcol} and \code{fill}
+#'        in the case of conflicts.
+#' @param fillcol a column vector of type \code{matrix} with same row names as \code{x}. 
+#'        Any columns added to \code{x} will be \code{fillcol}.  
+#'        If non-\code{NULL}, \code{fillcol} takes precedence over \code{fill}
+#'        in the case of conflicts.
 #' @param margin specifies the subscript(s) in \code{x} over which completion will occur
 #'        \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
 #'        For rows only, give \code{1}; 
