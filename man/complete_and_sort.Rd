@@ -4,8 +4,8 @@
 \alias{complete_and_sort}
 \title{Complete matrices relative to one another and sort into same row, column order}
 \usage{
-complete_and_sort(m1, m2, fill = 0, fillrow = NULL, fillcol = NULL,
-  margin = c(1, 2), roworder = NA, colorder = NA)
+complete_and_sort(m1, m2, fill = 0, margin = c(1, 2), roworder = NA,
+  colorder = NA)
 }
 \arguments{
 \item{m1}{The first matrix}
@@ -13,16 +13,6 @@ complete_and_sort(m1, m2, fill = 0, fillrow = NULL, fillcol = NULL,
 \item{m2}{The second (optional) matrix.}
 
 \item{fill}{rows and columns added to \code{x} will contain the value \code{fill}. (a double)}
-
-\item{fillrow}{a row vector of type \code{matrix} with same column names as \code{x}. 
-Any rows added to \code{x} will be \code{fillrow}.  
-If non-\code{NULL}, \code{fillrow} takes precedence over both \code{fillcol} and \code{fill}
-in the case of conflicts.}
-
-\item{fillcol}{a column vector of type \code{matrix} with same row names as \code{x}. 
-Any columns added to \code{x} will be \code{fillcol}.  
-If non-\code{NULL}, \code{fillcol} takes precedence over \code{fill}
-in the case of conflicts.}
 
 \item{margin}{Specifies the dimension(s) of \code{m1} and \code{m2} over which 
 completing and sorting will occur}
@@ -39,11 +29,8 @@ A named list containing completed and sorted versions of \code{m1} and \code{m2}
 \description{
 Completes each matrix relative to each other, thereby assuring that 
 both matrices have same row and column names. 
-All added rows and columns will be created from one of the \code{fill*} arguments.
-When conflicts arise, precedence among the \code{fill*} arguments is 
-\code{fillrow} then \code{fillcol} then \code{fill}.
 Missing rows and columns (relative to the other matrix)
-are filled with zeroes.
+are filled with \code{fill}.
 Thereafter, rows and columns of the matrices are sorted
 such that they are in the same order (by name).
 To complete rows of \code{m1} relative to columns of \code{m2},
