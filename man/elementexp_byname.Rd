@@ -10,7 +10,7 @@ elementexp_byname(M)
 \item{M}{a matrix of list of matrices}
 }
 \value{
-M with each element replaced by its exponential
+\code{M} with each element replaced by its exponential
 }
 \description{
 Gives the exponential of all elements of a matrix or list of matrices

@@ -103,6 +103,28 @@ difference_byname <- function(minuend, subtrahend){
   binaryapply_byname(`-`, minuend, subtrahend)
 }
 
+#' Powers of matrix elements
+#' 
+#' Gives the result of raising all elements of a matrix or list of matrices to a power. 
+#'
+#' @param M a matrix of list of matrices 
+#' @param pow the power to which elements of \code{M} will be raised
+#'
+#' @return \code{M} with each element raised to \code{pow}
+#' 
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' elementpow_byname(1)
+#' m <- matrix(c(log(10),log(1),log(1),log(100)), 
+#'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' elementexp_byname(m)
+elementpow_byname <- function(M, pow){
+  binaryapply_byname(`^`, a = M, b = pow)
+}
+
 #' Name-wise matrix multiplication
 #'
 #' @param multiplicand Multiplicand matrix

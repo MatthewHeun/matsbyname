@@ -51,8 +51,8 @@ test_that("elementexp_byname works as expected", {
   # Also works for lists.
   expect_equal(elementexp_byname(list(m, m)), list(expected, expected))
 })
-
-
+  
+  
 ###########################################################
 context("Inversion")
 ###########################################################
