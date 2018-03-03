@@ -11,7 +11,7 @@ library("parallel")
 #' Note that \code{complete_rows_cols(mat1, mat2)} and \code{complete_rows_cols(mat2, mat1)} are 
 #' not guaranteed to have the same order for rows and columns.
 #' (Nor are the values in the matrix guaranteed to have the same positions.)
-#' If \code{names} is NULL, \code{x} is returned unmodified.
+#' If \code{dimnames(mat)} is NULL, \code{x} is returned unmodified.
 #' If either \code{x} or \code{matrix} are missing names on a margin (row or column),
 #' an error is given.
 #' Matrices can be completed relative to themselves,
@@ -363,7 +363,7 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' Completes each matrix relative to each other, thereby assuring that 
 #' both matrices have same row and column names. 
 #' Missing rows and columns (relative to the other matrix)
-#' are filled with zeroes.
+#' are filled with \code{fill}.
 #' Thereafter, rows and columns of the matrices are sorted
 #' such that they are in the same order (by name).
 #' To complete rows of \code{m1} relative to columns of \code{m2},
@@ -382,6 +382,7 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' 
 #' @param m1 The first matrix
 #' @param m2 The second (optional) matrix.
+#' @param fill rows and columns added to \code{x} will contain the value \code{fill}. (a double) 
 #' @param margin Specifies the dimension(s) of \code{m1} and \code{m2} over which 
 #'        completing and sorting will occur 
 #' @param roworder Specifies a custom ordering for rows of returned matrices. 
@@ -408,15 +409,15 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' complete_and_sort(v, v)
 #' # Also works with lists
 #' complete_and_sort(list(m1,m1), list(m2,m2))
-complete_and_sort <- function(m1, m2, margin=c(1,2), roworder = NA, colorder = NA){
+complete_and_sort <- function(m1, m2, fill = 0, margin=c(1,2), roworder = NA, colorder = NA){
   if (missing(m2)) {
-    m1 <- complete_rows_cols(m1, margin = margin)
+    m1 <- complete_rows_cols(m1, fill = fill, margin = margin)
     m1 <- sort_rows_cols(m1, roworder = roworder, colorder = colorder)
     return(m1)
   }
-  m1 <- complete_rows_cols(m1, m2, margin = margin) %>% 
+  m1 <- complete_rows_cols(m1, m2, fill = fill, margin = margin) %>% 
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
-  m2 <- complete_rows_cols(m2, m1, margin = margin) %>% 
+  m2 <- complete_rows_cols(m2, m1, fill = fill, margin = margin) %>% 
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
   return(list(m1 = m1, m2 = m2))
 }

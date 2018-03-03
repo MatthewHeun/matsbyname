@@ -31,7 +31,7 @@ elementlog_byname <- function(M, base = exp(1)){
 #'
 #' @param M a matrix of list of matrices 
 #'
-#' @return M with each element replaced by its exponential
+#' @return \code{M} with each element replaced by its exponential
 #' 
 #' @export
 #'
@@ -45,7 +45,6 @@ elementlog_byname <- function(M, base = exp(1)){
 elementexp_byname <- function(M){
   unaryapply_byname(exp, a = M)
 }
-
 
 #' Invert a matrix
 #'

@@ -4,12 +4,15 @@
 \alias{complete_and_sort}
 \title{Complete matrices relative to one another and sort into same row, column order}
 \usage{
-complete_and_sort(m1, m2, margin = c(1, 2), roworder = NA, colorder = NA)
+complete_and_sort(m1, m2, fill = 0, margin = c(1, 2), roworder = NA,
+  colorder = NA)
 }
 \arguments{
 \item{m1}{The first matrix}
 
 \item{m2}{The second (optional) matrix.}
+
+\item{fill}{rows and columns added to \code{x} will contain the value \code{fill}. (a double)}
 
 \item{margin}{Specifies the dimension(s) of \code{m1} and \code{m2} over which 
 completing and sorting will occur}
@@ -27,7 +30,7 @@ A named list containing completed and sorted versions of \code{m1} and \code{m2}
 Completes each matrix relative to each other, thereby assuring that 
 both matrices have same row and column names. 
 Missing rows and columns (relative to the other matrix)
-are filled with zeroes.
+are filled with \code{fill}.
 Thereafter, rows and columns of the matrices are sorted
 such that they are in the same order (by name).
 To complete rows of \code{m1} relative to columns of \code{m2},

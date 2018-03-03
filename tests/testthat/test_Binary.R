@@ -483,6 +483,42 @@ test_that("detailed example of elementquotient_byname works as expected", {
 })
 
 
+###########################################################
+context("Element power")
+###########################################################
+
+test_that("elementpow_byname works as expected", {
+  # Try with single numbers
+  expect_equal(elementpow_byname(2, 2), 4)
+  expect_equal(elementpow_byname(2, 3), 8)
+  expect_equal(elementpow_byname(-1, 3), -1)
+  expect_equal(elementpow_byname(-1, 4), 1)
+  expect_equal(elementpow_byname(-1000, 0), 1)
+  expect_equal(elementpow_byname(0, 500), 0)
+  expect_equal(elementpow_byname(2, -1), 0.5)
+  
+  # Try with single matrices
+  m <- matrix(2, nrow = 2, ncol = 3)
+  sqrtm <- matrix(sqrt(2), nrow = 2, ncol = 3)
+  expect_equal(elementpow_byname(m, 0.5), sqrtm)
+  
+  # Try with a list of matrices
+  expect_equal(elementpow_byname(list(m, m), 0.5), list(sqrtm, sqrtm))
+  
+  # Try in a data frame
+  DF <- data.frame(m = I(list()), pow = I(list()))
+  DF[[1, "m"]] <- m
+  DF[[2, "m"]] <- m
+  DF[[1, "pow"]] <- 0.5
+  DF[[2, "pow"]] <- -1
+  res <- DF %>% mutate(
+    sqrtm = elementpow_byname(m, 0.5),
+    mtopow = elementpow_byname(m, pow)
+  )
+  expect_equal(res$sqrtm, list(sqrtm, sqrtm))
+  expect_equal(res$mtopow, list(m^0.5, m^-1))
+})
+
 
 ###########################################################
 context("Means")

@@ -44,7 +44,7 @@ with missing data represented by the value for \code{fill} (0, by default).
 Note that \code{complete_rows_cols(mat1, mat2)} and \code{complete_rows_cols(mat2, mat1)} are 
 not guaranteed to have the same order for rows and columns.
 (Nor are the values in the matrix guaranteed to have the same positions.)
-If \code{names} is NULL, \code{x} is returned unmodified.
+If \code{dimnames(mat)} is NULL, \code{x} is returned unmodified.
 If either \code{x} or \code{matrix} are missing names on a margin (row or column),
 an error is given.
 Matrices can be completed relative to themselves,
