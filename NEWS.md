@@ -1,4 +1,9 @@
-# News for `byname`
+# News for `matsbyname`
+
+## matsbyname 0.2.2 (2018-03-02)
+
+* New function `elementpow_byname` raises all elements of a matrix to a power.
+
 
 ## matsbyname 0.2.1 (2018-02-28)
 
