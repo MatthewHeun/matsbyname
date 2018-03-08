@@ -1,7 +1,8 @@
 ^matsbyname\.Rproj$
 ^\.Rproj\.user$
-^NEWS\.md$             
+^NEWS\.html$
 ^README\.Rmd$
-^cran-comments\.Rmd$
+^README\.html$
+^cran-comments\.md$
 ^cran-comments\.html$
 ^\.travis\.yml$

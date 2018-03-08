@@ -165,11 +165,11 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' \code{pattern_type} controls the type of pattern created:
 #' \itemize{
 #'   \item{\code{exact} produces a pattern that selects row or column names by exact match.}
-#'   \item{\code{leading} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+#'   \item{\code{leading} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
 #'         the beginnings of row or column names.}
-#'   \item{\code{trailing} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+#'   \item{\code{trailing} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
 #'         the ends of row or column names.}
-#'   \item{\code{anywhere} produces a pattern that selectes row or column names if the item in \code{row_col_names} matches
+#'   \item{\code{anywhere} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
 #'         any substring of row or column names.}
 #' }
 #'
@@ -564,9 +564,9 @@ coltype <- function(x){
 #' suitably escaped.
 #'
 #' @param m a matrix or a list of matrices
-#' @param retain_pattern an extended regex or list of extended regexes that specifies which rows of \code{m} to retain.
+#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to retain.
 #' Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern an extended regex or list of extended regexes that specifies which rows of \code{m} to remove
+#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
 #'
 #' @return a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -674,9 +674,9 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' 
 #'
 #' @param m a matrix or a list of matrices
-#' @param retain_pattern an extended regex or list of extended regexes that specifies which columns of \code{m} to retain.
+#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
 #' Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern an extended regex or list of extended regexes that specifies which columns of \code{m} to remove
+#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
 #'
 #' @return a matrix that is a subset of \code{m} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -821,7 +821,7 @@ clean_byname <- function(m, margin = c(1, 2), clean_value = 0){
 #' @param m a matrix of list of matrices
 #' @param tol the allowable deviation from 0 for any element
 #'
-#' @return \code{TRUE} iff this is the zero matrx within \code{tol}.
+#' @return \code{TRUE} iff this is the zero matrix within \code{tol}.
 #' @export
 #'
 #' @examples

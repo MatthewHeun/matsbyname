@@ -6,7 +6,7 @@ library(dplyr)
 #' 
 #' Specify the base of the log with \code{base} argument.
 #'
-#' @param M a matrix of list of matrices 
+#' @param a a matrix or list of matrices 
 #' @param base the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)
 #'
 #' @return M with each element replaced by its base \code{base} logarithm
@@ -20,8 +20,8 @@ library(dplyr)
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' elementlog_byname(m)
 #' elementlog_byname(m, base = 10)
-elementlog_byname <- function(M, base = exp(1)){
-  unaryapply_byname(log, a = M, .FUNdots = list(base = base))
+elementlog_byname <- function(a, base = exp(1)){
+  unaryapply_byname(log, a = a, .FUNdots = list(base = base))
 }
 
 
@@ -282,7 +282,7 @@ fractionize_byname <- function(M, margin){
 
 #' Row sums, sorted by name
 #'
-#' Calculates row sums for a matrix by post-multiplying by an identity vector (containins all 1's).
+#' Calculates row sums for a matrix by post-multiplying by an identity vector (containing all 1's).
 #' In contrast to \code{rowSums} (which returns a \code{numeric} result),
 #' the return value from \code{rowsums_byname} is a matrix.
 #' An optional \code{colname} for the resulting column vector can be supplied.
@@ -344,7 +344,7 @@ rowsums_byname <- function(m, colname = NA){
 
 #' Column sums, sorted by name
 #'
-#' Calculates column sums for a matrix by pre-multiplying by an identity vector (containins all 1's).
+#' Calculates column sums for a matrix by premultiplying by an identity vector (containing all 1's).
 #' In contrast to \code{colSums} (which returns a \code{numeric} result),
 #' the return value from \code{colsums_byname} is a matrix.
 #' An optional \code{rowname} for the resulting row vector can be supplied.

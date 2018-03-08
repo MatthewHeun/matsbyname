@@ -1,7 +1,7 @@
 # This file contains functions that apply other functions to 
 # matrices or data frames of matrices
 
-#' Apply a unary function byname
+#' Apply a unary function "by name"
 #' 
 #' Note that if \code{a} is a list, the names of \code{a} are applied to the output.
 #'
@@ -16,7 +16,7 @@
 #'                                  coltype of \code{a} becomes rowtype of output.}
 #'          \item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
 #'          \item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
-#'          \item{\code{none}: rowtype and coltype not set by this function. 
+#'          \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
 #'                             Rather, \code{FUN} will set rowtype and coltype.}
 #'        }
 #'
@@ -37,8 +37,8 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   rowcoltypes <- match.arg(rowcoltypes)
   if (is.list(a)) {
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
-    ldots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
-    return(Map(unaryapply_byname, lfun, a, ldots, rowcoltypes = rowcoltypes) %>% 
+    lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+    return(Map(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes) %>% 
              # Preserve names of a (if present) in the outgoing list.
              set_names(names(a)))
   }
@@ -68,7 +68,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   return(out)
 }
 
-#' Apply a binary function byname
+#' Apply a binary function "by name"
 #' 
 #' If either \code{a} or \code{b} is missing or \code{NULL}, 
 #' \code{0} is passed to \code{FUN} in its place.
@@ -90,12 +90,13 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #'        neither coltypes nor rowtypes are checked. 
 #' @param rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
 #'        to the output. 
-#'        The default (\code{TRUE}) means that row and column types are applied to the output.
-#'        If \code{FALSE}, row and column types are \emph{not} applied to the output.
+#'        Set \code{TRUE} (the default) to apply row and column types to the output.
+#'        Set \code{FALSE}, to \emph{not} apply row and column types to the output.
 #' @param .organize a boolean that tells whether or not to automatically 
 #'        complete \code{a} and \code{b} relative to each other and
 #'        sort the rows and columns of the completed matrices.
 #'        Normally, this should be \code{TRUE} (the default).
+#'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
 #'
 #' @return the result of applying \code{FUN} "by name" to \code{a} and \code{b}.
 #' 
@@ -147,15 +148,15 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' Apply a function cumulatively to a list of matrices or numbers
 #' 
 #' \code{FUN} must be a binary function that also accepts a single argument.
-#' The result is a list with first element \code{FUN(m[[1]])}.
-#' For \code{i >= 2}, elements are \code{FUN(m[[i]], out[[i-1]])},
+#' The result is a list with first element \code{FUN(a[[1]])}.
+#' For \code{i >= 2}, elements are \code{FUN(a[[i]], out[[i-1]])},
 #' where \code{out} is the result list.
 #'
 #' @param FUN  the function to be applied
-#' @param   m  the list of matrices or numbers to which \code{FUN} will be applied cumulatively
+#' @param   a  the list of matrices or numbers to which \code{FUN} will be applied cumulatively
 #'
-#' @return a list of same length as \code{m} 
-#'         containing the cumulative application of \code{FUN} to \code{m}
+#' @return a list of same length as \code{a} 
+#'         containing the cumulative application of \code{FUN} to \code{a}
 #' 
 #' @export
 #'
@@ -164,30 +165,30 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' cumapply_byname(sum_byname, list(1, 2, 3, 4))
 #' cumapply_byname(prod, list(1, 2, 3, 4))
 #' cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
-cumapply_byname <- function(FUN, m){
+cumapply_byname <- function(FUN, a){
   # Check for pathological cases.
-  if (length(m) == 0) {
+  if (length(a) == 0) {
     # Nothing to be done here.  Return NULL.
     # Note that length(NULL) == 0, so this tests for m == NULL, too.
     return(NULL)
   }
-  if (is.matrix(m)) {
+  if (is.matrix(a)) {
     # We have a single matrix. Just return it.
-    return(FUN(m))
+    return(FUN(a))
   }
-  if (length(m) == 1) {
+  if (length(a) == 1) {
     # Note that length(NA) == 1, so this test captures cases where m == NA.
     # Nothing to be done.
-    return(FUN(m))
+    return(FUN(a))
   }
-  # length(m) > 1
+  # length(a) > 1
   # Assume we have a list of matrices or numerics
   out <- list()
-  out[[1]] <- FUN(m[[1]])
-  for (i in 2:length(m)) {
-    out[[i]] <- FUN(m[[i]], out[[i - 1]])
+  out[[1]] <- FUN(a[[1]])
+  for (i in 2:length(a)) {
+    out[[i]] <- FUN(a[[i]], out[[i - 1]])
   }
-  # Preserve names of m in the outgoing list.
-  out <- out %>% set_names(names(m))
+  # Preserve names of a in the outgoing list.
+  out <- out %>% set_names(names(a))
   return(out)
 }

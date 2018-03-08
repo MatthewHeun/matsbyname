@@ -4,10 +4,10 @@
 \alias{elementlog_byname}
 \title{Logarithm of matrix elements}
 \usage{
-elementlog_byname(M, base = exp(1))
+elementlog_byname(a, base = exp(1))
 }
 \arguments{
-\item{M}{a matrix of list of matrices}
+\item{a}{a matrix or list of matrices}
 
 \item{base}{the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)}
 }

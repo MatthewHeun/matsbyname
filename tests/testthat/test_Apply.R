@@ -42,6 +42,6 @@ test_that("binaryapply_byname works as expected", {
 ###########################################################
 
 test_that("cumapply_byname works as expected", {
-  expect_equal(cumapply_byname(FUN = `sum`, m = list(1, 2, 3)), list(1, 3, 6))
-  expect_equal(cumapply_byname(FUN = `prod`, m = list(1, 2, 3)), list(1, 2, 6))
+  expect_equal(cumapply_byname(FUN = `sum`, a = list(1, 2, 3)), list(1, 3, 6))
+  expect_equal(cumapply_byname(FUN = `prod`, a = list(1, 2, 3)), list(1, 2, 6))
 })

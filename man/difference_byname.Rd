@@ -7,9 +7,9 @@
 difference_byname(minuend, subtrahend)
 }
 \arguments{
-\item{minuend}{Minuend matrix or constant}
+\item{minuend}{matrix or constant}
 
-\item{subtrahend}{Subtrahend matrix or constant
+\item{subtrahend}{matrix or constant
 
 Performs a union and sorting of row and column names prior to differencing.
 Zeroes are inserted for missing matrix elements.}

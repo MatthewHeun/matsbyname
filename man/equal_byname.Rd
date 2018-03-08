@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{equal_byname}
 \alias{equal_byname}
-\title{Compare two matrices (byname)}
+\title{Compare two matrices "by name"}
 \usage{
 equal_byname(a, b)
 }
@@ -17,7 +17,7 @@ row and column names are same \emph{and}
 all entries in the matrix are same.
 }
 \description{
-Matries are completed and sorted relative to one another before comparison
+Matrices are completed and sorted relative to one another before comparison
 }
 \examples{
 library(magrittr)

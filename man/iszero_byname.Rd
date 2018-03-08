@@ -12,7 +12,7 @@ iszero_byname(m, tol = 1e-06)
 \item{tol}{the allowable deviation from 0 for any element}
 }
 \value{
-\code{TRUE} iff this is the zero matrx within \code{tol}.
+\code{TRUE} iff this is the zero matrix within \code{tol}.
 }
 \description{
 Test whether this is the zero matrix

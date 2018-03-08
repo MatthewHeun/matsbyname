@@ -2,13 +2,13 @@
 % Please edit documentation in R/Apply.R
 \name{unaryapply_byname}
 \alias{unaryapply_byname}
-\title{Apply a unary function byname}
+\title{Apply a unary function "by name"}
 \usage{
 unaryapply_byname(FUN, a, .FUNdots = NULL, rowcoltypes = c("all",
   "transpose", "row", "col", "none"))
 }
 \arguments{
-\item{FUN}{a unary function to be applied "byname" to \code{a}.}
+\item{FUN}{a unary function to be applied "by name" to \code{a}.}
 
 \item{a}{the argument to \code{FUN}.}
 
@@ -22,12 +22,12 @@ Options are:
                           coltype of \code{a} becomes rowtype of output.}
   \item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
   \item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
-  \item{\code{none}: rowtype and coltype not set by this function. 
+  \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
                      Rather, \code{FUN} will set rowtype and coltype.}
 }}
 }
 \value{
-the result of applying \code{FUN} "byname" to \code{a}.
+the result of applying \code{FUN} "by name" to \code{a}.
 }
 \description{
 Note that if \code{a} is a list, the names of \code{a} are applied to the output.

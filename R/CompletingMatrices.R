@@ -4,7 +4,7 @@ library("parallel")
 
 #' Complete rows and columns in one matrix relative to another
 #' 
-#' "Complete"-ing rows and columns means that \code{x} contains a union of rows and columns
+#' "Completing" rows and columns means that \code{x} contains a union of rows and columns
 #' between \code{x} and \code{m},
 #' with missing data represented by the value for \code{fill} (0, by default).
 #' 
