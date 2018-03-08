@@ -8,7 +8,7 @@ unaryapply_byname(FUN, a, .FUNdots = NULL, rowcoltypes = c("all",
   "transpose", "row", "col", "none"))
 }
 \arguments{
-\item{FUN}{a unary function to be applied "byname" to \code{a}.}
+\item{FUN}{a unary function to be applied "by name" to \code{a}.}
 
 \item{a}{the argument to \code{FUN}.}
 
@@ -27,7 +27,7 @@ Options are:
 }}
 }
 \value{
-the result of applying \code{FUN} "byname" to \code{a}.
+the result of applying \code{FUN} "by name" to \code{a}.
 }
 \description{
 Note that if \code{a} is a list, the names of \code{a} are applied to the output.

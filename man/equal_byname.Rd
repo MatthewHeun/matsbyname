@@ -17,7 +17,7 @@ row and column names are same \emph{and}
 all entries in the matrix are same.
 }
 \description{
-Matries are completed and sorted relative to one another before comparison
+Matrices are completed and sorted relative to one another before comparison
 }
 \examples{
 library(magrittr)

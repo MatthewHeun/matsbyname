@@ -8,7 +8,7 @@ binaryapply_byname(FUN, a, b, .FUNdots = NULL, match_type = c("all",
   "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE)
 }
 \arguments{
-\item{FUN}{a binary function to be applied "byname" to \code{a} and \code{b}.}
+\item{FUN}{a binary function to be applied "by name" to \code{a} and \code{b}.}
 
 \item{a}{the first argument to \code{FUN}.}
 
@@ -37,7 +37,7 @@ sort the rows and columns of the completed matrices.
 Normally, this should be \code{TRUE} (the default).}
 }
 \value{
-the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
+the result of applying \code{FUN} "by name" to \code{a} and \code{b}.
 }
 \description{
 If either \code{a} or \code{b} is missing or \code{NULL}, 
