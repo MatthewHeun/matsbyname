@@ -5,7 +5,7 @@
 #' 
 #' Note that if \code{a} is a list, the names of \code{a} are applied to the output.
 #'
-#' @param FUN a unary function to be applied "byname" to \code{a}.
+#' @param FUN a unary function to be applied "by name" to \code{a}.
 #' @param a the argument to \code{FUN}.
 #' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
 #' @param rowcoltypes a string that tells how to transfer row and column types of \code{a} to output. 
@@ -20,7 +20,7 @@
 #'                             Rather, \code{FUN} will set rowtype and coltype.}
 #'        }
 #'
-#' @return the result of applying \code{FUN} "byname" to \code{a}.
+#' @return the result of applying \code{FUN} "by name" to \code{a}.
 #' 
 #' @export
 #'
@@ -75,7 +75,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' Note that if either \code{a} and \code{b} are lists, elements must be named the same.
 #' The names of list elements of \code{a} are applied to the output.
 #'
-#' @param FUN a binary function to be applied "byname" to \code{a} and \code{b}.
+#' @param FUN a binary function to be applied "by name" to \code{a} and \code{b}.
 #' @param a the first argument to \code{FUN}.
 #' @param b the second argument to \code{FUN}.
 #' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
@@ -97,7 +97,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #'        sort the rows and columns of the completed matrices.
 #'        Normally, this should be \code{TRUE} (the default).
 #'
-#' @return the result of applying \code{FUN} "byname" to \code{a} and \code{b}.
+#' @return the result of applying \code{FUN} "by name" to \code{a} and \code{b}.
 #' 
 #' @export
 #'
