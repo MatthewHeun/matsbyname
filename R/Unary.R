@@ -344,7 +344,7 @@ rowsums_byname <- function(m, colname = NA){
 
 #' Column sums, sorted by name
 #'
-#' Calculates column sums for a matrix by pre-multiplying by an identity vector (containing all 1's).
+#' Calculates column sums for a matrix by premultiplying by an identity vector (containing all 1's).
 #' In contrast to \code{colSums} (which returns a \code{numeric} result),
 #' the return value from \code{colsums_byname} is a matrix.
 #' An optional \code{rowname} for the resulting row vector can be supplied.

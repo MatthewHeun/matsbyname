@@ -9,10 +9,10 @@ select_rows_byname(m, retain_pattern = "$^", remove_pattern = "$^")
 \arguments{
 \item{m}{a matrix or a list of matrices}
 
-\item{retain_pattern}{an extended regex or list of extended regexes that specifies which rows of \code{m} to retain.
+\item{retain_pattern}{an extended regex or list of extended regexs that specifies which rows of \code{m} to retain.
 Default pattern (\code{$^}) retains nothing.}
 
-\item{remove_pattern}{an extended regex or list of extended regexes that specifies which rows of \code{m} to remove
+\item{remove_pattern}{an extended regex or list of extended regexs that specifies which rows of \code{m} to remove
 Default pattern (\code{$^}) removes nothing.}
 }
 \value{
