@@ -280,7 +280,7 @@ elementquotient_byname <- function(dividend, divisor){
 
 #' Name- and element-wise arithmetic mean of matrices.
 #'
-#' Gives the arithmatic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
+#' Gives the arithmetic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
 #' 
 #' This function performs a union and sorting of row and column names 
 #' prior to performing arithmetic mean.

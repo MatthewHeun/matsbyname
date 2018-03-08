@@ -16,7 +16,7 @@ A matrix representing the name-wise arithmetic mean
         of \strong{\code{X1}} and \strong{\code{X2}}.
 }
 \description{
-Gives the arithmatic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
+Gives the arithmetic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
 }
 \details{
 This function performs a union and sorting of row and column names 
