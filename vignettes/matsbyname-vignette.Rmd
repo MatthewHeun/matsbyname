@@ -2,7 +2,9 @@
 title: "Use Cases and Examples for <tt>matsbyname</tt>"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    smart: false
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -48,10 +50,10 @@ ensure size conformity of matrix operands,
 they do not respect the names of rows and columns
 (known as <tt>dimnames</tt> in <tt>R</tt>).
 In the following example, 
-**U** represents a "use" matrix
+**U** represents a *use*matrix
 that contains the quantity of each product used by each industry,
 and 
-**Y** represents a "final demand" matrix
+**Y** represents a *final demand* matrix
 that contains the quantity of each product consumed by final demand industries.
 If the rows and columns are not in the same order, 
 the sum of the matrices is nonsensical.
@@ -312,7 +314,7 @@ are different.
 tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
 ```
 
-Analysts are encouraged to use <tt>byname</tt> 
+Analysts are encouraged 
 to set row and column types on matrices,
 thereby taking advantage of <tt>byname</tt>'s
 type-tracking feature 
@@ -438,7 +440,7 @@ using <tt>byname</tt> functions.
 * Graph or perform other manipulations of the data.
 
 For more information and a detailed example of this workflow, 
-see <tt>vignette("matsindf")</tt>.
+see <tt>vignette(\"matsindf\")</tt>.
 
 
 ## Summary

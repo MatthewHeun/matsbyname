@@ -2,7 +2,9 @@
 title: "Writing Custom Functions for <tt>matsbyname</tt>"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    smart: false
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,7 +20,7 @@ library(matsbyname)
 
 ## Introduction
 
-The `matsbyname` package provides many useful functions for "by name" manipulation of
+The `matsbyname` package provides many useful functions for \"by name\" manipulation of
 matrices, lists of matrices, and matrices in columns of data frames.
 However, the built-in functions may not cover all possible needs.
 `matsbyname` provides three functions for these situations:
@@ -42,7 +44,7 @@ The `*apply_byname` functions have several arguments.
 `.FUNdots` | a named list of arguments to be passed to `FUN`
  `rowcoltypes` | tells what to do with row and column types
  `match_type` | tells how row and column types of `a` and `b` arguments must be matched
- `.organize` | tells whether to automatically "complete" `a` and `b` relative to each other and sort the rows and columns of the completed matrices
+ `.organize` | tells whether to automatically complete `a` and `b` relative to each other and sort the rows and columns of the completed matrices
 
 `FUN` is mapped as expected over `a` (in the case of `unaryapply_byname` and `cumapply_byname`) 
 or over `a` and `b` (in the case of `binaryapply_byname`).
