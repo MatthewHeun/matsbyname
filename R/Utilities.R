@@ -564,9 +564,9 @@ coltype <- function(x){
 #' suitably escaped.
 #'
 #' @param m a matrix or a list of matrices
-#' @param retain_pattern an extended regex or list of extended regexs that specifies which rows of \code{m} to retain.
+#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to retain.
 #' Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern an extended regex or list of extended regexs that specifies which rows of \code{m} to remove
+#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
 #'
 #' @return a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -674,9 +674,9 @@ select_rows_byname <- function(m, retain_pattern = "$^", remove_pattern = "$^"){
 #' 
 #'
 #' @param m a matrix or a list of matrices
-#' @param retain_pattern an extended regex or list of extended regexs that specifies which columns of \code{m} to retain.
+#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
 #' Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern an extended regex or list of extended regexs that specifies which columns of \code{m} to remove
+#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
 #'
 #' @return a matrix that is a subset of \code{m} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
