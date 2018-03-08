@@ -7,7 +7,7 @@ library(magrittr)
 library(dplyr)
 library(tidyr)
 library(matsbyname)
-library(matsindf)
+# library(matsindf)
 
 ## ------------------------------------------------------------------------
 productnames <- c("p1", "p2")
