@@ -4,27 +4,27 @@
 \alias{cumprod_byname}
 \title{Cumulative element-product that respects row and column names}
 \usage{
-cumprod_byname(m)
+cumprod_byname(a)
 }
 \arguments{
-\item{m}{a number, list of numbers, matrix or list of matrices for which cumulative element product is desired}
+\item{a}{a number, list of numbers, matrix or list of matrices for which cumulative element product is desired}
 }
 \value{
 a single number, list of numbers, a single matrix, or a list of matrices,
-        depending on the nature of \code{m}
+        depending on the nature of \code{a}
 }
 \description{
 Provides cumulative element-products along a list or column of a data frame.
-If \code{m} is a single number, \code{m} is returned.
-If \code{m} is a list of numbers, a list representing the cumulative product of the numbers is returned.
-If \code{m} is a single matrix, \code{m} is returned.
-If \code{m} is a list of matrices, a list representing the cumulative product
+If \code{a} is a single number, \code{a} is returned.
+If \code{a} is a list of numbers, a list representing the cumulative product of the numbers is returned.
+If \code{a} is a single matrix, \code{a} is returned.
+If \code{a} is a list of matrices, a list representing the cumulative product
 of the matrices is returned. 
 In this case, each entry in the returned list is product "by name," 
 such that row and column names of the matrices are respected.
 }
 \details{
-This function respects groups if \code{m} is a variable in a data frame.
+This function respects groups if \code{a} is a variable in a data frame.
 }
 \examples{
 library(magrittr)

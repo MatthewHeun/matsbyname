@@ -4,15 +4,15 @@
 \alias{elementpow_byname}
 \title{Powers of matrix elements}
 \usage{
-elementpow_byname(M, pow)
+elementpow_byname(a, pow)
 }
 \arguments{
-\item{M}{a matrix of list of matrices}
+\item{a}{a matrix of list of matrices}
 
-\item{pow}{the power to which elements of \code{M} will be raised}
+\item{pow}{the power to which elements of \code{a} will be raised}
 }
 \value{
-\code{M} with each element raised to \code{pow}
+\code{a} with each element raised to \code{pow}
 }
 \description{
 Gives the result of raising all elements of a matrix or list of matrices to a power.

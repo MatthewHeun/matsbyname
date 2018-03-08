@@ -4,61 +4,61 @@
 \alias{complete_rows_cols}
 \title{Complete rows and columns in one matrix relative to another}
 \usage{
-complete_rows_cols(x = NULL, mat = NULL, fill = 0, fillrow = NULL,
+complete_rows_cols(a = NULL, mat = NULL, fill = 0, fillrow = NULL,
   fillcol = NULL, margin = c(1, 2))
 }
 \arguments{
-\item{x}{a matrix or list of matrices to be completed.}
+\item{a}{a matrix or list of matrices to be completed.}
 
 \item{mat}{a \code{matrix} from which \code{dimnames} will be extracted
-for the purposes of completing \code{x} with respect to \code{mat}.}
+for the purposes of completing \code{a} with respect to \code{mat}.}
 
-\item{fill}{rows and columns added to \code{x} will contain the value \code{fill}. (a double)}
+\item{fill}{rows and columns added to \code{a} will contain the value \code{fill}. (a double)}
 
-\item{fillrow}{a row vector of type \code{matrix} with same column names as \code{x}. 
-Any rows added to \code{x} will be \code{fillrow}.  
+\item{fillrow}{a row vector of type \code{matrix} with same column names as \code{a}. 
+Any rows added to \code{a} will be \code{fillrow}.  
 If non-\code{NULL}, \code{fillrow} takes precedence over both \code{fillcol} and \code{fill}
 in the case of conflicts.}
 
-\item{fillcol}{a column vector of type \code{matrix} with same row names as \code{x}. 
-Any columns added to \code{x} will be \code{fillcol}.  
+\item{fillcol}{a column vector of type \code{matrix} with same row names as \code{a}. 
+Any columns added to \code{a} will be \code{fillcol}.  
 If non-\code{NULL}, \code{fillcol} takes precedence over \code{fill}
 in the case of conflicts.}
 
-\item{margin}{specifies the subscript(s) in \code{x} over which completion will occur
+\item{margin}{specifies the subscript(s) in \code{a} over which completion will occur
 \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
 For rows only, give \code{1}; 
 for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.}
 }
 \value{
-A modified version of \code{x} possibly containing additional rows and columns 
+A modified version of \code{a} possibly containing additional rows and columns 
 whose names are obtained from \code{matrix}
 }
 \description{
-"Completing" rows and columns means that \code{x} contains a union of rows and columns
-between \code{x} and \code{m},
+"Completing" rows and columns means that \code{a} contains a union of rows and columns
+between \code{a} and \code{m},
 with missing data represented by the value for \code{fill} (0, by default).
 }
 \details{
 Note that \code{complete_rows_cols(mat1, mat2)} and \code{complete_rows_cols(mat2, mat1)} are 
 not guaranteed to have the same order for rows and columns.
 (Nor are the values in the matrix guaranteed to have the same positions.)
-If \code{dimnames(mat)} is NULL, \code{x} is returned unmodified.
-If either \code{x} or \code{matrix} are missing names on a margin (row or column),
+If \code{dimnames(mat)} is NULL, \code{a} is returned unmodified.
+If either \code{a} or \code{matrix} are missing names on a margin (row or column),
 an error is given.
 Matrices can be completed relative to themselves,
-meaning that \code{x} will be made square,  
-containing the union of row and column names from \code{x} itself.
+meaning that \code{a} will be made square,  
+containing the union of row and column names from \code{a} itself.
 All added rows and columns will be created from one of the \code{fill*} arguments.
 When conflicts arise, precedence among the \code{fill*} arguments is 
 \code{fillrow} then \code{fillcol} then \code{fill}.
-Self-completion occurs if \code{x} is non-NULL and 
+Self-completion occurs if \code{a} is non-NULL and 
 both \code{is.null(matrix)} and \code{is.null(names)}.
 Under these conditions, no warning is given.
 If \code{is.null(names)} and dimnames of \code{matrix} cannot be determined
 (because, for example, \code{matrix} doesn't have any dimnames),
-\code{x} is completed relative to itself and a warning is given.
+\code{a} is completed relative to itself and a warning is given.
 }
 \examples{
 m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
@@ -77,12 +77,12 @@ complete_rows_cols(m1)
 complete_rows_cols(m1, matrix(0, nrow = 2, ncol = 2, 
                               dimnames = list(c("r10", "r11"), c("c10", "c11")))) 
 # Also works with lists
-complete_rows_cols(x = list(m1,m1))
-complete_rows_cols(x = list(m1,m1), mat = list(m2,m2))
+complete_rows_cols(a = list(m1,m1))
+complete_rows_cols(a = list(m1,m1), mat = list(m2,m2))
 # No changes because r2, r3 already present in m1
-complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 1) 
-complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 2)
-complete_rows_cols(x = list(m1,m1), 
+complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 1) 
+complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 2)
+complete_rows_cols(a = list(m1,m1), 
                    mat = make_list(matrix(0, nrow = 2, ncol = 2, 
                                           dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
                                    n = 2, lenx = 1))
@@ -93,5 +93,5 @@ b <- matrix(c(1:6), byrow = TRUE, nrow = 3, ncol = 2,
             dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
 fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, 
                   dimnames = list("r42", c("c1", "c2")))
-complete_rows_cols(x = a, mat = b, fillrow = fillrow)
+complete_rows_cols(a = a, mat = b, fillrow = fillrow)
 }

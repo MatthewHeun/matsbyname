@@ -4,10 +4,10 @@
 \alias{invert_byname}
 \title{Invert a matrix}
 \usage{
-invert_byname(m)
+invert_byname(a)
 }
 \arguments{
-\item{m}{the matrix to be inverted. \code{m} must be square.}
+\item{a}{the matrix to be inverted. \code{m} must be square.}
 }
 \value{
 the inversion

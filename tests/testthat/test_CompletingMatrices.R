@@ -120,53 +120,53 @@ context("Completing rows and columns")
 
 test_that("complete_rows_cols works as expected", {
 
-  # x is NULL, matrix is NULL.  Error.
-  expect_error(complete_rows_cols(x = NULL), "Both x and matrix are NULL in complete_rows_cols.")
+  # a is NULL, matrix is NULL.  Error.
+  expect_error(complete_rows_cols(a = NULL), "Both a and matrix are NULL in complete_rows_cols.")
    
-  # x is NULL, matrix is present.  
+  # a is NULL, matrix is present.  
   # Create a matrix of same size as matrix with names of matrix and values equal to fill.
-  expect_equal(complete_rows_cols(x = NULL, mat = matrix(1, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))), fill = 42), 
+  expect_equal(complete_rows_cols(a = NULL, mat = matrix(1, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))), fill = 42), 
                matrix(42, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))))
   
-  # x is a single number, matrix is NULL.  x is returned.
-  expect_equal(complete_rows_cols(x = 42), 42)
+  # a is a single number, matrix is NULL.  a is returned.
+  expect_equal(complete_rows_cols(a = 42), 42)
   
-  # x is a single number, a named matrix is present, and each item has length 1.  
+  # a is a single number, a named matrix is present, and each item has length 1.  
   # This should fail. 
   # There is no way to know which row or column names are already present.
-  # Therefore, there is now way to know how to complete the number x.
-  expect_error(complete_rows_cols(x = 42, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"))))
+  # Therefore, there is now way to know how to complete the number a.
+  expect_error(complete_rows_cols(a = 42, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"))))
   
   # If you want to take a single number and convert it to 
   # a matrix with named rows and columns, use
-  # complete_rows_cols(x = NULL, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"), fill = <<your number>>).
-  expect_equal(complete_rows_cols(x = NULL, 
+  # complete_rows_cols(a = NULL, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"), fill = <<your number>>).
+  expect_equal(complete_rows_cols(a = NULL, 
                                   mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col")), 
                                   fill = 42), 
                matrix(42, nrow = 1, ncol = 1, dimnames = list("row", "col")))
   
-  # x is a matrix without dimnames, names is NULL, matrix is NULL.  x is returned.
-  expect_equal(complete_rows_cols(x = matrix(42, nrow = 3, ncol = 2)), matrix(42, nrow = 3, ncol = 2))
+  # a is a matrix without dimnames, names is NULL, matrix is NULL.  a is returned.
+  expect_equal(complete_rows_cols(a = matrix(42, nrow = 3, ncol = 2)), matrix(42, nrow = 3, ncol = 2))
    
-  # x is a matrix without dimnames, a matrix names is present.  
+  # a is a matrix without dimnames, a matrix names is present.  
   # This is a degenerate case.
-  # We don't know what row and column names are already present in x.
-  # So we can't know how to complete x with names from matrix.
+  # We don't know what row and column names are already present in a.
+  # So we can't know how to complete a with names from matrix.
   # This should give an error.
-  expect_error(complete_rows_cols(x = matrix(42, nrow = 3, ncol = 2), 
+  expect_error(complete_rows_cols(a = matrix(42, nrow = 3, ncol = 2), 
                                   mat = matrix(0, nrow = 3, ncol = 2, 
                                                   dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))), 
-               "Can't complete x that is missing dimnames with non-NULL dimnames on mat.")
+               "Can't complete a that is missing dimnames with non-NULL dimnames on mat.")
    
-  # x is a matrix with dimnames, matrix is NULL.  x is completed relative to itself
-  expect_equal(complete_rows_cols(x = matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))), 
+  # a is a matrix with dimnames, matrix is NULL.  a is completed relative to itself
+  expect_equal(complete_rows_cols(a = matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))), 
                matrix(c(42, 0, 0, 
                         42, 0, 0, 
                          0, 0, 0), byrow = TRUE, 
                       nrow = 3, ncol = 3, dimnames = list(c("r1", "r2", "c1"), c("c1", "r1", "r2"))))
   
-  # x is a matrix with dimnames, names is NULL, but matrix is present.  Take names from matrix to complete x.
-  expect_equal(complete_rows_cols(x = matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))),
+  # a is a matrix with dimnames, names is NULL, but matrix is present.  Take names from matrix to complete a.
+  expect_equal(complete_rows_cols(a = matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))),
                                   mat = matrix(42, nrow = 4, ncol = 3, 
                                                      dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3")))), 
                matrix(c(1, 4, 0, 
@@ -175,14 +175,14 @@ test_that("complete_rows_cols works as expected", {
                         0, 0, 0), nrow = 4, ncol = 3, byrow = TRUE, 
                       dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3"))))
 
-  # In this example, x is non-NULL and has dimnames.
+  # In this example, a is non-NULL and has dimnames.
   # But we have no names. 
   # There is no "names" argument, and matrix has no row or column names.
-  # So there is no way to know how to complete x.
+  # So there is no way to know how to complete a.
   # So we give a warning and complete m1 relative to itself.
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   m2 <- matrix(c(7:12), ncol = 3)
-  expect_warning(complete_rows_cols(x = m1, mat = m2), 
+  expect_warning(complete_rows_cols(a = m1, mat = m2), 
                  "NULL names in complete_rows_cols, despite matrix being specified. Completing x relative to itself.") %>% 
     # Now test that the result is correct.
     expect_equal(matrix(c(1, 4, 0, 0, 0,

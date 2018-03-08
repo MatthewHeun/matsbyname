@@ -4,16 +4,16 @@
 \alias{transpose_byname}
 \title{Transpose a matrix by name}
 \usage{
-transpose_byname(m)
+transpose_byname(a)
 }
 \arguments{
-\item{m}{the matrix to be transposed}
+\item{a}{the matrix to be transposed}
 }
 \value{
 the transposed matrix
 }
 \description{
-Transpose a matrix by name
+Gives the transpose of a matrix or list of matrices
 }
 \examples{
 library(magrittr)

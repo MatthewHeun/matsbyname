@@ -4,21 +4,21 @@
 \alias{rowprods_byname}
 \title{Row products, sorted by name}
 \usage{
-rowprods_byname(M, colname = NA)
+rowprods_byname(a, colname = NA)
 }
 \arguments{
-\item{M}{a matrix or data frame from which row products are desired.}
+\item{a}{a matrix or list of matrices from which row products are desired.}
 
 \item{colname}{name of the output column containing row products}
 }
 \value{
-a column vector of type \code{matrix} containing the row products of \code{M}
+a column vector of type \code{matrix} containing the row products of \code{a}
 }
 \description{
 Calculates row products (the product of all elements in a row) for a matrix.
 An optional \code{colname} for the resulting column vector can be supplied.
 If \code{colname} is \code{NULL} or \code{NA} (the default),
-the column name is set to the column type as given by \code{coltype(M)}.
+the column name is set to the column type as given by \code{coltype(a)}.
 }
 \examples{
 library(magrittr)

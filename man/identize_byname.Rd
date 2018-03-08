@@ -4,10 +4,10 @@
 \alias{identize_byname}
 \title{Named identity matrix or vector}
 \usage{
-identize_byname(M, margin = c(1, 2))
+identize_byname(a, margin = c(1, 2))
 }
 \arguments{
-\item{M}{the matrix whose names and dimensions are to be preserved in an identity matrix or vector}
+\item{a}{the matrix whose names and dimensions are to be preserved in an identity matrix or vector}
 
 \item{margin}{determines whether an identity vector or matrix is returned}
 }
@@ -16,13 +16,13 @@ An identity matrix or vector.
 }
 \description{
 Creates an identity matrix (\strong{I}) or vector (\strong{i}) of same size and with same names and
-same row and column types as \strong{M}.
+same row and column types as \code{a}.
 If \code{margin = 1}, makes a column matrix filled with \code{1}s. 
-Row names and type are taken from row names and type of \strong{M}.
-Column name and type are same as column type of \strong{M}.
+Row names and type are taken from row names and type of \code{a}.
+Column name and type are same as column type of \code{a}.
 If \code{margin = 2}, make a row matrix filled with \code{1}s.
-Column names and type are taken from column name and type of \strong{M}.
-Row name and type are same as row type of \strong{M}.
+Column names and type are taken from column name and type of \code{a}.
+Row name and type are same as row type of \code{a}.
 If \code{c(1,2)} (the default), make an identity matrix with \code{1}s on the diagonal.
 Row and column names are sorted on output.
 }

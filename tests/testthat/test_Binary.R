@@ -575,11 +575,11 @@ test_that("mean_byname works as expected", {
 test_that("geometricmean_byname works as expected", {
   expect_equal(geometricmean_byname(0, 0), 0)
   expect_equal(geometricmean_byname(10, 20), sqrt(10*20))
-  expect_error(geometricmean_byname(-10, 10), "X1 and X2 must have same sign in geometricmean_byname")
+  expect_error(geometricmean_byname(-10, 10), "a and b must have same sign in geometricmean_byname")
   expect_equal(geometricmean_byname(10, 1000), 100)
-  expect_equal(geometricmean_byname(X1 = matrix(c(10, 10), nrow = 2, ncol = 1), X2 = 1000), 
+  expect_equal(geometricmean_byname(a = matrix(c(10, 10), nrow = 2, ncol = 1), b = 1000), 
                matrix(c(100, 100), nrow = 2, ncol = 1))
-  expect_equal(geometricmean_byname(X1 = 1000, X2 = matrix(c(10, 10), nrow = 2, ncol = 1)), 
+  expect_equal(geometricmean_byname(a = 1000, b = matrix(c(10, 10), nrow = 2, ncol = 1)), 
                matrix(c(100, 100), nrow = 2, ncol = 1))
   
   commoditynames <- c("c1", "c2")

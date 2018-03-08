@@ -4,10 +4,10 @@
 \alias{Iminus_byname}
 \title{Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})}
 \usage{
-Iminus_byname(m)
+Iminus_byname(a)
 }
 \arguments{
-\item{m}{the matrix to be subtracted from \code{I}}
+\item{a}{the matrix to be subtracted from \code{I}}
 }
 \value{
 The difference between an identity matrix (\code{I}) and \code{m}

@@ -4,12 +4,12 @@
 \alias{samestructure_byname}
 \title{Test whether two matrices or lists of matrices have same structure}
 \usage{
-samestructure_byname(X1, X2)
+samestructure_byname(a, b)
 }
 \arguments{
-\item{X1}{the first matrix to be tested}
+\item{a}{the first matrix to be tested}
 
-\item{X2}{the second matrix to be tested}
+\item{a}{the second matrix to be tested}
 }
 \value{
 \code{TRUE} if \code{X1} and \code{X2} have the same structure, \code{FALSE} otherwise.
