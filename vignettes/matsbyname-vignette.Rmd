@@ -314,7 +314,7 @@ are different.
 tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
 ```
 
-Analysts are encouraged to use <tt>byname</tt> 
+Analysts are encouraged 
 to set row and column types on matrices,
 thereby taking advantage of <tt>byname</tt>'s
 type-tracking feature 
