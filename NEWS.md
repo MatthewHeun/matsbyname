@@ -1,5 +1,13 @@
 # News for `matsbyname`
 
+## matsbyname 0.2.3 (2018-03-08)
+
+* Eliminate dependence (temporarily) on `matsindf`. 
+  Doing so allows `matsbyname` to be submitted first to CRAN.
+  Also, Travis builds are now successful, having eliminated the circular dependence between
+  `matsbyname` and `matsindf`.
+
+
 ## matsbyname 0.2.2 (2018-03-02)
 
 * New function `elementpow_byname` raises all elements of a matrix to a power.
