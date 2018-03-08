@@ -147,15 +147,15 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' Apply a function cumulatively to a list of matrices or numbers
 #' 
 #' \code{FUN} must be a binary function that also accepts a single argument.
-#' The result is a list with first element \code{FUN(m[[1]])}.
-#' For \code{i >= 2}, elements are \code{FUN(m[[i]], out[[i-1]])},
+#' The result is a list with first element \code{FUN(a[[1]])}.
+#' For \code{i >= 2}, elements are \code{FUN(a[[i]], out[[i-1]])},
 #' where \code{out} is the result list.
 #'
 #' @param FUN  the function to be applied
-#' @param   m  the list of matrices or numbers to which \code{FUN} will be applied cumulatively
+#' @param   a  the list of matrices or numbers to which \code{FUN} will be applied cumulatively
 #'
-#' @return a list of same length as \code{m} 
-#'         containing the cumulative application of \code{FUN} to \code{m}
+#' @return a list of same length as \code{a} 
+#'         containing the cumulative application of \code{FUN} to \code{a}
 #' 
 #' @export
 #'
@@ -164,30 +164,30 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' cumapply_byname(sum_byname, list(1, 2, 3, 4))
 #' cumapply_byname(prod, list(1, 2, 3, 4))
 #' cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
-cumapply_byname <- function(FUN, m){
+cumapply_byname <- function(FUN, a){
   # Check for pathological cases.
-  if (length(m) == 0) {
+  if (length(a) == 0) {
     # Nothing to be done here.  Return NULL.
     # Note that length(NULL) == 0, so this tests for m == NULL, too.
     return(NULL)
   }
-  if (is.matrix(m)) {
+  if (is.matrix(a)) {
     # We have a single matrix. Just return it.
-    return(FUN(m))
+    return(FUN(a))
   }
-  if (length(m) == 1) {
+  if (length(a) == 1) {
     # Note that length(NA) == 1, so this test captures cases where m == NA.
     # Nothing to be done.
-    return(FUN(m))
+    return(FUN(a))
   }
-  # length(m) > 1
+  # length(a) > 1
   # Assume we have a list of matrices or numerics
   out <- list()
-  out[[1]] <- FUN(m[[1]])
-  for (i in 2:length(m)) {
-    out[[i]] <- FUN(m[[i]], out[[i - 1]])
+  out[[1]] <- FUN(a[[1]])
+  for (i in 2:length(a)) {
+    out[[i]] <- FUN(a[[i]], out[[i - 1]])
   }
-  # Preserve names of m in the outgoing list.
-  out <- out %>% set_names(names(m))
+  # Preserve names of a in the outgoing list.
+  out <- out %>% set_names(names(a))
   return(out)
 }

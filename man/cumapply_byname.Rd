@@ -4,21 +4,21 @@
 \alias{cumapply_byname}
 \title{Apply a function cumulatively to a list of matrices or numbers}
 \usage{
-cumapply_byname(FUN, m)
+cumapply_byname(FUN, a)
 }
 \arguments{
 \item{FUN}{the function to be applied}
 
-\item{m}{the list of matrices or numbers to which \code{FUN} will be applied cumulatively}
+\item{a}{the list of matrices or numbers to which \code{FUN} will be applied cumulatively}
 }
 \value{
-a list of same length as \code{m} 
-        containing the cumulative application of \code{FUN} to \code{m}
+a list of same length as \code{a} 
+        containing the cumulative application of \code{FUN} to \code{a}
 }
 \description{
 \code{FUN} must be a binary function that also accepts a single argument.
-The result is a list with first element \code{FUN(m[[1]])}.
-For \code{i >= 2}, elements are \code{FUN(m[[i]], out[[i-1]])},
+The result is a list with first element \code{FUN(a[[1]])}.
+For \code{i >= 2}, elements are \code{FUN(a[[i]], out[[i-1]])},
 where \code{out} is the result list.
 }
 \examples{
