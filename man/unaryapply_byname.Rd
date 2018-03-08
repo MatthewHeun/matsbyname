@@ -2,7 +2,7 @@
 % Please edit documentation in R/Apply.R
 \name{unaryapply_byname}
 \alias{unaryapply_byname}
-\title{Apply a unary function byname}
+\title{Apply a unary function "by name"}
 \usage{
 unaryapply_byname(FUN, a, .FUNdots = NULL, rowcoltypes = c("all",
   "transpose", "row", "col", "none"))

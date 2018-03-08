@@ -1,7 +1,7 @@
 # This file contains functions that apply other functions to 
 # matrices or data frames of matrices
 
-#' Apply a unary function byname
+#' Apply a unary function "by name"
 #' 
 #' Note that if \code{a} is a list, the names of \code{a} are applied to the output.
 #'
@@ -68,7 +68,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   return(out)
 }
 
-#' Apply a binary function byname
+#' Apply a binary function "by name"
 #' 
 #' If either \code{a} or \code{b} is missing or \code{NULL}, 
 #' \code{0} is passed to \code{FUN} in its place.

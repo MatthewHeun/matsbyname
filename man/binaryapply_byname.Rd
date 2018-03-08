@@ -2,7 +2,7 @@
 % Please edit documentation in R/Apply.R
 \name{binaryapply_byname}
 \alias{binaryapply_byname}
-\title{Apply a binary function byname}
+\title{Apply a binary function "by name"}
 \usage{
 binaryapply_byname(FUN, a, b, .FUNdots = NULL, match_type = c("all",
   "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE)

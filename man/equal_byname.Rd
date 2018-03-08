@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{equal_byname}
 \alias{equal_byname}
-\title{Compare two matrices (byname)}
+\title{Compare two matrices "by name"}
 \usage{
 equal_byname(a, b)
 }
