@@ -7,9 +7,9 @@
 sum_byname(augend, addend)
 }
 \arguments{
-\item{augend}{Addend matrix or constant}
+\item{augend}{matrix or constant}
 
-\item{addend}{Augend matrix or constant
+\item{addend}{matrix or constant
 
 Performs a union and sorting of row and column names prior to summation.
 Zeroes are inserted for missing matrix elements.

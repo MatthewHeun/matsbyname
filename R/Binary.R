@@ -2,8 +2,8 @@
 
 #' Name-wise addition of matrices.
 #'
-#' @param augend Addend matrix or constant
-#' @param addend Augend matrix or constant
+#' @param augend matrix or constant
+#' @param addend matrix or constant
 #'
 #' Performs a union and sorting of row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
@@ -63,8 +63,8 @@ sum_byname <- function(augend, addend){
 
 #' Name-wise subtraction of matrices.
 #'
-#' @param minuend Minuend matrix or constant
-#' @param subtrahend Subtrahend matrix or constant
+#' @param minuend matrix or constant
+#' @param subtrahend matrix or constant
 #'
 #' Performs a union and sorting of row and column names prior to differencing.
 #' Zeroes are inserted for missing matrix elements.
