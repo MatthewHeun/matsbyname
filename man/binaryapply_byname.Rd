@@ -28,13 +28,14 @@ neither coltypes nor rowtypes are checked.}
 
 \item{rowcoltypes}{tells whether to apply row and column types from \code{a} and \code{b}
 to the output. 
-The default (\code{TRUE}) means that row and column types are applied to the output.
-If \code{FALSE}, row and column types are \emph{not} applied to the output.}
+Set \code{TRUE} (the default) to apply row and column types to the output.
+Set \code{FALSE}, to \emph{not} apply row and column types to the output.}
 
 \item{.organize}{a boolean that tells whether or not to automatically 
 complete \code{a} and \code{b} relative to each other and
 sort the rows and columns of the completed matrices.
-Normally, this should be \code{TRUE} (the default).}
+Normally, this should be \code{TRUE} (the default).
+However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
 }
 \value{
 the result of applying \code{FUN} "by name" to \code{a} and \code{b}.

@@ -6,7 +6,7 @@ library(dplyr)
 #' 
 #' Specify the base of the log with \code{base} argument.
 #'
-#' @param M a matrix of list of matrices 
+#' @param a a matrix or list of matrices 
 #' @param base the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)
 #'
 #' @return M with each element replaced by its base \code{base} logarithm
@@ -20,8 +20,8 @@ library(dplyr)
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' elementlog_byname(m)
 #' elementlog_byname(m, base = 10)
-elementlog_byname <- function(M, base = exp(1)){
-  unaryapply_byname(log, a = M, .FUNdots = list(base = base))
+elementlog_byname <- function(a, base = exp(1)){
+  unaryapply_byname(log, a = a, .FUNdots = list(base = base))
 }
 
 

@@ -22,7 +22,7 @@ Options are:
                           coltype of \code{a} becomes rowtype of output.}
   \item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
   \item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
-  \item{\code{none}: rowtype and coltype not set by this function. 
+  \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
                      Rather, \code{FUN} will set rowtype and coltype.}
 }}
 }
