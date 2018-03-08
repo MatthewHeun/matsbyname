@@ -27,3 +27,5 @@ vignettes/*.pdf
 inst/doc
 # File of comments for CRAN submission
 cran-comments.html
+NEWS.html
+README.html
