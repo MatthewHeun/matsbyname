@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette:
     smart: false
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{matsbyname use cases and examples}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
