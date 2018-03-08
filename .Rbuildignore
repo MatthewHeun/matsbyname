@@ -3,6 +3,6 @@
 ^NEWS\.html$
 ^README\.Rmd$
 ^README\.html$
-^cran-comments\.Rmd$
+^cran-comments\.md$
 ^cran-comments\.html$
 ^\.travis\.yml$
