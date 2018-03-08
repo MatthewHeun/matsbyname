@@ -10,7 +10,7 @@ library(parallel)
 library(matsbyname)
 library(magrittr)
 library(testthat)
-library(matsindf)
+# library(matsindf)
 library(tidyr)
 
 
@@ -882,20 +882,12 @@ context("Testing in a data frame")
 ###########################################################
 
 test_that("matrix multiplied by a constant in a data frame works", {
-  mats <- data.frame(
-    matrix = c("A", "A", "A", "A"),
-    row = c("p1", "p1", "p2", "p2"),
-    col = c("i1", "i2", "i1", "i2"),
-    vals = c(1, 3, 2, 4)
-  ) %>% 
-    mutate(
-      rowtype = "Industries",
-      coltype  = "Products"
-    ) %>% 
-    group_by(matrix) %>% 
-    collapse_to_matrices(matnames = "matrix", values = "vals", 
-                         rownames = "row", colnames = "col", 
-                         rowtypes = "rowtype", coltypes = "coltype") %>% 
+  matA <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Industries") %>% setcoltype("Products")
+  temp <- data.frame(matrix = I(list()), vals = I(list()))
+  temp[[1, "matrix"]] <- "A"
+  temp[[1, "vals"]] <- matA
+  mats <- temp %>% 
     rename(
       matrix.name = matrix,
       matrix = vals

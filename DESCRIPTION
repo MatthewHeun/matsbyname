@@ -22,7 +22,6 @@ Suggests:
     testthat,
     knitr, 
     rmarkdown,
-    matsindf,
     tidyr
 VignetteBuilder: 
     knitr
