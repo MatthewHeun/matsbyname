@@ -280,7 +280,7 @@ elementquotient_byname <- function(dividend, divisor){
 
 #' Name- and element-wise arithmetic mean of matrices.
 #'
-#' Gives the arithmatic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
+#' Gives the arithmetic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
 #' 
 #' This function performs a union and sorting of row and column names 
 #' prior to performing arithmetic mean.
@@ -454,7 +454,7 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
 
 #' Compare two matrices (byname)
 #'
-#' Matries are completed and sorted relative to one another before comparison
+#' Matrices are completed and sorted relative to one another before comparison
 #'
 #' @param a the first matrix to be compared
 #' @param b the second matrix to be compared
