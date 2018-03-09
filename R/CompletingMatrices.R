@@ -426,7 +426,7 @@ complete_and_sort <- function(a, b, fill = 0, margin=c(1,2), roworder = NA, colo
 #'
 #' @param x the object to be duplicated
 #' @param n the number of times to be duplicated
-#' @param lenx the length of item \code{x}. Normally \code{lenx} is taken from \code{length(x)},
+#' @param lenx the length of item \code{x}. Normally \code{lenx} is taken to be \code{length(x)},
 #' but if \code{x} is itself a \code{list}, you may wish for the \code{list} to be duplicated several
 #' times. In that case, set \code{lenx = 1}.
 #'
