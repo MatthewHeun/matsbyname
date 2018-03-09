@@ -1,5 +1,12 @@
 # News for `matsbyname`
 
+## matsbyname 0.2.4 (2018-03-08)
+
+* Preparing for submission to CRAN. 
+  Changed many variable names in the APIs to standardize on "a" and "b"
+  as names for matrix or list of matrices arguments.
+
+
 ## matsbyname 0.2.3 (2018-03-08)
 
 * Eliminate dependence (temporarily) on `matsindf`. 
