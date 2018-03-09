@@ -4,21 +4,21 @@
 \alias{cumsum_byname}
 \title{Cumulative sum that respects row and column names}
 \usage{
-cumsum_byname(m)
+cumsum_byname(a)
 }
 \arguments{
-\item{m}{a number, list of numbers, matrix or list of matrices for which cumulative sum is desired}
+\item{a}{a number, list of numbers, matrix or list of matrices for which cumulative sum is desired}
 }
 \value{
 a single number, list of numbers, a single matrix, or a list of matrices,
-        depending on the nature of \code{m}
+        depending on the nature of \code{a}
 }
 \description{
 Provides cumulative sums along a list or column of a data frame.
-If \code{m} is a single number, \code{m} is returned.
-If \code{m} is a list of numbers, a list representing the cumulative sum of the numbers is returned.
-If \code{m} is a single matrix, \code{m} is returned.
-If \code{m} is a list of matrices, a list representing the cumulative sum
+If \code{a} is a single number, \code{a} is returned.
+If \code{a} is a list of numbers, a list representing the cumulative sum of the numbers is returned.
+If \code{a} is a single matrix, \code{a} is returned.
+If \code{a} is a list of matrices, a list representing the cumulative sum
 of the matrices is returned. 
 In this case, each entry in the returned list is sum "by name," 
 such that row and column names of the matrices are respected.

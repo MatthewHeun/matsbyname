@@ -4,16 +4,16 @@
 \alias{prodall_byname}
 \title{Product of all elements in a matrix}
 \usage{
-prodall_byname(M)
+prodall_byname(a)
 }
 \arguments{
-\item{M}{the matrix whose elements are to be multiplied}
+\item{a}{the matrix whose elements are to be multiplied}
 }
 \value{
-the product of all elements in \strong{\code{M}} as a numeric.
+the product of all elements in \code{a} as a numeric.
 }
 \description{
-This function is equivalent to \code{M \%>\% rowprods_byname() \%>\% colprods_byname()},
+This function is equivalent to \code{a \%>\% rowprods_byname() \%>\% colprods_byname()},
 but returns a single numeric value instead of a 1x1 matrix.
 }
 \examples{

@@ -29,7 +29,7 @@ elementlog_byname <- function(a, base = exp(1)){
 #' 
 #' Gives the exponential of all elements of a matrix or list of matrices
 #'
-#' @param M a matrix of list of matrices 
+#' @param a a matrix of list of matrices 
 #'
 #' @return \code{M} with each element replaced by its exponential
 #' 
@@ -42,8 +42,8 @@ elementlog_byname <- function(a, base = exp(1)){
 #'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' elementexp_byname(m)
-elementexp_byname <- function(M){
-  unaryapply_byname(exp, a = M)
+elementexp_byname <- function(a){
+  unaryapply_byname(exp, a = a)
 }
 
 #' Invert a matrix
@@ -51,7 +51,7 @@ elementexp_byname <- function(M){
 #' This function transposes row and column names as well as row and column types.
 #' Rows and columns of \code{m} are sorted prior to inverting.
 #'
-#' @param m the matrix to be inverted. \code{m} must be square.
+#' @param a the matrix to be inverted. \code{m} must be square.
 #'
 #' @return the inversion
 #' 
@@ -65,13 +65,15 @@ elementexp_byname <- function(M){
 #' matrixproduct_byname(m, invert_byname(m))
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
-invert_byname <- function(m){
-  unaryapply_byname(solve, a = m, rowcoltypes = "transpose")
+invert_byname <- function(a){
+  unaryapply_byname(solve, a = a, rowcoltypes = "transpose")
 }
 
 #' Transpose a matrix by name
 #'
-#' @param m the matrix to be transposed
+#' Gives the transpose of a matrix or list of matrices
+#'
+#' @param a the matrix to be transposed
 #'
 #' @return the transposed matrix
 #' @export
@@ -82,8 +84,8 @@ invert_byname <- function(m){
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
-transpose_byname <- function(m){
-  unaryapply_byname(t, a = m, rowcoltypes = "transpose")
+transpose_byname <- function(a){
+  unaryapply_byname(t, a = a, rowcoltypes = "transpose")
 }
 
 #' Creates a diagonal "hat" matrix from a vector.
@@ -136,17 +138,17 @@ hatize_byname <- function(v){
 #' Named identity matrix or vector
 #'
 #' Creates an identity matrix (\strong{I}) or vector (\strong{i}) of same size and with same names and
-#' same row and column types as \strong{M}.
+#' same row and column types as \code{a}.
 #' If \code{margin = 1}, makes a column matrix filled with \code{1}s. 
-#' Row names and type are taken from row names and type of \strong{M}.
-#' Column name and type are same as column type of \strong{M}.
+#' Row names and type are taken from row names and type of \code{a}.
+#' Column name and type are same as column type of \code{a}.
 #' If \code{margin = 2}, make a row matrix filled with \code{1}s.
-#' Column names and type are taken from column name and type of \strong{M}.
-#' Row name and type are same as row type of \strong{M}.
+#' Column names and type are taken from column name and type of \code{a}.
+#' Row name and type are same as row type of \code{a}.
 #' If \code{c(1,2)} (the default), make an identity matrix with \code{1}s on the diagonal.
 #' Row and column names are sorted on output.
 #'
-#' @param M the matrix whose names and dimensions are to be preserved in an identity matrix or vector
+#' @param a the matrix whose names and dimensions are to be preserved in an identity matrix or vector
 #' @param margin determines whether an identity vector or matrix is returned
 #'
 #' @return An identity matrix or vector.
@@ -166,12 +168,9 @@ hatize_byname <- function(v){
 #' identize_byname(N)
 #' # This also works with lists
 #' identize_byname(list(M, M))
-identize_byname <- function(M, margin = c(1,2)){
-  # if (is.list(M)) {
-  #   margin <- make_list(margin, n = length(M), lenx = 1)
-  # }
-  identize.func <- function(M, margin){
-    if (class(M) == "numeric" & length(M) == 1) {
+identize_byname <- function(a, margin = c(1,2)){
+  identize.func <- function(a, margin){
+    if (class(a) == "numeric" & length(a) == 1) {
       # Assume we have a single number here
       # Thus, we return 1.
       return(1)
@@ -184,12 +183,12 @@ identize_byname <- function(M, margin = c(1,2)){
     if (length(margin) == 2 && all(margin %in% c(1,2))) {
       # M is a matrix. 
       # Return the identity matrix with 1's on diagonal,
-      # of same dimensions as M
-      # and same names and types as M.
-      stopifnot(nrow(M) == ncol(M))
-      return(diag(nrow(M)) %>% 
-               setrownames_byname(rownames(M)) %>% setcolnames_byname(colnames(M)) %>% 
-               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+      # of same dimensions as a
+      # and same names and types as a.
+      stopifnot(nrow(a) == ncol(a))
+      return(diag(nrow(a)) %>% 
+               setrownames_byname(rownames(a)) %>% setcolnames_byname(colnames(a)) %>% 
+               setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     }
     
     if (length(margin) != 1 || !margin %in% c(1,2)) {
@@ -198,33 +197,33 @@ identize_byname <- function(M, margin = c(1,2)){
     
     if (margin == 1)  {
       # Return a column vector containing 1's
-      return(matrix(rep_len(1, nrow(M)), nrow = nrow(M), ncol = 1) %>% 
-               setrownames_byname(rownames(M)) %>% setcolnames_byname(coltype(M)) %>% 
-               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+      return(matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1) %>% 
+               setrownames_byname(rownames(a)) %>% setcolnames_byname(coltype(a)) %>% 
+               setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     }
     if (margin == 2) {
       # Return a row vector containing 1's
-      return(matrix(rep_len(1, ncol(M)), nrow = 1, ncol = ncol(M)) %>% 
-               setrownames_byname(rowtype(M)) %>% setcolnames_byname(colnames(M)) %>% 
-               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+      return(matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a)) %>% 
+               setrownames_byname(rowtype(a)) %>% setcolnames_byname(colnames(a)) %>% 
+               setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     } 
     # Should never get here, but just in case:
     stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(identize.func, a = M, .FUNdots = list(margin = margin), rowcoltypes = "none")
+  unaryapply_byname(identize.func, a = a, .FUNdots = list(margin = margin), rowcoltypes = "none")
 }
 
 #' Compute fractions of matrix entries
 #' 
-#' This function divides all entries in \strong{M} by the specified sum,
+#' This function divides all entries in \code{a} by the specified sum,
 #' thereby "fractionizing" the matrix.
 #'
-#' @param M the matrix to be fractionized
-#' @param margin If \code{1} (rows), each entry in \strong{M} is divided by its row's sum.
-#' If \code{2}, each entry in \strong{M} is divided by its column's sum.
-#' If \code{c(1,2)}, each entry in \strong{M} is divided by the sum of all entries in \strong{M}.
+#' @param a the matrix to be fractionized
+#' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
+#' If \code{2}, each entry in \code{a} is divided by its column's sum.
+#' If \code{c(1,2)}, each entry in \code{a} is divided by the sum of all entries in \code{a}.
 #'
-#' @return a fractionized matrix of same dimensions and same row and column types as \strong{M}.
+#' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
 #' @export
 #'
 #' @examples
@@ -237,16 +236,13 @@ identize_byname <- function(M, margin = c(1,2)){
 #' fractionize_byname(M, margin = c(1,2))
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
-fractionize_byname <- function(M, margin){
-  # if (is.list(M)) {
-  #   margin <- make_list(margin, n = length(M), lenx = 1)
-  # }
-  fractionize.func <- function(M, margin){
-    if (!"matrix" %in% class(M) && !"data.frame" %in% class(M)) {
+fractionize_byname <- function(a, margin){
+  fractionize.func <- function(a, margin){
+    if (!"matrix" %in% class(a) && !"data.frame" %in% class(a)) {
       # Assume we have a single number here
-      # By dividing M by itself, we could throw a division by zero error,
+      # By dividing a by itself, we could throw a division by zero error,
       # which we would want to do.
-      return(M/M)
+      return(a/a)
     }
     if (length(margin) != length(unique(margin))) {
       stop("margin should contain unique integers in fractionize_byname")
@@ -256,7 +252,7 @@ fractionize_byname <- function(M, margin){
     }
     
     if (length(margin) == 2 && all(margin %in% c(1,2))) {
-      return(M/sumall_byname(M))
+      return(a/sumall_byname(a))
     }
     
     if (length(margin) != 1 || !margin %in% c(1,2)) {
@@ -265,18 +261,18 @@ fractionize_byname <- function(M, margin){
     
     if (margin == 1) {
       # Divide each entry by its row sum
-      # Do this with (M*i)_hat_inv * M
-      return(matrixproduct_byname(M %>% rowsums_byname %>% hatize_byname %>% invert_byname, M))
+      # Do this with (a*i)_hat_inv * a
+      return(matrixproduct_byname(a %>% rowsums_byname %>% hatize_byname %>% invert_byname, a))
     }
     if (margin == 2) {
       # Divide each entry by its column sum
-      # Do this with M * (i^T * M)_hat_inv
-      return(matrixproduct_byname(M, colsums_byname(M) %>% hatize_byname %>% invert_byname))
+      # Do this with a * (i^T * a)_hat_inv
+      return(matrixproduct_byname(a, colsums_byname(a) %>% hatize_byname %>% invert_byname))
     } 
     # Should never get here, but just in case:
     stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(fractionize.func, a = M, .FUNdots = list(margin = margin), rowcoltypes = "all")
+  unaryapply_byname(fractionize.func, a = a, .FUNdots = list(margin = margin), rowcoltypes = "all")
 }
 
 
@@ -287,9 +283,9 @@ fractionize_byname <- function(M, margin){
 #' the return value from \code{rowsums_byname} is a matrix.
 #' An optional \code{colname} for the resulting column vector can be supplied.
 #' If \code{colname} is \code{NULL} or \code{NA} (the default),
-#' the column name is set to the column type as given by \code{coltype(m)}.
+#' the column name is set to the column type as given by \code{coltype(a)}.
 #'
-#' @param m a matrix or list of matrices from which row sums are desired.
+#' @param a a matrix or list of matrices from which row sums are desired.
 #' @param colname name of the output column containing row sums
 #'
 #' @return a column vector of type \code{matrix} containing the row sums of \code{m}
@@ -317,29 +313,29 @@ fractionize_byname <- function(M, margin){
 #' ans$rs[[1]]
 #' # Nonsensical
 #' \dontrun{rowsums_byname(NULL)}
-rowsums_byname <- function(m, colname = NA){
+rowsums_byname <- function(a, colname = NA){
   if (is.null(colname)) {
     # Set to NA so that we can try setting to coltype in rowsum.func
     colname <- NA_character_
   }
-  rowsum.func <- function(m, colname){
+  rowsum.func <- function(a, colname){
     if (is.na(colname)) {
-      colname <- coltype(m)
+      colname <- coltype(a)
     }
-    rowSums(m) %>%
+    rowSums(a) %>%
       # Preserve matrix structure (i.e., result will be a column vector of type matrix)
       matrix(ncol = 1) %>%
       # Preserve row names
-      setrownames_byname(rownames(m)) %>%
+      setrownames_byname(rownames(a)) %>%
       # Set column name
       setcolnames_byname(colname) %>%
       # But sort the result on names
       sort_rows_cols() %>%
       # Set types
-      setrowtype(rowtype(m)) %>%
-      setcoltype(coltype(m))
+      setrowtype(rowtype(a)) %>%
+      setcoltype(coltype(a))
   }
-  unaryapply_byname(rowsum.func, a = m, .FUNdots = list(colname = colname), rowcoltypes = "none")
+  unaryapply_byname(rowsum.func, a = a, .FUNdots = list(colname = colname), rowcoltypes = "none")
 }
 
 #' Column sums, sorted by name
@@ -349,12 +345,12 @@ rowsums_byname <- function(m, colname = NA){
 #' the return value from \code{colsums_byname} is a matrix.
 #' An optional \code{rowname} for the resulting row vector can be supplied.
 #' If \code{rowname} is \code{NULL} or \code{NA} (the default),
-#' the row name is set to the row type as given by \code{rowtype(m)}.
+#' the row name is set to the row type as given by \code{rowtype(a)}.
 #'
-#' @param m a matrix or list of matrices from which column sums are desired.
+#' @param a a matrix or list of matrices from which column sums are desired.
 #' @param rowname name of the output row containing column sums.
 #'
-#' @return a row vector of type \code{matrix} containing the column sums of \code{m}.
+#' @return a row vector of type \code{matrix} containing the column sums of \code{a}.
 #' @export
 #'
 #' @examples
@@ -381,39 +377,39 @@ rowsums_byname <- function(m, colname = NA){
 #'   cs2 = colsums_byname(m, rowname = "sum")
 #' )
 #' res$cs2
-colsums_byname <- function(m, rowname = NA){
+colsums_byname <- function(a, rowname = NA){
    if (is.null(rowname)) {
     # Set to NA so that we can try setting to coltype in colsum.func
     rowname <- NA_character_
   }
-  colsum.func <- function(m, rowname){
+  colsum.func <- function(a, rowname){
     if (is.na(rowname)) {
-      rowname <- rowtype(m)
+      rowname <- rowtype(a)
     }
-    colSums(m) %>%
+    colSums(a) %>%
       # Preserve matrix structure (i.e., result will be a row vector of type matrix)
       matrix(nrow = 1) %>%
       # Preserve column names
-      setcolnames_byname(colnames(m)) %>%
+      setcolnames_byname(colnames(a)) %>%
       # Set row name
       setrownames_byname(rowname) %>%
       # But sort the result on names
       sort_rows_cols() %>%
       # Set types
-      setrowtype(rowtype(m)) %>%
-      setcoltype(coltype(m))
+      setrowtype(rowtype(a)) %>%
+      setcoltype(coltype(a))
   }
-  unaryapply_byname(colsum.func, a = m, .FUNdots = list(rowname = rowname), rowcoltypes = "none")
+  unaryapply_byname(colsum.func, a = a, .FUNdots = list(rowname = rowname), rowcoltypes = "none")
 }
 
 #' Sum of all elements in a matrix
 #'
-#' This function is equivalent to \code{m \%>\% rowsums_byname() \%>\% colsums_byname()},
+#' This function is equivalent to \code{a \%>\% rowsums_byname() \%>\% colsums_byname()},
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
-#' @param m the matrix whose elements are to be summed
+#' @param a the matrix whose elements are to be summed
 #'
-#' @return the sum of all elements in \code{m} as a numeric
+#' @return the sum of all elements in \code{a} as a numeric
 #' @export
 #'
 #' @examples
@@ -434,14 +430,14 @@ colsums_byname <- function(m, rowname = NA){
 #'   sums = sumall_byname(m)
 #' )
 #' res$sums
-sumall_byname <- function(m){
-  sum.func <- function(m){
-    m %>%
+sumall_byname <- function(a){
+  sum.func <- function(a){
+    a %>%
       rowsums_byname %>%
       colsums_byname %>%
       as.numeric
   }
-  unaryapply_byname(sum.func, a = m, rowcoltypes = "none")
+  unaryapply_byname(sum.func, a = a, rowcoltypes = "none")
 }
 
 #' Row products, sorted by name
@@ -449,12 +445,12 @@ sumall_byname <- function(m){
 #' Calculates row products (the product of all elements in a row) for a matrix.
 #' An optional \code{colname} for the resulting column vector can be supplied.
 #' If \code{colname} is \code{NULL} or \code{NA} (the default),
-#' the column name is set to the column type as given by \code{coltype(M)}.
+#' the column name is set to the column type as given by \code{coltype(a)}.
 #'
-#' @param M a matrix or data frame from which row products are desired.
+#' @param a a matrix or list of matrices from which row products are desired.
 #' @param colname name of the output column containing row products
 #'
-#' @return a column vector of type \code{matrix} containing the row products of \code{M}
+#' @return a column vector of type \code{matrix} containing the row products of \code{a}
 #' @export
 #'
 #' @examples
@@ -479,27 +475,27 @@ sumall_byname <- function(m){
 #' ans$rs[[1]]
 #' # Nonsensical
 #' \dontrun{rowprods_byname(NULL)}
-rowprods_byname <- function(M, colname = NA){
+rowprods_byname <- function(a, colname = NA){
   if (is.null(colname)) {
     # Set the column name to NA so we can change it in the function.
     colname <- NA_character_
   }
-  rowprod.func <- function(M, colname){
+  rowprod.func <- function(a, colname){
     if (is.na(colname)) {
-      colname <- coltype(M)
+      colname <- coltype(a)
     }
-    apply(M, MARGIN = 1, FUN = prod) %>%
+    apply(a, MARGIN = 1, FUN = prod) %>%
       # Preserve matrix structure (i.e., result will be a column vector of type matrix)
       matrix(byrow = TRUE) %>%
       # Preserve row names
-      setrownames_byname(rownames(M)) %>%
+      setrownames_byname(rownames(a)) %>%
       # But sort the result on names
       sort_rows_cols %>%
       setcolnames_byname(colname) %>%
-      setrowtype(rowtype(M)) %>%
-      setcoltype(coltype(M))
+      setrowtype(rowtype(a)) %>%
+      setcoltype(coltype(a))
   }
-  unaryapply_byname(rowprod.func, a = M, .FUNdots = list(colname = colname), rowcoltypes = "none")
+  unaryapply_byname(rowprod.func, a = a, .FUNdots = list(colname = colname), rowcoltypes = "none")
 }
 
 #' Column products, sorted by name
@@ -507,12 +503,12 @@ rowprods_byname <- function(M, colname = NA){
 #' Calculates column products (the product of all elements in a column) for a matrix.
 #' An optional \code{rowname} for the resulting row vector can be supplied.
 #' If \code{rowname} is \code{NULL} or \code{NA} (the default),
-#' the row name is set to the row type as given by \code{rowtype(M)}.
+#' the row name is set to the row type as given by \code{rowtype(a)}.
 #'
-#' @param M a matrix or data frame from which column products are desired.
+#' @param a a matrix or data frame from which column products are desired.
 #' @param rowname name of the output row containing column products.
 #'
-#' @return a row vector of type \code{matrix} containing the column products of \strong{\code{M}}.
+#' @return a row vector of type \code{matrix} containing the column products of \code{a}.
 #' @export
 #'
 #' @examples
@@ -539,37 +535,37 @@ rowprods_byname <- function(M, colname = NA){
 #'   cs2 = colprods_byname(M, rowname = "prod")
 #' )
 #' res$cs2
-colprods_byname <- function(M, rowname = NA){
+colprods_byname <- function(a, rowname = NA){
   if (is.null(rowname)) {
     # Set the row name to NA so we can change it in the function.
     rowname <- NA_character_
   }
-  colprod.func <- function(M, rowname){
+  colprod.func <- function(a, rowname){
     if (is.na(rowname)) {
-      rowname <- rowtype(M)
+      rowname <- rowtype(a)
     }
-    apply(M, MARGIN = 2, FUN = prod) %>%
+    apply(a, MARGIN = 2, FUN = prod) %>%
       # Preserve matrix structure (i.e., result will be a row vector of type matrix)
       matrix(nrow = 1) %>%
       # Preserve column names
-      setcolnames_byname(colnames(M)) %>%
+      setcolnames_byname(colnames(a)) %>%
       # But sort the result on names
       sort_rows_cols() %>%
       setrownames_byname(rowname) %>%
-      setrowtype(rowtype(M)) %>%
-      setcoltype(coltype(M))
+      setrowtype(rowtype(a)) %>%
+      setcoltype(coltype(a))
   }
-  unaryapply_byname(colprod.func, a = M, .FUNdots = list(rowname = rowname), rowcoltypes = "none")
+  unaryapply_byname(colprod.func, a = a, .FUNdots = list(rowname = rowname), rowcoltypes = "none")
 }
 
 #' Product of all elements in a matrix
 #'
-#' This function is equivalent to \code{M \%>\% rowprods_byname() \%>\% colprods_byname()},
+#' This function is equivalent to \code{a \%>\% rowprods_byname() \%>\% colprods_byname()},
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
-#' @param M the matrix whose elements are to be multiplied
+#' @param a the matrix whose elements are to be multiplied
 #'
-#' @return the product of all elements in \strong{\code{M}} as a numeric.
+#' @return the product of all elements in \code{a} as a numeric.
 #' @export
 #'
 #' @examples
@@ -590,14 +586,14 @@ colprods_byname <- function(M, rowname = NA){
 #'   prods = prodall_byname(M)
 #' )
 #' res$prods
-prodall_byname <- function(M){
-  prodall.func <- function(M){
-    M %>%
+prodall_byname <- function(a){
+  prodall.func <- function(a){
+    a %>%
       rowprods_byname() %>%
       colprods_byname() %>%
       as.numeric()
   }
-  unaryapply_byname(prodall.func, a = M, rowcoltypes = "none")
+  unaryapply_byname(prodall.func, a = a, rowcoltypes = "none")
 }
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
@@ -607,7 +603,7 @@ prodall_byname <- function(M){
 #' Furthermore, if \code{m} is not square, it will be made square
 #' before subtracting from \code{I} by calling \code{complete_and_sort}.
 #'
-#' @param m the matrix to be subtracted from \code{I}
+#' @param a the matrix to be subtracted from \code{I}
 #'
 #' @return The difference between an identity matrix (\code{I}) and \code{m}
 #' (whose rows and columns have been completed and sorted)
@@ -630,24 +626,24 @@ prodall_byname <- function(M){
 #' m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' Iminus_byname(m2)
-Iminus_byname <- function(m){
-  iminus.func <- function(m){
-    A <- complete_and_sort(m) %>%
-      setrowtype(rowtype(m)) %>%
-      setcoltype(coltype(m))
+Iminus_byname <- function(a){
+  iminus.func <- function(a){
+    A <- complete_and_sort(a) %>%
+      setrowtype(rowtype(a)) %>%
+      setcoltype(coltype(a))
     difference_byname(identize_byname(A), A)
   }
-  unaryapply_byname(iminus.func, a = m, rowcoltypes = "all")
+  unaryapply_byname(iminus.func, a = a, rowcoltypes = "all")
 }
 
 
 #' Cumulative sum that respects row and column names
 #'
 #' Provides cumulative sums along a list or column of a data frame.
-#' If \code{m} is a single number, \code{m} is returned.
-#' If \code{m} is a list of numbers, a list representing the cumulative sum of the numbers is returned.
-#' If \code{m} is a single matrix, \code{m} is returned.
-#' If \code{m} is a list of matrices, a list representing the cumulative sum
+#' If \code{a} is a single number, \code{a} is returned.
+#' If \code{a} is a list of numbers, a list representing the cumulative sum of the numbers is returned.
+#' If \code{a} is a single matrix, \code{a} is returned.
+#' If \code{a} is a list of matrices, a list representing the cumulative sum
 #' of the matrices is returned. 
 #' In this case, each entry in the returned list is sum "by name," 
 #' such that row and column names of the matrices are respected.
@@ -656,10 +652,10 @@ Iminus_byname <- function(m){
 #' groups in the data frame are respected if \code{mutate} is used.
 #' See examples.
 #'
-#' @param m a number, list of numbers, matrix or list of matrices for which cumulative sum is desired
+#' @param a a number, list of numbers, matrix or list of matrices for which cumulative sum is desired
 #'
 #' @return a single number, list of numbers, a single matrix, or a list of matrices,
-#'         depending on the nature of \code{m}
+#'         depending on the nature of \code{a}
 #'         
 #' @export
 #'
@@ -676,27 +672,27 @@ Iminus_byname <- function(m){
 #' # Groups are respected in the context of mutate.
 #' data.frame(grp = c("A", "A", "B"), m = I(list(m1, m2, m3))) %>% group_by(grp) %>% 
 #'   mutate(m2 = cumsum_byname(m))
-cumsum_byname <- function(m){
-  cumapply_byname(FUN = sum_byname, m)
+cumsum_byname <- function(a){
+  cumapply_byname(FUN = sum_byname, a)
 }
 
 #' Cumulative element-product that respects row and column names
 #'
 #' Provides cumulative element-products along a list or column of a data frame.
-#' If \code{m} is a single number, \code{m} is returned.
-#' If \code{m} is a list of numbers, a list representing the cumulative product of the numbers is returned.
-#' If \code{m} is a single matrix, \code{m} is returned.
-#' If \code{m} is a list of matrices, a list representing the cumulative product
+#' If \code{a} is a single number, \code{a} is returned.
+#' If \code{a} is a list of numbers, a list representing the cumulative product of the numbers is returned.
+#' If \code{a} is a single matrix, \code{a} is returned.
+#' If \code{a} is a list of matrices, a list representing the cumulative product
 #' of the matrices is returned. 
 #' In this case, each entry in the returned list is product "by name," 
 #' such that row and column names of the matrices are respected.
 #' 
-#' This function respects groups if \code{m} is a variable in a data frame.
+#' This function respects groups if \code{a} is a variable in a data frame.
 #'
-#' @param m a number, list of numbers, matrix or list of matrices for which cumulative element product is desired
+#' @param a a number, list of numbers, matrix or list of matrices for which cumulative element product is desired
 #'
 #' @return a single number, list of numbers, a single matrix, or a list of matrices,
-#'         depending on the nature of \code{m}
+#'         depending on the nature of \code{a}
 #'         
 #' @export
 #'
@@ -710,8 +706,8 @@ cumsum_byname <- function(m){
 #' m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>%
 #'   setrowtype("row") %>% setcoltype("col")
 #' cumprod_byname(list(m1, m2, m3))
-cumprod_byname <- function(m){
-  cumapply_byname(FUN = elementproduct_byname, m)
+cumprod_byname <- function(a){
+  cumapply_byname(FUN = elementproduct_byname, a)
 }
 
 

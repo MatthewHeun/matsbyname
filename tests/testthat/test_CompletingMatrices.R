@@ -68,19 +68,19 @@ test_that("sort_rows_cols works as expected", {
   sorted1 <- matrix(c(2, 5, 
                       1, 4,
                       3, 6), byrow = TRUE, nrow = 3, dimnames = list(c("r5", "r3", "r1"), c("c4", "c2")))
-  expect_equal(sort_rows_cols(x = list(m,m), margin = 1, roworder = c("r5", "r3", "r1")), 
+  expect_equal(sort_rows_cols(a = list(m,m), margin = 1, roworder = c("r5", "r3", "r1")), 
                list(sorted1, sorted1))
   # Columns are sorted as default, because no colorder is given.
   sorted2 <- matrix(c(4, 1, 
                       5, 2,
                       6, 3), byrow = TRUE, nrow = 3, dimnames = list(c("r3", "r5", "r1"), c("c2", "c4")))
-  expect_equal(sort_rows_cols(x = list(m,m), margin = 2, roworder = c("r5", "r3", "r1")), 
+  expect_equal(sort_rows_cols(a = list(m,m), margin = 2, roworder = c("r5", "r3", "r1")), 
                list(sorted2, sorted2))
   # Both columns and rows sorted, rows by the list, columns in natural order.
   sorted3 <- matrix(c(5, 2,
                       4, 1,
                       6, 3), byrow = TRUE, nrow = 3, dimnames = list(c("r5", "r3", "r1"), c("c2", "c4")))
-  expect_equal(sort_rows_cols(x = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1")), 
+  expect_equal(sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1")), 
                list(sorted3, sorted3))
   
   # Ensure that rowtypes and coltypes, if present, are maintained
@@ -120,53 +120,53 @@ context("Completing rows and columns")
 
 test_that("complete_rows_cols works as expected", {
 
-  # x is NULL, matrix is NULL.  Error.
-  expect_error(complete_rows_cols(x = NULL), "Both x and matrix are NULL in complete_rows_cols.")
+  # a is NULL, matrix is NULL.  Error.
+  expect_error(complete_rows_cols(a = NULL), "Both a and mat are NULL in complete_rows_cols.")
    
-  # x is NULL, matrix is present.  
+  # a is NULL, matrix is present.  
   # Create a matrix of same size as matrix with names of matrix and values equal to fill.
-  expect_equal(complete_rows_cols(x = NULL, mat = matrix(1, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))), fill = 42), 
+  expect_equal(complete_rows_cols(a = NULL, mat = matrix(1, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))), fill = 42), 
                matrix(42, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))))
   
-  # x is a single number, matrix is NULL.  x is returned.
-  expect_equal(complete_rows_cols(x = 42), 42)
+  # a is a single number, matrix is NULL.  a is returned.
+  expect_equal(complete_rows_cols(a = 42), 42)
   
-  # x is a single number, a named matrix is present, and each item has length 1.  
+  # a is a single number, a named matrix is present, and each item has length 1.  
   # This should fail. 
   # There is no way to know which row or column names are already present.
-  # Therefore, there is now way to know how to complete the number x.
-  expect_error(complete_rows_cols(x = 42, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"))))
+  # Therefore, there is now way to know how to complete the number a.
+  expect_error(complete_rows_cols(a = 42, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"))))
   
   # If you want to take a single number and convert it to 
   # a matrix with named rows and columns, use
-  # complete_rows_cols(x = NULL, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"), fill = <<your number>>).
-  expect_equal(complete_rows_cols(x = NULL, 
+  # complete_rows_cols(a = NULL, mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col"), fill = <<your number>>).
+  expect_equal(complete_rows_cols(a = NULL, 
                                   mat = matrix(0, nrow = 1, ncol = 1, dimnames = list("row", "col")), 
                                   fill = 42), 
                matrix(42, nrow = 1, ncol = 1, dimnames = list("row", "col")))
   
-  # x is a matrix without dimnames, names is NULL, matrix is NULL.  x is returned.
-  expect_equal(complete_rows_cols(x = matrix(42, nrow = 3, ncol = 2)), matrix(42, nrow = 3, ncol = 2))
+  # a is a matrix without dimnames, names is NULL, matrix is NULL.  a is returned.
+  expect_equal(complete_rows_cols(a = matrix(42, nrow = 3, ncol = 2)), matrix(42, nrow = 3, ncol = 2))
    
-  # x is a matrix without dimnames, a matrix names is present.  
+  # a is a matrix without dimnames, a matrix names is present.  
   # This is a degenerate case.
-  # We don't know what row and column names are already present in x.
-  # So we can't know how to complete x with names from matrix.
+  # We don't know what row and column names are already present in a.
+  # So we can't know how to complete a with names from matrix.
   # This should give an error.
-  expect_error(complete_rows_cols(x = matrix(42, nrow = 3, ncol = 2), 
+  expect_error(complete_rows_cols(a = matrix(42, nrow = 3, ncol = 2), 
                                   mat = matrix(0, nrow = 3, ncol = 2, 
                                                   dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))), 
-               "Can't complete x that is missing dimnames with non-NULL dimnames on mat.")
+               "Can't complete a that is missing dimnames with non-NULL dimnames on mat.")
    
-  # x is a matrix with dimnames, matrix is NULL.  x is completed relative to itself
-  expect_equal(complete_rows_cols(x = matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))), 
+  # a is a matrix with dimnames, matrix is NULL.  a is completed relative to itself
+  expect_equal(complete_rows_cols(a = matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))), 
                matrix(c(42, 0, 0, 
                         42, 0, 0, 
                          0, 0, 0), byrow = TRUE, 
                       nrow = 3, ncol = 3, dimnames = list(c("r1", "r2", "c1"), c("c1", "r1", "r2"))))
   
-  # x is a matrix with dimnames, names is NULL, but matrix is present.  Take names from matrix to complete x.
-  expect_equal(complete_rows_cols(x = matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))),
+  # a is a matrix with dimnames, names is NULL, but matrix is present.  Take names from matrix to complete a.
+  expect_equal(complete_rows_cols(a = matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))),
                                   mat = matrix(42, nrow = 4, ncol = 3, 
                                                      dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3")))), 
                matrix(c(1, 4, 0, 
@@ -175,15 +175,15 @@ test_that("complete_rows_cols works as expected", {
                         0, 0, 0), nrow = 4, ncol = 3, byrow = TRUE, 
                       dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3"))))
 
-  # In this example, x is non-NULL and has dimnames.
+  # In this example, a is non-NULL and has dimnames.
   # But we have no names. 
   # There is no "names" argument, and matrix has no row or column names.
-  # So there is no way to know how to complete x.
+  # So there is no way to know how to complete a.
   # So we give a warning and complete m1 relative to itself.
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   m2 <- matrix(c(7:12), ncol = 3)
-  expect_warning(complete_rows_cols(x = m1, mat = m2), 
-                 "NULL names in complete_rows_cols, despite matrix being specified. Completing x relative to itself.") %>% 
+  expect_warning(complete_rows_cols(a = m1, mat = m2), 
+                 "NULL names in complete_rows_cols, despite matrix being specified. Completing a relative to itself.") %>% 
     # Now test that the result is correct.
     expect_equal(matrix(c(1, 4, 0, 0, 0,
                           2, 5, 0, 0, 0, 
@@ -240,7 +240,7 @@ test_that("complete_rows_cols works as expected", {
                       dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4"))))
   # Doesn't work with data frames.  Need a matrix.
   expect_error(complete_rows_cols(data.frame(m1), data.frame(m2)), 
-               "x cannot be a data frame in complete_rows_cols.")
+               "a cannot be a data frame in complete_rows_cols.")
   # Nothing added, because everything already present
   expect_equal(complete_rows_cols(m1, m1), m1)
   # Adds empty rows c1, c2 ; Adds empty columns r1, r2, r3 
@@ -275,11 +275,11 @@ test_that("complete_rows_cols works as expected", {
   
   
   # Also works with lists
-  expect_equal(complete_rows_cols(x = list(m1,m1)), list(complete_rows_cols(m1), complete_rows_cols(m1)))
-  expect_equal(complete_rows_cols(x = list(m1,m1), mat = list(m2,m2)), list(complete_m1_m2, complete_m1_m2))
+  expect_equal(complete_rows_cols(a = list(m1,m1)), list(complete_rows_cols(m1), complete_rows_cols(m1)))
+  expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2)), list(complete_m1_m2, complete_m1_m2))
   # No changes because r2, r3 already present in m1
-  expect_equal(complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 1), list(m1, m1))
-  expect_equal(complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 2), 
+  expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 1), list(m1, m1))
+  expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 2), 
                list(complete_m1_m2, complete_m1_m2))
   
   # Test what happens when matrices are missing row or column names or both.
@@ -295,7 +295,7 @@ test_that("complete_rows_cols works as expected", {
   )
   
   # Test with list for x and NULL for matrix
-  expect_equal(complete_rows_cols(x = list(A, A)), list(A, A))
+  expect_equal(complete_rows_cols(a = list(A, A)), list(A, A))
   B <- A %>% set_rownames(c("r1", "r2")) %>% set_colnames(c("c1", "c2")) %>% 
     setrowtype("row") %>% setcoltype("col")
   B_completed <- matrix(c(1, 3, 0, 0, 
@@ -303,7 +303,7 @@ test_that("complete_rows_cols works as expected", {
                           0, 0, 0, 0, 
                           0, 0, 0, 0), byrow = TRUE, nrow = 4, ncol = 4,
                         dimnames = list(c("r1", "r2", "c1", "c2"), c("c1", "c2", "r1", "r2")))
-  expect_equal(complete_rows_cols(x = list(B, B)), list(B_completed, B_completed))
+  expect_equal(complete_rows_cols(a = list(B, B)), list(B_completed, B_completed))
   
   B_filled <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
@@ -321,7 +321,7 @@ test_that("completing works when list is present and lists and ... have differen
   # Adds empty columns c3 and c4
   expect_equal(complete_rows_cols(m1, m2), complete_m1_m2)
   # Try in a list
-  expect_equal(complete_rows_cols(x = list(m1, m1, m1), 
+  expect_equal(complete_rows_cols(a = list(m1, m1, m1), 
                                   mat = list(m2, m2, m2)), 
                                   list(complete_m1_m2, complete_m1_m2, complete_m1_m2))
   # Now try with different arguments
@@ -363,13 +363,13 @@ test_that("complete_rows_cols works correctly when fillrow is specified.", {
   expect_error(complete_rows_cols(a, b, fillrow = fillrow_tall), "fillrow must be a matrix with one row in complete_rows_cols.")
   # Number of columns doesn't match
   fillrow_wide <- matrix(42, nrow = 1, ncol = 3, dimnames = list("r42", c("c1", "c2", "c3")))
-  expect_error(complete_rows_cols(a, b, fillrow = fillrow_wide), "column names of fillrow must match column names of x in complete_rows_cols.")
+  expect_error(complete_rows_cols(a, b, fillrow = fillrow_wide), "column names of fillrow must match column names of a in complete_rows_cols.")
   # Column names of fillrow don't match column names of x
   fillrow_badnames <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c3", "c4")))
-  expect_error(complete_rows_cols(x = a, mat = b, fillrow = fillrow_badnames), "column names of fillrow must match column names of x in complete_rows_cols.")
+  expect_error(complete_rows_cols(a = a, mat = b, fillrow = fillrow_badnames), "column names of fillrow must match column names of a in complete_rows_cols.")
   # Test a case that should work
   fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c1", "c2")))
-  expect_equal(complete_rows_cols(x = a, mat = b, fillrow = fillrow), 
+  expect_equal(complete_rows_cols(a = a, mat = b, fillrow = fillrow), 
                matrix(c(11, 12,
                         21, 22,
                         31, 32), byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))))
@@ -386,13 +386,13 @@ test_that("complete_rows_cols works correctly when fillcol is specified.", {
   expect_error(complete_rows_cols(a, b, fillcol = fillcol_wide), "fillcol must be a matrix with one column in complete_rows_cols.")
   # Number of rows doesn't match
   fillcol_tall <- matrix(42, nrow = 3, ncol = 1, dimnames = list(c("r1", "r2", "r3"), "c3"))
-  expect_error(complete_rows_cols(a, b, fillcol = fillcol_tall), "row names of fillcol must match row names of x in complete_rows_cols.")
+  expect_error(complete_rows_cols(a, b, fillcol = fillcol_tall), "row names of fillcol must match row names of a in complete_rows_cols.")
   # Row names of fillcol don't match row names of x
   fillcol_badnames <- matrix(c(13, 23), nrow = 2, ncol = 1, dimnames = list(c("r3", "r4"), "c1"))
-  expect_error(complete_rows_cols(x = a, mat = b, fillcol = fillcol_badnames), "row names of fillcol must match row names of x in complete_rows_cols.")
+  expect_error(complete_rows_cols(a = a, mat = b, fillcol = fillcol_badnames), "row names of fillcol must match row names of a in complete_rows_cols.")
   # Test a case that should work
   fillcol <- matrix(c(13, 23), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c42"))
-  expect_equal(complete_rows_cols(x = a, mat = b, fillcol = fillcol), 
+  expect_equal(complete_rows_cols(a = a, mat = b, fillcol = fillcol), 
                matrix(c(11, 12, 13,
                         21, 22, 23), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3"))))
 })
@@ -428,18 +428,18 @@ test_that("complete_and_sort works as expected", {
                            8,10,12,0,0), 
                          nrow = 5, ncol = 5, byrow = TRUE,
                          dimnames = list(c("c2", "c3", "c4", "r3", "r4"), c("c2", "c3", "c4", "r3", "r4")))
-  m1m2_completed <- list(m1 = matrix(c(4,1,0,0,
-                                       5,2,0,0,
-                                       6,3,0,0,
-                                       0,0,0,0),
-                                     nrow = 4, ncol = 4, byrow = TRUE,
-                                     dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3", "c4"))), 
-                         m2 = matrix(c(0,0,0,0,
-                                       0,0,0,0,
-                                       0,7,9,11,
-                                       0,8,10,12),
-                                     nrow = 4, ncol = 4, byrow = TRUE,
-                                     dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3", "c4"))))
+  m1m2_completed <- list(a = matrix(c(4,1,0,0,
+                                      5,2,0,0,
+                                      6,3,0,0,
+                                      0,0,0,0),
+                                    nrow = 4, ncol = 4, byrow = TRUE,
+                                    dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3", "c4"))), 
+                         b = matrix(c(0,0,0,0,
+                                      0,0,0,0,
+                                      0,7,9,11,
+                                      0,8,10,12),
+                                    nrow = 4, ncol = 4, byrow = TRUE,
+                                    dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2", "c3", "c4"))))
   
   # Complete relative to itself
   expect_equal(complete_and_sort(m1), m1_completed)
@@ -450,124 +450,124 @@ test_that("complete_and_sort works as expected", {
   
   # Specify row order. Unspecified rows are dropped
   expect_equal(complete_and_sort(m1, m2, roworder = c("r3", "r2", "r1")), 
-               list(m1 = matrix(c(6,3,0,0,
-                                  5,2,0,0,
-                                  4,1,0,0),
-                                nrow = 3, ncol = 4, byrow = TRUE,
-                                dimnames = list(c("r3", "r2", "r1"), c("c1", "c2", "c3", "c4"))), 
-                    m2 = matrix(c(0,7,9,11,
-                                  0,0,0,0,
-                                  0,0,0,0),
-                                nrow = 3, ncol = 4, byrow = TRUE,
-                                dimnames = list(c("r3", "r2", "r1"), c("c1", "c2", "c3", "c4")))))
+               list(a = matrix(c(6,3,0,0,
+                                 5,2,0,0,
+                                 4,1,0,0),
+                               nrow = 3, ncol = 4, byrow = TRUE,
+                               dimnames = list(c("r3", "r2", "r1"), c("c1", "c2", "c3", "c4"))), 
+                    b = matrix(c(0,7,9,11,
+                                 0,0,0,0,
+                                 0,0,0,0),
+                               nrow = 3, ncol = 4, byrow = TRUE,
+                               dimnames = list(c("r3", "r2", "r1"), c("c1", "c2", "c3", "c4")))))
   
   # Specify column order. Unspecified columns are dropped
   expect_equal(complete_and_sort(m1, m2, colorder = c("c4", "c3")), 
-               list(m1 = matrix(c(0,0,
-                                  0,0,
-                                  0,0,
-                                  0,0),
-                                nrow = 4, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3", "r4"), c("c4", "c3"))), 
-                    m2 = matrix(c(0,0,
-                                  0,0,
-                                  11,9,
-                                  12,10),
-                                nrow = 4, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3", "r4"), c("c4", "c3")))))
+               list(a = matrix(c(0,0,
+                                 0,0,
+                                 0,0,
+                                 0,0),
+                               nrow = 4, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3", "r4"), c("c4", "c3"))), 
+                    b = matrix(c(0,0,
+                                 0,0,
+                                 11,9,
+                                 12,10),
+                               nrow = 4, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3", "r4"), c("c4", "c3")))))
   
   # Complete and sort for rows only
   expect_equal(complete_and_sort(m1, m2, margin = 1), 
-               list(m1 = matrix(c(1,4,
-                                  2,5,
-                                  3,6,
-                                  0,0),
-                                nrow = 4, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3", "r4"), c("c2", "c1"))), 
-                    m2 = matrix(c(0,0,0,
-                                  0,0,0,
-                                  7,9,11,
-                                  8,10,12),
-                                nrow = 4, ncol = 3, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3", "r4"), c("c2", "c3", "c4")))))
+               list(a = matrix(c(1,4,
+                                 2,5,
+                                 3,6,
+                                 0,0),
+                               nrow = 4, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3", "r4"), c("c2", "c1"))), 
+                    b = matrix(c(0,0,0,
+                                 0,0,0,
+                                 7,9,11,
+                                 8,10,12),
+                               nrow = 4, ncol = 3, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3", "r4"), c("c2", "c3", "c4")))))
   
   # Complete and sort for columns only
   expect_equal(complete_and_sort(m1, m2, margin = 2), 
-               list(m1 = matrix(c(4,1,0,0,
-                                  5,2,0,0,
-                                  6,3,0,0),
-                                nrow = 3, ncol = 4, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4"))), 
-                    m2 = matrix(c(0,7,9,11,
-                                  0,8,10,12),
-                                nrow = 2, ncol = 4, byrow = TRUE,
-                                dimnames = list(c("r3", "r4"), c("c1", "c2", "c3", "c4")))))
+               list(a = matrix(c(4,1,0,0,
+                                 5,2,0,0,
+                                 6,3,0,0),
+                               nrow = 3, ncol = 4, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4"))), 
+                    b = matrix(c(0,7,9,11,
+                                 0,8,10,12),
+                               nrow = 2, ncol = 4, byrow = TRUE,
+                               dimnames = list(c("r3", "r4"), c("c1", "c2", "c3", "c4")))))
   
   # transpose m2. Get lots of rows and columns.
   expect_equal(complete_and_sort(m1, t(m2)), 
-               list(m1 = matrix(c(0,0,0,0,
-                                  0,0,0,0,
-                                  0,0,0,0,
-                                  4,1,0,0,
-                                  5,2,0,0,
-                                  6,3,0,0),
-                                nrow = 6, ncol = 4, byrow = TRUE,
-                                dimnames = list(c("c2", "c3", "c4", "r1", "r2", "r3"), c("c1", "c2", "r3", "r4"))), 
-                    m2 = matrix(c(0,0,7,8,
-                                  0,0,9,10,
-                                  0,0,11,12,
-                                  0,0,0,0,
-                                  0,0,0,0,
-                                  0,0,0,0),
-                                nrow = 6, ncol = 4, byrow = TRUE,
-                                dimnames = list(c("c2", "c3", "c4", "r1", "r2", "r3"), c("c1", "c2", "r3", "r4")))))
+               list(a = matrix(c(0,0,0,0,
+                                 0,0,0,0,
+                                 0,0,0,0,
+                                 4,1,0,0,
+                                 5,2,0,0,
+                                 6,3,0,0),
+                               nrow = 6, ncol = 4, byrow = TRUE,
+                               dimnames = list(c("c2", "c3", "c4", "r1", "r2", "r3"), c("c1", "c2", "r3", "r4"))), 
+                    b = matrix(c(0,0,7,8,
+                                 0,0,9,10,
+                                 0,0,11,12,
+                                 0,0,0,0,
+                                 0,0,0,0,
+                                 0,0,0,0),
+                               nrow = 6, ncol = 4, byrow = TRUE,
+                               dimnames = list(c("c2", "c3", "c4", "r1", "r2", "r3"), c("c1", "c2", "r3", "r4")))))
   
   expect_equal(complete_and_sort(m1, t(m2), margin = 1), 
-               list(m1 = matrix(c(0,0,
-                                  0,0,
-                                  0,0,
-                                  1,4,
-                                  2,5,
-                                  3,6),
-                                nrow = 6, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("c2", "c3", "c4", "r1", "r2", "r3"), c("c2", "c1"))), 
-                    m2 = matrix(c(7,8,
-                                  9,10,
-                                  11,12,
-                                  0,0,
-                                  0,0,
-                                  0,0),
-                                nrow = 6, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("c2", "c3", "c4", "r1", "r2", "r3"), c("r3", "r4")))))
+               list(a = matrix(c(0,0,
+                                 0,0,
+                                 0,0,
+                                 1,4,
+                                 2,5,
+                                 3,6),
+                               nrow = 6, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("c2", "c3", "c4", "r1", "r2", "r3"), c("c2", "c1"))), 
+                    b = matrix(c(7,8,
+                                 9,10,
+                                 11,12,
+                                 0,0,
+                                 0,0,
+                                 0,0),
+                               nrow = 6, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("c2", "c3", "c4", "r1", "r2", "r3"), c("r3", "r4")))))
   
   expect_equal(complete_and_sort(m1, t(m2), margin = 2), 
-               list(m1 = matrix(c(4,1,0,0,
-                                  5,2,0,0,
-                                  6,3,0,0),
-                                nrow = 3, ncol = 4, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "r3", "r4"))), 
-                    m2 = matrix(c(0,0,7,8,
-                                  0,0,9,10,
-                                  0,0,11,12),
-                                nrow = 3, ncol = 4, byrow = TRUE,
-                                dimnames = list(c("c2", "c3", "c4"), c("c1", "c2", "r3", "r4")))))
+               list(a = matrix(c(4,1,0,0,
+                                 5,2,0,0,
+                                 6,3,0,0),
+                               nrow = 3, ncol = 4, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "r3", "r4"))), 
+                    b = matrix(c(0,0,7,8,
+                                 0,0,9,10,
+                                 0,0,11,12),
+                               nrow = 3, ncol = 4, byrow = TRUE,
+                               dimnames = list(c("c2", "c3", "c4"), c("c1", "c2", "r3", "r4")))))
   
   v <- matrix(1:6, ncol = 2, dimnames = list(c("r3", "r1", "r2"), c("c2", "c1")))
   expect_equal(complete_and_sort(v, v), 
-               list(m1 = matrix(c(5,2,
-                                  6,3,
-                                  4,1),
-                                nrow = 3, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))), 
-                    m2 = matrix(c(5,2,
-                                  6,3,
-                                  4,1),
-                                nrow = 3, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))))
+               list(a = matrix(c(5,2,
+                                 6,3,
+                                 4,1),
+                               nrow = 3, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))), 
+                    b = matrix(c(5,2,
+                                 6,3,
+                                 4,1),
+                               nrow = 3, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))))
   
   # Also works with lists
   expect_equal(complete_and_sort(list(m1,m1), list(m2,m2)), 
-               list(m1 = list(m1m2_completed$m1, m1m2_completed$m1), m2 = list(m1m2_completed$m2, m1m2_completed$m2)))
+               list(a = list(m1m2_completed$a, m1m2_completed$a), b = list(m1m2_completed$b, m1m2_completed$b)))
   
   # Should return unmodified matrices if row or column names are missing.
   m_bare <- matrix(c(1:4), nrow = 2)
@@ -576,31 +576,31 @@ test_that("complete_and_sort works as expected", {
   expect_equal(complete_and_sort(m_bare, margin = 2), m_bare)
   m_rownames <- matrix(c(1:4), nrow = 2, dimnames = list(c("r2", "r1"), NULL))
   expect_equal(complete_and_sort(m_rownames, m1, margin = 1), 
-               list(m1 = matrix(c(2,4,
-                                  1,3,
-                                  0,0),
-                                nrow = 3, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3"), NULL)),
-                    m2 = matrix(c(1,4,
-                                  2,5,
-                                  3,6),
-                                nrow = 3, ncol = 2, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))))
+               list(a = matrix(c(2,4,
+                                 1,3,
+                                 0,0),
+                               nrow = 3, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3"), NULL)),
+                    b = matrix(c(1,4,
+                                 2,5,
+                                 3,6),
+                               nrow = 3, ncol = 2, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))))
   m_colnames <- matrix(c(1:6), nrow = 2, dimnames = list(NULL, c("c3", "c2", "c1")))
   expect_equal(complete_and_sort(m_colnames, m1, margin = 2),
-               list(m1 = matrix(c(5,3,1,
-                                  6,4,2),
-                                nrow = 2, ncol = 3, byrow = TRUE,
-                                dimnames = list(NULL, c("c1", "c2", "c3"))),
-                    m2 = matrix(c(4,1,0,
-                                  5,2,0,
-                                  6,3,0),
-                                nrow = 3, ncol = 3, byrow = TRUE,
-                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))))
+               list(a = matrix(c(5,3,1,
+                                 6,4,2),
+                               nrow = 2, ncol = 3, byrow = TRUE,
+                               dimnames = list(NULL, c("c1", "c2", "c3"))),
+                    b = matrix(c(4,1,0,
+                                 5,2,0,
+                                 6,3,0),
+                               nrow = 3, ncol = 3, byrow = TRUE,
+                               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))))
   # Now try with matrices that have no dimnames
   a <- matrix(1:4, nrow = 2)
   b <- matrix(1:4, nrow = 2)
-  expect_equal(complete_and_sort(a, b), list(m1 = a, m2 = b))
+  expect_equal(complete_and_sort(a, b), list(a = a, b = b))
 })
 
 

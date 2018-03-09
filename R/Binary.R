@@ -107,10 +107,10 @@ difference_byname <- function(minuend, subtrahend){
 #' 
 #' Gives the result of raising all elements of a matrix or list of matrices to a power. 
 #'
-#' @param M a matrix of list of matrices 
-#' @param pow the power to which elements of \code{M} will be raised
+#' @param a a matrix of list of matrices 
+#' @param pow the power to which elements of \code{a} will be raised
 #'
-#' @return \code{M} with each element raised to \code{pow}
+#' @return \code{a} with each element raised to \code{pow}
 #' 
 #' @export
 #'
@@ -130,8 +130,8 @@ difference_byname <- function(minuend, subtrahend){
 #'   sqrtm = elementpow_byname(m, 0.5),
 #'   mtopow = elementpow_byname(m, pow)
 #' )
-elementpow_byname <- function(M, pow){
-  binaryapply_byname(`^`, M, pow)
+elementpow_byname <- function(a, pow){
+  binaryapply_byname(`^`, a, pow)
 }
 
 #' Name-wise matrix multiplication
@@ -280,17 +280,17 @@ elementquotient_byname <- function(dividend, divisor){
 
 #' Name- and element-wise arithmetic mean of matrices.
 #'
-#' Gives the arithmetic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
+#' Gives the arithmetic mean of corresponding entries of \code{a} and \code{b}.
 #' 
 #' This function performs a union and sorting of row and column names 
 #' prior to performing arithmetic mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param X1 first operand (a matrix or constant value or lists of same)
-#' @param X2 second operand (a matrix or constant value or lists of same)
+#' @param a first operand (a matrix or constant value or lists of same)
+#' @param b second operand (a matrix or constant value or lists of same)
 #'
 #' @return A matrix representing the name-wise arithmetic mean 
-#'         of \strong{\code{X1}} and \strong{\code{X2}}.
+#'         of \code{a} and \code{b}.
 #' @export
 #'
 #' @examples
@@ -317,27 +317,27 @@ elementquotient_byname <- function(dividend, divisor){
 #' DF[[2,"G"]] <- G
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
-mean_byname <- function(X1, X2){
-  mean.func <- function(X1, X2){
-    sum_byname(X1, X2) %>%
+mean_byname <- function(a, b){
+  mean.func <- function(a, b){
+    sum_byname(a, b) %>%
       elementquotient_byname(2)
   }
-  binaryapply_byname(mean.func, a = X1, b = X2)
+  binaryapply_byname(mean.func, a = a, b = b)
 }
 
 #' Name- and element-wise geometric mean of two matrices.
 #'
-#' Gives the geometric mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
+#' Gives the geometric mean of corresponding entries of \code{a} and \code{b}.
 #' 
 #' This function performs a union and sorting of row and column names 
 #' prior to performing geometric mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param X1 first operand (a matrix or constant value or lists of same)
-#' @param X2 second operand (a matrix or constant value or lists of same)
+#' @param a first operand (a matrix or constant value or lists of same)
+#' @param b second operand (a matrix or constant value or lists of same)
 #'
 #' @return A matrix representing the name-wise geometric mean 
-#'         of \strong{\code{X1}} and \strong{\code{X2}}.
+#'         of \code{a} and \code{b}.
 #' @export
 #'
 #' @examples
@@ -367,43 +367,43 @@ mean_byname <- function(X1, X2){
 #' DF[[2,"G"]] <- G
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
-geometricmean_byname <- function(X1, X2){
-  geomean.func <- function(X1, X2){
-    if (any((X1 < 0 & X2 > 0) | (X1 > 0 & X2 < 0))) {
-      stop(paste0("X1 and X2 must have same sign in geometricmean_byname: X1 = ", X1, ", X2 = ", X2, "."))
+geometricmean_byname <- function(a, b){
+  geomean.func <- function(a, b){
+    if (any((a < 0 & b > 0) | (a > 0 & b < 0))) {
+      stop(paste0("a and b must have same sign in geometricmean_byname: a = ", a, ", b = ", b, "."))
     } 
-    elementproduct_byname(X1, X2) %>% 
+    elementproduct_byname(a, b) %>% 
       sqrt()
   }
-  binaryapply_byname(geomean.func, a = X1, b = X2)
+  binaryapply_byname(geomean.func, a = a, b = b)
 }
 
 #' Name- and element-wise logarithmic mean of matrices.
 #'
-#' The logarithmic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}} is 
-#' \code{0} if \code{x1 = 0} or \code{x2 = 0}, 
-#' \code{x1} if \code{x1 = x2}, or
-#' \code{(x2 - x1) / (log(x2) - log(x1))} otherwise.
+#' The logarithmic mean of corresponding entries of \code{a} and \code{b} is 
+#' \code{0} if \code{a = 0} or \code{b = 0}, 
+#' \code{a} if \code{a = b}, or
+#' \code{(b - a) / (log(b) - log(a))} otherwise.
 #' 
 #' This function performs a union and sorting of row and column names 
 #' prior to performing logarithmic mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
 #' Internally, the third condition is implemented as 
-#' \code{(y - x) / log(y/x)}.
+#' \code{(b - a) / log(b/a)}.
 #' 
-#' Note that \code{(x2 - x1) / log(x2/x1) = (x1 - x2) / log(x1/x2)},
+#' Note that \code{(b - a) / log(b/a) = (a - b) / log(a/b)},
 #' so logarithmic mean is commutative;
-#' the order of arguments \strong{\code{X1}} and \strong{\code{X2}}
+#' the order of arguments \strong{\code{a}} and \strong{\code{b}}
 #' does not change the result.
 #' 
-#' @param X1 first operand (a matrix or constant value or lists of same).
-#' @param X2 second operand (a matrix or constant value or lists of same).
+#' @param a first operand (a matrix or constant value or lists of same).
+#' @param b second operand (a matrix or constant value or lists of same).
 #' @param base the base of the logarithm used when computing the logarithmic mean.
 #'        (Default is \code{base = exp(1)}.)
 #'
 #' @return A matrix representing the name-wise logarithmic mean 
-#'         of \strong{\code{X1}} and \strong{\code{X2}}.
+#'         of \code{a} and \code{b}.
 #' @export
 #'
 #' @examples
@@ -425,31 +425,31 @@ geometricmean_byname <- function(X1, X2){
 #' DF[[2,"m2"]] <- m2
 #' logarithmicmean_byname(DF$m1, DF$m2)
 #' DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2))
-logarithmicmean_byname <- function(X1, X2, base = exp(1)){
-  logmean.func <- function(X1, X2, base) {
+logarithmicmean_byname <- function(a, b, base = exp(1)){
+  logmean.func <- function(a, b, base) {
     # At this point, our list is gone.  
-    # X1 and X2 are single matrices or single numbers. 
-    # Furthermore, X1 and X2 should have 
+    # a and b are single matrices or single numbers. 
+    # Furthermore, a and b should have 
     #   * exact same dimensions, 
     #   * same row and column names, and 
     #   * same rowtype and column type.
     # We exploit these facts in the code below.
     # Unwrap each matrix and Map logmean to all elements.
-    out <- Map(f = logmean, as.numeric(X1), as.numeric(X2), base = base) %>% 
+    out <- Map(f = logmean, as.numeric(a), as.numeric(b), base = base) %>% 
       # Map produces a list, but we need a numeric vector.
       as.numeric()
-    if (is.matrix(X1)) {
-      # If X1 and X2 are originally matrices, make out into a matrix
+    if (is.matrix(a)) {
+      # If a and b are originally matrices, make out into a matrix
       # by rewrapping it. 
       out <- out %>% 
-        matrix(nrow = nrow(X1), ncol = ncol(X1)) %>% 
+        matrix(nrow = nrow(a), ncol = ncol(a)) %>% 
         # Add the row and column names to it.
-        setrownames_byname(rownames(X1)) %>% setcolnames_byname(colnames(X1))
+        setrownames_byname(rownames(a)) %>% setcolnames_byname(colnames(a))
     }
     out %>%  
-      setrowtype(rowtype(X1)) %>% setcoltype(coltype(X1))
+      setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
-  binaryapply_byname(logmean.func, a = X1, b = X2, .FUNdots = list(base = base))
+  binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base))
 }
 
 #' Compare two matrices "by name"
@@ -481,7 +481,7 @@ logarithmicmean_byname <- function(X1, X2, base = exp(1)){
 equal_byname <- function(a, b) {
   equal.func <- function(a, b){
     mats <- complete_and_sort(a, b)
-    return(isTRUE(all.equal(mats$m1, mats$m2)))
+    return(isTRUE(all.equal(mats$a, mats$b)))
   }
   binaryapply_byname(equal.func, a = a, b = b, match_type = "all", rowcoltypes = FALSE)
 }
@@ -493,10 +493,10 @@ equal_byname <- function(a, b) {
 #' and 
 #' if row and column names are identical.
 #'
-#' @param X1 the first matrix to be tested
-#' @param X2 the second matrix to be tested
+#' @param a the first matrix to be tested
+#' @param b the second matrix to be tested
 #'
-#' @return \code{TRUE} if \code{X1} and \code{X2} have the same structure, \code{FALSE} otherwise.
+#' @return \code{TRUE} if \code{a} and \code{b} have the same structure, \code{FALSE} otherwise.
 #' 
 #' @export
 #'
@@ -512,36 +512,36 @@ equal_byname <- function(a, b) {
 #' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
 #' samestructure_byname(list(U, U))
-samestructure_byname <- function(X1, X2){
-  samestruct.func <- function(X1, X2){
-    if (!isTRUE(all.equal(rownames(X1), rownames(X2)))) {
+samestructure_byname <- function(a, b){
+  samestruct.func <- function(a, b){
+    if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
     }
-    if (!isTRUE(all.equal(colnames(X1), colnames(X2)))) {
+    if (!isTRUE(all.equal(colnames(a), colnames(b)))) {
       return(FALSE)
     }
-    if (!is.null(rowtype(X1)) & !is.null(rowtype(X2))) {
+    if (!is.null(rowtype(a)) & !is.null(rowtype(b))) {
       # When both rowtypes are non-null, we can compare them directly.
-      if (!rowtype(X1) == rowtype(X2)) {
+      if (!rowtype(a) == rowtype(b)) {
         return(FALSE)
       }
     }
-    if (!is.null(coltype(X1)) & !is.null(coltype(X2))) {
+    if (!is.null(coltype(a)) & !is.null(coltype(b))) {
       # When both coltypes are non-null, we can compare them directly.
-      if (!coltype(X1) == coltype(X2)) {
+      if (!coltype(a) == coltype(b)) {
         return(FALSE)
       }
     }
-    # At least one of rowtype or coltype on X1 or X2 is null.
-    if (xor(is.null(rowtype(X1)), is.null(rowtype(X2)))) {
-      # Rowtype on one of X1 or X2 is null, but the other is non-null.
+    # At least one of rowtype or coltype on a or b is null.
+    if (xor(is.null(rowtype(a)), is.null(rowtype(b)))) {
+      # Rowtype on one of a or b is null, but the other is non-null.
       return(FALSE)
     }
-    if (xor(is.null(coltype(X1)), is.null(coltype(X2)))) {
-      # Coltype on one of X1 or X2 is null, but the other is non-null.
+    if (xor(is.null(coltype(a)), is.null(coltype(b)))) {
+      # Coltype on one of a or b is null, but the other is non-null.
       return(FALSE)
     }
     return(TRUE)
   }
-  binaryapply_byname(samestruct.func, X1, X2, match_type = "none", rowcoltypes = FALSE)
+  binaryapply_byname(samestruct.func, a, b, match_type = "none", rowcoltypes = FALSE)
 }

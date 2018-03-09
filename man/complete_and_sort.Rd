@@ -4,31 +4,31 @@
 \alias{complete_and_sort}
 \title{Complete matrices relative to one another and sort into same row, column order}
 \usage{
-complete_and_sort(m1, m2, fill = 0, margin = c(1, 2), roworder = NA,
+complete_and_sort(a, b, fill = 0, margin = c(1, 2), roworder = NA,
   colorder = NA)
 }
 \arguments{
-\item{m1}{The first matrix}
+\item{a}{The first matrix}
 
-\item{m2}{The second (optional) matrix.}
+\item{b}{The second (optional) matrix.}
 
-\item{fill}{rows and columns added to \code{x} will contain the value \code{fill}. (a double)}
+\item{fill}{rows and columns added to \code{a} and \code{b} will contain the value \code{fill}. (a double)}
 
-\item{margin}{Specifies the dimension(s) of \code{m1} and \code{m2} over which 
+\item{margin}{Specifies the dimension(s) of \code{a} and \code{b} over which
 completing and sorting will occur}
 
-\item{roworder}{Specifies a custom ordering for rows of returned matrices. 
+\item{roworder}{Specifies a custom ordering for rows of returned matrices.
 Unspecified rows are dropped.}
 
 \item{colorder}{Specifies a custom ordering for columns of returned matrices.
 Unspecified columns are dropped.}
 }
 \value{
-A named list containing completed and sorted versions of \code{m1} and \code{m2}.
+A named list containing completed and sorted versions of \code{a} and \code{b}.
 }
 \description{
-Completes each matrix relative to each other, thereby assuring that 
-both matrices have same row and column names. 
+Completes each matrix relative to each other, thereby assuring that
+both matrices have same row and column names.
 Missing rows and columns (relative to the other matrix)
 are filled with \code{fill}.
 Thereafter, rows and columns of the matrices are sorted
@@ -38,13 +38,13 @@ set the \code{m2} argument to \code{transpose_byname(m2)}.
 }
 \details{
 \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
-For rows only, give \code{1}; 
+For rows only, give \code{1};
 for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.
 
-If only \code{m1} is specified, rows of \code{m1} are completed and sorted 
+If only \code{m1} is specified, rows of \code{m1} are completed and sorted
 relative to columns of \code{m1}.
-If neither \code{m1} nor \code{m2} have dimnames, 
+If neither \code{m1} nor \code{m2} have dimnames,
 \code{m1} and \code{m2} are returned unmodified.
 If only one of \code{m1} or \code{m2} has dimnames, an error is thrown.
 }

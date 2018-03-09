@@ -129,15 +129,15 @@ organize_args <- function(a, b, match_type = "all", fill){
   # Ensure that matrices have correct row and column names and are in same order.
   if (match_type == "all") {
     matrices <- complete_and_sort(a, b)
-    outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
-    outb <- matrices$m2 %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+    outa <- matrices$a %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+    outb <- matrices$b %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
   } else if (match_type == "matmult") {
     # When the match_type is "matmult", we need to ensure that the columns of a match the rows of b.
     # To do so, we transpose b prior to completing and sorting, and we complete and sort on columns.
     matrices <- complete_and_sort(a, transpose_byname(b), margin = 2)
-    outa <- matrices$m1 %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+    outa <- matrices$a %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     # Before sending back, we need to re-transpose b.
-    outb <- matrices$m2 %>% transpose_byname %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+    outb <- matrices$b %>% transpose_byname %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
   } else if (match_type == "none") {
     outa <- a
     outb <- b

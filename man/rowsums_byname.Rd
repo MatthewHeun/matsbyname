@@ -4,10 +4,10 @@
 \alias{rowsums_byname}
 \title{Row sums, sorted by name}
 \usage{
-rowsums_byname(m, colname = NA)
+rowsums_byname(a, colname = NA)
 }
 \arguments{
-\item{m}{a matrix or list of matrices from which row sums are desired.}
+\item{a}{a matrix or list of matrices from which row sums are desired.}
 
 \item{colname}{name of the output column containing row sums}
 }
@@ -20,7 +20,7 @@ In contrast to \code{rowSums} (which returns a \code{numeric} result),
 the return value from \code{rowsums_byname} is a matrix.
 An optional \code{colname} for the resulting column vector can be supplied.
 If \code{colname} is \code{NULL} or \code{NA} (the default),
-the column name is set to the column type as given by \code{coltype(m)}.
+the column name is set to the column type as given by \code{coltype(a)}.
 }
 \examples{
 library(magrittr)

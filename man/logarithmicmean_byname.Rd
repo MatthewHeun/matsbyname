@@ -4,25 +4,25 @@
 \alias{logarithmicmean_byname}
 \title{Name- and element-wise logarithmic mean of matrices.}
 \usage{
-logarithmicmean_byname(X1, X2, base = exp(1))
+logarithmicmean_byname(a, b, base = exp(1))
 }
 \arguments{
-\item{X1}{first operand (a matrix or constant value or lists of same).}
+\item{a}{first operand (a matrix or constant value or lists of same).}
 
-\item{X2}{second operand (a matrix or constant value or lists of same).}
+\item{b}{second operand (a matrix or constant value or lists of same).}
 
 \item{base}{the base of the logarithm used when computing the logarithmic mean.
 (Default is \code{base = exp(1)}.)}
 }
 \value{
 A matrix representing the name-wise logarithmic mean 
-        of \strong{\code{X1}} and \strong{\code{X2}}.
+        of \code{a} and \code{b}.
 }
 \description{
-The logarithmic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}} is 
-\code{0} if \code{x1 = 0} or \code{x2 = 0}, 
-\code{x1} if \code{x1 = x2}, or
-\code{(x2 - x1) / (log(x2) - log(x1))} otherwise.
+The logarithmic mean of corresponding entries of \code{a} and \code{b} is 
+\code{0} if \code{a = 0} or \code{b = 0}, 
+\code{a} if \code{a = b}, or
+\code{(b - a) / (log(b) - log(a))} otherwise.
 }
 \details{
 This function performs a union and sorting of row and column names 
@@ -30,11 +30,11 @@ prior to performing logarithmic mean.
 Zeroes are inserted for missing matrix elements.
 
 Internally, the third condition is implemented as 
-\code{(y - x) / log(y/x)}.
+\code{(b - a) / log(b/a)}.
 
-Note that \code{(x2 - x1) / log(x2/x1) = (x1 - x2) / log(x1/x2)},
+Note that \code{(b - a) / log(b/a) = (a - b) / log(a/b)},
 so logarithmic mean is commutative;
-the order of arguments \strong{\code{X1}} and \strong{\code{X2}}
+the order of arguments \strong{\code{a}} and \strong{\code{b}}
 does not change the result.
 }
 \examples{

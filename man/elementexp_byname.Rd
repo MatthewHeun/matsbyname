@@ -4,10 +4,10 @@
 \alias{elementexp_byname}
 \title{Exponential of matrix elements}
 \usage{
-elementexp_byname(M)
+elementexp_byname(a)
 }
 \arguments{
-\item{M}{a matrix of list of matrices}
+\item{a}{a matrix of list of matrices}
 }
 \value{
 \code{M} with each element replaced by its exponential

@@ -4,16 +4,16 @@
 \alias{sumall_byname}
 \title{Sum of all elements in a matrix}
 \usage{
-sumall_byname(m)
+sumall_byname(a)
 }
 \arguments{
-\item{m}{the matrix whose elements are to be summed}
+\item{a}{the matrix whose elements are to be summed}
 }
 \value{
-the sum of all elements in \code{m} as a numeric
+the sum of all elements in \code{a} as a numeric
 }
 \description{
-This function is equivalent to \code{m \%>\% rowsums_byname() \%>\% colsums_byname()},
+This function is equivalent to \code{a \%>\% rowsums_byname() \%>\% colsums_byname()},
 but returns a single numeric value instead of a 1x1 matrix.
 }
 \examples{

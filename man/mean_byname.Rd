@@ -4,19 +4,19 @@
 \alias{mean_byname}
 \title{Name- and element-wise arithmetic mean of matrices.}
 \usage{
-mean_byname(X1, X2)
+mean_byname(a, b)
 }
 \arguments{
-\item{X1}{first operand (a matrix or constant value or lists of same)}
+\item{a}{first operand (a matrix or constant value or lists of same)}
 
-\item{X2}{second operand (a matrix or constant value or lists of same)}
+\item{b}{second operand (a matrix or constant value or lists of same)}
 }
 \value{
 A matrix representing the name-wise arithmetic mean 
-        of \strong{\code{X1}} and \strong{\code{X2}}.
+        of \code{a} and \code{b}.
 }
 \description{
-Gives the arithmetic mean of corresponding entries of \strong{\code{X1}} and \strong{\code{X2}}.
+Gives the arithmetic mean of corresponding entries of \code{a} and \code{b}.
 }
 \details{
 This function performs a union and sorting of row and column names 

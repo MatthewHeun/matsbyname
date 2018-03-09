@@ -11,7 +11,7 @@ make_list(x, n, lenx = ifelse(is.vector(x), length(x), 1))
 
 \item{n}{the number of times to be duplicated}
 
-\item{lenx}{the length of item \code{x}. Normally \code{lenx} is taken from \code{length(x)},
+\item{lenx}{the length of item \code{x}. Normally \code{lenx} is taken to be \code{length(x)},
 but if \code{x} is itself a \code{list}, you may wish for the \code{list} to be duplicated several
 times. In that case, set \code{lenx = 1}.}
 }
