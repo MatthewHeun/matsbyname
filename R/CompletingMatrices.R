@@ -142,7 +142,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
     }
     
     if (is.null(dimnamesmat)) {
-      # dimnamesmat is null, even after trying to gether row and column names from mat.  
+      # dimnamesmat is null, even after trying to gather row and column names from mat.  
       # If a is a matrix with names, complete it relative to itself.
       if (is.matrix(a) & !is.null(dimnames(a))) {
         if (!is.null(mat)) {
@@ -227,7 +227,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
                            ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
       }
-      x <- cbind(a, fillcols)
+      a <- cbind(a, fillcols)
     }
 
     if (1 %in% margin) {

@@ -183,7 +183,7 @@ test_that("complete_rows_cols works as expected", {
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   m2 <- matrix(c(7:12), ncol = 3)
   expect_warning(complete_rows_cols(a = m1, mat = m2), 
-                 "NULL names in complete_rows_cols, despite matrix being specified. Completing x relative to itself.") %>% 
+                 "NULL names in complete_rows_cols, despite matrix being specified. Completing a relative to itself.") %>% 
     # Now test that the result is correct.
     expect_equal(matrix(c(1, 4, 0, 0, 0,
                           2, 5, 0, 0, 0, 
@@ -240,7 +240,7 @@ test_that("complete_rows_cols works as expected", {
                       dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4"))))
   # Doesn't work with data frames.  Need a matrix.
   expect_error(complete_rows_cols(data.frame(m1), data.frame(m2)), 
-               "x cannot be a data frame in complete_rows_cols.")
+               "a cannot be a data frame in complete_rows_cols.")
   # Nothing added, because everything already present
   expect_equal(complete_rows_cols(m1, m1), m1)
   # Adds empty rows c1, c2 ; Adds empty columns r1, r2, r3 
@@ -275,11 +275,11 @@ test_that("complete_rows_cols works as expected", {
   
   
   # Also works with lists
-  expect_equal(complete_rows_cols(x = list(m1,m1)), list(complete_rows_cols(m1), complete_rows_cols(m1)))
-  expect_equal(complete_rows_cols(x = list(m1,m1), mat = list(m2,m2)), list(complete_m1_m2, complete_m1_m2))
+  expect_equal(complete_rows_cols(a = list(m1,m1)), list(complete_rows_cols(m1), complete_rows_cols(m1)))
+  expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2)), list(complete_m1_m2, complete_m1_m2))
   # No changes because r2, r3 already present in m1
-  expect_equal(complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 1), list(m1, m1))
-  expect_equal(complete_rows_cols(x = list(m1,m1), mat = list(m2,m2), margin = 2), 
+  expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 1), list(m1, m1))
+  expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 2), 
                list(complete_m1_m2, complete_m1_m2))
   
   # Test what happens when matrices are missing row or column names or both.
@@ -295,7 +295,7 @@ test_that("complete_rows_cols works as expected", {
   )
   
   # Test with list for x and NULL for matrix
-  expect_equal(complete_rows_cols(x = list(A, A)), list(A, A))
+  expect_equal(complete_rows_cols(a = list(A, A)), list(A, A))
   B <- A %>% set_rownames(c("r1", "r2")) %>% set_colnames(c("c1", "c2")) %>% 
     setrowtype("row") %>% setcoltype("col")
   B_completed <- matrix(c(1, 3, 0, 0, 
@@ -303,7 +303,7 @@ test_that("complete_rows_cols works as expected", {
                           0, 0, 0, 0, 
                           0, 0, 0, 0), byrow = TRUE, nrow = 4, ncol = 4,
                         dimnames = list(c("r1", "r2", "c1", "c2"), c("c1", "c2", "r1", "r2")))
-  expect_equal(complete_rows_cols(x = list(B, B)), list(B_completed, B_completed))
+  expect_equal(complete_rows_cols(a = list(B, B)), list(B_completed, B_completed))
   
   B_filled <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
@@ -321,7 +321,7 @@ test_that("completing works when list is present and lists and ... have differen
   # Adds empty columns c3 and c4
   expect_equal(complete_rows_cols(m1, m2), complete_m1_m2)
   # Try in a list
-  expect_equal(complete_rows_cols(x = list(m1, m1, m1), 
+  expect_equal(complete_rows_cols(a = list(m1, m1, m1), 
                                   mat = list(m2, m2, m2)), 
                                   list(complete_m1_m2, complete_m1_m2, complete_m1_m2))
   # Now try with different arguments
@@ -363,13 +363,13 @@ test_that("complete_rows_cols works correctly when fillrow is specified.", {
   expect_error(complete_rows_cols(a, b, fillrow = fillrow_tall), "fillrow must be a matrix with one row in complete_rows_cols.")
   # Number of columns doesn't match
   fillrow_wide <- matrix(42, nrow = 1, ncol = 3, dimnames = list("r42", c("c1", "c2", "c3")))
-  expect_error(complete_rows_cols(a, b, fillrow = fillrow_wide), "column names of fillrow must match column names of x in complete_rows_cols.")
+  expect_error(complete_rows_cols(a, b, fillrow = fillrow_wide), "column names of fillrow must match column names of a in complete_rows_cols.")
   # Column names of fillrow don't match column names of x
   fillrow_badnames <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c3", "c4")))
-  expect_error(complete_rows_cols(x = a, mat = b, fillrow = fillrow_badnames), "column names of fillrow must match column names of x in complete_rows_cols.")
+  expect_error(complete_rows_cols(a = a, mat = b, fillrow = fillrow_badnames), "column names of fillrow must match column names of a in complete_rows_cols.")
   # Test a case that should work
   fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c1", "c2")))
-  expect_equal(complete_rows_cols(x = a, mat = b, fillrow = fillrow), 
+  expect_equal(complete_rows_cols(a = a, mat = b, fillrow = fillrow), 
                matrix(c(11, 12,
                         21, 22,
                         31, 32), byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))))
@@ -386,13 +386,13 @@ test_that("complete_rows_cols works correctly when fillcol is specified.", {
   expect_error(complete_rows_cols(a, b, fillcol = fillcol_wide), "fillcol must be a matrix with one column in complete_rows_cols.")
   # Number of rows doesn't match
   fillcol_tall <- matrix(42, nrow = 3, ncol = 1, dimnames = list(c("r1", "r2", "r3"), "c3"))
-  expect_error(complete_rows_cols(a, b, fillcol = fillcol_tall), "row names of fillcol must match row names of x in complete_rows_cols.")
+  expect_error(complete_rows_cols(a, b, fillcol = fillcol_tall), "row names of fillcol must match row names of a in complete_rows_cols.")
   # Row names of fillcol don't match row names of x
   fillcol_badnames <- matrix(c(13, 23), nrow = 2, ncol = 1, dimnames = list(c("r3", "r4"), "c1"))
-  expect_error(complete_rows_cols(x = a, mat = b, fillcol = fillcol_badnames), "row names of fillcol must match row names of x in complete_rows_cols.")
+  expect_error(complete_rows_cols(a = a, mat = b, fillcol = fillcol_badnames), "row names of fillcol must match row names of a in complete_rows_cols.")
   # Test a case that should work
   fillcol <- matrix(c(13, 23), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c42"))
-  expect_equal(complete_rows_cols(x = a, mat = b, fillcol = fillcol), 
+  expect_equal(complete_rows_cols(a = a, mat = b, fillcol = fillcol), 
                matrix(c(11, 12, 13,
                         21, 22, 23), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3"))))
 })
