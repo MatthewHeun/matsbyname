@@ -4,16 +4,16 @@
 \alias{coltype}
 \title{Column type}
 \usage{
-coltype(x)
+coltype(a)
 }
 \arguments{
-\item{x}{the object from which you want to extract column types}
+\item{a}{the object from which you want to extract column types}
 }
 \value{
-the column type of \code{x}
+the column type of \code{a}
 }
 \description{
-Extracts column type of \code{x}.
+Extracts column type of \code{a}.
 }
 \examples{
 library(magrittr)

@@ -406,7 +406,7 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
 #' complete_and_sort(v, v)
 #' # Also works with lists
 #' complete_and_sort(list(m1,m1), list(m2,m2))
-complete_and_sort <- function(a, b, fill = 0, margin=c(1,2), roworder = NA, colorder = NA){
+complete_and_sort <- function(a, b, fill = 0, margin = c(1,2), roworder = NA, colorder = NA){
   if (missing(b)) {
     a <- complete_rows_cols(a, fill = fill, margin = margin)
     a <- sort_rows_cols(a, roworder = roworder, colorder = colorder)

@@ -4,12 +4,12 @@
 \alias{list_of_rows_or_cols}
 \title{Named list of rows or columns of matrices}
 \usage{
-list_of_rows_or_cols(m, margin)
+list_of_rows_or_cols(a, margin)
 }
 \arguments{
-\item{m}{a matrix or list of matrices (say, from a column of a data frame)}
-
 \item{margin}{the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)}
+
+\item{m}{a matrix or list of matrices (say, from a column of a data frame)}
 }
 \value{
 a named list of rows or columns extracted from \code{m}

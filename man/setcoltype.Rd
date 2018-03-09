@@ -4,15 +4,15 @@
 \alias{setcoltype}
 \title{Sets column type for a matrix or a list of matrices}
 \usage{
-setcoltype(x, coltype)
+setcoltype(a, coltype)
 }
 \arguments{
-\item{x}{the matrix on which column type is to be set}
+\item{a}{the matrix on which column type is to be set}
 
 \item{coltype}{the type of item stored in columns}
 }
 \value{
-\code{x} with \code{coltype} attribute set.
+\code{a} with \code{coltype} attribute set.
 }
 \description{
 This function is a wrapper for \code{attr} so that 

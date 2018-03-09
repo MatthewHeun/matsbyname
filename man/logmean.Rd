@@ -4,20 +4,20 @@
 \alias{logmean}
 \title{Logarithmic mean of two numbers}
 \usage{
-logmean(x1, x2, base = exp(1))
+logmean(a, b, base = exp(1))
 }
 \arguments{
-\item{x1}{the first operand (must be non-negative)}
+\item{a}{the first operand (must be non-negative)}
 
-\item{x2}{the second operand (must be non-negative)}
+\item{b}{the second operand (must be non-negative)}
 
 \item{base}{the base of the logarithm used in this calculation. 
 (Default is \code{exp(1)}.)}
 }
 \value{
-\code{0} if \code{x1 = 0} or \code{x2 = 0}; \code{x1} if \code{x1 == x2}; and
-        \code{(x1 - x2) / log(x1/x2, base = base)} 
-        for all other values of \code{x1} and \code{x2}
+\code{0} if \code{a = 0} or \code{b = 0}; \code{x1} if \code{a == b}; and
+        \code{(a - b) / log(a/b, base = base)} 
+        for all other values of \code{a} and \code{b}
 }
 \description{
 Calculates the logarithmic mean of two numbers.

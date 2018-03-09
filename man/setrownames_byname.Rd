@@ -4,10 +4,10 @@
 \alias{setrownames_byname}
 \title{Sets row names}
 \usage{
-setrownames_byname(m, rownames)
+setrownames_byname(a, rownames)
 }
 \arguments{
-\item{m}{A matrix or a list of matrices in which row names are to be set}
+\item{a}{A matrix or a list of matrices in which row names are to be set}
 
 \item{rownames}{A vector of new row names or a list of vectors of new row names}
 }

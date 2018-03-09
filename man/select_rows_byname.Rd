@@ -4,10 +4,10 @@
 \alias{select_rows_byname}
 \title{Select rows of a matrix (or list of matrices) by name}
 \usage{
-select_rows_byname(m, retain_pattern = "$^", remove_pattern = "$^")
+select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^")
 }
 \arguments{
-\item{m}{a matrix or a list of matrices}
+\item{a}{a matrix or a list of matrices}
 
 \item{retain_pattern}{an extended regex or list of extended regular expressions that specifies which rows of \code{m} to retain.
 Default pattern (\code{$^}) retains nothing.}

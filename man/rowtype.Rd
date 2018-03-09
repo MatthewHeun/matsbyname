@@ -4,16 +4,16 @@
 \alias{rowtype}
 \title{Row type}
 \usage{
-rowtype(x)
+rowtype(a)
 }
 \arguments{
-\item{x}{the object from which you want to extract row types}
+\item{a}{the object from which you want to extract row types}
 }
 \value{
-the row type of \code{x}
+the row type of \code{a}
 }
 \description{
-Extracts row type of \code{x}.
+Extracts row type of \code{a}.
 }
 \examples{
 library(magrittr)
