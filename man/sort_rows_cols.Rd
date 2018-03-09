@@ -4,25 +4,25 @@
 \alias{sort_rows_cols}
 \title{Sorts rows and columns of a matrix}
 \usage{
-sort_rows_cols(x, margin = c(1, 2), roworder = NA, colorder = NA)
+sort_rows_cols(a, margin = c(1, 2), roworder = NA, colorder = NA)
 }
 \arguments{
-\item{x}{a matrix or data frame whose rows and columns are to be sorted}
+\item{a}{a matrix or data frame whose rows and columns are to be sorted}
 
-\item{margin}{specifies the subscript(s) in \code{x} over which sorting will occur. 
+\item{margin}{specifies the subscript(s) in \code{a} over which sorting will occur. 
 \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
 For rows only, give \code{1}; 
 for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.}
 
-\item{roworder}{specifies the order for rows with default \code{sort(rownames(x))}. 
+\item{roworder}{specifies the order for rows with default \code{sort(rownames(a))}. 
 If \code{NULL}, default is used. Unspecified rows are dropped.}
 
-\item{colorder}{specifies the order for rows with default \code{sort(colnames(x))}.
+\item{colorder}{specifies the order for rows with default \code{sort(colnames(a))}.
 If \code{NULL}, default is used. Unspecified columns are dropped.}
 }
 \value{
-A modified version of \code{x} with sorted rows and columns
+A modified version of \code{a} with sorted rows and columns
 }
 \description{
 Checks that row names are unique and that column names are also unique.

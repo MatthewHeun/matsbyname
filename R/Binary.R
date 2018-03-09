@@ -481,7 +481,7 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 equal_byname <- function(a, b) {
   equal.func <- function(a, b){
     mats <- complete_and_sort(a, b)
-    return(isTRUE(all.equal(mats$m1, mats$m2)))
+    return(isTRUE(all.equal(mats$a, mats$b)))
   }
   binaryapply_byname(equal.func, a = a, b = b, match_type = "all", rowcoltypes = FALSE)
 }

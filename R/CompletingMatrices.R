@@ -264,17 +264,17 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
 #' any other matrix with the same row and column names will have 
 #' the same order.
 #'
-#' @param x a matrix or data frame whose rows and columns are to be sorted
-#' @param margin specifies the subscript(s) in \code{x} over which sorting will occur. 
+#' @param a a matrix or data frame whose rows and columns are to be sorted
+#' @param margin specifies the subscript(s) in \code{a} over which sorting will occur. 
 #' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
 #' For rows only, give \code{1}; 
 #' for columns only, give \code{2};
 #' for both rows and columns, give \code{c(1,2)}, the default value.
-#' @param roworder specifies the order for rows with default \code{sort(rownames(x))}. 
+#' @param roworder specifies the order for rows with default \code{sort(rownames(a))}. 
 #' If \code{NULL}, default is used. Unspecified rows are dropped.
-#' @param colorder specifies the order for rows with default \code{sort(colnames(x))}.
+#' @param colorder specifies the order for rows with default \code{sort(colnames(a))}.
 #' If \code{NULL}, default is used. Unspecified columns are dropped.
-#' @return A modified version of \code{x} with sorted rows and columns
+#' @return A modified version of \code{a} with sorted rows and columns
 #' @export
 #' @examples
 #' m <- matrix(c(1:6), nrow=3, dimnames = list(c("r3", "r5", "r1"), c("c4", "c2")))
@@ -300,19 +300,14 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
 #' sort_rows_cols(x = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
 #' # Both columns and rows sorted, rows by the list, columns in natural order.
 #' sort_rows_cols(x = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
-sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
-  # if (is.list(x) & !is.data.frame(x)) {
-  #   margin <- make_list(margin, n = length(x), lenx = 1)
-  #   roworder <- make_list(roworder, n = length(x), lenx = 1)
-  #   colorder <- make_list(colorder, n = length(x), lenx = 1)
-  # }
-  sort.func <- function(x, margin, roworder, colorder){
+sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
+  sort.func <- function(a, margin, roworder, colorder){
     # Gather rowtype and coltype so we can apply those later.
-    rt <- rowtype(x)
-    ct <- coltype(x)
+    rt <- rowtype(a)
+    ct <- coltype(a)
     if (any(is.na(roworder))) {
-      if (!is.null(rownames(x))) {
-        roworder <- sort(rownames(x))
+      if (!is.null(rownames(a))) {
+        roworder <- sort(rownames(a))
       } else {
         # Can't sort on rows, because they are not named.
         if (2 %in% margin) {
@@ -320,13 +315,13 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
           margin <- 2
         } else {
           # Nothing to be done
-          return(x)
+          return(a)
         }
       }
     }
     if (any(is.na(colorder))) {
-      if (!is.null(colnames(x))) {
-        colorder <- sort(colnames(x))
+      if (!is.null(colnames(a))) {
+        colorder <- sort(colnames(a))
       } else {
         # Can't sort on columns, because they are not named.
         if (1 %in% margin) {
@@ -334,27 +329,26 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
           margin <- 1
         } else {
           # Nothing to be done
-          return(x)
+          return(a)
         }
       }
     }
-    if (1 %in% margin & nrow(x) > 1) {
+    if (1 %in% margin & nrow(a) > 1) {
       # Sort rows
-      if (length(unique(rownames(x))) != length(rownames(x))) {
+      if (length(unique(rownames(a))) != length(rownames(a))) {
         stop("Row names not unique.")
       }
-      x <- x[roworder, , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
+      a <- a[roworder, , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
     }
-    if (2 %in% margin & ncol(x) > 1) {
-      if (length(unique(colnames(x))) != length(colnames(x))) {
+    if (2 %in% margin & ncol(a) > 1) {
+      if (length(unique(colnames(a))) != length(colnames(a))) {
         stop("Column names not unique.")
       }
-      x <- x[ , colorder, drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
+      a <- a[ , colorder, drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
     }
-    return(x %>% setrowtype(rt) %>% setcoltype(ct))
+    return(a %>% setrowtype(rt) %>% setcoltype(ct))
   }
-  # unaryapply_byname(sort.func, a = x, margin = margin, roworder = roworder, colorder = colorder)
-  unaryapply_byname(sort.func, a = x, .FUNdots = list(margin = margin, roworder = roworder, colorder = colorder))
+  unaryapply_byname(sort.func, a = a, .FUNdots = list(margin = margin, roworder = roworder, colorder = colorder))
 }
 
 #' Complete matrices relative to one another and sort into same row, column order
@@ -379,17 +373,17 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' \code{m1} and \code{m2} are returned unmodified.
 #' If only one of \code{m1} or \code{m2} has dimnames, an error is thrown.
 #' 
-#' @param m1 The first matrix
-#' @param m2 The second (optional) matrix.
-#' @param fill rows and columns added to \code{x} will contain the value \code{fill}. (a double) 
-#' @param margin Specifies the dimension(s) of \code{m1} and \code{m2} over which 
+#' @param a The first matrix
+#' @param b The second (optional) matrix.
+#' @param fill rows and columns added to \code{a} and \code{b} will contain the value \code{fill}. (a double) 
+#' @param margin Specifies the dimension(s) of \code{a} and \code{b} over which 
 #'        completing and sorting will occur 
 #' @param roworder Specifies a custom ordering for rows of returned matrices. 
 #'        Unspecified rows are dropped.
 #' @param colorder Specifies a custom ordering for columns of returned matrices.
 #'        Unspecified columns are dropped.
 #'
-#' @return A named list containing completed and sorted versions of \code{m1} and \code{m2}.
+#' @return A named list containing completed and sorted versions of \code{a} and \code{b}.
 #' @export
 #'
 #' @examples
@@ -408,17 +402,17 @@ sort_rows_cols <- function(x, margin=c(1,2), roworder = NA, colorder = NA){
 #' complete_and_sort(v, v)
 #' # Also works with lists
 #' complete_and_sort(list(m1,m1), list(m2,m2))
-complete_and_sort <- function(m1, m2, fill = 0, margin=c(1,2), roworder = NA, colorder = NA){
-  if (missing(m2)) {
-    m1 <- complete_rows_cols(m1, fill = fill, margin = margin)
-    m1 <- sort_rows_cols(m1, roworder = roworder, colorder = colorder)
-    return(m1)
+complete_and_sort <- function(a, b, fill = 0, margin=c(1,2), roworder = NA, colorder = NA){
+  if (missing(b)) {
+    a <- complete_rows_cols(a, fill = fill, margin = margin)
+    a <- sort_rows_cols(a, roworder = roworder, colorder = colorder)
+    return(a)
   }
-  m1 <- complete_rows_cols(m1, m2, fill = fill, margin = margin) %>% 
+  a <- complete_rows_cols(a, b, fill = fill, margin = margin) %>% 
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
-  m2 <- complete_rows_cols(m2, m1, fill = fill, margin = margin) %>% 
+  b <- complete_rows_cols(b, a, fill = fill, margin = margin) %>% 
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
-  return(list(m1 = m1, m2 = m2))
+  return(list(a = a, b = b))
 }
 
 #' Makes a list of items in x, regardless of x's type
@@ -448,7 +442,7 @@ complete_and_sort <- function(m1, m2, fill = 0, margin=c(1,2), roworder = NA, co
 #' make_list(l, n = 5) # Warning because length(l) (i.e., 2) not evenly divisible by 5
 #' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2) # Confused by x being a list
 #' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1) # Fix by setting lenx = 1
-# make_list <- function(x, n, lenx = ifelse(is.list(x), length(x), 1)){
+#' make_list <- function(x, n, lenx = ifelse(is.list(x), length(x), 1)){
 make_list <- function(x, n, lenx = ifelse(is.vector(x), length(x), 1)){
   out <- vector(mode = "list", length = n)
   reptimes <- as.integer(n / lenx)
