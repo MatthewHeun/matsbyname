@@ -494,9 +494,9 @@ equal_byname <- function(a, b) {
 #' if row and column names are identical.
 #'
 #' @param a the first matrix to be tested
-#' @param a the second matrix to be tested
+#' @param b the second matrix to be tested
 #'
-#' @return \code{TRUE} if \code{X1} and \code{X2} have the same structure, \code{FALSE} otherwise.
+#' @return \code{TRUE} if \code{a} and \code{b} have the same structure, \code{FALSE} otherwise.
 #' 
 #' @export
 #'

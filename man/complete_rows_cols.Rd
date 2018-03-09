@@ -71,7 +71,7 @@ complete_rows_cols(m1, t(m2), margin = 1) # Adds empty rows c2, c3, c4
 complete_rows_cols(m1, m2, fill = 100) # Adds columns c3 and c4 with 100's
 complete_rows_cols(m1, m1) # Nothing added, because everything already present
 complete_rows_cols(m1, t(m1)) # Adds empty c1, c2 rows; Adds empty r1, r2, r3 columns
-# Same as previous. With missing matrix, complete relative to transpose of x.
+# Same as previous. With missing matrix, complete relative to transpose of m1.
 complete_rows_cols(m1) 
 # Adds rows r10, r11; cols c10, c11
 complete_rows_cols(m1, matrix(0, nrow = 2, ncol = 2, 

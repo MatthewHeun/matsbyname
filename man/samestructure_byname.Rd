@@ -9,10 +9,10 @@ samestructure_byname(a, b)
 \arguments{
 \item{a}{the first matrix to be tested}
 
-\item{a}{the second matrix to be tested}
+\item{b}{the second matrix to be tested}
 }
 \value{
-\code{TRUE} if \code{X1} and \code{X2} have the same structure, \code{FALSE} otherwise.
+\code{TRUE} if \code{a} and \code{b} have the same structure, \code{FALSE} otherwise.
 }
 \description{
 Two matrices are said to have the same structure 

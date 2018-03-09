@@ -121,7 +121,7 @@ context("Completing rows and columns")
 test_that("complete_rows_cols works as expected", {
 
   # a is NULL, matrix is NULL.  Error.
-  expect_error(complete_rows_cols(a = NULL), "Both a and matrix are NULL in complete_rows_cols.")
+  expect_error(complete_rows_cols(a = NULL), "Both a and mat are NULL in complete_rows_cols.")
    
   # a is NULL, matrix is present.  
   # Create a matrix of same size as matrix with names of matrix and values equal to fill.

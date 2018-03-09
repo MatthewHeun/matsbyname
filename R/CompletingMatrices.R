@@ -61,7 +61,7 @@ library("parallel")
 #' complete_rows_cols(m1, m2, fill = 100) # Adds columns c3 and c4 with 100's
 #' complete_rows_cols(m1, m1) # Nothing added, because everything already present
 #' complete_rows_cols(m1, t(m1)) # Adds empty c1, c2 rows; Adds empty r1, r2, r3 columns
-#' # Same as previous. With missing matrix, complete relative to transpose of x.
+#' # Same as previous. With missing matrix, complete relative to transpose of m1.
 #' complete_rows_cols(m1) 
 #' # Adds rows r10, r11; cols c10, c11
 #' complete_rows_cols(m1, matrix(0, nrow = 2, ncol = 2, 
@@ -86,7 +86,7 @@ library("parallel")
 #' complete_rows_cols(a = a, mat = b, fillrow = fillrow)
 complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, fillcol = NULL, margin = c(1,2)){
   if (is.null(a) & is.null(mat)) {
-    stop("Both a and matrix are NULL in complete_rows_cols.")
+    stop("Both a and mat are NULL in complete_rows_cols.")
   }
   if (is.data.frame(a)) {
     stop("a cannot be a data frame in complete_rows_cols.")
@@ -103,7 +103,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
     } else if (is.matrix(mat)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as a.
-      mat <- make_list(mat, length(x))
+      mat <- make_list(mat, length(a))
     }
     # Double-check that we have what we need for the margin argument.
   } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
@@ -274,8 +274,11 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
 #' If \code{NULL}, default is used. Unspecified rows are dropped.
 #' @param colorder specifies the order for rows with default \code{sort(colnames(a))}.
 #' If \code{NULL}, default is used. Unspecified columns are dropped.
+#' 
 #' @return A modified version of \code{a} with sorted rows and columns
+#' 
 #' @export
+#' 
 #' @examples
 #' m <- matrix(c(1:6), nrow=3, dimnames = list(c("r3", "r5", "r1"), c("c4", "c2")))
 #' sort_rows_cols(m)
@@ -294,12 +297,12 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
 #' sort_rows_cols(list(m,m)) # Sorts rows and columns for both m's.
 #' # Sort rows only for first one, sort rows and columns for second one.  
 #' # Row order is applied to all m's.  Column order is natural.
-#' sort_rows_cols(x = list(m,m), margin = 1, roworder = c("r5", "r3", "r1"))
+#' sort_rows_cols(a = list(m,m), margin = 1, roworder = c("r5", "r3", "r1"))
 #' # Columns are sorted as default, because no colorder is given.
 #' # roworder is ignored. 
-#' sort_rows_cols(x = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
+#' sort_rows_cols(a = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
 #' # Both columns and rows sorted, rows by the list, columns in natural order.
-#' sort_rows_cols(x = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
+#' sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
 sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
   sort.func <- function(a, margin, roworder, colorder){
     # Gather rowtype and coltype so we can apply those later.
@@ -384,6 +387,7 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
 #'        Unspecified columns are dropped.
 #'
 #' @return A named list containing completed and sorted versions of \code{a} and \code{b}.
+#' 
 #' @export
 #'
 #' @examples
@@ -427,6 +431,7 @@ complete_and_sort <- function(a, b, fill = 0, margin=c(1,2), roworder = NA, colo
 #' times. In that case, set \code{lenx = 1}.
 #'
 #' @return a list of \code{x} duplicated \code{n} times
+#' 
 #' @export
 #'
 #' @examples
