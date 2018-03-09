@@ -356,38 +356,38 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
 
 #' Complete matrices relative to one another and sort into same row, column order
 #'
-#' Completes each matrix relative to each other, thereby assuring that 
-#' both matrices have same row and column names. 
+#' Completes each matrix relative to each other, thereby assuring that
+#' both matrices have same row and column names.
 #' Missing rows and columns (relative to the other matrix)
 #' are filled with \code{fill}.
 #' Thereafter, rows and columns of the matrices are sorted
 #' such that they are in the same order (by name).
 #' To complete rows of \code{m1} relative to columns of \code{m2},
 #' set the \code{m2} argument to \code{transpose_byname(m2)}.
-#' 
+#'
 #' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
-#' For rows only, give \code{1}; 
+#' For rows only, give \code{1};
 #' for columns only, give \code{2};
 #' for both rows and columns, give \code{c(1,2)}, the default value.
-#' 
-#' If only \code{m1} is specified, rows of \code{m1} are completed and sorted 
+#'
+#' If only \code{m1} is specified, rows of \code{m1} are completed and sorted
 #' relative to columns of \code{m1}.
-#' If neither \code{m1} nor \code{m2} have dimnames, 
+#' If neither \code{m1} nor \code{m2} have dimnames,
 #' \code{m1} and \code{m2} are returned unmodified.
 #' If only one of \code{m1} or \code{m2} has dimnames, an error is thrown.
-#' 
+#'
 #' @param a The first matrix
 #' @param b The second (optional) matrix.
-#' @param fill rows and columns added to \code{a} and \code{b} will contain the value \code{fill}. (a double) 
-#' @param margin Specifies the dimension(s) of \code{a} and \code{b} over which 
-#'        completing and sorting will occur 
-#' @param roworder Specifies a custom ordering for rows of returned matrices. 
+#' @param fill rows and columns added to \code{a} and \code{b} will contain the value \code{fill}. (a double)
+#' @param margin Specifies the dimension(s) of \code{a} and \code{b} over which
+#'        completing and sorting will occur
+#' @param roworder Specifies a custom ordering for rows of returned matrices.
 #'        Unspecified rows are dropped.
 #' @param colorder Specifies a custom ordering for columns of returned matrices.
 #'        Unspecified columns are dropped.
 #'
 #' @return A named list containing completed and sorted versions of \code{a} and \code{b}.
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -412,15 +412,15 @@ complete_and_sort <- function(a, b, fill = 0, margin=c(1,2), roworder = NA, colo
     a <- sort_rows_cols(a, roworder = roworder, colorder = colorder)
     return(a)
   }
-  a <- complete_rows_cols(a, b, fill = fill, margin = margin) %>% 
+  a <- complete_rows_cols(a, b, fill = fill, margin = margin) %>%
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
-  b <- complete_rows_cols(b, a, fill = fill, margin = margin) %>% 
+  b <- complete_rows_cols(b, a, fill = fill, margin = margin) %>%
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
   return(list(a = a, b = b))
 }
 
 #' Makes a list of items in x, regardless of x's type
-#' 
+#'
 #' Repeats \code{x} as necessary to make \code{n} of them.
 #' Does not try to simplify \code{x}.
 #'
@@ -431,7 +431,7 @@ complete_and_sort <- function(a, b, fill = 0, margin=c(1,2), roworder = NA, colo
 #' times. In that case, set \code{lenx = 1}.
 #'
 #' @return a list of \code{x} duplicated \code{n} times
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -447,7 +447,6 @@ complete_and_sort <- function(a, b, fill = 0, margin=c(1,2), roworder = NA, colo
 #' make_list(l, n = 5) # Warning because length(l) (i.e., 2) not evenly divisible by 5
 #' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2) # Confused by x being a list
 #' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1) # Fix by setting lenx = 1
-#' make_list <- function(x, n, lenx = ifelse(is.list(x), length(x), 1)){
 make_list <- function(x, n, lenx = ifelse(is.vector(x), length(x), 1)){
   out <- vector(mode = "list", length = n)
   reptimes <- as.integer(n / lenx)
