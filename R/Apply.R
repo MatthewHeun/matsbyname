@@ -90,7 +90,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #'        coltypes of \code{a} must match rowtypes of \code{b}.
 #'        If "\code{none}",
 #'        neither coltypes nor rowtypes are checked. 
-#' @param rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
+#' @param set_rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
 #'        to the output. 
 #'        Set \code{TRUE} (the default) to apply row and column types to the output.
 #'        Set \code{FALSE}, to \emph{not} apply row and column types to the output.
@@ -115,7 +115,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
 binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL, 
-                               match_type = c("all", "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE){
+                               match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
   match_type <- match.arg(match_type)
   if (.organize) {
     args <- organize_args(a, b, fill = 0, match_type = match_type)
@@ -124,16 +124,16 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   }
   if (is.list(a) & is.list(b)) {
     lfun <- replicate(n = max(length(a), length(b)), expr = FUN, simplify = FALSE)
-    ldots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
-    return(Map(binaryapply_byname, lfun, a, b, ldots,
-               match_type = match_type, rowcoltypes = rowcoltypes, .organize = .organize) %>% 
+    lFUNdots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
+    return(Map(binaryapply_byname, lfun, a, b, lFUNdots,
+               match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
              # If a and b have names, organize_args will have ensured that those names are same.
              # So we can set the names of the outgoing list to the names of a.
              set_names(names(a)))
   }
   out <- do.call(FUN, c(list(a), list(b), .FUNdots))
   
-  if (rowcoltypes) {
+  if (set_rowcoltypes) {
     # Either match_type is 
     #   "all" 
     #     in which case rowtype(a) == rowtype(b) and coltype(a) == coltype(b), 

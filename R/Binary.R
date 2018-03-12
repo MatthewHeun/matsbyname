@@ -483,7 +483,7 @@ equal_byname <- function(a, b) {
     mats <- complete_and_sort(a, b)
     return(isTRUE(all.equal(mats$a, mats$b)))
   }
-  binaryapply_byname(equal.func, a = a, b = b, match_type = "all", rowcoltypes = FALSE)
+  binaryapply_byname(equal.func, a = a, b = b, match_type = "all", set_rowcoltypes = FALSE)
 }
 
 #' Test whether two matrices or lists of matrices have same structure
@@ -543,5 +543,5 @@ samestructure_byname <- function(a, b){
     }
     return(TRUE)
   }
-  binaryapply_byname(samestruct.func, a, b, match_type = "none", rowcoltypes = FALSE)
+  binaryapply_byname(samestruct.func, a, b, match_type = "none", set_rowcoltypes = FALSE)
 }

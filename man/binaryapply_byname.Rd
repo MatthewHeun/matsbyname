@@ -5,7 +5,7 @@
 \title{Apply a binary function "by name"}
 \usage{
 binaryapply_byname(FUN, a, b, .FUNdots = NULL, match_type = c("all",
-  "matmult", "none"), rowcoltypes = TRUE, .organize = TRUE)
+  "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE)
 }
 \arguments{
 \item{FUN}{a binary function to be applied "by name" to \code{a} and \code{b}.}
@@ -26,7 +26,7 @@ coltypes of \code{a} must match rowtypes of \code{b}.
 If "\code{none}",
 neither coltypes nor rowtypes are checked.}
 
-\item{rowcoltypes}{tells whether to apply row and column types from \code{a} and \code{b}
+\item{set_rowcoltypes}{tells whether to apply row and column types from \code{a} and \code{b}
 to the output. 
 Set \code{TRUE} (the default) to apply row and column types to the output.
 Set \code{FALSE}, to \emph{not} apply row and column types to the output.}
