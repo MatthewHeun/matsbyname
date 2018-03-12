@@ -45,3 +45,13 @@ test_that("cumapply_byname works as expected", {
   expect_equal(cumapply_byname(FUN = `sum`, a = list(1, 2, 3)), list(1, 3, 6))
   expect_equal(cumapply_byname(FUN = `prod`, a = list(1, 2, 3)), list(1, 2, 6))
 })
+
+
+###########################################################
+# context("... apply")
+###########################################################
+
+test_that("apply_byname works as expected", {
+  expect_error(apply_byname(FUN = `sum`, ... = list(1,2,3)), "Must have at least 2 arguments in ... for apply_byname.")
+  expect_equal(apply_byname(FUN = sum_byname, 2, 3), 5)
+})

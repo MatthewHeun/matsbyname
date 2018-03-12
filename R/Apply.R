@@ -147,6 +147,20 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   return(out)
 }
 
+apply_byname <- function(FUN, ..., .FUNdots = NULL, 
+                         match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
+  if (length(list(...)) < 2) {
+    stop("Must have at least 2 arguments in ... for apply_byname.")
+  }
+  dots <- list(...)
+  a <- dots[[1]]
+  for (i in 2:length(dots)) {
+    b <- dots[[i]]
+    a <- binaryapply_byname(FUN, a = a, b = b, .FUNdots = .FUNdots, match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) 
+  }
+  return(a)
+}
+
 #' Apply a function cumulatively to a list of matrices or numbers
 #' 
 #' \code{FUN} must be a binary function that also accepts a single argument.
