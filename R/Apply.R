@@ -15,7 +15,7 @@
 #'          \item{\code{transpose}: rowtype of \code{a} becomes coltype of output;
 #'                                  coltype of \code{a} becomes rowtype of output.
 #'                                  "transpose" is helpful for \code{FUN}s that transpose 
-#'                                  \code upon output.}
+#'                                  \code{a} upon output.}
 #'          \item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
 #'          \item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
 #'          \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
