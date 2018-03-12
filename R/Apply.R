@@ -78,8 +78,8 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' The names of list elements of \code{a} are applied to the output.
 #'
 #' @param FUN a binary function to be applied "by name" to \code{a} and \code{b}.
-#' @param a the first argument to \code{FUN}.
-#' @param b the second argument to \code{FUN}.
+#' @param a the first operand for \code{FUN}.
+#' @param b the second operand for \code{FUN}.
 #' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
 #' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
 #'        When both \code{a} and \code{b} are matrices,
@@ -147,6 +147,48 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   return(out)
 }
 
+
+#' Apply a function "by name" to any number of operands
+#' 
+#' \code{FUN} must be a binary function.
+#' Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
+#' have same meaning as on \code{\link[matsbyname]{binaryapply_byname}}.
+#' 
+#' \code{\link{apply_byname}} and \code{\link{cumapply_byname}} are similar.
+#' Their differences can be described by considering a data frame.
+#' \code{\link{apply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
+#' For example, \code{\link{sum_byname}} applied to several variables gives another column
+#' containing the sums across each row of the data frame.
+#' \code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
+#' For example \code{\link{sum_byname}} applied to a single column gives the sum of all numbers in that column.
+#'
+#' @param FUN a binary function to be applied "by name" sequentially to \code{...}.
+#' @param ... the operands for \code{FUN}.
+#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
+#' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
+#'        When both \code{a} and \code{b} are matrices,
+#'        "\code{all}" (the default) indicates that
+#'        rowtypes of \code{a} must match rowtypes of \code{b} and
+#'        coltypes of \code{a} must match coltypes of \code{b}.
+#'        If "\code{matmult}",
+#'        coltypes of \code{a} must match rowtypes of \code{b}.
+#'        If "\code{none}",
+#'        neither coltypes nor rowtypes are checked. 
+#' @param set_rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
+#'        to the output. 
+#'        Set \code{TRUE} (the default) to apply row and column types to the output.
+#'        Set \code{FALSE}, to \emph{not} apply row and column types to the output.
+#' @param .organize a boolean that tells whether or not to automatically 
+#'        complete \code{a} and \code{b} relative to each other and
+#'        sort the rows and columns of the completed matrices.
+#'        Normally, this should be \code{TRUE} (the default).
+#'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
+#'        
+#' @return the result of applying \code{FUN} sequantially to each item in \code{...}
+#' 
+#' @export
+#'
+#' @examples
 apply_byname <- function(FUN, ..., .FUNdots = NULL, 
                          match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
   if (length(list(...)) < 2) {
@@ -167,6 +209,14 @@ apply_byname <- function(FUN, ..., .FUNdots = NULL,
 #' The result is a list with first element \code{FUN(a[[1]])}.
 #' For \code{i >= 2}, elements are \code{FUN(a[[i]], out[[i-1]])},
 #' where \code{out} is the result list.
+#' 
+#' #' \code{\link{apply_byname}} and \code{\link{cumapply_byname}} are similar.
+#' Their differences can be described by considering a data frame.
+#' \code{\link{apply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
+#' For example, \code{\link{sum_byname}} applied to several variables gives another column
+#' containing the sums across each row of the data frame.
+#' \code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
+#' For example \code{\link{sum_byname}} applied to a single column gives the sum of all numbers in that column.
 #'
 #' @param FUN  the function to be applied
 #' @param   a  the list of matrices or numbers to which \code{FUN} will be applied cumulatively
