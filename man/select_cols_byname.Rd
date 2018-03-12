@@ -7,13 +7,13 @@
 select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^")
 }
 \arguments{
+\item{a}{a matrix or a list of matrices}
+
 \item{retain_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
 Default pattern (\code{$^}) retains nothing.}
 
 \item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
 Default pattern (\code{$^}) removes nothing.}
-
-\item{m}{a matrix or a list of matrices}
 }
 \value{
 a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
