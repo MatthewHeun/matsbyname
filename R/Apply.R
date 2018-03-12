@@ -147,7 +147,6 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   return(out)
 }
 
-
 #' Apply a function "by name" to any number of operands
 #' 
 #' \code{FUN} must be a binary function.
