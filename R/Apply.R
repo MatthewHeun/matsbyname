@@ -152,7 +152,9 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' 
 #' \code{FUN} must be a binary function.
 #' Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
-#' have same meaning as on \code{\link[matsbyname]{binaryapply_byname}}.
+#' have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
+#' Thus, all of the operands in \code{...} must obey the rules of type matching 
+#' given by \code{match_type}.
 #' 
 #' \code{\link{apply_byname}} and \code{\link{cumapply_byname}} are similar.
 #' Their differences can be described by considering a data frame.
@@ -166,25 +168,27 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' @param ... the operands for \code{FUN}.
 #' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
 #' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
-#'        When both \code{a} and \code{b} are matrices,
+#'        When \code{...} are matrices,
 #'        "\code{all}" (the default) indicates that
-#'        rowtypes of \code{a} must match rowtypes of \code{b} and
-#'        coltypes of \code{a} must match coltypes of \code{b}.
+#'        rowtypes of all \code{...} matrices must match and
+#'        coltypes of all \code{...} matrices must match.
 #'        If "\code{matmult}",
-#'        coltypes of \code{a} must match rowtypes of \code{b}.
+#'        the coltype of the first operand must match the rowtype of the second operand
+#'        for every sequential invocation of \code{FUN}.
 #'        If "\code{none}",
-#'        neither coltypes nor rowtypes are checked. 
-#' @param set_rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
-#'        to the output. 
-#'        Set \code{TRUE} (the default) to apply row and column types to the output.
+#'        neither coltypes nor rowtypes are checked by \code{\link{apply_byname}}. 
+#' @param set_rowcoltypes tells whether to apply row and column types from 
+#'        operands in \code{...} to the output of each sequential invocation of \code{FUN}. 
+#'        Set \code{TRUE} (the default) to apply row and column types.
 #'        Set \code{FALSE}, to \emph{not} apply row and column types to the output.
 #' @param .organize a boolean that tells whether or not to automatically 
-#'        complete \code{a} and \code{b} relative to each other and
+#'        complete operands in \code{...} relative to each other and
 #'        sort the rows and columns of the completed matrices.
+#'        This organizing is done on each sequential invocation of \code{FUN}.
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
 #'        
-#' @return the result of applying \code{FUN} sequantially to each item in \code{...}
+#' @return the result of applying \code{FUN} sequantially to each operand in \code{...}
 #' 
 #' @export
 #'
