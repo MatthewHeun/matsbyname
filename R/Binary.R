@@ -350,12 +350,7 @@ elementquotient_byname <- function(dividend, divisor){
 #   binaryapply_byname(mean.func, a = a, b = b)
 # }
 mean_byname <- function(...){
-  mean.func <- function(...){
-    dots <- list(...)
-    sum_byname(...) %>%
-      elementquotient_byname(length(dots))
-  }
-  apply_byname(mean.func, ...)
+  sum_byname(...) %>% elementquotient_byname(length(list(...)))
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -411,10 +406,11 @@ mean_byname <- function(...){
 #   binaryapply_byname(geomean.func, a = a, b = b)
 # }
 geometricmean_byname <- function(...){
-  geomean.func <- function(...){
-    elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
-  }
-  apply_byname(geomean.func, ...)
+  elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
+  # geomean.func <- function(...){
+  #   elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
+  # }
+  # apply_byname(geomean.func, ...)
 }
 
 #' Name- and element-wise logarithmic mean of matrices.

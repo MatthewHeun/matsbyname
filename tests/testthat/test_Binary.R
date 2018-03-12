@@ -597,6 +597,7 @@ test_that("mean_byname works as expected", {
   expect_equal(mean_byname(0, 0), 0)
   expect_equal(mean_byname(-2, -4), -3)
   expect_equal(mean_byname(-10, 10), 0)
+  expect_equal(mean_byname(1,2,3), 2)
   commoditynames <- c("c1", "c2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -617,9 +618,20 @@ test_that("mean_byname works as expected", {
   expect_equal(mean_byname(10, G), 
                matrix((10 + 1:4)/2, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
                  setrowtype("Commodities") %>% setcoltype("Industries"))
+  A <- matrix(1:4, nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  B <- 2*A
+  C <- 2*B
+  ABCavg_expected <- matrix(c((1 + 2 + 4), (3 + 6 + 12), 
+                              (2 + 4 + 8), (4 + 8 + 16)) / 3, 
+                            byrow = TRUE, nrow = 2, dimnames = dimnames(A)) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(mean_byname(A, B, C), ABCavg_expected)
+  
   # This also works with lists
   expect_equal(mean_byname(list(100, 100), list(50, 50)), list(75, 75))
   expect_equal(mean_byname(list(U,U), list(G,G)), list(UGavg, UGavg))
+  expect_equal(mean_byname(list(A,A), list(B,B), list(C,C)), list(ABCavg_expected, ABCavg_expected))
   DF <- data.frame(U = I(list()), G = I(list()))
   DF[[1,"U"]] <- U
   DF[[2,"U"]] <- U
@@ -643,6 +655,7 @@ test_that("mean_byname works as expected", {
 test_that("geometricmean_byname works as expected", {
   expect_equal(geometricmean_byname(0, 0), 0)
   expect_equal(geometricmean_byname(10, 20), sqrt(10*20))
+  expect_equal(geometricmean_byname(10, 20, 30), (10*20*30)^(1/3))
   expect_true(is.nan(geometricmean_byname(-10, 10)))
   expect_equal(geometricmean_byname(10, 1000), 100)
   expect_equal(geometricmean_byname(a = matrix(c(10, 10), nrow = 2, ncol = 1), b = 1000), 
@@ -658,12 +671,16 @@ test_that("geometricmean_byname works as expected", {
     setrowtype("Commodities") %>% setcoltype("Industries")
   UGgeomean <- matrix(c(1000, 1000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
     setrowtype("Commodities") %>% setcoltype("Industries")
+  UGGgeomean <- matrix(c(10*1e5*1e5, 1000*1e3*1e3), nrow = 2, ncol = 1,
+                       dimnames = list(commoditynames, industrynames))^(1/3) %>% 
+    setrowtype("Commodities") %>% setcoltype("Industries")
   # Non-sensical. Row and column names not respected.
   expect_equal(sqrt(U*G), 
                matrix(c(100, 10000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
                  setrowtype("Commodities") %>% setcoltype("Industries"))
   # Row and column names respected!
   expect_equal(geometricmean_byname(U, G), UGgeomean)
+  expect_equal(geometricmean_byname(U, G, G), UGGgeomean)
   expect_equal(geometricmean_byname(1000, U), 
                matrix(c(100, 1000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
                  setrowtype("Commodities") %>% setcoltype("Industries"))
@@ -679,18 +696,27 @@ test_that("geometricmean_byname works as expected", {
   DF[[1,"G"]] <- G
   DF[[2,"G"]] <- G
   expect_equal(geometricmean_byname(DF$U, DF$G), list(UGgeomean, UGgeomean))
-  DF_expected <- data.frame(U = I(list()), G = I(list()), geomeans = I(list()))
+  DF_expected <- data.frame(U = I(list()), G = I(list()), geomeans = I(list()), UGGgeomean = I(list()))
   DF_expected[[1, "U"]] <- U
   DF_expected[[2, "U"]] <- U
   DF_expected[[1, "G"]] <- G
   DF_expected[[2, "G"]] <- G
   DF_expected[[1, "geomeans"]] <- UGgeomean
   DF_expected[[2, "geomeans"]] <- UGgeomean
+  DF_expected[[1, "UGGgeomean"]] <- UGGgeomean
+  DF_expected[[2, "UGGgeomean"]] <- UGGgeomean
   # Because DF_expected$geomeans is created with I(list()), its class is "AsIs".
   # Because DF$geomeans is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$geomeans to NULL to get a match.
   attr(DF_expected$geomeans, which = "class") <- NULL
-  expect_equal(DF %>% mutate(geomeans = geometricmean_byname(U, G)), DF_expected)
+  attr(DF_expected$UGGgeomean, which = "class") <- NULL
+  expect_equal(DF %>% 
+                 mutate(
+                   geomeans = geometricmean_byname(U, G), 
+                   UGGgeomean = geometricmean_byname(U, G, G)
+                 ), 
+               DF_expected
+  )
 })
 
 test_that("logmean works as expected", {
