@@ -197,8 +197,9 @@ elementpow_byname <- function(a, pow){
 # }
 matrixproduct_byname <- function(...){
   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
-  # are completed and sorted, but rows and cols of the output are not guaranteed 
-  # to be sorted.
+  # are completed and sorted, but rows and cols of the output of the 
+  # %*% operation are not guaranteed to be sorted.
+  # Thus, we sort_rows_cols() prior to returning.
   apply_byname(`%*%`, ..., match_type = "matmult") %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
@@ -207,16 +208,16 @@ matrixproduct_byname <- function(...){
 
 #' Name-wise matrix element multiplication
 #'
-#' @param multiplicand Multiplicand matrix or constant
-#' @param multiplier Multiplier matrix or constant
-#'
-#' Performs a union and sorting of names of rows and columns for both \code{multiplicand} and \code{multiplier}
-#' prior to element multiplication.
+#' Performs a union and sorting of names of rows and columns for both multiplicand and multiplier
+#' for each sequential multiplication step.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
-#' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
+#' the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.
 #'
-#' @return A matrix representing the name-wise element product of \code{multiplicand} and \code{multiplier}
+#' @param ... operands; constants, matrices, or lists of matrices 
+#'
+#' @return name-wise element product of operands
+#' 
 #' @export
 #'
 #' @examples
@@ -231,6 +232,7 @@ matrixproduct_byname <- function(...){
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' U * G # Not what is desired, because names aren't aligned
 #' elementproduct_byname(U, G)
+#' elementproduct_byname(U, G, G)
 #' elementproduct_byname(U, 0)
 #' elementproduct_byname(0, G)
 #' # This also works with lists
@@ -242,16 +244,6 @@ matrixproduct_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
-# elementproduct_byname <- function(multiplicand, multiplier){
-#   # Note that prod(1) returns 1, not 0.
-#   # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
-#   if (missing(multiplier)) {
-#     return(multiplicand)
-#   } else if (missing(multiplicand)) {
-#     return(multiplier)
-#   }
-#   binaryapply_byname(`*`, multiplicand, multiplier)
-# }
 elementproduct_byname <- function(...){
   # Note that prod(1) returns 1, not 0.
   # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
@@ -306,23 +298,23 @@ elementquotient_byname <- function(dividend, divisor){
 
 #' Name- and element-wise arithmetic mean of matrices.
 #'
-#' Gives the arithmetic mean of corresponding entries of \code{a} and \code{b}.
+#' Gives the arithmetic mean of operands in \code{...}.
 #' 
 #' This function performs a union and sorting of row and column names 
 #' prior to performing arithmetic mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param a first operand (a matrix or constant value or lists of same)
-#' @param b second operand (a matrix or constant value or lists of same)
+#' @param ... operands; constants, matrices, or lists of matrices
 #'
-#' @return A matrix representing the name-wise arithmetic mean 
-#'         of \code{a} and \code{b}.
+#' @return name-wise arithmetic mean of operands.
+#' 
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
 #' mean_byname(100, 50)
+#' mean_byname(10, 20, 30)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -331,7 +323,9 @@ elementquotient_byname <- function(dividend, divisor){
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' (U + G) / 2 # Non-sensical. Row and column names not respected.
 #' mean_byname(U, G) # Row and column names respected! Should be 1, 2, 3, and 4. 
+#' mean_byname(U, G, G)
 #' mean_byname(100, U)
+#' mean_byname(100, 50, U)
 #' mean_byname(10, G)
 #' # This also works with lists
 #' mean_byname(list(100, 100), list(50, 50))
