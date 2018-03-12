@@ -4,7 +4,7 @@
 \alias{sum_byname}
 \title{Name-wise addition of matrices.}
 \usage{
-sum_byname(augend, addend)
+sum_byname(...)
 }
 \arguments{
 \item{augend}{matrix or constant}

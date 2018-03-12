@@ -57,9 +57,17 @@
 #' DF3
 #' DF3$sums[[1]]
 #' DF3$sums[[2]]
-sum_byname <- function(augend, addend){
-  binaryapply_byname(`+`, augend, addend)
+# sum_byname <- function(augend, addend){
+#   binaryapply_byname(`+`, augend, addend)
+# }
+sum_byname <- function(...){
+  if (length(list(...)) == 1) {
+    return(list(...)[[1]])
+  }
+  apply_byname(`+`, ...)
 }
+
+
 
 #' Name-wise subtraction of matrices.
 #'
@@ -177,11 +185,20 @@ elementpow_byname <- function(a, pow){
 #' DF[[2,"G"]] <- G
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
-matrixproduct_byname <- function(multiplicand, multiplier){
+# matrixproduct_byname <- function(multiplicand, multiplier){
+#   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
+#   # are completed and sorted, but rows and cols of the output are not guaranteed 
+#   # to be sorted.
+#   binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
+#     # Because _byname assures that all rows and columns are sorted, 
+#     # we sort them here before returning. 
+#     sort_rows_cols()
+# }
+matrixproduct_byname <- function(...){
   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
   # are completed and sorted, but rows and cols of the output are not guaranteed 
   # to be sorted.
-  binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
+  apply_byname(`%*%`, ..., match_type = "matmult") %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     sort_rows_cols()
@@ -224,15 +241,23 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 #' DF[[2,"G"]] <- G
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
-elementproduct_byname <- function(multiplicand, multiplier){
+# elementproduct_byname <- function(multiplicand, multiplier){
+#   # Note that prod(1) returns 1, not 0.
+#   # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
+#   if (missing(multiplier)) {
+#     return(multiplicand)
+#   } else if (missing(multiplicand)) {
+#     return(multiplier)
+#   }
+#   binaryapply_byname(`*`, multiplicand, multiplier)
+# }
+elementproduct_byname <- function(...){
   # Note that prod(1) returns 1, not 0.
   # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
-  if (missing(multiplier)) {
-    return(multiplicand)
-  } else if (missing(multiplicand)) {
-    return(multiplier)
+  if (length(list(...)) == 1) {
+    return(list(...)[[1]])
   }
-  binaryapply_byname(`*`, multiplicand, multiplier)
+  apply_byname(`*`, ...)
 }
 
 #' Name-wise matrix element division
@@ -317,12 +342,20 @@ elementquotient_byname <- function(dividend, divisor){
 #' DF[[2,"G"]] <- G
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
-mean_byname <- function(a, b){
-  mean.func <- function(a, b){
-    sum_byname(a, b) %>%
-      elementquotient_byname(2)
+# mean_byname <- function(a, b){
+#   mean.func <- function(a, b){
+#     sum_byname(a, b) %>%
+#       elementquotient_byname(2)
+#   }
+#   binaryapply_byname(mean.func, a = a, b = b)
+# }
+mean_byname <- function(...){
+  mean.func <- function(...){
+    dots <- list(...)
+    sum_byname(...) %>%
+      elementquotient_byname(length(dots))
   }
-  binaryapply_byname(mean.func, a = a, b = b)
+  apply_byname(mean.func, ...)
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -367,15 +400,21 @@ mean_byname <- function(a, b){
 #' DF[[2,"G"]] <- G
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
-geometricmean_byname <- function(a, b){
-  geomean.func <- function(a, b){
-    if (any((a < 0 & b > 0) | (a > 0 & b < 0))) {
-      stop(paste0("a and b must have same sign in geometricmean_byname: a = ", a, ", b = ", b, "."))
-    } 
-    elementproduct_byname(a, b) %>% 
-      sqrt()
+# geometricmean_byname <- function(a, b){
+#   geomean.func <- function(a, b){
+#     if (any((a < 0 & b > 0) | (a > 0 & b < 0))) {
+#       stop(paste0("a and b must have same sign in geometricmean_byname: a = ", a, ", b = ", b, "."))
+#     } 
+#     elementproduct_byname(a, b) %>% 
+#       sqrt()
+#   }
+#   binaryapply_byname(geomean.func, a = a, b = b)
+# }
+geometricmean_byname <- function(...){
+  geomean.func <- function(...){
+    elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
   }
-  binaryapply_byname(geomean.func, a = a, b = b)
+  apply_byname(geomean.func, ...)
 }
 
 #' Name- and element-wise logarithmic mean of matrices.

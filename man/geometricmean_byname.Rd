@@ -4,7 +4,7 @@
 \alias{geometricmean_byname}
 \title{Name- and element-wise geometric mean of two matrices.}
 \usage{
-geometricmean_byname(a, b)
+geometricmean_byname(...)
 }
 \arguments{
 \item{a}{first operand (a matrix or constant value or lists of same)}

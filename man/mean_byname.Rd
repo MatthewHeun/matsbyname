@@ -4,7 +4,7 @@
 \alias{mean_byname}
 \title{Name- and element-wise arithmetic mean of matrices.}
 \usage{
-mean_byname(a, b)
+mean_byname(...)
 }
 \arguments{
 \item{a}{first operand (a matrix or constant value or lists of same)}

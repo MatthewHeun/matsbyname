@@ -4,7 +4,7 @@
 \alias{elementproduct_byname}
 \title{Name-wise matrix element multiplication}
 \usage{
-elementproduct_byname(multiplicand, multiplier)
+elementproduct_byname(...)
 }
 \arguments{
 \item{multiplicand}{Multiplicand matrix or constant}
