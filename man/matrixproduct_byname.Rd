@@ -7,27 +7,26 @@
 matrixproduct_byname(...)
 }
 \arguments{
-\item{multiplicand}{Multiplicand matrix}
+\item{...}{operands; constants, matrices, or lists of matrices
 
-\item{multiplier}{Multiplier matrix
-
+Multiplies operands from left to right.
 Performs a union and sorting of multiplicand rows and multiplier columns by name 
 prior to multiplication.
 Zeroes are inserted for missing matrix elements.
 Doing so ensures that
-the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
-I.e., the number of columns in \code{multiplicand}
-will equal the number of rows in \code{multiplier},
+the dimensions of multiplicand and multiplier matrices will be conformable.
+I.e., the number of columns in multiplicand
+will equal the number of rows in multiplier,
 so long as the column names of multiplicand are unique and
 the row names of multiplier are unique.
-If column type of \code{multiplicand} is not same as
-row type of \code{multiplier},
+If column type of the multiplicand is not same as
+row type of the multiplier on any step of the multiplication,
 the function will fail.
 The result is matrix product
-with row names from \code{multiplicand} and column names from \code{multiplier}.}
+with row names from the first multiplicand and column names from the last multiplier.}
 }
 \value{
-A matrix representing the name-wise product of \code{multiplicand} and \code{multiplier}
+A matrix representing the name-wise product of operands
 }
 \description{
 Name-wise matrix multiplication
@@ -37,11 +36,14 @@ library(magrittr)
 library(dplyr)
 V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
-G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("g2", "g1"))) \%>\%
+G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("i2", "i1"))) \%>\%
   setrowtype("Commodities") \%>\% setcoltype("Industries")
+Z <- matrix(11:14, ncol = 2, dimnames = list(c("i1", "i2"), c("s1", "s2"))) \%>\% 
+  setrowtype("Industries") \%>\% setcoltype("Sectors")
 # Succeeds because G is completed to include a row named c3 (that contains zeroes).
-matrixproduct_byname(V, G) 
+matrixproduct_byname(V, G)
 \dontrun{V \%*\% G} # Fails because E lacks a row named c3.
+matrixproduct_byname(V, G, Z)
 # This also works with lists
 matrixproduct_byname(list(V,V), list(G,G))
 DF <- data.frame(V = I(list()), G = I(list()))

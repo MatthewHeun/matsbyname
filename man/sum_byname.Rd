@@ -7,13 +7,11 @@
 sum_byname(...)
 }
 \arguments{
-\item{augend}{matrix or constant}
+\item{...}{operands; constants, matrices, or lists of matrices
 
-\item{addend}{matrix or constant
-
-Performs a union and sorting of row and column names prior to summation.
+Performs a union and sorting of addend and augend row and column names prior to summation.
 Zeroes are inserted for missing matrix elements.
-Treats missing or \code{NULL} \code{augend} and \code{addend} as \code{0}.}
+Treats missing or \code{NULL} operands as \code{0}.}
 }
 \value{
 A matrix representing the name-wise sum of \code{addend} and \code{augend}
@@ -25,16 +23,20 @@ Name-wise addition of matrices.
 library(magrittr)
 library(dplyr)
 sum_byname(2, 2)
+sum_byname(2, 2, 2)
+sum_byname(2, 2, -2, -2)
 productnames <- c("p1", "p2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) \%>\%
   setrowtype("Products") \%>\% setcoltype("Industries")
 Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) \%>\%
   setrowtype("Products") \%>\% setcoltype("Industries")
-U + Y # Non-sensical.  Row and column names not respected.
-sum_byname(U, Y)
 sum_byname(U, 100)
 sum_byname(200, Y)
+U + Y # Non-sensical.  Row and column names not respected.
+sum_byname(U, U)
+sum_byname(U, Y)
+sum_byname(U, U, Y, Y)
 V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, productnames)) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Products")
 U + V # row and column names are non-sensical and blindly taken from first argument (U)

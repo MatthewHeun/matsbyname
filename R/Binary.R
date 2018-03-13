@@ -64,7 +64,7 @@ sum_byname <- function(...){
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
-  apply_byname(`+`, ...)
+  naryapply_byname(`+`, ...)
 }
 
 #' Name-wise subtraction of matrices.
@@ -200,7 +200,7 @@ matrixproduct_byname <- function(...){
   # are completed and sorted, but rows and cols of the output of the 
   # %*% operation are not guaranteed to be sorted.
   # Thus, we sort_rows_cols() prior to returning.
-  apply_byname(`%*%`, ..., match_type = "matmult") %>% 
+  naryapply_byname(`%*%`, ..., match_type = "matmult") %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     sort_rows_cols()
@@ -250,7 +250,7 @@ elementproduct_byname <- function(...){
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
-  apply_byname(`*`, ...)
+  naryapply_byname(`*`, ...)
 }
 
 #' Name-wise matrix element division
@@ -337,13 +337,6 @@ elementquotient_byname <- function(dividend, divisor){
 #' DF[[2,"G"]] <- G
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
-# mean_byname <- function(a, b){
-#   mean.func <- function(a, b){
-#     sum_byname(a, b) %>%
-#       elementquotient_byname(2)
-#   }
-#   binaryapply_byname(mean.func, a = a, b = b)
-# }
 mean_byname <- function(...){
   sum_byname(...) %>% elementquotient_byname(length(list(...)))
 }
@@ -390,22 +383,8 @@ mean_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
-# geometricmean_byname <- function(a, b){
-#   geomean.func <- function(a, b){
-#     if (any((a < 0 & b > 0) | (a > 0 & b < 0))) {
-#       stop(paste0("a and b must have same sign in geometricmean_byname: a = ", a, ", b = ", b, "."))
-#     } 
-#     elementproduct_byname(a, b) %>% 
-#       sqrt()
-#   }
-#   binaryapply_byname(geomean.func, a = a, b = b)
-# }
 geometricmean_byname <- function(...){
   elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
-  # geomean.func <- function(...){
-  #   elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
-  # }
-  # apply_byname(geomean.func, ...)
 }
 
 #' Name- and element-wise logarithmic mean of matrices.

@@ -149,15 +149,15 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 
 #' Apply a function "by name" to any number of operands
 #' 
-#' \code{FUN} must be a binary function.
+#' \code{FUN} must be a binary function, but its use in this funcation is "n-ary."
 #' Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
 #' have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
 #' Thus, all of the operands in \code{...} must obey the rules of type matching 
 #' given by \code{match_type}.
 #' 
-#' \code{\link{apply_byname}} and \code{\link{cumapply_byname}} are similar.
+#' \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
 #' Their differences can be described by considering a data frame.
-#' \code{\link{apply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
+#' \code{\link{naryapply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
 #' For example, \code{\link{sum_byname}} applied to several variables gives another column
 #' containing the sums across each row of the data frame.
 #' \code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
@@ -175,7 +175,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #'        the coltype of the first operand must match the rowtype of the second operand
 #'        for every sequential invocation of \code{FUN}.
 #'        If "\code{none}",
-#'        neither coltypes nor rowtypes are checked by \code{\link{apply_byname}}. 
+#'        neither coltypes nor rowtypes are checked by \code{\link{naryapply_byname}}. 
 #' @param set_rowcoltypes tells whether to apply row and column types from 
 #'        operands in \code{...} to the output of each sequential invocation of \code{FUN}. 
 #'        Set \code{TRUE} (the default) to apply row and column types.
@@ -192,10 +192,10 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' @export
 #'
 #' @examples
-apply_byname <- function(FUN, ..., .FUNdots = NULL, 
+naryapply_byname <- function(FUN, ..., .FUNdots = NULL, 
                          match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
   if (length(list(...)) < 2) {
-    stop("Must have at least 2 arguments in ... for apply_byname.")
+    stop("Must have at least 2 arguments in ... for naryapply_byname.")
   }
   dots <- list(...)
   a <- dots[[1]]
@@ -213,9 +213,9 @@ apply_byname <- function(FUN, ..., .FUNdots = NULL,
 #' For \code{i >= 2}, elements are \code{FUN(a[[i]], out[[i-1]])},
 #' where \code{out} is the result list.
 #' 
-#' #' \code{\link{apply_byname}} and \code{\link{cumapply_byname}} are similar.
+#' \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
 #' Their differences can be described by considering a data frame.
-#' \code{\link{apply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
+#' \code{\link{naryapply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
 #' For example, \code{\link{sum_byname}} applied to several variables gives another column
 #' containing the sums across each row of the data frame.
 #' \code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.

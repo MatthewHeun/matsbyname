@@ -52,7 +52,7 @@ test_that("cumapply_byname works as expected", {
 ###########################################################
 
 test_that("apply_byname works as expected", {
-  expect_error(apply_byname(FUN = `sum`, ... = list(1,2,3)), "Must have at least 2 arguments in ... for apply_byname.")
-  expect_equal(apply_byname(FUN = sum_byname, 2, 3), 5)
-  expect_equal(apply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2), 0)
+  expect_error(naryapply_byname(FUN = `sum`, ... = list(1,2,3)), "Must have at least 2 arguments in ... for naryapply_byname.")
+  expect_equal(naryapply_byname(FUN = sum_byname, 2, 3), 5)
+  expect_equal(naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2), 0)
 })
