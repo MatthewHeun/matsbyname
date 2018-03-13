@@ -8,7 +8,7 @@ naryapply_byname(FUN, ..., .FUNdots = NULL, match_type = c("all", "matmult",
   "none"), set_rowcoltypes = TRUE, .organize = TRUE)
 }
 \arguments{
-\item{FUN}{a binary function to be applied "by name" sequentially to \code{...}.}
+\item{FUN}{a binary function to be applied "by name" to all operands in \code{...}.}
 
 \item{...}{the operands for \code{FUN}.}
 
@@ -38,16 +38,29 @@ Normally, this should be \code{TRUE} (the default).
 However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
 }
 \value{
-the result of applying \code{FUN} sequantially to each operand in \code{...}
+the result of applying \code{FUN} to all operands in \code{...}
 }
 \description{
-\code{FUN} must be a binary function, but its use in this funcation is "n-ary."
+Applies \code{FUN} to all operands in \code{...}.
+Other arguments have similar meaning as \code{\link{binaryapply_byname}}.
+See details for more information.
+}
+\details{
+If only one \code{...} argument is supplied, 
+\code{FUN} must be capable of handling one argument, and
+the call is routed to \code{\link{unaryapply_byname}}.
+When \code{set_rolcoltypes} is \code{TRUE}, 
+the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{all}", 
+but when \code{set_rowcoltypes} is \code{FALSE}, 
+the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{none}".
+If finer control is desired, the caller should use \code{\link{unaryapply_byname}} directly.
+If more than one argument is passed in \code{...},
+\code{FUN} must be a binary function, but its use in by \code{\link{naryapply_byname}} is "n-ary."
 Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
 have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
 Thus, all of the operands in \code{...} must obey the rules of type matching 
-given by \code{match_type}.
-}
-\details{
+when \code{match_type} is \code{TRUE}..
+
 \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
 Their differences can be described by considering a data frame.
 \code{\link{naryapply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
@@ -59,4 +72,6 @@ For example \code{\link{sum_byname}} applied to a single column gives the sum of
 \examples{
 naryapply_byname(FUN = sum_byname, 2, 3)
 naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2)
+# Routes to unaryapply_byname
+naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2)
 }

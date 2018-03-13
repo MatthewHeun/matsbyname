@@ -812,13 +812,26 @@ context("Equal_byname")
 ###########################################################
 
 test_that("equal_byname works as expected", {
+  
+  # Try with single numbers
+  expect_true(equal_byname(2, 2))
+  expect_true(equal_byname(2, 2, 2))
+  expect_false(equal_byname(2, 3, 5))
+  expect_false(equal_byname(2, 2, 5))
+
   # Try without row and column names
   a <- matrix(1:4, nrow = 2)
   expect_true(equal_byname(a, a))
+  expect_true(equal_byname(a, a, a))
   b <- matrix(4:1, nrow = 2)
+  expect_true(equal_byname(b, b, b))
   expect_false(equal_byname(a, b))
+  expect_false(equal_byname(a, a, b))
+  expect_false(equal_byname(b, a, a))
   b <- matrix(1:4, nrow = 2)
   expect_true(equal_byname(a, b))
+  expect_true(equal_byname(a, a, b))
+  expect_true(equal_byname(b, a, a, b))
   
   a <- a %>% setrowtype("Industries") %>% setcoltype("Products")
   # FALSE because a has row and column types, but b does not.
@@ -838,6 +851,17 @@ test_that("equal_byname works as expected", {
   
   # Try with lists.
   expect_equal(equal_byname(list(a, a), list(b, b)), list(TRUE, TRUE))
+  
+  # Try with two unsorted matrices. They should be equal (byname), 
+  # because they will be sorted prior to comparison.
+  matc <- matrix(c(1, 2), nrow = 2, dimnames = list(c("r1", "r2"), c("c1")))
+  matd <- matrix(c(2, 1), nrow = 2, dimnames = list(c("r2", "r1"), c("c1")))
+  # This is not what we want. Comparison is not done "byname", as we wish.
+  expect_equal(matc == matd, matrix(c(FALSE, FALSE), nrow = 2, dimnames = list(c("r1", "r2"), c("c1"))))
+  # This works as desired. The comparison is handled by the function, not the analyst.
+  expect_true(equal_byname(matc, matd))
+  expect_true(equal_byname(matc, matc, matd))
+  expect_equal(equal_byname(list(matc, matc), list(matd, matd), list(matc, matc)), list(TRUE, TRUE))
 })
 
 

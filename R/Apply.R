@@ -115,7 +115,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
 binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL, 
-                               set_rowcoltypes = TRUE, match_type = c("all", "matmult", "none"), .organize = TRUE){
+                               match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
   match_type <- match.arg(match_type)
   if (.organize) {
     args <- organize_args(a, b, fill = 0, match_type = match_type)
@@ -149,11 +149,24 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 
 #' Apply a function "by name" to any number of operands
 #' 
-#' \code{FUN} must be a binary function, but its use in this funcation is "n-ary."
+#' Applies \code{FUN} to all operands in \code{...}.
+#' Other arguments have similar meaning as \code{\link{binaryapply_byname}}.
+#' See details for more information.
+#' 
+#' If only one \code{...} argument is supplied, 
+#' \code{FUN} must be capable of handling one argument, and
+#' the call is routed to \code{\link{unaryapply_byname}}.
+#' When \code{set_rolcoltypes} is \code{TRUE}, 
+#' the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{all}", 
+#' but when \code{set_rowcoltypes} is \code{FALSE}, 
+#' the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{none}".
+#' If finer control is desired, the caller should use \code{\link{unaryapply_byname}} directly.
+#' If more than one argument is passed in \code{...},
+#' \code{FUN} must be a binary function, but its use in by \code{\link{naryapply_byname}} is "n-ary."
 #' Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
 #' have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
 #' Thus, all of the operands in \code{...} must obey the rules of type matching 
-#' given by \code{match_type}.
+#' when \code{match_type} is \code{TRUE}..
 #' 
 #' \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
 #' Their differences can be described by considering a data frame.
@@ -163,7 +176,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' \code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
 #' For example \code{\link{sum_byname}} applied to a single column gives the sum of all numbers in that column.
 #'
-#' @param FUN a binary function to be applied "by name" sequentially to \code{...}.
+#' @param FUN a binary function to be applied "by name" to all operands in \code{...}.
 #' @param ... the operands for \code{FUN}.
 #' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
 #' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
@@ -187,25 +200,60 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
 #'        
-#' @return the result of applying \code{FUN} sequantially to each operand in \code{...}
+#' @return the result of applying \code{FUN} to all operands in \code{...}
 #' 
 #' @export
 #'
 #' @examples
 #' naryapply_byname(FUN = sum_byname, 2, 3)
 #' naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2)
-naryapply_byname <- function(FUN, ..., .FUNdots = NULL, 
-                             set_rowcoltypes = TRUE, match_type = c("all", "matmult", "none"), .organize = TRUE){
-  if (length(list(...)) < 2) {
-    stop("Must have at least 2 arguments in ... for naryapply_byname.")
-  }
+#' # Routes to unaryapply_byname
+#' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2)
+naryapply_byname <- function(FUN, ..., 
+                             .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
+                             set_rowcoltypes = TRUE, .organize = TRUE){
+  match_type <- match.arg(match_type)
   dots <- list(...)
+  if (length(dots) == 1) {
+    # Perform a unaryapply
+    return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
+                      rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
+  }
   a <- dots[[1]]
   for (i in 2:length(dots)) {
     b <- dots[[i]]
     a <- binaryapply_byname(FUN, a = a, b = b, .FUNdots = .FUNdots, match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) 
   }
   return(a)
+}
+
+naryapplylogical_byname <- function(FUN, ..., 
+                                    .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
+                                    .organize = TRUE){
+  match_type <- match.arg(match_type)
+  dots <- list(...)
+  if (length(dots) == 1) {
+    return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
+                             rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
+  }
+  # Get it started
+  a <- dots[[1]]
+  b <- dots[[2]]
+  res <- binaryapply_byname(FUN, a = a, b = b, match_type = match_type, .organize = .organize) %>% as.logical()
+  if (length(dots) > 2) {
+    for (i in 3:length(dots)) {
+      a <- b
+      b <- dots[[i]]
+      temp <- binaryapply_byname(FUN, a = a, b = b)
+      res <- res & as.logical(temp)
+    }
+  }
+  if (length(res) == 1) {
+    # Return as a vector (which should be a single number)
+    return(res)
+  }
+  # When we have length of res > 1, return as a list
+  return(as.list(res))
 }
 
 #' Apply a function cumulatively to a list of matrices or numbers

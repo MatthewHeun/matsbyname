@@ -15,7 +15,7 @@ library(tidyr)
 
 
 ###########################################################
-# context("Unary apply")
+context("Unary apply")
 ###########################################################
 
 test_that("unaryapply_byname works as expected", {
@@ -28,7 +28,7 @@ test_that("unaryapply_byname works as expected", {
 
 
 ###########################################################
-# context("Binary apply")
+context("Binary apply")
 ###########################################################
 
 test_that("binaryapply_byname works as expected", {
@@ -38,7 +38,7 @@ test_that("binaryapply_byname works as expected", {
 
 
 ###########################################################
-# context("Cumulative apply")
+context("Cumulative apply")
 ###########################################################
 
 test_that("cumapply_byname works as expected", {
@@ -48,11 +48,14 @@ test_that("cumapply_byname works as expected", {
 
 
 ###########################################################
-# context("... apply")
+context("n-ary apply")
 ###########################################################
 
-test_that("apply_byname works as expected", {
-  expect_error(naryapply_byname(FUN = `sum`, ... = list(1,2,3)), "Must have at least 2 arguments in ... for naryapply_byname.")
+test_that("naryapply_byname works as expected", {
+  expect_equal(naryapply_byname(FUN = `sum`, ... = list(1,2,3)), list(1,2,3))
   expect_equal(naryapply_byname(FUN = sum_byname, 2, 3), 5)
   expect_equal(naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2), 0)
+  
+  # Try with a unary function.
+  expect_equal(naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2), list(1, 4, 9))
 })

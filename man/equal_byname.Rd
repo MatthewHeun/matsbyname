@@ -4,7 +4,7 @@
 \alias{equal_byname}
 \title{Compare two matrices "by name"}
 \usage{
-equal_byname(a, b)
+equal_byname(...)
 }
 \arguments{
 \item{a}{the first matrix to be compared}

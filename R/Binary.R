@@ -487,12 +487,37 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
-equal_byname <- function(a, b) {
+
+# equal_byname <- function(a, b){
+#   equal.func <- function(a, b){
+#     return(isTRUE(all.equal(a, b)))
+#   }
+#   binaryapply_byname(equal.func, a = a, b = b, match_type = "all", set_rowcoltypes = FALSE)
+# }
+
+equal_byname <- function(...){
   equal.func <- function(a, b){
-    mats <- complete_and_sort(a, b)
-    return(isTRUE(all.equal(mats$a, mats$b)))
+    return(isTRUE(all.equal(a, b)))
   }
-  binaryapply_byname(equal.func, a = a, b = b, match_type = "all", set_rowcoltypes = FALSE)
+  dots <- list(...)
+  # Get it started
+  a <- dots[[1]]
+  b <- dots[[2]]
+  res <- binaryapply_byname(equal.func, a = a, b = b) %>% as.logical()
+  if (length(dots) > 2) {
+    for (i in 3:length(dots)) {
+      a <- b
+      b <- dots[[i]]
+      temp <- binaryapply_byname(equal.func, a = a, b = b)
+      res <- res & as.logical(temp)
+    }
+  }
+  if (length(res) == 1) {
+    # Return as a vector (which should be a single number)
+    return(res)
+  }
+  # Return as a list
+  return(as.list(res))
 }
 
 #' Test whether two matrices or lists of matrices have same structure
