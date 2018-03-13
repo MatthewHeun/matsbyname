@@ -487,37 +487,11 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
-
-# equal_byname <- function(a, b){
-#   equal.func <- function(a, b){
-#     return(isTRUE(all.equal(a, b)))
-#   }
-#   binaryapply_byname(equal.func, a = a, b = b, match_type = "all", set_rowcoltypes = FALSE)
-# }
-
 equal_byname <- function(...){
   equal.func <- function(a, b){
     return(isTRUE(all.equal(a, b)))
   }
-  dots <- list(...)
-  # Get it started
-  a <- dots[[1]]
-  b <- dots[[2]]
-  res <- binaryapply_byname(equal.func, a = a, b = b) %>% as.logical()
-  if (length(dots) > 2) {
-    for (i in 3:length(dots)) {
-      a <- b
-      b <- dots[[i]]
-      temp <- binaryapply_byname(equal.func, a = a, b = b)
-      res <- res & as.logical(temp)
-    }
-  }
-  if (length(res) == 1) {
-    # Return as a vector (which should be a single number)
-    return(res)
-  }
-  # Return as a list
-  return(as.list(res))
+  naryapplylogical_byname(equal.func, ...)
 }
 
 #' Test whether two matrices or lists of matrices have same structure
@@ -546,7 +520,41 @@ equal_byname <- function(...){
 #' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
 #' samestructure_byname(list(U, U))
-samestructure_byname <- function(a, b){
+# samestructure_byname <- function(a, b){
+#   samestruct.func <- function(a, b){
+#     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
+#       return(FALSE)
+#     }
+#     if (!isTRUE(all.equal(colnames(a), colnames(b)))) {
+#       return(FALSE)
+#     }
+#     if (!is.null(rowtype(a)) & !is.null(rowtype(b))) {
+#       # When both rowtypes are non-null, we can compare them directly.
+#       if (!rowtype(a) == rowtype(b)) {
+#         return(FALSE)
+#       }
+#     }
+#     if (!is.null(coltype(a)) & !is.null(coltype(b))) {
+#       # When both coltypes are non-null, we can compare them directly.
+#       if (!coltype(a) == coltype(b)) {
+#         return(FALSE)
+#       }
+#     }
+#     # At least one of rowtype or coltype on a or b is null.
+#     if (xor(is.null(rowtype(a)), is.null(rowtype(b)))) {
+#       # Rowtype on one of a or b is null, but the other is non-null.
+#       return(FALSE)
+#     }
+#     if (xor(is.null(coltype(a)), is.null(coltype(b)))) {
+#       # Coltype on one of a or b is null, but the other is non-null.
+#       return(FALSE)
+#     }
+#     return(TRUE)
+#   }
+#   binaryapply_byname(samestruct.func, a, b, match_type = "none", set_rowcoltypes = FALSE)
+# }
+
+samestructure_byname <- function(...){
   samestruct.func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
@@ -577,5 +585,38 @@ samestructure_byname <- function(a, b){
     }
     return(TRUE)
   }
-  binaryapply_byname(samestruct.func, a, b, match_type = "none", set_rowcoltypes = FALSE)
+  naryapplylogical_byname(samestruct.func, ...)
+}
+
+
+
+
+#' And operation "by name"
+#' 
+#' Operands should be logical, although numerical operands are accepted.
+#' Numerical operands are interpreted as \code{FALSE} when \code{0} and
+#' \code{TRUE} for any other number.
+#'
+#' @param ... operands to the logical \code{and} function
+#'
+#' @return logical \code{and} applied to the operands
+#' 
+#' @export
+#'
+#' @examples
+#' and_byname(TRUE)
+#' and_byname(FALSE)
+#' and_byname(list(TRUE, FALSE), list(TRUE, TRUE), list(TRUE, TRUE), list(TRUE, TRUE))
+#' m1 <- matrix(c(TRUE, TRUE, TRUE, FALSE), nrow = 2, ncol = 2, 
+#'   dimnames = list(c("r1", "r2"), c("c1", "c2")))
+#' m2 <- matrix(c(TRUE, FALSE, TRUE, TRUE), nrow = 2, ncol = 2,
+#'   dimnames = list(c("r1", "r2"), c("c1", "c2")))
+#' and_byname(m1, m1)
+#' and_byname(m1, m2)
+#' and_byname(list(m1, m1), list(m1, m1), list(m2, m2))
+and_byname <- function(...){
+  if (length(list(...)) == 1) {
+    return(list(...)[[1]])
+  }
+  naryapplylogical_byname(`&`, ...)
 }

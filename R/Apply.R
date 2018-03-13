@@ -227,34 +227,96 @@ naryapply_byname <- function(FUN, ...,
   return(a)
 }
 
+#' Apply a function logically to numbers, matrices, or lists of numbers or matrices
+#' 
+#' Operands should be logical, although numerical operands are accepted.
+#' Numerical operands are interpreted as \code{0} is \code{FALSE}, and
+#' any other number is \code{TRUE}.
+#' 
+#' This function is not exported, 
+#' thereby retaining the right to future changes.
+#'
+#' @param FUN a binary function (that returns logical values) to be applied over operands 
+#' @param ... operands; constants, matrices, or lists of matrices
+#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
+#' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
+#'        When \code{...} are matrices,
+#'        "\code{all}" (the default) indicates that
+#'        rowtypes of all \code{...} matrices must match and
+#'        coltypes of all \code{...} matrices must match.
+#'        If "\code{matmult}",
+#'        the coltype of the first operand must match the rowtype of the second operand
+#'        for every sequential invocation of \code{FUN}.
+#'        If "\code{none}",
+#'        neither coltypes nor rowtypes are checked by \code{\link{naryapply_byname}}. 
+#' @param set_rowcoltypes tells whether to apply row and column types from 
+#'        operands in \code{...} to the output of each sequential invocation of \code{FUN}. 
+#'        Set \code{TRUE} (the default) to apply row and column types.
+#'        Set \code{FALSE}, to \emph{not} apply row and column types to the output.
+#' @param .organize a boolean that tells whether or not to automatically 
+#'        complete operands in \code{...} relative to each other and
+#'        sort the rows and columns of the completed matrices.
+#'        This organizing is done on each sequential invocation of \code{FUN}.
+#'        Normally, this should be \code{TRUE} (the default).
+#'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
+#'
+#' @return
+#'
+#' @examples
+#' naryapplylogical_byname(`&`, TRUE, TRUE, TRUE)
+#' naryapplylogical_byname(`&`, TRUE, TRUE, FALSE)
+
+# naryapplylogical_byname <- function(FUN, ..., 
+#                                     .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
+#                                     set_rowcoltypes = TRUE, .organize = TRUE){
+#   match_type <- match.arg(match_type)
+#   dots <- list(...)
+#   if (length(dots) == 1) {
+#     return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
+#                              rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
+#   }
+#   res <- dots[[1]]
+#   for (i in 2:length(dots)) {
+#     b <- dots[[i]]
+#     mats <- complete_and_sort(a = res, b = b, fill = FALSE)
+#     res <- binaryapply_byname(FUN, a = mats$a, b = mats$b, 
+#                               .FUNdots = .FUNdots, match_type = match_type, 
+#                               set_rowcoltypes = set_rowcoltypes, .organize = .organize)
+#   }
+#   return(res)
+# }
+
 naryapplylogical_byname <- function(FUN, ..., 
                                     .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
-                                    .organize = TRUE){
+                                    set_rowcoltypes = TRUE, .organize = TRUE){
   match_type <- match.arg(match_type)
   dots <- list(...)
   if (length(dots) == 1) {
     return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
                              rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
   }
-  # Get it started
+  # Get things started.
   a <- dots[[1]]
   b <- dots[[2]]
-  res <- binaryapply_byname(FUN, a = a, b = b, match_type = match_type, .organize = .organize) %>% as.logical()
+  mats <- complete_and_sort(a = a, b = b)
+  res <- binaryapply_byname(FUN, a = mats$a, b = mats$b, 
+                            .FUNdots = .FUNdots, match_type = match_type, 
+                            set_rowcoltypes = set_rowcoltypes, .organize = .organize)
   if (length(dots) > 2) {
-    for (i in 3:length(dots)) {
-      a <- b
+    for (i in 2:length(dots)) {
       b <- dots[[i]]
-      temp <- binaryapply_byname(FUN, a = a, b = b)
-      res <- res & as.logical(temp)
+      mats <- complete_and_sort(a = a, b = b)
+      res <- binaryapply_byname(FUN, a = mats$a, b = mats$b, 
+                                 .FUNdots = .FUNdots, match_type = match_type, 
+                                 set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
+        and_byname(res)
     }
   }
-  if (length(res) == 1) {
-    # Return as a vector (which should be a single number)
-    return(res)
-  }
-  # When we have length of res > 1, return as a list
-  return(as.list(res))
+  return(res)
 }
+
+
+
 
 #' Apply a function cumulatively to a list of matrices or numbers
 #' 

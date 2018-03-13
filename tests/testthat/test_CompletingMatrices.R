@@ -603,6 +603,19 @@ test_that("complete_and_sort works as expected", {
   expect_equal(complete_and_sort(a, b), list(a = a, b = b))
 })
 
+test_that("complete_and_sort preserves row and column types", {
+  # a and b are same matrices.
+  # Completing and sorting against each other should produce a (or b).
+  a <- matrix(c(1:4), nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  b <- matrix(c(1:4), nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(complete_rows_cols(a, b), a)
+  expect_equal(complete_rows_cols(b, a), b)
+  expect_equal(complete_and_sort(a, b), list(a = a, b = a))
+  expect_equal(complete_and_sort(a, b), list(a = b, b = a))
+})
+
 
 ###########################################################
 context("Utilities")

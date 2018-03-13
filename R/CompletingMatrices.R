@@ -254,7 +254,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
   binaryapply_byname(complete.func, a = a, b = mat, .FUNdots = list(fill = fill, 
                                                                     fillrow = fillrow, fillcol = fillcol, 
                                                                     margin = margin), 
-                     match_type = "all", set_rowcoltypes = FALSE, .organize = FALSE)
+                     match_type = "all", set_rowcoltypes = TRUE, .organize = FALSE)
 }
 
 #' Sorts rows and columns of a matrix

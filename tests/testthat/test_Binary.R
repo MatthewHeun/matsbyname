@@ -862,6 +862,18 @@ test_that("equal_byname works as expected", {
   expect_true(equal_byname(matc, matd))
   expect_true(equal_byname(matc, matc, matd))
   expect_equal(equal_byname(list(matc, matc), list(matd, matd), list(matc, matc)), list(TRUE, TRUE))
+  
+  # Try within data frames
+  DF <- data.frame(matc = I(list()), matd = I(list()))
+  DF[[1,"matc"]] <- matc
+  DF[[2,"matc"]] <- matc
+  DF[[1,"matd"]] <- matd
+  DF[[2,"matd"]] <- matd
+  DF_2 <- DF %>% 
+    mutate(
+      equal = equal_byname(matc, matd)
+    )
+  expect_equal(DF_2$equal, list(TRUE, TRUE))
 })
 
 
@@ -1033,3 +1045,36 @@ test_that("matrix multiplied by a constant in a data frame works", {
 })
 
 
+###########################################################
+context("And")
+###########################################################
+
+test_that("and_byname works as expected", {
+  # Test with non-logicals. 0 is interpreted as FALSE, any other number is interpreted as TRUE.
+  expect_true(and_byname(2, 2))
+  expect_false(and_byname(0, -1000))
+  # Test with single values.
+  expect_true(and_byname(TRUE))
+  expect_false(and_byname(FALSE))
+  expect_true(and_byname(TRUE, TRUE))
+  expect_true(and_byname(TRUE, TRUE, TRUE))
+  expect_false(and_byname(TRUE, TRUE, FALSE, TRUE))
+  
+  # Test with lists
+  expect_equal(and_byname(list(TRUE)), list(TRUE))
+  expect_equal(and_byname(list(FALSE)), list(FALSE))
+  expect_equal(and_byname(list(TRUE, TRUE)), list(TRUE, TRUE))
+  expect_equal(and_byname(list(TRUE, TRUE, TRUE)), list(TRUE, TRUE, TRUE))
+  expect_equal(and_byname(list(FALSE, TRUE, TRUE, TRUE)), list(FALSE, TRUE, TRUE, TRUE))
+  expect_equal(and_byname(list(TRUE, FALSE), list(TRUE, TRUE)), list(TRUE, FALSE))
+  expect_equal(and_byname(list(TRUE, FALSE), list(TRUE, TRUE), list(TRUE, TRUE), list(TRUE, TRUE)), list(TRUE, FALSE))
+  
+  # Test with matrices
+  m1 <- matrix(c(TRUE, TRUE, TRUE, FALSE), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  m2 <- matrix(c(TRUE, FALSE, TRUE, TRUE), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  expect_equal(and_byname(m1, m1), m1)
+  expect_equal(and_byname(m1, m2), m1 & m2)
+  # Test with lists of matrices
+  expect_equal(and_byname(list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
+  expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
+})

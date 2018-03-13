@@ -4,7 +4,7 @@
 \alias{samestructure_byname}
 \title{Test whether two matrices or lists of matrices have same structure}
 \usage{
-samestructure_byname(a, b)
+samestructure_byname(...)
 }
 \arguments{
 \item{a}{the first matrix to be tested}
