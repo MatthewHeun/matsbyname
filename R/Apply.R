@@ -115,7 +115,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
 binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL, 
-                               match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
+                               set_rowcoltypes = TRUE, match_type = c("all", "matmult", "none"), .organize = TRUE){
   match_type <- match.arg(match_type)
   if (.organize) {
     args <- organize_args(a, b, fill = 0, match_type = match_type)
@@ -192,8 +192,10 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' @export
 #'
 #' @examples
+#' naryapply_byname(FUN = sum_byname, 2, 3)
+#' naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2)
 naryapply_byname <- function(FUN, ..., .FUNdots = NULL, 
-                         match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
+                             set_rowcoltypes = TRUE, match_type = c("all", "matmult", "none"), .organize = TRUE){
   if (length(list(...)) < 2) {
     stop("Must have at least 2 arguments in ... for naryapply_byname.")
   }

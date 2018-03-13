@@ -56,3 +56,7 @@ containing the sums across each row of the data frame.
 \code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
 For example \code{\link{sum_byname}} applied to a single column gives the sum of all numbers in that column.
 }
+\examples{
+naryapply_byname(FUN = sum_byname, 2, 3)
+naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2)
+}

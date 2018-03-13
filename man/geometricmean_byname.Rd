@@ -7,13 +7,10 @@
 geometricmean_byname(...)
 }
 \arguments{
-\item{a}{first operand (a matrix or constant value or lists of same)}
-
-\item{b}{second operand (a matrix or constant value or lists of same)}
+\item{...}{operands; constants, matrices, or lists of matrices}
 }
 \value{
-A matrix representing the name-wise geometric mean 
-        of \code{a} and \code{b}.
+name-wise geometric mean of operands
 }
 \description{
 Gives the geometric mean of corresponding entries of \code{a} and \code{b}.
@@ -27,6 +24,7 @@ Zeroes are inserted for missing matrix elements.
 library(magrittr)
 library(dplyr)
 geometricmean_byname(10, 1000)
+geometricmean_byname(10, 1000, 100000)
 commoditynames <- c("c1", "c2")
 industrynames <- "i1"
 U <- matrix(c(10, 1000), ncol = 1, nrow = 2, dimnames = list(commoditynames, industrynames)) \%>\%

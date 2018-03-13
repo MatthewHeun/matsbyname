@@ -349,17 +349,17 @@ mean_byname <- function(...){
 #' prior to performing geometric mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param a first operand (a matrix or constant value or lists of same)
-#' @param b second operand (a matrix or constant value or lists of same)
+#' @param ... operands; constants, matrices, or lists of matrices
 #'
-#' @return A matrix representing the name-wise geometric mean 
-#'         of \code{a} and \code{b}.
+#' @return name-wise geometric mean of operands
+#' 
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
 #' geometricmean_byname(10, 1000)
+#' geometricmean_byname(10, 1000, 100000)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- "i1"
 #' U <- matrix(c(10, 1000), ncol = 1, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
