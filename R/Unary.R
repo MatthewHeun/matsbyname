@@ -24,7 +24,6 @@ elementlog_byname <- function(a, base = exp(1)){
   unaryapply_byname(log, a = a, .FUNdots = list(base = base))
 }
 
-
 #' Exponential of matrix elements
 #' 
 #' Gives the exponential of all elements of a matrix or list of matrices
