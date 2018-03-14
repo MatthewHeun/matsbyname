@@ -3,13 +3,13 @@
 This is a new package that assists with matrix mathematics.
 
 ## Test environments
-* local OS X install, R 3.4.3
-* ubuntu (on travis-ci), R 3.4.2
-* win-builder via devtools (devel and release)
+* local macOS X install v10.12.6 (Sierra), R3.4.3
+* ubuntu 14.04 (on Travis CI), R3.4.2
+* win-builder via devtools::build_win() (devel and release), R3.5.0 and R3.4.3
 
 ## R CMD check results
 There were no ERRORs or WARNINGs.
-There was one NOTE stating that this is a new submission. 
+There was one NOTE stating (correctly) that this is a new submission. 
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package.

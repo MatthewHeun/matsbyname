@@ -1,5 +1,27 @@
 # News for `matsbyname`
 
+## matsbyname 0.2.5 (2018-03-13)
+
+* New `*apply_byname` functions
+   + `naryapply_byname`: enables `...` arguments
+   + `naryapplylogical_byname`: enables logical functions
+* New `*apply_byname` functions enable API improvements, 
+  including `...` arguments for functions that deserve them.
+  These are API changes, but they shouldn't affect any existing code,
+  because calls to binary functions will "just work."
+  New `...` functions include, 
+   + `sum_byname`
+   + `matrixproduct_byname`
+   + `elementproduct_byname`
+   + `mean_byname`
+   + `geometricmean_byname`
+   + `equal_byname`
+   + `samestructure_byname`
+* New `and_byname(...)` function that provides logical and "by name."
+  The infrastructure is in place to 
+  add other logical functions in the future: `or_byname`, `xor_byname`, and `not_byname`.
+
+
 ## matsbyname 0.2.4 (2018-03-08)
 
 * Preparing for submission to CRAN. 

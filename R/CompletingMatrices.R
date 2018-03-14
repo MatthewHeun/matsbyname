@@ -158,8 +158,10 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
       return(a)
     }
     
-    rt <- rowtype(mat)
-    ct <- coltype(mat)
+    # rt <- rowtype(mat)
+    # ct <- coltype(mat)
+    rt <- rowtype(a)
+    ct <- coltype(a)
     if (is.null(a) & length(dimnamesmat) == 2) {
       # a is NULL, dimnamesmat is a nxn list.  We can work with this.
       # If we have fillcol, make a matrix consisting of repeated fillcols 
@@ -227,7 +229,8 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
                            ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
       }
-      a <- cbind(a, fillcols)
+      a <- cbind(a, fillcols) %>% 
+        setrowtype(rt) %>% setcoltype(ct)
     }
 
     if (1 %in% margin) {
@@ -246,7 +249,8 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
                            nrow = length(fillrownames), ncol = ncol(a), 
                            dimnames = list(fillrownames, colnames(a)))
       }
-      a <- rbind(a, fillrows)
+      a <- rbind(a, fillrows) %>% 
+        setrowtype(rt) %>% setcoltype(ct)
     }
     return(a)
   }
@@ -254,7 +258,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
   binaryapply_byname(complete.func, a = a, b = mat, .FUNdots = list(fill = fill, 
                                                                     fillrow = fillrow, fillcol = fillcol, 
                                                                     margin = margin), 
-                     match_type = "all", rowcoltypes = FALSE, .organize = FALSE)
+                     match_type = "all", set_rowcoltypes = TRUE, .organize = FALSE)
 }
 
 #' Sorts rows and columns of a matrix
@@ -406,7 +410,7 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
 #' complete_and_sort(v, v)
 #' # Also works with lists
 #' complete_and_sort(list(m1,m1), list(m2,m2))
-complete_and_sort <- function(a, b, fill = 0, margin=c(1,2), roworder = NA, colorder = NA){
+complete_and_sort <- function(a, b, fill = 0, margin = c(1,2), roworder = NA, colorder = NA){
   if (missing(b)) {
     a <- complete_rows_cols(a, fill = fill, margin = margin)
     a <- sort_rows_cols(a, roworder = roworder, colorder = colorder)

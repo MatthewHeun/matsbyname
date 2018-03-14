@@ -4,13 +4,13 @@
 \alias{getrownames_byname}
 \title{Gets row names}
 \usage{
-getrownames_byname(m)
+getrownames_byname(a)
 }
 \arguments{
-\item{m}{The matrix or data frame on which row names are to be retrieved}
+\item{a}{The matrix or data frame on which row names are to be retrieved}
 }
 \value{
-row names of \code{m}
+row names of \code{a}
 }
 \description{
 Gets row names in a way that is amenable to use in chaining operations in a functional programming way

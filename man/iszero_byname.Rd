@@ -4,10 +4,10 @@
 \alias{iszero_byname}
 \title{Test whether this is the zero matrix}
 \usage{
-iszero_byname(m, tol = 1e-06)
+iszero_byname(a, tol = 1e-06)
 }
 \arguments{
-\item{m}{a matrix of list of matrices}
+\item{a}{a matrix of list of matrices}
 
 \item{tol}{the allowable deviation from 0 for any element}
 }

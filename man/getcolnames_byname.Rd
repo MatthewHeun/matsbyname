@@ -4,10 +4,10 @@
 \alias{getcolnames_byname}
 \title{Gets column names}
 \usage{
-getcolnames_byname(m)
+getcolnames_byname(a)
 }
 \arguments{
-\item{m}{The matrix or data frame from which column names are to be retrieved}
+\item{a}{The matrix or data frame from which column names are to be retrieved}
 }
 \value{
 column names of \code{m}

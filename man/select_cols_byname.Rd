@@ -4,10 +4,10 @@
 \alias{select_cols_byname}
 \title{Select columns of a matrix (or list of matrices) by name}
 \usage{
-select_cols_byname(m, retain_pattern = "$^", remove_pattern = "$^")
+select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^")
 }
 \arguments{
-\item{m}{a matrix or a list of matrices}
+\item{a}{a matrix or a list of matrices}
 
 \item{retain_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
 Default pattern (\code{$^}) retains nothing.}
@@ -16,7 +16,7 @@ Default pattern (\code{$^}) retains nothing.}
 Default pattern (\code{$^}) removes nothing.}
 }
 \value{
-a matrix that is a subset of \code{m} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
+a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
 }
 \description{
 Arguments indicate which columns are to be retained and which are to be removed.
@@ -25,8 +25,8 @@ that are matched against column names.
 }
 \details{
 Patterns are compared against column names using extended regex.
-If no column names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
-If no column names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
+If no column names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
+If no column names of \code{a} match the \code{remove_pattern}, \code{a} is returned.
 
 Retaining columns takes precedence over removing columns, always.
 

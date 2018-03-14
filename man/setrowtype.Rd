@@ -4,15 +4,15 @@
 \alias{setrowtype}
 \title{Sets row type for a matrix or a list of matrices}
 \usage{
-setrowtype(x, rowtype)
+setrowtype(a, rowtype)
 }
 \arguments{
-\item{x}{the matrix on which row type is to be set}
+\item{a}{the matrix on which row type is to be set}
 
 \item{rowtype}{the type of item stored in rows}
 }
 \value{
-\code{x} with rowtype attribute set to \code{rowtype}.
+\code{a} with rowtype attribute set to \code{rowtype}.
 }
 \description{
 This function is a wrapper for \code{attr} so that 

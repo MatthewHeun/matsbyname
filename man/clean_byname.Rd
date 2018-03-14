@@ -4,10 +4,10 @@
 \alias{clean_byname}
 \title{Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}}
 \usage{
-clean_byname(m, margin = c(1, 2), clean_value = 0)
+clean_byname(a, margin = c(1, 2), clean_value = 0)
 }
 \arguments{
-\item{m}{the matrix to be cleaned}
+\item{a}{the matrix to be cleaned}
 
 \item{margin}{the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
 or \code{c(1,2)} for both rows and columns.}
