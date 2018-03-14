@@ -158,8 +158,10 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
       return(a)
     }
     
-    rt <- rowtype(mat)
-    ct <- coltype(mat)
+    # rt <- rowtype(mat)
+    # ct <- coltype(mat)
+    rt <- rowtype(a)
+    ct <- coltype(a)
     if (is.null(a) & length(dimnamesmat) == 2) {
       # a is NULL, dimnamesmat is a nxn list.  We can work with this.
       # If we have fillcol, make a matrix consisting of repeated fillcols 
@@ -227,7 +229,8 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
                            ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
       }
-      a <- cbind(a, fillcols)
+      a <- cbind(a, fillcols) %>% 
+        setrowtype(rt) %>% setcoltype(ct)
     }
 
     if (1 %in% margin) {
@@ -246,7 +249,8 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, fillrow = NULL, f
                            nrow = length(fillrownames), ncol = ncol(a), 
                            dimnames = list(fillrownames, colnames(a)))
       }
-      a <- rbind(a, fillrows)
+      a <- rbind(a, fillrows) %>% 
+        setrowtype(rt) %>% setcoltype(ct)
     }
     return(a)
   }

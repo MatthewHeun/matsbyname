@@ -302,7 +302,9 @@ test_that("complete_rows_cols works as expected", {
                           2, 4, 0, 0, 
                           0, 0, 0, 0, 
                           0, 0, 0, 0), byrow = TRUE, nrow = 4, ncol = 4,
-                        dimnames = list(c("r1", "r2", "c1", "c2"), c("c1", "c2", "r1", "r2")))
+                        dimnames = list(c("r1", "r2", "c1", "c2"), c("c1", "c2", "r1", "r2"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_equal(complete_rows_cols(a = B), B_completed)
   expect_equal(complete_rows_cols(a = list(B, B)), list(B_completed, B_completed))
   
   B_filled <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 

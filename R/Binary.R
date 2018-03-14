@@ -491,7 +491,7 @@ equal_byname <- function(...){
   equal.func <- function(a, b){
     return(isTRUE(all.equal(a, b)))
   }
-  naryapplylogical_byname(equal.func, ...)
+  naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
 }
 
 #' Test whether two matrices or lists of matrices have same structure
@@ -585,13 +585,10 @@ samestructure_byname <- function(...){
     }
     return(TRUE)
   }
-  naryapplylogical_byname(samestruct.func, ...)
+  naryapplylogical_byname(samestruct.func, ..., match_type = "none", set_rowcoltypes = FALSE, .organize = FALSE)
 }
 
-
-
-
-#' And operation "by name"
+#' And "by name"
 #' 
 #' Operands should be logical, although numerical operands are accepted.
 #' Numerical operands are interpreted as \code{FALSE} when \code{0} and

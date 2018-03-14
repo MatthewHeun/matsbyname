@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{and_byname}
 \alias{and_byname}
-\title{And operation "by name"}
+\title{And "by name"}
 \usage{
 and_byname(...)
 }

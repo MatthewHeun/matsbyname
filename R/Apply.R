@@ -134,15 +134,23 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   out <- do.call(FUN, c(list(a), list(b), .FUNdots))
   
   if (set_rowcoltypes) {
-    # Either match_type is 
-    #   "all" 
-    #     in which case rowtype(a) == rowtype(b) and coltype(a) == coltype(b), 
-    #     and setting rowtype to rowtype(a) and coltype to coltype(b) works fine, or
-    #   "matmult"
-    #     in which case coltype(a) == rowtype(b) and the result of FUN is
-    #     a matrix with rowtype == rowtype(a) and coltype == coltype(b).
-    # Given those options, we set rowtype to rowtype(a) and coltype to coltype(b).
-    return(out %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(b)))
+    if (match_type == "all") {
+      if (!is.null(a)) {
+        # Rowtypes and coltypes of a and b are set to a if it exists.
+        out <- out %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+      } else if (!is.null(b)) {
+        # If a doesn't exist, try setting row and column type to the row and column types of b.
+        out <- out %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+      } else {
+        # There is no way to set the row and column types. 
+        # Throw an error.
+        stop("set_rowcoltypes == TRUE, but a and b and NULL. How can we set row and column types from NULL?")
+      }
+    } else if (match_type == "matmult") {
+      # In this case, coltype(a) == rowtype(b) and the result of FUN is
+      # a matrix with rowtype == rowtype(a) and coltype == coltype(b).
+      out <- out %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(b))
+    }
   }
   return(out)
 }
@@ -298,15 +306,23 @@ naryapplylogical_byname <- function(FUN, ...,
   # Get things started.
   a <- dots[[1]]
   b <- dots[[2]]
-  mats <- complete_and_sort(a = a, b = b)
-  res <- binaryapply_byname(FUN, a = mats$a, b = mats$b, 
+  if (.organize) {
+    mats <- complete_and_sort(a = a, b = b)
+    a <- mats$a
+    b <- mats$b
+  }
+  res <- binaryapply_byname(FUN, a = a, b = b, 
                             .FUNdots = .FUNdots, match_type = match_type, 
                             set_rowcoltypes = set_rowcoltypes, .organize = .organize)
   if (length(dots) > 2) {
     for (i in 2:length(dots)) {
       b <- dots[[i]]
-      mats <- complete_and_sort(a = a, b = b)
-      res <- binaryapply_byname(FUN, a = mats$a, b = mats$b, 
+      if (.organize) {
+        mats <- complete_and_sort(a = a, b = b)
+        a <- mats$a
+        b <- mats$b
+      }
+      res <- binaryapply_byname(FUN, a = a, b = b, 
                                  .FUNdots = .FUNdots, match_type = match_type, 
                                  set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
         and_byname(res)
