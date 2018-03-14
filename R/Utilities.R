@@ -208,7 +208,7 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #'
 #' Note that the result provides column vectors, regardless of the value of \code{margin}.
 #'
-#' @param m a matrix or list of matrices (say, from a column of a data frame)
+#' @param a a matrix or list of matrices (say, from a column of a data frame)
 #' @param margin the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)
 #'
 #' @return a named list of rows or columns extracted from \code{m}
@@ -650,7 +650,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
 #' retain nothing and remove nothing.
 #' 
-#' @param m a matrix or a list of matrices
+#' @param a a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
 #' Default pattern (\code{$^}) retains nothing.
 #' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove

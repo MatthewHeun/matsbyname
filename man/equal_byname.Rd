@@ -2,22 +2,21 @@
 % Please edit documentation in R/Binary.R
 \name{equal_byname}
 \alias{equal_byname}
-\title{Compare two matrices "by name"}
+\title{Compare two matrices "by name" for equality}
 \usage{
-equal_byname(a, b)
+equal_byname(...)
 }
 \arguments{
-\item{a}{the first matrix to be compared}
-
-\item{b}{the second matrix to be compared}
+\item{...}{operands to be compared}
 }
 \value{
-\code{TRUE} iff row and column types are same \emph{and}
-row and column names are same \emph{and}
-all entries in the matrix are same.
+\code{TRUE} iff all information is the same, including
+row and column types \emph{and}
+row and column names \emph{and}
+entries in the matrix.
 }
 \description{
-Matrices are completed and sorted relative to one another before comparison
+If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 }
 \examples{
 library(magrittr)

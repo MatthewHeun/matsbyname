@@ -4,24 +4,20 @@
 \alias{elementproduct_byname}
 \title{Name-wise matrix element multiplication}
 \usage{
-elementproduct_byname(multiplicand, multiplier)
+elementproduct_byname(...)
 }
 \arguments{
-\item{multiplicand}{Multiplicand matrix or constant}
-
-\item{multiplier}{Multiplier matrix or constant
-
-Performs a union and sorting of names of rows and columns for both \code{multiplicand} and \code{multiplier}
-prior to element multiplication.
-Zeroes are inserted for missing matrix elements.
-Doing so ensures that
-the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.}
+\item{...}{operands; constants, matrices, or lists of matrices}
 }
 \value{
-A matrix representing the name-wise element product of \code{multiplicand} and \code{multiplier}
+name-wise element product of operands
 }
 \description{
-Name-wise matrix element multiplication
+Performs a union and sorting of names of rows and columns for both multiplicand and multiplier
+for each sequential multiplication step.
+Zeroes are inserted for missing matrix elements.
+Doing so ensures that
+the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.
 }
 \examples{
 library(magrittr)
@@ -35,6 +31,7 @@ G <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industryname
   setrowtype("Commodities") \%>\% setcoltype("Industries")
 U * G # Not what is desired, because names aren't aligned
 elementproduct_byname(U, G)
+elementproduct_byname(U, G, G)
 elementproduct_byname(U, 0)
 elementproduct_byname(0, G)
 # This also works with lists

@@ -7,9 +7,9 @@
 list_of_rows_or_cols(a, margin)
 }
 \arguments{
-\item{margin}{the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)}
+\item{a}{a matrix or list of matrices (say, from a column of a data frame)}
 
-\item{m}{a matrix or list of matrices (say, from a column of a data frame)}
+\item{margin}{the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)}
 }
 \value{
 a named list of rows or columns extracted from \code{m}

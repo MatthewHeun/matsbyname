@@ -4,19 +4,16 @@
 \alias{mean_byname}
 \title{Name- and element-wise arithmetic mean of matrices.}
 \usage{
-mean_byname(a, b)
+mean_byname(...)
 }
 \arguments{
-\item{a}{first operand (a matrix or constant value or lists of same)}
-
-\item{b}{second operand (a matrix or constant value or lists of same)}
+\item{...}{operands; constants, matrices, or lists of matrices}
 }
 \value{
-A matrix representing the name-wise arithmetic mean 
-        of \code{a} and \code{b}.
+name-wise arithmetic mean of operands.
 }
 \description{
-Gives the arithmetic mean of corresponding entries of \code{a} and \code{b}.
+Gives the arithmetic mean of operands in \code{...}.
 }
 \details{
 This function performs a union and sorting of row and column names 
@@ -27,6 +24,7 @@ Zeroes are inserted for missing matrix elements.
 library(magrittr)
 library(dplyr)
 mean_byname(100, 50)
+mean_byname(10, 20, 30)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) \%>\%
@@ -35,7 +33,9 @@ G <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industr
   setrowtype("Commodities") \%>\% setcoltype("Industries")
 (U + G) / 2 # Non-sensical. Row and column names not respected.
 mean_byname(U, G) # Row and column names respected! Should be 1, 2, 3, and 4. 
+mean_byname(U, G, G)
 mean_byname(100, U)
+mean_byname(100, 50, U)
 mean_byname(10, G)
 # This also works with lists
 mean_byname(list(100, 100), list(50, 50))

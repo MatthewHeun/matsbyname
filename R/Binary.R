@@ -2,12 +2,11 @@
 
 #' Name-wise addition of matrices.
 #'
-#' @param augend matrix or constant
-#' @param addend matrix or constant
+#' @param ... operands; constants, matrices, or lists of matrices
 #'
-#' Performs a union and sorting of row and column names prior to summation.
+#' Performs a union and sorting of addend and augend row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
-#' Treats missing or \code{NULL} \code{augend} and \code{addend} as \code{0}.
+#' Treats missing or \code{NULL} operands as \code{0}.
 #'
 #' @return A matrix representing the name-wise sum of \code{addend} and \code{augend}
 #' 
@@ -17,16 +16,20 @@
 #' library(magrittr)
 #' library(dplyr)
 #' sum_byname(2, 2)
+#' sum_byname(2, 2, 2)
+#' sum_byname(2, 2, -2, -2)
 #' productnames <- c("p1", "p2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
 #'   setrowtype("Products") %>% setcoltype("Industries")
-#' U + Y # Non-sensical.  Row and column names not respected.
-#' sum_byname(U, Y)
 #' sum_byname(U, 100)
 #' sum_byname(200, Y)
+#' U + Y # Non-sensical.  Row and column names not respected.
+#' sum_byname(U, U)
+#' sum_byname(U, Y)
+#' sum_byname(U, U, Y, Y)
 #' V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, productnames)) %>%
 #'   setrowtype("Industries") %>% setcoltype("Products")
 #' U + V # row and column names are non-sensical and blindly taken from first argument (U)
@@ -57,8 +60,11 @@
 #' DF3
 #' DF3$sums[[1]]
 #' DF3$sums[[2]]
-sum_byname <- function(augend, addend){
-  binaryapply_byname(`+`, augend, addend)
+sum_byname <- function(...){
+  if (length(list(...)) == 1) {
+    return(list(...)[[1]])
+  }
+  naryapply_byname(`+`, ...)
 }
 
 #' Name-wise subtraction of matrices.
@@ -136,25 +142,25 @@ elementpow_byname <- function(a, pow){
 
 #' Name-wise matrix multiplication
 #'
-#' @param multiplicand Multiplicand matrix
-#' @param multiplier Multiplier matrix
+#' @param ...  operands; constants, matrices, or lists of matrices
 #'
+#' Multiplies operands from left to right.
 #' Performs a union and sorting of multiplicand rows and multiplier columns by name 
 #' prior to multiplication.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
-#' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
-#' I.e., the number of columns in \code{multiplicand}
-#' will equal the number of rows in \code{multiplier},
+#' the dimensions of multiplicand and multiplier matrices will be conformable.
+#' I.e., the number of columns in multiplicand
+#' will equal the number of rows in multiplier,
 #' so long as the column names of multiplicand are unique and
 #' the row names of multiplier are unique.
-#' If column type of \code{multiplicand} is not same as
-#' row type of \code{multiplier},
+#' If column type of the multiplicand is not same as
+#' row type of the multiplier on any step of the multiplication,
 #' the function will fail.
 #' The result is matrix product
-#' with row names from \code{multiplicand} and column names from \code{multiplier}.
+#' with row names from the first multiplicand and column names from the last multiplier.
 #'
-#' @return A matrix representing the name-wise product of \code{multiplicand} and \code{multiplier}
+#' @return A matrix representing the name-wise product of operands 
 #' 
 #' @export
 #'
@@ -163,11 +169,14 @@ elementpow_byname <- function(a, pow){
 #' library(dplyr)
 #' V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("g2", "g1"))) %>%
+#' G <- matrix(1:4, ncol = 2, dimnames = list(c("c2", "c1"), c("i2", "i1"))) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
+#' Z <- matrix(11:14, ncol = 2, dimnames = list(c("i1", "i2"), c("s1", "s2"))) %>% 
+#'   setrowtype("Industries") %>% setcoltype("Sectors")
 #' # Succeeds because G is completed to include a row named c3 (that contains zeroes).
-#' matrixproduct_byname(V, G) 
+#' matrixproduct_byname(V, G)
 #' \dontrun{V %*% G} # Fails because E lacks a row named c3.
+#' matrixproduct_byname(V, G, Z)
 #' # This also works with lists
 #' matrixproduct_byname(list(V,V), list(G,G))
 #' DF <- data.frame(V = I(list()), G = I(list()))
@@ -177,11 +186,21 @@ elementpow_byname <- function(a, pow){
 #' DF[[2,"G"]] <- G
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
-matrixproduct_byname <- function(multiplicand, multiplier){
+# matrixproduct_byname <- function(multiplicand, multiplier){
+#   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
+#   # are completed and sorted, but rows and cols of the output are not guaranteed 
+#   # to be sorted.
+#   binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
+#     # Because _byname assures that all rows and columns are sorted, 
+#     # we sort them here before returning. 
+#     sort_rows_cols()
+# }
+matrixproduct_byname <- function(...){
   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
-  # are completed and sorted, but rows and cols of the output are not guaranteed 
-  # to be sorted.
-  binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
+  # are completed and sorted, but rows and cols of the output of the 
+  # %*% operation are not guaranteed to be sorted.
+  # Thus, we sort_rows_cols() prior to returning.
+  naryapply_byname(`%*%`, ..., match_type = "matmult") %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     sort_rows_cols()
@@ -189,16 +208,16 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 
 #' Name-wise matrix element multiplication
 #'
-#' @param multiplicand Multiplicand matrix or constant
-#' @param multiplier Multiplier matrix or constant
-#'
-#' Performs a union and sorting of names of rows and columns for both \code{multiplicand} and \code{multiplier}
-#' prior to element multiplication.
+#' Performs a union and sorting of names of rows and columns for both multiplicand and multiplier
+#' for each sequential multiplication step.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
-#' the dimensions of the \code{multiplicand} and \code{multiplier} will be conformable.
+#' the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.
 #'
-#' @return A matrix representing the name-wise element product of \code{multiplicand} and \code{multiplier}
+#' @param ... operands; constants, matrices, or lists of matrices 
+#'
+#' @return name-wise element product of operands
+#' 
 #' @export
 #'
 #' @examples
@@ -213,6 +232,7 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' U * G # Not what is desired, because names aren't aligned
 #' elementproduct_byname(U, G)
+#' elementproduct_byname(U, G, G)
 #' elementproduct_byname(U, 0)
 #' elementproduct_byname(0, G)
 #' # This also works with lists
@@ -224,15 +244,13 @@ matrixproduct_byname <- function(multiplicand, multiplier){
 #' DF[[2,"G"]] <- G
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
-elementproduct_byname <- function(multiplicand, multiplier){
+elementproduct_byname <- function(...){
   # Note that prod(1) returns 1, not 0.
   # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
-  if (missing(multiplier)) {
-    return(multiplicand)
-  } else if (missing(multiplicand)) {
-    return(multiplier)
+  if (length(list(...)) == 1) {
+    return(list(...)[[1]])
   }
-  binaryapply_byname(`*`, multiplicand, multiplier)
+  naryapply_byname(`*`, ...)
 }
 
 #' Name-wise matrix element division
@@ -280,23 +298,23 @@ elementquotient_byname <- function(dividend, divisor){
 
 #' Name- and element-wise arithmetic mean of matrices.
 #'
-#' Gives the arithmetic mean of corresponding entries of \code{a} and \code{b}.
+#' Gives the arithmetic mean of operands in \code{...}.
 #' 
 #' This function performs a union and sorting of row and column names 
 #' prior to performing arithmetic mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param a first operand (a matrix or constant value or lists of same)
-#' @param b second operand (a matrix or constant value or lists of same)
+#' @param ... operands; constants, matrices, or lists of matrices
 #'
-#' @return A matrix representing the name-wise arithmetic mean 
-#'         of \code{a} and \code{b}.
+#' @return name-wise arithmetic mean of operands.
+#' 
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
 #' mean_byname(100, 50)
+#' mean_byname(10, 20, 30)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -305,7 +323,9 @@ elementquotient_byname <- function(dividend, divisor){
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' (U + G) / 2 # Non-sensical. Row and column names not respected.
 #' mean_byname(U, G) # Row and column names respected! Should be 1, 2, 3, and 4. 
+#' mean_byname(U, G, G)
 #' mean_byname(100, U)
+#' mean_byname(100, 50, U)
 #' mean_byname(10, G)
 #' # This also works with lists
 #' mean_byname(list(100, 100), list(50, 50))
@@ -317,12 +337,8 @@ elementquotient_byname <- function(dividend, divisor){
 #' DF[[2,"G"]] <- G
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
-mean_byname <- function(a, b){
-  mean.func <- function(a, b){
-    sum_byname(a, b) %>%
-      elementquotient_byname(2)
-  }
-  binaryapply_byname(mean.func, a = a, b = b)
+mean_byname <- function(...){
+  sum_byname(...) %>% elementquotient_byname(length(list(...)))
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -333,17 +349,17 @@ mean_byname <- function(a, b){
 #' prior to performing geometric mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param a first operand (a matrix or constant value or lists of same)
-#' @param b second operand (a matrix or constant value or lists of same)
+#' @param ... operands; constants, matrices, or lists of matrices
 #'
-#' @return A matrix representing the name-wise geometric mean 
-#'         of \code{a} and \code{b}.
+#' @return name-wise geometric mean of operands
+#' 
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' library(dplyr)
 #' geometricmean_byname(10, 1000)
+#' geometricmean_byname(10, 1000, 100000)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- "i1"
 #' U <- matrix(c(10, 1000), ncol = 1, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -367,15 +383,8 @@ mean_byname <- function(a, b){
 #' DF[[2,"G"]] <- G
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
-geometricmean_byname <- function(a, b){
-  geomean.func <- function(a, b){
-    if (any((a < 0 & b > 0) | (a > 0 & b < 0))) {
-      stop(paste0("a and b must have same sign in geometricmean_byname: a = ", a, ", b = ", b, "."))
-    } 
-    elementproduct_byname(a, b) %>% 
-      sqrt()
-  }
-  binaryapply_byname(geomean.func, a = a, b = b)
+geometricmean_byname <- function(...){
+  elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
 }
 
 #' Name- and element-wise logarithmic mean of matrices.
@@ -452,16 +461,16 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
   binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base))
 }
 
-#' Compare two matrices "by name"
+#' Compare two matrices "by name" for equality
 #'
-#' Matrices are completed and sorted relative to one another before comparison
+#' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 #'
-#' @param a the first matrix to be compared
-#' @param b the second matrix to be compared
+#' @param ... operands to be compared
 #'
-#' @return \code{TRUE} iff row and column types are same \emph{and}
-#' row and column names are same \emph{and}
-#' all entries in the matrix are same.
+#' @return \code{TRUE} iff all information is the same, including
+#' row and column types \emph{and}
+#' row and column names \emph{and}
+#' entries in the matrix.
 #' @export
 #'
 #' @examples
@@ -478,25 +487,24 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
-equal_byname <- function(a, b) {
+equal_byname <- function(...){
   equal.func <- function(a, b){
-    mats <- complete_and_sort(a, b)
-    return(isTRUE(all.equal(mats$a, mats$b)))
+    return(isTRUE(all.equal(a, b)))
   }
-  binaryapply_byname(equal.func, a = a, b = b, match_type = "all", rowcoltypes = FALSE)
+  naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
 }
 
-#' Test whether two matrices or lists of matrices have same structure
+#' Test whether matrices or lists of matrices have same structure
 #' 
-#' Two matrices are said to have the same structure 
+#' Matrices are said to have the same structure 
 #' if row and column types are identical 
 #' and 
 #' if row and column names are identical.
+#' Values can be different.
 #'
-#' @param a the first matrix to be tested
-#' @param b the second matrix to be tested
+#' @param ... operands to be compared
 #'
-#' @return \code{TRUE} if \code{a} and \code{b} have the same structure, \code{FALSE} otherwise.
+#' @return \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
 #' 
 #' @export
 #'
@@ -511,8 +519,8 @@ equal_byname <- function(a, b) {
 #' samestructure_byname(U, U %>% setrowtype("row"))
 #' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
-#' samestructure_byname(list(U, U))
-samestructure_byname <- function(a, b){
+#' samestructure_byname(list(U, U), list(U, U))
+samestructure_byname <- function(...){
   samestruct.func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
@@ -543,5 +551,35 @@ samestructure_byname <- function(a, b){
     }
     return(TRUE)
   }
-  binaryapply_byname(samestruct.func, a, b, match_type = "none", rowcoltypes = FALSE)
+  naryapplylogical_byname(samestruct.func, ..., match_type = "none", set_rowcoltypes = FALSE, .organize = FALSE)
+}
+
+#' And "by name"
+#' 
+#' Operands should be logical, although numerical operands are accepted.
+#' Numerical operands are interpreted as \code{FALSE} when \code{0} and
+#' \code{TRUE} for any other number.
+#'
+#' @param ... operands to the logical \code{and} function
+#'
+#' @return logical \code{and} applied to the operands
+#' 
+#' @export
+#'
+#' @examples
+#' and_byname(TRUE)
+#' and_byname(FALSE)
+#' and_byname(list(TRUE, FALSE), list(TRUE, TRUE), list(TRUE, TRUE), list(TRUE, TRUE))
+#' m1 <- matrix(c(TRUE, TRUE, TRUE, FALSE), nrow = 2, ncol = 2, 
+#'   dimnames = list(c("r1", "r2"), c("c1", "c2")))
+#' m2 <- matrix(c(TRUE, FALSE, TRUE, TRUE), nrow = 2, ncol = 2,
+#'   dimnames = list(c("r1", "r2"), c("c1", "c2")))
+#' and_byname(m1, m1)
+#' and_byname(m1, m2)
+#' and_byname(list(m1, m1), list(m1, m1), list(m2, m2))
+and_byname <- function(...){
+  if (length(list(...)) == 1) {
+    return(list(...)[[1]])
+  }
+  naryapplylogical_byname(`&`, ...)
 }
