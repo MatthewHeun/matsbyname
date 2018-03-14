@@ -268,32 +268,11 @@ naryapply_byname <- function(FUN, ...,
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
 #'
-#' @return
+#' @return the result of \code{FUN} applied logically to \code{...}
 #'
 #' @examples
-#' naryapplylogical_byname(`&`, TRUE, TRUE, TRUE)
-#' naryapplylogical_byname(`&`, TRUE, TRUE, FALSE)
-
-# naryapplylogical_byname <- function(FUN, ..., 
-#                                     .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
-#                                     set_rowcoltypes = TRUE, .organize = TRUE){
-#   match_type <- match.arg(match_type)
-#   dots <- list(...)
-#   if (length(dots) == 1) {
-#     return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
-#                              rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
-#   }
-#   res <- dots[[1]]
-#   for (i in 2:length(dots)) {
-#     b <- dots[[i]]
-#     mats <- complete_and_sort(a = res, b = b, fill = FALSE)
-#     res <- binaryapply_byname(FUN, a = mats$a, b = mats$b, 
-#                               .FUNdots = .FUNdots, match_type = match_type, 
-#                               set_rowcoltypes = set_rowcoltypes, .organize = .organize)
-#   }
-#   return(res)
-# }
-
+#' matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, TRUE)
+#' matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, FALSE)
 naryapplylogical_byname <- function(FUN, ..., 
                                     .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
                                     set_rowcoltypes = TRUE, .organize = TRUE){
@@ -330,9 +309,6 @@ naryapplylogical_byname <- function(FUN, ...,
   }
   return(res)
 }
-
-
-
 
 #' Apply a function cumulatively to a list of matrices or numbers
 #' 

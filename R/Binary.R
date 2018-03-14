@@ -461,16 +461,16 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
   binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base))
 }
 
-#' Compare two matrices "by name"
+#' Compare two matrices "by name" for equality
 #'
-#' Matrices are completed and sorted relative to one another before comparison
+#' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 #'
-#' @param a the first matrix to be compared
-#' @param b the second matrix to be compared
+#' @param ... operands to be compared
 #'
-#' @return \code{TRUE} iff row and column types are same \emph{and}
-#' row and column names are same \emph{and}
-#' all entries in the matrix are same.
+#' @return \code{TRUE} iff all information is the same, including
+#' row and column types \emph{and}
+#' row and column names \emph{and}
+#' entries in the matrix.
 #' @export
 #'
 #' @examples
@@ -494,17 +494,17 @@ equal_byname <- function(...){
   naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
 }
 
-#' Test whether two matrices or lists of matrices have same structure
+#' Test whether matrices or lists of matrices have same structure
 #' 
-#' Two matrices are said to have the same structure 
+#' Matrices are said to have the same structure 
 #' if row and column types are identical 
 #' and 
 #' if row and column names are identical.
+#' Values can be different.
 #'
-#' @param a the first matrix to be tested
-#' @param b the second matrix to be tested
+#' @param ... operands to be compared
 #'
-#' @return \code{TRUE} if \code{a} and \code{b} have the same structure, \code{FALSE} otherwise.
+#' @return \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
 #' 
 #' @export
 #'
@@ -519,41 +519,7 @@ equal_byname <- function(...){
 #' samestructure_byname(U, U %>% setrowtype("row"))
 #' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
-#' samestructure_byname(list(U, U))
-# samestructure_byname <- function(a, b){
-#   samestruct.func <- function(a, b){
-#     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
-#       return(FALSE)
-#     }
-#     if (!isTRUE(all.equal(colnames(a), colnames(b)))) {
-#       return(FALSE)
-#     }
-#     if (!is.null(rowtype(a)) & !is.null(rowtype(b))) {
-#       # When both rowtypes are non-null, we can compare them directly.
-#       if (!rowtype(a) == rowtype(b)) {
-#         return(FALSE)
-#       }
-#     }
-#     if (!is.null(coltype(a)) & !is.null(coltype(b))) {
-#       # When both coltypes are non-null, we can compare them directly.
-#       if (!coltype(a) == coltype(b)) {
-#         return(FALSE)
-#       }
-#     }
-#     # At least one of rowtype or coltype on a or b is null.
-#     if (xor(is.null(rowtype(a)), is.null(rowtype(b)))) {
-#       # Rowtype on one of a or b is null, but the other is non-null.
-#       return(FALSE)
-#     }
-#     if (xor(is.null(coltype(a)), is.null(coltype(b)))) {
-#       # Coltype on one of a or b is null, but the other is non-null.
-#       return(FALSE)
-#     }
-#     return(TRUE)
-#   }
-#   binaryapply_byname(samestruct.func, a, b, match_type = "none", set_rowcoltypes = FALSE)
-# }
-
+#' samestructure_byname(list(U, U), list(U, U))
 samestructure_byname <- function(...){
   samestruct.func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {

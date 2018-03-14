@@ -2,23 +2,22 @@
 % Please edit documentation in R/Binary.R
 \name{samestructure_byname}
 \alias{samestructure_byname}
-\title{Test whether two matrices or lists of matrices have same structure}
+\title{Test whether matrices or lists of matrices have same structure}
 \usage{
 samestructure_byname(...)
 }
 \arguments{
-\item{a}{the first matrix to be tested}
-
-\item{b}{the second matrix to be tested}
+\item{...}{operands to be compared}
 }
 \value{
-\code{TRUE} if \code{a} and \code{b} have the same structure, \code{FALSE} otherwise.
+\code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
 }
 \description{
-Two matrices are said to have the same structure 
+Matrices are said to have the same structure 
 if row and column types are identical 
 and 
 if row and column names are identical.
+Values can be different.
 }
 \examples{
 library(magrittr)
@@ -31,5 +30,5 @@ samestructure_byname(U, U)
 samestructure_byname(U, U \%>\% setrowtype("row"))
 samestructure_byname(U \%>\% setcoltype("col"), U)
 # Also works with lists
-samestructure_byname(list(U, U))
+samestructure_byname(list(U, U), list(U, U))
 }

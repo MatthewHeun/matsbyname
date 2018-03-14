@@ -38,7 +38,7 @@ Normally, this should be \code{TRUE} (the default).
 However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
 }
 \value{
-
+the result of \code{FUN} applied logically to \code{...}
 }
 \description{
 Operands should be logical, although numerical operands are accepted.
@@ -50,6 +50,6 @@ This function is not exported,
 thereby retaining the right to future changes.
 }
 \examples{
-naryapplylogical_byname(`&`, TRUE, TRUE, TRUE)
-naryapplylogical_byname(`&`, TRUE, TRUE, FALSE)
+matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, TRUE)
+matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, FALSE)
 }
