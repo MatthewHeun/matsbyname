@@ -10,6 +10,10 @@ colsums_byname(a, rowname = NA, mc.cores = get_mc.cores())
 \item{a}{a matrix or list of matrices from which column sums are desired.}
 
 \item{rowname}{name of the output row containing column sums.}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a row vector of type \code{matrix} containing the column sums of \code{a}.

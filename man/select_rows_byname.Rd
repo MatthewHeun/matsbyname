@@ -15,6 +15,10 @@ Default pattern (\code{$^}) retains nothing.}
 
 \item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
 Default pattern (\code{$^}) removes nothing.}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.

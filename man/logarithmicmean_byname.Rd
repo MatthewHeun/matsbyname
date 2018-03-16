@@ -13,6 +13,10 @@ logarithmicmean_byname(a, b, base = exp(1), mc.cores = get_mc.cores())
 
 \item{base}{the base of the logarithm used when computing the logarithmic mean.
 (Default is \code{base = exp(1)}.)}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 A matrix representing the name-wise logarithmic mean 

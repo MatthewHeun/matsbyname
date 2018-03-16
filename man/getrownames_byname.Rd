@@ -8,6 +8,10 @@ getrownames_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{The matrix or data frame on which row names are to be retrieved}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 row names of \code{a}

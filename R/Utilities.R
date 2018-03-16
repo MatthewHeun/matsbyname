@@ -210,9 +210,14 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #'
 #' @param a a matrix or list of matrices (say, from a column of a data frame)
 #' @param margin the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a named list of rows or columns extracted from \code{m}
+#' 
 #' @export
+#' 
 #' @importFrom magrittr set_names
 #'
 #' @examples
@@ -251,8 +256,12 @@ list_of_rows_or_cols <- function(a, margin, mc.cores = get_mc.cores()){
 #' Gets row names in a way that is amenable to use in chaining operations in a functional programming way
 #'
 #' @param a The matrix or data frame on which row names are to be retrieved
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return row names of \code{a}
+#' 
 #' @export
 #'
 #' @examples
@@ -275,8 +284,12 @@ getrownames_byname <- function(a, mc.cores = get_mc.cores()){
 #' Gets column names in a way that is amenable to use in chaining operations in a functional programming way
 #'
 #' @param a The matrix or data frame from which column names are to be retrieved
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return column names of \code{m}
+#' 
 #' @export
 #'
 #' @examples
@@ -309,8 +322,12 @@ getcolnames_byname <- function(a, mc.cores = get_mc.cores()){
 #'
 #' @param a A matrix or a list of matrices in which row names are to be set
 #' @param rownames A vector of new row names or a list of vectors of new row names
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a copy of \code{m} with new row names
+#' 
 #' @export
 #'
 #' @examples
@@ -368,8 +385,12 @@ setrownames_byname <- function(a, rownames, mc.cores = get_mc.cores()){
 #'
 #' @param a A matrix or a list of matrices in which column names are to be set
 #' @param colnames A vector of new column names or a list of vectors of new column names
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a copy of \code{a} with new column names
+#' 
 #' @export
 #'
 #' @examples
@@ -409,6 +430,9 @@ setcolnames_byname <- function(a, colnames, mc.cores = get_mc.cores()){
 #'
 #' @param a the matrix on which row type is to be set
 #' @param rowtype the type of item stored in rows
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{a} with rowtype attribute set to \code{rowtype}.
 #' 
@@ -451,6 +475,9 @@ setrowtype <- function(a, rowtype, mc.cores = get_mc.cores()){
 #'
 #' @param a the matrix on which column type is to be set
 #' @param coltype the type of item stored in columns
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{a} with \code{coltype} attribute set.
 #' 
@@ -487,8 +514,12 @@ setcoltype <- function(a, coltype, mc.cores = get_mc.cores()){
 #' Extracts row type of \code{a}.
 #'
 #' @param a the object from which you want to extract row types
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the row type of \code{a}
+#' 
 #' @export
 #'
 #' @examples
@@ -511,8 +542,12 @@ rowtype <- function(a, mc.cores = get_mc.cores()){
 #' Extracts column type of \code{a}.
 #'
 #' @param a the object from which you want to extract column types
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the column type of \code{a}
+#' 
 #' @export
 #'
 #' @examples
@@ -560,8 +595,12 @@ coltype <- function(a, mc.cores = get_mc.cores()){
 #' Default pattern (\code{$^}) retains nothing.
 #' @param remove_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
+#' 
 #' @export
 #'
 #' @examples
@@ -626,15 +665,12 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
                     rowcoltypes = "none", mc.cores = mc.cores)
 }
 
-#' @title
 #' Select columns of a matrix (or list of matrices) by name
 #'
-#' @description
 #' Arguments indicate which columns are to be retained and which are to be removed.
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against column names.
 #'
-#' @details
 #' Patterns are compared against column names using extended regex.
 #' If no column names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no column names of \code{a} match the \code{remove_pattern}, \code{a} is returned.
@@ -650,7 +686,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #'
 #' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 #' 
-#' #' \code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
+#' \code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
 #' 
@@ -662,8 +698,12 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' Default pattern (\code{$^}) retains nothing.
 #' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
+#' 
 #' @export
 #'
 #' @examples
@@ -738,11 +778,15 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' @param margin the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
 #' or \code{c(1,2)} for both rows and columns.
 #' @param clean_value the undesirable value
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' When a row (when \code{margin = 1}) or a column (when \code{margin = 2})
 #' contains exclusively \code{clean_value}, the row or column is deleted from the matrix.
 #'
 #' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{clean_value}.
+#' 
 #' @export
 #'
 #' @examples
@@ -801,8 +845,12 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, mc.cores = get_mc
 #'
 #' @param a a matrix of list of matrices
 #' @param tol the allowable deviation from 0 for any element
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{TRUE} iff this is the zero matrix within \code{tol}.
+#' 
 #' @export
 #'
 #' @examples

@@ -9,7 +9,11 @@ difference_byname(minuend, subtrahend, mc.cores = get_mc.cores())
 \arguments{
 \item{minuend}{matrix or constant}
 
-\item{subtrahend}{matrix or constant
+\item{subtrahend}{matrix or constant}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+       Default is \code{get_mc.cores()} or \code{1}. 
+       Try \code{mc.cores = parallel::detectCores()}.
 
 Performs a union and sorting of row and column names prior to differencing.
 Zeroes are inserted for missing matrix elements.}

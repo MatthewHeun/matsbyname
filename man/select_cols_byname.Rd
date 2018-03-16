@@ -15,6 +15,10 @@ Default pattern (\code{$^}) retains nothing.}
 
 \item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
 Default pattern (\code{$^}) removes nothing.}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -40,7 +44,7 @@ Some typical patterns are:
 
 Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 
-#' \code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
+\code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 

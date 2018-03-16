@@ -44,6 +44,9 @@ library("parallel")
 #'        For rows only, give \code{1}; 
 #'        for columns only, give \code{2};
 #'        for both rows and columns, give \code{c(1,2)}, the default value.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'        
 #' @export
 #' 
@@ -281,6 +284,9 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
 #' If \code{NULL}, default is used. Unspecified rows are dropped.
 #' @param colorder specifies the order for rows with default \code{sort(colnames(a))}.
 #' If \code{NULL}, default is used. Unspecified columns are dropped.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #' 
 #' @return A modified version of \code{a} with sorted rows and columns
 #' 
@@ -394,6 +400,9 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA, mc.co
 #'        Unspecified rows are dropped.
 #' @param colorder Specifies a custom ordering for columns of returned matrices.
 #'        Unspecified columns are dropped.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return A named list containing completed and sorted versions of \code{a} and \code{b}.
 #'

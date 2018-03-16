@@ -21,6 +21,10 @@ If \code{NULL}, default is used. Unspecified rows are dropped.}
 
 \item{colorder}{specifies the order for rows with default \code{sort(colnames(a))}.
 If \code{NULL}, default is used. Unspecified columns are dropped.}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 A modified version of \code{a} with sorted rows and columns

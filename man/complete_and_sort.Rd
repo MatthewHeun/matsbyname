@@ -22,6 +22,10 @@ Unspecified rows are dropped.}
 
 \item{colorder}{Specifies a custom ordering for columns of returned matrices.
 Unspecified columns are dropped.}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 A named list containing completed and sorted versions of \code{a} and \code{b}.

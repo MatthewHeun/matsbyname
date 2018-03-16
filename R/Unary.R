@@ -8,6 +8,9 @@ library(dplyr)
 #'
 #' @param a a matrix or list of matrices 
 #' @param base the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return M with each element replaced by its base \code{base} logarithm
 #' 
@@ -29,6 +32,9 @@ elementlog_byname <- function(a, base = exp(1), mc.cores = get_mc.cores()){
 #' Gives the exponential of all elements of a matrix or list of matrices
 #'
 #' @param a a matrix of list of matrices 
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{M} with each element replaced by its exponential
 #' 
@@ -51,6 +57,9 @@ elementexp_byname <- function(a, mc.cores = get_mc.cores()){
 #' Rows and columns of \code{m} are sorted prior to inverting.
 #'
 #' @param a the matrix to be inverted. \code{m} must be square.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the inversion
 #' 
@@ -73,6 +82,9 @@ invert_byname <- function(a, mc.cores = get_mc.cores()){
 #' Gives the transpose of a matrix or list of matrices
 #'
 #' @param a the matrix to be transposed
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the transposed matrix
 #' @export
@@ -90,6 +102,9 @@ transpose_byname <- function(a, mc.cores = get_mc.cores()){
 #' Creates a diagonal "hat" matrix from a vector.
 #'
 #' @param v The vector from which a "hat" matrix is to be created.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
@@ -149,6 +164,9 @@ hatize_byname <- function(v, mc.cores = get_mc.cores()){
 #'
 #' @param a the matrix whose names and dimensions are to be preserved in an identity matrix or vector
 #' @param margin determines whether an identity vector or matrix is returned
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return An identity matrix or vector.
 #' 
@@ -222,6 +240,9 @@ identize_byname <- function(a, margin = c(1,2), mc.cores = get_mc.cores()){
 #' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
 #' If \code{2}, each entry in \code{a} is divided by its column's sum.
 #' If \code{c(1,2)}, each entry in \code{a} is divided by the sum of all entries in \code{a}.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
 #' @export
@@ -288,6 +309,9 @@ fractionize_byname <- function(a, margin, mc.cores = get_mc.cores()){
 #'
 #' @param a a matrix or list of matrices from which row sums are desired.
 #' @param colname name of the output column containing row sums
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a column vector of type \code{matrix} containing the row sums of \code{m}
 #' @export
@@ -351,6 +375,9 @@ rowsums_byname <- function(a, colname = NA, mc.cores = get_mc.cores()){
 #'
 #' @param a a matrix or list of matrices from which column sums are desired.
 #' @param rowname name of the output row containing column sums.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a row vector of type \code{matrix} containing the column sums of \code{a}.
 #' @export
@@ -411,6 +438,9 @@ colsums_byname <- function(a, rowname = NA, mc.cores = get_mc.cores()){
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
 #' @param a the matrix whose elements are to be summed
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the sum of all elements in \code{a} as a numeric
 #' @export
@@ -452,8 +482,12 @@ sumall_byname <- function(a, mc.cores = get_mc.cores()){
 #'
 #' @param a a matrix or list of matrices from which row products are desired.
 #' @param colname name of the output column containing row products
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a column vector of type \code{matrix} containing the row products of \code{a}
+#' 
 #' @export
 #'
 #' @examples
@@ -511,8 +545,12 @@ rowprods_byname <- function(a, colname = NA, mc.cores = get_mc.cores()){
 #'
 #' @param a a matrix or data frame from which column products are desired.
 #' @param rowname name of the output row containing column products.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a row vector of type \code{matrix} containing the column products of \code{a}.
+#' 
 #' @export
 #'
 #' @examples
@@ -569,8 +607,12 @@ colprods_byname <- function(a, rowname = NA, mc.cores = get_mc.cores()){
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
 #' @param a the matrix whose elements are to be multiplied
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the product of all elements in \code{a} as a numeric.
+#' 
 #' @export
 #'
 #' @examples
@@ -609,9 +651,13 @@ prodall_byname <- function(a, mc.cores = get_mc.cores()){
 #' before subtracting from \code{I} by calling \code{complete_and_sort}.
 #'
 #' @param a the matrix to be subtracted from \code{I}
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return The difference between an identity matrix (\code{I}) and \code{m}
 #' (whose rows and columns have been completed and sorted)
+#' 
 #' @export
 #' 
 #' @importFrom magrittr %>%

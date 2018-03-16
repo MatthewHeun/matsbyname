@@ -9,19 +9,21 @@ elementquotient_byname(dividend, divisor, mc.cores = get_mc.cores())
 \arguments{
 \item{dividend}{Dividend matrix or constant}
 
-\item{divisor}{Divisor matrix or constant
+\item{divisor}{Divisor matrix or constant}
 
-Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
-prior to element division.
-Zeroes are inserted for missing matrix elements.
-Doing so ensures that
-the dimensions of the \code{dividend} and \code{divisor} will be conformable.}
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 A matrix representing the name-wise element quotient of \code{dividend} and \code{divisor}
 }
 \description{
-Name-wise matrix element division
+Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
+prior to element division.
+Zeroes are inserted for missing matrix elements.
+Doing so ensures that
+the dimensions of the \code{dividend} and \code{divisor} will be conformable.
 }
 \examples{
 library(magrittr)

@@ -30,6 +30,10 @@ in the case of conflicts.}
 For rows only, give \code{1}; 
 for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 A modified version of \code{a} possibly containing additional rows and columns 

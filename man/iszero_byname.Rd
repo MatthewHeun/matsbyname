@@ -10,6 +10,10 @@ iszero_byname(a, tol = 1e-06, mc.cores = get_mc.cores())
 \item{a}{a matrix of list of matrices}
 
 \item{tol}{the allowable deviation from 0 for any element}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 \code{TRUE} iff this is the zero matrix within \code{tol}.

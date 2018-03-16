@@ -8,6 +8,10 @@ elementexp_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix of list of matrices}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 \code{M} with each element replaced by its exponential

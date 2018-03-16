@@ -29,7 +29,8 @@ Options are:
 }}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{1}. Try \code{mc.cores = parallel::detectCores()}.}
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 the result of applying \code{FUN} "by name" to \code{a}.

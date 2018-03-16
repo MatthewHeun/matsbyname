@@ -76,6 +76,9 @@ sum_byname <- function(..., mc.cores = get_mc.cores()){
 #'
 #' @param minuend matrix or constant
 #' @param subtrahend matrix or constant
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' Performs a union and sorting of row and column names prior to differencing.
 #' Zeroes are inserted for missing matrix elements.
@@ -120,6 +123,9 @@ difference_byname <- function(minuend, subtrahend, mc.cores = get_mc.cores()){
 #'
 #' @param a a matrix of list of matrices 
 #' @param pow the power to which elements of \code{a} will be raised
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{a} with each element raised to \code{pow}
 #' 
@@ -148,6 +154,9 @@ elementpow_byname <- function(a, pow, mc.cores = get_mc.cores()){
 #' Name-wise matrix multiplication
 #'
 #' @param ...  operands; constants, matrices, or lists of matrices
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' Multiplies operands from left to right.
 #' Performs a union and sorting of multiplicand rows and multiplier columns by name 
@@ -220,6 +229,9 @@ matrixproduct_byname <- function(..., mc.cores = get_mc.cores()){
 #' the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.
 #'
 #' @param ... operands; constants, matrices, or lists of matrices 
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return name-wise element product of operands
 #' 
@@ -260,16 +272,20 @@ elementproduct_byname <- function(..., mc.cores = get_mc.cores()){
 
 #' Name-wise matrix element division
 #'
-#' @param dividend Dividend matrix or constant
-#' @param divisor Divisor matrix or constant
-#'
 #' Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
 #' prior to element division.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
 #' the dimensions of the \code{dividend} and \code{divisor} will be conformable.
 #'
+#' @param dividend Dividend matrix or constant
+#' @param divisor Divisor matrix or constant
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
+#'
 #' @return A matrix representing the name-wise element quotient of \code{dividend} and \code{divisor}
+#' 
 #' @export
 #'
 #' @examples
@@ -310,6 +326,9 @@ elementquotient_byname <- function(dividend, divisor, mc.cores = get_mc.cores())
 #' Zeroes are inserted for missing matrix elements.
 #' 
 #' @param ... operands; constants, matrices, or lists of matrices
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return name-wise arithmetic mean of operands.
 #' 
@@ -355,6 +374,9 @@ mean_byname <- function(..., mc.cores = get_mc.cores()){
 #' Zeroes are inserted for missing matrix elements.
 #' 
 #' @param ... operands; constants, matrices, or lists of matrices
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return name-wise geometric mean of operands
 #' 
@@ -415,6 +437,9 @@ geometricmean_byname <- function(..., mc.cores = get_mc.cores()){
 #' @param b second operand (a matrix or constant value or lists of same).
 #' @param base the base of the logarithm used when computing the logarithmic mean.
 #'        (Default is \code{base = exp(1)}.)
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return A matrix representing the name-wise logarithmic mean 
 #'         of \code{a} and \code{b}.
@@ -471,6 +496,9 @@ logarithmicmean_byname <- function(a, b, base = exp(1), mc.cores = get_mc.cores(
 #' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 #'
 #' @param ... operands to be compared
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{TRUE} iff all information is the same, including
 #' row and column types \emph{and}
@@ -508,6 +536,9 @@ equal_byname <- function(..., mc.cores = get_mc.cores()){
 #' Values can be different.
 #'
 #' @param ... operands to be compared
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
 #' 
@@ -568,6 +599,9 @@ samestructure_byname <- function(..., mc.cores = get_mc.cores()){
 #' \code{TRUE} for any other number.
 #'
 #' @param ... operands to the logical \code{and} function
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return logical \code{and} applied to the operands
 #' 
