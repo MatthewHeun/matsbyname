@@ -4,7 +4,7 @@
 \alias{hatize_byname}
 \title{Creates a diagonal "hat" matrix from a vector.}
 \usage{
-hatize_byname(v)
+hatize_byname(v, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{v}{The vector from which a "hat" matrix is to be created.

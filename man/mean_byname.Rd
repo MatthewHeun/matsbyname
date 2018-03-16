@@ -4,7 +4,7 @@
 \alias{mean_byname}
 \title{Name- and element-wise arithmetic mean of matrices.}
 \usage{
-mean_byname(...)
+mean_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
 \item{...}{operands; constants, matrices, or lists of matrices}

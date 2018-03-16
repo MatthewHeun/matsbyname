@@ -4,7 +4,7 @@
 \alias{matrixproduct_byname}
 \title{Name-wise matrix multiplication}
 \usage{
-matrixproduct_byname(...)
+matrixproduct_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
 \item{...}{operands; constants, matrices, or lists of matrices

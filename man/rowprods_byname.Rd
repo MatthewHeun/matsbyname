@@ -4,7 +4,7 @@
 \alias{rowprods_byname}
 \title{Row products, sorted by name}
 \usage{
-rowprods_byname(a, colname = NA)
+rowprods_byname(a, colname = NA, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or list of matrices from which row products are desired.}

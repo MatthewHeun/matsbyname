@@ -4,7 +4,7 @@
 \alias{identize_byname}
 \title{Named identity matrix or vector}
 \usage{
-identize_byname(a, margin = c(1, 2))
+identize_byname(a, margin = c(1, 2), mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix whose names and dimensions are to be preserved in an identity matrix or vector}

@@ -4,7 +4,7 @@
 \alias{fractionize_byname}
 \title{Compute fractions of matrix entries}
 \usage{
-fractionize_byname(a, margin)
+fractionize_byname(a, margin, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix to be fractionized}

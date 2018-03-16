@@ -4,7 +4,7 @@
 \alias{logarithmicmean_byname}
 \title{Name- and element-wise logarithmic mean of matrices.}
 \usage{
-logarithmicmean_byname(a, b, base = exp(1))
+logarithmicmean_byname(a, b, base = exp(1), mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{first operand (a matrix or constant value or lists of same).}

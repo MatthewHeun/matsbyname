@@ -4,7 +4,7 @@
 \alias{equal_byname}
 \title{Compare two matrices "by name" for equality}
 \usage{
-equal_byname(...)
+equal_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
 \item{...}{operands to be compared}

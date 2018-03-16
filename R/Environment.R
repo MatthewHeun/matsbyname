@@ -17,5 +17,10 @@ set_mc.cores <- function(mc.cores){
 }
 
 consts_env <- new.env()
+
+# Set default to 1 core.
 set_mc.cores(1)
+
+# Use this line for local testing only. 
+# NEVER submit to CRAN with this line uncommented.
 # set_mc.cores(detectCores(logical = FALSE))

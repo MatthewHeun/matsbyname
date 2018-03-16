@@ -4,7 +4,7 @@
 \alias{prodall_byname}
 \title{Product of all elements in a matrix}
 \usage{
-prodall_byname(a)
+prodall_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix whose elements are to be multiplied}

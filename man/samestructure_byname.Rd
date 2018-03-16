@@ -4,7 +4,7 @@
 \alias{samestructure_byname}
 \title{Test whether matrices or lists of matrices have same structure}
 \usage{
-samestructure_byname(...)
+samestructure_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
 \item{...}{operands to be compared}

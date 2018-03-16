@@ -4,7 +4,7 @@
 \alias{elementlog_byname}
 \title{Logarithm of matrix elements}
 \usage{
-elementlog_byname(a, base = exp(1))
+elementlog_byname(a, base = exp(1), mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or list of matrices}

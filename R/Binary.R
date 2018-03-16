@@ -2,11 +2,16 @@
 
 #' Name-wise addition of matrices.
 #'
-#' @param ... operands; constants, matrices, or lists of matrices
-#'
 #' Performs a union and sorting of addend and augend row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
 #' Treats missing or \code{NULL} operands as \code{0}.
+#' 
+#' <<Stuff here about cores.>>
+#' 
+#' @param ... operands; constants, matrices, or lists of matrices
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()}. Try \code{mc.cores = parallel::detectCores()}.
+#'        See details for more information.
 #'
 #' @return A matrix representing the name-wise sum of \code{addend} and \code{augend}
 #' 
@@ -105,8 +110,8 @@ sum_byname <- function(..., mc.cores = get_mc.cores()){
 #' DF[[2,"G"]] <- G
 #' difference_byname(DF$U, DF$G)
 #' DF %>% mutate(diffs = difference_byname(U, G))
-difference_byname <- function(minuend, subtrahend){
-  binaryapply_byname(`-`, minuend, subtrahend)
+difference_byname <- function(minuend, subtrahend, mc.cores = get_mc.cores()){
+  binaryapply_byname(`-`, minuend, subtrahend, mc.cores = mc.cores)
 }
 
 #' Powers of matrix elements
@@ -136,8 +141,8 @@ difference_byname <- function(minuend, subtrahend){
 #'   sqrtm = elementpow_byname(m, 0.5),
 #'   mtopow = elementpow_byname(m, pow)
 #' )
-elementpow_byname <- function(a, pow){
-  binaryapply_byname(`^`, a, pow)
+elementpow_byname <- function(a, pow, mc.cores = get_mc.cores()){
+  binaryapply_byname(`^`, a, pow, mc.cores = mc.cores)
 }
 
 #' Name-wise matrix multiplication
@@ -195,12 +200,12 @@ elementpow_byname <- function(a, pow){
 #     # we sort them here before returning. 
 #     sort_rows_cols()
 # }
-matrixproduct_byname <- function(...){
+matrixproduct_byname <- function(..., mc.cores = get_mc.cores()){
   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
   # are completed and sorted, but rows and cols of the output of the 
   # %*% operation are not guaranteed to be sorted.
   # Thus, we sort_rows_cols() prior to returning.
-  naryapply_byname(`%*%`, ..., match_type = "matmult") %>% 
+  naryapply_byname(`%*%`, ..., match_type = "matmult", mc.cores = mc.cores) %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     sort_rows_cols()
@@ -244,13 +249,13 @@ matrixproduct_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
-elementproduct_byname <- function(...){
+elementproduct_byname <- function(..., mc.cores = get_mc.cores()){
   # Note that prod(1) returns 1, not 0.
   # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
-  naryapply_byname(`*`, ...)
+  naryapply_byname(`*`, ..., mc.cores = mc.cores)
 }
 
 #' Name-wise matrix element division
@@ -292,8 +297,8 @@ elementproduct_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' elementquotient_byname(DF$U, DF$G)
 #' DF %>% mutate(elementquotients = elementquotient_byname(U, G))
-elementquotient_byname <- function(dividend, divisor){
-  binaryapply_byname(`/`, dividend, divisor)
+elementquotient_byname <- function(dividend, divisor, mc.cores = get_mc.cores()){
+  binaryapply_byname(`/`, dividend, divisor, mc.cores = mc.cores)
 }
 
 #' Name- and element-wise arithmetic mean of matrices.
@@ -337,8 +342,8 @@ elementquotient_byname <- function(dividend, divisor){
 #' DF[[2,"G"]] <- G
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
-mean_byname <- function(...){
-  sum_byname(...) %>% elementquotient_byname(length(list(...)))
+mean_byname <- function(..., mc.cores = get_mc.cores()){
+  sum_byname(...) %>% elementquotient_byname(length(list(...)), mc.cores = mc.cores)
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -383,8 +388,8 @@ mean_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
-geometricmean_byname <- function(...){
-  elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
+geometricmean_byname <- function(..., mc.cores = get_mc.cores()){
+  elementproduct_byname(..., mc.cores = mc.cores) %>% elementpow_byname(1/length(list(...)), mc.cores = mc.cores)
 }
 
 #' Name- and element-wise logarithmic mean of matrices.
@@ -434,7 +439,7 @@ geometricmean_byname <- function(...){
 #' DF[[2,"m2"]] <- m2
 #' logarithmicmean_byname(DF$m1, DF$m2)
 #' DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2))
-logarithmicmean_byname <- function(a, b, base = exp(1)){
+logarithmicmean_byname <- function(a, b, base = exp(1), mc.cores = get_mc.cores()){
   logmean.func <- function(a, b, base) {
     # At this point, our list is gone.  
     # a and b are single matrices or single numbers. 
@@ -458,7 +463,7 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
     out %>%  
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
-  binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base))
+  binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base), mc.cores = mc.cores)
 }
 
 #' Compare two matrices "by name" for equality
@@ -487,11 +492,11 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
-equal_byname <- function(...){
+equal_byname <- function(..., mc.cores = get_mc.cores()){
   equal.func <- function(a, b){
     return(isTRUE(all.equal(a, b)))
   }
-  naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE, mc.cores = mc.cores)
 }
 
 #' Test whether matrices or lists of matrices have same structure
@@ -520,7 +525,7 @@ equal_byname <- function(...){
 #' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
 #' samestructure_byname(list(U, U), list(U, U))
-samestructure_byname <- function(...){
+samestructure_byname <- function(..., mc.cores = get_mc.cores()){
   samestruct.func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
@@ -551,7 +556,9 @@ samestructure_byname <- function(...){
     }
     return(TRUE)
   }
-  naryapplylogical_byname(samestruct.func, ..., match_type = "none", set_rowcoltypes = FALSE, .organize = FALSE)
+  naryapplylogical_byname(samestruct.func, ..., 
+                          match_type = "none", set_rowcoltypes = FALSE, 
+                          .organize = FALSE, mc.cores = mc.cores)
 }
 
 #' And "by name"
@@ -577,9 +584,9 @@ samestructure_byname <- function(...){
 #' and_byname(m1, m1)
 #' and_byname(m1, m2)
 #' and_byname(list(m1, m1), list(m1, m1), list(m2, m2))
-and_byname <- function(...){
+and_byname <- function(..., mc.cores = get_mc.cores()){
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
-  naryapplylogical_byname(`&`, ...)
+  naryapplylogical_byname(`&`, ..., mc.cores = mc.cores)
 }

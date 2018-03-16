@@ -4,7 +4,7 @@
 \alias{invert_byname}
 \title{Invert a matrix}
 \usage{
-invert_byname(a)
+invert_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix to be inverted. \code{m} must be square.}

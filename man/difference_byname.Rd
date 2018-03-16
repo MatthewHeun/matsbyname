@@ -4,7 +4,7 @@
 \alias{difference_byname}
 \title{Name-wise subtraction of matrices.}
 \usage{
-difference_byname(minuend, subtrahend)
+difference_byname(minuend, subtrahend, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{minuend}{matrix or constant}

@@ -5,7 +5,8 @@
 \title{Apply a function "by name" to any number of operands}
 \usage{
 naryapply_byname(FUN, ..., .FUNdots = NULL, match_type = c("all", "matmult",
-  "none"), set_rowcoltypes = TRUE, .organize = TRUE, mc.cores = 1)
+  "none"), set_rowcoltypes = TRUE, .organize = TRUE,
+  mc.cores = get_mc.cores())
 }
 \arguments{
 \item{FUN}{a binary function to be applied "by name" to all operands in \code{...}.}
@@ -38,7 +39,7 @@ Normally, this should be \code{TRUE} (the default).
 However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is 1. Try \code{mc.cores = parallel::detectCores()}.}
+Default is \code{1}. Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 the result of applying \code{FUN} to all operands in \code{...}

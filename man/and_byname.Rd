@@ -4,7 +4,7 @@
 \alias{and_byname}
 \title{And "by name"}
 \usage{
-and_byname(...)
+and_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
 \item{...}{operands to the logical \code{and} function}

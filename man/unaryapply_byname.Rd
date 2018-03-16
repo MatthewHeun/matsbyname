@@ -5,7 +5,7 @@
 \title{Apply a unary function "by name"}
 \usage{
 unaryapply_byname(FUN, a, .FUNdots = NULL, rowcoltypes = c("all",
-  "transpose", "row", "col", "none"), mc.cores = 1)
+  "transpose", "row", "col", "none"), mc.cores = get_mc.cores())
 }
 \arguments{
 \item{FUN}{a unary function to be applied "by name" to \code{a}.}
@@ -29,7 +29,7 @@ Options are:
 }}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is 1. Try \code{mc.cores = parallel::detectCores()}.}
+Default is \code{1}. Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 the result of applying \code{FUN} "by name" to \code{a}.

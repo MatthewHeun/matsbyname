@@ -4,7 +4,7 @@
 \alias{transpose_byname}
 \title{Transpose a matrix by name}
 \usage{
-transpose_byname(a)
+transpose_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix to be transposed}

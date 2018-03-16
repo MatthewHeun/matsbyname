@@ -4,7 +4,7 @@
 \alias{colprods_byname}
 \title{Column products, sorted by name}
 \usage{
-colprods_byname(a, rowname = NA)
+colprods_byname(a, rowname = NA, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or data frame from which column products are desired.}

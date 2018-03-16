@@ -4,7 +4,7 @@
 \alias{elementexp_byname}
 \title{Exponential of matrix elements}
 \usage{
-elementexp_byname(a)
+elementexp_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix of list of matrices}

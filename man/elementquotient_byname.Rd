@@ -4,7 +4,7 @@
 \alias{elementquotient_byname}
 \title{Name-wise matrix element division}
 \usage{
-elementquotient_byname(dividend, divisor)
+elementquotient_byname(dividend, divisor, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{dividend}{Dividend matrix or constant}

@@ -4,7 +4,7 @@
 \alias{colsums_byname}
 \title{Column sums, sorted by name}
 \usage{
-colsums_byname(a, rowname = NA)
+colsums_byname(a, rowname = NA, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or list of matrices from which column sums are desired.}

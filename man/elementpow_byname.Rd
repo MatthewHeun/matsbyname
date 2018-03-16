@@ -4,7 +4,7 @@
 \alias{elementpow_byname}
 \title{Powers of matrix elements}
 \usage{
-elementpow_byname(a, pow)
+elementpow_byname(a, pow, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix of list of matrices}

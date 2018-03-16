@@ -19,8 +19,9 @@ test_that("getting and setting mc.cores works as expected", {
   # Try setting the value to something else.
   set_mc.cores(4)
   expect_equal(get_mc.cores(), 4)
-  # Set back to default number
+  # Set back to default value.
   set_mc.cores(1)
+  expect_equal(get_mc.cores(), 1)
 })
 
 

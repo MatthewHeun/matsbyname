@@ -6,7 +6,7 @@
 \usage{
 naryapplylogical_byname(FUN, ..., .FUNdots = NULL, match_type = c("all",
   "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE,
-  mc.cores = 1)
+  mc.cores = get_mc.cores())
 }
 \arguments{
 \item{FUN}{a binary function (that returns logical values) to be applied over operands}
@@ -39,7 +39,7 @@ Normally, this should be \code{TRUE} (the default).
 However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is 1. Try \code{mc.cores = parallel::detectCores()}.}
+Default is \code{1}. Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 the result of \code{FUN} applied logically to \code{...}

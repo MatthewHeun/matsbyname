@@ -4,7 +4,7 @@
 \alias{sumall_byname}
 \title{Sum of all elements in a matrix}
 \usage{
-sumall_byname(a)
+sumall_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix whose elements are to be summed}
