@@ -60,11 +60,11 @@
 #' DF3
 #' DF3$sums[[1]]
 #' DF3$sums[[2]]
-sum_byname <- function(...){
+sum_byname <- function(..., mc.cores = get_mc.cores()){
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
-  naryapply_byname(`+`, ...)
+  naryapply_byname(`+`, ..., mc.cores = mc.cores)
 }
 
 #' Name-wise subtraction of matrices.

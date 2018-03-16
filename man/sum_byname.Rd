@@ -4,7 +4,7 @@
 \alias{sum_byname}
 \title{Name-wise addition of matrices.}
 \usage{
-sum_byname(...)
+sum_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
 \item{...}{operands; constants, matrices, or lists of matrices
