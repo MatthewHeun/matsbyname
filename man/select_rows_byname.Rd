@@ -4,7 +4,8 @@
 \alias{select_rows_byname}
 \title{Select rows of a matrix (or list of matrices) by name}
 \usage{
-select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^")
+select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^",
+  mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or a list of matrices}
@@ -14,6 +15,10 @@ Default pattern (\code{$^}) retains nothing.}
 
 \item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
 Default pattern (\code{$^}) removes nothing.}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.

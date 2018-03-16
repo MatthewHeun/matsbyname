@@ -4,20 +4,25 @@
 \alias{sum_byname}
 \title{Name-wise addition of matrices.}
 \usage{
-sum_byname(...)
+sum_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
-\item{...}{operands; constants, matrices, or lists of matrices
+\item{...}{operands; constants, matrices, or lists of matrices}
 
-Performs a union and sorting of addend and augend row and column names prior to summation.
-Zeroes are inserted for missing matrix elements.
-Treats missing or \code{NULL} operands as \code{0}.}
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()}. Try \code{mc.cores = parallel::detectCores()}.
+See details for more information.}
 }
 \value{
 A matrix representing the name-wise sum of \code{addend} and \code{augend}
 }
 \description{
-Name-wise addition of matrices.
+Performs a union and sorting of addend and augend row and column names prior to summation.
+Zeroes are inserted for missing matrix elements.
+Treats missing or \code{NULL} operands as \code{0}.
+}
+\details{
+<<Stuff here about cores.>>
 }
 \examples{
 library(magrittr)

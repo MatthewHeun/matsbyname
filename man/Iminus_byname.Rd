@@ -4,10 +4,14 @@
 \alias{Iminus_byname}
 \title{Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})}
 \usage{
-Iminus_byname(a)
+Iminus_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix to be subtracted from \code{I}}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 The difference between an identity matrix (\code{I}) and \code{m}

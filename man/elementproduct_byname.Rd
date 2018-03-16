@@ -4,10 +4,14 @@
 \alias{elementproduct_byname}
 \title{Name-wise matrix element multiplication}
 \usage{
-elementproduct_byname(...)
+elementproduct_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
 \item{...}{operands; constants, matrices, or lists of matrices}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 name-wise element product of operands
