@@ -10,6 +10,9 @@ get_mc.cores <- function(){
 }
 
 set_mc.cores <- function(mc.cores){
+  if (mc.cores <= 0) {
+    stop("mc.cores must be >= 1.")
+  }
   assign("mc.cores", mc.cores, envir = consts_env)
 }
 
