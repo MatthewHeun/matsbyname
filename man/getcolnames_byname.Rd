@@ -4,7 +4,7 @@
 \alias{getcolnames_byname}
 \title{Gets column names}
 \usage{
-getcolnames_byname(a)
+getcolnames_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{The matrix or data frame from which column names are to be retrieved}

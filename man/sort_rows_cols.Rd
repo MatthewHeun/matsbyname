@@ -4,7 +4,8 @@
 \alias{sort_rows_cols}
 \title{Sorts rows and columns of a matrix}
 \usage{
-sort_rows_cols(a, margin = c(1, 2), roworder = NA, colorder = NA)
+sort_rows_cols(a, margin = c(1, 2), roworder = NA, colorder = NA,
+  mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or data frame whose rows and columns are to be sorted}

@@ -4,7 +4,8 @@
 \alias{select_cols_byname}
 \title{Select columns of a matrix (or list of matrices) by name}
 \usage{
-select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^")
+select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^",
+  mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or a list of matrices}

@@ -23,4 +23,5 @@ set_mc.cores(1)
 
 # Use this line for local testing only. 
 # NEVER submit to CRAN with this line uncommented.
+# In fact, one test will fail if this line is uncommented.
 # set_mc.cores(detectCores(logical = FALSE))

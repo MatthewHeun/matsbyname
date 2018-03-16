@@ -4,7 +4,8 @@
 \alias{clean_byname}
 \title{Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}}
 \usage{
-clean_byname(a, margin = c(1, 2), clean_value = 0)
+clean_byname(a, margin = c(1, 2), clean_value = 0,
+  mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix to be cleaned}

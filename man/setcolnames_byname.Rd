@@ -4,7 +4,7 @@
 \alias{setcolnames_byname}
 \title{Sets column names}
 \usage{
-setcolnames_byname(a, colnames)
+setcolnames_byname(a, colnames, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{A matrix or a list of matrices in which column names are to be set}

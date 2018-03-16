@@ -4,7 +4,7 @@
 \alias{setrownames_byname}
 \title{Sets row names}
 \usage{
-setrownames_byname(a, rownames)
+setrownames_byname(a, rownames, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{A matrix or a list of matrices in which row names are to be set}

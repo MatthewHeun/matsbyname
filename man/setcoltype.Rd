@@ -4,7 +4,7 @@
 \alias{setcoltype}
 \title{Sets column type for a matrix or a list of matrices}
 \usage{
-setcoltype(a, coltype)
+setcoltype(a, coltype, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix on which column type is to be set}

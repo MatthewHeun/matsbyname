@@ -5,7 +5,7 @@
 \title{Complete rows and columns in one matrix relative to another}
 \usage{
 complete_rows_cols(a = NULL, mat = NULL, fill = 0, fillrow = NULL,
-  fillcol = NULL, margin = c(1, 2))
+  fillcol = NULL, margin = c(1, 2), mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or list of matrices to be completed.}

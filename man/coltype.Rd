@@ -4,7 +4,7 @@
 \alias{coltype}
 \title{Column type}
 \usage{
-coltype(a)
+coltype(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the object from which you want to extract column types}

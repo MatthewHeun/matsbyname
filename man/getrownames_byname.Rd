@@ -4,7 +4,7 @@
 \alias{getrownames_byname}
 \title{Gets row names}
 \usage{
-getrownames_byname(a)
+getrownames_byname(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{The matrix or data frame on which row names are to be retrieved}

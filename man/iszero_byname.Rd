@@ -4,7 +4,7 @@
 \alias{iszero_byname}
 \title{Test whether this is the zero matrix}
 \usage{
-iszero_byname(a, tol = 1e-06)
+iszero_byname(a, tol = 1e-06, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix of list of matrices}

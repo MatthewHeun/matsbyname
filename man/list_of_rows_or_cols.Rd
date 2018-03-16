@@ -4,7 +4,7 @@
 \alias{list_of_rows_or_cols}
 \title{Named list of rows or columns of matrices}
 \usage{
-list_of_rows_or_cols(a, margin)
+list_of_rows_or_cols(a, margin, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{a matrix or list of matrices (say, from a column of a data frame)}

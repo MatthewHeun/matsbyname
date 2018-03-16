@@ -5,7 +5,7 @@
 \title{Complete matrices relative to one another and sort into same row, column order}
 \usage{
 complete_and_sort(a, b, fill = 0, margin = c(1, 2), roworder = NA,
-  colorder = NA)
+  colorder = NA, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{The first matrix}

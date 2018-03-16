@@ -4,7 +4,7 @@
 \alias{rowtype}
 \title{Row type}
 \usage{
-rowtype(a)
+rowtype(a, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the object from which you want to extract row types}

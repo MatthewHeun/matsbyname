@@ -4,7 +4,7 @@
 \alias{setrowtype}
 \title{Sets row type for a matrix or a list of matrices}
 \usage{
-setrowtype(a, rowtype)
+setrowtype(a, rowtype, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{the matrix on which row type is to be set}
