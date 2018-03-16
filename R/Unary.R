@@ -8,6 +8,9 @@ library(dplyr)
 #'
 #' @param a a matrix or list of matrices 
 #' @param base the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return M with each element replaced by its base \code{base} logarithm
 #' 
@@ -20,8 +23,8 @@ library(dplyr)
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' elementlog_byname(m)
 #' elementlog_byname(m, base = 10)
-elementlog_byname <- function(a, base = exp(1)){
-  unaryapply_byname(log, a = a, .FUNdots = list(base = base))
+elementlog_byname <- function(a, base = exp(1), mc.cores = get_mc.cores()){
+  unaryapply_byname(log, a = a, .FUNdots = list(base = base), mc.cores = mc.cores)
 }
 
 #' Exponential of matrix elements
@@ -29,6 +32,9 @@ elementlog_byname <- function(a, base = exp(1)){
 #' Gives the exponential of all elements of a matrix or list of matrices
 #'
 #' @param a a matrix of list of matrices 
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{M} with each element replaced by its exponential
 #' 
@@ -41,8 +47,8 @@ elementlog_byname <- function(a, base = exp(1)){
 #'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' elementexp_byname(m)
-elementexp_byname <- function(a){
-  unaryapply_byname(exp, a = a)
+elementexp_byname <- function(a, mc.cores = get_mc.cores()){
+  unaryapply_byname(exp, a = a, mc.cores = mc.cores)
 }
 
 #' Invert a matrix
@@ -51,6 +57,9 @@ elementexp_byname <- function(a){
 #' Rows and columns of \code{m} are sorted prior to inverting.
 #'
 #' @param a the matrix to be inverted. \code{m} must be square.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the inversion
 #' 
@@ -64,8 +73,8 @@ elementexp_byname <- function(a){
 #' matrixproduct_byname(m, invert_byname(m))
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
-invert_byname <- function(a){
-  unaryapply_byname(solve, a = a, rowcoltypes = "transpose")
+invert_byname <- function(a, mc.cores = get_mc.cores()){
+  unaryapply_byname(solve, a = a, rowcoltypes = "transpose", mc.cores = mc.cores)
 }
 
 #' Transpose a matrix by name
@@ -73,6 +82,9 @@ invert_byname <- function(a){
 #' Gives the transpose of a matrix or list of matrices
 #'
 #' @param a the matrix to be transposed
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the transposed matrix
 #' @export
@@ -83,13 +95,16 @@ invert_byname <- function(a){
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
-transpose_byname <- function(a){
-  unaryapply_byname(t, a = a, rowcoltypes = "transpose")
+transpose_byname <- function(a, mc.cores = get_mc.cores()){
+  unaryapply_byname(t, a = a, rowcoltypes = "transpose", mc.cores = mc.cores)
 }
 
 #' Creates a diagonal "hat" matrix from a vector.
 #'
 #' @param v The vector from which a "hat" matrix is to be created.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
@@ -110,7 +125,7 @@ transpose_byname <- function(a){
 #' hatize_byname(r)
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
-hatize_byname <- function(v){
+hatize_byname <- function(v, mc.cores = get_mc.cores()){
   hatize.func <- function(v){
     v_sorted <- sort_rows_cols(v) # %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
     out <- OpenMx::vec2diag(v_sorted)
@@ -131,7 +146,7 @@ hatize_byname <- function(v){
     }
     return(out)
   }
-  unaryapply_byname(hatize.func, a = v, rowcoltypes = "none")
+  unaryapply_byname(hatize.func, a = v, rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Named identity matrix or vector
@@ -149,6 +164,9 @@ hatize_byname <- function(v){
 #'
 #' @param a the matrix whose names and dimensions are to be preserved in an identity matrix or vector
 #' @param margin determines whether an identity vector or matrix is returned
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return An identity matrix or vector.
 #' 
@@ -167,7 +185,7 @@ hatize_byname <- function(v){
 #' identize_byname(N)
 #' # This also works with lists
 #' identize_byname(list(M, M))
-identize_byname <- function(a, margin = c(1,2)){
+identize_byname <- function(a, margin = c(1,2), mc.cores = get_mc.cores()){
   identize.func <- function(a, margin){
     if (class(a) == "numeric" & length(a) == 1) {
       # Assume we have a single number here
@@ -209,7 +227,8 @@ identize_byname <- function(a, margin = c(1,2)){
     # Should never get here, but just in case:
     stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(identize.func, a = a, .FUNdots = list(margin = margin), rowcoltypes = "none")
+  unaryapply_byname(identize.func, a = a, .FUNdots = list(margin = margin), 
+                    rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Compute fractions of matrix entries
@@ -221,6 +240,9 @@ identize_byname <- function(a, margin = c(1,2)){
 #' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
 #' If \code{2}, each entry in \code{a} is divided by its column's sum.
 #' If \code{c(1,2)}, each entry in \code{a} is divided by the sum of all entries in \code{a}.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
 #' @export
@@ -235,7 +257,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' fractionize_byname(M, margin = c(1,2))
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
-fractionize_byname <- function(a, margin){
+fractionize_byname <- function(a, margin, mc.cores = get_mc.cores()){
   fractionize.func <- function(a, margin){
     if (!"matrix" %in% class(a) && !"data.frame" %in% class(a)) {
       # Assume we have a single number here
@@ -271,7 +293,8 @@ fractionize_byname <- function(a, margin){
     # Should never get here, but just in case:
     stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(fractionize.func, a = a, .FUNdots = list(margin = margin), rowcoltypes = "all")
+  unaryapply_byname(fractionize.func, a = a, .FUNdots = list(margin = margin), 
+                    rowcoltypes = "all", mc.cores = mc.cores)
 }
 
 
@@ -286,6 +309,9 @@ fractionize_byname <- function(a, margin){
 #'
 #' @param a a matrix or list of matrices from which row sums are desired.
 #' @param colname name of the output column containing row sums
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a column vector of type \code{matrix} containing the row sums of \code{m}
 #' @export
@@ -312,7 +338,7 @@ fractionize_byname <- function(a, margin){
 #' ans$rs[[1]]
 #' # Nonsensical
 #' \dontrun{rowsums_byname(NULL)}
-rowsums_byname <- function(a, colname = NA){
+rowsums_byname <- function(a, colname = NA, mc.cores = get_mc.cores()){
   if (is.null(colname)) {
     # Set to NA so that we can try setting to coltype in rowsum.func
     colname <- NA_character_
@@ -334,7 +360,8 @@ rowsums_byname <- function(a, colname = NA){
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
   }
-  unaryapply_byname(rowsum.func, a = a, .FUNdots = list(colname = colname), rowcoltypes = "none")
+  unaryapply_byname(rowsum.func, a = a, .FUNdots = list(colname = colname), 
+                    rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Column sums, sorted by name
@@ -348,6 +375,9 @@ rowsums_byname <- function(a, colname = NA){
 #'
 #' @param a a matrix or list of matrices from which column sums are desired.
 #' @param rowname name of the output row containing column sums.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a row vector of type \code{matrix} containing the column sums of \code{a}.
 #' @export
@@ -376,7 +406,7 @@ rowsums_byname <- function(a, colname = NA){
 #'   cs2 = colsums_byname(m, rowname = "sum")
 #' )
 #' res$cs2
-colsums_byname <- function(a, rowname = NA){
+colsums_byname <- function(a, rowname = NA, mc.cores = get_mc.cores()){
    if (is.null(rowname)) {
     # Set to NA so that we can try setting to coltype in colsum.func
     rowname <- NA_character_
@@ -398,7 +428,8 @@ colsums_byname <- function(a, rowname = NA){
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
   }
-  unaryapply_byname(colsum.func, a = a, .FUNdots = list(rowname = rowname), rowcoltypes = "none")
+  unaryapply_byname(colsum.func, a = a, .FUNdots = list(rowname = rowname), 
+                    rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Sum of all elements in a matrix
@@ -407,6 +438,9 @@ colsums_byname <- function(a, rowname = NA){
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
 #' @param a the matrix whose elements are to be summed
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the sum of all elements in \code{a} as a numeric
 #' @export
@@ -429,14 +463,14 @@ colsums_byname <- function(a, rowname = NA){
 #'   sums = sumall_byname(m)
 #' )
 #' res$sums
-sumall_byname <- function(a){
+sumall_byname <- function(a, mc.cores = get_mc.cores()){
   sum.func <- function(a){
     a %>%
       rowsums_byname %>%
       colsums_byname %>%
       as.numeric
   }
-  unaryapply_byname(sum.func, a = a, rowcoltypes = "none")
+  unaryapply_byname(sum.func, a = a, rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Row products, sorted by name
@@ -448,8 +482,12 @@ sumall_byname <- function(a){
 #'
 #' @param a a matrix or list of matrices from which row products are desired.
 #' @param colname name of the output column containing row products
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a column vector of type \code{matrix} containing the row products of \code{a}
+#' 
 #' @export
 #'
 #' @examples
@@ -474,7 +512,7 @@ sumall_byname <- function(a){
 #' ans$rs[[1]]
 #' # Nonsensical
 #' \dontrun{rowprods_byname(NULL)}
-rowprods_byname <- function(a, colname = NA){
+rowprods_byname <- function(a, colname = NA, mc.cores = get_mc.cores()){
   if (is.null(colname)) {
     # Set the column name to NA so we can change it in the function.
     colname <- NA_character_
@@ -494,7 +532,8 @@ rowprods_byname <- function(a, colname = NA){
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
   }
-  unaryapply_byname(rowprod.func, a = a, .FUNdots = list(colname = colname), rowcoltypes = "none")
+  unaryapply_byname(rowprod.func, a = a, .FUNdots = list(colname = colname), 
+                    rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Column products, sorted by name
@@ -506,8 +545,12 @@ rowprods_byname <- function(a, colname = NA){
 #'
 #' @param a a matrix or data frame from which column products are desired.
 #' @param rowname name of the output row containing column products.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a row vector of type \code{matrix} containing the column products of \code{a}.
+#' 
 #' @export
 #'
 #' @examples
@@ -534,7 +577,7 @@ rowprods_byname <- function(a, colname = NA){
 #'   cs2 = colprods_byname(M, rowname = "prod")
 #' )
 #' res$cs2
-colprods_byname <- function(a, rowname = NA){
+colprods_byname <- function(a, rowname = NA, mc.cores = get_mc.cores()){
   if (is.null(rowname)) {
     # Set the row name to NA so we can change it in the function.
     rowname <- NA_character_
@@ -554,7 +597,8 @@ colprods_byname <- function(a, rowname = NA){
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
   }
-  unaryapply_byname(colprod.func, a = a, .FUNdots = list(rowname = rowname), rowcoltypes = "none")
+  unaryapply_byname(colprod.func, a = a, .FUNdots = list(rowname = rowname), 
+                    rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Product of all elements in a matrix
@@ -563,8 +607,12 @@ colprods_byname <- function(a, rowname = NA){
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
 #' @param a the matrix whose elements are to be multiplied
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the product of all elements in \code{a} as a numeric.
+#' 
 #' @export
 #'
 #' @examples
@@ -585,14 +633,14 @@ colprods_byname <- function(a, rowname = NA){
 #'   prods = prodall_byname(M)
 #' )
 #' res$prods
-prodall_byname <- function(a){
+prodall_byname <- function(a, mc.cores = get_mc.cores()){
   prodall.func <- function(a){
     a %>%
       rowprods_byname() %>%
       colprods_byname() %>%
       as.numeric()
   }
-  unaryapply_byname(prodall.func, a = a, rowcoltypes = "none")
+  unaryapply_byname(prodall.func, a = a, rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
@@ -603,9 +651,13 @@ prodall_byname <- function(a){
 #' before subtracting from \code{I} by calling \code{complete_and_sort}.
 #'
 #' @param a the matrix to be subtracted from \code{I}
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return The difference between an identity matrix (\code{I}) and \code{m}
 #' (whose rows and columns have been completed and sorted)
+#' 
 #' @export
 #' 
 #' @importFrom magrittr %>%
@@ -625,14 +677,14 @@ prodall_byname <- function(a){
 #' m2 <- matrix(c(1,2,3,4,5,6), ncol = 2, dimnames = list(c("a", "b", "c"), c("a", "b"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' Iminus_byname(m2)
-Iminus_byname <- function(a){
+Iminus_byname <- function(a, mc.cores = get_mc.cores()){
   iminus.func <- function(a){
     A <- complete_and_sort(a) %>%
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
     difference_byname(identize_byname(A), A)
   }
-  unaryapply_byname(iminus.func, a = a, rowcoltypes = "all")
+  unaryapply_byname(iminus.func, a = a, rowcoltypes = "all", mc.cores = mc.cores)
 }
 
 

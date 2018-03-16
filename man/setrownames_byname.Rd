@@ -4,12 +4,16 @@
 \alias{setrownames_byname}
 \title{Sets row names}
 \usage{
-setrownames_byname(a, rownames)
+setrownames_byname(a, rownames, mc.cores = get_mc.cores())
 }
 \arguments{
 \item{a}{A matrix or a list of matrices in which row names are to be set}
 
 \item{rownames}{A vector of new row names or a list of vectors of new row names}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a copy of \code{m} with new row names

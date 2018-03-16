@@ -21,6 +21,11 @@
 #'          \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
 #'                             Rather, \code{FUN} will set rowtype and coltype.}
 #'        }
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
+#' 
+#' @importFrom parallel mcMap
 #'
 #' @return the result of applying \code{FUN} "by name" to \code{a}.
 #' 
@@ -35,12 +40,13 @@
 #' difference_byname(0, U)
 #' unaryapply_byname(`-`, U)
 unaryapply_byname <- function(FUN, a, .FUNdots = NULL, 
-                              rowcoltypes = c("all", "transpose", "row", "col", "none")){
+                              rowcoltypes = c("all", "transpose", "row", "col", "none"), 
+                              mc.cores = get_mc.cores()){
   rowcoltypes <- match.arg(rowcoltypes)
   if (is.list(a)) {
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
     lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
-    return(Map(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes) %>% 
+    return(mcMap(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes, mc.cores = mc.cores) %>% 
              # Preserve names of a (if present) in the outgoing list.
              set_names(names(a)))
   }
@@ -99,6 +105,9 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #'        sort the rows and columns of the completed matrices.
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the result of applying \code{FUN} "by name" to \code{a} and \code{b}.
 #' 
@@ -115,7 +124,8 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
 binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL, 
-                               match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
+                               match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE, 
+                               mc.cores = get_mc.cores()){
   match_type <- match.arg(match_type)
   if (.organize) {
     args <- organize_args(a, b, fill = 0, match_type = match_type)
@@ -125,8 +135,9 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   if (is.list(a) & is.list(b)) {
     lfun <- replicate(n = max(length(a), length(b)), expr = FUN, simplify = FALSE)
     lFUNdots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
-    return(Map(binaryapply_byname, lfun, a, b, lFUNdots,
-               match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
+    return(mcMap(binaryapply_byname, lfun, a, b, lFUNdots,
+                 match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize,
+                 mc.cores = mc.cores) %>% 
              # If a and b have names, organize_args will have ensured that those names are same.
              # So we can set the names of the outgoing list to the names of a.
              set_names(names(a)))
@@ -207,6 +218,9 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #'        This organizing is done on each sequential invocation of \code{FUN}.
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
 #'        
 #' @return the result of applying \code{FUN} to all operands in \code{...}
 #' 
@@ -219,18 +233,23 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2)
 naryapply_byname <- function(FUN, ..., 
                              .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
-                             set_rowcoltypes = TRUE, .organize = TRUE){
+                             set_rowcoltypes = TRUE, .organize = TRUE, 
+                             mc.cores = get_mc.cores()){
   match_type <- match.arg(match_type)
   dots <- list(...)
   if (length(dots) == 1) {
     # Perform a unaryapply
-    return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
-                      rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
+    return(unaryapply_byname(FUN, a = dots[[1]], 
+                             .FUNdots = .FUNdots, rowcoltypes = ifelse(set_rowcoltypes, "all", "none"), 
+                             mc.cores = mc.cores))
   }
   a <- dots[[1]]
   for (i in 2:length(dots)) {
     b <- dots[[i]]
-    a <- binaryapply_byname(FUN, a = a, b = b, .FUNdots = .FUNdots, match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) 
+    a <- binaryapply_byname(FUN, a = a, b = b, 
+                            .FUNdots = .FUNdots, match_type = match_type, 
+                            set_rowcoltypes = set_rowcoltypes, .organize = .organize, 
+                            mc.cores = mc.cores) 
   }
   return(a)
 }
@@ -267,7 +286,10 @@ naryapply_byname <- function(FUN, ...,
 #'        This organizing is done on each sequential invocation of \code{FUN}.
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
-#'
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
+#'        
 #' @return the result of \code{FUN} applied logically to \code{...}
 #'
 #' @examples
@@ -275,12 +297,14 @@ naryapply_byname <- function(FUN, ...,
 #' matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, FALSE)
 naryapplylogical_byname <- function(FUN, ..., 
                                     .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
-                                    set_rowcoltypes = TRUE, .organize = TRUE){
+                                    set_rowcoltypes = TRUE, .organize = TRUE, 
+                                    mc.cores = get_mc.cores()){
   match_type <- match.arg(match_type)
   dots <- list(...)
   if (length(dots) == 1) {
     return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
-                             rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
+                             rowcoltypes = ifelse(set_rowcoltypes, "all", "none"), 
+                             mc.cores = mc.cores))
   }
   # Get things started.
   a <- dots[[1]]
@@ -292,7 +316,8 @@ naryapplylogical_byname <- function(FUN, ...,
   }
   res <- binaryapply_byname(FUN, a = a, b = b, 
                             .FUNdots = .FUNdots, match_type = match_type, 
-                            set_rowcoltypes = set_rowcoltypes, .organize = .organize)
+                            set_rowcoltypes = set_rowcoltypes, .organize = .organize, 
+                            mc.cores = mc.cores)
   if (length(dots) > 2) {
     for (i in 2:length(dots)) {
       b <- dots[[i]]

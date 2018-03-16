@@ -4,10 +4,14 @@
 \alias{samestructure_byname}
 \title{Test whether matrices or lists of matrices have same structure}
 \usage{
-samestructure_byname(...)
+samestructure_byname(..., mc.cores = get_mc.cores())
 }
 \arguments{
 \item{...}{operands to be compared}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+Default is \code{get_mc.cores()} or \code{1}. 
+Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.

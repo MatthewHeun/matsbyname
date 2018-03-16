@@ -4,10 +4,14 @@
 \alias{hatize_byname}
 \title{Creates a diagonal "hat" matrix from a vector.}
 \usage{
-hatize_byname(v)
+hatize_byname(v, mc.cores = get_mc.cores())
 }
 \arguments{
-\item{v}{The vector from which a "hat" matrix is to be created.
+\item{v}{The vector from which a "hat" matrix is to be created.}
+
+\item{mc.cores}{an integer specifying the number of cores to be used.
+       Default is \code{get_mc.cores()} or \code{1}. 
+       Try \code{mc.cores = parallel::detectCores()}.
 
 A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
