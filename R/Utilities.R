@@ -417,7 +417,6 @@ setcolnames_byname <- function(a, colnames, mc.cores = get_mc.cores()){
   # }
   # unaryapply_byname(colname.func, a = a, .FUNdots = list(colnames = colnames), 
   #                   rowcoltypes = "all", mc.cores = mc.cores)
-
   a %>% 
     transpose_byname(mc.cores = mc.cores) %>% 
     setrownames_byname(rownames = colnames, mc.cores = mc.cores) %>% 

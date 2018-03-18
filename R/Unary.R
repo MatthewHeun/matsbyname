@@ -407,29 +407,33 @@ rowsums_byname <- function(a, colname = NA, mc.cores = get_mc.cores()){
 #' )
 #' res$cs2
 colsums_byname <- function(a, rowname = NA, mc.cores = get_mc.cores()){
-   if (is.null(rowname)) {
-    # Set to NA so that we can try setting to coltype in colsum.func
-    rowname <- NA_character_
-  }
-  colsum.func <- function(a, rowname){
-    if (is.na(rowname)) {
-      rowname <- rowtype(a)
-    }
-    colSums(a) %>%
-      # Preserve matrix structure (i.e., result will be a row vector of type matrix)
-      matrix(nrow = 1) %>%
-      # Preserve column names
-      setcolnames_byname(colnames(a)) %>%
-      # Set row name
-      setrownames_byname(rowname) %>%
-      # But sort the result on names
-      sort_rows_cols() %>%
-      # Set types
-      setrowtype(rowtype(a)) %>%
-      setcoltype(coltype(a))
-  }
-  unaryapply_byname(colsum.func, a = a, .FUNdots = list(rowname = rowname), 
-                    rowcoltypes = "none", mc.cores = mc.cores)
+  #  if (is.null(rowname)) {
+  #   # Set to NA so that we can try setting to coltype in colsum.func
+  #   rowname <- NA_character_
+  # }
+  # colsum.func <- function(a, rowname){
+  #   if (is.na(rowname)) {
+  #     rowname <- rowtype(a)
+  #   }
+  #   colSums(a) %>%
+  #     # Preserve matrix structure (i.e., result will be a row vector of type matrix)
+  #     matrix(nrow = 1) %>%
+  #     # Preserve column names
+  #     setcolnames_byname(colnames(a)) %>%
+  #     # Set row name
+  #     setrownames_byname(rowname) %>%
+  #     # But sort the result on names
+  #     sort_rows_cols() %>%
+  #     # Set types
+  #     setrowtype(rowtype(a)) %>%
+  #     setcoltype(coltype(a))
+  # }
+  # unaryapply_byname(colsum.func, a = a, .FUNdots = list(rowname = rowname), 
+  #                   rowcoltypes = "none", mc.cores = mc.cores)
+  a %>% 
+    transpose_byname(mc.cores = mc.cores) %>% 
+    rowsums_byname(colname = rowname, mc.cores = mc.cores) %>% 
+    transpose_byname(mc.cores = mc.cores)
 }
 
 #' Sum of all elements in a matrix
@@ -578,27 +582,30 @@ rowprods_byname <- function(a, colname = NA, mc.cores = get_mc.cores()){
 #' )
 #' res$cs2
 colprods_byname <- function(a, rowname = NA, mc.cores = get_mc.cores()){
-  if (is.null(rowname)) {
-    # Set the row name to NA so we can change it in the function.
-    rowname <- NA_character_
-  }
-  colprod.func <- function(a, rowname){
-    if (is.na(rowname)) {
-      rowname <- rowtype(a)
-    }
-    apply(a, MARGIN = 2, FUN = prod) %>%
-      # Preserve matrix structure (i.e., result will be a row vector of type matrix)
-      matrix(nrow = 1) %>%
-      # Preserve column names
-      setcolnames_byname(colnames(a)) %>%
-      # But sort the result on names
-      sort_rows_cols() %>%
-      setrownames_byname(rowname) %>%
-      setrowtype(rowtype(a)) %>%
-      setcoltype(coltype(a))
-  }
-  unaryapply_byname(colprod.func, a = a, .FUNdots = list(rowname = rowname), 
-                    rowcoltypes = "none", mc.cores = mc.cores)
+  # if (is.null(rowname)) {
+  #   # Set the row name to NA so we can change it in the function.
+  #   rowname <- NA_character_
+  # }
+  # colprod.func <- function(a, rowname){
+  #   if (is.na(rowname)) {
+  #     rowname <- rowtype(a)
+  #   }
+  #   apply(a, MARGIN = 2, FUN = prod) %>%
+  #     # Preserve matrix structure (i.e., result will be a row vector of type matrix)
+  #     matrix(nrow = 1) %>%
+  #     # Preserve column names
+  #     setcolnames_byname(colnames(a)) %>%
+  #     # But sort the result on names
+  #     sort_rows_cols() %>%
+  #     setrownames_byname(rowname) %>%
+  #     setrowtype(rowtype(a)) %>%
+  #     setcoltype(coltype(a))
+  # }
+  # unaryapply_byname(colprod.func, a = a, .FUNdots = list(rowname = rowname), 
+  #                   rowcoltypes = "none", mc.cores = mc.cores)
+  a %>% transpose_byname(mc.cores = mc.cores) %>% 
+    rowprods_byname(colname = rowname, mc.cores = mc.cores) %>% 
+    transpose_byname(mc.cores = mc.cores)
 }
 
 #' Product of all elements in a matrix
