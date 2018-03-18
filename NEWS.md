@@ -1,5 +1,11 @@
 # News for `matsbyname`
 
+## matsbyname 0.2.7 (2018-xx-xx)
+
+* Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions,
+  thereby simplifying code.
+
+
 ## matsbyname 0.2.6 (2018-03-16)
 
 * New multicore functionality available in most `*_byname` functions.
