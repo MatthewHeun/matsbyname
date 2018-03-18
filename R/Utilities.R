@@ -399,24 +399,28 @@ setrownames_byname <- function(a, rownames, mc.cores = get_mc.cores()){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' setcolnames_byname(m, c("a", "b", "c"))
 setcolnames_byname <- function(a, colnames, mc.cores = get_mc.cores()){
-  colname.func <- function(a, colnames){
-    if (is.null(dim(a))) {
-      # a has no dimensions. It is a constant.
-      # Turn it into a matrix and set the row names.
-      out <- matrix(a, nrow = 1, ncol = 1)
-    } else {
-      out <- a
-    }
-    if (is.null(colnames) || is.na(colnames)) {
-      # replace with default row names
-      colnames(out) <- NULL
-    } else {
-      colnames(out) <- colnames
-    }
-    return(out)
-  }
-  unaryapply_byname(colname.func, a = a, .FUNdots = list(colnames = colnames), 
-                    rowcoltypes = "all", mc.cores = mc.cores)
+  # colname.func <- function(a, colnames){
+  #   if (is.null(dim(a))) {
+  #     # a has no dimensions. It is a constant.
+  #     # Turn it into a matrix and set the row names.
+  #     out <- matrix(a, nrow = 1, ncol = 1)
+  #   } else {
+  #     out <- a
+  #   }
+  #   if (is.null(colnames) || is.na(colnames)) {
+  #     # replace with default row names
+  #     colnames(out) <- NULL
+  #   } else {
+  #     colnames(out) <- colnames
+  #   }
+  #   return(out)
+  # }
+  # unaryapply_byname(colname.func, a = a, .FUNdots = list(colnames = colnames), 
+  #                   rowcoltypes = "all", mc.cores = mc.cores)
+  a %>% 
+    transpose_byname(mc.cores = mc.cores) %>% 
+    setrownames_byname(rownames = colnames, mc.cores = mc.cores) %>% 
+    transpose_byname(mc.cores = mc.cores)
 }
 
 #' Sets row type for a matrix or a list of matrices
@@ -460,7 +464,7 @@ setrowtype <- function(a, rowtype, mc.cores = get_mc.cores()){
     attr(a, "rowtype") <- rowtype
     return(a)
   }
-  unaryapply_byname(rt.func, a = a, .FUNdots = list(rowtype = rowtype), 
+  unaryapply_byname(rt.func, a = a, .FUNdots = list(rowtype = rowtype),
                     rowcoltypes = "none", mc.cores = mc.cores)
 }
 
@@ -715,61 +719,70 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc.cores()){
-  # Note default patterns ("$^") retain nothing and remove nothing,
-  # because $ means end of line and ^ means beginning of line.
-  # The default pattern would match lines where the beginning of the line is the end of the line.
-  # That is impossible, so nothing is matched.
-  select.func <- function(a, retain_pattern, remove_pattern){
-    retain_indices <- grep(pattern = retain_pattern, x = colnames(a))
-    remove_indices <- grep(pattern = remove_pattern, x = colnames(a))
-    if (length(retain_indices) == 0) {
-      # Nothing to be retained, so try removing columns
-      if (length(remove_indices) == 0) {
-        # Nothing to be retained and nothing to be removed.
-        # If the caller wanted to retain something,
-        # which is indicated by a non-default retain_pattern,
-        # don't retain anything.
-        # Do this first, because retain takes precedence.
-        if (retain_pattern != "$^") {
-          return(NULL)
-        }
-        # If the caller wanted to remove something,
-        # which is indicated by a non-default remove_pattern,
-        # don't remove anything. Simply return m.
-        if (remove_pattern != "$^") {
-          return(a)
-        }
-        # Neither retain_pattern nor remove_pattern is different from the default.
-        # This is almost surely an error.
-        stop("neither retain_pattern nor remove_pattern are differnt from default.")
-      }
-      # Remove
-      return(a[ , -remove_indices] %>%
-               # When only 1 row is selected, the natural result will be a numeric vector
-               # We want to ensure that the return value is a matrix
-               # with correct rowtype and coltype.
-               # Thus, we need to take these additional steps.
-               matrix(ncol = ncol(a) - length(remove_indices),
-                      dimnames = list(dimnames(a)[[1]],
-                                      dimnames(a)[[2]][setdiff(1:ncol(a), remove_indices)])) %>%
-               setrowtype(rowtype(a)) %>%
-               setcoltype(coltype(a))
-      )
-    }
-    # Retain
-    return(a[ , retain_indices] %>%
-             matrix(ncol = length(retain_indices),
-                    dimnames = list(dimnames(a)[[1]],
-                                    dimnames(a)[[2]][retain_indices])) %>%
-             setrowtype(rowtype(a)) %>%
-             setcoltype(coltype(a))
-    )
-    
+  out <- a %>% 
+    transpose_byname(mc.cores = mc.cores) %>% 
+    select_rows_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern, mc.cores = mc.cores)
+  if (is.null(out)) {
+    return(NULL)
   }
-  unaryapply_byname(select.func, 
-                    a = a, 
-                    .FUNdots = list(retain_pattern = retain_pattern, remove_pattern = remove_pattern), 
-                    rowcoltypes = "none", mc.cores = mc.cores)
+  out %>% 
+    transpose_byname(mc.cores = mc.cores)
+  
+  # # Note default patterns ("$^") retain nothing and remove nothing,
+  # # because $ means end of line and ^ means beginning of line.
+  # # The default pattern would match lines where the beginning of the line is the end of the line.
+  # # That is impossible, so nothing is matched.
+  # select.func <- function(a, retain_pattern, remove_pattern){
+  #   retain_indices <- grep(pattern = retain_pattern, x = colnames(a))
+  #   remove_indices <- grep(pattern = remove_pattern, x = colnames(a))
+  #   if (length(retain_indices) == 0) {
+  #     # Nothing to be retained, so try removing columns
+  #     if (length(remove_indices) == 0) {
+  #       # Nothing to be retained and nothing to be removed.
+  #       # If the caller wanted to retain something,
+  #       # which is indicated by a non-default retain_pattern,
+  #       # don't retain anything.
+  #       # Do this first, because retain takes precedence.
+  #       if (retain_pattern != "$^") {
+  #         return(NULL)
+  #       }
+  #       # If the caller wanted to remove something,
+  #       # which is indicated by a non-default remove_pattern,
+  #       # don't remove anything. Simply return m.
+  #       if (remove_pattern != "$^") {
+  #         return(a)
+  #       }
+  #       # Neither retain_pattern nor remove_pattern is different from the default.
+  #       # This is almost surely an error.
+  #       stop("neither retain_pattern nor remove_pattern are differnt from default.")
+  #     }
+  #     # Remove
+  #     return(a[ , -remove_indices] %>%
+  #              # When only 1 row is selected, the natural result will be a numeric vector
+  #              # We want to ensure that the return value is a matrix
+  #              # with correct rowtype and coltype.
+  #              # Thus, we need to take these additional steps.
+  #              matrix(ncol = ncol(a) - length(remove_indices),
+  #                     dimnames = list(dimnames(a)[[1]],
+  #                                     dimnames(a)[[2]][setdiff(1:ncol(a), remove_indices)])) %>%
+  #              setrowtype(rowtype(a)) %>%
+  #              setcoltype(coltype(a))
+  #     )
+  #   }
+  #   # Retain
+  #   return(a[ , retain_indices] %>%
+  #            matrix(ncol = length(retain_indices),
+  #                   dimnames = list(dimnames(a)[[1]],
+  #                                   dimnames(a)[[2]][retain_indices])) %>%
+  #            setrowtype(rowtype(a)) %>%
+  #            setcoltype(coltype(a))
+  #   )
+  #   
+  # }
+  # unaryapply_byname(select.func, 
+  #                   a = a, 
+  #                   .FUNdots = list(retain_pattern = retain_pattern, remove_pattern = remove_pattern), 
+  #                   rowcoltypes = "none", mc.cores = mc.cores)
 }
 
 #' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
