@@ -20,6 +20,7 @@ a copy of \code{a} with new column names
 }
 \description{
 Sets column names in a way that is amenable to use in piping operations in a functional programming way.
+if \code{a} is \code{NULL}, \code{NULL} is returned.
 If \code{a} is a constant, it is converted to a matrix and \code{colnames} are applied.
 If \code{a} is a matrix, \code{colnames} should be a vector of new column names
 that is as long as the number of columns in \code{a}.
