@@ -20,15 +20,16 @@ a copy of \code{m} with new row names
 }
 \description{
 Sets row names in a way that is amenable to use in piping operations in a functional programming way.
-If \code{m} is a constant, it is converted to a matrix and \code{rownames} are applied.
-If \code{m} is a matrix, \code{rownames} should be a vector of new row names
-that is as long as the number of rows in \code{m}.
-If \code{m} is a list of matrices, 
-\code{rownames} can also be a list, and it should be as long \code{m}.
+If \code{a} is \code{NULL}, \code{NULL} is returned.
+If \code{a} is a constant, it is converted to a matrix and \code{rownames} are applied.
+If \code{a} is a matrix, \code{rownames} should be a vector of new row names
+that is as long as the number of rows in \code{a}.
+If \code{a} is a list of matrices, 
+\code{rownames} can also be a list, and it should be as long \code{a}.
 Or \code{rownames} can be a vector of row names which will be applied to every matrix in
-the list of \code{m}.
+the list of \code{a}.
 Each item in the list should be a vector containing row names for the corresponding 
-matrix in \code{m}.
+matrix in \code{a}.
 }
 \examples{
 library(magrittr)

@@ -310,15 +310,16 @@ getcolnames_byname <- function(a, mc.cores = get_mc.cores()){
 #' Sets row names
 #'
 #' Sets row names in a way that is amenable to use in piping operations in a functional programming way.
-#' If \code{m} is a constant, it is converted to a matrix and \code{rownames} are applied.
-#' If \code{m} is a matrix, \code{rownames} should be a vector of new row names
-#' that is as long as the number of rows in \code{m}.
-#' If \code{m} is a list of matrices, 
-#' \code{rownames} can also be a list, and it should be as long \code{m}.
+#' If \code{a} is \code{NULL}, \code{NULL} is returned.
+#' If \code{a} is a constant, it is converted to a matrix and \code{rownames} are applied.
+#' If \code{a} is a matrix, \code{rownames} should be a vector of new row names
+#' that is as long as the number of rows in \code{a}.
+#' If \code{a} is a list of matrices, 
+#' \code{rownames} can also be a list, and it should be as long \code{a}.
 #' Or \code{rownames} can be a vector of row names which will be applied to every matrix in
-#' the list of \code{m}.
+#' the list of \code{a}.
 #' Each item in the list should be a vector containing row names for the corresponding 
-#' matrix in \code{m}.
+#' matrix in \code{a}.
 #'
 #' @param a A matrix or a list of matrices in which row names are to be set
 #' @param rownames A vector of new row names or a list of vectors of new row names
@@ -350,6 +351,9 @@ getcolnames_byname <- function(a, mc.cores = get_mc.cores()){
 #' DF <- DF %>% mutate(m = setrownames_byname(m, c("r1", "r2")))
 #' DF$m[[1]]
 setrownames_byname <- function(a, rownames, mc.cores = get_mc.cores()){
+  if (is.null(a)) {
+    return(NULL)
+  }
   rowname.func <- function(a, rownames){
     if (is.null(dim(a))) {
       # a has no dimensions. It is a constant.
@@ -373,6 +377,7 @@ setrownames_byname <- function(a, rownames, mc.cores = get_mc.cores()){
 #' Sets column names
 #'
 #' Sets column names in a way that is amenable to use in piping operations in a functional programming way.
+#' if \code{a} is \code{NULL}, \code{NULL} is returned.
 #' If \code{a} is a constant, it is converted to a matrix and \code{colnames} are applied.
 #' If \code{a} is a matrix, \code{colnames} should be a vector of new column names
 #' that is as long as the number of columns in \code{a}.
@@ -417,6 +422,9 @@ setcolnames_byname <- function(a, colnames, mc.cores = get_mc.cores()){
   # }
   # unaryapply_byname(colname.func, a = a, .FUNdots = list(colnames = colnames), 
   #                   rowcoltypes = "all", mc.cores = mc.cores)
+  if (is.null(a)) {
+    return(NULL)
+  }
   a %>% 
     transpose_byname(mc.cores = mc.cores) %>% 
     setrownames_byname(rownames = colnames, mc.cores = mc.cores) %>% 
@@ -574,6 +582,8 @@ coltype <- function(a, mc.cores = get_mc.cores()){
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against row names.
 #'
+#' If \code{a} is \code{NULL}, \code{NULL} is returned.
+#' 
 #' Patterns are compared against row names using extended regex.
 #' If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
@@ -616,6 +626,9 @@ coltype <- function(a, mc.cores = get_mc.cores()){
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc.cores()){
+  if (is.null(a)) {
+    return(NULL)
+  }
   # Note default patterns ("$^") retain nothing and remove nothing,
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
@@ -642,7 +655,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
         }
         # Neither retain_pattern nor remove_pattern is different from the default.
         # This is almost surely an error.
-        stop("neither retain_pattern nor remove_pattern are differnt from default.")
+        stop("neither retain_pattern nor remove_pattern are different from default.")
       }
       # Remove
       return(a[-remove_indices , ] %>%
@@ -675,6 +688,8 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against column names.
 #'
+#' If \code{a} is \code{NULL}, \code{NULL} is returned.
+#' 
 #' Patterns are compared against column names using extended regex.
 #' If no column names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no column names of \code{a} match the \code{remove_pattern}, \code{a} is returned.
@@ -719,6 +734,9 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc.cores()){
+  if (is.null(a)) {
+    return(NULL)
+  }
   out <- a %>% 
     transpose_byname(mc.cores = mc.cores) %>% 
     select_rows_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern, mc.cores = mc.cores)

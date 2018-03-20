@@ -43,12 +43,18 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
                               rowcoltypes = c("all", "transpose", "row", "col", "none"), 
                               mc.cores = get_mc.cores()){
   rowcoltypes <- match.arg(rowcoltypes)
+  if (is.null(a)) {
+    return(NULL)
+  }
   if (is.list(a)) {
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
     lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
     return(mcMap(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes, mc.cores = mc.cores) %>% 
              # Preserve names of a (if present) in the outgoing list.
              set_names(names(a)))
+  }
+  if (is.null(a)) {
+    return(NULL)
   }
   out <- do.call(FUN, c(list(a), .FUNdots))
 

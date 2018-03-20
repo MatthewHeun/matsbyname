@@ -29,6 +29,8 @@ For maximum flexibility, arguments are extended regex patterns
 that are matched against row names.
 }
 \details{
+If \code{a} is \code{NULL}, \code{NULL} is returned.
+
 Patterns are compared against row names using extended regex.
 If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
@@ -45,7 +47,7 @@ Some typical patterns are:
 }
 
 Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-\code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
+\code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 }
