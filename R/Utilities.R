@@ -642,7 +642,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
         }
         # Neither retain_pattern nor remove_pattern is different from the default.
         # This is almost surely an error.
-        stop("neither retain_pattern nor remove_pattern are differnt from default.")
+        stop("neither retain_pattern nor remove_pattern are different from default.")
       }
       # Remove
       return(a[-remove_indices , ] %>%
