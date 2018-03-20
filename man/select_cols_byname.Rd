@@ -29,6 +29,8 @@ For maximum flexibility, arguments are extended regex patterns
 that are matched against column names.
 }
 \details{
+If \code{a} is \code{NULL}, \code{NULL} is returned.
+
 Patterns are compared against column names using extended regex.
 If no column names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
 If no column names of \code{a} match the \code{remove_pattern}, \code{a} is returned.

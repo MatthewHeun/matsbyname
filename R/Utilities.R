@@ -582,6 +582,8 @@ coltype <- function(a, mc.cores = get_mc.cores()){
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against row names.
 #'
+#' If \code{a} is \code{NULL}, \code{NULL} is returned.
+#' 
 #' Patterns are compared against row names using extended regex.
 #' If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
@@ -624,6 +626,9 @@ coltype <- function(a, mc.cores = get_mc.cores()){
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc.cores()){
+  if (is.null(a)) {
+    return(NULL)
+  }
   # Note default patterns ("$^") retain nothing and remove nothing,
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
@@ -683,6 +688,8 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against column names.
 #'
+#' If \code{a} is \code{NULL}, \code{NULL} is returned.
+#' 
 #' Patterns are compared against column names using extended regex.
 #' If no column names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
 #' If no column names of \code{a} match the \code{remove_pattern}, \code{a} is returned.
@@ -727,6 +734,9 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc.cores()){
+  if (is.null(a)) {
+    return(NULL)
+  }
   out <- a %>% 
     transpose_byname(mc.cores = mc.cores) %>% 
     select_rows_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern, mc.cores = mc.cores)

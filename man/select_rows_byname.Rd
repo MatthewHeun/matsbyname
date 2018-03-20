@@ -29,6 +29,8 @@ For maximum flexibility, arguments are extended regex patterns
 that are matched against row names.
 }
 \details{
+If \code{a} is \code{NULL}, \code{NULL} is returned.
+
 Patterns are compared against row names using extended regex.
 If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
