@@ -4,6 +4,9 @@
 
 * Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions,
   thereby simplifying code.
+* Fixed a bug caused by the above refactoring.
+  In `select_cols_byname`, a `NULL` result terminated the executing thread.
+* Improvements to documentation.
 
 
 ## matsbyname 0.2.6 (2018-03-16)
