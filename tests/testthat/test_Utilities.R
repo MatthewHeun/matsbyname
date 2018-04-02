@@ -1,6 +1,52 @@
 # This file contains tests for functions in Utilities.R.
 
 library(magrittr)
+library(parallel)
+library(testthat)
+library(rlang)
+library(dplyr)
+library(tictoc)
+library(Matrix)
+
+
+###########################################################
+context("Multi-core mutate")
+###########################################################
+
+test_that("mcmutate works as expected", {
+  df1 <- data.frame(a = c(1,2), b = c(3,4))
+  res1 <- df1 %>% 
+    mcmutate(mc.cores = 2L,
+      c = a + b
+    )
+  expect_equal(res1$c, c(4, 6))
+  
+  df2 <- data.frame(a = c(1,2,3), b = c(4,5,6))
+  res2 <- df2 %>% 
+    mcmutate(mc.cores = 2L,
+      c = a + b
+    )
+  expect_equal(res2$c, c(5, 7, 9))
+  
+  # Make a large data frame, fill it, and test with 1-2 cores.
+  size <- 100
+  df3 <- matrix(runif(2*size), nrow = size, ncol = 2, dimnames = list(NULL, c("a", "b"))) %>% 
+    as.data.frame()
+  expected3 <- df3 %>% 
+    mutate(
+      c = a + b
+    )
+  ncores <- 1:2
+  res3 <- lapply(ncores, FUN = function(cores){
+    df3 %>% 
+      mcmutate(mc.cores = cores,
+        c = a + b
+      )
+  })
+  for (i in ncores) {
+    expect_equal(res3[[i]], expected3)
+  }
+})
 
 
 ###########################################################

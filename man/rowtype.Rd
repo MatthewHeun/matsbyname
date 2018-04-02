@@ -4,13 +4,13 @@
 \alias{rowtype}
 \title{Row type}
 \usage{
-rowtype(a, mc.cores = get_mc.cores())
+rowtype(a, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{the object from which you want to extract row types}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

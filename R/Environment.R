@@ -19,8 +19,8 @@ library(parallel)
 #' @export
 #'
 #' @examples
-#' get_mc.cores()
-get_mc.cores <- function(){
+#' get_mc_cores()
+get_mc_cores <- function(){
   return(get("mc.cores", envir = consts_env))
 }
 
@@ -41,9 +41,12 @@ get_mc.cores <- function(){
 #'
 #' @examples
 #' set_mc.cores(1)
-set_mc.cores <- function(mc.cores){
+set_mc_cores <- function(mc.cores){
+  if (!is.integer(mc.cores)) {
+    stop("mc.cores must be an integer. Try appending an L: '4L'")
+  }
   if (mc.cores <= 0) {
-    stop("mc.cores must be >= 1.")
+    stop("mc.cores must be >= 1L")
   }
   assign("mc.cores", mc.cores, envir = consts_env)
 }
@@ -51,7 +54,7 @@ set_mc.cores <- function(mc.cores){
 consts_env <- new.env()
 
 # Set default to 1 core.
-set_mc.cores(1)
+set_mc_cores(1L)
 
 # Use this line for local testing only. 
 # NEVER submit to CRAN with this line uncommented, 

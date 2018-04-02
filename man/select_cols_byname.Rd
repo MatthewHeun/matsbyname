@@ -5,7 +5,7 @@
 \title{Select columns of a matrix (or list of matrices) by name}
 \usage{
 select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^",
-  mc.cores = get_mc.cores())
+  mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{a matrix or a list of matrices}
@@ -17,7 +17,7 @@ Default pattern (\code{$^}) retains nothing.}
 Default pattern (\code{$^}) removes nothing.}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

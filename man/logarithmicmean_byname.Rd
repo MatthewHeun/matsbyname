@@ -4,7 +4,7 @@
 \alias{logarithmicmean_byname}
 \title{Name- and element-wise logarithmic mean of matrices.}
 \usage{
-logarithmicmean_byname(a, b, base = exp(1), mc.cores = get_mc.cores())
+logarithmicmean_byname(a, b, base = exp(1), mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{first operand (a matrix or constant value or lists of same).}
@@ -15,7 +15,7 @@ logarithmicmean_byname(a, b, base = exp(1), mc.cores = get_mc.cores())
 (Default is \code{base = exp(1)}.)}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

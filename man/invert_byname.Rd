@@ -4,13 +4,13 @@
 \alias{invert_byname}
 \title{Invert a matrix}
 \usage{
-invert_byname(a, mc.cores = get_mc.cores())
+invert_byname(a, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{the matrix to be inverted. \code{m} must be square.}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

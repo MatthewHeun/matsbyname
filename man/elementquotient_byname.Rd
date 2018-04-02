@@ -4,7 +4,7 @@
 \alias{elementquotient_byname}
 \title{Name-wise matrix element division}
 \usage{
-elementquotient_byname(dividend, divisor, mc.cores = get_mc.cores())
+elementquotient_byname(dividend, divisor, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{dividend}{Dividend matrix or constant}
@@ -12,7 +12,7 @@ elementquotient_byname(dividend, divisor, mc.cores = get_mc.cores())
 \item{divisor}{Divisor matrix or constant}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
