@@ -1,6 +1,36 @@
 # This file contains several utility functions for the byname package.
 
 
+mcmutate <- function(.data, ..., 
+                     mc.preschedule = TRUE, mc.set.seed = TRUE,
+                     mc.silent = FALSE, mc.cores = getOption("mc.cores", 2L),
+                     mc.cleanup = TRUE, mc.allow.recursive = TRUE){
+  dots <- enquos(...)
+  nr <- nrow(.data)
+  rowspercore <- nr / mc.cores
+  # Decide which rows are in each execution set
+  smalldf <- list()
+  for (i in 1:mc.cores) {
+    firstrow <- (i - 1)*rowspercore + 1
+    lastrow <- i*rowspercore
+    smalldf[[i]] <- .data[firstrow:lastrow, ]
+  }
+  lapply(X = smalldf, FUN = function(df){
+    mutate(df, !!!dots)
+  }) %>% 
+    as.data.frame()
+  
+  
+  
+  
+  # lapply(X = execution_sets, FUN = mutate, ... = ...,
+  #          mc.preschedule = mc.preschedule, mc.setseed = mc.setseed,
+  #          mc.silent = mc.silent, mc.cores = mc.cores,
+  #          mc.cleanup = mc.cleanup, mc.allow.recursive = mc.allow.recursive) %>%
+  #   rbind()
+}
+
+
 #' Organize binary arguments
 #'
 #' Organizes arguments of binary (2 arguments) \code{_byname} functions.
