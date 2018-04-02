@@ -4,7 +4,9 @@
 \alias{mat_byname}
 \title{Create a \code{mat_byname} object}
 \usage{
-mat_byname(m)
+mat_byname(data = NA, nrow = 1, ncol = 1, byrow = FALSE,
+  dimnames = NULL, m = matrix(data = data, nrow = nrow, ncol = ncol, byrow =
+  byrow, dimnames = dimnames), rowtype = NULL, coltype = NULL)
 }
 \arguments{
 \item{m}{a \code{matrix} object}
