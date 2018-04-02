@@ -21,12 +21,9 @@
 #' mat_byname(matrix(c(1:2)))
 mat_byname <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL, 
                        m = matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames),
-                       rowtype, coltype) {
+                       rowtype = NULL, coltype = NULL) {
   if (is.null(m)) {
-    return(NULL)
-  }
-  if (all(is.na(m))) {
-    return(NA)
+    stop("'m' must be of a vector type, was 'NULL'")
   }
   if (!"matrix" %in% class(m)) {
     stop("A matrix is required in mat_byname.")
