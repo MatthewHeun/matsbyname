@@ -19,8 +19,8 @@ test_that("mat_byname works as expected", {
 context("Adding mat_bynames")
 ###########################################################
 
-test_that("adding two mat_bynames works as expected", {
-  m1 <- matrix()
-})
+# test_that("adding two mat_bynames works as expected", {
+#   m1 <- matrix()
+# })
   
 
