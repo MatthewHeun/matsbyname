@@ -19,7 +19,9 @@
 #'
 #' @examples
 #' mat_byname(matrix(c(1:2)))
-mat_byname <- function(m) {
+mat_byname <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL, 
+                       m = matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames),
+                       rowtype, coltype) {
   if (is.null(m)) {
     return(NULL)
   }
@@ -30,5 +32,5 @@ mat_byname <- function(m) {
     stop("A matrix is required in mat_byname.")
   }
   class(m) <- append(class(m), "mat_byname")
-  return(m)
+  return(m %>% setrowtype(rowtype) %>% setcoltype(coltype))
 }
