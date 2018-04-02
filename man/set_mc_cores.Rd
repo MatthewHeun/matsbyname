@@ -22,5 +22,5 @@ Note that all \pkg{matsbyname} functions also have a \code{mc.cores} argument.
 If set, the \code{mc.cores} argument overrides the package-wide value.
 }
 \examples{
-set_mc.cores(1)
+set_mc_cores(1L)
 }

@@ -17,9 +17,16 @@
 #'
 #' @return the mutated data frame
 #' 
+#' @importFrom dplyr mutate
+#' @importFrom dplyr bind_rows
+#' @importFrom rlang enquos
+#' @importFrom parallel mclapply
+#' @importFrom magrittr %>%
+#' 
 #' @export
 #'
 #' @examples
+#' library(magrittr)
 #' data.frame(a = c(1,2,3), b = c(4,5,6)) %>% mcmutate(mc.cores = 2L, c = a + b)
 mcmutate <- function(.data, mc.cores = get_mc_cores(), ..., 
                      mc.args = list(mc.preschedule = FALSE, mc.set.seed = TRUE,

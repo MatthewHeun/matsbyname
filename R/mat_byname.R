@@ -12,6 +12,13 @@
 #' If \code{m} is not a \code{matrix}, an error is given.
 #'
 #' @param m a \code{matrix} object
+#' @param data a vector of values for \code{m}
+#' @param nrow the number of rows in \code{m}
+#' @param ncol the number of columns in \code{m}
+#' @param byrow tells whether to fill \code{m} by rows (\code{TRUE}) or columns (\code{FALSE})
+#' @param dimnames row and column names for \code{m}
+#' @param rowtype the type for rows
+#' @param coltype the type for columns
 #'
 #' @return a \code{mat_byname} object
 #' 

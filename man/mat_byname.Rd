@@ -9,7 +9,21 @@ mat_byname(data = NA, nrow = 1, ncol = 1, byrow = FALSE,
   byrow, dimnames = dimnames), rowtype = NULL, coltype = NULL)
 }
 \arguments{
+\item{data}{a vector of values for \code{m}}
+
+\item{nrow}{the number of rows in \code{m}}
+
+\item{ncol}{the number of columns in \code{m}}
+
+\item{byrow}{tells whether to fill \code{m} by rows (\code{TRUE}) or columns (\code{FALSE})}
+
+\item{dimnames}{row and column names for \code{m}}
+
 \item{m}{a \code{matrix} object}
+
+\item{rowtype}{the type for rows}
+
+\item{coltype}{the type for columns}
 }
 \value{
 a \code{mat_byname} object

@@ -40,7 +40,7 @@ get_mc_cores <- function(){
 #' @export
 #'
 #' @examples
-#' set_mc.cores(1)
+#' set_mc_cores(1L)
 set_mc_cores <- function(mc.cores){
   if (!is.integer(mc.cores)) {
     stop("mc.cores must be an integer. Try appending an L: '4L'")
@@ -61,4 +61,4 @@ set_mc_cores(1L)
 # because CRAN will not accept multi-threaded test code.
 # If this is a problem, I should be able to catch it, because
 # a test in test_Environment.R will fail if this line is uncommented.
-# set_mc.cores(detectCores(logical = FALSE))
+# set_mc_cores(detectCores(logical = FALSE))

@@ -30,5 +30,6 @@ Note that \code{mc.preschedule} defaults to \code{FALSE},
 because this function does its own prescheduling.
 }
 \examples{
+library(magrittr)
 data.frame(a = c(1,2,3), b = c(4,5,6)) \%>\% mcmutate(mc.cores = 2L, c = a + b)
 }
