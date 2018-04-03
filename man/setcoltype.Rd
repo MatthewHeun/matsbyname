@@ -4,7 +4,7 @@
 \alias{setcoltype}
 \title{Sets column type for a matrix or a list of matrices}
 \usage{
-setcoltype(a, coltype, mc.cores = get_mc.cores())
+setcoltype(a, coltype, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{the matrix on which column type is to be set}
@@ -12,7 +12,7 @@ setcoltype(a, coltype, mc.cores = get_mc.cores())
 \item{coltype}{the type of item stored in columns}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

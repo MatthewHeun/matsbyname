@@ -4,7 +4,7 @@
 \alias{difference_byname}
 \title{Name-wise subtraction of matrices.}
 \usage{
-difference_byname(minuend, subtrahend, mc.cores = get_mc.cores())
+difference_byname(minuend, subtrahend, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{minuend}{matrix or constant}
@@ -12,7 +12,7 @@ difference_byname(minuend, subtrahend, mc.cores = get_mc.cores())
 \item{subtrahend}{matrix or constant}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-       Default is \code{get_mc.cores()} or \code{1}. 
+       Default is \code{get_mc_cores()} or \code{1}. 
        Try \code{mc.cores = parallel::detectCores()}.
 
 Performs a union and sorting of row and column names prior to differencing.

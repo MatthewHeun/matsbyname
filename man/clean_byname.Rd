@@ -5,7 +5,7 @@
 \title{Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}}
 \usage{
 clean_byname(a, margin = c(1, 2), clean_value = 0,
-  mc.cores = get_mc.cores())
+  mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{the matrix to be cleaned}
@@ -16,7 +16,7 @@ or \code{c(1,2)} for both rows and columns.}
 \item{clean_value}{the undesirable value}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-       Default is \code{get_mc.cores()} or \code{1}. 
+       Default is \code{get_mc_cores()} or \code{1}. 
        Try \code{mc.cores = parallel::detectCores()}.
 
 When a row (when \code{margin = 1}) or a column (when \code{margin = 2})

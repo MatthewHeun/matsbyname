@@ -45,7 +45,7 @@ library("parallel")
 #'        for columns only, give \code{2};
 #'        for both rows and columns, give \code{c(1,2)}, the default value.
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'        
 #' @export
@@ -89,7 +89,7 @@ library("parallel")
 #' complete_rows_cols(a = a, mat = b, fillrow = fillrow)
 complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, 
                                fillrow = NULL, fillcol = NULL, 
-                               margin = c(1,2), mc.cores = get_mc.cores()){
+                               margin = c(1,2), mc.cores = get_mc_cores()){
   if (is.null(a) & is.null(mat)) {
     stop("Both a and mat are NULL in complete_rows_cols.")
   }
@@ -285,7 +285,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
 #' @param colorder specifies the order for rows with default \code{sort(colnames(a))}.
 #' If \code{NULL}, default is used. Unspecified columns are dropped.
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #' 
 #' @return A modified version of \code{a} with sorted rows and columns
@@ -316,7 +316,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
 #' sort_rows_cols(a = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
 #' # Both columns and rows sorted, rows by the list, columns in natural order.
 #' sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
-sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA, mc.cores = get_mc.cores()){
+sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA, mc.cores = get_mc_cores()){
   sort.func <- function(a, margin, roworder, colorder){
     # Gather rowtype and coltype so we can apply those later.
     rt <- rowtype(a)
@@ -401,7 +401,7 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA, mc.co
 #' @param colorder Specifies a custom ordering for columns of returned matrices.
 #'        Unspecified columns are dropped.
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return A named list containing completed and sorted versions of \code{a} and \code{b}.
@@ -425,7 +425,7 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA, mc.co
 #' # Also works with lists
 #' complete_and_sort(list(m1,m1), list(m2,m2))
 complete_and_sort <- function(a, b, fill = 0, margin = c(1,2), roworder = NA, colorder = NA, 
-                              mc.cores = get_mc.cores()){
+                              mc.cores = get_mc_cores()){
   if (missing(b)) {
     a <- complete_rows_cols(a, fill = fill, margin = margin, mc.cores = mc.cores)
     a <- sort_rows_cols(a, roworder = roworder, colorder = colorder)

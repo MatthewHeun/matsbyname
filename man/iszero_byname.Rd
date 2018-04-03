@@ -4,7 +4,7 @@
 \alias{iszero_byname}
 \title{Test whether this is the zero matrix}
 \usage{
-iszero_byname(a, tol = 1e-06, mc.cores = get_mc.cores())
+iszero_byname(a, tol = 1e-06, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{a matrix of list of matrices}
@@ -12,7 +12,7 @@ iszero_byname(a, tol = 1e-06, mc.cores = get_mc.cores())
 \item{tol}{the allowable deviation from 0 for any element}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
