@@ -4,16 +4,16 @@
 \alias{mcmutate}
 \title{Multi-core mutate}
 \usage{
-mcmutate(.data, mc.cores = get_mc_cores(), ...,
+mcmutate(.data, ..., mc.cores = get_mc_cores(),
   mc.args = list(mc.preschedule = FALSE, mc.set.seed = TRUE, mc.silent =
   FALSE, mc.cores = mc.cores, mc.cleanup = TRUE, mc.allow.recursive = TRUE))
 }
 \arguments{
 \item{.data}{a data frame to mutate using multiple cores}
 
-\item{mc.cores}{the number of sub-data.frames created}
-
 \item{...}{name-value pairs of expressions passed to \code{\link[dplyr]{mutate}}}
+
+\item{mc.cores}{the number of sub-data.frames created}
 
 \item{mc.args}{arguments passed to \code{\link[parallel]{mclapply}}}
 }
@@ -21,8 +21,8 @@ mcmutate(.data, mc.cores = get_mc_cores(), ...,
 the mutated data frame
 }
 \description{
-Breaks the data frame into equal-length subsets of rows,
-mutates each one, and recombines.
+Splits the data frame into (near-)equal-length subsets of rows,
+mutates each, and recombines.
 }
 \details{
 Arguments to \code{\link{mclapply}} are provided by the \code{mc.cores} argument.

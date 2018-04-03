@@ -3,8 +3,8 @@
 
 #' Multi-core mutate
 #' 
-#' Breaks the data frame into equal-length subsets of rows,
-#' mutates each one, and recombines.
+#' Splits the data frame into (near-)equal-length subsets of rows,
+#' mutates each, and recombines.
 #' 
 #' Arguments to \code{\link{mclapply}} are provided by the \code{mc.cores} argument.
 #' Note that \code{mc.preschedule} defaults to \code{FALSE},
@@ -17,18 +17,20 @@
 #'
 #' @return the mutated data frame
 #' 
-#' @importFrom dplyr mutate
 #' @importFrom dplyr bind_rows
+#' @importFrom dplyr mutate
+#' @importFrom rlang abort
 #' @importFrom rlang enquos
-#' @importFrom parallel mclapply
 #' @importFrom magrittr %>%
+#' @importFrom parallel mclapply
 #' 
 #' @export
 #'
 #' @examples
 #' library(magrittr)
 #' data.frame(a = c(1,2,3), b = c(4,5,6)) %>% mcmutate(mc.cores = 2L, c = a + b)
-mcmutate <- function(.data, mc.cores = get_mc_cores(), ..., 
+mcmutate <- function(.data, ..., 
+                     mc.cores = get_mc_cores(),
                      mc.args = list(mc.preschedule = FALSE, mc.set.seed = TRUE,
                                     mc.silent = FALSE, mc.cores = mc.cores,
                                     mc.cleanup = TRUE, mc.allow.recursive = TRUE)){
@@ -39,7 +41,7 @@ mcmutate <- function(.data, mc.cores = get_mc_cores(), ...,
   }
   # More than 1 core was requested.  
   if (!is.integer(ndf)) {
-    stop("mc.cores must be an integer")
+    abort("mc.cores must be an integer")
   }
   # Avoid a degenerate case.
   # If we have fewer rows of .data than the requested number of cores, 

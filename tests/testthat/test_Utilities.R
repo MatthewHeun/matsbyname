@@ -48,6 +48,19 @@ test_that("mcmutate works as expected", {
   }
 })
 
+test_that("mcmutate works with programming", {
+  my_mcmutate <- function(df, newvarname = "c", operand1 = "a", operand2 = "b", mc.cores = 4L){
+    df %>% 
+      mcmutate(
+        !!as.name(newvarname) := !!as.name(operand1) + !!as.name(operand2), 
+        mc.cores = mc.cores
+      )
+  }
+  df <- data.frame(a = c(1,2), b = c(3,4))
+  res <- df %>% 
+    my_mcmutate()
+  expect_equal(res$c, c(4,6))
+})
 
 ###########################################################
 context("Selecting rows and columns")
