@@ -48,7 +48,7 @@ test_that("mcmutate works as expected", {
 })
 
 test_that("mcmutate works with programming", {
-  my_mcmutate <- function(df, newvarname = "c", operand1 = "a", operand2 = "b", mc.cores = 4L){
+  my_mcmutate <- function(df, newvarname = "c", operand1 = "a", operand2 = "b", mc.cores = 2L){
     df %>% 
       mcmutate(
         !!as.name(newvarname) := !!as.name(operand1) + !!as.name(operand2), 
