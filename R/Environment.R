@@ -43,7 +43,7 @@ get_mc_cores <- function(){
 #' set_mc_cores(1L)
 set_mc_cores <- function(mc.cores){
   if (!is.integer(mc.cores)) {
-    stop("mc.cores must be an integer. Try appending an L: '4L'")
+    stop(paste0("mc.cores must be an integer. Try appending an L: '", mc.cores, "L'"))
   }
   if (mc.cores <= 0) {
     stop("mc.cores must be >= 1L")
