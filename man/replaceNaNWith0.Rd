@@ -8,6 +8,8 @@ replaceNaNWith0(a, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{a matrix of list of matrices in which \code{NaN} will be replaced by \code{0}}
+
+\item{mc.cores}{the number of cores to use for this calculation}
 }
 \value{
 a matrix or list of matrices in which all \code{NaN} are replaced by \code{0}
