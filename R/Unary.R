@@ -769,3 +769,28 @@ cumprod_byname <- function(a){
 }
 
 
+#' Replace NaN values with 0
+#'
+#' In a matrix or within matrices in a list, 
+#' replace all \code{NaN} matrix values with \code{0}.
+#' 
+#' @param a a matrix of list of matrices in which \code{NaN} will be replaced by \code{0}
+#'
+#' @return a matrix or list of matrices in which all \code{NaN} are replaced by \code{0}
+#' 
+#' @export
+#'
+#' @examples
+#' suppressWarnings(a <- matrix(c(1, sqrt(-1))))
+#' replaceNaNWith0(a)
+replaceNaNWith0 <- function(a, mc.cores = get_mc.cores()){
+  replace.func <- function(a){
+    a[is.nan(a)] <- 0
+    return(a)
+  }
+  unaryapply_byname(replace.func, a = a, rowcoltypes = "all", mc.cores = mc.cores)
+}
+
+
+
+
