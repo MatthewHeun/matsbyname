@@ -775,6 +775,7 @@ cumprod_byname <- function(a){
 #' replace all \code{NaN} matrix values with \code{0}.
 #' 
 #' @param a a matrix of list of matrices in which \code{NaN} will be replaced by \code{0}
+#' @param mc.cores the number of cores to use for this calculation
 #'
 #' @return a matrix or list of matrices in which all \code{NaN} are replaced by \code{0}
 #' 
