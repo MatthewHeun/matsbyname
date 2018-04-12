@@ -4,7 +4,7 @@
 \alias{replaceNaNWith0}
 \title{Replace NaN values with 0}
 \usage{
-replaceNaNWith0(a, mc.cores = get_mc.cores())
+replaceNaNWith0(a, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{a matrix of list of matrices in which \code{NaN} will be replaced by \code{0}}
