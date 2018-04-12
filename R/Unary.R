@@ -768,4 +768,3 @@ cumprod_byname <- function(a){
   cumapply_byname(FUN = elementproduct_byname, a)
 }
 
-
