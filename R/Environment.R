@@ -19,8 +19,8 @@ library(parallel)
 #' @export
 #'
 #' @examples
-#' get_mc.cores()
-get_mc.cores <- function(){
+#' get_mc_cores()
+get_mc_cores <- function(){
   return(get("mc.cores", envir = consts_env))
 }
 
@@ -40,10 +40,13 @@ get_mc.cores <- function(){
 #' @export
 #'
 #' @examples
-#' set_mc.cores(1)
-set_mc.cores <- function(mc.cores){
+#' set_mc_cores(1L)
+set_mc_cores <- function(mc.cores){
+  if (!is.integer(mc.cores)) {
+    stop(paste0("mc.cores must be an integer. Try appending an L: '", mc.cores, "L'"))
+  }
   if (mc.cores <= 0) {
-    stop("mc.cores must be >= 1.")
+    stop("mc.cores must be >= 1L")
   }
   assign("mc.cores", mc.cores, envir = consts_env)
 }
@@ -51,11 +54,11 @@ set_mc.cores <- function(mc.cores){
 consts_env <- new.env()
 
 # Set default to 1 core.
-set_mc.cores(1)
+set_mc_cores(1L)
 
 # Use this line for local testing only. 
 # NEVER submit to CRAN with this line uncommented, 
 # because CRAN will not accept multi-threaded test code.
 # If this is a problem, I should be able to catch it, because
 # a test in test_Environment.R will fail if this line is uncommented.
-# set_mc.cores(detectCores(logical = FALSE))
+# set_mc_cores(detectCores(logical = FALSE))

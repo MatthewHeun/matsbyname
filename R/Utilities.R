@@ -1,6 +1,79 @@
 # This file contains several utility functions for the byname package.
 
 
+#' Multi-core mutate
+#' 
+#' Splits the data frame into (near-)equal-length subsets of rows,
+#' mutates each, and recombines.
+#' 
+#' Arguments to \code{\link{mclapply}} are provided by the \code{mc.cores} argument.
+#' Note that \code{mc.preschedule} defaults to \code{FALSE},
+#' because this function does its own prescheduling.
+#' 
+#' @param .data a data frame to mutate using multiple cores
+#' @param mc.cores the number of sub-data.frames created
+#' @param ... name-value pairs of expressions passed to \code{\link[dplyr]{mutate}}
+#' @param mc.args arguments passed to \code{\link[parallel]{mclapply}}
+#'
+#' @return the mutated data frame
+#' 
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr mutate
+#' @importFrom rlang abort
+#' @importFrom rlang enquos
+#' @importFrom magrittr %>%
+#' @importFrom parallel mclapply
+#' 
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' data.frame(a = c(1,2,3), b = c(4,5,6)) %>% mcmutate(mc.cores = 2L, c = a + b)
+mcmutate <- function(.data, ..., 
+                     mc.cores = get_mc_cores(),
+                     mc.args = list(mc.preschedule = FALSE, mc.set.seed = TRUE,
+                                    mc.silent = FALSE, mc.cores = mc.cores,
+                                    mc.cleanup = TRUE, mc.allow.recursive = TRUE)){
+  ndf <- mc.args[["mc.cores"]]
+  # If only 1 core was requested, calculate and return.
+  if (ndf <= 1) {
+    return(mutate(.data, !!!enquos(...)))
+  }
+  # More than 1 core was requested.  
+  if (!is.integer(ndf)) {
+    abort("mc.cores must be an integer")
+  }
+  # Avoid a degenerate case.
+  # If we have fewer rows of .data than the requested number of cores, 
+  # only use as many subdfs as we have rows in .data.
+  if (nrow(.data) < ndf) {
+    ndf <- nrow(.data)
+  }
+  rowspercore <- as.integer(nrow(.data) / ndf)
+  # Decide which rows are in each sub-data.frame
+  subdf <- list()
+  lastrow <- 0
+  for (i in 1:max(ndf - 1, 1)) {
+    firstrow <- lastrow + 1
+    lastrow <- firstrow + rowspercore - 1
+    subdf[[i]] <- .data[firstrow:lastrow, ]
+  }
+  # Pick up all final rows.
+  subdf[[ndf]] <- .data[(lastrow + 1):nrow(.data), ]
+  # Do the mutate calculations in ... on all subdfs of the data frame.
+  mclapply(X = subdf,
+           mc.preschedule = mc.args[["mc.preschedule"]],
+           mc.set.seed = mc.args[["mc.set.seed"]],
+           mc.silent = mc.args[["mc.silent"]],
+           mc.cores = mc.args[["mc.cores"]],
+           mc.cleanup = mc.args[["mc.cleanup"]],
+           mc.allow.recursive = mc.args[["mc.allow.recursive"]],
+           FUN = function(df){mutate(df, !!!enquos(...))}
+           ) %>%
+    bind_rows()
+}
+
+
 #' Organize binary arguments
 #'
 #' Organizes arguments of binary (2 arguments) \code{_byname} functions.
@@ -211,7 +284,7 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #' @param a a matrix or list of matrices (say, from a column of a data frame)
 #' @param margin the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a named list of rows or columns extracted from \code{m}
@@ -228,7 +301,7 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #'   setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
-list_of_rows_or_cols <- function(a, margin, mc.cores = get_mc.cores()){
+list_of_rows_or_cols <- function(a, margin, mc.cores = get_mc_cores()){
   lrc.func <- function(a, margin){
     stopifnot(length(margin) == 1)
     stopifnot(margin %in% c(1,2))
@@ -257,7 +330,7 @@ list_of_rows_or_cols <- function(a, margin, mc.cores = get_mc.cores()){
 #'
 #' @param a The matrix or data frame on which row names are to be retrieved
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return row names of \code{a}
@@ -275,7 +348,7 @@ list_of_rows_or_cols <- function(a, margin, mc.cores = get_mc.cores()){
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
 #' getrownames_byname(DF$m)
-getrownames_byname <- function(a, mc.cores = get_mc.cores()){
+getrownames_byname <- function(a, mc.cores = get_mc_cores()){
   unaryapply_byname(rownames, a = a, rowcoltypes = "none", mc.cores = mc.cores)
 }
 
@@ -285,7 +358,7 @@ getrownames_byname <- function(a, mc.cores = get_mc.cores()){
 #'
 #' @param a The matrix or data frame from which column names are to be retrieved
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return column names of \code{m}
@@ -303,7 +376,7 @@ getrownames_byname <- function(a, mc.cores = get_mc.cores()){
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
 #' getcolnames_byname(DF$m)
-getcolnames_byname <- function(a, mc.cores = get_mc.cores()){
+getcolnames_byname <- function(a, mc.cores = get_mc_cores()){
   unaryapply_byname(colnames, a = a, rowcoltypes = "none", mc.cores = mc.cores)
 }
 
@@ -324,7 +397,7 @@ getcolnames_byname <- function(a, mc.cores = get_mc.cores()){
 #' @param a A matrix or a list of matrices in which row names are to be set
 #' @param rownames A vector of new row names or a list of vectors of new row names
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a copy of \code{m} with new row names
@@ -350,7 +423,7 @@ getcolnames_byname <- function(a, mc.cores = get_mc.cores()){
 #' setrownames_byname(DF$m, c("c", "d"))
 #' DF <- DF %>% mutate(m = setrownames_byname(m, c("r1", "r2")))
 #' DF$m[[1]]
-setrownames_byname <- function(a, rownames, mc.cores = get_mc.cores()){
+setrownames_byname <- function(a, rownames, mc.cores = get_mc_cores()){
   if (is.null(a)) {
     return(NULL)
   }
@@ -391,7 +464,7 @@ setrownames_byname <- function(a, rownames, mc.cores = get_mc.cores()){
 #' @param a A matrix or a list of matrices in which column names are to be set
 #' @param colnames A vector of new column names or a list of vectors of new column names
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a copy of \code{a} with new column names
@@ -403,7 +476,7 @@ setrownames_byname <- function(a, rownames, mc.cores = get_mc.cores()){
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' setcolnames_byname(m, c("a", "b", "c"))
-setcolnames_byname <- function(a, colnames, mc.cores = get_mc.cores()){
+setcolnames_byname <- function(a, colnames, mc.cores = get_mc_cores()){
   # colname.func <- function(a, colnames){
   #   if (is.null(dim(a))) {
   #     # a has no dimensions. It is a constant.
@@ -443,7 +516,7 @@ setcolnames_byname <- function(a, colnames, mc.cores = get_mc.cores()){
 #' @param a the matrix on which row type is to be set
 #' @param rowtype the type of item stored in rows
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{a} with rowtype attribute set to \code{rowtype}.
@@ -467,7 +540,7 @@ setcolnames_byname <- function(a, colnames, mc.cores = get_mc.cores()){
 #' DF <- DF %>% mutate(newcol = setrowtype(U, "Commodities"))
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
-setrowtype <- function(a, rowtype, mc.cores = get_mc.cores()){
+setrowtype <- function(a, rowtype, mc.cores = get_mc_cores()){
   rt.func <- function(a, rowtype){
     attr(a, "rowtype") <- rowtype
     return(a)
@@ -488,7 +561,7 @@ setrowtype <- function(a, rowtype, mc.cores = get_mc.cores()){
 #' @param a the matrix on which column type is to be set
 #' @param coltype the type of item stored in columns
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{a} with \code{coltype} attribute set.
@@ -512,7 +585,7 @@ setrowtype <- function(a, rowtype, mc.cores = get_mc.cores()){
 #' DF <- DF %>% mutate(newcol = setcoltype(U, "Industries"))
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
-setcoltype <- function(a, coltype, mc.cores = get_mc.cores()){
+setcoltype <- function(a, coltype, mc.cores = get_mc_cores()){
   ct.func <- function(a, coltype){
     attr(a, "coltype") <- coltype
     return(a)
@@ -527,7 +600,7 @@ setcoltype <- function(a, coltype, mc.cores = get_mc.cores()){
 #'
 #' @param a the object from which you want to extract row types
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the row type of \code{a}
@@ -544,7 +617,7 @@ setcoltype <- function(a, coltype, mc.cores = get_mc.cores()){
 #' rowtype(U)
 #' # This also works for lists
 #' rowtype(list(U,U))
-rowtype <- function(a, mc.cores = get_mc.cores()){
+rowtype <- function(a, mc.cores = get_mc_cores()){
   unaryapply_byname(attr, a = a, .FUNdots = list(which = "rowtype"), 
                     rowcoltypes = "none", mc.cores = mc.cores)
 }
@@ -555,7 +628,7 @@ rowtype <- function(a, mc.cores = get_mc.cores()){
 #'
 #' @param a the object from which you want to extract column types
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the column type of \code{a}
@@ -571,7 +644,7 @@ rowtype <- function(a, mc.cores = get_mc.cores()){
 #' coltype(U)
 #' # This also works for lists
 #' coltype(list(U,U))
-coltype <- function(a, mc.cores = get_mc.cores()){
+coltype <- function(a, mc.cores = get_mc_cores()){
   unaryapply_byname(attr, a = a, .FUNdots = list(which = "coltype"), 
                     rowcoltypes = "none", mc.cores = mc.cores)
 }
@@ -610,7 +683,7 @@ coltype <- function(a, mc.cores = get_mc.cores()){
 #' @param remove_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -625,7 +698,7 @@ coltype <- function(a, mc.cores = get_mc.cores()){
 #' select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
-select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc.cores()){
+select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc_cores()){
   if (is.null(a)) {
     return(NULL)
   }
@@ -718,7 +791,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
 #' Default pattern (\code{$^}) removes nothing.
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -733,7 +806,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' select_cols_byname(m, remove_pattern = make_pattern(c("p1", "p3"), pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
-select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc.cores()){
+select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", mc.cores = get_mc_cores()){
   if (is.null(a)) {
     return(NULL)
   }
@@ -810,7 +883,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' or \code{c(1,2)} for both rows and columns.
 #' @param clean_value the undesirable value
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' When a row (when \code{margin = 1}) or a column (when \code{margin = 2})
@@ -842,7 +915,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #' DF2[[1, "m2"]] <- m2
 #' DF2[[2, "m2"]] <- m2
 #' DF2 %>% clean_byname(margin = c(1, 2), clean_value = -20)
-clean_byname <- function(a, margin = c(1, 2), clean_value = 0, mc.cores = get_mc.cores()){
+clean_byname <- function(a, margin = c(1, 2), clean_value = 0, mc.cores = get_mc_cores()){
   if (1 %in% margin & 2 %in% margin) {
     # Clean both dimensions of a.
     cleaned1 <- clean_byname(a, margin = 1, clean_value = clean_value)
@@ -877,7 +950,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, mc.cores = get_mc
 #' @param a a matrix of list of matrices
 #' @param tol the allowable deviation from 0 for any element
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{TRUE} iff this is the zero matrix within \code{tol}.
@@ -901,7 +974,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, mc.cores = get_mc
 #' iszero_byname(DF$B)
 #' iszero_byname(matrix(1e-10, nrow = 2))
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
-iszero_byname <- function(a, tol = 1e-6, mc.cores = get_mc.cores()){
+iszero_byname <- function(a, tol = 1e-6, mc.cores = get_mc_cores()){
   zero.func <- function(a, tol){
     all(abs(a) < tol)
   }

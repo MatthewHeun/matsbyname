@@ -5,7 +5,7 @@
 \title{Sorts rows and columns of a matrix}
 \usage{
 sort_rows_cols(a, margin = c(1, 2), roworder = NA, colorder = NA,
-  mc.cores = get_mc.cores())
+  mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{a matrix or data frame whose rows and columns are to be sorted}
@@ -23,7 +23,7 @@ If \code{NULL}, default is used. Unspecified rows are dropped.}
 If \code{NULL}, default is used. Unspecified columns are dropped.}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

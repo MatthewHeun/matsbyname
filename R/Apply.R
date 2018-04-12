@@ -22,7 +22,7 @@
 #'                             Rather, \code{FUN} will set rowtype and coltype.}
 #'        }
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #' 
 #' @importFrom parallel mcMap
@@ -41,7 +41,7 @@
 #' unaryapply_byname(`-`, U)
 unaryapply_byname <- function(FUN, a, .FUNdots = NULL, 
                               rowcoltypes = c("all", "transpose", "row", "col", "none"), 
-                              mc.cores = get_mc.cores()){
+                              mc.cores = get_mc_cores()){
   rowcoltypes <- match.arg(rowcoltypes)
   if (is.null(a)) {
     return(NULL)
@@ -112,7 +112,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return the result of applying \code{FUN} "by name" to \code{a} and \code{b}.
@@ -131,7 +131,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' binaryapply_byname(`+`, U, Y)
 binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL, 
                                match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE, 
-                               mc.cores = get_mc.cores()){
+                               mc.cores = get_mc_cores()){
   match_type <- match.arg(match_type)
   if (.organize) {
     args <- organize_args(a, b, fill = 0, match_type = match_type)
@@ -225,7 +225,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'        
 #' @return the result of applying \code{FUN} to all operands in \code{...}
@@ -240,7 +240,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 naryapply_byname <- function(FUN, ..., 
                              .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
                              set_rowcoltypes = TRUE, .organize = TRUE, 
-                             mc.cores = get_mc.cores()){
+                             mc.cores = get_mc_cores()){
   match_type <- match.arg(match_type)
   dots <- list(...)
   if (length(dots) == 1) {
@@ -293,7 +293,7 @@ naryapply_byname <- function(FUN, ...,
 #'        Normally, this should be \code{TRUE} (the default).
 #'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
 #' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
+#'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
 #'        
 #' @return the result of \code{FUN} applied logically to \code{...}
@@ -304,7 +304,7 @@ naryapply_byname <- function(FUN, ...,
 naryapplylogical_byname <- function(FUN, ..., 
                                     .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
                                     set_rowcoltypes = TRUE, .organize = TRUE, 
-                                    mc.cores = get_mc.cores()){
+                                    mc.cores = get_mc_cores()){
   match_type <- match.arg(match_type)
   dots <- list(...)
   if (length(dots) == 1) {
