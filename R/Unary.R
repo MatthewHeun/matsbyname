@@ -768,3 +768,15 @@ cumprod_byname <- function(a){
   cumapply_byname(FUN = elementproduct_byname, a)
 }
 
+
+count_vals_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"), val = 0){
+  compare_fun <- match.arg(compare_fun)
+  compare_fun <- match.fun(compare_fun)
+  count_func <- function(a,  compare_fun, val){
+    # At this point, a should be an individual matrix.
+    sumall_byname(compare_fun(a, val))
+  }
+  unaryapply_byname(FUN = count_func, a = a, 
+                    .FUNdots = c(compare_fun = compare_fun, val = val), rowcoltypes = "all")
+}
+

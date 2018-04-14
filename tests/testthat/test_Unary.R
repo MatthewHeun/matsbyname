@@ -1033,3 +1033,24 @@ test_that("cumprod_byname works as expected", {
   expect_equal(DF3$m2, list(m1, sum_byname(m1, m2) * 0, m3))
 })
 
+
+###########################################################
+context("Counting values")
+###########################################################
+
+test_that("count_vals_byname works as expected", {
+  m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  expect_equal(count_vals_byname(m), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "==", 0), 2)
+  expect_equal(count_vals_byname(m, "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "!="), 4)
+  expect_equal(count_vals_byname(m, "<", 1), 2)
+  expect_equal(count_vals_byname(m, "<=", 1), 3)
+  expect_equal(count_vals_byname(m, ">=", 3), 2)
+  expect_equal(count_vals_byname(m, ">", 4), 0)
+  
+})
+  
+
+
