@@ -7,6 +7,9 @@
 * Fixed a bug caused by the above refactoring.
   In `select_cols_byname`, a `NULL` result terminated the executing thread.
 * Added new function `replaceNaNWith0`.
+* Added new functions `count_vals_byname`, `count_vals_inrows_byname`, and 
+  `count_vals_incols_byname` that return the number of matrix entries
+  that meet a criterion for the entire matrix, in each row, and in each column, respectively.
 * Improvements to documentation.
 
 

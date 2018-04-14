@@ -822,14 +822,105 @@ replaceNaNWith0 <- function(a, mc.cores = get_mc_cores()){
 #' # Also works for lists
 #' count_vals_byname(list(m,m), "<=", 1)
 count_vals_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"), val = 0){
+  sumall_byname(compare_byname(a, compare_fun, val))  
+}
+
+
+#' Count the number of matrix entries in rows that meet a criterion
+#' 
+#' Expressions can be written in a natural way such as 
+#' \code{count_vals_inrows_byname(m, "<=", 1)}.
+#' 
+#' Either a single matrix or a list of matrices can be given as the \code{a} argument.
+#' \code{compare_fun} can be specified as a string (\code{"!="})
+#' or as a back-quoted function (\code{`!=`}).
+#' 
+#' @param a a matrix or list of matrices whose values are to be counted by rows according to \code{compare_fun}
+#' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
+#' @param val the value against which matrix entries are compared
+#'
+#' @return an \code{matrix} with a single column indicating the number of entries in \code{a} 
+#'         that meet the specified criterion in each row of \code{a}
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+#' count_vals_inrows_byname(m) # uses defaults: compare_fun = "==" and val = 0
+#' count_vals_inrows_byname(m, compare_fun = "!=")
+#' count_vals_inrows_byname(m, compare_fun = `!=`)
+#' # Write expressions in a natural way
+#' count_vals_inrows_byname(m, "<=", 1)
+#' # Also works for lists
+#' count_vals_inrows_byname(list(m,m), "<=", 1)
+count_vals_inrows_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"), val = 0){
+  rowsums_byname(compare_byname(a, compare_fun, val))  
+}
+
+
+#' Count the number of matrix entries in columns that meet a criterion
+#' 
+#' Expressions can be written in a natural way such as 
+#' \code{count_vals_incols_byname(m, "<=", 1)}.
+#' 
+#' Either a single matrix or a list of matrices can be given as the \code{a} argument.
+#' \code{compare_fun} can be specified as a string (\code{"!="})
+#' or as a back-quoted function (\code{`!=`}).
+#' 
+#' @param a a matrix or list of matrices whose values are to be counted by columns 
+#'        according to \code{compare_fun}
+#' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
+#' @param val the value against which matrix entries are compared
+#'
+#' @return an \code{matrix} with a single row indicating the number of entries in \code{a} 
+#'         that meet the specified criterion in each column of \code{a}
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+#' count_vals_incols_byname(m) # uses defaults: compare_fun = "==" and val = 0
+#' count_vals_incols_byname(m, compare_fun = "!=")
+#' count_vals_incols_byname(m, compare_fun = `!=`)
+#' # Write expressions in a natural way
+#' count_vals_incols_byname(m, "<=", 1)
+#' # Also works for lists
+#' count_vals_incols_byname(list(m,m), "<=", 1)
+count_vals_incols_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"), val = 0){
+  colsums_byname(compare_byname(a, compare_fun, val))  
+}
+
+
+#' Compare matrix entries to a value
+#'
+#' @param a a matrix or list of matrices whose values are to be counted according to \code{compare_fun}
+#' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
+#' @param val the value against which matrix entries are compared
+#'
+#' @return a logial matrix of same size as \code{a} containing \code{TRUE} when the criterion is met,
+#'         \code{FALSE} otherwise
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+#' compare_byname(m, "<", 3)
+#' compare_byname(list(m,m), "<", 3)
+compare_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"), val = 0){
   if (!is.function(compare_fun)) {
     compare_fun <- match.arg(compare_fun)
   }
   compare_fun <- match.fun(compare_fun)
-  count_func <- function(a,  compare_fun, val){
+  test_func <- function(a,  compare_fun, val){
     # At this point, a should be an individual matrix.
-    sumall_byname(compare_fun(a, val))
+    compare_fun(a, val)
   }
-  unaryapply_byname(FUN = count_func, a = a, 
+  unaryapply_byname(FUN = test_func, a = a, 
                     .FUNdots = c(compare_fun = compare_fun, val = val), rowcoltypes = "all")
 }
+
+
+
