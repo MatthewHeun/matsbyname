@@ -2,10 +2,11 @@
 
 ## matsbyname 0.2.7 (2018-xx-xx)
 
-* Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions,
-  thereby simplifying code.
+* Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions
+  with a transposed argument, thereby simplifying code.
 * Fixed a bug caused by the above refactoring.
   In `select_cols_byname`, a `NULL` result terminated the executing thread.
+* Added new function `replaceNaNWith0`.
 * Improvements to documentation.
 
 
