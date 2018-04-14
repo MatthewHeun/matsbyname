@@ -1045,3 +1045,27 @@ test_that("replaceNaNWith0 works as expected", {
   # Should work with lists
   expect_equal(replaceNaNWith0(list(a,a)), list(expected, expected))
 })
+
+
+###########################################################
+context("Counting values")
+###########################################################
+
+test_that("count_vals_byname works as expected", {
+  m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  expect_equal(count_vals_byname(m), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = `==`, 0), 2)
+  expect_equal(count_vals_byname(m, "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "!="), 4)
+  expect_equal(count_vals_byname(m, compare_fun = `!=`), 4)
+  expect_equal(count_vals_byname(m, "<", 1), 2)
+  expect_equal(count_vals_byname(m, "<=", 1), 3)
+  expect_equal(count_vals_byname(m, ">=", 3), 2)
+  expect_equal(count_vals_byname(m, ">", 4), 0)
+  expect_equal(count_vals_byname(m, `>`, 4), 0)
+  # Should also work for lists
+  l <- list(m, m)
+  expect_equal(count_vals_byname(l, `>`, 4), list(0, 0))
+})
