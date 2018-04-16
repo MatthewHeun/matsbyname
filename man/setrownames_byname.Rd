@@ -4,7 +4,7 @@
 \alias{setrownames_byname}
 \title{Sets row names}
 \usage{
-setrownames_byname(a, rownames, mc.cores = get_mc.cores())
+setrownames_byname(a, rownames, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{A matrix or a list of matrices in which row names are to be set}
@@ -12,7 +12,7 @@ setrownames_byname(a, rownames, mc.cores = get_mc.cores())
 \item{rownames}{A vector of new row names or a list of vectors of new row names}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
@@ -20,15 +20,16 @@ a copy of \code{m} with new row names
 }
 \description{
 Sets row names in a way that is amenable to use in piping operations in a functional programming way.
-If \code{m} is a constant, it is converted to a matrix and \code{rownames} are applied.
-If \code{m} is a matrix, \code{rownames} should be a vector of new row names
-that is as long as the number of rows in \code{m}.
-If \code{m} is a list of matrices, 
-\code{rownames} can also be a list, and it should be as long \code{m}.
+If \code{a} is \code{NULL}, \code{NULL} is returned.
+If \code{a} is a constant, it is converted to a matrix and \code{rownames} are applied.
+If \code{a} is a matrix, \code{rownames} should be a vector of new row names
+that is as long as the number of rows in \code{a}.
+If \code{a} is a list of matrices, 
+\code{rownames} can also be a list, and it should be as long \code{a}.
 Or \code{rownames} can be a vector of row names which will be applied to every matrix in
-the list of \code{m}.
+the list of \code{a}.
 Each item in the list should be a vector containing row names for the corresponding 
-matrix in \code{m}.
+matrix in \code{a}.
 }
 \examples{
 library(magrittr)

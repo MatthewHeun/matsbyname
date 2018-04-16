@@ -5,7 +5,7 @@
 \title{Complete matrices relative to one another and sort into same row, column order}
 \usage{
 complete_and_sort(a, b, fill = 0, margin = c(1, 2), roworder = NA,
-  colorder = NA, mc.cores = get_mc.cores())
+  colorder = NA, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{The first matrix}
@@ -24,7 +24,7 @@ Unspecified rows are dropped.}
 Unspecified columns are dropped.}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

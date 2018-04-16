@@ -4,7 +4,7 @@
 \alias{rowprods_byname}
 \title{Row products, sorted by name}
 \usage{
-rowprods_byname(a, colname = NA, mc.cores = get_mc.cores())
+rowprods_byname(a, colname = NA, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{a matrix or list of matrices from which row products are desired.}
@@ -12,7 +12,7 @@ rowprods_byname(a, colname = NA, mc.cores = get_mc.cores())
 \item{colname}{name of the output column containing row products}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

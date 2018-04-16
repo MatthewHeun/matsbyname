@@ -5,7 +5,7 @@
 \title{Select columns of a matrix (or list of matrices) by name}
 \usage{
 select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^",
-  mc.cores = get_mc.cores())
+  mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{a matrix or a list of matrices}
@@ -17,7 +17,7 @@ Default pattern (\code{$^}) retains nothing.}
 Default pattern (\code{$^}) removes nothing.}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
@@ -29,6 +29,8 @@ For maximum flexibility, arguments are extended regex patterns
 that are matched against column names.
 }
 \details{
+If \code{a} is \code{NULL}, \code{NULL} is returned.
+
 Patterns are compared against column names using extended regex.
 If no column names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
 If no column names of \code{a} match the \code{remove_pattern}, \code{a} is returned.
@@ -44,7 +46,7 @@ Some typical patterns are:
 
 Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 
-\code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
+\code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 

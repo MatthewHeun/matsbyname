@@ -4,13 +4,13 @@
 \alias{getrownames_byname}
 \title{Gets row names}
 \usage{
-getrownames_byname(a, mc.cores = get_mc.cores())
+getrownames_byname(a, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{The matrix or data frame on which row names are to be retrieved}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

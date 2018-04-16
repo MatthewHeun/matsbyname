@@ -4,13 +4,13 @@
 \alias{prodall_byname}
 \title{Product of all elements in a matrix}
 \usage{
-prodall_byname(a, mc.cores = get_mc.cores())
+prodall_byname(a, mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{the matrix whose elements are to be multiplied}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

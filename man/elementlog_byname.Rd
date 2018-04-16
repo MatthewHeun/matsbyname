@@ -4,7 +4,7 @@
 \alias{elementlog_byname}
 \title{Logarithm of matrix elements}
 \usage{
-elementlog_byname(a, base = exp(1), mc.cores = get_mc.cores())
+elementlog_byname(a, base = exp(1), mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{a matrix or list of matrices}
@@ -12,7 +12,7 @@ elementlog_byname(a, base = exp(1), mc.cores = get_mc.cores())
 \item{base}{the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

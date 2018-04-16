@@ -4,7 +4,7 @@
 \alias{identize_byname}
 \title{Named identity matrix or vector}
 \usage{
-identize_byname(a, margin = c(1, 2), mc.cores = get_mc.cores())
+identize_byname(a, margin = c(1, 2), mc.cores = get_mc_cores())
 }
 \arguments{
 \item{a}{the matrix whose names and dimensions are to be preserved in an identity matrix or vector}
@@ -12,7 +12,7 @@ identize_byname(a, margin = c(1, 2), mc.cores = get_mc.cores())
 \item{margin}{determines whether an identity vector or matrix is returned}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
+Default is \code{get_mc_cores()} or \code{1}. 
 Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{

@@ -1033,3 +1033,90 @@ test_that("cumprod_byname works as expected", {
   expect_equal(DF3$m2, list(m1, sum_byname(m1, m2) * 0, m3))
 })
 
+
+###########################################################
+context("Replace NaN with 0")
+###########################################################
+
+test_that("replaceNaNWith0 works as expected", {
+  expected <- matrix(c(1,0))
+  suppressWarnings(a <- matrix(c(1, sqrt(-1))))
+  expect_equal(replaceNaNWith0(a), expected)
+  # Should work with lists
+  expect_equal(replaceNaNWith0(list(a,a)), list(expected, expected))
+})
+
+
+###########################################################
+context("Counting values")
+###########################################################
+
+test_that("count_vals_byname works as expected", {
+  m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  expect_equal(count_vals_byname(m), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = `==`, 0), 2)
+  expect_equal(count_vals_byname(m, "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "!="), 4)
+  expect_equal(count_vals_byname(m, compare_fun = `!=`), 4)
+  expect_equal(count_vals_byname(m, "<", 1), 2)
+  expect_equal(count_vals_byname(m, "<=", 1), 3)
+  expect_equal(count_vals_byname(m, ">=", 3), 2)
+  expect_equal(count_vals_byname(m, ">", 4), 0)
+  expect_equal(count_vals_byname(m, `>`, 4), 0)
+  # Should also work for lists
+  l <- list(m, m)
+  expect_equal(count_vals_byname(l, `>`, 4), list(0, 0))
+})
+
+
+test_that("compare_byname works as expected", {
+  m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  expect_equal(compare_byname(m), matrix(c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
+  expect_equal(compare_byname(m, "<", 3), 
+               matrix(c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
+})
+  
+  
+test_that("count_vals_inrows_byname works as expected", {
+  m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  expect_equal(count_vals_inrows_byname(m), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, compare_fun = "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, compare_fun = `==`, 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, compare_fun = "!="), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, compare_fun = `!=`), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, "<", 1), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, "<=", 1), matrix(1, nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, ">=", 3), matrix(c(1, 1, 0), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, ">", 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, `>`, 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
+  # Should also work for lists
+  l <- list(m, m)
+  ans <- matrix(c(0, 0, 0), nrow = 3, ncol = 1)
+  expect_equal(count_vals_inrows_byname(l, `>`, 4), list(ans, ans))
+})
+
+
+test_that("count_vals_incols_byname works as expected", {
+  m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  expect_equal(count_vals_incols_byname(m), matrix(c(1, 1), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, compare_fun = "==", 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, compare_fun = `==`, 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, "==", 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, compare_fun = "!="), matrix(c(2, 2), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, compare_fun = `!=`), matrix(c(2, 2), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, "<", 1), matrix(c(1, 1), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, "<=", 1), matrix(c(2, 1), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, ">=", 3), matrix(c(0, 2), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, ">", 4), matrix(c(0, 0), nrow = 1, ncol = 2))
+  expect_equal(count_vals_incols_byname(m, `>`, 4), matrix(c(0, 0), nrow = 1, ncol = 2))
+  # Should also work for lists
+  l <- list(m, m)
+  ans <- matrix(c(0, 2), nrow = 1, ncol = 2)
+  expect_equal(count_vals_incols_byname(l, `>`, 2), list(ans, ans))
+})
+
