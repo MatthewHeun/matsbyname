@@ -1,6 +1,6 @@
 # News for `matsbyname`
 
-## matsbyname 0.2.7 (2018-xx-xx)
+## matsbyname 0.2.7 (2018-04-15)
 
 * Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions
   with a transposed argument, thereby simplifying code.
@@ -11,6 +11,7 @@
   `count_vals_incols_byname` that return the number of matrix entries
   that meet a criterion for the entire matrix, in each row, and in each column, respectively.
 * Improvements to documentation.
+* Now up to 646 passing tests.
 
 
 ## matsbyname 0.2.6 (2018-03-16)
