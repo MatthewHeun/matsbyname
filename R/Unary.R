@@ -929,4 +929,46 @@ compare_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
 }
 
 
+#' Are all matrix elements \code{TRUE}?
+#' 
+#' Tells whether all elements in matrix \code{a} are true.
+#' 
+#' \code{a} can be a matrix or a list of matrices.
+#'
+#' @param a a matrix or list of matrices
+#'
+#' @return \code{TRUE} if all elements of \code{a} are \code{TRUE}, \code{FALSE} otherwise
+#' 
+#' @export
+#'
+#' @examples
+#' all_byname(matrix(rep(TRUE, times = 4), nrow = 2, ncol = 2))
+#' all_byname(matrix(c(TRUE, FALSE), nrow = 2, ncol = 1))
+all_byname <- function(a){
+  all_func <- function(a){
+    all(a)
+  }
+  unaryapply_byname(FUN = all_func, a = a, rowcoltypes = "none")
+}
 
+#' Are any matrix elements \code{TRUE}?
+#' 
+#' Tells whether any elements in matrix \code{a} are true.
+#' 
+#' \code{a} can be a matrix or a list of matrices.
+#'
+#' @param a a matrix or list of matrices
+#'
+#' @return \code{TRUE} if any elements of \code{a} are \code{TRUE}, \code{FALSE} otherwise
+#' 
+#' @export
+#'
+#' @examples
+#' any_byname(matrix(c(TRUE, FALSE), nrow = 2, ncol = 1))
+#' any_byname(matrix(rep(FALSE, times = 4), nrow = 2, ncol = 2))
+any_byname <- function(a){
+  any_func <- function(a){
+    any(a)
+  }
+  unaryapply_byname(FUN = any_func, a = a, rowcoltypes = "none")
+}

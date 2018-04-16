@@ -1,5 +1,10 @@
 # News for `matsbyname`
 
+## matsbyname 0.2.8 (2018-xx-xx)
+
+* New functions `all_byname` and `any_byname` make logical tests easy.
+
+
 ## matsbyname 0.2.7 (2018-04-15)
 
 * Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions

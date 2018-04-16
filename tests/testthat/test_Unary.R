@@ -1120,3 +1120,24 @@ test_that("count_vals_incols_byname works as expected", {
   expect_equal(count_vals_incols_byname(l, `>`, 2), list(ans, ans))
 })
 
+
+###########################################################
+context("Any")
+###########################################################
+
+test_that("any_byname works as expected", {
+  m <- matrix(rep(TRUE, times = 4), nrow = 2, ncol = 2)
+  expect_true(all_byname(m))
+  expect_true(any_byname(m))
+  
+  n <- matrix(c(TRUE, FALSE), nrow = 2, ncol = 1)
+  expect_false(all_byname(n))
+  expect_true(any_byname(n))
+  
+  # Also works for lists
+  expect_equal(all_byname(list(m,m)), list(TRUE, TRUE))
+  expect_equal(any_byname(list(m,m)), list(TRUE, TRUE))
+  expect_equal(all_byname(list(n,n)), list(FALSE, FALSE))
+  expect_equal(any_byname(list(n,n)), list(TRUE, TRUE))
+  
+})
