@@ -11,16 +11,20 @@ compare_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
 \item{a}{a matrix or list of matrices whose values are to be counted according to \code{compare_fun}}
 
 \item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}", 
-"\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"}
+"\code{<}", "\code{<=}", "\code{>=}", or "\code{>}"}
 
 \item{val}{the value against which matrix entries are compared}
 }
 \value{
-a logial matrix of same size as \code{a} containing \code{TRUE} when the criterion is met,
+a logial matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
         \code{FALSE} otherwise
 }
 \description{
-Compare matrix entries to a value
+Compares matrix entries to a value, 
+returning a matrix of same size as \code{a}
+containing \code{TRUE} or \code{FALSE} values
+as the result of applying \code{compare_fun} and \code{val}
+to all entries in \code{a}.
 }
 \examples{
 m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)

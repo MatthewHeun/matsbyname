@@ -894,13 +894,19 @@ count_vals_incols_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", "
 
 
 #' Compare matrix entries to a value
+#' 
+#' Compares matrix entries to a value, 
+#' returning a matrix of same size as \code{a}
+#' containing \code{TRUE} or \code{FALSE} values
+#' as the result of applying \code{compare_fun} and \code{val}
+#' to all entries in \code{a}.
 #'
 #' @param a a matrix or list of matrices whose values are to be counted according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
+#'        "\code{<}", "\code{<=}", "\code{>=}", or "\code{>}"
 #' @param val the value against which matrix entries are compared
 #'
-#' @return a logial matrix of same size as \code{a} containing \code{TRUE} when the criterion is met,
+#' @return a logial matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
 #'         \code{FALSE} otherwise
 #' 
 #' @export
