@@ -1035,15 +1035,17 @@ test_that("cumprod_byname works as expected", {
 
 
 ###########################################################
-context("Replace NaN with 0")
+context("Replace NaN")
 ###########################################################
 
-test_that("replaceNaNWith0 works as expected", {
+test_that("replaceNaN works as expected", {
   expected <- matrix(c(1,0))
   suppressWarnings(a <- matrix(c(1, sqrt(-1))))
-  expect_equal(replaceNaNWith0(a), expected)
+  expect_equal(replaceNaN_byname(a), expected)
   # Should work with lists
-  expect_equal(replaceNaNWith0(list(a,a)), list(expected, expected))
+  expect_equal(replaceNaN_byname(list(a,a)), list(expected, expected))
+  # Try with a different value
+  expect_equal(replaceNaN_byname(a, 42), matrix(c(1,42)))
 })
 
 
