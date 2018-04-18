@@ -784,8 +784,8 @@ cumprod_byname <- function(a){
 #'
 #' @examples
 #' suppressWarnings(a <- matrix(c(1, sqrt(-1))))
-#' replaceNaN(a)
-#' replaceNaN(a, 42)
+#' replaceNaN_byname(a)
+#' replaceNaN_byname(a, 42)
 replaceNaN_byname <- function(a, val = 0, mc.cores = get_mc_cores()){
   replace.func <- function(a){
     a[is.nan(a)] <- val

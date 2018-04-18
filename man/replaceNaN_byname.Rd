@@ -9,6 +9,8 @@ replaceNaN_byname(a, val = 0, mc.cores = get_mc_cores())
 \arguments{
 \item{a}{a matrix of list of matrices in which \code{NaN} will be replaced by \code{val}}
 
+\item{val}{\code{NaN}s are replace by \code{val}}
+
 \item{mc.cores}{the number of cores to use for this calculation}
 }
 \value{
@@ -20,6 +22,6 @@ replace all \code{NaN} matrix values with \code{val}.
 }
 \examples{
 suppressWarnings(a <- matrix(c(1, sqrt(-1))))
-replaceNaN(a)
-replaceNaN(a, 42)
+replaceNaN_byname(a)
+replaceNaN_byname(a, 42)
 }
