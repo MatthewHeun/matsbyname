@@ -11,9 +11,9 @@ clean_byname(a, margin = c(1, 2), clean_value = 0,
 \item{a}{the matrix to be cleaned}
 
 \item{margin}{the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
-or \code{c(1,2)} for both rows and columns.}
+or \code{c(1,2)} for both rows and columns. Default is \code{c(1,2)}.}
 
-\item{clean_value}{the undesirable value}
+\item{clean_value}{the undesirable value. Default is \code{0}.}
 
 \item{mc.cores}{an integer specifying the number of cores to be used.
        Default is \code{get_mc_cores()} or \code{1}. 

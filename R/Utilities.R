@@ -880,8 +880,8 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
 #'
 #' @param a the matrix to be cleaned
 #' @param margin the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
-#' or \code{c(1,2)} for both rows and columns.
-#' @param clean_value the undesirable value
+#' or \code{c(1,2)} for both rows and columns. Default is \code{c(1,2)}.
+#' @param clean_value the undesirable value. Default is \code{0}.
 #' @param mc.cores an integer specifying the number of cores to be used.
 #'        Default is \code{get_mc_cores()} or \code{1}. 
 #'        Try \code{mc.cores = parallel::detectCores()}.
