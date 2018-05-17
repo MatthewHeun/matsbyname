@@ -29,12 +29,42 @@
 mat_byname <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL, 
                        m = matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames),
                        rowtype = NULL, coltype = NULL) {
-  if (is.null(m)) {
-    stop("'m' must be of a vector type, was 'NULL'")
+  # if (is.null(m)) {
+  #   stop("'m' must be of a matrix type, was 'NULL'")
+  # }
+  # if (!"matrix" %in% class(m)) {
+  #   stop("A matrix is required in mat_byname.")
+  # }
+  # class(m) <- append(class(m), "mat_byname")
+  m %>% setrowtype(rowtype) %>% setcoltype(coltype) %>% as.mat_byname()
+}
+
+
+#' Test if an argument is a \code{mat_byname}
+#'
+#' @param m the object to be tested
+#'
+#' @return \code{TRUE} if \code{m} is a \code{mat_byname}, \code{FALSE} otherwise
+#' 
+#' @export
+#'
+#' @examples
+#' is.mat_byname(matrix(1:2))
+#' is.mat_byname(mat_byname(1:2))
+is.mat_byname <- function(x) {
+  if ("mat_byname" %in% class(x)) {
+    return(TRUE)
   }
-  if (!"matrix" %in% class(m)) {
-    stop("A matrix is required in mat_byname.")
+  return(FALSE)
+}
+
+as.mat_byname <- function(x){
+  if (is.null(x)) {
+    stop("'x' must be of a matrix type, was 'NULL'")
   }
-  class(m) <- append(class(m), "mat_byname")
-  return(m %>% setrowtype(rowtype) %>% setcoltype(coltype))
+  if (!"matrix" %in% class(x)) {
+    stop("'x' must be of a matrix type in as.mat_byname.")
+  }
+  class(x) <- append(class(x), "mat_byname")
+  return(x)
 }
