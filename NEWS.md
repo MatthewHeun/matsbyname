@@ -1,6 +1,6 @@
 # News for `matsbyname`
 
-## matsbyname 0.2.8 (2018-xx-xx)
+## matsbyname 0.2.8 (2018-05-17)
 
 * New functions `all_byname` and `any_byname` make logical tests easy.
 * New function `replaceNaN_byname` replaces `NaN` entries with a value (default is 0).
