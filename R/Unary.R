@@ -769,24 +769,26 @@ cumprod_byname <- function(a){
 }
 
 
-#' Replace NaN values with 0
+#' Replace NaN values with a value
 #'
 #' In a matrix or within matrices in a list, 
-#' replace all \code{NaN} matrix values with \code{0}.
+#' replace all \code{NaN} matrix values with \code{val}.
 #' 
-#' @param a a matrix of list of matrices in which \code{NaN} will be replaced by \code{0}
+#' @param a a matrix of list of matrices in which \code{NaN} will be replaced by \code{val}
+#' @param val \code{NaN}s are replace by \code{val}
 #' @param mc.cores the number of cores to use for this calculation
 #'
-#' @return a matrix or list of matrices in which all \code{NaN} are replaced by \code{0}
+#' @return a matrix or list of matrices in which all \code{NaN} are replaced by \code{val}
 #' 
 #' @export
 #'
 #' @examples
 #' suppressWarnings(a <- matrix(c(1, sqrt(-1))))
-#' replaceNaNWith0(a)
-replaceNaNWith0 <- function(a, mc.cores = get_mc_cores()){
+#' replaceNaN_byname(a)
+#' replaceNaN_byname(a, 42)
+replaceNaN_byname <- function(a, val = 0, mc.cores = get_mc_cores()){
   replace.func <- function(a){
-    a[is.nan(a)] <- 0
+    a[is.nan(a)] <- val
     return(a)
   }
   unaryapply_byname(replace.func, a = a, rowcoltypes = "all", mc.cores = mc.cores)
@@ -929,4 +931,46 @@ compare_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
 }
 
 
+#' Are all matrix elements \code{TRUE}?
+#' 
+#' Tells whether all elements in matrix \code{a} are true.
+#' 
+#' \code{a} can be a matrix or a list of matrices.
+#'
+#' @param a a matrix or list of matrices
+#'
+#' @return \code{TRUE} if all elements of \code{a} are \code{TRUE}, \code{FALSE} otherwise
+#' 
+#' @export
+#'
+#' @examples
+#' all_byname(matrix(rep(TRUE, times = 4), nrow = 2, ncol = 2))
+#' all_byname(matrix(c(TRUE, FALSE), nrow = 2, ncol = 1))
+all_byname <- function(a){
+  all_func <- function(a){
+    all(a)
+  }
+  unaryapply_byname(FUN = all_func, a = a, rowcoltypes = "none")
+}
 
+#' Are any matrix elements \code{TRUE}?
+#' 
+#' Tells whether any elements in matrix \code{a} are true.
+#' 
+#' \code{a} can be a matrix or a list of matrices.
+#'
+#' @param a a matrix or list of matrices
+#'
+#' @return \code{TRUE} if any elements of \code{a} are \code{TRUE}, \code{FALSE} otherwise
+#' 
+#' @export
+#'
+#' @examples
+#' any_byname(matrix(c(TRUE, FALSE), nrow = 2, ncol = 1))
+#' any_byname(matrix(rep(FALSE, times = 4), nrow = 2, ncol = 2))
+any_byname <- function(a){
+  any_func <- function(a){
+    any(a)
+  }
+  unaryapply_byname(FUN = any_func, a = a, rowcoltypes = "none")
+}
