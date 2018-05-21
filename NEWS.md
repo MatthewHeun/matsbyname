@@ -1,5 +1,11 @@
 # News for `matsbyname`
 
+## matsbyname 0.2.9 (2018-05-20)
+
+* Beginnings of S3 class `matbyname`. 
+  Not sure if I want to keep it.
+
+
 ## matsbyname 0.2.8 (2018-05-17)
 
 * New functions `all_byname` and `any_byname` make logical tests easy.
