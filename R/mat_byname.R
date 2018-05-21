@@ -63,16 +63,18 @@ is.mat_byname <- function(x) {
 #' as.mat_byname(matrix(1:2))
 as.mat_byname <- function(x){
   if (is.null(x)) {
-    stop("'x' must be of a matrix type, was 'NULL'")
+    stop("'x' must not be NULL in as.mat_byname.")
   }
-  if (!"matrix" %in% class(x)) {
-    stop("'x' must be of a matrix type in as.mat_byname.")
-  }
+  # if (!"matrix" %in% class(x)) {
+  #   stop("'x' must be of a matrix type in as.mat_byname.")
+  # }
   class(x) <- c("mat_byname", class(x))
   return(x)
 }
 
 
-"+.mat_byname" <- function(...){
-  sum_byname(...)
-}
+# `+.mat_byname` <- function(a, b){
+#   # See http://adv-r.had.co.nz/S3.html for details.
+#   # See, especially, the "Best practices section at the end.
+#   sum_byname(a, b)
+# }
