@@ -29,12 +29,52 @@
 mat_byname <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL, 
                        m = matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames),
                        rowtype = NULL, coltype = NULL) {
-  if (is.null(m)) {
-    stop("'m' must be of a vector type, was 'NULL'")
-  }
-  if (!"matrix" %in% class(m)) {
-    stop("A matrix is required in mat_byname.")
-  }
-  class(m) <- append(class(m), "mat_byname")
-  return(m %>% setrowtype(rowtype) %>% setcoltype(coltype))
+  m %>% setrowtype(rowtype) %>% setcoltype(coltype) %>% as.mat_byname()
 }
+
+
+#' Test if an argument is a \code{mat_byname}
+#'
+#' @param m the object to be tested
+#'
+#' @return \code{TRUE} if \code{m} is a \code{mat_byname}, \code{FALSE} otherwise
+#' 
+#' @export
+#'
+#' @examples
+#' is.mat_byname(matrix(1:2))
+#' is.mat_byname(mat_byname(1:2))
+is.mat_byname <- function(x) {
+  if ("mat_byname" %in% class(x)) {
+    return(TRUE)
+  }
+  return(FALSE)
+}
+
+#' Convert a \code{matrix}-like object to a \code{mat_byname}
+#'
+#' @param x the matrix-like object to be converted to a \code{mat_byname} object
+#'
+#' @return the \code{mat_byname} object
+#' 
+#' @export
+#'
+#' @examples
+#' as.mat_byname(matrix(1:2))
+as.mat_byname <- function(x){
+  if (is.null(x)) {
+    stop("'x' must not be NULL in as.mat_byname.")
+  }
+  # if (!"matrix" %in% class(x)) {
+  #   stop("'x' must be of a matrix type in as.mat_byname.")
+  # }
+  class(x) <- c("mat_byname", class(x))
+  return(x)
+}
+
+
+# `+.mat_byname` <- function(a, b){
+#   # See http://adv-r.had.co.nz/S3.html for details.
+#   # See, especially, the "Best practices section at the end.
+#   sum_byname(a, b)
+# }
