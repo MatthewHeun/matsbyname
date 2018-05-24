@@ -35,9 +35,9 @@ mat_byname <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = 
 
 #' Test if an argument is a \code{mat_byname}
 #'
-#' @param m the object to be tested
+#' @param x the object to be tested
 #'
-#' @return \code{TRUE} if \code{m} is a \code{mat_byname}, \code{FALSE} otherwise
+#' @return \code{TRUE} if \code{x} is a \code{mat_byname}, \code{FALSE} otherwise
 #' 
 #' @export
 #'
