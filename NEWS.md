@@ -1,9 +1,10 @@
 # News for `matsbyname`
 
-## matsbyname 0.2.9 (2018-05-20)
+## matsbyname 0.2.9 (2018-05-24)
 
 * Beginnings of S3 class `matbyname`. 
   Not sure if I want to keep it.
+* Fixed an argument name error exposed by check.
 
 
 ## matsbyname 0.2.8 (2018-05-17)

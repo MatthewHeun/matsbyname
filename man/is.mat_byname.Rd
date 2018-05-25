@@ -7,10 +7,10 @@
 is.mat_byname(x)
 }
 \arguments{
-\item{m}{the object to be tested}
+\item{x}{the object to be tested}
 }
 \value{
-\code{TRUE} if \code{m} is a \code{mat_byname}, \code{FALSE} otherwise
+\code{TRUE} if \code{x} is a \code{mat_byname}, \code{FALSE} otherwise
 }
 \description{
 Test if an argument is a \code{mat_byname}
