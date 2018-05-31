@@ -15,6 +15,19 @@ library(tidyr)
 
 
 ###########################################################
+context("Absolute value")
+###########################################################
+
+test_that("abs_byname works as expected", {
+  expect_equal(abs_byname(1), 1)
+  expect_equal(abs_byname(-1), 1)
+  m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Commodity")
+  expect_equal(abs_byname(m), abs(m))
+})
+
+
+###########################################################
 context("Element log and exp")
 ###########################################################
 

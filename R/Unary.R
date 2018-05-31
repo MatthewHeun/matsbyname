@@ -2,6 +2,28 @@ library(parallel)
 library(magrittr)
 library(dplyr)
 
+#' Absolute value of matrix elements
+#'
+#' @param a a matrix or list of matrices 
+#' @param mc.cores an integer specifying the number of cores to be used.
+#'        Default is \code{get_mc_cores()} or \code{1}. 
+#'        Try \code{mc.cores = parallel::detectCores()}.
+#'
+#' @return a with each element replaced by its absolute value
+#' 
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' abs_byname(1)
+#' abs_byname(-1)
+#' m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+#'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' abs_byname(m)
+abs_byname <- function(a, mc.cores = get_mc_cores()){
+  unaryapply_byname(abs, a = a, mc.cores = mc.cores)
+}
+
 #' Logarithm of matrix elements
 #' 
 #' Specify the base of the log with \code{base} argument.
