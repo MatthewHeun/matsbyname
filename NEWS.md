@@ -1,5 +1,14 @@
 # News for `matsbyname`
 
+## matsbyname 0.3.0 (2018-06-20)
+
+* Removed parallelism features introduced in v0.2.6.
+  Detailed timings revealed that the parallel code was slower than single-thread code.
+  This topic may be revisited in the future. 
+  But for now, it is best to remove the multicore code.
+  So there are no longer any `mc.cores` arguments to `matsbyname` functions.
+
+
 ## matsbyname 0.2.9 (2018-05-24)
 
 * Beginnings of S3 class `matbyname`. 
