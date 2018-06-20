@@ -4,14 +4,10 @@
 \alias{abs_byname}
 \title{Absolute value of matrix elements}
 \usage{
-abs_byname(a, mc.cores = get_mc_cores())
+abs_byname(a)
 }
 \arguments{
 \item{a}{a matrix or list of matrices}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc_cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a with each element replaced by its absolute value

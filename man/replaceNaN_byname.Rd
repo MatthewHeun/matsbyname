@@ -4,14 +4,12 @@
 \alias{replaceNaN_byname}
 \title{Replace NaN values with a value}
 \usage{
-replaceNaN_byname(a, val = 0, mc.cores = get_mc_cores())
+replaceNaN_byname(a, val = 0)
 }
 \arguments{
 \item{a}{a matrix of list of matrices in which \code{NaN} will be replaced by \code{val}}
 
 \item{val}{\code{NaN}s are replace by \code{val}}
-
-\item{mc.cores}{the number of cores to use for this calculation}
 }
 \value{
 a matrix or list of matrices in which all \code{NaN} are replaced by \code{val}

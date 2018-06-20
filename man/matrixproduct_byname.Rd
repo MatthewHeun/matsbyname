@@ -4,14 +4,10 @@
 \alias{matrixproduct_byname}
 \title{Name-wise matrix multiplication}
 \usage{
-matrixproduct_byname(..., mc.cores = get_mc_cores())
+matrixproduct_byname(...)
 }
 \arguments{
-\item{...}{operands; constants, matrices, or lists of matrices}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-       Default is \code{get_mc_cores()} or \code{1}. 
-       Try \code{mc.cores = parallel::detectCores()}.
+\item{...}{operands; constants, matrices, or lists of matrices
 
 Multiplies operands from left to right.
 Performs a union and sorting of multiplicand rows and multiplier columns by name 
