@@ -4,8 +4,7 @@
 \alias{select_rows_byname}
 \title{Select rows of a matrix (or list of matrices) by name}
 \usage{
-select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^",
-  mc.cores = get_mc.cores())
+select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^")
 }
 \arguments{
 \item{a}{a matrix or a list of matrices}
@@ -15,10 +14,6 @@ Default pattern (\code{$^}) retains nothing.}
 
 \item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
 Default pattern (\code{$^}) removes nothing.}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -29,6 +24,8 @@ For maximum flexibility, arguments are extended regex patterns
 that are matched against row names.
 }
 \details{
+If \code{a} is \code{NULL}, \code{NULL} is returned.
+
 Patterns are compared against row names using extended regex.
 If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
 If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
@@ -45,7 +42,7 @@ Some typical patterns are:
 }
 
 Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-\code{make_pattern} escapes regex strings using \code{Hmisc::escapeRegex}.
+\code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 }

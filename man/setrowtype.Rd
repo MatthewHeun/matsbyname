@@ -4,16 +4,12 @@
 \alias{setrowtype}
 \title{Sets row type for a matrix or a list of matrices}
 \usage{
-setrowtype(a, rowtype, mc.cores = get_mc.cores())
+setrowtype(a, rowtype)
 }
 \arguments{
 \item{a}{the matrix on which row type is to be set}
 
 \item{rowtype}{the type of item stored in rows}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 \code{a} with rowtype attribute set to \code{rowtype}.

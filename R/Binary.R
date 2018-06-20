@@ -8,10 +8,7 @@
 #' 
 #' <<Stuff here about cores.>>
 #' 
-#' @param ... operands; constants, matrices, or lists of matrices
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()}. Try \code{mc.cores = parallel::detectCores()}.
-#'        See details for more information.
+#' @param ... operands: constants, matrices, or lists of matrices
 #'
 #' @return A matrix representing the name-wise sum of \code{addend} and \code{augend}
 #' 
@@ -65,20 +62,17 @@
 #' DF3
 #' DF3$sums[[1]]
 #' DF3$sums[[2]]
-sum_byname <- function(..., mc.cores = get_mc.cores()){
+sum_byname <- function(...){
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
-  naryapply_byname(`+`, ..., mc.cores = mc.cores)
+  naryapply_byname(`+`, ...)
 }
 
 #' Name-wise subtraction of matrices.
 #'
 #' @param minuend matrix or constant
 #' @param subtrahend matrix or constant
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' Performs a union and sorting of row and column names prior to differencing.
 #' Zeroes are inserted for missing matrix elements.
@@ -113,8 +107,8 @@ sum_byname <- function(..., mc.cores = get_mc.cores()){
 #' DF[[2,"G"]] <- G
 #' difference_byname(DF$U, DF$G)
 #' DF %>% mutate(diffs = difference_byname(U, G))
-difference_byname <- function(minuend, subtrahend, mc.cores = get_mc.cores()){
-  binaryapply_byname(`-`, minuend, subtrahend, mc.cores = mc.cores)
+difference_byname <- function(minuend, subtrahend){
+  binaryapply_byname(`-`, minuend, subtrahend)
 }
 
 #' Powers of matrix elements
@@ -123,9 +117,6 @@ difference_byname <- function(minuend, subtrahend, mc.cores = get_mc.cores()){
 #'
 #' @param a a matrix of list of matrices 
 #' @param pow the power to which elements of \code{a} will be raised
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{a} with each element raised to \code{pow}
 #' 
@@ -147,16 +138,13 @@ difference_byname <- function(minuend, subtrahend, mc.cores = get_mc.cores()){
 #'   sqrtm = elementpow_byname(m, 0.5),
 #'   mtopow = elementpow_byname(m, pow)
 #' )
-elementpow_byname <- function(a, pow, mc.cores = get_mc.cores()){
-  binaryapply_byname(`^`, a, pow, mc.cores = mc.cores)
+elementpow_byname <- function(a, pow){
+  binaryapply_byname(`^`, a, pow)
 }
 
 #' Name-wise matrix multiplication
 #'
 #' @param ...  operands; constants, matrices, or lists of matrices
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' Multiplies operands from left to right.
 #' Performs a union and sorting of multiplicand rows and multiplier columns by name 
@@ -209,12 +197,12 @@ elementpow_byname <- function(a, pow, mc.cores = get_mc.cores()){
 #     # we sort them here before returning. 
 #     sort_rows_cols()
 # }
-matrixproduct_byname <- function(..., mc.cores = get_mc.cores()){
+matrixproduct_byname <- function(...){
   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
   # are completed and sorted, but rows and cols of the output of the 
   # %*% operation are not guaranteed to be sorted.
   # Thus, we sort_rows_cols() prior to returning.
-  naryapply_byname(`%*%`, ..., match_type = "matmult", mc.cores = mc.cores) %>% 
+  naryapply_byname(`%*%`, ..., match_type = "matmult") %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     sort_rows_cols()
@@ -229,9 +217,6 @@ matrixproduct_byname <- function(..., mc.cores = get_mc.cores()){
 #' the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.
 #'
 #' @param ... operands; constants, matrices, or lists of matrices 
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return name-wise element product of operands
 #' 
@@ -261,13 +246,13 @@ matrixproduct_byname <- function(..., mc.cores = get_mc.cores()){
 #' DF[[2,"G"]] <- G
 #' elementproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(elementprods = elementproduct_byname(U, G))
-elementproduct_byname <- function(..., mc.cores = get_mc.cores()){
+elementproduct_byname <- function(...){
   # Note that prod(1) returns 1, not 0.
   # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
-  naryapply_byname(`*`, ..., mc.cores = mc.cores)
+  naryapply_byname(`*`, ...)
 }
 
 #' Name-wise matrix element division
@@ -280,9 +265,6 @@ elementproduct_byname <- function(..., mc.cores = get_mc.cores()){
 #'
 #' @param dividend Dividend matrix or constant
 #' @param divisor Divisor matrix or constant
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return A matrix representing the name-wise element quotient of \code{dividend} and \code{divisor}
 #' 
@@ -313,8 +295,8 @@ elementproduct_byname <- function(..., mc.cores = get_mc.cores()){
 #' DF[[2,"G"]] <- G
 #' elementquotient_byname(DF$U, DF$G)
 #' DF %>% mutate(elementquotients = elementquotient_byname(U, G))
-elementquotient_byname <- function(dividend, divisor, mc.cores = get_mc.cores()){
-  binaryapply_byname(`/`, dividend, divisor, mc.cores = mc.cores)
+elementquotient_byname <- function(dividend, divisor){
+  binaryapply_byname(`/`, dividend, divisor)
 }
 
 #' Name- and element-wise arithmetic mean of matrices.
@@ -325,10 +307,7 @@ elementquotient_byname <- function(dividend, divisor, mc.cores = get_mc.cores())
 #' prior to performing arithmetic mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param ... operands; constants, matrices, or lists of matrices
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
+#' @param ... operands: constants, matrices, or lists of matrices
 #'
 #' @return name-wise arithmetic mean of operands.
 #' 
@@ -361,8 +340,8 @@ elementquotient_byname <- function(dividend, divisor, mc.cores = get_mc.cores())
 #' DF[[2,"G"]] <- G
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
-mean_byname <- function(..., mc.cores = get_mc.cores()){
-  sum_byname(...) %>% elementquotient_byname(length(list(...)), mc.cores = mc.cores)
+mean_byname <- function(...){
+  sum_byname(...) %>% elementquotient_byname(length(list(...)))
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -374,9 +353,6 @@ mean_byname <- function(..., mc.cores = get_mc.cores()){
 #' Zeroes are inserted for missing matrix elements.
 #' 
 #' @param ... operands; constants, matrices, or lists of matrices
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return name-wise geometric mean of operands
 #' 
@@ -410,8 +386,8 @@ mean_byname <- function(..., mc.cores = get_mc.cores()){
 #' DF[[2,"G"]] <- G
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
-geometricmean_byname <- function(..., mc.cores = get_mc.cores()){
-  elementproduct_byname(..., mc.cores = mc.cores) %>% elementpow_byname(1/length(list(...)), mc.cores = mc.cores)
+geometricmean_byname <- function(...){
+  elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
 }
 
 #' Name- and element-wise logarithmic mean of matrices.
@@ -437,9 +413,6 @@ geometricmean_byname <- function(..., mc.cores = get_mc.cores()){
 #' @param b second operand (a matrix or constant value or lists of same).
 #' @param base the base of the logarithm used when computing the logarithmic mean.
 #'        (Default is \code{base = exp(1)}.)
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return A matrix representing the name-wise logarithmic mean 
 #'         of \code{a} and \code{b}.
@@ -464,7 +437,7 @@ geometricmean_byname <- function(..., mc.cores = get_mc.cores()){
 #' DF[[2,"m2"]] <- m2
 #' logarithmicmean_byname(DF$m1, DF$m2)
 #' DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2))
-logarithmicmean_byname <- function(a, b, base = exp(1), mc.cores = get_mc.cores()){
+logarithmicmean_byname <- function(a, b, base = exp(1)){
   logmean.func <- function(a, b, base) {
     # At this point, our list is gone.  
     # a and b are single matrices or single numbers. 
@@ -488,7 +461,7 @@ logarithmicmean_byname <- function(a, b, base = exp(1), mc.cores = get_mc.cores(
     out %>%  
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
-  binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base), mc.cores = mc.cores)
+  binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base))
 }
 
 #' Compare two matrices "by name" for equality
@@ -496,9 +469,6 @@ logarithmicmean_byname <- function(a, b, base = exp(1), mc.cores = get_mc.cores(
 #' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 #'
 #' @param ... operands to be compared
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{TRUE} iff all information is the same, including
 #' row and column types \emph{and}
@@ -520,11 +490,11 @@ logarithmicmean_byname <- function(a, b, base = exp(1), mc.cores = get_mc.cores(
 #' equal_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
-equal_byname <- function(..., mc.cores = get_mc.cores()){
+equal_byname <- function(...){
   equal.func <- function(a, b){
     return(isTRUE(all.equal(a, b)))
   }
-  naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE, mc.cores = mc.cores)
+  naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
 }
 
 #' Test whether matrices or lists of matrices have same structure
@@ -536,9 +506,6 @@ equal_byname <- function(..., mc.cores = get_mc.cores()){
 #' Values can be different.
 #'
 #' @param ... operands to be compared
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
 #' 
@@ -556,7 +523,7 @@ equal_byname <- function(..., mc.cores = get_mc.cores()){
 #' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
 #' samestructure_byname(list(U, U), list(U, U))
-samestructure_byname <- function(..., mc.cores = get_mc.cores()){
+samestructure_byname <- function(...){
   samestruct.func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
@@ -589,7 +556,7 @@ samestructure_byname <- function(..., mc.cores = get_mc.cores()){
   }
   naryapplylogical_byname(samestruct.func, ..., 
                           match_type = "none", set_rowcoltypes = FALSE, 
-                          .organize = FALSE, mc.cores = mc.cores)
+                          .organize = FALSE)
 }
 
 #' And "by name"
@@ -599,9 +566,6 @@ samestructure_byname <- function(..., mc.cores = get_mc.cores()){
 #' \code{TRUE} for any other number.
 #'
 #' @param ... operands to the logical \code{and} function
-#' @param mc.cores an integer specifying the number of cores to be used.
-#'        Default is \code{get_mc.cores()} or \code{1}. 
-#'        Try \code{mc.cores = parallel::detectCores()}.
 #'
 #' @return logical \code{and} applied to the operands
 #' 
@@ -618,9 +582,9 @@ samestructure_byname <- function(..., mc.cores = get_mc.cores()){
 #' and_byname(m1, m1)
 #' and_byname(m1, m2)
 #' and_byname(list(m1, m1), list(m1, m1), list(m2, m2))
-and_byname <- function(..., mc.cores = get_mc.cores()){
+and_byname <- function(...){
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
-  naryapplylogical_byname(`&`, ..., mc.cores = mc.cores)
+  naryapplylogical_byname(`&`, ...)
 }

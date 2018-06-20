@@ -4,21 +4,17 @@
 \alias{invert_byname}
 \title{Invert a matrix}
 \usage{
-invert_byname(a, mc.cores = get_mc.cores())
+invert_byname(a)
 }
 \arguments{
-\item{a}{the matrix to be inverted. \code{m} must be square.}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
+\item{a}{the matrix to be inverted. \code{a} must be square.}
 }
 \value{
-the inversion
+the inversion of \code{a}
 }
 \description{
 This function transposes row and column names as well as row and column types.
-Rows and columns of \code{m} are sorted prior to inverting.
+Rows and columns of \code{a} are sorted prior to inverting.
 }
 \examples{
 library(magrittr)

@@ -4,16 +4,12 @@
 \alias{colprods_byname}
 \title{Column products, sorted by name}
 \usage{
-colprods_byname(a, rowname = NA, mc.cores = get_mc.cores())
+colprods_byname(a, rowname = NA)
 }
 \arguments{
 \item{a}{a matrix or data frame from which column products are desired.}
 
 \item{rowname}{name of the output row containing column products.}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a row vector of type \code{matrix} containing the column products of \code{a}.

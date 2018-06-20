@@ -4,14 +4,10 @@
 \alias{and_byname}
 \title{And "by name"}
 \usage{
-and_byname(..., mc.cores = get_mc.cores())
+and_byname(...)
 }
 \arguments{
 \item{...}{operands to the logical \code{and} function}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 logical \code{and} applied to the operands

@@ -4,22 +4,19 @@
 \alias{setcolnames_byname}
 \title{Sets column names}
 \usage{
-setcolnames_byname(a, colnames, mc.cores = get_mc.cores())
+setcolnames_byname(a, colnames)
 }
 \arguments{
 \item{a}{A matrix or a list of matrices in which column names are to be set}
 
 \item{colnames}{A vector of new column names or a list of vectors of new column names}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a copy of \code{a} with new column names
 }
 \description{
 Sets column names in a way that is amenable to use in piping operations in a functional programming way.
+if \code{a} is \code{NULL}, \code{NULL} is returned.
 If \code{a} is a constant, it is converted to a matrix and \code{colnames} are applied.
 If \code{a} is a matrix, \code{colnames} should be a vector of new column names
 that is as long as the number of columns in \code{a}.

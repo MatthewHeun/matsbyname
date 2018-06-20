@@ -4,16 +4,12 @@
 \alias{elementpow_byname}
 \title{Powers of matrix elements}
 \usage{
-elementpow_byname(a, pow, mc.cores = get_mc.cores())
+elementpow_byname(a, pow)
 }
 \arguments{
 \item{a}{a matrix of list of matrices}
 
 \item{pow}{the power to which elements of \code{a} will be raised}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc.cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 \code{a} with each element raised to \code{pow}

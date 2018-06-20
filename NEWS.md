@@ -1,17 +1,53 @@
 # News for `matsbyname`
 
+## matsbyname 0.3.0 (2018-06-20)
+
+* Removed parallelism features introduced in v0.2.6.
+  Detailed timings revealed that the parallel code was slower than single-thread code.
+  This topic may be revisited in the future. 
+  But for now, it is best to remove the multicore code.
+  So there are no longer any `mc.cores` arguments to `matsbyname` functions.
+
+
+## matsbyname 0.2.9 (2018-05-24)
+
+* Beginnings of S3 class `matbyname`. 
+  Not sure if I want to keep it.
+* Fixed an argument name error exposed by check.
+
+
+## matsbyname 0.2.8 (2018-05-17)
+
+* New functions `all_byname` and `any_byname` make logical tests easy.
+* New function `replaceNaN_byname` replaces `NaN` entries with a value (default is 0).
+
+
+## matsbyname 0.2.7 (2018-04-15)
+
+* Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions
+  with a transposed argument, thereby simplifying code.
+* Fixed a bug caused by the above refactoring.
+  In `select_cols_byname`, a `NULL` result terminated the executing thread.
+* Added new function `replaceNaNWith0`.
+* Added new functions `count_vals_byname`, `count_vals_inrows_byname`, and 
+  `count_vals_incols_byname` that return the number of matrix entries
+  that meet a criterion for the entire matrix, in each row, and in each column, respectively.
+* Improvements to documentation.
+* Now up to 646 passing tests.
+
+
 ## matsbyname 0.2.6 (2018-03-16)
 
 * New multicore functionality available in most `*_byname` functions.
-   + New functions `set_mc.cores` and `get_mc.cores` to set and get package-wide `mc.cores` variable.
+   + New functions `set_mc_cores` and `get_mc_cores` to set and get package-wide `mc.cores` variable.
      Default is `1`, so all functions work as previously unless `mc.cores` is more than `1`.
    + Alternatively, specify the `mc.cores` argument of any function 
      to specify the number of cores to be used for an individual calculation.
-     Default is `get_mc.cores()`.
-     A useful approach is to `set_mc.cores(detectCores(logical = FALSE))`.
+     Default is `get_mc_cores()`.
+     A useful approach is to `set_mc_cores(detectCores(logical = FALSE))`.
 * Suggested usage 
    + `sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4)` to send each sum to a different core.
-   + `set_mc.cores(4); sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4); set_mc.cores(1)` 
+   + `set_mc_cores(4L); sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4); set_mc_cores(1L)` 
      to do the same thing and set the package-wide value back to `1`.
 
 
