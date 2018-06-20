@@ -4,14 +4,10 @@
 \alias{equal_byname}
 \title{Compare two matrices "by name" for equality}
 \usage{
-equal_byname(..., mc.cores = get_mc_cores())
+equal_byname(...)
 }
 \arguments{
 \item{...}{operands to be compared}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc_cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 \code{TRUE} iff all information is the same, including

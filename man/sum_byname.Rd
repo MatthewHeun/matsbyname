@@ -4,14 +4,10 @@
 \alias{sum_byname}
 \title{Name-wise addition of matrices.}
 \usage{
-sum_byname(..., mc.cores = get_mc_cores())
+sum_byname(...)
 }
 \arguments{
-\item{...}{operands; constants, matrices, or lists of matrices}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc_cores()}. Try \code{mc.cores = parallel::detectCores()}.
-See details for more information.}
+\item{...}{operands: constants, matrices, or lists of matrices}
 }
 \value{
 A matrix representing the name-wise sum of \code{addend} and \code{augend}

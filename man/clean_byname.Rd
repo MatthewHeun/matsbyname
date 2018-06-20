@@ -4,8 +4,7 @@
 \alias{clean_byname}
 \title{Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}}
 \usage{
-clean_byname(a, margin = c(1, 2), clean_value = 0,
-  mc.cores = get_mc_cores())
+clean_byname(a, margin = c(1, 2), clean_value = 0)
 }
 \arguments{
 \item{a}{the matrix to be cleaned}
@@ -13,11 +12,7 @@ clean_byname(a, margin = c(1, 2), clean_value = 0,
 \item{margin}{the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
 or \code{c(1,2)} for both rows and columns. Default is \code{c(1,2)}.}
 
-\item{clean_value}{the undesirable value. Default is \code{0}.}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-       Default is \code{get_mc_cores()} or \code{1}. 
-       Try \code{mc.cores = parallel::detectCores()}.
+\item{clean_value}{the undesirable value. Default is \code{0}.
 
 When a row (when \code{margin = 1}) or a column (when \code{margin = 2})
 contains exclusively \code{clean_value}, the row or column is deleted from the matrix.}

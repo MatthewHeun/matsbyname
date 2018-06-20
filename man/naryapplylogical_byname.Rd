@@ -5,8 +5,7 @@
 \title{Apply a function logically to numbers, matrices, or lists of numbers or matrices}
 \usage{
 naryapplylogical_byname(FUN, ..., .FUNdots = NULL, match_type = c("all",
-  "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE,
-  mc.cores = get_mc_cores())
+  "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE)
 }
 \arguments{
 \item{FUN}{a binary function (that returns logical values) to be applied over operands}
@@ -37,10 +36,6 @@ sort the rows and columns of the completed matrices.
 This organizing is done on each sequential invocation of \code{FUN}.
 Normally, this should be \code{TRUE} (the default).
 However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc_cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 the result of \code{FUN} applied logically to \code{...}

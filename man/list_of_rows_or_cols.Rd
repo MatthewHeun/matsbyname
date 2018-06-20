@@ -4,16 +4,12 @@
 \alias{list_of_rows_or_cols}
 \title{Named list of rows or columns of matrices}
 \usage{
-list_of_rows_or_cols(a, margin, mc.cores = get_mc_cores())
+list_of_rows_or_cols(a, margin)
 }
 \arguments{
 \item{a}{a matrix or list of matrices (say, from a column of a data frame)}
 
 \item{margin}{the margin of the matrices to be extracted (\code{1} for rows, \code{2} for columns)}
-
-\item{mc.cores}{an integer specifying the number of cores to be used.
-Default is \code{get_mc_cores()} or \code{1}. 
-Try \code{mc.cores = parallel::detectCores()}.}
 }
 \value{
 a named list of rows or columns extracted from \code{m}

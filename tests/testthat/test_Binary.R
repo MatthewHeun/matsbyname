@@ -1078,3 +1078,4 @@ test_that("and_byname works as expected", {
   expect_equal(and_byname(list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
   expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
 })
+
