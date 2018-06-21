@@ -16,7 +16,7 @@ compare_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
 \item{val}{the value against which matrix entries are compared}
 }
 \value{
-a logial matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
+a logical matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
         \code{FALSE} otherwise
 }
 \description{
