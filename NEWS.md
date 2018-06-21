@@ -7,6 +7,7 @@
   This topic may be revisited in the future. 
   But for now, it is best to remove the multicore code.
   So there are no longer any `mc.cores` arguments to `matsbyname` functions.
+* First CRAN release.
 
 
 ## matsbyname 0.2.9 (2018-05-24)
