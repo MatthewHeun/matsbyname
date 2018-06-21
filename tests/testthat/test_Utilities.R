@@ -5,7 +5,6 @@ library(parallel)
 library(testthat)
 library(rlang)
 library(dplyr)
-library(Matrix)
 
 
 ###########################################################
