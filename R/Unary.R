@@ -840,7 +840,7 @@ count_vals_incols_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", "
 #'        "\code{<}", "\code{<=}", "\code{>=}", or "\code{>}"
 #' @param val the value against which matrix entries are compared
 #'
-#' @return a logial matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
+#' @return a logical matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
 #'         \code{FALSE} otherwise
 #' 
 #' @export
