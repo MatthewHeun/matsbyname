@@ -1,5 +1,4 @@
 ## Context
-
 `matsbyname` is a new package that assists with matrix mathematics.
 
 ## Test environments
