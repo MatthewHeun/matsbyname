@@ -45,7 +45,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   if (is.list(a)) {
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
     lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
-    return(mcMap(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes) %>% 
+    return(Map(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes) %>% 
              # Preserve names of a (if present) in the outgoing list.
              set_names(names(a)))
   }
@@ -133,7 +133,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   if (is.list(a) & is.list(b)) {
     lfun <- replicate(n = max(length(a), length(b)), expr = FUN, simplify = FALSE)
     lFUNdots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
-    return(mcMap(binaryapply_byname, lfun, a, b, lFUNdots,
+    return(Map(binaryapply_byname, lfun, a, b, lFUNdots,
                  match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
              # If a and b have names, organize_args will have ensured that those names are same.
              # So we can set the names of the outgoing list to the names of a.
