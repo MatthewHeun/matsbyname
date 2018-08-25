@@ -2,7 +2,7 @@
 `matsbyname` is a new package that assists with matrix mathematics.
 
 ## Test environments
-* local macOS X install v10.12.6 (Sierra), R3.5.0
+* local macOS X install v10.13.1 (High Sierra), R3.5.1
 * ubuntu 14.04 (on Travis CI), R3.5.0
 * win-builder via `devtools::build_win()` (devel and release), R3.5.0
 
