@@ -10,7 +10,7 @@ Maintainer: Matthew Heun <matthew.heun@me.com>
 Description: An implementation of matrix mathematics wherein operations are performed "by name."
 License: MIT + file LICENSE
 Encoding: UTF-8
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Imports:
     rlang,
     dplyr,
