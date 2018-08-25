@@ -1,5 +1,11 @@
 # News for `matsbyname`
 
+## matsbyname 0.3.1 (2018-08-25)
+
+* Updated to new version of Roxygen which changed line breaks in some .Rd files.
+* First release to CRAN.
+
+
 ## matsbyname 0.3.0 (2018-06-20)
 
 * Removed parallelism features introduced in v0.2.6.
@@ -7,7 +13,6 @@
   This topic may be revisited in the future. 
   But for now, it is best to remove the multicore code.
   So there are no longer any `mc.cores` arguments to `matsbyname` functions.
-* First CRAN release.
 
 
 ## matsbyname 0.2.9 (2018-05-24)

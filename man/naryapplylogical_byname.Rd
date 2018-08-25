@@ -4,8 +4,9 @@
 \alias{naryapplylogical_byname}
 \title{Apply a function logically to numbers, matrices, or lists of numbers or matrices}
 \usage{
-naryapplylogical_byname(FUN, ..., .FUNdots = NULL, match_type = c("all",
-  "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE)
+naryapplylogical_byname(FUN, ..., .FUNdots = NULL,
+  match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE,
+  .organize = TRUE)
 }
 \arguments{
 \item{FUN}{a binary function (that returns logical values) to be applied over operands}

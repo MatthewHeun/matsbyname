@@ -5,8 +5,8 @@
 \title{Create a \code{mat_byname} object}
 \usage{
 mat_byname(data = NA, nrow = 1, ncol = 1, byrow = FALSE,
-  dimnames = NULL, m = matrix(data = data, nrow = nrow, ncol = ncol, byrow =
-  byrow, dimnames = dimnames), rowtype = NULL, coltype = NULL)
+  dimnames = NULL, m = matrix(data = data, nrow = nrow, ncol = ncol,
+  byrow = byrow, dimnames = dimnames), rowtype = NULL, coltype = NULL)
 }
 \arguments{
 \item{data}{a vector of values for \code{m}}
