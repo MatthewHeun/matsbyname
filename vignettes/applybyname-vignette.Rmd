@@ -133,8 +133,8 @@ cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
 
 ## Summary
 
-The various `*apply_byname` functions allow users to extend the functionality of the `byname` 
+The various `*apply_byname` functions allow users to extend the functionality of the `matsbyname` 
 package as needed for any problem domain.
-The functions are used extensively in `byname` itself.
-In fact, all `byname` functions utilize the `*apply_byname` functions,
+The functions are used extensively in `matsbyname` itself.
+In fact, all `matsbyname` functions utilize the `*apply_byname` functions,
 so they are ready for prime time!
