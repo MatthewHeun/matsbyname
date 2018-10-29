@@ -1,3 +1,5 @@
+^docs$
+^_pkgdown\.yml$
 ^matsbyname\.Rproj$
 ^\.Rproj\.user$
 ^NEWS\.html$

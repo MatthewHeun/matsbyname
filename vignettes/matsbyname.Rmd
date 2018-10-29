@@ -185,7 +185,7 @@ Commonly-used functions are:
 * <tt>invert_byname</tt>, and 
 * <tt>transpose_byname</tt>.
 
-The full list of functions can be found with <tt>?byname</tt>
+The full list of functions can be found with <tt>?matsbyname</tt>
 and clicking the <tt>Index</tt> link.
 
 Furthermore, <tt>matsbyname</tt> works well with its sister package, <tt>matsindf</tt>.
