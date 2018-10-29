@@ -1,6 +1,6 @@
 # News for `matsbyname`
 
-## matsbyname 0.3.1 (2018-08-25)
+## matsbyname 0.3.2 (2018-08-25)
 
 * First release to CRAN didn't work.
 * Added online documentation at github with pkgdown.
