@@ -3,5 +3,5 @@ pkgdown: 1.1.0
 pkgdown_sha: ~
 articles:
   applybyname-vignette: applybyname-vignette.html
-  matsbyname-vignette: matsbyname-vignette.html
+  matsbyname: matsbyname.html
 

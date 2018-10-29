@@ -1,5 +1,5 @@
 ---
-title: "Writing Custom Functions for <tt>matsbyname</tt>"
+title: "Writing Custom Functions for matsbyname"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: 
