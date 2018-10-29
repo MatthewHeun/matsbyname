@@ -1,5 +1,11 @@
 # News for `matsbyname`
 
+## matsbyname 0.3.2 (2018-08-25)
+
+* First release to CRAN didn't work.
+* Added online documentation at github with pkgdown.
+
+
 ## matsbyname 0.3.1 (2018-08-25)
 
 * Updated to new version of Roxygen which changed line breaks in some .Rd files.
