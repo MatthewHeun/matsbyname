@@ -1,5 +1,11 @@
 # News for `matsbyname`
 
+## matsbyname 0.3.3 (2018-08-25)
+
+* Fix version number on pkgdown website.
+* Updated many details of pkgdown website for better user navigation.
+
+
 ## matsbyname 0.3.2 (2018-08-25)
 
 * First release to CRAN didn't work.
