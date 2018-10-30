@@ -31,7 +31,7 @@ The functions in this package were used in the paper
 ## More Information
 
 Find more information, including vignettes and function documentation at 
-<https://MatthewHeun.github.io/matsbyname/>
+<https://MatthewHeun.github.io/matsbyname/>.
 
 
 ## References
