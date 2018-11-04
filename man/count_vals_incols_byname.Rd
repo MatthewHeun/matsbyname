@@ -12,9 +12,9 @@ count_vals_incols_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=",
 according to \code{compare_fun}}
 
 \item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}", 
-"\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"}
+"\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}"}
 
-\item{val}{the value against which matrix entries are compared}
+\item{val}{the value against which matrix entries are compared. Default is \code{0}.}
 }
 \value{
 an \code{matrix} with a single row indicating the number of entries in \code{a} 

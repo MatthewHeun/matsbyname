@@ -11,9 +11,9 @@ count_vals_inrows_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=",
 \item{a}{a matrix or list of matrices whose values are to be counted by rows according to \code{compare_fun}}
 
 \item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}", 
-"\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"}
+"\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}".}
 
-\item{val}{the value against which matrix entries are compared}
+\item{val}{the value against which matrix entries are compared. Default is \code{0}.}
 }
 \value{
 an \code{matrix} with a single column indicating the number of entries in \code{a} 

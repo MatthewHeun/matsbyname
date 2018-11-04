@@ -738,8 +738,8 @@ replaceNaN_byname <- function(a, val = 0){
 #' 
 #' @param a a matrix or list of matrices whose values are to be counted according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
-#' @param val the value against which matrix entries are compared
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}".
+#' @param val the value against which matrix entries are compared. Default is \code{0}.
 #'
 #' @return an integer indicating the number of entries in \code{a} 
 #'         that meet the specified criterion
@@ -771,8 +771,8 @@ count_vals_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">
 #' 
 #' @param a a matrix or list of matrices whose values are to be counted by rows according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
-#' @param val the value against which matrix entries are compared
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}".
+#' @param val the value against which matrix entries are compared. Default is \code{0}.
 #'
 #' @return an \code{matrix} with a single column indicating the number of entries in \code{a} 
 #'         that meet the specified criterion in each row of \code{a}
@@ -805,8 +805,8 @@ count_vals_inrows_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", "
 #' @param a a matrix or list of matrices whose values are to be counted by columns 
 #'        according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
-#' @param val the value against which matrix entries are compared
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}"
+#' @param val the value against which matrix entries are compared. Default is \code{0}.
 #'
 #' @return an \code{matrix} with a single row indicating the number of entries in \code{a} 
 #'         that meet the specified criterion in each column of \code{a}
@@ -837,8 +837,8 @@ count_vals_incols_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", "
 #'
 #' @param a a matrix or list of matrices whose values are to be counted according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>=}", or "\code{>}"
-#' @param val the value against which matrix entries are compared
+#'        "\code{<}", "\code{<=}", "\code{>=}", or "\code{>}". Default is "\code{==}".
+#' @param val the value against which matrix entries are compared. Default is \code{0}.
 #'
 #' @return a logical matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
 #'         \code{FALSE} otherwise

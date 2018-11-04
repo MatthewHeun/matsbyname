@@ -1,3 +1,6 @@
+* Documented defaults for `count_*` functions.
+
+
 # matsbyname 0.3.3 (2018-10-29)
 
 * Fix version number on pkgdown website.
