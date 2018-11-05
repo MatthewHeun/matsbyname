@@ -1,4 +1,4 @@
-* Documented defaults for `count_*` functions.
+* Documented defaults for arguments to `count_*` functions.
 
 
 # matsbyname 0.3.3 (2018-10-29)
