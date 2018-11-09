@@ -86,7 +86,7 @@
 </h1>
                         <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2018-11-08</h4>
+            <h4 class="date">2018-11-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/master/vignettes/matsbyname.Rmd"><code>vignettes/matsbyname.Rmd</code></a></small>
       <div class="hidden name"><code>matsbyname.Rmd</code></div>
@@ -128,90 +128,90 @@
 <h3 class="hasAnchor">
 <a href="#problem-1" class="anchor"></a>Problem 1</h3>
 <p>Although built-in matrix functions ensure size conformity of matrix operands, they do not respect the names of rows and columns (known as <tt>dimnames</tt> in <tt>R</tt>). In the following example, <strong>U</strong> represents a <em>use</em>matrix that contains the quantity of each product used by each industry, and <strong>Y</strong> represents a <em>final demand</em> matrix that contains the quantity of each product consumed by final demand industries. If the rows and columns are not in the same order, the sum of the matrices is nonsensical.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">productnames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">industrynames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">U &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(productnames, industrynames))</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">U</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; p1  1  3</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; p2  2  4</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">Y &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">rev</span>(productnames), <span class="kw">rev</span>(industrynames)))</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">Y</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt;    i2 i1</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt; p2  1  3</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt; p1  2  4</span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co"># This sum is nonsensical.  Neither row nor column names are respected.</span></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">U <span class="op">+</span><span class="st"> </span>Y </a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt; p1  2  6</span></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt; p2  4  8</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">productnames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>)
+industrynames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>)
+U &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(productnames, industrynames))
+U
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  1  3</span>
+<span class="co">#&gt; p2  2  4</span>
+Y &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">rev</span>(productnames), <span class="kw">rev</span>(industrynames)))
+Y
+<span class="co">#&gt;    i2 i1</span>
+<span class="co">#&gt; p2  1  3</span>
+<span class="co">#&gt; p1  2  4</span>
+<span class="co"># This sum is nonsensical.  Neither row nor column names are respected.</span>
+U <span class="op">+</span><span class="st"> </span>Y 
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  2  6</span>
+<span class="co">#&gt; p2  4  8</span></code></pre></div>
 <p>As a result, analysts performing matrix operations must maintain strict order of rows and columns across all calculations.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># Make a new version of Y (Y2), this time with dimnames in same order as U</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">Y2 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">4</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(productnames, industrynames))</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">Y2</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt; p1  4  2</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt; p2  3  1</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co"># Now the sum is sensible. Both row and column names are respected.</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">U <span class="op">+</span><span class="st"> </span>Y2</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; p1  5  5</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; p2  5  5</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Make a new version of Y (Y2), this time with dimnames in same order as U</span>
+Y2 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">4</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(productnames, industrynames))
+Y2
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  4  2</span>
+<span class="co">#&gt; p2  3  1</span>
+<span class="co"># Now the sum is sensible. Both row and column names are respected.</span>
+U <span class="op">+</span><span class="st"> </span>Y2
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  5  5</span>
+<span class="co">#&gt; p2  5  5</span></code></pre></div>
 </div>
 <div id="problem-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#problem-2" class="anchor"></a>Problem 2</h3>
 <p>In many cases, operand matrices may have different numbers or different names of rows or columns. This situation can occur when, for example, products or industries changes across time periods. When performing matrix operations, rows or columns of zeros must be added to ensure name conformity.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">Y3 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">5</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">"p1"</span>, <span class="st">"p3"</span>), <span class="kw">c</span>(<span class="st">"i1"</span>, <span class="st">"i3"</span>)))</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">Y3</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt;    i1 i3</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; p1  5  7</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt; p3  6  8</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co"># Nonsensical because neither row nor column names are respected. </span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co"># The "p3" rows and "i3" columns of Y3 have been added to </span></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co"># "p2" rows and "i2" columns of U.</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co"># Row and column names for the sum are taken from the first operand (U).</span></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10">U <span class="op">+</span><span class="st"> </span>Y3</a>
-<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt; p1  6 10</span></a>
-<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt; p2  8 12</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co"># Rather, need to insert missing rows in both U and Y before summing.</span></a>
-<a class="sourceLine" id="cb3-15" data-line-number="15">U_<span class="dv">2000</span> &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb3-16" data-line-number="16">                   <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb3-17" data-line-number="17">                   <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb3-18" data-line-number="18">                 <span class="dt">ncol =</span> <span class="dv">3</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>, </a>
-<a class="sourceLine" id="cb3-19" data-line-number="19">                 <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span>), <span class="kw">c</span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i3"</span>)))</a>
-<a class="sourceLine" id="cb3-20" data-line-number="20">Y_<span class="dv">2000</span> &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">7</span>,</a>
-<a class="sourceLine" id="cb3-21" data-line-number="21">                   <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, </a>
-<a class="sourceLine" id="cb3-22" data-line-number="22">                   <span class="dv">6</span>, <span class="dv">0</span>, <span class="dv">8</span>),</a>
-<a class="sourceLine" id="cb3-23" data-line-number="23">                 <span class="dt">ncol =</span> <span class="dv">3</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb3-24" data-line-number="24">                 <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span>), <span class="kw">c</span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i3"</span>)))</a>
-<a class="sourceLine" id="cb3-25" data-line-number="25">U_<span class="dv">2000</span></a>
-<a class="sourceLine" id="cb3-26" data-line-number="26"><span class="co">#&gt;    i1 i2 i3</span></a>
-<a class="sourceLine" id="cb3-27" data-line-number="27"><span class="co">#&gt; p1  1  3  0</span></a>
-<a class="sourceLine" id="cb3-28" data-line-number="28"><span class="co">#&gt; p2  2  4  0</span></a>
-<a class="sourceLine" id="cb3-29" data-line-number="29"><span class="co">#&gt; p3  0  0  0</span></a>
-<a class="sourceLine" id="cb3-30" data-line-number="30">Y_<span class="dv">2000</span></a>
-<a class="sourceLine" id="cb3-31" data-line-number="31"><span class="co">#&gt;    i1 i2 i3</span></a>
-<a class="sourceLine" id="cb3-32" data-line-number="32"><span class="co">#&gt; p1  5  0  7</span></a>
-<a class="sourceLine" id="cb3-33" data-line-number="33"><span class="co">#&gt; p2  0  0  0</span></a>
-<a class="sourceLine" id="cb3-34" data-line-number="34"><span class="co">#&gt; p3  6  0  8</span></a>
-<a class="sourceLine" id="cb3-35" data-line-number="35">U_<span class="dv">2000</span> <span class="op">+</span><span class="st"> </span>Y_<span class="dv">2000</span></a>
-<a class="sourceLine" id="cb3-36" data-line-number="36"><span class="co">#&gt;    i1 i2 i3</span></a>
-<a class="sourceLine" id="cb3-37" data-line-number="37"><span class="co">#&gt; p1  6  3  7</span></a>
-<a class="sourceLine" id="cb3-38" data-line-number="38"><span class="co">#&gt; p2  2  4  0</span></a>
-<a class="sourceLine" id="cb3-39" data-line-number="39"><span class="co">#&gt; p3  6  0  8</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Y3 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">5</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">"p1"</span>, <span class="st">"p3"</span>), <span class="kw">c</span>(<span class="st">"i1"</span>, <span class="st">"i3"</span>)))
+Y3
+<span class="co">#&gt;    i1 i3</span>
+<span class="co">#&gt; p1  5  7</span>
+<span class="co">#&gt; p3  6  8</span>
+<span class="co"># Nonsensical because neither row nor column names are respected. </span>
+<span class="co"># The "p3" rows and "i3" columns of Y3 have been added to </span>
+<span class="co"># "p2" rows and "i2" columns of U.</span>
+<span class="co"># Row and column names for the sum are taken from the first operand (U).</span>
+U <span class="op">+</span><span class="st"> </span>Y3
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  6 10</span>
+<span class="co">#&gt; p2  8 12</span>
+<span class="co"># Rather, need to insert missing rows in both U and Y before summing.</span>
+U_<span class="dv">2000</span> &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">0</span>,
+                   <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">0</span>,
+                   <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),
+                 <span class="dt">ncol =</span> <span class="dv">3</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>, 
+                 <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span>), <span class="kw">c</span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i3"</span>)))
+Y_<span class="dv">2000</span> &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">7</span>,
+                   <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, 
+                   <span class="dv">6</span>, <span class="dv">0</span>, <span class="dv">8</span>),
+                 <span class="dt">ncol =</span> <span class="dv">3</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>,
+                 <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span>), <span class="kw">c</span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i3"</span>)))
+U_<span class="dv">2000</span>
+<span class="co">#&gt;    i1 i2 i3</span>
+<span class="co">#&gt; p1  1  3  0</span>
+<span class="co">#&gt; p2  2  4  0</span>
+<span class="co">#&gt; p3  0  0  0</span>
+Y_<span class="dv">2000</span>
+<span class="co">#&gt;    i1 i2 i3</span>
+<span class="co">#&gt; p1  5  0  7</span>
+<span class="co">#&gt; p2  0  0  0</span>
+<span class="co">#&gt; p3  6  0  8</span>
+U_<span class="dv">2000</span> <span class="op">+</span><span class="st"> </span>Y_<span class="dv">2000</span>
+<span class="co">#&gt;    i1 i2 i3</span>
+<span class="co">#&gt; p1  6  3  7</span>
+<span class="co">#&gt; p2  2  4  0</span>
+<span class="co">#&gt; p3  6  0  8</span></code></pre></div>
 <p>The analyst’s burden is cumbersome. But worse problems await.</p>
 <p>Respecting names (and adding rows and columns of zeroes) can lead to an inability to invert matrices downstream, as shown in the following example.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># The original U matrix is invertible.</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">solve</span>(U)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt;    p1   p2</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; i1 -2  1.5</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; i2  1 -0.5</span></a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co"># The version of U that contains zero rows and columns (U_2000)</span></a>
-<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co"># is singular and cannot be inverted.</span></a>
-<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="kw">tryCatch</span>(<span class="kw">solve</span>(U_<span class="dv">2000</span>), <span class="dt">error =</span> <span class="cf">function</span>(err){<span class="kw">print</span>(err)})</a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; &lt;simpleError in solve.default(U_2000): Lapack routine dgesv: system is exactly singular: U[3,3] = 0&gt;</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The original U matrix is invertible.</span>
+<span class="kw">solve</span>(U)
+<span class="co">#&gt;    p1   p2</span>
+<span class="co">#&gt; i1 -2  1.5</span>
+<span class="co">#&gt; i2  1 -0.5</span>
+<span class="co"># The version of U that contains zero rows and columns (U_2000)</span>
+<span class="co"># is singular and cannot be inverted.</span>
+<span class="kw">tryCatch</span>(<span class="kw">solve</span>(U_<span class="dv">2000</span>), <span class="dt">error =</span> <span class="cf">function</span>(err){<span class="kw">print</span>(err)})
+<span class="co">#&gt; &lt;simpleError in solve.default(U_2000): Lapack routine dgesv: system is exactly singular: U[3,3] = 0&gt;</span></code></pre></div>
 </div>
 <div id="problem-3" class="section level3">
 <h3 class="hasAnchor">
@@ -234,22 +234,22 @@
 <li>respect row and column types, enforcing conformity as appropriate.</li>
 </ul>
 <p>These features are available without analyst intervention, as shown in the following example.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Same as U + Y2, without needing to create Y2.</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(U, Y)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; p1  5  5</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; p2  5  5</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co"># Same as U_2000 + Y_2000, but U and Y3 are unmodified.</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(U, Y3)</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt;    i1 i2 i3</span></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; p1  6  3  7</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; p2  2  4  0</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; p3  6  0  8</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co"># Eliminate zero-filled rows and columns. Same result as solve(U).</span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">U_<span class="dv">2000</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/clean_byname.html">clean_byname</a></span>(<span class="dt">margin =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">clean_value =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">solve</span>()</a>
-<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co">#&gt;    p1   p2</span></a>
-<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co">#&gt; i1 -2  1.5</span></a>
-<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="co">#&gt; i2  1 -0.5</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Same as U + Y2, without needing to create Y2.</span>
+<span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(U, Y)
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  5  5</span>
+<span class="co">#&gt; p2  5  5</span>
+<span class="co"># Same as U_2000 + Y_2000, but U and Y3 are unmodified.</span>
+<span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(U, Y3)
+<span class="co">#&gt;    i1 i2 i3</span>
+<span class="co">#&gt; p1  6  3  7</span>
+<span class="co">#&gt; p2  2  4  0</span>
+<span class="co">#&gt; p3  6  0  8</span>
+<span class="co"># Eliminate zero-filled rows and columns. Same result as solve(U).</span>
+U_<span class="dv">2000</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/clean_byname.html">clean_byname</a></span>(<span class="dt">margin =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">clean_value =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">solve</span>()
+<span class="co">#&gt;    p1   p2</span>
+<span class="co">#&gt; i1 -2  1.5</span>
+<span class="co">#&gt; i2  1 -0.5</span></code></pre></div>
 <p>In addition to <tt>sum_byname</tt> and <tt>clean_byname</tt>, the <tt>matsbyname</tt> package contains many additional matrix algebra functions that respect the names of rows and columns. Commonly-used functions are:</p>
 <ul>
 <li><tt>sum_byname</tt></li>
@@ -277,161 +277,161 @@
 <h3 class="hasAnchor">
 <a href="#setting-row-and-column-names" class="anchor"></a>Setting row and column names</h3>
 <p>In the preceding examples, row and column names were provided by the <tt>dimnames</tt> argument to the <tt>matrix</tt> function. However, <tt>matsbyname</tt> provides the <tt>setcolnames_byname</tt> and <tt>setrownames_byname</tt> functions to perform the same tasks using the pipe operator (<tt>%&gt;%</tt>).</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">U_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span>(productnames) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span>(industrynames)</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">U_<span class="dv">2</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; p1  1  3</span></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; p2  2  4</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span>(productnames) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span>(industrynames)
+U_<span class="dv">2</span>
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  1  3</span>
+<span class="co">#&gt; p2  2  4</span></code></pre></div>
 </div>
 <div id="setting-row-and-column-types" class="section level3">
 <h3 class="hasAnchor">
 <a href="#setting-row-and-column-types" class="anchor"></a>Setting row and column types</h3>
 <p>Row and column types can be understood by analogy: row and column types are to matrices in matrix algebra as units are to scalars in scalar algebra. Just as careful tracking of units is necessary in scalar calculations, careful tracking of row and column types is necessary in matrix operations. Because <tt>matsbyname</tt> keeps track of row and column types automatically, much of the burden of dealing with row and column types is removed from the analyst.</p>
 <p>Row and column types are character strings stored as attributes of the matrix object, and <tt>matsbyname</tt> functions ensure correctness of matrix operations by checking row and column types, throwing errors if needed. Row and column types can be set by the functions <tt>setrowtype</tt> and <tt>setcoltype</tt> and retrieved by the functions <tt>rowtype</tt> and <tt>coltype</tt>. Consider matrices <strong>A</strong>, <strong>B</strong>, and <strong>C</strong>:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">A &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span>(productnames) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span>(industrynames) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">A</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; p1  1  3</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; p2  2  4</span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">B &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">8</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span>(productnames) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span>(industrynames) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)</a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">B</a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; p1  8  6</span></a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; p2  7  5</span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb7-21" data-line-number="21"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb7-22" data-line-number="22"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb7-23" data-line-number="23">C &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-24" data-line-number="24"><span class="st">  </span><span class="kw"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span>(industrynames) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span>(productnames) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-25" data-line-number="25"><span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Industries"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Products"</span>)</a>
-<a class="sourceLine" id="cb7-26" data-line-number="26">C</a>
-<a class="sourceLine" id="cb7-27" data-line-number="27"><span class="co">#&gt;    p1 p2</span></a>
-<a class="sourceLine" id="cb7-28" data-line-number="28"><span class="co">#&gt; i1  1  3</span></a>
-<a class="sourceLine" id="cb7-29" data-line-number="29"><span class="co">#&gt; i2  2  4</span></a>
-<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb7-31" data-line-number="31"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb7-32" data-line-number="32"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb7-33" data-line-number="33"><span class="co">#&gt; [1] "Products"</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span>(productnames) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span>(industrynames) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)
+A
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  1  3</span>
+<span class="co">#&gt; p2  2  4</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span>
+B &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">8</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span>(productnames) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span>(industrynames) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)
+B
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  8  6</span>
+<span class="co">#&gt; p2  7  5</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span>
+C &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span>(industrynames) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span>(productnames) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Industries"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Products"</span>)
+C
+<span class="co">#&gt;    p1 p2</span>
+<span class="co">#&gt; i1  1  3</span>
+<span class="co">#&gt; i2  2  4</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Industries"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Products"</span></code></pre></div>
 <p><strong>B</strong> can be added to <strong>A</strong>, because row and column types are identical.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(A, B)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; p1  9  9</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; p2  9  9</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; [1] "Industries"</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(A, B)
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  9  9</span>
+<span class="co">#&gt; p2  9  9</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span></code></pre></div>
 <p>However, <strong>C</strong> cannot be added to <strong>A</strong> (or <strong>B</strong>), because row and column types disagree.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">tryCatch</span>(<span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(A, C), <span class="dt">error =</span> <span class="cf">function</span>(err){<span class="kw">print</span>(err)})</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt; &lt;simpleError in organize_args(a, b, fill = 0, match_type = match_type): rowtype(a) (Products) != rowtype(b) (Industries).&gt;</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tryCatch</span>(<span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(A, C), <span class="dt">error =</span> <span class="cf">function</span>(err){<span class="kw">print</span>(err)})
+<span class="co">#&gt; &lt;simpleError in organize_args(a, b, fill = 0, match_type = match_type): rowtype(a) (Products) != rowtype(b) (Industries).&gt;</span></code></pre></div>
 <p>In this case, a sum is possible if <strong>C</strong> is transposed prior to adding to <strong>A</strong>, because row and column types of <strong>A</strong> and <strong>C</strong><sup>T</sup> agree.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(A, <span class="kw"><a href="../reference/transpose_byname.html">transpose_byname</a></span>(C))</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; p1  2  5</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt; p2  5  8</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; [1] "Industries"</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(A, <span class="kw"><a href="../reference/transpose_byname.html">transpose_byname</a></span>(C))
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  2  5</span>
+<span class="co">#&gt; p2  5  8</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span></code></pre></div>
 <p>Matrices <strong>A</strong> and <strong>B</strong> can be element-multiplied and element-divided for the same reason they can be summed: row and column types agree.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="../reference/elementproduct_byname.html">elementproduct_byname</a></span>(A, B)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co">#&gt; p1  8 18</span></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co">#&gt; p2 14 20</span></a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="kw"><a href="../reference/elementquotient_byname.html">elementquotient_byname</a></span>(A, B)</a>
-<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#&gt;           i1  i2</span></a>
-<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#&gt; p1 0.1250000 0.5</span></a>
-<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="co">#&gt; p2 0.2857143 0.8</span></a>
-<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb11-16" data-line-number="16"><span class="co">#&gt; [1] "Industries"</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/elementproduct_byname.html">elementproduct_byname</a></span>(A, B)
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  8 18</span>
+<span class="co">#&gt; p2 14 20</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span>
+<span class="kw"><a href="../reference/elementquotient_byname.html">elementquotient_byname</a></span>(A, B)
+<span class="co">#&gt;           i1  i2</span>
+<span class="co">#&gt; p1 0.1250000 0.5</span>
+<span class="co">#&gt; p2 0.2857143 0.8</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span></code></pre></div>
 <p>Note that <strong>A</strong> and <strong>C</strong> can be matrix-multiplied, because the column type of <strong>A</strong> and the row type of <strong>C</strong> are identical (<tt>Industries</tt>). The result is a <tt>Products</tt>-by-<tt>Products</tt> matrix.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(A, C)</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt;    p1 p2</span></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt; p1  7 15</span></a>
-<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt; p2 10 22</span></a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#&gt; [1] "Products"</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(A, C)
+<span class="co">#&gt;    p1 p2</span>
+<span class="co">#&gt; p1  7 15</span>
+<span class="co">#&gt; p2 10 22</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Products"</span></code></pre></div>
 <p>However, <strong>A</strong> and <strong>B</strong> cannot be matrix-multiplied, because the column type of <strong>A</strong> (<tt>Industries</tt>) and the row type of <strong>B</strong> (<tt>Products</tt>) are different.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">tryCatch</span>(<span class="kw"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(A, B), <span class="dt">error =</span> <span class="cf">function</span>(err){<span class="kw">print</span>(err)})</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co">#&gt; &lt;simpleError in organize_args(a, b, fill = 0, match_type = match_type): coltype(a) != rowtype(b): Industries != Products.&gt;</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tryCatch</span>(<span class="kw"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(A, B), <span class="dt">error =</span> <span class="cf">function</span>(err){<span class="kw">print</span>(err)})
+<span class="co">#&gt; &lt;simpleError in organize_args(a, b, fill = 0, match_type = match_type): coltype(a) != rowtype(b): Industries != Products.&gt;</span></code></pre></div>
 <p>Analysts are encouraged to set row and column types on matrices, thereby taking advantage of <tt>matsbyname</tt>’s type-tracking feature to improve their matrix-based analyses.</p>
 </div>
 <div id="byname-functions-work-well-with-lists" class="section level3">
 <h3 class="hasAnchor">
 <a href="#byname-functions-work-well-with-lists" class="anchor"></a><tt>*_byname</tt> functions work well with lists</h3>
 <p>Another feature of the <tt>matsbyname</tt> package is that it works when arguments to functions are lists of matrices, returning lists as appropriate.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(A, <span class="kw">list</span>(B, B))</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="co">#&gt; p1  9  9</span></a>
-<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="co">#&gt; p2  9  9</span></a>
-<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb14-10" data-line-number="10"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="co">#&gt; [[2]]</span></a>
-<a class="sourceLine" id="cb14-12" data-line-number="12"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#&gt; p1  9  9</span></a>
-<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="co">#&gt; p2  9  9</span></a>
-<a class="sourceLine" id="cb14-15" data-line-number="15"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb14-16" data-line-number="16"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb14-18" data-line-number="18"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="kw"><a href="../reference/elementproduct_byname.html">elementproduct_byname</a></span>(<span class="kw">list</span>(A, A), B)</a>
-<a class="sourceLine" id="cb14-20" data-line-number="20"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb14-21" data-line-number="21"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb14-22" data-line-number="22"><span class="co">#&gt; p1  8 18</span></a>
-<a class="sourceLine" id="cb14-23" data-line-number="23"><span class="co">#&gt; p2 14 20</span></a>
-<a class="sourceLine" id="cb14-24" data-line-number="24"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb14-25" data-line-number="25"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb14-26" data-line-number="26"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb14-27" data-line-number="27"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb14-28" data-line-number="28"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb14-29" data-line-number="29"><span class="co">#&gt; [[2]]</span></a>
-<a class="sourceLine" id="cb14-30" data-line-number="30"><span class="co">#&gt;    i1 i2</span></a>
-<a class="sourceLine" id="cb14-31" data-line-number="31"><span class="co">#&gt; p1  8 18</span></a>
-<a class="sourceLine" id="cb14-32" data-line-number="32"><span class="co">#&gt; p2 14 20</span></a>
-<a class="sourceLine" id="cb14-33" data-line-number="33"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb14-34" data-line-number="34"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb14-35" data-line-number="35"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb14-36" data-line-number="36"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb14-37" data-line-number="37"><span class="kw"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(<span class="kw">list</span>(A, A), <span class="kw">list</span>(C, C))</a>
-<a class="sourceLine" id="cb14-38" data-line-number="38"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb14-39" data-line-number="39"><span class="co">#&gt;    p1 p2</span></a>
-<a class="sourceLine" id="cb14-40" data-line-number="40"><span class="co">#&gt; p1  7 15</span></a>
-<a class="sourceLine" id="cb14-41" data-line-number="41"><span class="co">#&gt; p2 10 22</span></a>
-<a class="sourceLine" id="cb14-42" data-line-number="42"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb14-43" data-line-number="43"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb14-44" data-line-number="44"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb14-45" data-line-number="45"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb14-46" data-line-number="46"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb14-47" data-line-number="47"><span class="co">#&gt; [[2]]</span></a>
-<a class="sourceLine" id="cb14-48" data-line-number="48"><span class="co">#&gt;    p1 p2</span></a>
-<a class="sourceLine" id="cb14-49" data-line-number="49"><span class="co">#&gt; p1  7 15</span></a>
-<a class="sourceLine" id="cb14-50" data-line-number="50"><span class="co">#&gt; p2 10 22</span></a>
-<a class="sourceLine" id="cb14-51" data-line-number="51"><span class="co">#&gt; attr(,"rowtype")</span></a>
-<a class="sourceLine" id="cb14-52" data-line-number="52"><span class="co">#&gt; [1] "Products"</span></a>
-<a class="sourceLine" id="cb14-53" data-line-number="53"><span class="co">#&gt; attr(,"coltype")</span></a>
-<a class="sourceLine" id="cb14-54" data-line-number="54"><span class="co">#&gt; [1] "Products"</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(A, <span class="kw">list</span>(B, B))
+<span class="co">#&gt; [[1]]</span>
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  9  9</span>
+<span class="co">#&gt; p2  9  9</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; [[2]]</span>
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  9  9</span>
+<span class="co">#&gt; p2  9  9</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span>
+<span class="kw"><a href="../reference/elementproduct_byname.html">elementproduct_byname</a></span>(<span class="kw">list</span>(A, A), B)
+<span class="co">#&gt; [[1]]</span>
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  8 18</span>
+<span class="co">#&gt; p2 14 20</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; [[2]]</span>
+<span class="co">#&gt;    i1 i2</span>
+<span class="co">#&gt; p1  8 18</span>
+<span class="co">#&gt; p2 14 20</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Industries"</span>
+<span class="kw"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(<span class="kw">list</span>(A, A), <span class="kw">list</span>(C, C))
+<span class="co">#&gt; [[1]]</span>
+<span class="co">#&gt;    p1 p2</span>
+<span class="co">#&gt; p1  7 15</span>
+<span class="co">#&gt; p2 10 22</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; [[2]]</span>
+<span class="co">#&gt;    p1 p2</span>
+<span class="co">#&gt; p1  7 15</span>
+<span class="co">#&gt; p2 10 22</span>
+<span class="co">#&gt; attr(,"rowtype")</span>
+<span class="co">#&gt; [1] "Products"</span>
+<span class="co">#&gt; attr(,"coltype")</span>
+<span class="co">#&gt; [1] "Products"</span></code></pre></div>
 <!-- ### <tt>matsbyname</tt> works well with <tt>matsindf</tt> -->
 <!-- The <tt>matsindf</tt> package provides functions that collapse -->
 <!-- [tidy](http://tidyr.tidyverse.org/articles/tidy-data.html) data frames -->
