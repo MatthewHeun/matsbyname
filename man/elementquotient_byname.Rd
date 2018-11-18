@@ -22,7 +22,6 @@ Doing so ensures that
 the dimensions of the \code{dividend} and \code{divisor} will be conformable.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 elementquotient_byname(100, 50)
 commoditynames <- c("c1", "c2")

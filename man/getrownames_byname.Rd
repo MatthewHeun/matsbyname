@@ -16,7 +16,6 @@ row names of \code{a}
 Gets row names in a way that is amenable to use in chaining operations in a functional programming way
 }
 \examples{
-library(magrittr)
 m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 getrownames_byname(m)

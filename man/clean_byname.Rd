@@ -24,7 +24,6 @@ a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{c
 Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
 }
 \examples{
-library(magrittr)
 m <- matrix(c(-20, 1, -20, 2), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
 m
 m \%>\% clean_byname(margin = 1, clean_value = -20) # Eliminates -20, -20 row

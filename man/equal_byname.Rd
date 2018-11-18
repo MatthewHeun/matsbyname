@@ -19,7 +19,6 @@ entries in the matrix.
 If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 }
 \examples{
-library(magrittr)
 a <- matrix(1:4, nrow = 2)
 b <- matrix(1:4, nrow = 2)
 equal_byname(a, b)

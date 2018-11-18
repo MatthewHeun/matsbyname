@@ -1,6 +1,5 @@
 ## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
-library(magrittr)
 library(dplyr)
 library(parallel)
 library(matsbyname)

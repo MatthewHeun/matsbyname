@@ -29,7 +29,6 @@ groups in the data frame are respected if \code{mutate} is used.
 See examples.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\% 
   setrowtype("row") \%>\% setcoltype("col")

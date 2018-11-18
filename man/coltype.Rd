@@ -16,7 +16,6 @@ the column type of \code{a}
 Extracts column type of \code{a}.
 }
 \examples{
-library(magrittr)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) \%>\%

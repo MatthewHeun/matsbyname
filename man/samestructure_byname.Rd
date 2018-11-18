@@ -20,7 +20,6 @@ if row and column names are identical.
 Values can be different.
 }
 \examples{
-library(magrittr)
 samestructure_byname(2, 2)
 productnames <- c("p1", "p2")
 industrynames <- c("i1", "i2")

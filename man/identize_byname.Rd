@@ -27,7 +27,6 @@ If \code{c(1,2)} (the default), make an identity matrix with \code{1}s on the di
 Row and column names are sorted on output.
 }
 \examples{
-library(magrittr)
 M <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 identize_byname(M)

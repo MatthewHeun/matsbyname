@@ -1,7 +1,3 @@
-library(parallel)
-library(magrittr)
-library(dplyr)
-
 #' Absolute value of matrix elements
 #'
 #' @param a a matrix or list of matrices 
@@ -11,7 +7,6 @@ library(dplyr)
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' abs_byname(1)
 #' abs_byname(-1)
 #' m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
@@ -33,7 +28,6 @@ abs_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' elementlog_byname(exp(1))
 #' m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
@@ -54,7 +48,6 @@ elementlog_byname <- function(a, base = exp(1)){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' elementexp_byname(1)
 #' m <- matrix(c(log(10),log(1),log(1),log(100)), 
 #'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
@@ -76,7 +69,6 @@ elementexp_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' invert_byname(m)
@@ -94,10 +86,10 @@ invert_byname <- function(a){
 #' @param a the matrix to be transposed
 #'
 #' @return the transposed matrix
+#' 
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' transpose_byname(m)
@@ -108,30 +100,29 @@ transpose_byname <- function(a){
 
 #' Creates a diagonal "hat" matrix from a vector.
 #'
-#' @param v The vector from which a "hat" matrix is to be created.
-#'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
 #' \code{v} must be a matrix with at least one dimension of length 1 (a vector).
 #' The names of both dimensions of the hatized matrix are the same and taken from \code{v}.
 #' Note that the vector names are sorted prior to forming the "hat" matrix.
 #'
+#' @param v The vector from which a "hat" matrix is to be created.
+#'
 #' @return A square "hat" matrix with size equal to the length of \code{v}.
 #' @export
 #'
 #' @examples
-#' library(magrittr)
-#' v <- matrix(1:10, ncol = 1, dimnames=list(c(paste0("i", 1:10)), c("c1"))) %>%
+#' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
-#' r <- matrix(1:5, nrow = 1, dimnames=list(c("r1"), c(paste0("c", 1:5)))) %>%
+#' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
 #'   setrowtype(NA) %>% setcoltype("Commodities")
 #' hatize_byname(v)
 #' hatize_byname(r)
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
-  hatize.func <- function(v){
-    v_sorted <- sort_rows_cols(v) # %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
+  hatize_func <- function(v){
+    v_sorted <- sort_rows_cols(v)
     out <- OpenMx::vec2diag(v_sorted)
     if (ncol(v) == 1) {
       rownames(out) <- rownames(v_sorted)
@@ -150,7 +141,64 @@ hatize_byname <- function(v){
     }
     return(out)
   }
-  unaryapply_byname(hatize.func, a = v, rowcoltypes = "none")
+  unaryapply_byname(hatize_func, a = v, rowcoltypes = "none")
+}
+
+#' Hatize and invert a vector
+#' 
+#' When dividing rows or columns of a matrix by elements of a vector,
+#' the vector elements are inverted, placed on the diagonal of a new matrix, and
+#' pre- or post-multiplied into the matrix.
+#' This function performs the hatizing and inverting of vector \code{v} in one step
+#' and takes advantage of computational efficiencies to achieve the desired result.
+#' The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
+#' a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of \code{v}.
+#' So this function first inverts each member of \code{v} then places those members on the diagonal of a matrix.
+#' 
+#' Note that this function gives the same result as \code{invert_byname(hatize_byname(v))},
+#' except that \code{invert_byname(hatize_byname(v))} fails due to singular matrix
+#' when any of the elements of \code{v} are zero.
+#' This function will give \code{Inf} on the diagonal of the result for each zero element of \code{v},
+#' arguably a better answer.
+#' 
+#' Note further that a zero value in \code{v} could indicate a missing value.
+#' Thus, for the purposes of multiplying into a later matrix, the \code{hatinv} matrix
+#' it may be better that the result has zeroes where \code{v} had zeroes. 
+#' Set argument \code{inf_to_zero = TRUE} to achieve the desired effect.
+#' 
+#' @param v the vector to be hatized and inverted
+#' @param inf_to_zero a logical to indicate how to handle \code{Inf} values produced by the inversion process.
+#'        If \code{FALSE} (the default), \code{Inf} is not handled differently.
+#'        If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.
+#'
+#' @return a square diagonal matrix with inverted elements of \code{v} on the diagonal
+#' 
+#' @export
+#'
+#' @examples
+#' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
+#'   setrowtype("Industries") %>% setcoltype(NA)
+#' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
+#'   setrowtype(NA) %>% setcoltype("Commodities")
+#' hatinv_byname(v)
+#' hatinv_byname(r)
+#' # This also works with lists.
+#' hatinv_byname(list(v, v))
+#' # Provides better handling of 0 values.
+#' v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
+#'   setrowtype("Industries") %>% setcoltype(NA)
+#' hatinv_byname(v2)
+#' \dontrun{v2 %>% hatize_byname() %>% invert_byname # Produces singular matrix error}
+#' hatinv_byname(v2, inf_to_zero = TRUE)
+hatinv_byname <- function(v, inf_to_zero = FALSE){
+  hatinv_func <- function(v){
+    v_inv <- 1/v
+    if (inf_to_zero) {
+      v_inv[is.infinite(v_inv)] <- 0 
+    }
+    hatize_byname(v_inv)
+  }
+  unaryapply_byname(hatinv_func, a = v, rowcoltypes = "none")
 }
 
 #' Named identity matrix or vector
@@ -174,7 +222,6 @@ hatize_byname <- function(v){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' M <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' identize_byname(M)
@@ -246,7 +293,6 @@ identize_byname <- function(a, margin = c(1,2)){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' M <- matrix(c(1, 5,
 #'               4, 5),
 #'             nrow = 2, ncol = 2, byrow = TRUE, 
@@ -312,7 +358,6 @@ fractionize_byname <- function(a, margin){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -375,7 +420,6 @@ rowsums_byname <- function(a, colname = NA){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -416,7 +460,6 @@ colsums_byname <- function(a, rowname = NA){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
@@ -458,7 +501,6 @@ sumall_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' M <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Products")
@@ -518,7 +560,6 @@ rowprods_byname <- function(a, colname = NA){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' M <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -559,7 +600,6 @@ colprods_byname <- function(a, rowname = NA){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' M <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Product")
@@ -603,7 +643,6 @@ prodall_byname <- function(a){
 #' @importFrom magrittr %>%
 #' 
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' # Rows and columns are unsorted
@@ -651,7 +690,6 @@ Iminus_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
 #'   setrowtype("row") %>% setcoltype("col")
@@ -688,7 +726,6 @@ cumsum_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' cumprod_byname(list(1, 2, 3, 4, 5))
 #' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>%
 #'   setrowtype("row") %>% setcoltype("col")
