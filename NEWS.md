@@ -1,3 +1,8 @@
+# matsbyname 0.3.5 (2018-11-18)
+
+* Now using `identical()` instead of `isTRUE(all.equal())` for `equal_byname` function.
+
+
 # matsbyname 0.3.4 (2018-11-18)
 
 * Added new function `hatinv_byname`.
