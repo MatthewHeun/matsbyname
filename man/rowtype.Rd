@@ -16,7 +16,6 @@ the row type of \code{a}
 Extracts row type of \code{a}.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")

@@ -35,7 +35,6 @@ the result of applying \code{FUN} "by name" to \code{a}.
 Note that if \code{a} is a list, the names of \code{a} are applied to the output.
 }
 \examples{
-library(magrittr)
 productnames <- c("p1", "p2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) \%>\%

@@ -21,7 +21,6 @@ A matrix representing the name-wise difference between \code{minuend} and \code{
 Name-wise subtraction of matrices.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 difference_byname(100, 50)
 commoditynames <- c("c1", "c2")

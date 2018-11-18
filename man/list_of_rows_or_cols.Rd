@@ -25,7 +25,6 @@ or column (if \code{margin == 2}).
 Note that the result provides column vectors, regardless of the value of \code{margin}.
 }
 \examples{
-library(magrittr)
 m <- matrix(data = c(1:6), 
             nrow = 2, ncol = 3, 
             dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) \%>\%

@@ -47,7 +47,6 @@ This function assumes that \code{retain_pattern} and \code{remove_pattern} have 
 suitably escaped.
 }
 \examples{
-library(magrittr)
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))

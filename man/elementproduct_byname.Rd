@@ -20,7 +20,6 @@ Doing so ensures that
 the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 elementproduct_byname(2, 2)
 commoditynames <- c("c1", "c2")
