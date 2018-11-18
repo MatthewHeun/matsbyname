@@ -32,7 +32,11 @@
 
 <meta property="og:title" content="Creates a diagonal "hat" matrix from a vector. — hatize_byname" />
 
-<meta property="og:description" content="Creates a diagonal &quot;hat&quot; matrix from a vector." />
+<meta property="og:description" content="A &quot;hat&quot; matrix is one in which the only non-zero elements are stored on the diagonal.
+To &quot;hatize&quot; a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
+v must be a matrix with at least one dimension of length 1 (a vector).
+The names of both dimensions of the hatized matrix are the same and taken from v.
+Note that the vector names are sorted prior to forming the &quot;hat&quot; matrix." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -61,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.3</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.4</span>
       </span>
     </div>
 
@@ -122,7 +126,11 @@
 
     <div class="ref-description">
     
-    <p>Creates a diagonal "hat" matrix from a vector.</p>
+    <p>A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
+To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
+<code>v</code> must be a matrix with at least one dimension of length 1 (a vector).
+The names of both dimensions of the hatized matrix are the same and taken from <code>v</code>.
+Note that the vector names are sorted prior to forming the "hat" matrix.</p>
     
     </div>
 
@@ -133,12 +141,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>v</th>
-      <td><p>The vector from which a "hat" matrix is to be created.</p>
-<p>A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
-To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
-<code>v</code> must be a matrix with at least one dimension of length 1 (a vector).
-The names of both dimensions of the hatized matrix are the same and taken from <code>v</code>.
-Note that the vector names are sorted prior to forming the "hat" matrix.</p></td>
+      <td><p>The vector from which a "hat" matrix is to be created.</p></td>
     </tr>
     </table>
     
@@ -148,10 +151,9 @@ Note that the vector names are sorted prior to forming the "hat" matrix.</p></td
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
-<span class='no'>v</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fl'>1</span>:<span class='fl'>10</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>dimnames</span><span class='kw'>=</span><span class='fu'>list</span>(<span class='fu'>c</span>(<span class='fu'>paste0</span>(<span class='st'>"i"</span>, <span class='fl'>1</span>:<span class='fl'>10</span>)), <span class='fu'>c</span>(<span class='st'>"c1"</span>))) <span class='kw'>%&gt;%</span>
+    <pre class="examples"><div class='input'><span class='no'>v</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fl'>1</span>:<span class='fl'>10</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>c</span>(<span class='fu'>paste0</span>(<span class='st'>"i"</span>, <span class='fl'>1</span>:<span class='fl'>10</span>)), <span class='fu'>c</span>(<span class='st'>"c1"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='fl'>NA</span>)
-<span class='no'>r</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fl'>1</span>:<span class='fl'>5</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>dimnames</span><span class='kw'>=</span><span class='fu'>list</span>(<span class='fu'>c</span>(<span class='st'>"r1"</span>), <span class='fu'>c</span>(<span class='fu'>paste0</span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>5</span>)))) <span class='kw'>%&gt;%</span>
+<span class='no'>r</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fl'>1</span>:<span class='fl'>5</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>c</span>(<span class='st'>"r1"</span>), <span class='fu'>c</span>(<span class='fu'>paste0</span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>5</span>)))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='fl'>NA</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodities"</span>)
 <span class='fu'>hatize_byname</span>(<span class='no'>v</span>)</div><div class='output co'>#&gt;     i1 i10 i2 i3 i4 i5 i6 i7 i8 i9
 #&gt; i1   1   0  0  0  0  0  0  0  0  0

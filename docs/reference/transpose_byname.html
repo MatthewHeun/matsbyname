@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.3</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.4</span>
       </span>
     </div>
 
@@ -143,8 +143,7 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>magrittr</span>)
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>11</span>,<span class='fl'>21</span>,<span class='fl'>31</span>,<span class='fl'>12</span>,<span class='fl'>22</span>,<span class='fl'>32</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>paste0</span>(<span class='st'>"i"</span>, <span class='fl'>1</span>:<span class='fl'>3</span>), <span class='fu'>paste0</span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>2</span>))) <span class='kw'>%&gt;%</span>
+    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>11</span>,<span class='fl'>21</span>,<span class='fl'>31</span>,<span class='fl'>12</span>,<span class='fl'>22</span>,<span class='fl'>32</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>paste0</span>(<span class='st'>"i"</span>, <span class='fl'>1</span>:<span class='fl'>3</span>), <span class='fu'>paste0</span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>2</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industry"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodity"</span>)
 <span class='fu'>transpose_byname</span>(<span class='no'>m</span>)</div><div class='output co'>#&gt;    i1 i2 i3
 #&gt; c1 11 21 31

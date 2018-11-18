@@ -147,8 +147,9 @@ hatize_byname <- function(v){
 #' Hatize and invert a vector
 #' 
 #' When dividing rows or columns of a matrix by elements of a vector,
-#' the vector elements are inverted, placed on the diagonal of a new matrix, and
-#' pre- or post-multiplied into the matrix.
+#' the vector elements are placed on the diagonal of a new matrix,
+#' the diagonal matrix is inverted, and
+#' the result is pre- or post-multiplied into the matrix.
 #' This function performs the hatizing and inverting of vector \code{v} in one step
 #' and takes advantage of computational efficiencies to achieve the desired result.
 #' The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
