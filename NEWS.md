@@ -1,4 +1,8 @@
+# matsbyname 0.3.4 (2018-11-18)
+
+* Added new function `hatinv_byname`.
 * Documented defaults for arguments to `count_*` functions.
+* Now importing pipe operator from magrittr package at global level
 
 
 # matsbyname 0.3.3 (2018-10-29)
