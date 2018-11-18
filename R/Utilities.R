@@ -218,7 +218,6 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #' @importFrom magrittr set_names
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(data = c(1:6), 
 #'             nrow = 2, ncol = 3, 
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>%
@@ -259,7 +258,6 @@ list_of_rows_or_cols <- function(a, margin){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' getrownames_byname(m)
@@ -284,7 +282,6 @@ getrownames_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' getcolnames_byname(m)
@@ -320,7 +317,6 @@ getcolnames_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -384,7 +380,6 @@ setrownames_byname <- function(a, rownames){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' setcolnames_byname(m, c("a", "b", "c"))
@@ -415,7 +410,6 @@ setcolnames_byname <- function(a, colnames){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
@@ -457,7 +451,6 @@ setrowtype <- function(a, rowtype){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
@@ -493,7 +486,6 @@ setcoltype <- function(a, coltype){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
@@ -518,7 +510,6 @@ rowtype <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -570,7 +561,6 @@ coltype <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
@@ -675,7 +665,6 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_cols_byname(m, retain_pattern = make_pattern(c("p1", "p4"), pattern_type = "exact"))
@@ -711,7 +700,6 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(-20, 1, -20, 2), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
 #' m
 #' m %>% clean_byname(margin = 1, clean_value = -20) # Eliminates -20, -20 row

@@ -32,7 +32,6 @@ A matrix representing the name-wise product of operands
 Name-wise matrix multiplication
 }
 \examples{
-library(magrittr)
 library(dplyr)
 V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")

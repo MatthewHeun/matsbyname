@@ -21,7 +21,6 @@ prior to performing arithmetic mean.
 Zeroes are inserted for missing matrix elements.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 mean_byname(100, 50)
 mean_byname(10, 20, 30)

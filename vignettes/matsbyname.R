@@ -3,7 +3,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(magrittr)
 library(dplyr)
 library(tidyr)
 library(parallel)

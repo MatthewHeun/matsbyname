@@ -14,6 +14,57 @@ library(tidyr)
 
 
 ###########################################################
+context("Hatize and Inverse")
+###########################################################
+
+test_that("hatinv_byname works as expected", {
+  # Test with a column vector
+  v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  expect_equal(hatinv_byname(v), v %>% hatize_byname() %>% invert_byname())
+  # Test with a row vector
+  r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
+    setrowtype(NA) %>% setcoltype("Commodities")
+  expect_equal(hatinv_byname(r), r %>% hatize_byname() %>% invert_byname())
+  # Test with a list
+  v_list <- list(v, v)
+  expect_equal(hatinv_byname(v_list), v_list %>% hatize_byname() %>% invert_byname())
+  # Test with a data frame
+  DF <- data.frame(v_list = I(list()))
+  DF[[1, "v_list"]] <- v
+  DF[[2, "v_list"]] <- v
+  DF <- DF %>% 
+    mutate(
+      hatinv = hatinv_byname(v_list)
+    )
+  DF_expected <- data.frame(v_list = I(list()), hatinv = I(list()))
+  DF_expected[[1, "v_list"]] <- v
+  DF_expected[[2, "v_list"]] <- v
+  DF_expected[[1, "hatinv"]] <- v %>% hatize_byname() %>% invert_byname()
+  DF_expected[[2, "hatinv"]] <- v %>% hatize_byname() %>% invert_byname()
+  # The hatinv column of DF_expected will have class = 'AsIs', but
+  # the hatinv column of DF will have no class attribute.  
+  # Eliminate that mismatch.
+  attr(DF_expected$hatinv, which = "class") <- NULL
+  expect_equal(DF, DF_expected)
+  # Test when one of the elements of v is 0.
+  v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  expect_equal(hatinv_byname(v2), matrix(c(1/0, 0,
+                                           0, 1), 
+               nrow = 2, ncol = 2, byrow = TRUE,
+               dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
+               setrowtype("Industries") %>% setcoltype("Industries"))
+  # Test when we want the 0 element of v to give a 0 instead of Inf.
+  expect_equal(hatinv_byname(v2, inf_to_zero = TRUE), matrix(c(0, 0,
+                                                               0, 1), 
+                                                             nrow = 2, ncol = 2, byrow = TRUE,
+                                                             dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
+                 setrowtype("Industries") %>% setcoltype("Industries"))
+})
+
+
+###########################################################
 context("Absolute value")
 ###########################################################
 

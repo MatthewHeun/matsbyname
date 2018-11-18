@@ -24,7 +24,6 @@ Column types are strings stored in the \code{coltype} attribute.
 and subsequent calls to \code{coltype} will return \code{NULL}.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")

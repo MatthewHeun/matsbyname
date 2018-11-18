@@ -15,7 +15,6 @@
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' sum_byname(2, 2)
 #' sum_byname(2, 2, 2)
@@ -82,7 +81,6 @@ sum_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' difference_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
@@ -123,7 +121,6 @@ difference_byname <- function(minuend, subtrahend){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' elementpow_byname(2, 3)
 #' m <- matrix(2, nrow = 2, ncol = 3, dimnames = list(paste0("r", 1:2), paste0("c", 1:3))) %>% 
@@ -167,7 +164,6 @@ elementpow_byname <- function(a, pow){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -223,7 +219,6 @@ matrixproduct_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' elementproduct_byname(2, 2)
 #' commoditynames <- c("c1", "c2")
@@ -271,7 +266,6 @@ elementproduct_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' elementquotient_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
@@ -314,7 +308,6 @@ elementquotient_byname <- function(dividend, divisor){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' mean_byname(100, 50)
 #' mean_byname(10, 20, 30)
@@ -359,7 +352,6 @@ mean_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' geometricmean_byname(10, 1000)
 #' geometricmean_byname(10, 1000, 100000)
@@ -419,7 +411,6 @@ geometricmean_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m1 <- matrix(c(1:6), nrow = 3, ncol = 2) %>% 
 #'   setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
@@ -477,7 +468,6 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' a <- matrix(1:4, nrow = 2)
 #' b <- matrix(1:4, nrow = 2)
 #' equal_byname(a, b)
@@ -512,7 +502,6 @@ equal_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' samestructure_byname(2, 2)
 #' productnames <- c("p1", "p2")
 #' industrynames <- c("i1", "i2")

@@ -27,7 +27,6 @@ such that row and column names of the matrices are respected.
 This function respects groups if \code{a} is a variable in a data frame.
 }
 \examples{
-library(magrittr)
 cumprod_byname(list(1, 2, 3, 4, 5))
 m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\%
   setrowtype("row") \%>\% setcoltype("col")
