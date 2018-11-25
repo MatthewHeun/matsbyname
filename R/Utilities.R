@@ -751,6 +751,9 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
 }
 
 #' Test whether this is the zero matrix
+#' 
+#' Note that this function tests whether the elements of \code{abs(a)} are \code{<= tol}.
+#' So, you can set \code{tol = 0} to discover if \code{a} is EXACTLY the zero matrix.
 #'
 #' @param a a matrix of list of matrices
 #' @param tol the allowable deviation from 0 for any element
@@ -777,7 +780,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
 iszero_byname <- function(a, tol = 1e-6){
   zero.func <- function(a, tol){
-    all(abs(a) < tol)
+    all(abs(a) <= tol)
   }
   unaryapply_byname(zero.func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")
