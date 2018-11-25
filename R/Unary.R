@@ -98,7 +98,7 @@ transpose_byname <- function(a){
   unaryapply_byname(t, a = a, rowcoltypes = "transpose")
 }
 
-#' Creates a diagonal "hat" matrix from a vector.
+#' Creates a diagonal "hat" matrix from a vector
 #'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
@@ -876,7 +876,7 @@ count_vals_incols_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", "
 #' @param a a matrix or list of matrices whose values are to be counted according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
 #'        "\code{<}", "\code{<=}", "\code{>=}", or "\code{>}". Default is "\code{==}".
-#' @param val the value against which matrix entries are compared. Default is \code{0}.
+#' @param val a single value against which entries in matrix \code{a} are compared. Default is \code{0}.
 #'
 #' @return a logical matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
 #'         \code{FALSE} otherwise

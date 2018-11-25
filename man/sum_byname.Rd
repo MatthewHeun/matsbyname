@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{sum_byname}
 \alias{sum_byname}
-\title{Name-wise addition of matrices.}
+\title{Name-wise addition of matrices}
 \usage{
 sum_byname(...)
 }

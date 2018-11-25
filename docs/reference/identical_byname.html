@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Test whether matrices or lists of matrices have same structure — samestructure_byname • matsbyname</title>
+<title>Compare two matrices "by name" for exact equality — identical_byname • matsbyname</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,13 +30,9 @@
 
 
 
-<meta property="og:title" content="Test whether matrices or lists of matrices have same structure — samestructure_byname" />
+<meta property="og:title" content="Compare two matrices "by name" for exact equality — identical_byname" />
 
-<meta property="og:description" content="Matrices are said to have the same structure 
-if row and column types are identical 
-and 
-if row and column names are identical.
-Values can be different." />
+<meta property="og:description" content="If operands are matrices, they are completed and sorted relative to one another prior to comparison." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,22 +117,18 @@ Values can be different." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Test whether matrices or lists of matrices have same structure</h1>
+    <h1>Compare two matrices "by name" for exact equality</h1>
     <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Binary.R'><code>R/Binary.R</code></a></small>
-    <div class="hidden name"><code>samestructure_byname.Rd</code></div>
+    <div class="hidden name"><code>identical_byname.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Matrices are said to have the same structure 
-if row and column types are identical 
-and 
-if row and column names are identical.
-Values can be different.</p>
+    <p>If operands are matrices, they are completed and sorted relative to one another prior to comparison.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>samestructure_byname</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>identical_byname</span>(<span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,21 +141,28 @@ Values can be different.</p>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>TRUE</code> if all operands have the same structure, <code>FALSE</code> otherwise.</p>
+    <p><code>TRUE</code> iff all information is identical, including
+row and column types <em>and</em>
+row and column names <em>and</em>
+entries in the matrices.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Comparisons are made by <code><a href='https://www.rdocumentation.org/packages/base/topics/identical'>identical(a, b)</a></code> so that variations among numbers
+within the computational precision will return <code>FALSE</code>.</p>
+<p>If fuzzy comparison is needed, use <code><a href='equal_byname.html'>equal_byname</a></code>, 
+which compares using <code><a href='https://www.rdocumentation.org/packages/base/topics/Logic'>isTRUE(all.equal(a, b))</a></code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>samestructure_byname</span>(<span class='fl'>2</span>, <span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='no'>productnames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"p1"</span>, <span class='st'>"p2"</span>)
-<span class='no'>industrynames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i2"</span>)
-<span class='no'>U</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>productnames</span>, <span class='no'>industrynames</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Products"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Industries"</span>)
-<span class='fu'>samestructure_byname</span>(<span class='no'>U</span>, <span class='no'>U</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'>samestructure_byname</span>(<span class='no'>U</span>, <span class='no'>U</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"row"</span>))</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='fu'>samestructure_byname</span>(<span class='no'>U</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"col"</span>), <span class='no'>U</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='co'># Also works with lists</span>
-<span class='fu'>samestructure_byname</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>U</span>, <span class='no'>U</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>U</span>, <span class='no'>U</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] TRUE
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] TRUE
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='no'>a</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'>identical_byname</span>(<span class='no'>a</span>, <span class='no'>b</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'>identical_byname</span>(<span class='no'>a</span>, <span class='no'>b</span> + <span class='fl'>1e-100</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='no'>a</span> <span class='kw'>&lt;-</span> <span class='no'>a</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodities"</span>)
+<span class='fu'>identical_byname</span>(<span class='no'>a</span>, <span class='no'>b</span>) <span class='co'># FALSE because a has row and column types, but b does not.</span></div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='no'>b</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodities"</span>)
+<span class='fu'>identical_byname</span>(<span class='no'>a</span>, <span class='no'>b</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/dimnames'>dimnames</a></span>(<span class='no'>a</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i2"</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>))
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/dimnames'>dimnames</a></span>(<span class='no'>b</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i2"</span>))
+<span class='fu'>identical_byname</span>(<span class='no'>a</span>, <span class='no'>b</span>) <span class='co'># FALSE, because row and column names are not equal</span></div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/dimnames'>dimnames</a></span>(<span class='no'>b</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/dimnames'>dimnames</a></span>(<span class='no'>a</span>)
+<span class='fu'>identical_byname</span>(<span class='no'>a</span>, <span class='no'>b</span>)</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -171,6 +170,8 @@ Values can be different.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

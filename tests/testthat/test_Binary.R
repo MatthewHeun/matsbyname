@@ -807,7 +807,7 @@ test_that("logarithmicmean_byname works as expected", {
 
 
 ###########################################################
-context("Equal_byname")
+context("Equal and identical")
 ###########################################################
 
 test_that("equal_byname works as expected", {
@@ -873,8 +873,52 @@ test_that("equal_byname works as expected", {
       equal = equal_byname(matc, matd)
     )
   expect_equal(DF_2$equal, list(TRUE, TRUE))
+  
+
+
+  # When two objects have different order for attributes, equal_byname should still return true.
+  a <- 2 %>% setrowtype("row") %>% setcoltype("col")
+  b <- 2 %>% setcoltype("col") %>% setrowtype("row")
+  expect_true(equal_byname(a, b))
+  # But if the objects have different attributes, the comparison should fail.
+  c <- a %>% setcoltype("cols")
+  expect_false(equal_byname(c, b))
+  
+  # Try with some numerical fuzz.
+  e <- matrix(1:4, nrow = 2)
+  f <- matrix(1:4, nrow = 2)
+  # equal_byname works
+  expect_true(equal_byname(e, f))
+  equal_byname(e, f + 1e-100)
+  # But identical_byname should fail
+  expect_false(identical_byname(e, f + 1e-100))
 })
 
+test_that("identical_byname works as expected", {
+  expect_true(identical_byname(100, 100))
+  # With a little bit of numerical fuzz, identical_byname fails
+  expect_false(identical_byname(100, 100 + 1e-10))
+  # With a little bit of numerical fuzz, equal_byname passes
+  expect_true(equal_byname(100, 100 + 1e-10))
+  # Now try with matrices
+  a <- matrix(1:4, nrow = 2)
+  b <- matrix(1:4, nrow = 2)
+  expect_true(identical_byname(a, b))
+  expect_false(identical_byname(a, b + 1e-100))
+  a <- a %>% setrowtype("Industries") %>% setcoltype("Commodities")
+  # FALSE because a has row and column types, but b does not.
+  expect_false(identical_byname(a, b)) 
+  b <- b %>% setrowtype("Industries") %>% setcoltype("Commodities")
+  expect_true(identical_byname(a, b))
+  dimnames(a) <- list(c("i1", "i2"), c("c1", "c2"))
+  dimnames(b) <- list(c("c1", "c2"), c("i1", "i2"))
+  # FALSE, because row and column names are not equal
+  expect_false(identical_byname(a, b)) 
+  dimnames(b) <- dimnames(a)
+  expect_true(identical_byname(a, b))
+})
+
+  
 
 ###########################################################
 context("Utilities")

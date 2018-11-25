@@ -1,3 +1,14 @@
+# matsbyname 0.3.6 (2018-11-25)
+
+* `iszero_byname` now checks if values of `abs(a)` are `<= tol`.
+   (Previously, `iszero_byname` tested with `< tol`.)
+   This change allows the zero matrix to pass the test when `tol = 0`, 
+   as we would want.
+* Reverted `equal_byname` to use `isTRUE(all.equal())` when checking for equality.
+* New function `identical_byname` checks for exact equality using `identical`.
+* Now up to 672 tests.
+
+
 # matsbyname 0.3.5 (2018-11-18)
 
 * Now using `identical()` instead of `isTRUE(all.equal())` for `equal_byname` function.
