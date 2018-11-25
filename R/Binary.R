@@ -458,19 +458,27 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' Compare two matrices "by name" for equality
 #'
 #' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
+#' 
+#' Comparisons are made by \code{isTRUE(all.equal(a, b))} so that variations among numbers
+#' within the computational precision will still return \code{TRUE}.
+#' 
+#' If EXACT comparison is needed, use \code{\link{identical_byname}}, 
+#' which compares using \code{identical(a, b)}.
 #'
 #' @param ... operands to be compared
 #'
-#' @return \code{TRUE} iff all information is the same, including
+#' @return \code{TRUE} iff all information is equal, including
 #' row and column types \emph{and}
 #' row and column names \emph{and}
-#' entries in the matrix.
+#' entries in the matrices.
 #' @export
 #'
 #' @examples
 #' a <- matrix(1:4, nrow = 2)
 #' b <- matrix(1:4, nrow = 2)
 #' equal_byname(a, b)
+#' equal_byname(a, b + 1e-100)
+#' identical_byname(a, b + 1e-100)
 #' a <- a %>% setrowtype("Industries") %>% setcoltype("Commodities")
 #' equal_byname(a, b) # FALSE because a has row and column types, but b does not.
 #' b <- b %>% setrowtype("Industries") %>% setcoltype("Commodities")
@@ -482,9 +490,48 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b)
 equal_byname <- function(...){
   equal.func <- function(a, b){
-    return(identical(a, b))
+    return(isTRUE(all.equal(a, b)))
   }
   naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
+}
+
+#' Compare two matrices "by name" for exact equality
+#'
+#' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
+#' 
+#' Comparisons are made by \code{identical(a, b)} so that variations among numbers
+#' within the computational precision will return \code{FALSE}.
+#' 
+#' If fuzzy comparison is needed, use \code{\link{equal_byname}}, 
+#' which compares using \code{isTRUE(all.equal(a, b))}.
+#'
+#' @param ... operands to be compared
+#'
+#' @return \code{TRUE} iff all information is identical, including
+#' row and column types \emph{and}
+#' row and column names \emph{and}
+#' entries in the matrices.
+#' @export
+#'
+#' @examples
+#' a <- matrix(1:4, nrow = 2)
+#' b <- matrix(1:4, nrow = 2)
+#' identical_byname(a, b)
+#' identical_byname(a, b + 1e-100)
+#' a <- a %>% setrowtype("Industries") %>% setcoltype("Commodities")
+#' identical_byname(a, b) # FALSE because a has row and column types, but b does not.
+#' b <- b %>% setrowtype("Industries") %>% setcoltype("Commodities")
+#' identical_byname(a, b)
+#' dimnames(a) <- list(c("i1", "i2"), c("c1", "c2"))
+#' dimnames(b) <- list(c("c1", "c2"), c("i1", "i2"))
+#' identical_byname(a, b) # FALSE, because row and column names are not equal
+#' dimnames(b) <- dimnames(a)
+#' identical_byname(a, b)
+identical_byname <- function(...){
+  identical.func <- function(a, b){
+    return(identical(a, b))
+  }
+  naryapplylogical_byname(identical.func, ..., set_rowcoltypes = FALSE)
 }
 
 #' Test whether matrices or lists of matrices have same structure
