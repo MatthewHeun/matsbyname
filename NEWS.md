@@ -1,3 +1,7 @@
+* `iszero_byname` now checks if values of `abs(a)` are `<= tol`.
+   (Previously, `iszero_byname` tested only for inequality.)
+
+
 # matsbyname 0.3.5 (2018-11-18)
 
 * Now using `identical()` instead of `isTRUE(all.equal())` for `equal_byname` function.
