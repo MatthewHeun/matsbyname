@@ -1,7 +1,7 @@
 # This file contains functions that apply other functions to 
 # matrices or data frames of matrices
 
-#' Apply a unary function "by name"
+#' Apply a unary function by name
 #' 
 #' Note that if \code{a} is a list, the names of \code{a} are applied to the output.
 #'
