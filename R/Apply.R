@@ -180,7 +180,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
 #' have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
 #' Thus, all of the operands in \code{...} must obey the rules of type matching 
-#' when \code{match_type} is \code{TRUE}..
+#' when \code{match_type} is \code{TRUE}.
 #' 
 #' \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
 #' Their differences can be described by considering a data frame.
