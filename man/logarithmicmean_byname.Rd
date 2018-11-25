@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{logarithmicmean_byname}
 \alias{logarithmicmean_byname}
-\title{Name- and element-wise logarithmic mean of matrices.}
+\title{Name- and element-wise logarithmic mean of matrices}
 \usage{
 logarithmicmean_byname(a, b, base = exp(1))
 }

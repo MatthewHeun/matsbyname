@@ -98,7 +98,7 @@ transpose_byname <- function(a){
   unaryapply_byname(t, a = a, rowcoltypes = "transpose")
 }
 
-#' Creates a diagonal "hat" matrix from a vector.
+#' Creates a diagonal "hat" matrix from a vector
 #'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.

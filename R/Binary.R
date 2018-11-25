@@ -1,6 +1,6 @@
 # This file contains binary functions
 
-#' Name-wise addition of matrices.
+#' Name-wise addition of matrices
 #'
 #' Performs a union and sorting of addend and augend row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
@@ -68,7 +68,7 @@ sum_byname <- function(...){
   naryapply_byname(`+`, ...)
 }
 
-#' Name-wise subtraction of matrices.
+#' Name-wise subtraction of matrices
 #'
 #' @param minuend matrix or constant
 #' @param subtrahend matrix or constant
@@ -293,7 +293,7 @@ elementquotient_byname <- function(dividend, divisor){
   binaryapply_byname(`/`, dividend, divisor)
 }
 
-#' Name- and element-wise arithmetic mean of matrices.
+#' Name- and element-wise arithmetic mean of matrices
 #'
 #' Gives the arithmetic mean of operands in \code{...}.
 #' 
@@ -382,7 +382,7 @@ geometricmean_byname <- function(...){
   elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
 }
 
-#' Name- and element-wise logarithmic mean of matrices.
+#' Name- and element-wise logarithmic mean of matrices
 #'
 #' The logarithmic mean of corresponding entries of \code{a} and \code{b} is 
 #' \code{0} if \code{a = 0} or \code{b = 0}, 

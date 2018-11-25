@@ -2,7 +2,7 @@
 % Please edit documentation in R/Unary.R
 \name{hatize_byname}
 \alias{hatize_byname}
-\title{Creates a diagonal "hat" matrix from a vector.}
+\title{Creates a diagonal "hat" matrix from a vector}
 \usage{
 hatize_byname(v)
 }

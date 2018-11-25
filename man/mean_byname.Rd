@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{mean_byname}
 \alias{mean_byname}
-\title{Name- and element-wise arithmetic mean of matrices.}
+\title{Name- and element-wise arithmetic mean of matrices}
 \usage{
 mean_byname(...)
 }
