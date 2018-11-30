@@ -55,5 +55,5 @@ v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype(NA)
 hatinv_byname(v2)
 \dontrun{v2 \%>\% hatize_byname() \%>\% invert_byname # Produces singular matrix error}
-hatinv_byname(v2, inf_to_zero = TRUE)
+hatinv_byname(v2, inf_becomes = NULL)
 }

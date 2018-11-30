@@ -192,7 +192,7 @@ hatize_byname <- function(v){
 #'   setrowtype("Industries") %>% setcoltype(NA)
 #' hatinv_byname(v2)
 #' \dontrun{v2 %>% hatize_byname() %>% invert_byname # Produces singular matrix error}
-#' hatinv_byname(v2, inf_to_zero = TRUE)
+#' hatinv_byname(v2, inf_becomes = NULL)
 hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
   hatinv_func <- function(v){
     v_inv <- 1/v
