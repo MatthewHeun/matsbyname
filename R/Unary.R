@@ -154,21 +154,23 @@ hatize_byname <- function(v){
 #' and takes advantage of computational efficiencies to achieve the desired result.
 #' The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
 #' a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of \code{v}.
-#' So this function first inverts each member of \code{v} then places those members on the diagonal of a matrix.
+#' So this function first inverts each element of \code{v} then places the inverted elements on the diagonal of a diagonal matrix.
 #' 
 #' Note that this function gives the same result as \code{invert_byname(hatize_byname(v))},
-#' except that \code{invert_byname(hatize_byname(v))} fails due to singular matrix
+#' except that \code{invert_byname(hatize_byname(v))} fails due to a singular matrix error
 #' when any of the elements of \code{v} are zero.
-#' This function will give \code{Inf} on the diagonal of the result for each zero element of \code{v},
+#' This function will give \code{inf_becomes} on the diagonal of the result for each zero element of \code{v},
 #' arguably a better answer.
+#' The sign of \code{Inf} is preserved in the substitution.
+#' The default value of \code{inf_becomes} is \code{.Machine$double.xmax}.
+#' Set \code{inf_becomes} to \code{NULL} to disable this behavior.
 #' 
-#' Note further that a zero value in \code{v} could indicate a missing value.
-#' Thus, for the purposes of multiplying into a later matrix, the \code{hatinv} matrix
-#' it may be better that the result has zeroes where \code{v} had zeroes. 
-#' Set argument \code{inf_to_zero = TRUE} to achieve the desired effect.
+#' The default behavior is helpful for cases when the result of \code{hatinv_byname} is later multiplied by \code{0}
+#' to obtain \code{0}.
+#' Multiplying \code{Inf} by \code{0} gives \code{NaN} which would effectively end the stream of calculations.
 #' 
 #' @param v the vector to be hatized and inverted
-#' @param inf_to_zero a logical to indicate how to handle \code{Inf} values produced by the inversion process.
+#' @param inf_becomes a value to be substitutde for any \code{Inf} produced by the inversion process. Default is \code{.Machine$double.xmax}.
 #'        If \code{FALSE} (the default), \code{Inf} is not handled differently.
 #'        If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.
 #'
@@ -191,11 +193,12 @@ hatize_byname <- function(v){
 #' hatinv_byname(v2)
 #' \dontrun{v2 %>% hatize_byname() %>% invert_byname # Produces singular matrix error}
 #' hatinv_byname(v2, inf_to_zero = TRUE)
-hatinv_byname <- function(v, inf_to_zero = FALSE){
+hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
   hatinv_func <- function(v){
     v_inv <- 1/v
-    if (inf_to_zero) {
-      v_inv[is.infinite(v_inv)] <- 0 
+    if (!is.null(inf_becomes)) {
+      v_inv[v_inv == Inf] <- inf_becomes
+      v_inv[v_inv == -Inf] <- -inf_becomes
     }
     hatize_byname(v_inv)
   }
