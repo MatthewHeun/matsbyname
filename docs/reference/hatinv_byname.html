@@ -208,7 +208,7 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 #&gt; attr(,"rowtype")
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
-#&gt; [1] "Commodities"</div><div class='input'><span class='co'># This also works with lists.</span>
+#&gt; [1] "Commodities"</div><div class='input'><span class='co'># This function also works with lists.</span>
 <span class='fu'>hatinv_byname</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>v</span>, <span class='no'>v</span>))</div><div class='output co'>#&gt; [[1]]
 #&gt;     i1 i10  i2        i3   i4  i5        i6        i7    i8        i9
 #&gt; i1   1 0.0 0.0 0.0000000 0.00 0.0 0.0000000 0.0000000 0.000 0.0000000
@@ -242,18 +242,25 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Industries"
-#&gt; </div><div class='input'><span class='co'># Provides better handling of 0 values.</span>
+#&gt; </div><div class='input'><span class='co'># Watch out for 0 values</span>
 <span class='no'>v2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fl'>0</span>:<span class='fl'>1</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"i"</span>, <span class='fl'>0</span>:<span class='fl'>1</span>)), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"p1"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='fl'>NA</span>)
+<span class='co'># Produces singular matrix error</span></div><span class='co'># NOT RUN {</span>
+<span class='no'>v2</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='hatize_byname.html'>hatize_byname</a></span>() <span class='kw'>%&gt;%</span> <span class='no'>invert_byname</span>
+<span class='co'># }</span><div class='input'><span class='co'># Handles 0 values well</span>
 <span class='fu'>hatinv_byname</span>(<span class='no'>v2</span>)</div><div class='output co'>#&gt;               i0 i1
 #&gt; i0 1.797693e+308  0
 #&gt; i1  0.000000e+00  1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><span class='co'># NOT RUN {</span>
-<span class='no'>v2</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='hatize_byname.html'>hatize_byname</a></span>() <span class='kw'>%&gt;%</span> <span class='no'>invert_byname</span> <span class='co'># Produces singular matrix error</span>
-<span class='co'># }</span><div class='input'><span class='fu'>hatinv_byname</span>(<span class='no'>v2</span>, <span class='kw'>inf_becomes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</div><div class='output co'>#&gt;     i0 i1
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hatinv_byname</span>(<span class='no'>v2</span>, <span class='kw'>inf_becomes</span> <span class='kw'>=</span> <span class='fl'>42</span>)</div><div class='output co'>#&gt;    i0 i1
+#&gt; i0 42  0
+#&gt; i1  0  1
+#&gt; attr(,"rowtype")
+#&gt; [1] "Industries"
+#&gt; attr(,"coltype")
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hatinv_byname</span>(<span class='no'>v2</span>, <span class='kw'>inf_becomes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</div><div class='output co'>#&gt;     i0 i1
 #&gt; i0 Inf  0
 #&gt; i1   0  1
 #&gt; attr(,"rowtype")

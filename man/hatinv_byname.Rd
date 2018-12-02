@@ -48,12 +48,15 @@ r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) \%>\%
   setrowtype(NA) \%>\% setcoltype("Commodities")
 hatinv_byname(v)
 hatinv_byname(r)
-# This also works with lists.
+# This function also works with lists.
 hatinv_byname(list(v, v))
-# Provides better handling of 0 values.
+# Watch out for 0 values
 v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype(NA)
+# Produces singular matrix error
+\dontrun{v2 \%>\% hatize_byname() \%>\% invert_byname}
+# Handles 0 values well
 hatinv_byname(v2)
-\dontrun{v2 \%>\% hatize_byname() \%>\% invert_byname # Produces singular matrix error}
+hatinv_byname(v2, inf_becomes = 42)
 hatinv_byname(v2, inf_becomes = NULL)
 }
