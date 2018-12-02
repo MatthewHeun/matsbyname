@@ -170,7 +170,8 @@ hatize_byname <- function(v){
 #' Multiplying \code{Inf} by \code{0} gives \code{NaN} which would effectively end the stream of calculations.
 #' 
 #' @param v the vector to be hatized and inverted
-#' @param inf_becomes a value to be substitutde for any \code{Inf} produced by the inversion process. Default is \code{.Machine$double.xmax}.
+#' @param inf_becomes a value to be substitute for any \code{Inf} produced by the inversion process. 
+#'        Default is \code{.Machine$double.xmax}.
 #'        If \code{FALSE} (the default), \code{Inf} is not handled differently.
 #'        If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.
 #'
