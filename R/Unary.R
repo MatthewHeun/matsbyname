@@ -102,7 +102,7 @@ transpose_byname <- function(a){
 #'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
-#' \code{v} must be a matrix with at least one dimension of length 1 (a vector).
+#' \code{v} must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
 #' The names of both dimensions of the hatized matrix are the same and taken from \code{v}.
 #' Note that the vector names are sorted prior to forming the "hat" matrix.
 #'
@@ -137,7 +137,7 @@ hatize_byname <- function(v){
       # So, we must do so here.
       out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
     } else {
-      stop("matrix v must have at least one dimension of length 1 in hatize")
+      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
     return(out)
   }
