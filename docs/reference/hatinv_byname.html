@@ -40,7 +40,7 @@ This function performs the hatizing and inverting of vector v in one step
 and takes advantage of computational efficiencies to achieve the desired result.
 The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
 a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of v.
-So this function first inverts each member of v then places those members on the diagonal of a matrix." />
+So this function first inverts each element of v then places the inverted elements on the diagonal of a diagonal matrix." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -140,11 +140,11 @@ This function performs the hatizing and inverting of vector <code>v</code> in on
 and takes advantage of computational efficiencies to achieve the desired result.
 The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
 a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of <code>v</code>.
-So this function first inverts each member of <code>v</code> then places those members on the diagonal of a matrix.</p>
+So this function first inverts each element of <code>v</code> then places the inverted elements on the diagonal of a diagonal matrix.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>hatinv_byname</span>(<span class='no'>v</span>, <span class='kw'>inf_to_zero</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>hatinv_byname</span>(<span class='no'>v</span>, <span class='kw'>inf_becomes</span> <span class='kw'>=</span> <span class='no'>.Machine</span>$<span class='no'>double.xmax</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,8 +154,8 @@ So this function first inverts each member of <code>v</code> then places those m
       <td><p>the vector to be hatized and inverted</p></td>
     </tr>
     <tr>
-      <th>inf_to_zero</th>
-      <td><p>a logical to indicate how to handle <code>Inf</code> values produced by the inversion process.
+      <th>inf_becomes</th>
+      <td><p>a value to be substitutde for any <code>Inf</code> produced by the inversion process. Default is <code>.Machine$double.xmax</code>.
 If <code>FALSE</code> (the default), <code>Inf</code> is not handled differently.
 If <code>TRUE</code>, <code>Inf</code> values in the resulting matrix are converted to zeroes.</p></td>
     </tr>
@@ -168,14 +168,16 @@ If <code>TRUE</code>, <code>Inf</code> values in the resulting matrix are conver
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Note that this function gives the same result as <code><a href='invert_byname.html'>invert_byname(hatize_byname(v))</a></code>,
-except that <code><a href='invert_byname.html'>invert_byname(hatize_byname(v))</a></code> fails due to singular matrix
+except that <code><a href='invert_byname.html'>invert_byname(hatize_byname(v))</a></code> fails due to a singular matrix error
 when any of the elements of <code>v</code> are zero.
-This function will give <code>Inf</code> on the diagonal of the result for each zero element of <code>v</code>,
-arguably a better answer.</p>
-<p>Note further that a zero value in <code>v</code> could indicate a missing value.
-Thus, for the purposes of multiplying into a later matrix, the <code>hatinv</code> matrix
-it may be better that the result has zeroes where <code>v</code> had zeroes. 
-Set argument <code>inf_to_zero = TRUE</code> to achieve the desired effect.</p>
+This function will give <code>inf_becomes</code> on the diagonal of the result for each zero element of <code>v</code>,
+arguably a better answer.
+The sign of <code>Inf</code> is preserved in the substitution.
+The default value of <code>inf_becomes</code> is <code>.Machine$double.xmax</code>.
+Set <code>inf_becomes</code> to <code>NULL</code> to disable this behavior.</p>
+<p>The default behavior is helpful for cases when the result of <code>hatinv_byname</code> is later multiplied by <code>0</code>
+to obtain <code>0</code>.
+Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which would effectively end the stream of calculations.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -243,17 +245,17 @@ Set argument <code>inf_to_zero = TRUE</code> to achieve the desired effect.</p>
 #&gt; </div><div class='input'><span class='co'># Provides better handling of 0 values.</span>
 <span class='no'>v2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fl'>0</span>:<span class='fl'>1</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"i"</span>, <span class='fl'>0</span>:<span class='fl'>1</span>)), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"p1"</span>))) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='fl'>NA</span>)
-<span class='fu'>hatinv_byname</span>(<span class='no'>v2</span>)</div><div class='output co'>#&gt;     i0 i1
-#&gt; i0 Inf  0
-#&gt; i1   0  1
+<span class='fu'>hatinv_byname</span>(<span class='no'>v2</span>)</div><div class='output co'>#&gt;               i0 i1
+#&gt; i0 1.797693e+308  0
+#&gt; i1  0.000000e+00  1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Industries"</div><span class='co'># NOT RUN {</span>
 <span class='no'>v2</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='hatize_byname.html'>hatize_byname</a></span>() <span class='kw'>%&gt;%</span> <span class='no'>invert_byname</span> <span class='co'># Produces singular matrix error</span>
-<span class='co'># }</span><div class='input'><span class='fu'>hatinv_byname</span>(<span class='no'>v2</span>, <span class='kw'>inf_to_zero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;    i0 i1
-#&gt; i0  0  0
-#&gt; i1  0  1
+<span class='co'># }</span><div class='input'><span class='fu'>hatinv_byname</span>(<span class='no'>v2</span>, <span class='kw'>inf_becomes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</div><div class='output co'>#&gt;     i0 i1
+#&gt; i0 Inf  0
+#&gt; i1   0  1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
