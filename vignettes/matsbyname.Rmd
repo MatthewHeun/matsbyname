@@ -1,5 +1,5 @@
 ---
-title: "Use Cases and Examples for <tt>matsbyname</tt>"
+title: "Use Cases and Examples for `matsbyname`"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: 
@@ -8,7 +8,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{matsbyname use cases and examples}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}

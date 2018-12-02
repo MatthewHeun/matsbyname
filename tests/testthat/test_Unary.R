@@ -50,13 +50,13 @@ test_that("hatinv_byname works as expected", {
   # Test when one of the elements of v is 0.
   v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
     setrowtype("Industries") %>% setcoltype(NA)
-  expect_equal(hatinv_byname(v2), matrix(c(1/0, 0,
+  expect_equal(hatinv_byname(v2), matrix(c(.Machine$double.xmax, 0,
                                            0, 1), 
                nrow = 2, ncol = 2, byrow = TRUE,
                dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
                setrowtype("Industries") %>% setcoltype("Industries"))
-  # Test when we want the 0 element of v to give a 0 instead of Inf.
-  expect_equal(hatinv_byname(v2, inf_to_zero = TRUE), matrix(c(0, 0,
+  # Test when we want the 0 element of v to give Inf instead of .Machine$double.xmax.
+  expect_equal(hatinv_byname(v2, inf_becomes = NULL), matrix(c(Inf, 0,
                                                                0, 1), 
                                                              nrow = 2, ncol = 2, byrow = TRUE,
                                                              dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  

@@ -102,7 +102,7 @@ transpose_byname <- function(a){
 #'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
-#' \code{v} must be a matrix with at least one dimension of length 1 (a vector).
+#' \code{v} must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
 #' The names of both dimensions of the hatized matrix are the same and taken from \code{v}.
 #' Note that the vector names are sorted prior to forming the "hat" matrix.
 #'
@@ -137,7 +137,7 @@ hatize_byname <- function(v){
       # So, we must do so here.
       out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
     } else {
-      stop("matrix v must have at least one dimension of length 1 in hatize")
+      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
     return(out)
   }
@@ -154,21 +154,23 @@ hatize_byname <- function(v){
 #' and takes advantage of computational efficiencies to achieve the desired result.
 #' The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
 #' a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of \code{v}.
-#' So this function first inverts each member of \code{v} then places those members on the diagonal of a matrix.
+#' So this function first inverts each element of \code{v} then places the inverted elements on the diagonal of a diagonal matrix.
 #' 
 #' Note that this function gives the same result as \code{invert_byname(hatize_byname(v))},
-#' except that \code{invert_byname(hatize_byname(v))} fails due to singular matrix
+#' except that \code{invert_byname(hatize_byname(v))} fails due to a singular matrix error
 #' when any of the elements of \code{v} are zero.
-#' This function will give \code{Inf} on the diagonal of the result for each zero element of \code{v},
+#' This function will give \code{inf_becomes} on the diagonal of the result for each zero element of \code{v},
 #' arguably a better answer.
+#' The sign of \code{Inf} is preserved in the substitution.
+#' The default value of \code{inf_becomes} is \code{.Machine$double.xmax}.
+#' Set \code{inf_becomes} to \code{NULL} to disable this behavior.
 #' 
-#' Note further that a zero value in \code{v} could indicate a missing value.
-#' Thus, for the purposes of multiplying into a later matrix, the \code{hatinv} matrix
-#' it may be better that the result has zeroes where \code{v} had zeroes. 
-#' Set argument \code{inf_to_zero = TRUE} to achieve the desired effect.
+#' The default behavior is helpful for cases when the result of \code{hatinv_byname} is later multiplied by \code{0}
+#' to obtain \code{0}.
+#' Multiplying \code{Inf} by \code{0} gives \code{NaN} which would effectively end the stream of calculations.
 #' 
 #' @param v the vector to be hatized and inverted
-#' @param inf_to_zero a logical to indicate how to handle \code{Inf} values produced by the inversion process.
+#' @param inf_becomes a value to be substitutde for any \code{Inf} produced by the inversion process. Default is \code{.Machine$double.xmax}.
 #'        If \code{FALSE} (the default), \code{Inf} is not handled differently.
 #'        If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.
 #'
@@ -183,19 +185,23 @@ hatize_byname <- function(v){
 #'   setrowtype(NA) %>% setcoltype("Commodities")
 #' hatinv_byname(v)
 #' hatinv_byname(r)
-#' # This also works with lists.
+#' # This function also works with lists.
 #' hatinv_byname(list(v, v))
-#' # Provides better handling of 0 values.
+#' # Watch out for 0 values
 #' v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
+#' # Produces singular matrix error
+#' \dontrun{v2 %>% hatize_byname() %>% invert_byname}
+#' # Handles 0 values well
 #' hatinv_byname(v2)
-#' \dontrun{v2 %>% hatize_byname() %>% invert_byname # Produces singular matrix error}
-#' hatinv_byname(v2, inf_to_zero = TRUE)
-hatinv_byname <- function(v, inf_to_zero = FALSE){
+#' hatinv_byname(v2, inf_becomes = 42)
+#' hatinv_byname(v2, inf_becomes = NULL)
+hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
   hatinv_func <- function(v){
     v_inv <- 1/v
-    if (inf_to_zero) {
-      v_inv[is.infinite(v_inv)] <- 0 
+    if (!is.null(inf_becomes)) {
+      v_inv[v_inv == Inf] <- inf_becomes
+      v_inv[v_inv == -Inf] <- -inf_becomes
     }
     hatize_byname(v_inv)
   }

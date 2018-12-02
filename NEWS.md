@@ -1,3 +1,11 @@
+# matsbyname 0.3.7 (2018-12-02)
+
+* `hatinv_byname` now handles `0` values in input vectors gracefully.
+  By default, `0` values become `.Machine$double.xmax`.  
+  To choose a different value, set new argument `inf_becomes` to a numerical value.
+  To suppress default behavior, set `inf_becomes = NULL`.
+
+
 # matsbyname 0.3.6 (2018-11-25)
 
 * `iszero_byname` now checks if values of `abs(a)` are `<= tol`.

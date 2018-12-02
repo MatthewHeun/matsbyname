@@ -29,7 +29,7 @@ However, the built-in functions may not cover all possible needs.
 |--:|:------------------------------------
 | `unaryapply_byname` | apply a unary function to a single matrix, a list of matrices, or a column of matrices in a data frame  
 | `binaryapply_byname` | apply a binary function to two matrices or Map a binary function across two lists of matrices or two columns of matrices in a data frame
-| `cumapply_byname` | apply a binary function cumulatively to a singe list of matrices or a column of matrices in a data frame
+| `cumapply_byname` | apply a binary function cumulatively to a single list of matrices or a column of matrices in a data frame
 
 
 ## How the `*apply_byname` functions work
