@@ -332,22 +332,22 @@ test_that("fractionze_byname works as expected", {
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
               dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Products")
+    setrowtype("Products") %>% setcoltype("Industries")
   expectedM_rows <- matrix(c(1/6, 5/6,
                              4/9, 5/9),
                            nrow = 2, ncol = 2, byrow = TRUE,
                            dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Products")
+    setrowtype("Products") %>% setcoltype("Industries")
   expectedM_cols <- matrix(c(1/5, 5/10,
                              4/5, 5/10),
                            nrow = 2, ncol = 2, byrow = TRUE,
                            dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Products")
+    setrowtype("Products") %>% setcoltype("Industries")
   expectedM_sumall <- matrix(c(1/15, 5/15,
                                4/15, 5/15),
                              nrow = 2, ncol = 2, byrow = TRUE,
                              dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Products")
+    setrowtype("Products") %>% setcoltype("Industries")
   
   # Test for errors
   expect_error(fractionize_byname(M, margin = c(2,2,1,1,0)), "margin should contain unique integers in fractionize_byname")
@@ -394,6 +394,27 @@ test_that("fractionze_byname works as expected", {
   expect_equal(DF2$F_row, list(expectedM_rows, expectedM_rows))
   expect_equal(DF2$F_col, list(expectedM_cols, expectedM_cols))
   expect_equal(DF2$F_tot, list(expectedM_sumall, expectedM_sumall))
+  
+  # Test when a column contains zeroes
+  Mzerocol <- matrix(c(1, 0,
+                       2, 0),
+                     nrow = 2, ncol = 2, byrow = TRUE,
+                     dimnames = list(c("p1", "p2"), c("i1", "i2")))
+  expect_equal(fractionize_byname(Mzerocol, margin = c(1,2)), 
+               matrix(c(1/3, 0,
+                        2/3, 0),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzerocol, margin = 1), 
+               matrix(c(1, 0,
+                        1, 0),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzerocol, margin = 2), 
+               matrix(c(1/3, 0/0,
+                        2/3, 0/0),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
 })
 
 
