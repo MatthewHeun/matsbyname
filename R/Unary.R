@@ -199,6 +199,8 @@ hatize_byname <- function(v){
 #' hatinv_byname(v2, inf_becomes = NULL)
 hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
   hatinv_func <- function(v){
+    # Note: there is no need to check that v is, indeed, a vector here.
+    # hatize_byname() does that check for us.
     v_inv <- 1/v
     if (!is.null(inf_becomes)) {
       v_inv[v_inv == Inf] <- inf_becomes
