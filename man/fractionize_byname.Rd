@@ -20,6 +20,14 @@ a fractionized matrix of same dimensions and same row and column types as \code{
 This function divides all entries in \code{a} by the specified sum,
 thereby "fractionizing" the matrix.
 }
+\details{
+When \code{margin = 1}, this function performs the matrix operations
+\code{matrixproduct_byname(hatinv_byname(rowsums_byname(a)), a)}.
+When \code{margin = 2}, this function performs the matrix operations
+\code{matrixproduct_byname(a, hatinv_byname(colsums_byname(a)))}.
+Note that the matrix mathematics above will throw a singular matrix error when
+a row or column is full of zeroes.
+}
 \examples{
 M <- matrix(c(1, 5,
               4, 5),

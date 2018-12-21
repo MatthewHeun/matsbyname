@@ -410,11 +410,18 @@ test_that("fractionze_byname works as expected", {
                         1, 0),
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  # Verify that the zero column now works and gives NaNs.
   expect_equal(fractionize_byname(Mzerocol, margin = 2), 
                matrix(c(1/3, 0/0,
-                        2/3, 0/0),
+                        2/3, 0/0), 
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  # But if we clean the matrix first, we will also get something that makes sense.
+  expect_equal(fractionize_byname(clean_byname(Mzerocol, margin = 2), margin = 2),
+               matrix(c(1/3,
+                        2/3),
+                      nrow = 2, ncol = 1, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1"))))
 })
 
 
