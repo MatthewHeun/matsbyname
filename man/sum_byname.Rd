@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{sum_byname}
 \alias{sum_byname}
-\title{Name-wise addition of matrices.}
+\title{Name-wise addition of matrices}
 \usage{
 sum_byname(...)
 }
@@ -21,7 +21,6 @@ Treats missing or \code{NULL} operands as \code{0}.
 <<Stuff here about cores.>>
 }
 \examples{
-library(magrittr)
 library(dplyr)
 sum_byname(2, 2)
 sum_byname(2, 2, 2)

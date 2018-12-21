@@ -1,7 +1,3 @@
-library(parallel)
-library(magrittr)
-library(dplyr)
-
 #' Absolute value of matrix elements
 #'
 #' @param a a matrix or list of matrices 
@@ -11,7 +7,6 @@ library(dplyr)
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' abs_byname(1)
 #' abs_byname(-1)
 #' m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
@@ -33,7 +28,6 @@ abs_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' elementlog_byname(exp(1))
 #' m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
@@ -54,7 +48,6 @@ elementlog_byname <- function(a, base = exp(1)){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' elementexp_byname(1)
 #' m <- matrix(c(log(10),log(1),log(1),log(100)), 
 #'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
@@ -76,7 +69,6 @@ elementexp_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' invert_byname(m)
@@ -94,10 +86,10 @@ invert_byname <- function(a){
 #' @param a the matrix to be transposed
 #'
 #' @return the transposed matrix
+#' 
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' transpose_byname(m)
@@ -106,32 +98,31 @@ transpose_byname <- function(a){
   unaryapply_byname(t, a = a, rowcoltypes = "transpose")
 }
 
-#' Creates a diagonal "hat" matrix from a vector.
-#'
-#' @param v The vector from which a "hat" matrix is to be created.
+#' Creates a diagonal "hat" matrix from a vector
 #'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
-#' \code{v} must be a matrix with at least one dimension of length 1 (a vector).
+#' \code{v} must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
 #' The names of both dimensions of the hatized matrix are the same and taken from \code{v}.
 #' Note that the vector names are sorted prior to forming the "hat" matrix.
+#'
+#' @param v The vector from which a "hat" matrix is to be created.
 #'
 #' @return A square "hat" matrix with size equal to the length of \code{v}.
 #' @export
 #'
 #' @examples
-#' library(magrittr)
-#' v <- matrix(1:10, ncol = 1, dimnames=list(c(paste0("i", 1:10)), c("c1"))) %>%
+#' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
-#' r <- matrix(1:5, nrow = 1, dimnames=list(c("r1"), c(paste0("c", 1:5)))) %>%
+#' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
 #'   setrowtype(NA) %>% setcoltype("Commodities")
 #' hatize_byname(v)
 #' hatize_byname(r)
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
-  hatize.func <- function(v){
-    v_sorted <- sort_rows_cols(v) # %>% setrowtype(rowtype(v)) %>% setcoltype(coltype(v))
+  hatize_func <- function(v){
+    v_sorted <- sort_rows_cols(v)
     out <- OpenMx::vec2diag(v_sorted)
     if (ncol(v) == 1) {
       rownames(out) <- rownames(v_sorted)
@@ -146,11 +137,78 @@ hatize_byname <- function(v){
       # So, we must do so here.
       out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
     } else {
-      stop("matrix v must have at least one dimension of length 1 in hatize")
+      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
     return(out)
   }
-  unaryapply_byname(hatize.func, a = v, rowcoltypes = "none")
+  unaryapply_byname(hatize_func, a = v, rowcoltypes = "none")
+}
+
+#' Hatize and invert a vector
+#' 
+#' When dividing rows or columns of a matrix by elements of a vector,
+#' the vector elements are placed on the diagonal of a new matrix,
+#' the diagonal matrix is inverted, and
+#' the result is pre- or post-multiplied into the matrix.
+#' This function performs the hatizing and inverting of vector \code{v} in one step
+#' and takes advantage of computational efficiencies to achieve the desired result.
+#' The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
+#' a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of \code{v}.
+#' So this function first inverts each element of \code{v} then places the inverted elements on the diagonal of a diagonal matrix.
+#' 
+#' Note that this function gives the same result as \code{invert_byname(hatize_byname(v))},
+#' except that \code{invert_byname(hatize_byname(v))} fails due to a singular matrix error
+#' when any of the elements of \code{v} are zero.
+#' This function will give \code{inf_becomes} on the diagonal of the result for each zero element of \code{v},
+#' arguably a better answer.
+#' The sign of \code{Inf} is preserved in the substitution.
+#' The default value of \code{inf_becomes} is \code{.Machine$double.xmax}.
+#' Set \code{inf_becomes} to \code{NULL} to disable this behavior.
+#' 
+#' The default behavior is helpful for cases when the result of \code{hatinv_byname} is later multiplied by \code{0}
+#' to obtain \code{0}.
+#' Multiplying \code{Inf} by \code{0} gives \code{NaN} which would effectively end the stream of calculations.
+#' 
+#' @param v the vector to be hatized and inverted
+#' @param inf_becomes a value to be substitute for any \code{Inf} produced by the inversion process. 
+#'        Default is \code{.Machine$double.xmax}.
+#'        If \code{FALSE} (the default), \code{Inf} is not handled differently.
+#'        If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.
+#'
+#' @return a square diagonal matrix with inverted elements of \code{v} on the diagonal
+#' 
+#' @export
+#'
+#' @examples
+#' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
+#'   setrowtype("Industries") %>% setcoltype(NA)
+#' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
+#'   setrowtype(NA) %>% setcoltype("Commodities")
+#' hatinv_byname(v)
+#' hatinv_byname(r)
+#' # This function also works with lists.
+#' hatinv_byname(list(v, v))
+#' # Watch out for 0 values
+#' v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
+#'   setrowtype("Industries") %>% setcoltype(NA)
+#' # Produces singular matrix error
+#' \dontrun{v2 %>% hatize_byname() %>% invert_byname}
+#' # Handles 0 values well
+#' hatinv_byname(v2)
+#' hatinv_byname(v2, inf_becomes = 42)
+#' hatinv_byname(v2, inf_becomes = NULL)
+hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
+  hatinv_func <- function(v){
+    # Note: there is no need to check that v is, indeed, a vector here.
+    # hatize_byname() does that check for us.
+    v_inv <- 1/v
+    if (!is.null(inf_becomes)) {
+      v_inv[v_inv == Inf] <- inf_becomes
+      v_inv[v_inv == -Inf] <- -inf_becomes
+    }
+    hatize_byname(v_inv)
+  }
+  unaryapply_byname(hatinv_func, a = v, rowcoltypes = "none")
 }
 
 #' Named identity matrix or vector
@@ -174,7 +232,6 @@ hatize_byname <- function(v){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' M <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' identize_byname(M)
@@ -246,7 +303,6 @@ identize_byname <- function(a, margin = c(1,2)){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' M <- matrix(c(1, 5,
 #'               4, 5),
 #'             nrow = 2, ncol = 2, byrow = TRUE, 
@@ -281,12 +337,14 @@ fractionize_byname <- function(a, margin){
     if (margin == 1) {
       # Divide each entry by its row sum
       # Do this with (a*i)_hat_inv * a
-      return(matrixproduct_byname(a %>% rowsums_byname %>% hatize_byname %>% invert_byname, a))
+      # return(matrixproduct_byname(a %>% rowsums_byname %>% hatize_byname %>% invert_byname, a))
+      return(sweep(a, margin, rowSums(a), `/`))
     }
     if (margin == 2) {
       # Divide each entry by its column sum
       # Do this with a * (i^T * a)_hat_inv
-      return(matrixproduct_byname(a, colsums_byname(a) %>% hatize_byname %>% invert_byname))
+      # return(matrixproduct_byname(a, colsums_byname(a) %>% hatize_byname %>% invert_byname))
+      return(sweep(a, margin, colSums(a), `/`))
     } 
     # Should never get here, but just in case:
     stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
@@ -312,7 +370,6 @@ fractionize_byname <- function(a, margin){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -375,7 +432,6 @@ rowsums_byname <- function(a, colname = NA){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -416,7 +472,6 @@ colsums_byname <- function(a, rowname = NA){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
@@ -458,7 +513,6 @@ sumall_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' M <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Products")
@@ -518,7 +572,6 @@ rowprods_byname <- function(a, colname = NA){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' M <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -559,7 +612,6 @@ colprods_byname <- function(a, rowname = NA){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' M <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Product")
@@ -603,7 +655,6 @@ prodall_byname <- function(a){
 #' @importFrom magrittr %>%
 #' 
 #' @examples
-#' library(magrittr)
 #' m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' # Rows and columns are unsorted
@@ -651,7 +702,6 @@ Iminus_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
 #'   setrowtype("row") %>% setcoltype("col")
@@ -688,7 +738,6 @@ cumsum_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' cumprod_byname(list(1, 2, 3, 4, 5))
 #' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>%
 #'   setrowtype("row") %>% setcoltype("col")
@@ -738,8 +787,8 @@ replaceNaN_byname <- function(a, val = 0){
 #' 
 #' @param a a matrix or list of matrices whose values are to be counted according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
-#' @param val the value against which matrix entries are compared
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}".
+#' @param val the value against which matrix entries are compared. Default is \code{0}.
 #'
 #' @return an integer indicating the number of entries in \code{a} 
 #'         that meet the specified criterion
@@ -771,8 +820,8 @@ count_vals_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">
 #' 
 #' @param a a matrix or list of matrices whose values are to be counted by rows according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
-#' @param val the value against which matrix entries are compared
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}".
+#' @param val the value against which matrix entries are compared. Default is \code{0}.
 #'
 #' @return an \code{matrix} with a single column indicating the number of entries in \code{a} 
 #'         that meet the specified criterion in each row of \code{a}
@@ -805,8 +854,8 @@ count_vals_inrows_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", "
 #' @param a a matrix or list of matrices whose values are to be counted by columns 
 #'        according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}"
-#' @param val the value against which matrix entries are compared
+#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}"
+#' @param val the value against which matrix entries are compared. Default is \code{0}.
 #'
 #' @return an \code{matrix} with a single row indicating the number of entries in \code{a} 
 #'         that meet the specified criterion in each column of \code{a}
@@ -837,8 +886,8 @@ count_vals_incols_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", "
 #'
 #' @param a a matrix or list of matrices whose values are to be counted according to \code{compare_fun}
 #' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>=}", or "\code{>}"
-#' @param val the value against which matrix entries are compared
+#'        "\code{<}", "\code{<=}", "\code{>=}", or "\code{>}". Default is "\code{==}".
+#' @param val a single value against which entries in matrix \code{a} are compared. Default is \code{0}.
 #'
 #' @return a logical matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
 #'         \code{FALSE} otherwise

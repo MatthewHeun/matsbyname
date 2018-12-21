@@ -1,6 +1,6 @@
 # This file contains binary functions
 
-#' Name-wise addition of matrices.
+#' Name-wise addition of matrices
 #'
 #' Performs a union and sorting of addend and augend row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
@@ -15,7 +15,6 @@
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' sum_byname(2, 2)
 #' sum_byname(2, 2, 2)
@@ -69,7 +68,7 @@ sum_byname <- function(...){
   naryapply_byname(`+`, ...)
 }
 
-#' Name-wise subtraction of matrices.
+#' Name-wise subtraction of matrices
 #'
 #' @param minuend matrix or constant
 #' @param subtrahend matrix or constant
@@ -82,7 +81,6 @@ sum_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' difference_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
@@ -123,7 +121,6 @@ difference_byname <- function(minuend, subtrahend){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' elementpow_byname(2, 3)
 #' m <- matrix(2, nrow = 2, ncol = 3, dimnames = list(paste0("r", 1:2), paste0("c", 1:3))) %>% 
@@ -167,7 +164,6 @@ elementpow_byname <- function(a, pow){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("c1", "c2", "c3"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -223,7 +219,6 @@ matrixproduct_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' elementproduct_byname(2, 2)
 #' commoditynames <- c("c1", "c2")
@@ -271,7 +266,6 @@ elementproduct_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' elementquotient_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
@@ -299,7 +293,7 @@ elementquotient_byname <- function(dividend, divisor){
   binaryapply_byname(`/`, dividend, divisor)
 }
 
-#' Name- and element-wise arithmetic mean of matrices.
+#' Name- and element-wise arithmetic mean of matrices
 #'
 #' Gives the arithmetic mean of operands in \code{...}.
 #' 
@@ -314,7 +308,6 @@ elementquotient_byname <- function(dividend, divisor){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' mean_byname(100, 50)
 #' mean_byname(10, 20, 30)
@@ -359,7 +352,6 @@ mean_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' geometricmean_byname(10, 1000)
 #' geometricmean_byname(10, 1000, 100000)
@@ -390,7 +382,7 @@ geometricmean_byname <- function(...){
   elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
 }
 
-#' Name- and element-wise logarithmic mean of matrices.
+#' Name- and element-wise logarithmic mean of matrices
 #'
 #' The logarithmic mean of corresponding entries of \code{a} and \code{b} is 
 #' \code{0} if \code{a = 0} or \code{b = 0}, 
@@ -419,7 +411,6 @@ geometricmean_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' library(dplyr)
 #' m1 <- matrix(c(1:6), nrow = 3, ncol = 2) %>% 
 #'   setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
@@ -467,20 +458,27 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' Compare two matrices "by name" for equality
 #'
 #' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
+#' 
+#' Comparisons are made by \code{isTRUE(all.equal(a, b))} so that variations among numbers
+#' within the computational precision will still return \code{TRUE}.
+#' 
+#' If EXACT comparison is needed, use \code{\link{identical_byname}}, 
+#' which compares using \code{identical(a, b)}.
 #'
 #' @param ... operands to be compared
 #'
-#' @return \code{TRUE} iff all information is the same, including
+#' @return \code{TRUE} iff all information is equal, including
 #' row and column types \emph{and}
 #' row and column names \emph{and}
-#' entries in the matrix.
+#' entries in the matrices.
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' a <- matrix(1:4, nrow = 2)
 #' b <- matrix(1:4, nrow = 2)
 #' equal_byname(a, b)
+#' equal_byname(a, b + 1e-100)
+#' identical_byname(a, b + 1e-100)
 #' a <- a %>% setrowtype("Industries") %>% setcoltype("Commodities")
 #' equal_byname(a, b) # FALSE because a has row and column types, but b does not.
 #' b <- b %>% setrowtype("Industries") %>% setcoltype("Commodities")
@@ -495,6 +493,45 @@ equal_byname <- function(...){
     return(isTRUE(all.equal(a, b)))
   }
   naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
+}
+
+#' Compare two matrices "by name" for exact equality
+#'
+#' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
+#' 
+#' Comparisons are made by \code{identical(a, b)} so that variations among numbers
+#' within the computational precision will return \code{FALSE}.
+#' 
+#' If fuzzy comparison is needed, use \code{\link{equal_byname}}, 
+#' which compares using \code{isTRUE(all.equal(a, b))}.
+#'
+#' @param ... operands to be compared
+#'
+#' @return \code{TRUE} iff all information is identical, including
+#' row and column types \emph{and}
+#' row and column names \emph{and}
+#' entries in the matrices.
+#' @export
+#'
+#' @examples
+#' a <- matrix(1:4, nrow = 2)
+#' b <- matrix(1:4, nrow = 2)
+#' identical_byname(a, b)
+#' identical_byname(a, b + 1e-100)
+#' a <- a %>% setrowtype("Industries") %>% setcoltype("Commodities")
+#' identical_byname(a, b) # FALSE because a has row and column types, but b does not.
+#' b <- b %>% setrowtype("Industries") %>% setcoltype("Commodities")
+#' identical_byname(a, b)
+#' dimnames(a) <- list(c("i1", "i2"), c("c1", "c2"))
+#' dimnames(b) <- list(c("c1", "c2"), c("i1", "i2"))
+#' identical_byname(a, b) # FALSE, because row and column names are not equal
+#' dimnames(b) <- dimnames(a)
+#' identical_byname(a, b)
+identical_byname <- function(...){
+  identical.func <- function(a, b){
+    return(identical(a, b))
+  }
+  naryapplylogical_byname(identical.func, ..., set_rowcoltypes = FALSE)
 }
 
 #' Test whether matrices or lists of matrices have same structure
@@ -512,7 +549,6 @@ equal_byname <- function(...){
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' samestructure_byname(2, 2)
 #' productnames <- c("p1", "p2")
 #' industrynames <- c("i1", "i2")

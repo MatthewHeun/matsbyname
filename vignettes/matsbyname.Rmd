@@ -1,5 +1,5 @@
 ---
-title: "Use Cases and Examples for <tt>matsbyname</tt>"
+title: "Use Cases and Examples for `matsbyname`"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: 
@@ -8,7 +8,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{matsbyname use cases and examples}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(magrittr)
 library(dplyr)
 library(tidyr)
 library(parallel)
@@ -185,7 +184,7 @@ Commonly-used functions are:
 * <tt>invert_byname</tt>, and 
 * <tt>transpose_byname</tt>.
 
-The full list of functions can be found with <tt>?byname</tt>
+The full list of functions can be found with <tt>?matsbyname</tt>
 and clicking the <tt>Index</tt> link.
 
 Furthermore, <tt>matsbyname</tt> works well with its sister package, <tt>matsindf</tt>.

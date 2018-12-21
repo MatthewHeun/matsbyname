@@ -2,7 +2,7 @@
 % Please edit documentation in R/Apply.R
 \name{unaryapply_byname}
 \alias{unaryapply_byname}
-\title{Apply a unary function "by name"}
+\title{Apply a unary function by name}
 \usage{
 unaryapply_byname(FUN, a, .FUNdots = NULL, rowcoltypes = c("all",
   "transpose", "row", "col", "none"))
@@ -35,7 +35,6 @@ the result of applying \code{FUN} "by name" to \code{a}.
 Note that if \code{a} is a list, the names of \code{a} are applied to the output.
 }
 \examples{
-library(magrittr)
 productnames <- c("p1", "p2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) \%>\%

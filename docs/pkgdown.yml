@@ -1,0 +1,7 @@
+pandoc: 2.0.6
+pkgdown: 1.2.0
+pkgdown_sha: ~
+articles:
+  applybyname-vignette: applybyname-vignette.html
+  matsbyname: matsbyname.html
+

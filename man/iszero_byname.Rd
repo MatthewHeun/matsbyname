@@ -15,7 +15,8 @@ iszero_byname(a, tol = 1e-06)
 \code{TRUE} iff this is the zero matrix within \code{tol}.
 }
 \description{
-Test whether this is the zero matrix
+Note that this function tests whether the elements of \code{abs(a)} are \code{<= tol}.
+So, you can set \code{tol = 0} to discover if \code{a} is EXACTLY the zero matrix.
 }
 \examples{
 zero <- matrix(0, nrow = 50, ncol = 50)

@@ -1,12 +1,58 @@
-# News for `matsbyname`
+# matsbyname 0.3.8 (2018-12-21)
 
-## matsbyname 0.3.1 (2018-08-25)
+* `fractionize_byname` now correctly handles non-square matrices.
+
+
+# matsbyname 0.3.7 (2018-12-02)
+
+* `hatinv_byname` now handles `0` values in input vectors gracefully.
+  By default, `0` values become `.Machine$double.xmax`.  
+  To choose a different value, set new argument `inf_becomes` to a numerical value.
+  To suppress default behavior, set `inf_becomes = NULL`.
+
+
+# matsbyname 0.3.6 (2018-11-25)
+
+* `iszero_byname` now checks if values of `abs(a)` are `<= tol`.
+   (Previously, `iszero_byname` tested with `< tol`.)
+   This change allows the zero matrix to pass the test when `tol = 0`, 
+   as we would want.
+* Reverted `equal_byname` to use `isTRUE(all.equal())` when checking for equality.
+* New function `identical_byname` checks for exact equality using `identical`.
+* Now up to 672 tests.
+
+
+# matsbyname 0.3.5 (2018-11-18)
+
+* Now using `identical()` instead of `isTRUE(all.equal())` for `equal_byname` function.
+
+
+# matsbyname 0.3.4 (2018-11-18)
+
+* Added new function `hatinv_byname`.
+* Documented defaults for arguments to `count_*` functions.
+* Now importing pipe operator from magrittr package at global level
+
+
+# matsbyname 0.3.3 (2018-10-29)
+
+* Fix version number on pkgdown website.
+* Updated many details of pkgdown website for better user navigation.
+
+
+# matsbyname 0.3.2 (2018-10-29)
+
+* First release to CRAN didn't work.
+* Added online documentation at github with pkgdown.
+
+
+# matsbyname 0.3.1 (2018-08-25)
 
 * Updated to new version of Roxygen which changed line breaks in some .Rd files.
 * First release to CRAN.
 
 
-## matsbyname 0.3.0 (2018-06-20)
+# matsbyname 0.3.0 (2018-06-20)
 
 * Removed parallelism features introduced in v0.2.6.
   Detailed timings revealed that the parallel code was slower than single-thread code.
@@ -15,20 +61,20 @@
   So there are no longer any `mc.cores` arguments to `matsbyname` functions.
 
 
-## matsbyname 0.2.9 (2018-05-24)
+# matsbyname 0.2.9 (2018-05-24)
 
 * Beginnings of S3 class `matbyname`. 
   Not sure if I want to keep it.
 * Fixed an argument name error exposed by check.
 
 
-## matsbyname 0.2.8 (2018-05-17)
+# matsbyname 0.2.8 (2018-05-17)
 
 * New functions `all_byname` and `any_byname` make logical tests easy.
 * New function `replaceNaN_byname` replaces `NaN` entries with a value (default is 0).
 
 
-## matsbyname 0.2.7 (2018-04-15)
+# matsbyname 0.2.7 (2018-04-15)
 
 * Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions
   with a transposed argument, thereby simplifying code.
@@ -42,51 +88,69 @@
 * Now up to 646 passing tests.
 
 
-## matsbyname 0.2.6 (2018-03-16)
+# matsbyname 0.2.6 (2018-03-16)
 
-* New multicore functionality available in most `*_byname` functions.
-   + New functions `set_mc_cores` and `get_mc_cores` to set and get package-wide `mc.cores` variable.
+## New multicore functionality available in most `*_byname` functions.
+
+* New functions `set_mc_cores` and `get_mc_cores` to set and get package-wide `mc.cores` variable.
      Default is `1`, so all functions work as previously unless `mc.cores` is more than `1`.
-   + Alternatively, specify the `mc.cores` argument of any function 
+     
+* Alternatively, specify the `mc.cores` argument of any function 
      to specify the number of cores to be used for an individual calculation.
      Default is `get_mc_cores()`.
      A useful approach is to `set_mc_cores(detectCores(logical = FALSE))`.
-* Suggested usage 
-   + `sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4)` to send each sum to a different core.
-   + `set_mc_cores(4L); sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4); set_mc_cores(1L)` 
+     
+## Suggested usage 
+
+* `sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4)` to send each sum to a different core.
+
+* `set_mc_cores(4L); sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4); set_mc_cores(1L)` 
      to do the same thing and set the package-wide value back to `1`.
 
 
-## matsbyname 0.2.5 (2018-03-13)
+# matsbyname 0.2.5 (2018-03-13)
 
-* New `*apply_byname` functions
-   + `naryapply_byname`: enables `...` arguments
-   + `naryapplylogical_byname`: enables logical functions
-* New `*apply_byname` functions enable API improvements, 
-  including `...` arguments for functions that deserve them.
-  These are API changes, but they shouldn't affect any existing code,
+## New `*apply_byname` functions enable API improvements
+
+* These are API changes, but they shouldn't affect any existing code,
   because calls to binary functions will "just work."
-  New `...` functions include, 
-   + `sum_byname`
-   + `matrixproduct_byname`
-   + `elementproduct_byname`
-   + `mean_byname`
-   + `geometricmean_byname`
-   + `equal_byname`
-   + `samestructure_byname`
-* New `and_byname(...)` function that provides logical and "by name."
-  The infrastructure is in place to 
+  
+* `naryapply_byname`: enables `...` arguments
+
+* `naryapplylogical_byname`: enables logical functions
+
+* Add `...` arguments for functions that deserve them.
+
+## New functions with `...` arguments including
+
+* `sum_byname`
+
+* `matrixproduct_byname`
+
+* `elementproduct_byname`
+
+* `mean_byname`
+
+* `geometricmean_byname`
+
+* `equal_byname`
+
+* `samestructure_byname`
+
+## New `and_byname(...)` function that provides logical and "by name."
+
+* The infrastructure is in place to 
   add other logical functions in the future: `or_byname`, `xor_byname`, and `not_byname`.
 
 
-## matsbyname 0.2.4 (2018-03-08)
+# matsbyname 0.2.4 (2018-03-08)
 
 * Preparing for submission to CRAN. 
   Changed many variable names in the APIs to standardize on "a" and "b"
   as names for matrix or list of matrices arguments.
 
 
-## matsbyname 0.2.3 (2018-03-08)
+# matsbyname 0.2.3 (2018-03-08)
 
 * Eliminate dependence (temporarily) on `matsindf`. 
   Doing so allows `matsbyname` to be submitted first to CRAN.
@@ -94,12 +158,12 @@
   `matsbyname` and `matsindf`.
 
 
-## matsbyname 0.2.2 (2018-03-02)
+# matsbyname 0.2.2 (2018-03-02)
 
 * New function `elementpow_byname` raises all elements of a matrix to a power.
 
 
-## matsbyname 0.2.1 (2018-02-28)
+# matsbyname 0.2.1 (2018-02-28)
 
 * `complete_rows_cols` now accepts `fillrow` and `fillcol` arguments.
   These arguments can be used (instead of the `fill` argument) 
@@ -108,22 +172,22 @@
   `fillrow` then `fillcol` then `fill`.
 
 
-## matsbyname 0.2.0 (2018-02-23)
+# matsbyname 0.2.0 (2018-02-23)
 
 * Name change to `matsbyname`.
 
 
-## byname 0.1.9 (2018-02-14)
+# byname 0.1.9 (2018-02-14)
 
 * Now preserving names of list items in `*apply_byname` functions.
 
 
-## byname 0.1.8 (2018-02-14)
+# byname 0.1.8 (2018-02-14)
 
 * Added `applybyname` vignette.
 
 
-## byname 0.1.7 (2018-02-14)
+# byname 0.1.7 (2018-02-14)
 
 * `unaryapply_byname` and `binaryapply_byname` now have `.FUNdots` arguments
   through which arguments to `FUN` should be passed. 
@@ -137,18 +201,18 @@
   was not happening properly.
 
 
-## byname 0.1.6 (2018-02-08)
+# byname 0.1.6 (2018-02-08)
 
 * New functions `cumsum_byname`, `cumprod_byname`, and `cumapply_byname`.
 * Miscellaneous improvements to documentation of many functions.
 
 
-## byname 0.1.5 (2018-02-01)
+# byname 0.1.5 (2018-02-01)
 
 * New functions `elementlog_byname` and `elementexp_byname`.
 
 
-## byname 0.1.4 (2018-01-31)
+# byname 0.1.4 (2018-01-31)
 
 * New functions `unaryapply_byname` and `binaryapply_byname`.
   These functions have a `FUN` argument that allows an arbitrary function to be 
@@ -161,7 +225,7 @@
   very solid.
 
 
-## byname 0.1.3 (2018-01-27)
+# byname 0.1.3 (2018-01-27)
 
 * Fixed a vector vs. list bug that caused failure of binary `_byname` functions when one argument
   was a list and the other was a non-constant numeric vector. 
@@ -169,7 +233,7 @@
 * Various other fixes.
 
 
-## byname 0.1.2 (2018-01-23)
+# byname 0.1.2 (2018-01-23)
 
 * Added the following functions:
    + `mean_byname`: returns the arithmetic mean of corresponding entries of two matrices
@@ -180,7 +244,7 @@
 * Miscellaneous improvements to documentation of many functions.
    
 
-## byname 0.1.1 (2018-01-21)
+# byname 0.1.1 (2018-01-21)
 
 * Added the following functions: 
    + `rowprod_byname`: returns a column vector with row products (product of all entries in a row)
@@ -189,6 +253,6 @@
 * Miscellaneous improvements to documentation of many functions.
 
 
-## byname 0.1
+# byname 0.1
 
 Initial version.

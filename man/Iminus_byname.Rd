@@ -20,7 +20,6 @@ Furthermore, if \code{m} is not square, it will be made square
 before subtracting from \code{I} by calling \code{complete_and_sort}.
 }
 \examples{
-library(magrittr)
 m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 # Rows and columns are unsorted

@@ -1,16 +1,17 @@
 Package: matsbyname
 Type: Package
 Title: An Implementation of Matrix Mathematics
-Version: 0.3.1
-Date: 2018-08-25
+Version: 0.3.8
+Date: 2018-12-21
 Authors@R: c(person("Matthew", "Heun", role = c("aut", "cre"),
+                     comment = c(ORCID = "0000-0002-7438-214X"),
                      email = "matthew.heun@me.com"))
 Author: Matthew Heun [aut, cre]
 Maintainer: Matthew Heun <matthew.heun@me.com>
 Description: An implementation of matrix mathematics wherein operations are performed "by name."
 License: MIT + file LICENSE
 Encoding: UTF-8
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Imports:
     rlang,
     dplyr,
@@ -25,3 +26,5 @@ Suggests:
     tidyr
 VignetteBuilder: 
     knitr
+URL: https://github.com/MatthewHeun/matsbyname
+BugReports: https://github.com/MatthewHeun/matsbyname/issues

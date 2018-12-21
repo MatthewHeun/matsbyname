@@ -1,7 +1,7 @@
 # This file contains functions that apply other functions to 
 # matrices or data frames of matrices
 
-#' Apply a unary function "by name"
+#' Apply a unary function by name
 #' 
 #' Note that if \code{a} is a list, the names of \code{a} are applied to the output.
 #'
@@ -29,7 +29,6 @@
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' productnames <- c("p1", "p2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
@@ -113,7 +112,6 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' @export
 #'
 #' @examples
-#' library(magrittr)
 #' productnames <- c("p1", "p2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
@@ -182,7 +180,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
 #' have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
 #' Thus, all of the operands in \code{...} must obey the rules of type matching 
-#' when \code{match_type} is \code{TRUE}..
+#' when \code{match_type} is \code{TRUE}.
 #' 
 #' \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
 #' Their differences can be described by considering a data frame.

@@ -18,7 +18,6 @@ elementpow_byname(a, pow)
 Gives the result of raising all elements of a matrix or list of matrices to a power.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 elementpow_byname(2, 3)
 m <- matrix(2, nrow = 2, ncol = 3, dimnames = list(paste0("r", 1:2), paste0("c", 1:3))) \%>\% 

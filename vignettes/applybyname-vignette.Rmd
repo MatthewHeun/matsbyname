@@ -1,5 +1,5 @@
 ---
-title: "Writing Custom Functions for <tt>matsbyname</tt>"
+title: "Writing Custom Functions for matsbyname"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: 
@@ -13,7 +13,6 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(magrittr)
 library(dplyr)
 library(parallel)
 library(matsbyname)
@@ -30,7 +29,7 @@ However, the built-in functions may not cover all possible needs.
 |--:|:------------------------------------
 | `unaryapply_byname` | apply a unary function to a single matrix, a list of matrices, or a column of matrices in a data frame  
 | `binaryapply_byname` | apply a binary function to two matrices or Map a binary function across two lists of matrices or two columns of matrices in a data frame
-| `cumapply_byname` | apply a binary function cumulatively to a singe list of matrices or a column of matrices in a data frame
+| `cumapply_byname` | apply a binary function cumulatively to a single list of matrices or a column of matrices in a data frame
 
 
 ## How the `*apply_byname` functions work
@@ -133,8 +132,8 @@ cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
 
 ## Summary
 
-The various `*apply_byname` functions allow users to extend the functionality of the `byname` 
+The various `*apply_byname` functions allow users to extend the functionality of the `matsbyname` 
 package as needed for any problem domain.
-The functions are used extensively in `byname` itself.
-In fact, all `byname` functions utilize the `*apply_byname` functions,
+The functions are used extensively in `matsbyname` itself.
+In fact, all `matsbyname` functions utilize the `*apply_byname` functions,
 so they are ready for prime time!

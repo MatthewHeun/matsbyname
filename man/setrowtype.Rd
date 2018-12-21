@@ -24,7 +24,6 @@ If \code{is.null(rowtype)}, the rowtype attribute is deleted
 and subsequent calls to \code{rowtype} will return \code{NULL}.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 commoditynames <- c("c1", "c2")
 industrynames <- c("i1", "i2")

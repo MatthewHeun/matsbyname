@@ -11,9 +11,9 @@ compare_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
 \item{a}{a matrix or list of matrices whose values are to be counted according to \code{compare_fun}}
 
 \item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}", 
-"\code{<}", "\code{<=}", "\code{>=}", or "\code{>}"}
+"\code{<}", "\code{<=}", "\code{>=}", or "\code{>}". Default is "\code{==}".}
 
-\item{val}{the value against which matrix entries are compared}
+\item{val}{a single value against which entries in matrix \code{a} are compared. Default is \code{0}.}
 }
 \value{
 a logical matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,

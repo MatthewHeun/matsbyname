@@ -18,7 +18,6 @@ M with each element replaced by its base \code{base} logarithm
 Specify the base of the log with \code{base} argument.
 }
 \examples{
-library(magrittr)
 elementlog_byname(exp(1))
 m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")

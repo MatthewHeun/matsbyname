@@ -10,19 +10,27 @@ equal_byname(...)
 \item{...}{operands to be compared}
 }
 \value{
-\code{TRUE} iff all information is the same, including
+\code{TRUE} iff all information is equal, including
 row and column types \emph{and}
 row and column names \emph{and}
-entries in the matrix.
+entries in the matrices.
 }
 \description{
 If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 }
+\details{
+Comparisons are made by \code{isTRUE(all.equal(a, b))} so that variations among numbers
+within the computational precision will still return \code{TRUE}.
+
+If EXACT comparison is needed, use \code{\link{identical_byname}}, 
+which compares using \code{identical(a, b)}.
+}
 \examples{
-library(magrittr)
 a <- matrix(1:4, nrow = 2)
 b <- matrix(1:4, nrow = 2)
 equal_byname(a, b)
+equal_byname(a, b + 1e-100)
+identical_byname(a, b + 1e-100)
 a <- a \%>\% setrowtype("Industries") \%>\% setcoltype("Commodities")
 equal_byname(a, b) # FALSE because a has row and column types, but b does not.
 b <- b \%>\% setrowtype("Industries") \%>\% setcoltype("Commodities")

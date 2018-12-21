@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{mean_byname}
 \alias{mean_byname}
-\title{Name- and element-wise arithmetic mean of matrices.}
+\title{Name- and element-wise arithmetic mean of matrices}
 \usage{
 mean_byname(...)
 }
@@ -21,7 +21,6 @@ prior to performing arithmetic mean.
 Zeroes are inserted for missing matrix elements.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 mean_byname(100, 50)
 mean_byname(10, 20, 30)

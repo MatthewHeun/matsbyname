@@ -21,7 +21,6 @@ If \code{colname} is \code{NULL} or \code{NA} (the default),
 the column name is set to the column type as given by \code{coltype(a)}.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 M <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Products")

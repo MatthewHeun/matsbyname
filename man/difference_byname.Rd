@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{difference_byname}
 \alias{difference_byname}
-\title{Name-wise subtraction of matrices.}
+\title{Name-wise subtraction of matrices}
 \usage{
 difference_byname(minuend, subtrahend)
 }
@@ -18,10 +18,9 @@ Zeroes are inserted for missing matrix elements.}
 A matrix representing the name-wise difference between \code{minuend} and \code{subtrahend}
 }
 \description{
-Name-wise subtraction of matrices.
+Name-wise subtraction of matrices
 }
 \examples{
-library(magrittr)
 library(dplyr)
 difference_byname(100, 50)
 commoditynames <- c("c1", "c2")

@@ -21,7 +21,6 @@ prior to performing geometric mean.
 Zeroes are inserted for missing matrix elements.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 geometricmean_byname(10, 1000)
 geometricmean_byname(10, 1000, 100000)

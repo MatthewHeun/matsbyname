@@ -2,7 +2,7 @@
 % Please edit documentation in R/Binary.R
 \name{logarithmicmean_byname}
 \alias{logarithmicmean_byname}
-\title{Name- and element-wise logarithmic mean of matrices.}
+\title{Name- and element-wise logarithmic mean of matrices}
 \usage{
 logarithmicmean_byname(a, b, base = exp(1))
 }
@@ -38,7 +38,6 @@ the order of arguments \strong{\code{a}} and \strong{\code{b}}
 does not change the result.
 }
 \examples{
-library(magrittr)
 library(dplyr)
 m1 <- matrix(c(1:6), nrow = 3, ncol = 2) \%>\% 
   setrownames_byname(c("r1", "r2", "r3")) \%>\% setcolnames_byname(c("c1", "c2")) \%>\% 

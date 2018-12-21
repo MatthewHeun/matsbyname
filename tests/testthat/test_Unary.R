@@ -14,6 +14,57 @@ library(tidyr)
 
 
 ###########################################################
+context("Hatize and Inverse")
+###########################################################
+
+test_that("hatinv_byname works as expected", {
+  # Test with a column vector
+  v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  expect_equal(hatinv_byname(v), v %>% hatize_byname() %>% invert_byname())
+  # Test with a row vector
+  r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
+    setrowtype(NA) %>% setcoltype("Commodities")
+  expect_equal(hatinv_byname(r), r %>% hatize_byname() %>% invert_byname())
+  # Test with a list
+  v_list <- list(v, v)
+  expect_equal(hatinv_byname(v_list), v_list %>% hatize_byname() %>% invert_byname())
+  # Test with a data frame
+  DF <- data.frame(v_list = I(list()))
+  DF[[1, "v_list"]] <- v
+  DF[[2, "v_list"]] <- v
+  DF <- DF %>% 
+    mutate(
+      hatinv = hatinv_byname(v_list)
+    )
+  DF_expected <- data.frame(v_list = I(list()), hatinv = I(list()))
+  DF_expected[[1, "v_list"]] <- v
+  DF_expected[[2, "v_list"]] <- v
+  DF_expected[[1, "hatinv"]] <- v %>% hatize_byname() %>% invert_byname()
+  DF_expected[[2, "hatinv"]] <- v %>% hatize_byname() %>% invert_byname()
+  # The hatinv column of DF_expected will have class = 'AsIs', but
+  # the hatinv column of DF will have no class attribute.  
+  # Eliminate that mismatch.
+  attr(DF_expected$hatinv, which = "class") <- NULL
+  expect_equal(DF, DF_expected)
+  # Test when one of the elements of v is 0.
+  v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  expect_equal(hatinv_byname(v2), matrix(c(.Machine$double.xmax, 0,
+                                           0, 1), 
+               nrow = 2, ncol = 2, byrow = TRUE,
+               dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
+               setrowtype("Industries") %>% setcoltype("Industries"))
+  # Test when we want the 0 element of v to give Inf instead of .Machine$double.xmax.
+  expect_equal(hatinv_byname(v2, inf_becomes = NULL), matrix(c(Inf, 0,
+                                                               0, 1), 
+                                                             nrow = 2, ncol = 2, byrow = TRUE,
+                                                             dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
+                 setrowtype("Industries") %>% setcoltype("Industries"))
+})
+
+
+###########################################################
 context("Absolute value")
 ###########################################################
 
@@ -281,22 +332,22 @@ test_that("fractionze_byname works as expected", {
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
               dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Products")
+    setrowtype("Products") %>% setcoltype("Industries")
   expectedM_rows <- matrix(c(1/6, 5/6,
                              4/9, 5/9),
                            nrow = 2, ncol = 2, byrow = TRUE,
                            dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Products")
+    setrowtype("Products") %>% setcoltype("Industries")
   expectedM_cols <- matrix(c(1/5, 5/10,
                              4/5, 5/10),
                            nrow = 2, ncol = 2, byrow = TRUE,
                            dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Products")
+    setrowtype("Products") %>% setcoltype("Industries")
   expectedM_sumall <- matrix(c(1/15, 5/15,
                                4/15, 5/15),
                              nrow = 2, ncol = 2, byrow = TRUE,
                              dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Products")
+    setrowtype("Products") %>% setcoltype("Industries")
   
   # Test for errors
   expect_error(fractionize_byname(M, margin = c(2,2,1,1,0)), "margin should contain unique integers in fractionize_byname")
@@ -343,6 +394,76 @@ test_that("fractionze_byname works as expected", {
   expect_equal(DF2$F_row, list(expectedM_rows, expectedM_rows))
   expect_equal(DF2$F_col, list(expectedM_cols, expectedM_cols))
   expect_equal(DF2$F_tot, list(expectedM_sumall, expectedM_sumall))
+  
+  # Test when a column contains zeroes
+  Mzerocol <- matrix(c(1, 0,
+                       2, 0),
+                     nrow = 2, ncol = 2, byrow = TRUE,
+                     dimnames = list(c("p1", "p2"), c("i1", "i2")))
+  expect_equal(fractionize_byname(Mzerocol, margin = c(1,2)), 
+               matrix(c(1/3, 0,
+                        2/3, 0),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzerocol, margin = 1), 
+               matrix(c(1, 0,
+                        1, 0),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  # Verify that the zero column now works and gives NaNs.
+  expect_equal(fractionize_byname(Mzerocol, margin = 2), 
+               matrix(c(1/3, 0/0,
+                        2/3, 0/0), 
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  # But if we clean the matrix first, we will also get something that makes sense.
+  expect_equal(fractionize_byname(clean_byname(Mzerocol, margin = 2), margin = 2),
+               matrix(c(1/3,
+                        2/3),
+                      nrow = 2, ncol = 1, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1"))))
+  
+  # Test when rows are zero.
+  Mzerorow <- matrix(c(0, 0,
+                       1, 2),
+                     nrow = 2, ncol = 2, byrow = TRUE,
+                     dimnames = list(c("p1", "p2"), c("i1", "i2")))
+  expect_equal(fractionize_byname(Mzerorow, margin = c(1,2)), 
+               matrix(c(0,   0,
+                        1/3, 2/3),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzerorow, margin = 1), 
+               matrix(c(0/0, 0/0,
+                        1/3, 2/3),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzerorow, margin = 2), 
+               matrix(c(0, 0,
+                        1, 1),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  
+  # Test when everything is zero
+  Mzero <- matrix(c(0, 0,
+                    0, 0),
+                  nrow = 2, ncol = 2, byrow = TRUE,
+                  dimnames = list(c("p1", "p2"), c("i1", "i2")))
+  expect_equal(fractionize_byname(Mzero, margin = 1), 
+               matrix(c(0/0, 0/0,
+                        0/0, 0/0), 
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzero, margin = 2), 
+               matrix(c(0/0, 0/0,
+                        0/0, 0/0), 
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzero, margin = c(1,2)), 
+               matrix(c(0/0, 0/0,
+                        0/0, 0/0), 
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
 })
 
 
