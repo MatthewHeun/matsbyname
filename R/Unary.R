@@ -293,13 +293,6 @@ identize_byname <- function(a, margin = c(1,2)){
 #' 
 #' This function divides all entries in \code{a} by the specified sum,
 #' thereby "fractionizing" the matrix.
-#' 
-#' When \code{margin = 1}, this function performs the matrix operations
-#' \code{matrixproduct_byname(hatinv_byname(rowsums_byname(a)), a)}.
-#' When \code{margin = 2}, this function performs the matrix operations
-#' \code{matrixproduct_byname(a, hatinv_byname(colsums_byname(a)))}.
-#' Note that the matrix mathematics above will throw a singular matrix error when
-#' a row or column is full of zeroes.
 #'
 #' @param a the matrix to be fractionized
 #' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
