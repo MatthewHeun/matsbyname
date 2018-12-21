@@ -1,3 +1,8 @@
+# matsbyname 0.3.8 (2018-12-21)
+
+* `fractionize_byname` now correctly handles non-square matrices.
+
+
 # matsbyname 0.3.7 (2018-12-02)
 
 * `hatinv_byname` now handles `0` values in input vectors gracefully.
