@@ -422,6 +422,48 @@ test_that("fractionze_byname works as expected", {
                         2/3),
                       nrow = 2, ncol = 1, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1"))))
+  
+  # Test when rows are zero.
+  Mzerorow <- matrix(c(0, 0,
+                       1, 2),
+                     nrow = 2, ncol = 2, byrow = TRUE,
+                     dimnames = list(c("p1", "p2"), c("i1", "i2")))
+  expect_equal(fractionize_byname(Mzerorow, margin = c(1,2)), 
+               matrix(c(0,   0,
+                        1/3, 2/3),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzerorow, margin = 1), 
+               matrix(c(0/0, 0/0,
+                        1/3, 2/3),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzerorow, margin = 2), 
+               matrix(c(0, 0,
+                        1, 1),
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  
+  # Test when everything is zero
+  Mzero <- matrix(c(0, 0,
+                    0, 0),
+                  nrow = 2, ncol = 2, byrow = TRUE,
+                  dimnames = list(c("p1", "p2"), c("i1", "i2")))
+  expect_equal(fractionize_byname(Mzero, margin = 1), 
+               matrix(c(0/0, 0/0,
+                        0/0, 0/0), 
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzero, margin = 2), 
+               matrix(c(0/0, 0/0,
+                        0/0, 0/0), 
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
+  expect_equal(fractionize_byname(Mzero, margin = c(1,2)), 
+               matrix(c(0/0, 0/0,
+                        0/0, 0/0), 
+                      nrow = 2, ncol = 2, byrow = TRUE,
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))))
 })
 
 
