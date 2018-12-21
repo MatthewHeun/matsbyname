@@ -337,12 +337,14 @@ fractionize_byname <- function(a, margin){
     if (margin == 1) {
       # Divide each entry by its row sum
       # Do this with (a*i)_hat_inv * a
-      return(matrixproduct_byname(a %>% rowsums_byname %>% hatize_byname %>% invert_byname, a))
+      # return(matrixproduct_byname(a %>% rowsums_byname %>% hatize_byname %>% invert_byname, a))
+      return(sweep(a, margin, rowSums(a), `/`))
     }
     if (margin == 2) {
       # Divide each entry by its column sum
       # Do this with a * (i^T * a)_hat_inv
-      return(matrixproduct_byname(a, colsums_byname(a) %>% hatize_byname %>% invert_byname))
+      # return(matrixproduct_byname(a, colsums_byname(a) %>% hatize_byname %>% invert_byname))
+      return(sweep(a, margin, colSums(a), `/`))
     } 
     # Should never get here, but just in case:
     stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
