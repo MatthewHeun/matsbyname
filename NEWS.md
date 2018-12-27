@@ -1,11 +1,16 @@
+# matsbyname 0.4.0 (2018-12-27)
+
+* First release to CRAN.
+
+
 # matsbyname 0.3.8 (2018-12-21)
 
-* `fractionize_byname` now correctly handles non-square matrices.
+* `fractionize_byname()` now correctly handles non-square matrices.
 
 
 # matsbyname 0.3.7 (2018-12-02)
 
-* `hatinv_byname` now handles `0` values in input vectors gracefully.
+* `hatinv_byname()` now handles `0` values in input vectors gracefully.
   By default, `0` values become `.Machine$double.xmax`.  
   To choose a different value, set new argument `inf_becomes` to a numerical value.
   To suppress default behavior, set `inf_becomes = NULL`.
@@ -13,23 +18,23 @@
 
 # matsbyname 0.3.6 (2018-11-25)
 
-* `iszero_byname` now checks if values of `abs(a)` are `<= tol`.
-   (Previously, `iszero_byname` tested with `< tol`.)
+* `iszero_byname()` now checks if values of `abs(a)` are `<= tol`.
+   (Previously, `iszero_byname()` tested with `< tol`.)
    This change allows the zero matrix to pass the test when `tol = 0`, 
    as we would want.
-* Reverted `equal_byname` to use `isTRUE(all.equal())` when checking for equality.
-* New function `identical_byname` checks for exact equality using `identical`.
+* Reverted `equal_byname()` to use `isTRUE(all.equal())` when checking for equality.
+* New function `identical_byname()` checks for exact equality using `identical`.
 * Now up to 672 tests.
 
 
 # matsbyname 0.3.5 (2018-11-18)
 
-* Now using `identical()` instead of `isTRUE(all.equal())` for `equal_byname` function.
+* Now using `identical()` instead of `isTRUE(all.equal())` for `equal_byname()` function.
 
 
 # matsbyname 0.3.4 (2018-11-18)
 
-* Added new function `hatinv_byname`.
+* Added new function `hatinv_byname()`.
 * Documented defaults for arguments to `count_*` functions.
 * Now importing pipe operator from magrittr package at global level
 
@@ -70,8 +75,8 @@
 
 # matsbyname 0.2.8 (2018-05-17)
 
-* New functions `all_byname` and `any_byname` make logical tests easy.
-* New function `replaceNaN_byname` replaces `NaN` entries with a value (default is 0).
+* New functions `all_byname()` and `any_byname()` make logical tests easy.
+* New function `replaceNaN_byname()` replaces `NaN` entries with a value (default is 0).
 
 
 # matsbyname 0.2.7 (2018-04-15)
@@ -218,7 +223,7 @@
   These functions have a `FUN` argument that allows an arbitrary function to be 
   applied `_byname` to matrices or data frames containing matrices.
    + `unaryapply_byname` is for unary functions such as `rowsums_byname`.
-   + `binaryapply_byname` is for binary functinos such as `sum_byname`.
+   + `binaryapply_byname` is for binary functions such as `sum_byname`.
 * `unaryapply_byname` and `binaryapply_byname` are used by all `_byname` functions internally.
 * Now conducting 412 tests across the entire package. 
   All tests are passing, indicating that the `unaryapply` and `binaryapply` functions are 
