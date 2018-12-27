@@ -10,6 +10,7 @@ Author: Matthew Heun [aut, cre]
 Maintainer: Matthew Heun <matthew.heun@me.com>
 Description: An implementation of matrix mathematics wherein operations are performed "by name."
 License: MIT + file LICENSE
+Language: en-US
 Encoding: UTF-8
 RoxygenNote: 6.1.1
 Imports:

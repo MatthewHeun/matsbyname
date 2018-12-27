@@ -218,7 +218,7 @@
   These functions have a `FUN` argument that allows an arbitrary function to be 
   applied `_byname` to matrices or data frames containing matrices.
    + `unaryapply_byname` is for unary functions such as `rowsums_byname`.
-   + `binaryapply_byname` is for binary functinos such as `sum_byname`.
+   + `binaryapply_byname` is for binary functions such as `sum_byname`.
 * `unaryapply_byname` and `binaryapply_byname` are used by all `_byname` functions internally.
 * Now conducting 412 tests across the entire package. 
   All tests are passing, indicating that the `unaryapply` and `binaryapply` functions are 
