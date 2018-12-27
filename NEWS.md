@@ -1,3 +1,8 @@
+# matsbyname 0.4.0 (2018-12-27)
+
+* First release to CRAN.
+
+
 # matsbyname 0.3.8 (2018-12-21)
 
 * `fractionize_byname()` now correctly handles non-square matrices.

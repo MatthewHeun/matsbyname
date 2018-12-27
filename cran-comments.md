@@ -9,6 +9,9 @@
     * `devtools::check_win_release()`, R3.5.2
     * `devtools::check_win_devel()`, r75909
 * rhub
+    * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
+    * Ubuntu Linux 16.04 LTS, R-release, GCC
+    * Fedora Linux, R-devel, clang, gfortran
 
 ## R CMD check results
 There were no ERRORs or WARNINGs.
@@ -16,7 +19,7 @@ There were two NOTEs:
 
 * The first states (correctly) that `matsbyname` is a new submission to CRAN. 
 * The second states (correctly) that the Author field in DESCRIPTION 
-  differs from derived from Authors@R.
+  differs from that derived from Authors@R.
   I have include my ORCID for `pgkdown` per the documentation found at
   https://pkgdown.r-lib.org/articles/pkgdown.html#home-page.
 
