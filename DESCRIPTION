@@ -17,6 +17,7 @@ Imports:
     rlang,
     dplyr,
     Hmisc,
+    Matrix,
     magrittr,
     OpenMx,
     parallel
