@@ -55,9 +55,13 @@ test_that("sort_rows_cols works as expected", {
   # Sorts columns
   expect_equal(sort_rows_cols(r), sortedr)
   # No row name
-  n <- matrix(c(1,2), nrow = 1, dimnames = list(NULL, c("c2", "c1"))) 
+  nrn <- matrix(c(1,2), nrow = 1, dimnames = list(NULL, c("c2", "c1"))) 
   # Sorts columns, because only one row.
-  expect_equal(sort_rows_cols(n), matrix(2:1, nrow = 1, dimnames = list(NULL, c("c1", "c2"))))
+  expect_equal(sort_rows_cols(nrn), matrix(2:1, nrow = 1, dimnames = list(NULL, c("c1", "c2"))))
+  # No column name
+  ncn <- matrix(c(1,2), ncol = 1, dimnames = list(c("r2", "r1"), NULL)) 
+  # Sorts rows, because only one column.
+  expect_equal(sort_rows_cols(ncn), matrix(c(2, 1), ncol = 1, dimnames = list(c("r1", "r2"), NULL)))
   # Also works with lists
   # Sorts rows and columns for both m's.
   sortedm <- matrix(c(6, 3,
