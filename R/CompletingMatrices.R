@@ -265,21 +265,27 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
 
 #' Sorts rows and columns of a matrix
 #' 
-#' Checks that row names are unique and that column names are also unique.
+#' Checks that row names are unique and that column names are unique.
 #' Then, sorts the rows and columns in a way that ensures
 #' any other matrix with the same row and column names will have 
 #' the same order.
+#' 
+#' Default sort order is given by \code{base::sort()} with \code{decreasing = FALSE}.
 #'
 #' @param a a matrix or data frame whose rows and columns are to be sorted
 #' @param margin specifies the subscript(s) in \code{a} over which sorting will occur. 
-#' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
-#' For rows only, give \code{1}; 
-#' for columns only, give \code{2};
-#' for both rows and columns, give \code{c(1,2)}, the default value.
+#'        \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
+#'        For rows only, give \code{1}; 
+#'        for columns only, give \code{2};
+#'        for both rows and columns, give \code{c(1,2)}, the default value.
 #' @param roworder specifies the order for rows with default \code{sort(rownames(a))}. 
-#' If \code{NULL}, default is used. Unspecified rows are dropped.
+#'        If \code{NA} (the default), default sort order is used. 
+#'        Unspecified rows are removed from the output, thus providing a way to delete rows from \code{a}.
+#'        Extraneous row names (row names in \code{roworder} that do not appear in \code{a}) are ignored.
 #' @param colorder specifies the order for rows with default \code{sort(colnames(a))}.
-#' If \code{NULL}, default is used. Unspecified columns are dropped.
+#'        If \code{NA} (the default), default sort order is used. 
+#'        Unspecified columns are removed from the output, thus providing a way to delete columns from \code{a}.
+#'        Extraneous column names (column names in \code{colorder} that do not appear in \code{a}) are ignored.
 #' 
 #' @return A modified version of \code{a} with sorted rows and columns
 #' 
@@ -310,7 +316,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
 #' # Both columns and rows sorted, rows by the list, columns in natural order.
 #' sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
 sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
-  sort.func <- function(a, margin, roworder, colorder){
+  sort_func <- function(a, margin, roworder, colorder){
     # Gather rowtype and coltype so we can apply those later.
     rt <- rowtype(a)
     ct <- coltype(a)
@@ -347,17 +353,21 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
       if (length(unique(rownames(a))) != length(rownames(a))) {
         stop("Row names not unique.")
       }
+      # Trim items from roworder that do not appear as names in rownames(a)
+      roworder <- roworder[roworder %in% rownames(a)]
       a <- a[roworder, , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
     }
     if (2 %in% margin & ncol(a) > 1) {
       if (length(unique(colnames(a))) != length(colnames(a))) {
         stop("Column names not unique.")
       }
+      # Trim items from colorder that do not appear as names in colnames(a)
+      colorder <- colorder[colorder %in% colnames(a)]
       a <- a[ , colorder, drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
     }
     return(a %>% setrowtype(rt) %>% setcoltype(ct))
   }
-  unaryapply_byname(sort.func, a = a, 
+  unaryapply_byname(sort_func, a = a, 
                     .FUNdots = list(margin = margin, roworder = roworder, colorder = colorder))
 }
 

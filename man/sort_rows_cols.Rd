@@ -16,19 +16,26 @@ for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.}
 
 \item{roworder}{specifies the order for rows with default \code{sort(rownames(a))}. 
-If \code{NULL}, default is used. Unspecified rows are dropped.}
+If \code{NA} (the default), default sort order is used. 
+Unspecified rows are removed from the output, thus providing a way to delete rows from \code{a}.
+Extraneous row names (row names in \code{roworder} that do not appear in \code{a}) are ignored.}
 
 \item{colorder}{specifies the order for rows with default \code{sort(colnames(a))}.
-If \code{NULL}, default is used. Unspecified columns are dropped.}
+If \code{NA} (the default), default sort order is used. 
+Unspecified columns are removed from the output, thus providing a way to delete columns from \code{a}.
+Extraneous column names (column names in \code{colorder} that do not appear in \code{a}) are ignored.}
 }
 \value{
 A modified version of \code{a} with sorted rows and columns
 }
 \description{
-Checks that row names are unique and that column names are also unique.
+Checks that row names are unique and that column names are unique.
 Then, sorts the rows and columns in a way that ensures
 any other matrix with the same row and column names will have 
 the same order.
+}
+\details{
+Default sort order is given by \code{base::sort()} with \code{decreasing = FALSE}.
 }
 \examples{
 m <- matrix(c(1:6), nrow=3, dimnames = list(c("r3", "r5", "r1"), c("c4", "c2")))

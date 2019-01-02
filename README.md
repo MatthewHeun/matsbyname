@@ -9,7 +9,6 @@
 
 [![Travis-CI Build
 Status](https://travis-ci.org/MatthewHeun/matsbyname.svg?branch=master)](https://travis-ci.org/MatthewHeun/matsbyname)
-
 [![Coverage
 status](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://codecov.io/github/MatthewHeun/matsbyname?branch=master)
 

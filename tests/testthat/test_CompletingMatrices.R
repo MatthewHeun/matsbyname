@@ -5,9 +5,9 @@
 # and tests containing the string "(" don't work as expected.
 
 library(dplyr)
+library(magrittr)
 library(matsbyname)
 library(parallel)
-library(magrittr)
 library(testthat)
 
 ###########################################################
@@ -112,6 +112,25 @@ test_that("sort_rows_cols works with different-length arguments for lists", {
   expect_equal(res$sorted[[3]][[1]], m_sorted)
   expect_equal(res$sorted[[1]][[2]], m_sorted)
 })
+
+test_that("sort_rows_cols works when specifying a row or col name that isn't present in a", {
+  m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  sorted_m <- matrix(c(2, 4, 1, 3), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_equal(sort_rows_cols(m), sorted_m)
+  # It should not matter that "r3" doesn't exist in m.
+  expect_equal(sort_rows_cols(m, roworder = c("r1", "r2", "r3")), sorted_m)
+  # It should not matter that "c3" doesn't exist in m.
+  expect_equal(sort_rows_cols(m, colorder = c("c1", "c2", "c3")), sorted_m)
+  expect_equal(sort_rows_cols(m, colorder = c("c100", "c42", "c2", "c1", "cmillion")), 
+               matrix(c(4, 2, 3, 1), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c2", "c1"))) %>% 
+                 setrowtype("row") %>% setcoltype("col"))
+  expect_equal(sort_rows_cols(m, colorder = c("c2")), 
+               matrix(c(4, 3), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c2")) %>% 
+                 setrowtype("row") %>% setcoltype("col"))
+})
+  
 
 
 ###########################################################

@@ -26,11 +26,11 @@
 #'
 #' @examples
 #' mat_byname(matrix(c(1:2)))
-mat_byname <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL, 
-                       m = matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames),
-                       rowtype = NULL, coltype = NULL) {
-  m %>% setrowtype(rowtype) %>% setcoltype(coltype) %>% as.mat_byname()
-}
+# mat_byname <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL, 
+#                        m = matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames),
+#                        rowtype = NULL, coltype = NULL) {
+#   m %>% setrowtype(rowtype) %>% setcoltype(coltype) %>% as.mat_byname()
+# }
 
 
 #' Test if an argument is a \code{mat_byname}
@@ -44,12 +44,12 @@ mat_byname <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = 
 #' @examples
 #' is.mat_byname(matrix(1:2))
 #' is.mat_byname(mat_byname(1:2))
-is.mat_byname <- function(x) {
-  if ("mat_byname" %in% class(x)) {
-    return(TRUE)
-  }
-  return(FALSE)
-}
+# is.mat_byname <- function(x) {
+#   if ("mat_byname" %in% class(x)) {
+#     return(TRUE)
+#   }
+#   return(FALSE)
+# }
 
 #' Convert a \code{matrix}-like object to a \code{mat_byname}
 #'
@@ -61,16 +61,16 @@ is.mat_byname <- function(x) {
 #'
 #' @examples
 #' as.mat_byname(matrix(1:2))
-as.mat_byname <- function(x){
-  if (is.null(x)) {
-    stop("'x' must not be NULL in as.mat_byname.")
-  }
-  # if (!"matrix" %in% class(x)) {
-  #   stop("'x' must be of a matrix type in as.mat_byname.")
-  # }
-  class(x) <- c("mat_byname", class(x))
-  return(x)
-}
+# as.mat_byname <- function(x){
+#   if (is.null(x)) {
+#     stop("'x' must not be NULL in as.mat_byname.")
+#   }
+#   # if (!"matrix" %in% class(x)) {
+#   #   stop("'x' must be of a matrix type in as.mat_byname.")
+#   # }
+#   class(x) <- c("mat_byname", class(x))
+#   return(x)
+# }
 
 
 # `+.mat_byname` <- function(a, b){
