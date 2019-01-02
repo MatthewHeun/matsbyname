@@ -117,7 +117,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     margin <- make_list(margin, length(mat), lenx = 1)
   }
 
-  complete.func <- function(a = NULL, mat = NULL, fill, fillrow = NULL, fillcol = NULL, margin){
+  complete_func <- function(a = NULL, mat = NULL, fill, fillrow = NULL, fillcol = NULL, margin){
     # When we get here, we should not have lists for any of the arguments.
     # We should have single matrices for a and/or matrix. 
     
@@ -188,13 +188,13 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
                setrowtype(rt) %>% setcoltype(ct))
     }
     
-    # If we get here, we could have a without dimnames and non-NULL dimnames on mat
+    # If we get here, we could have matrix "a" without dimnames and non-NULL dimnames on mat
     # This is a degenerate case.
     # We don't know what row and column names are already present in a.
     # So we can't know how to complete a with the dimnames from mat.
     # Give an error.
     if (is.null(dimnames(a)) & !is.null(dimnamesmat)) {
-      stop("Can't complete a that is missing dimnames with non-NULL dimnames on mat.  How can we know which names are already present in x?")
+      stop("Can't complete a that is missing dimnames with non-NULL dimnames on mat.  How can we know which names are already present in a?")
     }
     
     # At this point, we should have 
@@ -255,7 +255,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     return(a)
   }
   
-  binaryapply_byname(complete.func, a = a, b = mat, .FUNdots = list(fill = fill, 
+  binaryapply_byname(complete_func, a = a, b = mat, .FUNdots = list(fill = fill, 
                                                                     fillrow = fillrow, fillcol = fillcol, 
                                                                     margin = margin), 
                      match_type = "all", set_rowcoltypes = TRUE, .organize = FALSE)
