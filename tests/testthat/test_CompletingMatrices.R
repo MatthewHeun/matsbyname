@@ -130,7 +130,23 @@ test_that("sort_rows_cols works when specifying a row or col name that isn't pre
                matrix(c(4, 3), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c2")) %>% 
                  setrowtype("row") %>% setcoltype("col"))
 })
-  
+
+test_that("sort_rows_cols fails when row and col names are not unique", {
+  mrowprob <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r1"), c("c1", "c1"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_error(sort_rows_cols(mrowprob), "Row names not unique")
+  mcolprob <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c1"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_error(sort_rows_cols(mcolprob), "Column names not unique")
+  m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  # Check duplicating a row.
+  expect_equal(sort_rows_cols(m, roworder = c("r1", "r1")), 
+               matrix(c(2, 4,
+                        2, 4), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r1"), c("c1", "c2"))) %>% 
+                 setrowtype("row") %>% setcoltype("col"))
+})
+
 
 
 ###########################################################
