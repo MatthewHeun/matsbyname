@@ -1,3 +1,8 @@
+* sort_rows_cols now allows entires in roworder and colorder 
+  that are not presently names of rows or columns. 
+  Extraneous names are silently ignored.
+
+
 # matsbyname 0.4.1 (2019-01-01)
 
 * Adding code coverage badge.
