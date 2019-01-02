@@ -21,9 +21,10 @@ Imports:
     parallel
 Suggests:
     testthat,
-    knitr, 
+    knitr,
     rmarkdown,
-    tidyr
+    tidyr,
+    covr
 VignetteBuilder: 
     knitr
 URL: https://github.com/MatthewHeun/matsbyname
