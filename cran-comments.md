@@ -16,12 +16,8 @@
 ## R CMD check results
 * ERRORs: 0
 * WARNINGs: 0
-* NOTEs: 2
-    * The first NOTE states that `matsbyname` is a new submission to CRAN. 
-    * The second NOTE states that the Author field in DESCRIPTION 
-      differs from that derived from Authors@R.
-      I have include my ORCID for `pgkdown` per the documentation found at
-      <https://pkgdown.r-lib.org/articles/pkgdown.html>.
+* NOTEs: 1
+    * The only NOTE states (correctly) that `matsbyname` is a new submission to CRAN. 
 
 ## Downstream dependencies
 There are currently no downstream dependencies for `matsbyname`.
