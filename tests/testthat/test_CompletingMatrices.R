@@ -470,6 +470,14 @@ test_that("complete_rows_cols works when orders are different for row fill.", {
   fillrow <- matrix(c(2, 1), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("row", c("c2", "c1")))
   expect_equal(complete_rows_cols(a = a, mat = mat, fillrow = fillrow, margin = 1), 
                matrix(c(21, 22, 1, 2), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))))
+  # Try with duplicated column names in matrix a.
+  a_dup <- matrix(c(1, 2), nrow = 1, ncol = 2, dimnames = list("r1", c("c1", "c1")))
+  expect_error(complete_rows_cols(a = a_dup, mat = mat, fillrow = fillrow, margin = 1), 
+               "Duplicated column names found in matrix a in complete_rows_cols.")
+  # Try with duplicated column names in fillrow.
+  fillrow_dup <- matrix(c(1, 2), nrow = 1, ncol = 2, dimnames = list("row", c("c1", "c1")))
+  expect_error(complete_rows_cols(a = a, mat = mat, fillrow = fillrow_dup, margin = 1), 
+               "Duplicated column names found in matrix fillrow in complete_rows_cols.")
 })
 
 test_that("complete_rows_cols works when orders are different for column fill.", {
@@ -490,6 +498,14 @@ test_that("complete_rows_cols works when orders are different for column fill.",
   expect_equal(complete_rows_cols(a = a, mat = mat, fillcol = fillcol, margin = 2), 
                matrix(c(11, 1, 
                         21, 2), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c2", "c1"))))
+  # Try with duplicated row names in matrix a.
+  a_dup <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r1"), "c1"))
+  expect_error(complete_rows_cols(a = a_dup, mat = mat, fillcol = fillcol, margin = 2), 
+               "Duplicated row names found in matrix a in complete_rows_cols.")
+  # Try with duplicated row names in fillcol.
+  fillcol_dup <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r1"), "col"))
+  expect_error(complete_rows_cols(a = a, mat = mat, fillcol = fillcol_dup, margin = 2), 
+               "Duplicated row names found in matrix fillcol in complete_rows_cols.")
 })
 
 
