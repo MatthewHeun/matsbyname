@@ -449,12 +449,24 @@ test_that("fillrow, fillcol collisions work as expected.", {
 })
 
 test_that("complete_rows_cols works when orders are different with fill.", {
+  a <- matrix(c(21, 22), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r2", c("c1", "c2")))
   mat <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
-  fillrow <- matrix(c(11, 12), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c1", "c2")))
-  fillcol <- matrix(c(11, 21), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c42"))
-  expect_equal(complete_rows_cols(mat = mat, fillrow = fillrow, fillcol = fillcol), 
-               matrix(c(11, 12,
-                        11, 12), byrow = TRUE, nrow = 2, ncol = 2, dimnames = dimnames(mat)))
+  fillrow <- matrix(c(1, 2), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("row", c("c1", "c2")))
+  # fillrow is added to the bottom, as expected.
+  expect_equal(complete_rows_cols(a = a, mat = mat, fillrow = fillrow, margin = 1), 
+               matrix(c(21, 22, 1, 2), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))))
+  # Now try with a fillrow that has different column names. Should give an error.
+  fillrow <- matrix(c(2, 1), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("row", c("c1", "c42")))
+  expect_error(complete_rows_cols(a = a, mat = mat, fillrow = fillrow, margin = 1), 
+               "column names of fillrow must match column names of a in complete_rows_cols.")
+  # Now try with a fillrow that has the correct column names, but they are out of order.
+  # This should work, because complete_rows_cols should sort the columns of fillrow to match
+  # the columns of a.
+  # But it does not, at present.
+  fillrow <- matrix(c(2, 1), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("row", c("c2", "c1")))
+  expect_equal(complete_rows_cols(a = a, mat = mat, fillrow = fillrow, margin = 1), 
+               matrix(c(21, 22, 1, 2), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))))
+  
 })
 
 ###########################################################
