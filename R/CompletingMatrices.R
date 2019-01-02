@@ -220,11 +220,30 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
         fillcols <- matrix(fill, ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
       } else {
-        # fillcol is present. Ensure that row names on fillcol are identical to rownames in a
-        if (!isTRUE(all.equal(rownames(fillcol), rownames(a)))) {
-          stop("row names of fillcol must match row names of a in complete_rows_cols.")
+        # # fillcol is present. Ensure that row names on fillcol are identical to rownames in a
+        # if (!isTRUE(all.equal(rownames(fillcol), rownames(a)))) {
+        #   stop("row names of fillcol must match row names of a in complete_rows_cols.")
+        # }
+        # # Make the fillcols matrix from the fillcol row vector
+        # fillcols <- matrix(rep.int(fillcol, length(fillcolnames)), 
+        #                    ncol = length(fillcolnames), nrow = nrow(a), 
+        #                    dimnames = list(rownames(a), fillcolnames))
+
+        # fillcol is present. Perform some tests.
+        # Stop if fillcol or a has any duplicated column names
+        if (any(duplicated(rownames(fillcol)))) {
+          stop("Duplicated row names found in matrix fillcol in complete_rows_cols.")
         }
-        # Make the fillcols matrix from the fillcol row vector
+        if (any(duplicated(rownames(a)))) {
+          stop("Duplicated row names found in matrix a in complete_rows_cols.")
+        }
+        # Ensure that all of the row names in matrix a are present in fillcol
+        if (!all(rownames(a) %in% rownames(fillcol))) {
+          stop("Some rows of matrix a are not present in matrix fillcol in complete_rows_cols.")
+        }
+        # Ensure that the order of rows in fillcol is the same as the order of rows in a.
+        fillcol <- fillcol[rownames(a), , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
+        # Make the fillcols matrix from the fillrow row vector
         fillcols <- matrix(rep.int(fillcol, length(fillcolnames)), 
                            ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
@@ -240,10 +259,20 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
         fillrows <- matrix(fill, nrow = length(fillrownames), ncol = ncol(a), 
                           dimnames = list(fillrownames, colnames(a)))
       } else {
-        # fillrow is present. Ensure fillrows is the right class (matrix) and has the right dimensions (1 by a)
-        if (!isTRUE(all.equal(colnames(fillrow), colnames(a)))) {
-          stop("column names of fillrow must match column names of a in complete_rows_cols.")
+        # fillrow is present. Perform some tests.
+        # Stop if fillrow or a has any duplicated column names
+        if (any(duplicated(colnames(fillrow)))) {
+          stop("Duplicated column names found in matrix fillrow in complete_rows_cols.")
         }
+        if (any(duplicated(colnames(a)))) {
+          stop("Duplicated column names found in matrix a in complete_rows_cols.")
+        }
+        # Ensure that all of the column names in matrix a are present in fillrow
+        if (!all(colnames(a) %in% colnames(fillrow))) {
+          stop("Some columns of matrix a are not present in matrix fillrow in complete_rows_cols.")
+        }
+        # Ensure that the order of columns in fillrow is the same as the order of columns in a.
+        fillrow <- fillrow[ , colnames(a), drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
         # Make the fillrows matrix from the fillrow row vector
         fillrows <- matrix(rep.int(fillrow, length(fillrownames)), byrow = TRUE, 
                            nrow = length(fillrownames), ncol = ncol(a), 
