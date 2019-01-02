@@ -1,6 +1,12 @@
+# matsbyname 0.4.3 (2019-01-02)
+
+* `complete_rows_cols()` is now agnostic about the order of columns in `fillrow`
+  and the order of rows in `fillcol`.
+
+
 # matsbyname 0.4.2 (2019-01-02)
 
-* sort_rows_cols now allows entires in roworder and colorder 
+* `sort_rows_cols()` now allows entires in roworder and colorder 
   that are not presently names of rows or columns. 
   Extraneous names are silently ignored.
 

@@ -55,9 +55,13 @@ test_that("sort_rows_cols works as expected", {
   # Sorts columns
   expect_equal(sort_rows_cols(r), sortedr)
   # No row name
-  n <- matrix(c(1,2), nrow = 1, dimnames = list(NULL, c("c2", "c1"))) 
+  nrn <- matrix(c(1,2), nrow = 1, dimnames = list(NULL, c("c2", "c1"))) 
   # Sorts columns, because only one row.
-  expect_equal(sort_rows_cols(n), matrix(2:1, nrow = 1, dimnames = list(NULL, c("c1", "c2"))))
+  expect_equal(sort_rows_cols(nrn), matrix(2:1, nrow = 1, dimnames = list(NULL, c("c1", "c2"))))
+  # No column name
+  ncn <- matrix(c(1,2), ncol = 1, dimnames = list(c("r2", "r1"), NULL)) 
+  # Sorts rows, because only one column.
+  expect_equal(sort_rows_cols(ncn), matrix(c(2, 1), ncol = 1, dimnames = list(c("r1", "r2"), NULL)))
   # Also works with lists
   # Sorts rows and columns for both m's.
   sortedm <- matrix(c(6, 3,
@@ -130,9 +134,26 @@ test_that("sort_rows_cols works when specifying a row or col name that isn't pre
                matrix(c(4, 3), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c2")) %>% 
                  setrowtype("row") %>% setcoltype("col"))
 })
+
+test_that("sort_rows_cols fails when row and col names are not unique", {
+  mrowprob <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r1"), c("c1", "c1"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_error(sort_rows_cols(mrowprob), "Row names not unique")
+  mcolprob <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c1"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_error(sort_rows_cols(mcolprob), "Column names not unique")
+})
+
+test_that("sort_rows_cols duplicates a row when requested", {
+  m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_equal(sort_rows_cols(m, roworder = c("r1", "r1")), 
+               matrix(c(2, 4,
+                        2, 4), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r1"), c("c1", "c2"))) %>% 
+                 setrowtype("row") %>% setcoltype("col"))
+})  
+
   
-
-
 ###########################################################
 context("Completing rows and columns")
 ###########################################################
@@ -384,10 +405,13 @@ test_that("complete_rows_cols works correctly when fillrow is specified.", {
   expect_error(complete_rows_cols(a, b, fillrow = fillrow_tall), "fillrow must be a matrix with one row in complete_rows_cols.")
   # Number of columns doesn't match
   fillrow_wide <- matrix(42, nrow = 1, ncol = 3, dimnames = list("r42", c("c1", "c2", "c3")))
-  expect_error(complete_rows_cols(a, b, fillrow = fillrow_wide), "column names of fillrow must match column names of a in complete_rows_cols.")
+  expect_equal(complete_rows_cols(a, b, fillrow = fillrow_wide), 
+               matrix(c(11, 12, 
+                        21, 22, 
+                        42, 42), byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))))
   # Column names of fillrow don't match column names of x
   fillrow_badnames <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c3", "c4")))
-  expect_error(complete_rows_cols(a = a, mat = b, fillrow = fillrow_badnames), "column names of fillrow must match column names of a in complete_rows_cols.")
+  expect_error(complete_rows_cols(a = a, mat = b, fillrow = fillrow_badnames), "Some columns of matrix a are not present in matrix fillrow in complete_rows_cols.")
   # Test a case that should work
   fillrow <- matrix(c(31, 32), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c1", "c2")))
   expect_equal(complete_rows_cols(a = a, mat = b, fillrow = fillrow), 
@@ -407,10 +431,12 @@ test_that("complete_rows_cols works correctly when fillcol is specified.", {
   expect_error(complete_rows_cols(a, b, fillcol = fillcol_wide), "fillcol must be a matrix with one column in complete_rows_cols.")
   # Number of rows doesn't match
   fillcol_tall <- matrix(42, nrow = 3, ncol = 1, dimnames = list(c("r1", "r2", "r3"), "c3"))
-  expect_error(complete_rows_cols(a, b, fillcol = fillcol_tall), "row names of fillcol must match row names of a in complete_rows_cols.")
+  expect_equal(complete_rows_cols(a, b, fillcol = fillcol_tall), 
+               matrix(c(11, 12, 42, 
+                        21, 22, 42), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3"))))
   # Row names of fillcol don't match row names of x
   fillcol_badnames <- matrix(c(13, 23), nrow = 2, ncol = 1, dimnames = list(c("r3", "r4"), "c1"))
-  expect_error(complete_rows_cols(a = a, mat = b, fillcol = fillcol_badnames), "row names of fillcol must match row names of a in complete_rows_cols.")
+  expect_error(complete_rows_cols(a = a, mat = b, fillcol = fillcol_badnames), "Some rows of matrix a are not present in matrix fillcol in complete_rows_cols.")
   # Test a case that should work
   fillcol <- matrix(c(13, 23), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c42"))
   expect_equal(complete_rows_cols(a = a, mat = b, fillcol = fillcol), 
@@ -426,6 +452,62 @@ test_that("fillrow, fillcol collisions work as expected.", {
                matrix(c(11, 12,
                         11, 12), byrow = TRUE, nrow = 2, ncol = 2, dimnames = dimnames(mat)))
 })
+
+test_that("complete_rows_cols works when orders are different for row fill.", {
+  a <- matrix(c(21, 22), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r2", c("c1", "c2")))
+  mat <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  fillrow <- matrix(c(1, 2), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("row", c("c1", "c2")))
+  # fillrow is added to the bottom, as expected.
+  expect_equal(complete_rows_cols(a = a, mat = mat, fillrow = fillrow, margin = 1), 
+               matrix(c(21, 22, 1, 2), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))))
+  # Now try with a fillrow that has different column names. Should give an error.
+  fillrow <- matrix(c(2, 1), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("row", c("c1", "c42")))
+  expect_error(complete_rows_cols(a = a, mat = mat, fillrow = fillrow, margin = 1), 
+               "Some columns of matrix a are not present in matrix fillrow in complete_rows_cols.")
+  # Now try with a fillrow that has the correct column names, but they are out of order.
+  # This works, because complete_rows_cols sorts the columns of fillrow to match
+  # the columns of a.
+  fillrow <- matrix(c(2, 1), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("row", c("c2", "c1")))
+  expect_equal(complete_rows_cols(a = a, mat = mat, fillrow = fillrow, margin = 1), 
+               matrix(c(21, 22, 1, 2), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))))
+  # Try with duplicated column names in matrix a.
+  a_dup <- matrix(c(1, 2), nrow = 1, ncol = 2, dimnames = list("r1", c("c1", "c1")))
+  expect_error(complete_rows_cols(a = a_dup, mat = mat, fillrow = fillrow, margin = 1), 
+               "Duplicated column names found in matrix a in complete_rows_cols.")
+  # Try with duplicated column names in fillrow.
+  fillrow_dup <- matrix(c(1, 2), nrow = 1, ncol = 2, dimnames = list("row", c("c1", "c1")))
+  expect_error(complete_rows_cols(a = a, mat = mat, fillrow = fillrow_dup, margin = 1), 
+               "Duplicated column names found in matrix fillrow in complete_rows_cols.")
+})
+
+test_that("complete_rows_cols works when orders are different for column fill.", {
+  a <- matrix(c(11, 21), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c2"))
+  mat <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  fillcol <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "col"))
+  # fillcol is added at the right, as expected.
+  expect_equal(complete_rows_cols(a = a, mat = mat, fillcol = fillcol, margin = 2), 
+               matrix(c(11, 1, 21, 2), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c2", "c1"))))
+  # Now try with a fillcol that has different column names. Should give an error.
+  fillcol <- matrix(c(2, 1),nrow = 2, ncol = 1, dimnames = list(c("r2", "r42"), "col"))
+  expect_error(complete_rows_cols(a = a, mat = mat, fillcol = fillcol, margin = 2), 
+               "Some rows of matrix a are not present in matrix fillcol in complete_rows_cols.")
+  # Now try with a fillcol that has the correct row names, but they are out of order.
+  # This works, because complete_rows_cols sorts the rows of fillcol to match
+  # the columns of a.
+  fillcol <- matrix(c(2, 1), nrow = 2, ncol = 1, dimnames = list(c("r2", "r1"), "col"))
+  expect_equal(complete_rows_cols(a = a, mat = mat, fillcol = fillcol, margin = 2), 
+               matrix(c(11, 1, 
+                        21, 2), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c2", "c1"))))
+  # Try with duplicated row names in matrix a.
+  a_dup <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r1"), "c1"))
+  expect_error(complete_rows_cols(a = a_dup, mat = mat, fillcol = fillcol, margin = 2), 
+               "Duplicated row names found in matrix a in complete_rows_cols.")
+  # Try with duplicated row names in fillcol.
+  fillcol_dup <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r1"), "col"))
+  expect_error(complete_rows_cols(a = a, mat = mat, fillcol = fillcol_dup, margin = 2), 
+               "Duplicated row names found in matrix fillcol in complete_rows_cols.")
+})
+
 
 
 ###########################################################
