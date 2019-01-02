@@ -1,6 +1,11 @@
+# matsbyname 0.4.1 (2019-01-01)
+
+* Adding code coverage badge.
+
+
 # matsbyname 0.4.0 (2018-12-27)
 
-* First release to CRAN.
+* Attempted first release to CRAN. (Failed.)
 
 
 # matsbyname 0.3.8 (2018-12-21)
