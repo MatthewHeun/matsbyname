@@ -32,7 +32,7 @@
 
 <meta property="og:title" content="Sorts rows and columns of a matrix — sort_rows_cols" />
 
-<meta property="og:description" content="Checks that row names are unique and that column names are also unique.
+<meta property="og:description" content="Checks that row names are unique and that column names are unique.
 Then, sorts the rows and columns in a way that ensures
 any other matrix with the same row and column names will have 
 the same order." />
@@ -66,7 +66,7 @@ the same order." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
       </span>
     </div>
 
@@ -127,7 +127,7 @@ the same order." />
 
     <div class="ref-description">
     
-    <p>Checks that row names are unique and that column names are also unique.
+    <p>Checks that row names are unique and that column names are unique.
 Then, sorts the rows and columns in a way that ensures
 any other matrix with the same row and column names will have 
 the same order.</p>
@@ -154,18 +154,26 @@ for both rows and columns, give <code><a href='https://www.rdocumentation.org/pa
     <tr>
       <th>roworder</th>
       <td><p>specifies the order for rows with default <code><a href='https://www.rdocumentation.org/packages/base/topics/sort'>sort(rownames(a))</a></code>. 
-If <code>NULL</code>, default is used. Unspecified rows are dropped.</p></td>
+If <code>NA</code> (the default), default sort order is used. 
+Unspecified rows are removed from the output, thus providing a way to delete rows from <code>a</code>.
+Extraneous row names (row names in <code>roworder</code> that do not appear in <code>a</code>) are ignored.</p></td>
     </tr>
     <tr>
       <th>colorder</th>
       <td><p>specifies the order for rows with default <code><a href='https://www.rdocumentation.org/packages/base/topics/sort'>sort(colnames(a))</a></code>.
-If <code>NULL</code>, default is used. Unspecified columns are dropped.</p></td>
+If <code>NA</code> (the default), default sort order is used. 
+Unspecified columns are removed from the output, thus providing a way to delete columns from <code>a</code>.
+Extraneous column names (column names in <code>colorder</code> that do not appear in <code>a</code>) are ignored.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A modified version of <code>a</code> with sorted rows and columns</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Default sort order is given by <code><a href='https://www.rdocumentation.org/packages/base/topics/sort'>base::sort()</a></code> with <code>decreasing = FALSE</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -259,6 +267,8 @@ If <code>NULL</code>, default is used. Unspecified columns are dropped.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
