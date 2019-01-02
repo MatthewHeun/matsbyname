@@ -448,6 +448,14 @@ test_that("fillrow, fillcol collisions work as expected.", {
                         11, 12), byrow = TRUE, nrow = 2, ncol = 2, dimnames = dimnames(mat)))
 })
 
+test_that("complete_rows_cols works when orders are different with fill.", {
+  mat <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  fillrow <- matrix(c(11, 12), byrow = TRUE, nrow = 1, ncol = 2, dimnames = list("r42", c("c1", "c2")))
+  fillcol <- matrix(c(11, 21), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c42"))
+  expect_equal(complete_rows_cols(mat = mat, fillrow = fillrow, fillcol = fillcol), 
+               matrix(c(11, 12,
+                        11, 12), byrow = TRUE, nrow = 2, ncol = 2, dimnames = dimnames(mat)))
+})
 
 ###########################################################
 context("Completing and sorting matrices")

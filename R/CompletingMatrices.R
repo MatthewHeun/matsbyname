@@ -160,8 +160,6 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
       return(a)
     }
     
-    # rt <- rowtype(mat)
-    # ct <- coltype(mat)
     rt <- rowtype(a)
     ct <- coltype(a)
     if (is.null(a) & length(dimnamesmat) == 2) {
