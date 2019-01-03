@@ -1,3 +1,8 @@
+# matsbyname 0.4.4 (2019-01-02)
+
+* Added tests to achieve 100% code coverage.
+
+
 # matsbyname 0.4.3 (2019-01-02)
 
 * `complete_rows_cols()` is now agnostic about the order of columns in `fillrow`
