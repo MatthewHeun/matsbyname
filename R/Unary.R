@@ -122,6 +122,10 @@ transpose_byname <- function(a){
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
   hatize_func <- function(v){
+    # Check if this is the right size
+    if (!(nrow(v) == 1 | ncol(v) == 1)) {
+      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
+    }
     v_sorted <- sort_rows_cols(v)
     out <- OpenMx::vec2diag(v_sorted)
     if (ncol(v) == 1) {
@@ -136,8 +140,6 @@ hatize_byname <- function(v){
       # This function does not rely on unaryapply_byname to set row and column types.
       # So, we must do so here.
       out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
-    } else {
-      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
     return(out)
   }
@@ -244,7 +246,7 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' # This also works with lists
 #' identize_byname(list(M, M))
 identize_byname <- function(a, margin = c(1,2)){
-  identize.func <- function(a, margin){
+  identize_func <- function(a, margin){
     if (class(a) == "numeric" & length(a) == 1) {
       # Assume we have a single number here
       # Thus, we return 1.
@@ -266,7 +268,7 @@ identize_byname <- function(a, margin = c(1,2)){
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     }
     
-    if (length(margin) != 1 || !margin %in% c(1,2)) {
+    if (length(margin) != 1 || !(margin %in% c(1,2))) {
       stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
     }
     
@@ -283,9 +285,9 @@ identize_byname <- function(a, margin = c(1,2)){
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     } 
     # Should never get here, but just in case:
-    stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
+    # stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(identize.func, a = a, .FUNdots = list(margin = margin), 
+  unaryapply_byname(identize_func, a = a, .FUNdots = list(margin = margin), 
                     rowcoltypes = "none")
 }
 
@@ -347,7 +349,7 @@ fractionize_byname <- function(a, margin){
       return(sweep(a, margin, colSums(a), `/`))
     } 
     # Should never get here, but just in case:
-    stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
+    # stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
   unaryapply_byname(fractionize.func, a = a, .FUNdots = list(margin = margin), 
                     rowcoltypes = "all")

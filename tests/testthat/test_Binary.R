@@ -946,6 +946,9 @@ test_that("samestructure_byname works as expected", {
   expect_true(all(samestructure_byname(list(U, U), list(U, U)) %>% as.logical()))
   expect_true(all(samestructure_byname(list(U, U), list(V, V)) %>% as.logical()))
   expect_true(all(samestructure_byname(list(V, V), list(U, U)) %>% as.logical()))
+  # Check when one or both of rowtype or coltype is NULL
+  expect_false(samestructure_byname(U, U %>% setrowtype(NULL)))
+  expect_false(samestructure_byname(U, U %>% setcoltype(NULL)))
 })
 
 test_that("make_pattern works as expected", {
