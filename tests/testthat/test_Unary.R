@@ -216,6 +216,10 @@ context("Hatize")
 ###########################################################
 
 test_that("hatize_byname works as expected", {
+  # Check the absurd situation where a non-vector is sent to hatize()
+  supposed_to_be_a_vector <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  expect_error(hatize_byname(supposed_to_be_a_vector), 
+               "matrix v must have at least one dimension of length 1 in hatize_byname")
   v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
     setrowtype("Industries") %>% setcoltype(NA)
   orderedRowNames <- c("i1", "i10", paste0("i", 2:9))
@@ -269,6 +273,9 @@ context("Identize")
 ###########################################################
 
 test_that("identize_byname works as expected", {
+  # Try first with a single number
+  expect_equal(identize_byname(42), 1)
+  # Now try with matrices.
   m <- matrix(1:16, ncol = 4, dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   mI_expected <- matrix(c(1,0,0,0,

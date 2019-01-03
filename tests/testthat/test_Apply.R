@@ -22,6 +22,10 @@ test_that("unaryapply_byname works as expected", {
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "row"), 
+               difference_byname(0, U) %>% setcoltype("Products"))
+  expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "col"), 
+               difference_byname(0, U) %>% setrowtype("Industries"))
   expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "all"), difference_byname(0, U))
 })
 
@@ -31,8 +35,13 @@ context("Binary apply")
 ###########################################################
 
 test_that("binaryapply_byname works as expected", {
+  # Test a pathological case
   expect_equal(binaryapply_byname(FUN = sum, a = list(1, 2, 3), b = list(4,5,6)), 
                list(5, 7, 9))
+  expect_error(binaryapply_byname(FUN = sum, 
+                                  a = NULL, b = NULL, 
+                                  match_type = "all", set_rowcoltypes = TRUE, .organize = FALSE), 
+               "set_rowcoltypes == TRUE, but a and b and NULL. How can we set row and column types from NULL?")
 })
 
 
@@ -51,10 +60,15 @@ context("n-ary apply")
 ###########################################################
 
 test_that("naryapply_byname works as expected", {
+  # Test when there is only 1 item in ...
+  expect_equal(naryapply_byname(FUN = `-`, 42), -42)
   expect_equal(naryapply_byname(FUN = `sum`, ... = list(1,2,3)), list(1,2,3))
   expect_equal(naryapply_byname(FUN = sum_byname, 2, 3), 5)
   expect_equal(naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2), 0)
   
   # Try with a unary function.
   expect_equal(naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2), list(1, 4, 9))
+  
+  # Try with naryapplylogical_byname
+  expect_false(matsbyname:::naryapplylogical_byname(FUN = iszero_byname, 42))
 })

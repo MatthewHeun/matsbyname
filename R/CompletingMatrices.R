@@ -30,7 +30,8 @@ library("parallel")
 #' @param a a matrix or list of matrices to be completed. 
 #' @param mat a \code{matrix} from which \code{dimnames} will be extracted
 #'        for the purposes of completing \code{a} with respect to \code{mat}.
-#' @param fill rows and columns added to \code{a} will contain the value \code{fill}. (a double) 
+#' @param fill rows and columns added to \code{a} will contain the value \code{fill}. 
+#'        (Default is 0.) 
 #' @param fillrow a row vector of type \code{matrix} with same column names as \code{a}. 
 #'        Any rows added to \code{a} will be \code{fillrow}.  
 #'        If non-\code{NULL}, \code{fillrow} takes precedence over both \code{fillcol} and \code{fill}

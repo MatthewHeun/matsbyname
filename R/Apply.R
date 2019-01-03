@@ -48,9 +48,6 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
              # Preserve names of a (if present) in the outgoing list.
              set_names(names(a)))
   }
-  if (is.null(a)) {
-    return(NULL)
-  }
   out <- do.call(FUN, c(list(a), .FUNdots))
 
   if (rowcoltypes == "all") {
@@ -71,8 +68,6 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
       setcoltype(coltype(a))
   } else if (rowcoltypes == "none") {
     # Do nothing. rowtype and coltype should have been set by FUN.
-  } else {
-    stop(paste("Unknown rowcoltypes argument in unaryapply_byname:", rowcoltypes))
   }
   return(out)
 }

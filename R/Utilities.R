@@ -126,6 +126,7 @@ organize_args <- function(a, b, match_type = "all", fill){
     }
   } 
   
+  # We already ensured that match_type was one of the known types. 
   # Ensure that matrices have correct row and column names and are in same order.
   if (match_type == "all") {
     matrices <- complete_and_sort(a, b)
@@ -141,10 +142,7 @@ organize_args <- function(a, b, match_type = "all", fill){
   } else if (match_type == "none") {
     outa <- a
     outb <- b
-  } else {
-    stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
-  # Reset row and column types.
   return(list(a = outa, b = outb))
 }
 

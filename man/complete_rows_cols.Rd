@@ -13,7 +13,8 @@ complete_rows_cols(a = NULL, mat = NULL, fill = 0, fillrow = NULL,
 \item{mat}{a \code{matrix} from which \code{dimnames} will be extracted
 for the purposes of completing \code{a} with respect to \code{mat}.}
 
-\item{fill}{rows and columns added to \code{a} will contain the value \code{fill}. (a double)}
+\item{fill}{rows and columns added to \code{a} will contain the value \code{fill}. 
+(Default is 0.)}
 
 \item{fillrow}{a row vector of type \code{matrix} with same column names as \code{a}. 
 Any rows added to \code{a} will be \code{fillrow}.  
