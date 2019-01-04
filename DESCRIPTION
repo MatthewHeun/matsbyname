@@ -22,6 +22,7 @@ Imports:
 Suggests:
     testthat,
     knitr,
+    Matrix,
     rmarkdown,
     tidyr,
     covr
