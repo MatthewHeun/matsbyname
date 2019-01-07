@@ -28,6 +28,7 @@ However, the built-in functions may not cover all possible needs.
 | Function | Purpose    
 |--:|:------------------------------------
 | `unaryapply_byname` | apply a unary function to a single matrix, a list of matrices, or a column of matrices in a data frame  
+| `elementapply_byname` | apply a unary function to a single element of a matrix or a column of matrices in a data frame
 | `binaryapply_byname` | apply a binary function to two matrices or Map a binary function across two lists of matrices or two columns of matrices in a data frame
 | `cumapply_byname` | apply a binary function cumulatively to a single list of matrices or a column of matrices in a data frame
 
@@ -46,7 +47,8 @@ The `*apply_byname` functions have several arguments.
  `match_type` | tells how row and column types of `a` and `b` arguments must be matched
  `.organize` | tells whether to automatically complete `a` and `b` relative to each other and sort the rows and columns of the completed matrices
 
-`FUN` is mapped as expected over `a` (in the case of `unaryapply_byname` and `cumapply_byname`) 
+`FUN` is mapped as expected over `a` (in the case of `unaryapply_byname`, 
+`elementapply_byname`, and `cumapply_byname`) 
 or over `a` and `b` (in the case of `binaryapply_byname`).
 `FUN` should assume that its `a` and/or `b` arguments are single numbers or matrices; 
 `*apply_byname` handles all mapping across lists.
@@ -56,7 +58,7 @@ The following sections describe each `*apply_byname` function.
 ## `unaryapply_byname`
 
 `unaryapply_byname` applies `FUN` to a single matrix, a list of matrices, or 
-(if used with `dplyr::mutate`) a column in a data frame that contains matrices.
+(if used with `dplyr::mutate()`) a column in a data frame that contains matrices.
 The `rowcoltypes` argument must be one of the following:
 
 | `rowcoltypes` value | Behaviour
@@ -75,6 +77,24 @@ U <- matrix(1:4, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>%
 U
 difference_byname(0, U)
 unaryapply_byname(`-`, U)
+```
+
+
+## `elementapply_byname`
+
+`elementapply_byname` applies `FUN` to a single matrix, a list of matrices, or 
+(if used with `dplyr::mutate()`) a column in a data frame that contains matrices.
+
+A simple example follows.
+
+```{r}
+divide <- function(x, divisor){
+  x/divisor
+}
+m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+  setrowtype("row") %>% setcoltype("col")
+m
+elementapply_byname(divide, a = m, row = 1, col = 1, .FUNdots = list(divisor = 2))
 ```
 
 
@@ -126,7 +146,7 @@ Simple examples follow.
 
 ```{r}
 cumapply_byname(sum_byname, list(1, 2, 3, 4))
-cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
+cumapply_byname(hadamardproduct_byname, list(1, 2, 3, 4))
 ```
 
 
