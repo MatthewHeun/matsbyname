@@ -5,6 +5,7 @@
       to avoid name collision with `elementapply_byname()`.
     * `elementquotient_byname()` changed to `quotient_byname()`.
     * `elementpow_byname()` changed to `pow_byname()`.
+    * `elementexp_byname()` changed to `exp_byname()`.
 
 
 # matsbyname 0.4.4 (2019-01-02)
