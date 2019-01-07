@@ -72,6 +72,50 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   return(out)
 }
 
+
+#' Apply a function to an element of a matrix specified by rows and columns
+#' 
+#' \code{FUN} is applied to the element of \code{a} that is 
+#' 
+#' \code{row} and \code{col} can be any of row or column names or integer indices or a mix of both.
+#'
+#' @param FUN a unary function to be applied to specified rows and columns of \code{a}
+#' @param a the argument to \code{FUN}
+#' @param row the row name of the element to which \code{FUN} will be applied
+#' @param col the column name of the element to which \code{FUN} will be applied
+#' @param .FUNdots a list of additional arguments to \code{FUN}. (Default is \code{NULL}.)
+#'
+#' @return \code{a}, after \code{FUN} has been applied to the element at \code{row} and \code{col}
+#' 
+#' @export
+#'
+#' @examples
+#' divide <- function(x, divisor){
+#'   x/divisor
+#' }
+#' m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+#'   setrowtype("row") %>% setcoltype("col")
+#' elementapply_byname(divide, a = m, row = 1, col = 1, .FUNdots = list(divisor = 2))
+#' elementapply_byname(divide, a = m, row = 1, col = 2, .FUNdots = list(divisor = 10))
+#' elementapply_byname(divide, a = m, row = "r2", col = "c2", .FUNdots = list(divisor = 100))
+elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
+  if (is.null(a)) {
+    return(NULL)
+  }
+  if (is.list(a)) {
+    lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
+    lrow <- make_list(x = row, n = length(a), lenx = 1)
+    lcol <- make_list(x = col, n = length(a), lenx = 1)
+    lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+    return(Map(elementapply_byname, lfun, a, lrow, lcol, lFUNdots) %>% 
+             # Preserve names of a (if present) in the outgoing list.
+             set_names(names(a)))
+  }
+  out <- a
+  out[row, col] <- do.call(FUN, c(list(a[row, col]), .FUNdots))
+  return(out)
+}
+
 #' Apply a binary function "by name"
 #' 
 #' If either \code{a} or \code{b} is missing or \code{NULL}, 

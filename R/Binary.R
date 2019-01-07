@@ -204,13 +204,15 @@ matrixproduct_byname <- function(...){
     sort_rows_cols()
 }
 
-#' Name-wise matrix element multiplication
+#' Name-wise matrix Hadamard multiplication
 #'
 #' Performs a union and sorting of names of rows and columns for both multiplicand and multiplier
 #' for each sequential multiplication step.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
 #' the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.
+#' 
+#' The Hadamard product is also known as the \code{entrywise} product.
 #'
 #' @param ... operands; constants, matrices, or lists of matrices 
 #'
@@ -220,7 +222,7 @@ matrixproduct_byname <- function(...){
 #'
 #' @examples
 #' library(dplyr)
-#' elementproduct_byname(2, 2)
+#' hadamardproduct_byname(2, 2)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -228,22 +230,22 @@ matrixproduct_byname <- function(...){
 #' G <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' U * G # Not what is desired, because names aren't aligned
-#' elementproduct_byname(U, G)
-#' elementproduct_byname(U, G, G)
-#' elementproduct_byname(U, 0)
-#' elementproduct_byname(0, G)
+#' hadamardproduct_byname_byname(U, G)
+#' hadamardproduct_byname_byname(U, G, G)
+#' hadamardproduct_byname_byname(U, 0)
+#' hadamardproduct_byname_byname(0, G)
 #' # This also works with lists
-#' elementproduct_byname(list(U, U), list(G, G))
+#' hadamardproduct_byname(list(U, U), list(G, G))
 #' DF <- data.frame(U = I(list()), G = I(list()))
 #' DF[[1,"U"]] <- U
 #' DF[[2,"U"]] <- U
 #' DF[[1,"G"]] <- G
 #' DF[[2,"G"]] <- G
-#' elementproduct_byname(DF$U, DF$G)
-#' DF %>% mutate(elementprods = elementproduct_byname(U, G))
-elementproduct_byname <- function(...){
+#' hadamardproduct_byname(DF$U, DF$G)
+#' DF %>% mutate(entrywiseprods = hadamardproduct_byname(U, G))
+hadamardproduct_byname <- function(...){
   # Note that prod(1) returns 1, not 0.
-  # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
+  # So hadamardproduct_byname returns the non-missing argument if only 1 argument is provided.
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
@@ -379,7 +381,7 @@ mean_byname <- function(...){
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
 geometricmean_byname <- function(...){
-  elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
+  hadamardproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
 }
 
 #' Name- and element-wise logarithmic mean of matrices

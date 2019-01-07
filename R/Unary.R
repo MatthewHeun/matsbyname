@@ -749,7 +749,7 @@ cumsum_byname <- function(a){
 #'   setrowtype("row") %>% setcoltype("col")
 #' cumprod_byname(list(m1, m2, m3))
 cumprod_byname <- function(a){
-  cumapply_byname(FUN = elementproduct_byname, a)
+  cumapply_byname(FUN = hadamardproduct_byname, a)
 }
 
 
