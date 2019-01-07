@@ -1,6 +1,5 @@
 library("dplyr")
 library("magrittr")
-library("parallel")
 
 #' Complete rows and columns in one matrix relative to another
 #' 

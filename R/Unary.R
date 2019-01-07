@@ -314,7 +314,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(a, margin){
-  fractionize.func <- function(a, margin){
+  fractionize_func <- function(a, margin){
     if (!"matrix" %in% class(a) && !"data.frame" %in% class(a)) {
       # Assume we have a single number here
       # By dividing a by itself, we could throw a division by zero error,
@@ -351,7 +351,7 @@ fractionize_byname <- function(a, margin){
     # Should never get here, but just in case:
     # stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(fractionize.func, a = a, .FUNdots = list(margin = margin), 
+  unaryapply_byname(fractionize_func, a = a, .FUNdots = list(margin = margin), 
                     rowcoltypes = "all")
 }
 
@@ -397,7 +397,7 @@ rowsums_byname <- function(a, colname = NA){
     # Set to NA so that we can try setting to coltype in rowsum.func
     colname <- NA_character_
   }
-  rowsum.func <- function(a, colname){
+  rowsum_func <- function(a, colname){
     if (is.na(colname)) {
       colname <- coltype(a)
     }
@@ -414,7 +414,7 @@ rowsums_byname <- function(a, colname = NA){
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
   }
-  unaryapply_byname(rowsum.func, a = a, .FUNdots = list(colname = colname), 
+  unaryapply_byname(rowsum_func, a = a, .FUNdots = list(colname = colname), 
                     rowcoltypes = "none")
 }
 
@@ -491,13 +491,13 @@ colsums_byname <- function(a, rowname = NA){
 #' )
 #' res$sums
 sumall_byname <- function(a){
-  sum.func <- function(a){
+  sum_func <- function(a){
     a %>%
       rowsums_byname %>%
       colsums_byname %>%
       as.numeric
   }
-  unaryapply_byname(sum.func, a = a, rowcoltypes = "none")
+  unaryapply_byname(sum_func, a = a, rowcoltypes = "none")
 }
 
 #' Row products, sorted by name
@@ -540,7 +540,7 @@ rowprods_byname <- function(a, colname = NA){
     # Set the column name to NA so we can change it in the function.
     colname <- NA_character_
   }
-  rowprod.func <- function(a, colname){
+  rowprod_func <- function(a, colname){
     if (is.na(colname)) {
       colname <- coltype(a)
     }
@@ -555,7 +555,7 @@ rowprods_byname <- function(a, colname = NA){
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
   }
-  unaryapply_byname(rowprod.func, a = a, .FUNdots = list(colname = colname), 
+  unaryapply_byname(rowprod_func, a = a, .FUNdots = list(colname = colname), 
                     rowcoltypes = "none")
 }
 
@@ -631,13 +631,13 @@ colprods_byname <- function(a, rowname = NA){
 #' )
 #' res$prods
 prodall_byname <- function(a){
-  prodall.func <- function(a){
+  prodall_func <- function(a){
     a %>%
       rowprods_byname() %>%
       colprods_byname() %>%
       as.numeric()
   }
-  unaryapply_byname(prodall.func, a = a, rowcoltypes = "none")
+  unaryapply_byname(prodall_func, a = a, rowcoltypes = "none")
 }
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
@@ -654,8 +654,6 @@ prodall_byname <- function(a){
 #' 
 #' @export
 #' 
-#' @importFrom magrittr %>%
-#' 
 #' @examples
 #' m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -671,13 +669,13 @@ prodall_byname <- function(a){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' Iminus_byname(m2)
 Iminus_byname <- function(a){
-  iminus.func <- function(a){
+  iminus_func <- function(a){
     A <- complete_and_sort(a) %>%
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
     difference_byname(identize_byname(A), A)
   }
-  unaryapply_byname(iminus.func, a = a, rowcoltypes = "all")
+  unaryapply_byname(iminus_func, a = a, rowcoltypes = "all")
 }
 
 
@@ -770,11 +768,11 @@ cumprod_byname <- function(a){
 #' replaceNaN_byname(a)
 #' replaceNaN_byname(a, 42)
 replaceNaN_byname <- function(a, val = 0){
-  replace.func <- function(a){
+  replace_func <- function(a){
     a[is.nan(a)] <- val
     return(a)
   }
-  unaryapply_byname(replace.func, a = a, rowcoltypes = "all")
+  unaryapply_byname(replace_func, a = a, rowcoltypes = "all")
 }
 
 
