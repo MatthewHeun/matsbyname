@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Count the number of matrix entries in columns that meet a criterion — count_vals_incols_byname • matsbyname</title>
+<title>Powers of matrix elements — pow_byname • matsbyname</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Count the number of matrix entries in columns that meet a criterion — count_vals_incols_byname" />
+<meta property="og:title" content="Powers of matrix elements — pow_byname" />
 
-<meta property="og:description" content="Expressions can be written in a natural way such as 
-count_vals_incols_byname(m, &quot;&amp;lt;=&quot;, 1)." />
+<meta property="og:description" content="Gives the result of raising all elements of a matrix or list of matrices to a power." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -118,68 +117,61 @@ count_vals_incols_byname(m, &quot;&amp;lt;=&quot;, 1)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Count the number of matrix entries in columns that meet a criterion</h1>
-    <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Unary.R'><code>R/Unary.R</code></a></small>
-    <div class="hidden name"><code>count_vals_incols_byname.Rd</code></div>
+    <h1>Powers of matrix elements</h1>
+    <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Binary.R'><code>R/Binary.R</code></a></small>
+    <div class="hidden name"><code>pow_byname.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Expressions can be written in a natural way such as 
-<code>count_vals_incols_byname(m, "&lt;=", 1)</code>.</p>
+    <p>Gives the result of raising all elements of a matrix or list of matrices to a power.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>count_vals_incols_byname</span>(<span class='no'>a</span>, <span class='kw'>compare_fun</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"=="</span>, <span class='st'>"!="</span>, <span class='st'>"&lt;"</span>, <span class='st'>"&lt;="</span>, <span class='st'>"&gt;="</span>,
-  <span class='st'>"&gt;"</span>), <span class='kw'>val</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
+    <pre class="usage"><span class='fu'>pow_byname</span>(<span class='no'>a</span>, <span class='no'>pow</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>a</th>
-      <td><p>a matrix or list of matrices whose values are to be counted by columns 
-according to <code>compare_fun</code></p></td>
+      <td><p>a matrix of list of matrices</p></td>
     </tr>
     <tr>
-      <th>compare_fun</th>
-      <td><p>the comparison function, one of "<code>==</code>", "<code>!=</code>", 
-"<code>&lt;</code>", "<code>&lt;=</code>", "<code>&gt;</code>", or "<code>&gt;=</code>". Default is "<code>==</code>"</p></td>
-    </tr>
-    <tr>
-      <th>val</th>
-      <td><p>the value against which matrix entries are compared. Default is <code>0</code>.</p></td>
+      <th>pow</th>
+      <td><p>the power to which elements of <code>a</code> will be raised</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an <code>matrix</code> with a single row indicating the number of entries in <code>a</code> 
-        that meet the specified criterion in each column of <code>a</code></p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Either a single matrix or a list of matrices can be given as the <code>a</code> argument.
-<code>compare_fun</code> can be specified as a string (<code>"!="</code>)
-or as a back-quoted function (<code>`!=`</code>).</p>
+    <p><code>a</code> with each element raised to <code>pow</code></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>0</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-<span class='fu'>count_vals_incols_byname</span>(<span class='no'>m</span>) <span class='co'># uses defaults: compare_fun = "==" and val = 0</span></div><div class='output co'>#&gt;      [,1] [,2]
-#&gt; [1,]    1    1</div><div class='input'><span class='fu'>count_vals_incols_byname</span>(<span class='no'>m</span>, <span class='kw'>compare_fun</span> <span class='kw'>=</span> <span class='st'>"!="</span>)</div><div class='output co'>#&gt;      [,1] [,2]
-#&gt; [1,]    2    2</div><div class='input'><span class='fu'>count_vals_incols_byname</span>(<span class='no'>m</span>, <span class='kw'>compare_fun</span> <span class='kw'>=</span> <span class='no'>`!=`</span>)</div><div class='output co'>#&gt;      [,1] [,2]
-#&gt; [1,]    2    2</div><div class='input'><span class='co'># Write expressions in a natural way</span>
-<span class='fu'>count_vals_incols_byname</span>(<span class='no'>m</span>, <span class='st'>"&lt;="</span>, <span class='fl'>1</span>)</div><div class='output co'>#&gt;      [,1] [,2]
-#&gt; [1,]    2    1</div><div class='input'><span class='co'># Also works for lists</span>
-<span class='fu'>count_vals_incols_byname</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='st'>"&lt;="</span>, <span class='fl'>1</span>)</div><div class='output co'>#&gt; [[1]]
-#&gt;      [,1] [,2]
-#&gt; [1,]    2    1
-#&gt; 
-#&gt; [[2]]
-#&gt;      [,1] [,2]
-#&gt; [1,]    2    1
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='fu'>pow_byname</span>(<span class='fl'>2</span>, <span class='fl'>3</span>)</div><div class='output co'>#&gt; [1] 8</div><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fl'>2</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"r"</span>, <span class='fl'>1</span>:<span class='fl'>2</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>3</span>))) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"rows"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"cols"</span>)
+<span class='fu'>pow_byname</span>(<span class='no'>m</span>, <span class='fl'>2</span>)</div><div class='output co'>#&gt;    c1 c2 c3
+#&gt; r1  4  4  4
+#&gt; r2  4  4  4
+#&gt; attr(,"rowtype")
+#&gt; [1] "rows"
+#&gt; attr(,"coltype")
+#&gt; [1] "cols"</div><div class='input'><span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>m</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/AsIs'>I</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>()), <span class='kw'>pow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/AsIs'>I</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>()))
+<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>1</span>, <span class='st'>"m"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m</span>
+<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>2</span>, <span class='st'>"m"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m</span>
+<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>1</span>, <span class='st'>"pow"</span>]] <span class='kw'>&lt;-</span> <span class='fl'>0.5</span>
+<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>2</span>, <span class='st'>"pow"</span>]] <span class='kw'>&lt;-</span> -<span class='fl'>1</span>
+<span class='no'>DF</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(
+  <span class='kw'>sqrtm</span> <span class='kw'>=</span> <span class='fu'>pow_byname</span>(<span class='no'>m</span>, <span class='fl'>0.5</span>),
+  <span class='kw'>mtopow</span> <span class='kw'>=</span> <span class='fu'>pow_byname</span>(<span class='no'>m</span>, <span class='no'>pow</span>)
+)</div><div class='output co'>#&gt;              m pow                                                      sqrtm
+#&gt; 1 2, 2, 2,.... 0.5 1.414214, 1.414214, 1.414214, 1.414214, 1.414214, 1.414214
+#&gt; 2 2, 2, 2,....  -1 1.414214, 1.414214, 1.414214, 1.414214, 1.414214, 1.414214
+#&gt;                                                       mtopow
+#&gt; 1 1.414214, 1.414214, 1.414214, 1.414214, 1.414214, 1.414214
+#&gt; 2                               0.5, 0.5, 0.5, 0.5, 0.5, 0.5</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -187,8 +179,6 @@ or as a back-quoted function (<code>`!=`</code>).</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

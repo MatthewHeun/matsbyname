@@ -1,3 +1,5 @@
+# matsbyname 0.4.5 (2019-01-07)
+
 * New function `elementapply_byname()` applies a function to an element
   of a matrix specified by `row` and `col` arguments.
 * Breaking changes: 
