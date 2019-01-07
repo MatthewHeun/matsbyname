@@ -1,7 +1,7 @@
-* New function `elementapply_byname()` applies a function to an element
-  of a matrix specified by `row` and `col` arguments.
 * Breaking change: `elementproduct_byname()` changed to `hadamardproduct_byname()`
   to avoid name collision with `elementapply_byname()`.
+* New function `elementapply_byname()` applies a function to an element
+  of a matrix specified by `row` and `col` arguments.
 
 
 # matsbyname 0.4.4 (2019-01-02)
