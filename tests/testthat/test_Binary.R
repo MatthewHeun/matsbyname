@@ -446,8 +446,8 @@ test_that("hadamardproduct_byname works as expected", {
 context("Quotients")
 ###########################################################
 
-test_that("elementquotient_byname works as expected", {
-  expect_equal(elementquotient_byname(100, 50), 2)
+test_that("quotient_byname works as expected", {
+  expect_equal(quotient_byname(100, 50), 2)
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
@@ -460,37 +460,37 @@ test_that("elementquotient_byname works as expected", {
                  setrowtype("Products") %>% setcoltype("Industries"))
   UoverY_expected <- matrix(c(1,1,1,1), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementquotient_byname(U, Y), UoverY_expected)
-  expect_equal(elementquotient_byname(U, 10), 
+  expect_equal(quotient_byname(U, Y), UoverY_expected)
+  expect_equal(quotient_byname(U, 10), 
                matrix(c(0.1, 0.2, 0.3, 0.4), nrow = 2, dimnames = dimnames(U)) %>% 
                  setrowtype("Products") %>% setcoltype("Industries"))
   tenoverY_expected <- matrix(c(10, 5, 10/3, 2.5), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementquotient_byname(10, Y), tenoverY_expected)
+  expect_equal(quotient_byname(10, Y), tenoverY_expected)
   # This also works with lists
-  expect_equal(elementquotient_byname(10, list(Y,Y)), list(tenoverY_expected, tenoverY_expected))
+  expect_equal(quotient_byname(10, list(Y,Y)), list(tenoverY_expected, tenoverY_expected))
   # Try more-complicated lists
-  expect_equal(elementquotient_byname(list(10, 10, 10), list(Y, Y, Y)), 
+  expect_equal(quotient_byname(list(10, 10, 10), list(Y, Y, Y)), 
                list(tenoverY_expected, tenoverY_expected, tenoverY_expected))
   mat12 <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
   mat34 <- matrix(c(3, 4), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
-  expect_equal(elementquotient_byname(list(mat12, mat34), list(2, 4)), 
+  expect_equal(quotient_byname(list(mat12, mat34), list(2, 4)), 
                list(mat12 / 2, mat34 / 4))
   
-  # Use dimnames(U), because after performing elementquotient_byname, 
+  # Use dimnames(U), because after performing quotient_byname, 
   # the rows and columns will be sorted alphabetically by name. 
   # U has rows and columns that are sorted alphabetically by name.
   Yover10_expected <- matrix(c(0.1, 0.2, 0.3, 0.4), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementquotient_byname(list(Y,Y), 10), list(Yover10_expected, Yover10_expected))
-  expect_equal(elementquotient_byname(list(U, U), list(Y, Y)), list(UoverY_expected, UoverY_expected))
+  expect_equal(quotient_byname(list(Y,Y), 10), list(Yover10_expected, Yover10_expected))
+  expect_equal(quotient_byname(list(U, U), list(Y, Y)), list(UoverY_expected, UoverY_expected))
   # Also works with data frames.
   DF <- data.frame(U = I(list()), Y = I(list()))
   DF[[1,"U"]] <- U
   DF[[2,"U"]] <- U
   DF[[1,"Y"]] <- Y
   DF[[2,"Y"]] <- Y
-  expect_equal(elementquotient_byname(DF$U, DF$Y), list(UoverY_expected, UoverY_expected))
+  expect_equal(quotient_byname(DF$U, DF$Y), list(UoverY_expected, UoverY_expected))
   DF_expected <- data.frame(U = I(list()), Y = I(list()), elementquotients = I(list()))
   DF_expected[[1, "U"]] <- U
   DF_expected[[2, "U"]] <- U
@@ -502,10 +502,10 @@ test_that("elementquotient_byname works as expected", {
   # Because DF$elementquotients is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$elementquotients to NULL to get a match.
   attr(DF_expected$elementquotients, which = "class") <- NULL
-  expect_equal(DF %>% mutate(elementquotients = elementquotient_byname(U, Y)), DF_expected)
+  expect_equal(DF %>% mutate(elementquotients = quotient_byname(U, Y)), DF_expected)
 })
 
-test_that("detailed example of elementquotient_byname works as expected", {
+test_that("detailed example of quotient_byname works as expected", {
   Lv <- list(
     matrix(c(36.40956907, 
              86.56170245), nrow = 2, ncol = 1), 
@@ -524,14 +524,14 @@ test_that("detailed example of elementquotient_byname works as expected", {
                             0.794087179), nrow = 2, ncol = 1)) %>% 
     setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor") %>% 
     setrowtype("subcat") %>% setcoltype("factor")
-  expect_equal(elementquotient_byname(Lv, LV), expected)
+  expect_equal(quotient_byname(Lv, LV), expected)
   
   # This is the failure mode.
   # Somehow, LV is not maintained as a list. 
   # It comes in as a numeric vector.
   # Then, organize_args turns it into a funky list.
   LVnumeric <- c(123.3151731, 208.1079558, 285.6464036)
-  expect_equal(elementquotient_byname(Lv, LVnumeric), expected)
+  expect_equal(quotient_byname(Lv, LVnumeric), expected)
 
   # Now try these in a data frame
   DF <- data.frame(Lv = I(list()), LV = I(list()))
@@ -544,7 +544,7 @@ test_that("detailed example of elementquotient_byname works as expected", {
   DF[[3,"LV"]] <- LV[[3]]
   DF2 <- DF %>% 
     mutate(
-      wv = elementquotient_byname(Lv, LV)
+      wv = quotient_byname(Lv, LV)
     )
   expect_equal(DF2$wv, expected)
 })
@@ -554,23 +554,23 @@ test_that("detailed example of elementquotient_byname works as expected", {
 context("Element power")
 ###########################################################
 
-test_that("elementpow_byname works as expected", {
+test_that("pow_byname works as expected", {
   # Try with single numbers
-  expect_equal(elementpow_byname(2, 2), 4)
-  expect_equal(elementpow_byname(2, 3), 8)
-  expect_equal(elementpow_byname(-1, 3), -1)
-  expect_equal(elementpow_byname(-1, 4), 1)
-  expect_equal(elementpow_byname(-1000, 0), 1)
-  expect_equal(elementpow_byname(0, 500), 0)
-  expect_equal(elementpow_byname(2, -1), 0.5)
+  expect_equal(pow_byname(2, 2), 4)
+  expect_equal(pow_byname(2, 3), 8)
+  expect_equal(pow_byname(-1, 3), -1)
+  expect_equal(pow_byname(-1, 4), 1)
+  expect_equal(pow_byname(-1000, 0), 1)
+  expect_equal(pow_byname(0, 500), 0)
+  expect_equal(pow_byname(2, -1), 0.5)
   
   # Try with single matrices
   m <- matrix(2, nrow = 2, ncol = 3)
   sqrtm <- matrix(sqrt(2), nrow = 2, ncol = 3)
-  expect_equal(elementpow_byname(m, 0.5), sqrtm)
+  expect_equal(pow_byname(m, 0.5), sqrtm)
   
   # Try with a list of matrices
-  expect_equal(elementpow_byname(list(m, m), 0.5), list(sqrtm, sqrtm))
+  expect_equal(pow_byname(list(m, m), 0.5), list(sqrtm, sqrtm))
   
   # Try in a data frame
   DF <- data.frame(m = I(list()), pow = I(list()))
@@ -579,8 +579,8 @@ test_that("elementpow_byname works as expected", {
   DF[[1, "pow"]] <- 0.5
   DF[[2, "pow"]] <- -1
   res <- DF %>% mutate(
-    sqrtm = elementpow_byname(m, 0.5),
-    mtopow = elementpow_byname(m, pow)
+    sqrtm = pow_byname(m, 0.5),
+    mtopow = pow_byname(m, pow)
   )
   expect_equal(res$sqrtm, list(sqrtm, sqrtm))
   expect_equal(res$mtopow, list(m^0.5, m^-1))

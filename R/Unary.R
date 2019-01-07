@@ -28,12 +28,12 @@ abs_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' elementlog_byname(exp(1))
+#' log_byname(exp(1))
 #' m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
-#' elementlog_byname(m)
-#' elementlog_byname(m, base = 10)
-elementlog_byname <- function(a, base = exp(1)){
+#' log_byname(m)
+#' log_byname(m, base = 10)
+log_byname <- function(a, base = exp(1)){
   unaryapply_byname(log, a = a, .FUNdots = list(base = base))
 }
 
@@ -48,12 +48,12 @@ elementlog_byname <- function(a, base = exp(1)){
 #' @export
 #'
 #' @examples
-#' elementexp_byname(1)
+#' exp_byname(1)
 #' m <- matrix(c(log(10),log(1),log(1),log(100)), 
 #'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
-#' elementexp_byname(m)
-elementexp_byname <- function(a){
+#' exp_byname(m)
+exp_byname <- function(a){
   unaryapply_byname(exp, a = a)
 }
 

@@ -122,20 +122,20 @@ difference_byname <- function(minuend, subtrahend){
 #'
 #' @examples
 #' library(dplyr)
-#' elementpow_byname(2, 3)
+#' pow_byname(2, 3)
 #' m <- matrix(2, nrow = 2, ncol = 3, dimnames = list(paste0("r", 1:2), paste0("c", 1:3))) %>% 
 #'   setrowtype("rows") %>% setcoltype("cols")
-#' elementpow_byname(m, 2)
+#' pow_byname(m, 2)
 #' DF <- data.frame(m = I(list()), pow = I(list()))
 #' DF[[1, "m"]] <- m
 #' DF[[2, "m"]] <- m
 #' DF[[1, "pow"]] <- 0.5
 #' DF[[2, "pow"]] <- -1
 #' DF %>% mutate(
-#'   sqrtm = elementpow_byname(m, 0.5),
-#'   mtopow = elementpow_byname(m, pow)
+#'   sqrtm = pow_byname(m, 0.5),
+#'   mtopow = pow_byname(m, pow)
 #' )
-elementpow_byname <- function(a, pow){
+pow_byname <- function(a, pow){
   binaryapply_byname(`^`, a, pow)
 }
 
@@ -254,6 +254,8 @@ hadamardproduct_byname <- function(...){
 
 #' Name-wise matrix element division
 #'
+#' Element-wise division of two matrices.
+#' 
 #' Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
 #' prior to element division.
 #' Zeroes are inserted for missing matrix elements.
@@ -269,7 +271,7 @@ hadamardproduct_byname <- function(...){
 #'
 #' @examples
 #' library(dplyr)
-#' elementquotient_byname(100, 50)
+#' quotient_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -277,21 +279,21 @@ hadamardproduct_byname <- function(...){
 #' G <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' U / G # Non-sensical.  Names aren't aligned
-#' elementquotient_byname(U, G)
-#' elementquotient_byname(U, 10)
-#' elementquotient_byname(10, G)
+#' quotient_byname(U, G)
+#' quotient_byname(U, 10)
+#' quotient_byname(10, G)
 #' # This also works with lists
-#' elementquotient_byname(10, list(G,G))
-#' elementquotient_byname(list(G,G), 10)
-#' elementquotient_byname(list(U, U), list(G, G))
+#' quotient_byname(10, list(G,G))
+#' quotient_byname(list(G,G), 10)
+#' quotient_byname(list(U, U), list(G, G))
 #' DF <- data.frame(U = I(list()), G = I(list()))
 #' DF[[1,"U"]] <- U
 #' DF[[2,"U"]] <- U
 #' DF[[1,"G"]] <- G
 #' DF[[2,"G"]] <- G
-#' elementquotient_byname(DF$U, DF$G)
-#' DF %>% mutate(elementquotients = elementquotient_byname(U, G))
-elementquotient_byname <- function(dividend, divisor){
+#' quotient_byname(DF$U, DF$G)
+#' DF %>% mutate(elementquotients = quotient_byname(U, G))
+quotient_byname <- function(dividend, divisor){
   binaryapply_byname(`/`, dividend, divisor)
 }
 
@@ -336,7 +338,7 @@ elementquotient_byname <- function(dividend, divisor){
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
 mean_byname <- function(...){
-  sum_byname(...) %>% elementquotient_byname(length(list(...)))
+  sum_byname(...) %>% quotient_byname(length(list(...)))
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -381,7 +383,7 @@ mean_byname <- function(...){
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
 geometricmean_byname <- function(...){
-  hadamardproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
+  hadamardproduct_byname(...) %>% pow_byname(1/length(list(...)))
 }
 
 #' Name- and element-wise logarithmic mean of matrices
