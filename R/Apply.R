@@ -21,8 +21,6 @@
 #'          \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
 #'                             Rather, \code{FUN} will set rowtype and coltype.}
 #'        }
-#' 
-#' @importFrom parallel mcMap
 #'
 #' @return the result of applying \code{FUN} "by name" to \code{a}.
 #' 
@@ -46,7 +44,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
     lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
     return(Map(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes) %>% 
              # Preserve names of a (if present) in the outgoing list.
-             set_names(names(a)))
+             magrittr::set_names(names(a)))
   }
   out <- do.call(FUN, c(list(a), .FUNdots))
 
@@ -109,7 +107,7 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
     lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
     return(Map(elementapply_byname, lfun, a, lrow, lcol, lFUNdots) %>% 
              # Preserve names of a (if present) in the outgoing list.
-             set_names(names(a)))
+             magrittr::set_names(names(a)))
   }
   out <- a
   out[row, col] <- do.call(FUN, c(list(a[row, col]), .FUNdots))
@@ -174,7 +172,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
                  match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
              # If a and b have names, organize_args will have ensured that those names are same.
              # So we can set the names of the outgoing list to the names of a.
-             set_names(names(a)))
+             magrittr::set_names(names(a)))
   }
   out <- do.call(FUN, c(list(a), list(b), .FUNdots))
   
@@ -409,6 +407,6 @@ cumapply_byname <- function(FUN, a){
     out[[i]] <- FUN(a[[i]], out[[i - 1]])
   }
   # Preserve names of a in the outgoing list.
-  out <- out %>% set_names(names(a))
+  out <- out %>% magrittr::set_names(names(a))
   return(out)
 }

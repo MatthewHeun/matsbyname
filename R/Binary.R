@@ -338,7 +338,8 @@ quotient_byname <- function(dividend, divisor){
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
 mean_byname <- function(...){
-  sum_byname(...) %>% quotient_byname(length(list(...)))
+  sum_byname(...) %>% 
+    quotient_byname(length(list(...)))
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -383,7 +384,8 @@ mean_byname <- function(...){
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
 geometricmean_byname <- function(...){
-  hadamardproduct_byname(...) %>% pow_byname(1/length(list(...)))
+  hadamardproduct_byname(...) %>% 
+    pow_byname(1/length(list(...)))
 }
 
 #' Name- and element-wise logarithmic mean of matrices
@@ -433,7 +435,7 @@ geometricmean_byname <- function(...){
 #' logarithmicmean_byname(DF$m1, DF$m2)
 #' DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2))
 logarithmicmean_byname <- function(a, b, base = exp(1)){
-  logmean.func <- function(a, b, base) {
+  logmean_func <- function(a, b, base) {
     # At this point, our list is gone.  
     # a and b are single matrices or single numbers. 
     # Furthermore, a and b should have 
@@ -456,7 +458,7 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
     out %>%  
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
-  binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base))
+  binaryapply_byname(logmean_func, a = a, b = b, .FUNdots = list(base = base))
 }
 
 #' Compare two matrices "by name" for equality
@@ -493,10 +495,10 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
 equal_byname <- function(...){
-  equal.func <- function(a, b){
-    return(isTRUE(all.equal(a, b)))
+  equal_func <- function(a, b){
+    return(isTRUE(base::all.equal(a, b)))
   }
-  naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE)
 }
 
 #' Compare two matrices "by name" for exact equality
@@ -532,10 +534,10 @@ equal_byname <- function(...){
 #' dimnames(b) <- dimnames(a)
 #' identical_byname(a, b)
 identical_byname <- function(...){
-  identical.func <- function(a, b){
+  ident_func <- function(a, b){
     return(identical(a, b))
   }
-  naryapplylogical_byname(identical.func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(ident_func, ..., set_rowcoltypes = FALSE)
 }
 
 #' Test whether matrices or lists of matrices have same structure
@@ -564,7 +566,7 @@ identical_byname <- function(...){
 #' # Also works with lists
 #' samestructure_byname(list(U, U), list(U, U))
 samestructure_byname <- function(...){
-  samestruct.func <- function(a, b){
+  samestruct_func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
     }
@@ -594,7 +596,7 @@ samestructure_byname <- function(...){
     }
     return(TRUE)
   }
-  naryapplylogical_byname(samestruct.func, ..., 
+  naryapplylogical_byname(samestruct_func, ..., 
                           match_type = "none", set_rowcoltypes = FALSE, 
                           .organize = FALSE)
 }
