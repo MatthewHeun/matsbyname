@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
       </span>
     </div>
 
@@ -118,6 +118,25 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0-4-5-2019-01-07" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-5-2019-01-07" class="anchor"></a>matsbyname 0.4.5 (2019-01-07)</h1>
+<ul>
+<li>New function <code><a href="../reference/elementapply_byname.html">elementapply_byname()</a></code> applies a function to an element of a matrix specified by <code>row</code> and <code>col</code> arguments.</li>
+<li>Breaking changes:
+<ul>
+<li>
+<code>elementproduct_byname()</code> changed to <code><a href="../reference/hadamardproduct_byname.html">hadamardproduct_byname()</a></code> to avoid name collision with <code><a href="../reference/elementapply_byname.html">elementapply_byname()</a></code>.</li>
+<li>
+<code>elementquotient_byname()</code> changed to <code><a href="../reference/quotient_byname.html">quotient_byname()</a></code>.</li>
+<li>
+<code>elementpow_byname()</code> changed to <code><a href="../reference/pow_byname.html">pow_byname()</a></code>.</li>
+<li>
+<code>elementexp_byname()</code> changed to <code><a href="../reference/exp_byname.html">exp_byname()</a></code>.</li>
+</ul>
+</li>
+</ul>
+</div>
     <div id="matsbyname-0-4-4-2019-01-02" class="section level1">
 <h1 class="page-header">
 <a href="#matsbyname-0-4-4-2019-01-02" class="anchor"></a>matsbyname 0.4.4 (2019-01-02)</h1>
@@ -138,7 +157,7 @@
 <a href="#matsbyname-0-4-2-2019-01-02" class="anchor"></a>matsbyname 0.4.2 (2019-01-02)</h1>
 <ul>
 <li>
-<code><a href="../reference/sort_rows_cols.html">sort_rows_cols()</a></code> now allows entires in roworder and colorder that are not presently names of rows or columns. Extraneous names are silently ignored.</li>
+<code><a href="../reference/sort_rows_cols.html">sort_rows_cols()</a></code> now allows entries in roworder and colorder that are not presently names of rows or columns. Extraneous names are silently ignored.</li>
 </ul>
 </div>
     <div id="matsbyname-0-4-1-2019-01-01" class="section level1">
@@ -458,6 +477,7 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#matsbyname-0-4-5-2019-01-07">0.4.5</a></li>
         <li><a href="#matsbyname-0-4-4-2019-01-02">0.4.4</a></li>
         <li><a href="#matsbyname-0-4-3-2019-01-02">0.4.3</a></li>
         <li><a href="#matsbyname-0-4-2-2019-01-02">0.4.2</a></li>

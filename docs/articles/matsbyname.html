@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
 </h1>
                         <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2019-01-02</h4>
+            <h4 class="date">2019-01-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/master/vignettes/matsbyname.Rmd"><code>vignettes/matsbyname.Rmd</code></a></small>
       <div class="hidden name"><code>matsbyname.Rmd</code></div>
@@ -253,17 +253,17 @@
 <a class="sourceLine" id="cb5-16" data-line-number="16"><span class="co">#&gt; i2  1 -0.5</span></a></code></pre></div>
 <p>In addition to <tt>sum_byname</tt> and <tt>clean_byname</tt>, the <tt>matsbyname</tt> package contains many additional matrix algebra functions that respect the names of rows and columns. Commonly-used functions are:</p>
 <ul>
-<li><tt>sum_byname</tt></li>
-<li><tt>difference_byname</tt></li>
-<li><tt>elementproduct_byname</tt></li>
-<li><tt>matrixproduct_byname</tt></li>
-<li><tt>elementquotient_byname</tt></li>
-<li><tt>rowsums_byname</tt></li>
-<li><tt>colsums_byname</tt></li>
+<li><code><a href="../reference/sum_byname.html">sum_byname()</a></code></li>
+<li><code><a href="../reference/difference_byname.html">difference_byname()</a></code></li>
+<li><code><a href="../reference/hadamardproduct_byname.html">hadamardproduct_byname()</a></code></li>
+<li><code><a href="../reference/matrixproduct_byname.html">matrixproduct_byname()</a></code></li>
+<li><code><a href="../reference/quotient_byname.html">quotient_byname()</a></code></li>
+<li><code><a href="../reference/rowsums_byname.html">rowsums_byname()</a></code></li>
+<li><code><a href="../reference/colsums_byname.html">colsums_byname()</a></code></li>
 <li>
-<tt>invert_byname</tt>, and</li>
+<code><a href="../reference/invert_byname.html">invert_byname()</a></code>, and</li>
 <li>
-<tt>transpose_byname</tt>.</li>
+<code><a href="../reference/transpose_byname.html">transpose_byname()</a></code>.</li>
 </ul>
 <p>The full list of functions can be found with <tt>?matsbyname</tt> and clicking the <tt>Index</tt> link.</p>
 <p>Furthermore, <tt>matsbyname</tt> works well with its sister package, <tt>matsindf</tt>. <tt>matsindf</tt> creates data frames whose entries are not numbers but entire matrices, thereby enabling the use of <tt>matsbyname</tt> functions in <a href="http://www.tidyverse.org"><tt>tidyverse</tt></a> functional programming.</p>
@@ -345,7 +345,7 @@
 <a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; attr(,"coltype")</span></a>
 <a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; [1] "Industries"</span></a></code></pre></div>
 <p>Matrices <strong>A</strong> and <strong>B</strong> can be element-multiplied and element-divided for the same reason they can be summed: row and column types agree.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="../reference/elementproduct_byname.html">elementproduct_byname</a></span>(A, B)</a>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="../reference/hadamardproduct_byname.html">hadamardproduct_byname</a></span>(A, B)</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co">#&gt;    i1 i2</span></a>
 <a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co">#&gt; p1  8 18</span></a>
 <a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co">#&gt; p2 14 20</span></a>
@@ -353,7 +353,7 @@
 <a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt; [1] "Products"</span></a>
 <a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt; attr(,"coltype")</span></a>
 <a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="kw"><a href="../reference/elementquotient_byname.html">elementquotient_byname</a></span>(A, B)</a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="kw"><a href="../reference/quotient_byname.html">quotient_byname</a></span>(A, B)</a>
 <a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#&gt;           i1  i2</span></a>
 <a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#&gt; p1 0.1250000 0.5</span></a>
 <a class="sourceLine" id="cb11-12" data-line-number="12"><span class="co">#&gt; p2 0.2857143 0.8</span></a>
@@ -397,7 +397,7 @@
 <a class="sourceLine" id="cb14-16" data-line-number="16"><span class="co">#&gt; [1] "Products"</span></a>
 <a class="sourceLine" id="cb14-17" data-line-number="17"><span class="co">#&gt; attr(,"coltype")</span></a>
 <a class="sourceLine" id="cb14-18" data-line-number="18"><span class="co">#&gt; [1] "Industries"</span></a>
-<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="kw"><a href="../reference/elementproduct_byname.html">elementproduct_byname</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(A, A), B)</a>
+<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="kw"><a href="../reference/hadamardproduct_byname.html">hadamardproduct_byname</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(A, A), B)</a>
 <a class="sourceLine" id="cb14-20" data-line-number="20"><span class="co">#&gt; [[1]]</span></a>
 <a class="sourceLine" id="cb14-21" data-line-number="21"><span class="co">#&gt;    i1 i2</span></a>
 <a class="sourceLine" id="cb14-22" data-line-number="22"><span class="co">#&gt; p1  8 18</span></a>
@@ -496,7 +496,7 @@
 <!--     # Sum all rows of the data frame with a single instruction. -->
 <!--     sum = sum_byname(A, B), -->
 <!--     # Multiply matrices in the sum column by corresponding constants in the c column. -->
-<!--     product = elementproduct_byname(c, sum) -->
+<!--     product = hadamardproduct_byname(c, sum) -->
 <!--   ) -->
 <!-- result -->
 <!-- result$sum[[1]] -->

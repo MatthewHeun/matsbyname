@@ -1,3 +1,15 @@
+# matsbyname 0.4.5 (2019-01-07)
+
+* New function `elementapply_byname()` applies a function to an element
+  of a matrix specified by `row` and `col` arguments.
+* Breaking changes: 
+    * `elementproduct_byname()` changed to `hadamardproduct_byname()`
+      to avoid name collision with `elementapply_byname()`.
+    * `elementquotient_byname()` changed to `quotient_byname()`.
+    * `elementpow_byname()` changed to `pow_byname()`.
+    * `elementexp_byname()` changed to `exp_byname()`.
+
+
 # matsbyname 0.4.4 (2019-01-02)
 
 * Added tests to achieve 100% code coverage.
@@ -11,7 +23,7 @@
 
 # matsbyname 0.4.2 (2019-01-02)
 
-* `sort_rows_cols()` now allows entires in roworder and colorder 
+* `sort_rows_cols()` now allows entries in roworder and colorder 
   that are not presently names of rows or columns. 
   Extraneous names are silently ignored.
 

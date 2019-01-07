@@ -93,8 +93,8 @@ tryCatch(sum_byname(A, C), error = function(err){print(err)})
 sum_byname(A, transpose_byname(C))
 
 ## ------------------------------------------------------------------------
-elementproduct_byname(A, B)
-elementquotient_byname(A, B)
+hadamardproduct_byname(A, B)
+quotient_byname(A, B)
 
 ## ------------------------------------------------------------------------
 matrixproduct_byname(A, C)
@@ -104,6 +104,6 @@ tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
 
 ## ------------------------------------------------------------------------
 sum_byname(A, list(B, B))
-elementproduct_byname(list(A, A), B)
+hadamardproduct_byname(list(A, A), B)
 matrixproduct_byname(list(A, A), list(C, C))
 
