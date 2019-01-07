@@ -384,7 +384,7 @@ naryapplylogical_byname <- function(FUN, ...,
 #' cumapply_byname(sum, list(1, 2, 3, 4))
 #' cumapply_byname(sum_byname, list(1, 2, 3, 4))
 #' cumapply_byname(prod, list(1, 2, 3, 4))
-#' cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
+#' cumapply_byname(hadamardproduct_byname, list(1, 2, 3, 4))
 cumapply_byname <- function(FUN, a){
   # Check for pathological cases.
   if (length(a) == 0) {

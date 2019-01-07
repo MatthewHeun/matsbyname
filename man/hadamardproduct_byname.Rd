@@ -32,10 +32,10 @@ U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) \%>\%
 G <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) \%>\%
   setrowtype("Commodities") \%>\% setcoltype("Industries")
 U * G # Not what is desired, because names aren't aligned
-hadamardproduct_byname_byname(U, G)
-hadamardproduct_byname_byname(U, G, G)
-hadamardproduct_byname_byname(U, 0)
-hadamardproduct_byname_byname(0, G)
+hadamardproduct_byname(U, G)
+hadamardproduct_byname(U, G, G)
+hadamardproduct_byname(U, 0)
+hadamardproduct_byname(0, G)
 # This also works with lists
 hadamardproduct_byname(list(U, U), list(G, G))
 DF <- data.frame(U = I(list()), G = I(list()))

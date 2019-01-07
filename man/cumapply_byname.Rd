@@ -34,5 +34,5 @@ For example \code{\link{sum_byname}} applied to a single column gives the sum of
 cumapply_byname(sum, list(1, 2, 3, 4))
 cumapply_byname(sum_byname, list(1, 2, 3, 4))
 cumapply_byname(prod, list(1, 2, 3, 4))
-cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
+cumapply_byname(hadamardproduct_byname, list(1, 2, 3, 4))
 }

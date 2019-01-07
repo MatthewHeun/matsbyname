@@ -1,7 +1,10 @@
-* Breaking change: `elementproduct_byname()` changed to `hadamardproduct_byname()`
-  to avoid name collision with `elementapply_byname()`.
 * New function `elementapply_byname()` applies a function to an element
   of a matrix specified by `row` and `col` arguments.
+* Breaking changes: 
+    * `elementproduct_byname()` changed to `hadamardproduct_byname()`
+      to avoid name collision with `elementapply_byname()`.
+    * `elementquotient_byname()` changed to `quotient_byname()`.
+    * `elementpow_byname()` changed to `pow_byname()`.
 
 
 # matsbyname 0.4.4 (2019-01-02)
