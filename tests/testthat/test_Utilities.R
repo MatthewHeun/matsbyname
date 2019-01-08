@@ -1,10 +1,5 @@
 # This file contains tests for functions in Utilities.R.
 
-library(magrittr)
-library(testthat)
-library(dplyr)
-
-
 ###########################################################
 context("Organizing arguments")
 ###########################################################

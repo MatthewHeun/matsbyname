@@ -1,17 +1,5 @@
 # Contains tests for binary functions in the byname package.
 
-# Need to put dplyr before testthat.
-# If not, the "matches" function in dplyr overrides the "matches" function in testthat,
-# and tests containing the string "(" don't work as expectged.
-
-# library(Hmisc)
-# library(dplyr)
-# library(matsbyname)
-# library(magrittr)
-# library(testthat)
-# library(tidyr)
-
-
 ###########################################################
 context("Sums")
 ###########################################################
@@ -103,7 +91,8 @@ test_that("sums of matrices in lists and data frames works as expected", {
   
   # sum_byname also should work with data frames, as they are lists.
   expect_equal(sum_byname(DF$U, DF$Y), list(UplusY, UplusY))
-  expect_equal(DF %>% mutate(sums = sum_byname(U, Y)), DF %>% mutate(sums = list(UplusY, UplusY)))
+  expect_equal(DF %>% mutate(sums = sum_byname(U, Y)), 
+               DF %>% mutate(sums = list(UplusY, UplusY)))
   
   # And sum_byname should work with more than 2 operands.
   expect_equal(sum_byname(DF$U, DF$Y, DF$Z), list(UYZ, UYZ))
@@ -1068,7 +1057,7 @@ test_that("matrix multiplied by a constant in a data frame works", {
       matrix.name = matrix,
       matrix = vals
     ) %>% 
-    spread(key = matrix.name, value = matrix) %>% 
+    tidyr::spread(key = matrix.name, value = matrix) %>% 
     # Duplicate the row to demonstrate byname operating simultaneously 
     # on all rows of the data frame.
     rbind(., .) %>% 

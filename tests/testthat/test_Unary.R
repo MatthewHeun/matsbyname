@@ -1,17 +1,3 @@
-
-
-# Need to put dplyr before testthat.
-# If not, the "matches" function in dplyr overrides the "matches" function in testthat,
-# and tests containing the string "(" don't work as expectged.
-
-# library(Hmisc)
-# library(dplyr)
-# library(matsbyname)
-# library(magrittr)
-# library(testthat)
-# library(tidyr)
-
-
 ###########################################################
 context("Hatize and Inverse")
 ###########################################################
