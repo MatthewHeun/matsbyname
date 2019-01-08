@@ -1,5 +1,7 @@
 # Contains tests for binary functions in the byname package.
 
+library(dplyr)
+
 ###########################################################
 context("Sums")
 ###########################################################
