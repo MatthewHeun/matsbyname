@@ -59,11 +59,11 @@ organize_args <- function(a, b, match_type = "all", fill){
   if (is.list(a) | is.list(b)) {
     if (!is.list(a)) {
       # b is a list, but a is not.  Make a into a list and give it same names as b.
-      a <- make_list(a, n = length(b)) %>% set_names(names(b))
+      a <- make_list(a, n = length(b)) %>% magrittr::set_names(names(b))
     }
     if (!is.list(b)) {
       # a is a list, but b is not.  Make b into a list and give it same names as a.
-      b <- make_list(b, n = length(a)) %>% set_names(names(a))
+      b <- make_list(b, n = length(a)) %>% magrittr::set_names(names(a))
     }
   }
   if (is.list(a) & is.list(b)) {
@@ -176,8 +176,6 @@ organize_args <- function(a, b, match_type = "all", fill){
 #'
 #' @return an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
 #' 
-#' @importFrom Hmisc escapeRegex
-#' 
 #' @export
 #'
 #' @examples
@@ -213,8 +211,6 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #' 
 #' @export
 #' 
-#' @importFrom magrittr set_names
-#'
 #' @examples
 #' m <- matrix(data = c(1:6), 
 #'             nrow = 2, ncol = 3, 
@@ -223,7 +219,7 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
 list_of_rows_or_cols <- function(a, margin){
-  lrc.func <- function(a, margin){
+  lrc_func <- function(a, margin){
     stopifnot(length(margin) == 1)
     stopifnot(margin %in% c(1,2))
     stopifnot("matrix" %in% class(a))
@@ -239,9 +235,9 @@ list_of_rows_or_cols <- function(a, margin){
       matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>%
         setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
     }) %>%
-      set_names(colnames(out))
+      magrittr::set_names(colnames(out))
   }
-  unaryapply_byname(lrc.func, a = a, .FUNdots = list(margin = margin), 
+  unaryapply_byname(lrc_func, a = a, .FUNdots = list(margin = margin), 
                     rowcoltypes = "none")
 }
 
@@ -336,7 +332,7 @@ setrownames_byname <- function(a, rownames){
   if (is.null(a)) {
     return(NULL)
   }
-  rowname.func <- function(a, rownames){
+  rowname_func <- function(a, rownames){
     if (is.null(dim(a))) {
       # a has no dimensions. It is a constant.
       # Turn it into a matrix and set the row names.
@@ -352,7 +348,7 @@ setrownames_byname <- function(a, rownames){
     }
     return(out)
   }
-  unaryapply_byname(rowname.func, a = a, .FUNdots = list(rownames = rownames), 
+  unaryapply_byname(rowname_func, a = a, .FUNdots = list(rownames = rownames), 
                     rowcoltypes = "all")
 }
 
@@ -424,11 +420,11 @@ setcolnames_byname <- function(a, colnames){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setrowtype <- function(a, rowtype){
-  rt.func <- function(a, rowtype){
+  rt_func <- function(a, rowtype){
     attr(a, "rowtype") <- rowtype
     return(a)
   }
-  unaryapply_byname(rt.func, a = a, .FUNdots = list(rowtype = rowtype),
+  unaryapply_byname(rt_func, a = a, .FUNdots = list(rowtype = rowtype),
                     rowcoltypes = "none")
 }
 
@@ -465,11 +461,11 @@ setrowtype <- function(a, rowtype){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setcoltype <- function(a, coltype){
-  ct.func <- function(a, coltype){
+  ct_func <- function(a, coltype){
     attr(a, "coltype") <- coltype
     return(a)
   }
-  unaryapply_byname(ct.func, a = a, .FUNdots = list(coltype = coltype), 
+  unaryapply_byname(ct_func, a = a, .FUNdots = list(coltype = coltype), 
                     rowcoltypes = "none")
 }
 
@@ -573,7 +569,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
-  select.func <- function(a, retain_pattern, remove_pattern){
+  select_func <- function(a, retain_pattern, remove_pattern){
     retain_indices <- grep(pattern = retain_pattern, x = rownames(a))
     remove_indices <- grep(pattern = remove_pattern, x = rownames(a))
     if (length(retain_indices) == 0) {
@@ -617,7 +613,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
              setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     )
   }
-  unaryapply_byname(select.func, a = a, 
+  unaryapply_byname(select_func, a = a, 
                     .FUNdots = list(retain_pattern = retain_pattern, remove_pattern = remove_pattern), 
                     rowcoltypes = "none")
 }
@@ -725,7 +721,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
     cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
     return(cleaned2)
   }
-  clean.func <- function(a, margin, clean_value){
+  clean_func <- function(a, margin, clean_value){
     if (margin == 1) {
       # Want to clean rows. Code below assumes want to clean columns.
       # Transpose and then transpose again before returning.
@@ -744,7 +740,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
       return(c)
     }
   }
-  unaryapply_byname(clean.func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
+  unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
                     rowcoltypes = "all")
 }
 
@@ -777,10 +773,10 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
 #' iszero_byname(matrix(1e-10, nrow = 2))
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
 iszero_byname <- function(a, tol = 1e-6){
-  zero.func <- function(a, tol){
+  zero_func <- function(a, tol){
     all(abs(a) <= tol)
   }
-  unaryapply_byname(zero.func, a = a, .FUNdots = list(tol = tol), 
+  unaryapply_byname(zero_func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")
 }
 

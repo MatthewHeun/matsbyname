@@ -5,7 +5,6 @@ knitr::opts_chunk$set(
 )
 library(dplyr)
 library(tidyr)
-library(parallel)
 library(matsbyname)
 # library(matsindf)
 

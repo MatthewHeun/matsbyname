@@ -7,7 +7,6 @@
 library(dplyr)
 library(magrittr)
 library(matsbyname)
-library(parallel)
 library(testthat)
 
 ###########################################################
