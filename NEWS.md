@@ -1,3 +1,8 @@
+# matsbyname 0.4.7 (2019-01-07)
+
+* Cleaned up dependencies for testing.
+
+
 # matsbyname 0.4.6 (2019-01-07)
 
 * Now all external function calls are fully qualified. 
