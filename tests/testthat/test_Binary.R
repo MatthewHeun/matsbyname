@@ -6,7 +6,6 @@
 
 library(Hmisc)
 library(dplyr)
-library(parallel)
 library(matsbyname)
 library(magrittr)
 library(testthat)
