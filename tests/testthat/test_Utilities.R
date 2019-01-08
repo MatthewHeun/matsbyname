@@ -3,7 +3,6 @@
 library(magrittr)
 library(parallel)
 library(testthat)
-library(rlang)
 library(dplyr)
 
 
