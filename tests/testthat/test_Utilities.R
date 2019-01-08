@@ -1,7 +1,6 @@
 # This file contains tests for functions in Utilities.R.
 
 library(magrittr)
-library(parallel)
 library(testthat)
 library(dplyr)
 
