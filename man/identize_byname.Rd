@@ -9,7 +9,7 @@ identize_byname(a, margin = c(1, 2))
 \arguments{
 \item{a}{the matrix whose names and dimensions are to be preserved in an identity matrix or vector}
 
-\item{margin}{determines whether an identity vector or matrix is returned}
+\item{margin}{determines whether an identity vector or matrix is returned. See details.}
 }
 \value{
 An identity matrix or vector.

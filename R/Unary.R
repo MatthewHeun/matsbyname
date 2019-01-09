@@ -127,7 +127,7 @@ hatize_byname <- function(v){
       stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
     v_sorted <- sort_rows_cols(v)
-    out <- OpenMx::vec2diag(v_sorted)
+    out <- diag(as.numeric(v_sorted))
     if (ncol(v) == 1) {
       rownames(out) <- rownames(v_sorted)
       colnames(out) <- rownames(v_sorted)
@@ -135,8 +135,8 @@ hatize_byname <- function(v){
       # So, we must do so here.
       out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
     } else if (nrow(v) == 1) {
-      rownames(out) <- colnames(v)
-      colnames(out) <- colnames(v)
+      rownames(out) <- colnames(v_sorted)
+      colnames(out) <- colnames(v_sorted)
       # This function does not rely on unaryapply_byname to set row and column types.
       # So, we must do so here.
       out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
@@ -227,7 +227,7 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' Row and column names are sorted on output.
 #'
 #' @param a the matrix whose names and dimensions are to be preserved in an identity matrix or vector
-#' @param margin determines whether an identity vector or matrix is returned
+#' @param margin determines whether an identity vector or matrix is returned. See details.
 #'
 #' @return An identity matrix or vector.
 #' 
@@ -258,7 +258,7 @@ identize_byname <- function(a, margin = c(1,2)){
     }
     
     if (length(margin) == 2 && all(margin %in% c(1,2))) {
-      # M is a matrix. 
+      # a is a matrix. 
       # Return the identity matrix with 1's on diagonal,
       # of same dimensions as a
       # and same names and types as a.
