@@ -15,8 +15,7 @@ RoxygenNote: 6.1.1
 Imports:
     dplyr,
     Hmisc,
-    magrittr,
-    OpenMx
+    magrittr
 Suggests:
     testthat,
     knitr,
