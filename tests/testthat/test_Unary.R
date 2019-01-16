@@ -914,8 +914,8 @@ test_that("setting row names works as expected", {
   expect_equal(rownames(m3), c("c", "d"))
   m4 <- m1 %>% setrownames_byname(NULL)
   expect_null(rownames(m4))
-  m5 <- m1 %>% setrownames_byname(NA)
-  expect_null(rownames(m5))
+  m5 <- m1 %>% setrownames_byname(c(NA, NA))
+  expect_equal(rownames(m5), c(NA_character_, NA_character_))
   # This also works for lists
   l1 <- list(m1,m1)
   l2 <- setrownames_byname(l1, c("a", "b"))
@@ -946,8 +946,8 @@ test_that("setting col names works as expected", {
   expect_equal(colnames(m3), c("d", "e", "f"))
   m4 <- m1 %>% setcolnames_byname(NULL)
   expect_null(colnames(m4))
-  m5 <- m1 %>% setcolnames_byname(NA)
-  expect_null(colnames(m5))
+  m5 <- m1 %>% setcolnames_byname(c(NA, NA, NA))
+  expect_equal(colnames(m5), c(NA_character_, NA_character_, NA_character_))
   # This also works for lists
   l1 <- list(m1,m1)
   l2 <- setcolnames_byname(l1, c("a", "b", "c"))
@@ -1030,7 +1030,7 @@ test_that("setrownames_byname works as expected", {
   expect_equal(m %>% setrownames_byname(rownames(m2)) %>% rownames(), c("a", "b"))
   expect_equal(m %>% setrownames_byname(c("c", "d")) %>% rownames(), c("c", "d"))
   expect_null(m %>% setrownames_byname(NULL) %>% rownames())
-  expect_null(m %>% setrownames_byname(NA) %>% rownames())
+  expect_equal(m %>% setrownames_byname(c(NA, NA)) %>% rownames(), c(NA_character_, NA_character_))
   # The function should convert the constant to a matrix and apply the row name
   expect_equal(2 %>% setrownames_byname("row"), 
                matrix(2, nrow = 1, ncol = 1, dimnames = list(c("row"), NULL)))
@@ -1043,7 +1043,7 @@ test_that("setcolnames_byname works as expected", {
                c("a", "b", "c"))
   expect_equal(m %>% setcolnames_byname(c("d", "e", "f")) %>% colnames(), c("d", "e", "f"))
   expect_null(m %>% setcolnames_byname(NULL) %>% colnames())
-  expect_null(m %>% setcolnames_byname(NA) %>% colnames())
+  expect_equal(m %>% setcolnames_byname(c(NA, NA, NA)) %>% colnames(), c(NA_character_, NA_character_, NA_character_))
   # The function should convert the constant to a matrix and apply the col name
   expect_equal(2 %>% setcolnames_byname("col"), 
                matrix(2, nrow = 1, ncol = 1, dimnames = list(NULL, c("col"))))

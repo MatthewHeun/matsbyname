@@ -34,7 +34,7 @@ m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3)
 setrownames_byname(m, c("a", "b"))
 setrownames_byname(m \%>\% setrowtype("Industries") \%>\% setcoltype("Commodities"), c("c", "d"))
 m \%>\% setrownames_byname(NULL)
-m \%>\% setrownames_byname(NA)
+m \%>\% setrownames_byname(c(NA, NA))
 2 \%>\% setrownames_byname("row")
 # This also works for lists
 setrownames_byname(list(m,m), c("a", "b"))

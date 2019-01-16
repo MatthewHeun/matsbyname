@@ -317,7 +317,7 @@ getcolnames_byname <- function(a){
 #' setrownames_byname(m, c("a", "b"))
 #' setrownames_byname(m %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("c", "d"))
 #' m %>% setrownames_byname(NULL)
-#' m %>% setrownames_byname(NA)
+#' m %>% setrownames_byname(c(NA, NA))
 #' 2 %>% setrownames_byname("row")
 #' # This also works for lists
 #' setrownames_byname(list(m,m), c("a", "b"))
@@ -340,7 +340,7 @@ setrownames_byname <- function(a, rownames){
     } else {
       out <- a
     }
-    if (is.null(rownames) || is.na(rownames)) {
+    if (is.null(rownames)) {
       # replace with default row names
       rownames(out) <- NULL
     } else {
