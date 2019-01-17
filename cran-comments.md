@@ -15,21 +15,28 @@
 ## R CMD check results
 * NOTEs: 1
     * The only NOTE states (correctly) that `matsbyname` is a new submission to CRAN. 
-* WARNINGs: 0
-* ERRORs:
-    * Errors occur only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
+* WARNINGs: 1
+    * Warnings occur only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
     * R CMD check works perfectly on all other environments, 
       including the R-devel environment on win-builder (`devtools::check_win_devel()`).
-    * The problem on rhub's "Fedora Linux, R-devel, clang, gfortran" environment appears to be connected to 
+    * The warning on rhub's "Fedora Linux, R-devel, clang, gfortran" environment appears to be connected to 
+      an installation failure for the package `Matrix`.
+    * The warning contains the text
+        * `Error: processing vignette 'matsbyname.Rmd' failed with diagnostics:`
+        * `there is no package called 'Matrix'`
+    * This warning is apparently not the fault of the `matsbyname` package.
+    * Rather, the warning appears to be unique to rhub's "Fedora Linux, R-devel, clang, gfortran" environment.
+* ERRORs: 9
+    * Errors occur only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
+    * No errors occur in any other environment, 
+      including the R-devel environment on win-builder (`devtools::check_win_devel()`).
+    * The errors on rhub's "Fedora Linux, R-devel, clang, gfortran" environment appear to be connected to 
       an installation failure for the package `Matrix`.
     * One example error is 
         * `Error in loadNamespace(j <- i[[1L]], c(lib.loc, .libPaths()), versionCheck = vI[[j]]) :`
         * `there is no package called â€˜Matrixâ€™`
-    * Another error is
-        * `Error: processing vignette 'matsbyname.Rmd' failed with diagnostics:`
-        * `there is no package called 'Matrix'`
     * These errors are apparently not the fault of the `matsbyname` package.
-    * Rather, the error appears to be unique to rhub's "Fedora Linux, R-devel, clang, gfortran" environment.
+    * Rather, the errors appears to be unique to rhub's "Fedora Linux, R-devel, clang, gfortran" environment.
 
 ## Downstream dependencies
 There are currently no downstream dependencies for `matsbyname`.
