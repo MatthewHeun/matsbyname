@@ -1,3 +1,8 @@
+# matsbyname 0.4.8 (2019-01-16)
+
+* Improved cran-comments for submission.
+
+
 # matsbyname 0.4.7 (2019-01-07)
 
 * Cleaned up dependencies for testing.
