@@ -1,5 +1,5 @@
 ## Context
-`matsbyname` is a new package that performs matrix mathematics by name.
+`matsbyname` is a new package that performs matrix mathematics "by name."
 
 ## Test environments
 * local macOS X install 10.14.2 (Mojave), R3.5.2
@@ -13,8 +13,11 @@
         * Fedora Linux, R-devel, clang, gfortran
 
 ## R CMD check results
+* NOTEs: 1
+    * The only NOTE states (correctly) that `matsbyname` is a new submission to CRAN. 
+* WARNINGs: 0
 * ERRORs:
-    * The only errors occur on rhub's Fedora Linux, R-devel environment. 
+    * Errors occur only in rhub's Fedora Linux, R-devel environment. 
     * R CMD check works perfectly on all other environments, 
       including the R-devel environment on win-builder.
     * The problem on rhub's Fedora Linux R-devel environment appears to be connected to 
@@ -23,16 +26,10 @@
         * `Error in loadNamespace(j <- i[[1L]], c(lib.loc, .libPaths()), versionCheck = vI[[j]]) :`
         * `there is no package called â€˜Matrixâ€™`
     * Another error is
-        * `6450#> 1. Error: (unknown) (@test_Apply.R#7)`
-        * `6451#> 2. Error: (unknown) (@test_Binary.R#7)`
-        * `6452#> 3. Error: (unknown) (@test_Unary.R#7)`
-        * Each of these line 7's is `library(Hmisc)`.
-        * I note that `Hmisc` depends on `Matrix`.
-    * These errors are apparently not the fault of my `matsbyname` package.
+        * `Error: processing vignette 'matsbyname.Rmd' failed with diagnostics:`
+        * `there is no package called 'Matrix'`
+    * These errors are apparently not the fault of the `matsbyname` package.
     * Rather, the error appears to be unique to rhub's Fedora Linux, R-devel environment.
-* WARNINGs: 0
-* NOTEs: 1
-    * The only NOTE states (correctly) that `matsbyname` is a new submission to CRAN. 
 
 ## Downstream dependencies
 There are currently no downstream dependencies for `matsbyname`.
