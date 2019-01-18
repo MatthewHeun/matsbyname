@@ -1,6 +1,11 @@
+# matsbyname 0.4.9 (2019-01-17)
+
+* Improved LICENSE file for submission to CRAN.
+
+
 # matsbyname 0.4.8 (2019-01-16)
 
-* Improved cran-comments for submission.
+* Improved cran-comments for submission to CRAN..
 
 
 # matsbyname 0.4.7 (2019-01-07)
