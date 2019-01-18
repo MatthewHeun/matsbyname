@@ -30,7 +30,7 @@
         * `there is no package called 'Matrix'`
     * I don't think these ERRORs are the fault of the `matsbyname` package.
     * Rather, the errors are unique to rhub's "Fedora Linux, R-devel, clang, gfortran" environment
-      and appear to result from an installation failure of a package in that environment.
+      and appear to be the result of an installation failure of a package in that environment.
 * ERRORs: 9
     * Errors occur only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
     * No errors occur in any other environment, 
@@ -42,7 +42,7 @@
         * `there is no package called â€˜Matrixâ€™`
     * I don't think these ERRORs are the fault of the `matsbyname` package.
     * Rather, the ERRORs are unique to rhub's "Fedora Linux, R-devel, clang, gfortran" environment
-      and appear to result from an installation failure of a package in that environment.
+      and appear to be the result of an installation failure of a package in that environment.
 
 ## Downstream dependencies
 There are currently no downstream dependencies for `matsbyname`.
