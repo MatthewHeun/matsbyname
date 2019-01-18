@@ -21,7 +21,7 @@
         * So this NOTE is surprising, and it occurs only in one of six environments.
 * WARNING: 1
     * The single WARNING occurs only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
-    * R CMD check works perfectly on all other environments, 
+    * No WARNINGs occur in any other environments, 
       including the R-devel environment on win-builder (`devtools::check_win_devel()`).
     * The warning on rhub's "Fedora Linux, R-devel, clang, gfortran" environment appears to be connected to 
       an installation failure for the package `Matrix`.
@@ -32,8 +32,8 @@
     * Rather, the errors are unique to rhub's "Fedora Linux, R-devel, clang, gfortran" environment
       and appear to be the result of an installation failure of a package in that environment.
 * ERRORs: 9
-    * Errors occur only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
-    * No errors occur in any other environment, 
+    * ERRORs occur only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
+    * No ERRORs occur in any other environment, 
       including the R-devel environment on win-builder (`devtools::check_win_devel()`).
     * The errors in rhub's "Fedora Linux, R-devel, clang, gfortran" environment appear to be connected to 
       an installation failure for the package `Matrix`.
