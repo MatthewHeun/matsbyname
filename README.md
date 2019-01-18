@@ -3,7 +3,7 @@
 <!-- Note: README.md is generated from README.Rmd.   -->
 <!-- Be sure to edit README.Rmd and generate the README.md file by Cmd/Ctl-shift-K -->
 <!-- *********** -->
-[![Travis-CI Build Status](https://travis-ci.org/MatthewHeun/matsbyname.svg?branch=master)](https://travis-ci.org/MatthewHeun/matsbyname) [![Coverage status](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://codecov.io/github/MatthewHeun/matsbyname?branch=master) [![CRAN status](https://www.r-pkg.org/badges/version/matsbyname)](https://cran.r-project.org/package=matsbyname)
+[![Travis-CI Build Status](https://travis-ci.org/MatthewHeun/matsbyname.svg?branch=master)](https://travis-ci.org/MatthewHeun/matsbyname) [![Coverage status](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://codecov.io/github/MatthewHeun/matsbyname?branch=master)
 
 matsbyname
 ==========
