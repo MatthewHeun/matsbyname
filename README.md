@@ -7,6 +7,9 @@
 
 <!-- *********** -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/matsbyname)](https://cran.r-project.org/package=matsbyname)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Travis-CI Build
 Status](https://travis-ci.org/MatthewHeun/matsbyname.svg?branch=master)](https://travis-ci.org/MatthewHeun/matsbyname)
 [![Coverage
