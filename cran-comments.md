@@ -18,7 +18,7 @@
     * The second NOTE occurs only in rhub's "Ubuntu Linux 16.04 LTS, R-release, GCC" environment.
         * The note states that `Author field differs from that derived from Authors@R`.
         * But my `DESCRIPTION` file contains only an `Authors@R` field.
-        * So this NOTE is surprising, and it occurs only in one of six environments.
+        * So this NOTE is surprising, and it occurs in only one of six test environments.
 * WARNING: 1
     * The single WARNING occurs only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
     * No WARNINGs occur in any other environments, 
