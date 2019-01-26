@@ -28,8 +28,8 @@
     * The warning contains the text
         * `Error: processing vignette 'matsbyname.Rmd' failed with diagnostics:`
         * `there is no package called 'Matrix'`
-    * I don't think these ERRORs are the fault of the `matsbyname` package.
-    * Rather, the errors are unique to rhub's "Fedora Linux, R-devel, clang, gfortran" environment
+    * I don't think these Errors are the fault of the `matsbyname` package.
+    * Rather, the Errors are unique to rhub's "Fedora Linux, R-devel, clang, gfortran" environment
       and appear to be the result of an installation failure of a package in that environment.
 * ERRORs: 9
     * ERRORs occur only in rhub's "Fedora Linux, R-devel, clang, gfortran" environment. 
