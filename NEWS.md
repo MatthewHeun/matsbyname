@@ -1,6 +1,8 @@
 # matsbyname 0.4.9 (2019-01-17)
 
 * Improved LICENSE file for submission to CRAN.
+* First version to appear on CRAN.
+* Added CRAN badge.
 
 
 # matsbyname 0.4.8 (2019-01-16)
