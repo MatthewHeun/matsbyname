@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -118,11 +118,18 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0-4-9-2019-01-17" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-9-2019-01-17" class="anchor"></a>matsbyname 0.4.9 (2019-01-17)</h1>
+<ul>
+<li>Improved LICENSE file for submission to CRAN.</li>
+</ul>
+</div>
     <div id="matsbyname-0-4-8-2019-01-16" class="section level1">
 <h1 class="page-header">
 <a href="#matsbyname-0-4-8-2019-01-16" class="anchor"></a>matsbyname 0.4.8 (2019-01-16)</h1>
 <ul>
-<li>Improved cran-comments for submission.</li>
+<li>Improved cran-comments for submission to CRAN..</li>
 </ul>
 </div>
     <div id="matsbyname-0-4-7-2019-01-07" class="section level1">
@@ -430,14 +437,11 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 <h1 class="page-header">
 <a href="#byname-0-1-4-2018-01-31" class="anchor"></a>byname 0.1.4 (2018-01-31)</h1>
 <ul>
-<li>New functions <code>unaryapply_byname</code> and <code>binaryapply_byname</code>. These functions have a <code>FUN</code> argument that allows an arbitrary function to be applied <code>_byname</code> to matrices or data frames containing matrices.
-<ul>
+<li>New functions <code>unaryapply_byname</code> and <code>binaryapply_byname</code>. These functions have a <code>FUN</code> argument that allows an arbitrary function to be applied <code>_byname</code> to matrices or data frames containing matrices.</li>
 <li>
 <code>unaryapply_byname</code> is for unary functions such as <code>rowsums_byname</code>.</li>
 <li>
 <code>binaryapply_byname</code> is for binary functions such as <code>sum_byname</code>.</li>
-</ul>
-</li>
 <li>
 <code>unaryapply_byname</code> and <code>binaryapply_byname</code> are used by all <code>_byname</code> functions internally.</li>
 <li>Now conducting 412 tests across the entire package. All tests are passing, indicating that the <code>unaryapply</code> and <code>binaryapply</code> functions are very solid.</li>
@@ -456,16 +460,13 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 <h1 class="page-header">
 <a href="#byname-0-1-2-2018-01-23" class="anchor"></a>byname 0.1.2 (2018-01-23)</h1>
 <ul>
-<li>Added the following functions:
-<ul>
+<li>Added the following functions:</li>
 <li>
 <code>mean_byname</code>: returns the arithmetic mean of corresponding entries of two matrices</li>
 <li>
 <code>geometricmean_byname</code>: returns the geometric mean of corresponding entries of two matrices</li>
 <li>
 <code>logarithmicmean_byname</code>: returns the logarithmic mean of corresponding entries of two matrices</li>
-</ul>
-</li>
 <li>Fixed a bug whereby calling <code>setrownames_byname</code> and <code>setcolnames_byname</code> on a constant would fail. It now produces a 1x1 matrix with named rows or columns.</li>
 <li>Miscellaneous improvements to documentation of many functions.</li>
 </ul>
@@ -474,16 +475,13 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 <h1 class="page-header">
 <a href="#byname-0-1-1-2018-01-21" class="anchor"></a>byname 0.1.1 (2018-01-21)</h1>
 <ul>
-<li>Added the following functions:
-<ul>
+<li>Added the following functions:</li>
 <li>
 <code>rowprod_byname</code>: returns a column vector with row products (product of all entries in a row)</li>
 <li>
 <code>colprod_byname</code>: returns a row vector with column products (product of all entries in a column)</li>
 <li>
 <code>prodall_byname</code>: returns a numeric of the product of all entries in a matrix</li>
-</ul>
-</li>
 <li>Miscellaneous improvements to documentation of many functions.</li>
 </ul>
 </div>
@@ -498,6 +496,7 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#matsbyname-0-4-9-2019-01-17">0.4.9</a></li>
         <li><a href="#matsbyname-0-4-8-2019-01-16">0.4.8</a></li>
         <li><a href="#matsbyname-0-4-7-2019-01-07">0.4.7</a></li>
         <li><a href="#matsbyname-0-4-6-2019-01-07">0.4.6</a></li>
