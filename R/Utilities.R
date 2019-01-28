@@ -17,7 +17,7 @@
 #'
 #' @param a the first argument to be organized
 #' @param b the second argument to be organized
-#' @param match_type one of \code{"all"} or \code{"matmult"}.
+#' @param match_type one of \code{"all"}, \code{"matmult"}, \code{"none"}.
 #' When both \code{a} and \code{b} are matrices,
 #' "\code{all}" (the default) indicates that
 #' rowtypes of \code{a} must match rowtypes of \code{b} and
@@ -84,21 +84,33 @@ organize_args <- function(a, b, match_type = "all", fill){
   }
   
   # Neither a nor b are lists.
-  # We don't know if one or both a and b is a matrix.
-  # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
-  if (!is.matrix(a) & is.matrix(b)) {
-    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b)) %>%
-      setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
-  } else if (is.matrix(a) & !is.matrix(b)) {
-    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a)) %>%
-      setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
-  }
-  
-  # Assume that both a and b are now matrices.
-  # Need to check whether matchtype is a known type.
+  # First check whether matchtype is a known value.
   if (!match_type %in% c("all", "matmult", "none"))  {
     stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
+  # We don't know if one or both a and b is a matrix.
+  # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
+  if (!is.matrix(a) & is.matrix(b)) {
+    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
+    if (match_type == "all") {
+      a <- a %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+    } 
+    if (match_type == "matmult") {
+      a <- a %>% setcoltype(rowtype(b))
+    }
+    # If matchtype == "none", we don't to anything.
+  } else if (is.matrix(a) & !is.matrix(b)) {
+    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
+    if (match_type == "all") {
+      b <- b %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+    }
+    if (match_type == "matmult") {
+      b <- b %>% setrowtype(coltype(a))
+    }
+    # If matchtype == "none", we don't to anything.
+  }
+  
+  # Assume that both a and b are now matrices.
   
   # Verify that row and column types are appropriate.
   if (match_type == "all") {
