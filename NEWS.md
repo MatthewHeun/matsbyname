@@ -1,3 +1,8 @@
+* Fixed a bug in `matrixproduct_byname` 
+  in which row and column types were not set correctly when one
+  operand was a `matrix` and the other operand was `NA`.
+
+
 # matsbyname 0.4.9 (2019-01-17)
 
 * Improved LICENSE file for submission to CRAN.
