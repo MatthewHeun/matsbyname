@@ -325,19 +325,23 @@ test_that("matrixproduct_byname works as expected", {
                DF_expected)
 })
 
-test_that("NA matrix product is correct", {
-  Z <- NA_real_ %>% setrowtype("Product") %>% setcoltype("Industry")
+test_that("matrix product with NA is correct", {
+  Z <- 42 %>% setrowtype("Product") %>% setcoltype("Industry")
   D <- 42 %>% setrowtype("Industry") %>% setcoltype("Product")
-  actual <- matrixproduct_byname(Z, D)
-  expected <- matrix(NA_real_, nrow = 1, ncol = 1) %>% setrowtype("Product") %>% setcoltype("Product")
-  expect_equal(actual, expected)
+  expect_equal(matrixproduct_byname(NA_real_, D), 
+               matrix(NA_real_, nrow = 1, ncol = 1) %>% setcoltype("Product"))
+  expect_equal(matrixproduct_byname(Z, NA_real_), 
+               matrix(NA_real_, nrow = 1, ncol = 1) %>% setrowtype("Product"))
   
+  # Try when a is NA and b is a matrix
+  Z2 <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("Product") %>% setcoltype("Industry")
   D2 <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("Industry") %>% setcoltype("Product")
-  actual2 <- matrixproduct_byname(Z, D2)
-  expected2 <- matrix(NA_real_, nrow = 2, ncol = 2, dimnames = dimnames(D2)) %>% 
-    setcoltype(coltype(D2))
-  expect_equal(actual2, expected2)
+  expect_equal(matrixproduct_byname(NA, D2),
+               matrix(NA_real_, nrow = 2, ncol = 2, dimnames = dimnames(D2)) %>% setcoltype(coltype(D2)))
+  expect_equal(matrixproduct_byname(Z2, NA), 
+               matrix(NA_real_, nrow = 2, ncol = 2, dimnames = dimnames(Z2)) %>% setrowtype(rowtype(Z2)))
 })
 
 test_that("hadamardproduct_byname works as expected", {
