@@ -325,6 +325,14 @@ test_that("matrixproduct_byname works as expected", {
                DF_expected)
 })
 
+test_that("NA matrix product is correct", {
+  Z <- NA_real_ %>% setrowtype("Product") %>% setcoltype("Industry")
+  D <- 42 %>% setrowtype("Industry") %>% setcoltype("Product")
+  actual <- matrixproduct_byname(Z, D)
+  expected <- matrix(NA_real_, nrow = 1, ncol = 1) %>% setrowtype("Product") %>% setcoltype("Product")
+  expect_equal(res, expected)
+})
+
 test_that("hadamardproduct_byname works as expected", {
   expect_equal(hadamardproduct_byname(2, 2), 4)
   expect_equal(hadamardproduct_byname(2, 2, 2), 8)
