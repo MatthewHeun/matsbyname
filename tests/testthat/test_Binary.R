@@ -91,8 +91,8 @@ test_that("sums of matrices in lists and data frames works as expected", {
   
   # sum_byname also should work with data frames, as they are lists.
   expect_equal(sum_byname(DF$U, DF$Y), list(UplusY, UplusY))
-  expect_equal(DF %>% mutate(sums = sum_byname(U, Y)), 
-               DF %>% mutate(sums = list(UplusY, UplusY)))
+  expect_equal(DF %>% dplyr::mutate(sums = sum_byname(U, Y)), 
+               DF %>% dplyr::mutate(sums = list(UplusY, UplusY)))
   
   # And sum_byname should work with more than 2 operands.
   expect_equal(sum_byname(DF$U, DF$Y, DF$Z), list(UYZ, UYZ))
@@ -139,7 +139,7 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   DF2[[1,"Y"]] <- Y
   DF2[[2,"Y"]] <- Y
   res2 <- DF2 %>% 
-    mutate(
+    dplyr::mutate(
       sum = sum_byname(ulist2_col, Y)
     )
   expect_equal(res2$sum[[1]][[1]], UplusY)
@@ -160,7 +160,7 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   DF3[[2,"Y"]] <- Y
   DF3[[3,"Y"]] <- Y
   res3 <- DF3 %>% 
-    mutate(
+    dplyr::mutate(
       sum = sum_byname(ulist3_col, Y)
     )
   expect_equal(res3$sum[[1]][[1]], U3plusY)

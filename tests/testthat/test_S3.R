@@ -1,5 +1,3 @@
-library(testthat)
-
 
 ###########################################################
 context("Creating a mat_byname")

@@ -96,7 +96,7 @@ test_that("sort_rows_cols works with different-length arguments for lists", {
   DF[[2, "m"]] <- mlist
   DF[[3, "m"]] <- mlist
   res <- DF %>% 
-    mutate(
+    dplyr::mutate(
       sorted = sort_rows_cols(m)
     )
   expect_equal(res$sorted[[1]][[1]], m_sorted)

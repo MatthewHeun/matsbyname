@@ -19,7 +19,7 @@ test_that("hatinv_byname works as expected", {
   DF[[1, "v_list"]] <- v
   DF[[2, "v_list"]] <- v
   DF <- DF %>% 
-    mutate(
+    dplyr::mutate(
       hatinv = hatinv_byname(v_list)
     )
   DF_expected <- data.frame(v_list = I(list()), hatinv = I(list()))
@@ -135,7 +135,7 @@ test_that("invert_byname works as expected", {
   # Because DF$minv is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$minv to NULL to get a match.
   attr(DF_expected$minv, which = "class") <- NULL
-  expect_equal(DF %>% mutate(minv = invert_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(minv = invert_byname(m)), DF_expected)
 })
 
 
@@ -165,7 +165,7 @@ test_that("transpose_byname works as expected", {
   # Because DF$mT is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$mT to NULL to get a match.
   attr(DF_expected$mT, which = "class") <- NULL
-  expect_equal(DF %>% mutate(mT = transpose_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(mT = transpose_byname(m)), DF_expected)
 })
 
 test_that("transpose_byname works with lists of lists", {
@@ -182,7 +182,7 @@ test_that("transpose_byname works with lists of lists", {
   DF[[1,"listofm"]] <- listofm
   DF[[2,"listofm"]] <- listofm
   
-  res <- DF %>% mutate(
+  res <- DF %>% dplyr::mutate(
     listofmT = transpose_byname(listofm)
   )
   expect_equal(res$listofmT[[1]][[1]], mT)
@@ -249,7 +249,7 @@ test_that("hatize_byname works as expected", {
   # Because DF$v_hat is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$v_hat to NULL to get a match.
   attr(DF_expected$v_hat, which = "class") <- NULL
-  expect_equal(DF %>% mutate(v_hat = hatize_byname(v)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(v_hat = hatize_byname(v)), DF_expected)
 })
 
 
@@ -311,7 +311,7 @@ test_that("identize_byname works as expected", {
   # Because DF$mI is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$mI to NULL to get a match.
   attr(DF_expected$mI, which = "class") <- NULL
-  expect_equal(DF %>% mutate(mI = identize_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(mI = identize_byname(m)), DF_expected)
 })
 
 
@@ -377,7 +377,7 @@ test_that("fractionze_byname works as expected", {
   DF[[1, "M"]] <- M
   DF[[2, "M"]] <- M
   DF2 <- DF %>% 
-    mutate(
+    dplyr::mutate(
       F_row = fractionize_byname(M, margin = 1),
       F_col = fractionize_byname(M, margin = 2),
       F_tot = fractionize_byname(M, margin = c(2,1))
@@ -533,7 +533,7 @@ test_that("matrix row selection by name in lists works as expected", {
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
-  DF <- DF %>% mutate(trimmed = select_rows_byname(.$m, 
+  DF <- DF %>% dplyr::mutate(trimmed = select_rows_byname(.$m, 
                                                    retain_pattern = make_pattern(row_col_names = c("i1", "i2"), 
                                                                                  pattern_type = "exact")))
   DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
@@ -604,7 +604,7 @@ test_that("matrix column selection by name in lists works as expected", {
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
-  DF <- DF %>% mutate(trimmed = select_cols_byname(.$m, 
+  DF <- DF %>% dplyr::mutate(trimmed = select_cols_byname(.$m, 
                                                    retain_pattern = make_pattern(row_col_names = c("p1", "p2"), 
                                                                                  pattern_type = "exact")))
   DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
@@ -650,7 +650,7 @@ test_that("rowsums_byname works as expected", {
   # Because DF$mi is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$mi to NULL to get a match.
   attr(DF_expected$mi, which = "class") <- NULL
-  expect_equal(DF %>% mutate(mi = rowsums_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(mi = rowsums_byname(m)), DF_expected)
 })
 
 test_that("colsums_byname works as expected", {
@@ -680,7 +680,7 @@ test_that("colsums_byname works as expected", {
   # Because DF$iTm is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$iTm to NULL to get a match.
   attr(DF_expected$iTm, which = "class") <- NULL
-  expect_equal(DF %>% mutate(iTm = colsums_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(iTm = colsums_byname(m)), DF_expected)
 })
 
 test_that("sumall_byname works as expected", {
@@ -706,7 +706,7 @@ test_that("sumall_byname works as expected", {
   # Because DF$summ is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$summ to NULL to get a match.
   attr(DF_expected$summ, which = "class") <- NULL
-  expect_equal(DF %>% mutate(summ = sumall_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(summ = sumall_byname(m)), DF_expected)
 })
 
 
@@ -742,7 +742,7 @@ test_that("rowprods_byname works as expected", {
   # Because DF$mi is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$mi to NULL to get a match.
   attr(DF_expected$mi, which = "class") <- NULL
-  expect_equal(DF %>% mutate(mi = rowprods_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(mi = rowprods_byname(m)), DF_expected)
 })
 
 test_that("colprods_byname works as expected", {
@@ -772,7 +772,7 @@ test_that("colprods_byname works as expected", {
   # Because DF$iTm is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$iTm to NULL to get a match.
   attr(DF_expected$iTm, which = "class") <- NULL
-  expect_equal(DF %>% mutate(iTm = colprods_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(iTm = colprods_byname(m)), DF_expected)
 })
 
 test_that("prodall_byname works as expected", {
@@ -798,7 +798,7 @@ test_that("prodall_byname works as expected", {
   # Because DF$summ is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$summ to NULL to get a match.
   attr(DF_expected$prodm, which = "class") <- NULL
-  expect_equal(DF %>% mutate(prodm = prodall_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(prodm = prodall_byname(m)), DF_expected)
 })
 
 
@@ -834,7 +834,7 @@ test_that("Iminus_byname works as expected", {
   # Because DF$Iminusm is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$Iminusm to NULL to get a match.
   attr(DF_expected$Iminusm, which = "class") <- NULL
-  expect_equal(DF %>% mutate(Iminusm = Iminus_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(Iminusm = Iminus_byname(m)), DF_expected)
   
   # If m is not square before subtracting from I,
   # it will be made square by the function complete_and_sort.
@@ -925,13 +925,13 @@ test_that("setting row names works as expected", {
   DF1[[1,"mcol"]] <- m1
   DF1[[2,"mcol"]] <- m1
   DF2 <- DF1 %>% 
-    mutate(
+    dplyr::mutate(
       mcol2 = setrownames_byname(mcol, c("r1", "r2"))
     )
   expect_equal(rownames(DF2$mcol2[[1]]), c("r1", "r2"))
   expect_equal(rownames(DF2$mcol2[[2]]), c("r1", "r2"))
   DF3 <- DF1 %>% 
-    mutate(
+    dplyr::mutate(
       mcol2 = setrownames_byname(mcol, c("r3", "r4"))
     )
   expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r3", "r4"), c("r3", "r4")))
@@ -957,13 +957,13 @@ test_that("setting col names works as expected", {
   DF1[[1,"mcol"]] <- m1
   DF1[[2,"mcol"]] <- m1
   DF2 <- DF1 %>% 
-    mutate(
+    dplyr::mutate(
       mcol2 = setcolnames_byname(mcol, c("c1", "c2", "c3"))
     )
   expect_equal(colnames(DF2$mcol2[[1]]), c("c1", "c2", "c3"))
   expect_equal(colnames(DF2$mcol2[[2]]), c("c1", "c2", "c3"))
   DF3 <- DF1 %>% 
-    mutate(
+    dplyr::mutate(
       mcol2 = setcolnames_byname(mcol, c("c1", "c2", "c3"))
     )
   expect_equal(list(colnames(DF3$mcol2[[1]]), colnames(DF3$mcol2[[2]])), list(c("c1", "c2", "c3"), c("c1", "c2", "c3")))
@@ -991,7 +991,7 @@ test_that("setrowtype and rowtype works as expected", {
   DF[[2,"U"]] <- U
   DF2 <- setrowtype(DF$U, "Products")
   expect_equal(rowtype(DF2), list("Products", "Products"))
-  DF3 <- DF %>% mutate(newcol = setrowtype(U, "Products"))
+  DF3 <- DF %>% dplyr::mutate(newcol = setrowtype(U, "Products"))
   expect_equal(DF3$newcol %>% rowtype, list("Products", "Products"))
 })
 
@@ -1012,7 +1012,7 @@ test_that("setcoltype and coltype works as expected", {
   DF[[2,"U"]] <- U
   DF2 <- setcoltype(DF$U, "Industries")
   expect_equal(coltype(DF2), list("Industries", "Industries"))
-  DF3 <- DF %>% mutate(newcol = setcoltype(U, "Industries"))
+  DF3 <- DF %>% dplyr::mutate(newcol = setcoltype(U, "Industries"))
   expect_equal(DF3$newcol %>% coltype, list("Industries", "Industries"))
 })
 
@@ -1065,7 +1065,7 @@ test_that("cumsum_byname works as expected", {
   # Try in a data frame.
   DF <- data.frame(l1 = I(lst), l2 = I(lst))
   CS <- DF %>% 
-    mutate(
+    dplyr::mutate(
       cs1 = cumsum_byname(l1), 
       cs2 = cumsum_byname(l2)
     )
@@ -1079,7 +1079,7 @@ test_that("cumsum_byname works as expected", {
   expect_equal(cumsum_byname(list(rowmat, rowmat, rowmat)), list(rowmat, 2*rowmat, 3*rowmat))
   # Test in a data frame
   DF2 <- data.frame(m = I(list(rowmat, rowmat, rowmat))) %>% 
-    mutate(
+    dplyr::mutate(
       m2 = cumsum_byname(m)
     )
   expect_equal(DF2$m2, list(rowmat, 2*rowmat, 3*rowmat))
@@ -1096,8 +1096,8 @@ test_that("cumsum_byname works as expected", {
   
   # Ensure that groups are respected in the context of mutate.
   DF3 <- data.frame(grp = c("A", "A", "B"), m = I(mlist)) %>% 
-    group_by(grp) %>% 
-    mutate(
+    dplyr::group_by(grp) %>% 
+    dplyr::mutate(
       m2 = cumsum_byname(m)
     )
   expect_equal(DF3$m2, list(m1, sum_byname(m1, m2), m3))
@@ -1119,7 +1119,7 @@ test_that("cumprod_byname works as expected", {
   # Try in a data frame.
   DF <- data.frame(l1 = I(lst), l2 = I(lst))
   CS <- DF %>%
-    mutate(
+    dplyr::mutate(
       cs1 = cumprod_byname(l1),
       cs2 = cumprod_byname(l2)
     )
@@ -1134,7 +1134,7 @@ test_that("cumprod_byname works as expected", {
   expect_equal(cumprod_byname(list(rowmat, rowmat, rowmat)), expected_powers)
   # Test in a data frame
   DF2 <- data.frame(m = I(list(rowmat, rowmat, rowmat))) %>%
-    mutate(
+    dplyr::mutate(
       m2 = cumprod_byname(m)
     )
   expect_equal(DF2$m2, expected_powers)
@@ -1151,8 +1151,8 @@ test_that("cumprod_byname works as expected", {
 
   # Ensure that groups are respected in the context of mutate.
   DF3 <- data.frame(grp = c("A", "A", "B"), m = I(mlist)) %>%
-    group_by(grp) %>%
-    mutate(
+    dplyr::group_by(grp) %>%
+    dplyr::mutate(
       m2 = cumprod_byname(m)
     )
   expect_equal(DF3$m2, list(m1, sum_byname(m1, m2) * 0, m3))
