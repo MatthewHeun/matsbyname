@@ -113,7 +113,7 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   
   # Operate on the lists in each cell of the data frame.
   res <- DF %>% 
-    mutate(
+    dplyr::mutate(
       sum = sum_byname(Ulist, Ylist),
       bigsum = sum_byname(Ulist, Ylist, Zlist)
     )
@@ -226,8 +226,8 @@ test_that("differences of matrices in lists and data frames works as expected", 
   expect_equal(difference_byname(list(100, 100), list(50, 50)), list(50, 50))
   expect_equal(difference_byname(list(U, U), list(Z, Z)), list(UminusZ, UminusZ))
   expect_equal(difference_byname(DF$U, DF$Z), list(UminusZ, UminusZ))
-  expect_equal(DF %>% mutate(diffs = difference_byname(U, Z)), 
-               DF %>% mutate(diffs = list(UminusZ)))
+  expect_equal(DF %>% dplyr::mutate(diffs = difference_byname(U, Z)), 
+               DF %>% dplyr::mutate(diffs = list(UminusZ)))
 })
 
 
@@ -307,7 +307,7 @@ test_that("matrixproduct_byname works as expected", {
   attr(DF_expected$matprods, which = "class") <- NULL
   attr(DF_expected$VYZ, which = "class") <- NULL
   expect_equal(DF %>% 
-                 mutate(
+                 dplyr::mutate(
                    matprods = matrixproduct_byname(V, Y),
                    VYZ = matrixproduct_byname(V, Y, Z)
                  ), 
@@ -319,7 +319,7 @@ test_that("matrixproduct_byname works as expected", {
   # Should obtain same results as above.
   M <- Y
   expect_equal(DF %>% 
-                 mutate(
+                 dplyr::mutate(
                    matprods = matrixproduct_byname(V, M),
                    VYZ = matrixproduct_byname(V, M, Z)), 
                DF_expected)
@@ -402,14 +402,14 @@ test_that("hadamardproduct_byname works as expected", {
   # and DF_expected$UUYY to NULL to get a match.
   attr(DF_expected$elementprods, which = "class") <- NULL
   attr(DF_expected$UUYY, which = "class") <- NULL
-  expect_equal(DF %>% mutate(
+  expect_equal(DF %>% dplyr::mutate(
     elementprods = hadamardproduct_byname(U, Y), 
     UUYY = hadamardproduct_byname(U, Y, U, Y)
   ), 
   DF_expected)
   # Test with a constant multipliying a column of the DF
   DF_2 <- DF %>% 
-    mutate(
+    dplyr::mutate(
       c = 10,
       A = hadamardproduct_byname(c, U)
     )
@@ -418,7 +418,7 @@ test_that("hadamardproduct_byname works as expected", {
   }
   constant <- 20
   DF_3 <- DF %>% 
-    mutate(
+    dplyr::mutate(
       B = hadamardproduct_byname(constant, U)
     )
   for (i in c(1:2)) {
@@ -426,7 +426,7 @@ test_that("hadamardproduct_byname works as expected", {
   }
   # Try with two constants multiplying a column of the DF.
   DF_3 <- DF_2 %>% 
-    mutate(
+    dplyr::mutate(
       d = 0.5,
       B = hadamardproduct_byname(c, d, U)
     )
@@ -509,7 +509,7 @@ test_that("quotient_byname works as expected", {
   # Because DF$elementquotients is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$elementquotients to NULL to get a match.
   attr(DF_expected$elementquotients, which = "class") <- NULL
-  expect_equal(DF %>% mutate(elementquotients = quotient_byname(U, Y)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(elementquotients = quotient_byname(U, Y)), DF_expected)
 })
 
 test_that("detailed example of quotient_byname works as expected", {
@@ -550,7 +550,7 @@ test_that("detailed example of quotient_byname works as expected", {
   DF[[2,"LV"]] <- LV[[2]]
   DF[[3,"LV"]] <- LV[[3]]
   DF2 <- DF %>% 
-    mutate(
+    dplyr::mutate(
       wv = quotient_byname(Lv, LV)
     )
   expect_equal(DF2$wv, expected)
@@ -585,7 +585,7 @@ test_that("pow_byname works as expected", {
   DF[[2, "m"]] <- m
   DF[[1, "pow"]] <- 0.5
   DF[[2, "pow"]] <- -1
-  res <- DF %>% mutate(
+  res <- DF %>% dplyr::mutate(
     sqrtm = pow_byname(m, 0.5),
     mtopow = pow_byname(m, pow)
   )
@@ -655,7 +655,7 @@ test_that("mean_byname works as expected", {
   # Because DF$means is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$means to NULL to get a match.
   attr(DF_expected$means, which = "class") <- NULL
-  expect_equal(DF %>% mutate(means = mean_byname(U, G)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(means = mean_byname(U, G)), DF_expected)
 })
 
 test_that("geometricmean_byname works as expected", {
@@ -717,7 +717,7 @@ test_that("geometricmean_byname works as expected", {
   attr(DF_expected$geomeans, which = "class") <- NULL
   attr(DF_expected$UGGgeomean, which = "class") <- NULL
   expect_equal(DF %>% 
-                 mutate(
+                 dplyr::mutate(
                    geomeans = geometricmean_byname(U, G), 
                    UGGgeomean = geometricmean_byname(U, G, G)
                  ), 
@@ -808,7 +808,7 @@ test_that("logarithmicmean_byname works as expected", {
   # Because DF$geomeans is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$geomeans to NULL to get a match.
   attr(DF_expected$logmeans, which = "class") <- NULL
-  expect_equal(DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(logmeans = logarithmicmean_byname(m1, m2)), DF_expected)
 })
 
 
@@ -876,7 +876,7 @@ test_that("equal_byname works as expected", {
   DF[[1,"matd"]] <- matd
   DF[[2,"matd"]] <- matd
   DF_2 <- DF %>% 
-    mutate(
+    dplyr::mutate(
       equal = equal_byname(matc, matd)
     )
   expect_equal(DF_2$equal, list(TRUE, TRUE))
@@ -989,7 +989,7 @@ test_that("list_of_rows_or_cols works as expected", {
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
-  DF <- DF %>% mutate(
+  DF <- DF %>% dplyr::mutate(
     extracted_rows = list_of_rows_or_cols(m, margin = 1), 
     extracted_cols = list_of_rows_or_cols(m, margin = 2)
   )
@@ -1080,7 +1080,7 @@ test_that("matrix multiplied by a constant in a data frame works", {
     # Duplicate the row to demonstrate byname operating simultaneously 
     # on all rows of the data frame.
     rbind(., .) %>% 
-    mutate(
+    dplyr::mutate(
       constant = make_list(x = 1:2, n = 2, lenx = 2),
       # Multiplies matrices in the sum column by corresponding constants in the c column.
       product = hadamardproduct_byname(constant, A)
