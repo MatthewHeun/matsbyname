@@ -1072,7 +1072,7 @@ test_that("matrix multiplied by a constant in a data frame works", {
   temp[[1, "matrix"]] <- "A"
   temp[[1, "vals"]] <- matA
   mats <- temp %>% 
-    rename(
+    dplyr::rename(
       matrix.name = matrix,
       matrix = vals
     ) %>% 

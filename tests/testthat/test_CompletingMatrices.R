@@ -325,7 +325,7 @@ test_that("complete_rows_cols works as expected", {
   # Test what happens when matrices are missing row or column names or both.
   A <- matrix(1:4, nrow = 2)
   expect_equal(complete_rows_cols(A), A)
-  expect_equal(complete_rows_cols(A %>% set_rownames(c("r1", "r2")) %>% set_colnames(c("c1", "c2"))), 
+  expect_equal(complete_rows_cols(A %>% magrittr::set_rownames(c("r1", "r2")) %>% magrittr::set_colnames(c("c1", "c2"))), 
                matrix(c(1, 3, 0, 0, 
                         2, 4, 0, 0, 
                         0, 0, 0, 0,
@@ -336,7 +336,7 @@ test_that("complete_rows_cols works as expected", {
   
   # Test with list for x and NULL for matrix
   expect_equal(complete_rows_cols(a = list(A, A)), list(A, A))
-  B <- A %>% set_rownames(c("r1", "r2")) %>% set_colnames(c("c1", "c2")) %>% 
+  B <- A %>% magrittr::set_rownames(c("r1", "r2")) %>% magrittr::set_colnames(c("c1", "c2")) %>% 
     setrowtype("row") %>% setcoltype("col")
   B_completed <- matrix(c(1, 3, 0, 0, 
                           2, 4, 0, 0, 
