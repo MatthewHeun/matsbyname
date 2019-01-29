@@ -1,14 +1,5 @@
 # Contains tests for the CompletingMatrices.R file in the byname package.
 
-# Need to put dplyr before testthat.
-# If not, the "matches" function in dplyr overrides the "matches" function in testthat,
-# and tests containing the string "(" don't work as expected.
-
-library(dplyr)
-library(magrittr)
-library(matsbyname)
-library(testthat)
-
 ###########################################################
 context("Sorting rows and columns")
 ###########################################################
