@@ -22,7 +22,13 @@ dimnames and provides row and column types.
 
 ## Installation
 
-You can install `matsbyname` from github with:
+You can install `matsbyname` from CRAN with:
+
+``` r
+install.packages("matsbyname")
+```
+
+You can install a recent development of `matsbyname` from github with:
 
 ``` r
 # install devtools if not already installed
