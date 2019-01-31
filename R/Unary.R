@@ -298,8 +298,9 @@ identize_byname <- function(a, margin = c(1,2)){
 #'
 #' @param a the matrix to be fractionized
 #' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
-#' If \code{2}, each entry in \code{a} is divided by its column's sum.
-#' If \code{c(1,2)}, each entry in \code{a} is divided by the sum of all entries in \code{a}.
+#' If \code{2} (columns), each entry in \code{a} is divided by its column's sum.
+#' If \code{c(1,2)} (both rows and columns), 
+#' each entry in \code{a} is divided by the sum of all entries in \code{a}.
 #'
 #' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
 #' @export
