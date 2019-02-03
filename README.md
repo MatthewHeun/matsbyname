@@ -17,8 +17,8 @@ status](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.s
 
 # matsbyname
 
-The `R` package `matsbyname` provides matrix mathematics that respects
-dimnames and provides row and column types.
+The `R` package `matsbyname` enables matrix mathematics wherein
+operations are performed “by name” and row and column types are allowed.
 
 ## Installation
 
@@ -28,7 +28,8 @@ You can install `matsbyname` from CRAN with:
 install.packages("matsbyname")
 ```
 
-You can install a recent development of `matsbyname` from github with:
+You can install a recent development version of `matsbyname` from github
+with:
 
 ``` r
 # install devtools if not already installed
@@ -45,8 +46,8 @@ The functions in this package were used in the paper [Heun et al.
 
 ## More Information
 
-Find more information, including vignettes and function documentation at
-<https://MatthewHeun.github.io/matsbyname/>.
+Find more information, including vignettes and function documentation,
+at <https://MatthewHeun.github.io/matsbyname/>.
 
 ## References
 
