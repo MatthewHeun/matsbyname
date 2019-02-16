@@ -52,7 +52,7 @@
             * This problem is not likely to be the fault of `matsbyname`.
             
 ## Downstream dependencies
-* `tools::package_dependencies("matsbyname")` 
-shows that the only downstream dependency for `matsbyname` is 
-the package `matsindf`, which I also wrote.
-* The current version of `matsindf` works perfectly with this version of `matsbyname` (v0.5.0).
+* Downstream dependencies were checked with `revdepcheck::revdep_check(num_workers = 4)`. 
+    * ERRORs: 0
+    * WARNINGs: 0
+    * NOTEs: 0
