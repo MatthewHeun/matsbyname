@@ -1,8 +1,5 @@
-## Context
-`matsbyname` is a new package that performs matrix mathematics "by name."
-
 ## Test environments
-* local macOS X install 10.14.2 (Mojave), R3.5.2
+* local macOS X install 10.14.3 (Mojave), R3.5.2
 * ubuntu 14.04.5 (on Travis CI), R3.5.2
 * windows (on win-builder)
     * `devtools::check_win_devel()`, R Under development (unstable) (2019-01-09 r75961)
