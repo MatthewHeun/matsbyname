@@ -1,5 +1,5 @@
 ## Context
-This is a bugfix release.
+`matsbyname` v0.4.10 is a minor bugfix release. See `NEWS.md` for details. 
 
 ## Test environments
 * local macOS X install 10.14.3 (Mojave), R3.5.2
@@ -52,6 +52,7 @@ This is a bugfix release.
             * This problem is not likely to be the fault of `matsbyname`.
             
 ## Downstream dependencies
-`tools::package_dependencies("matsbyname")` 
+* `tools::package_dependencies("matsbyname")` 
 shows that the only downstream dependency for `matsbyname` is 
 the package `matsindf`, which I also wrote.
+* The current version of `matsindf` works perfectly with this version of `matsbyname` (v0.5.0).

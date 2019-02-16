@@ -1,4 +1,4 @@
-# matsbyname 0.5.0 (2019-02-16)
+# matsbyname 0.4.10 (2019-02-16)
 
 * Added CRAN installation instructions to README.Rmd, now that the package is on CRAN.
 * Added CITATION file. `citation("matsbyname")` now gives useful information.
