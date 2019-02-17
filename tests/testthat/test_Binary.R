@@ -1,18 +1,5 @@
 # Contains tests for binary functions in the byname package.
 
-# Need to put dplyr before testthat.
-# If not, the "matches" function in dplyr overrides the "matches" function in testthat,
-# and tests containing the string "(" don't work as expectged.
-
-library(Hmisc)
-library(dplyr)
-library(parallel)
-library(matsbyname)
-library(magrittr)
-library(testthat)
-library(tidyr)
-
-
 ###########################################################
 context("Sums")
 ###########################################################
@@ -104,7 +91,8 @@ test_that("sums of matrices in lists and data frames works as expected", {
   
   # sum_byname also should work with data frames, as they are lists.
   expect_equal(sum_byname(DF$U, DF$Y), list(UplusY, UplusY))
-  expect_equal(DF %>% mutate(sums = sum_byname(U, Y)), DF %>% mutate(sums = list(UplusY, UplusY)))
+  expect_equal(DF %>% dplyr::mutate(sums = sum_byname(U, Y)), 
+               DF %>% dplyr::mutate(sums = list(UplusY, UplusY)))
   
   # And sum_byname should work with more than 2 operands.
   expect_equal(sum_byname(DF$U, DF$Y, DF$Z), list(UYZ, UYZ))
@@ -125,7 +113,7 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   
   # Operate on the lists in each cell of the data frame.
   res <- DF %>% 
-    mutate(
+    dplyr::mutate(
       sum = sum_byname(Ulist, Ylist),
       bigsum = sum_byname(Ulist, Ylist, Zlist)
     )
@@ -151,7 +139,7 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   DF2[[1,"Y"]] <- Y
   DF2[[2,"Y"]] <- Y
   res2 <- DF2 %>% 
-    mutate(
+    dplyr::mutate(
       sum = sum_byname(ulist2_col, Y)
     )
   expect_equal(res2$sum[[1]][[1]], UplusY)
@@ -172,7 +160,7 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   DF3[[2,"Y"]] <- Y
   DF3[[3,"Y"]] <- Y
   res3 <- DF3 %>% 
-    mutate(
+    dplyr::mutate(
       sum = sum_byname(ulist3_col, Y)
     )
   expect_equal(res3$sum[[1]][[1]], U3plusY)
@@ -224,7 +212,7 @@ test_that("differences of matrices works as expected", {
   # When subtrahend is missing, return minuend (in this case, Z) with sorted rows and columns.
   expect_equal(difference_byname(Z), sort_rows_cols(Z))
   # When minuend is missing, return - subtrahend (in this case, -Z)
-  expect_equal(difference_byname(subtrahend = Z), elementproduct_byname(-1, Z))
+  expect_equal(difference_byname(subtrahend = Z), hadamardproduct_byname(-1, Z))
 })
   
 test_that("differences of matrices in lists and data frames works as expected", {
@@ -238,8 +226,8 @@ test_that("differences of matrices in lists and data frames works as expected", 
   expect_equal(difference_byname(list(100, 100), list(50, 50)), list(50, 50))
   expect_equal(difference_byname(list(U, U), list(Z, Z)), list(UminusZ, UminusZ))
   expect_equal(difference_byname(DF$U, DF$Z), list(UminusZ, UminusZ))
-  expect_equal(DF %>% mutate(diffs = difference_byname(U, Z)), 
-               DF %>% mutate(diffs = list(UminusZ)))
+  expect_equal(DF %>% dplyr::mutate(diffs = difference_byname(U, Z)), 
+               DF %>% dplyr::mutate(diffs = list(UminusZ)))
 })
 
 
@@ -319,7 +307,7 @@ test_that("matrixproduct_byname works as expected", {
   attr(DF_expected$matprods, which = "class") <- NULL
   attr(DF_expected$VYZ, which = "class") <- NULL
   expect_equal(DF %>% 
-                 mutate(
+                 dplyr::mutate(
                    matprods = matrixproduct_byname(V, Y),
                    VYZ = matrixproduct_byname(V, Y, Z)
                  ), 
@@ -331,18 +319,37 @@ test_that("matrixproduct_byname works as expected", {
   # Should obtain same results as above.
   M <- Y
   expect_equal(DF %>% 
-                 mutate(
+                 dplyr::mutate(
                    matprods = matrixproduct_byname(V, M),
                    VYZ = matrixproduct_byname(V, M, Z)), 
                DF_expected)
 })
 
-test_that("elementproduct_byname works as expected", {
-  expect_equal(elementproduct_byname(2, 2), 4)
-  expect_equal(elementproduct_byname(2, 2, 2), 8)
-  expect_equal(elementproduct_byname(matrix(c(10, 10), nrow = 2, ncol = 1), 1000), 
+test_that("matrix product with NA is correct", {
+  Z <- 42 %>% setrowtype("Product") %>% setcoltype("Industry")
+  D <- 42 %>% setrowtype("Industry") %>% setcoltype("Product")
+  expect_equal(matrixproduct_byname(NA_real_, D), 
+               matrix(NA_real_, nrow = 1, ncol = 1) %>% setcoltype("Product"))
+  expect_equal(matrixproduct_byname(Z, NA_real_), 
+               matrix(NA_real_, nrow = 1, ncol = 1) %>% setrowtype("Product"))
+  
+  # Try when a is NA and b is a matrix
+  Z2 <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("Product") %>% setcoltype("Industry")
+  D2 <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("Industry") %>% setcoltype("Product")
+  expect_equal(matrixproduct_byname(NA, D2),
+               matrix(NA_real_, nrow = 2, ncol = 2, dimnames = dimnames(D2)) %>% setcoltype(coltype(D2)))
+  expect_equal(matrixproduct_byname(Z2, NA), 
+               matrix(NA_real_, nrow = 2, ncol = 2, dimnames = dimnames(Z2)) %>% setrowtype(rowtype(Z2)))
+})
+
+test_that("hadamardproduct_byname works as expected", {
+  expect_equal(hadamardproduct_byname(2, 2), 4)
+  expect_equal(hadamardproduct_byname(2, 2, 2), 8)
+  expect_equal(hadamardproduct_byname(matrix(c(10, 10), nrow = 2, ncol = 1), 1000), 
                matrix(c(10000, 10000), nrow = 2, ncol = 1))
-  expect_equal(elementproduct_byname(matrix(c(10, 10), nrow = 2, ncol = 1), 1000, 10), 
+  expect_equal(hadamardproduct_byname(matrix(c(10, 10), nrow = 2, ncol = 1), 1000, 10), 
                matrix(c(100000, 100000), nrow = 2, ncol = 1))
   
   productnames <- c("p1", "p2")
@@ -357,28 +364,28 @@ test_that("elementproduct_byname works as expected", {
                  setrowtype("Products") %>% setcoltype("Industries"))
   UY_expected <- matrix(c(4,6,6,4), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementproduct_byname(U, Y), UY_expected)
-  expect_equal(elementproduct_byname(U, 0), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
+  expect_equal(hadamardproduct_byname(U, Y), UY_expected)
+  expect_equal(hadamardproduct_byname(U, 0), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
                  setrowtype("Products") %>% setcoltype("Industries"))
   # See if a product of 4 vectors works as expected
   UUYY_expected <- matrix(c(16, 36, 36, 16), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementproduct_byname(U, U, Y, Y), UUYY_expected)
+  expect_equal(hadamardproduct_byname(U, U, Y, Y), UUYY_expected)
   
-  # Use dimnames(U), because after performing elementproduct_byname, 
+  # Use dimnames(U), because after performing hadamardproduct_byname, 
   # the rows and columns will be sorted alphabetically by name. 
   # U has rows and columns that are sorted alphabetically by name.
-  expect_equal(elementproduct_byname(0, Y), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
+  expect_equal(hadamardproduct_byname(0, Y), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
                  setrowtype("Products") %>% setcoltype("Industries"))
   # This also works with lists
-  expect_equal(elementproduct_byname(list(U, U), list(Y, Y)), list(UY_expected, UY_expected))
+  expect_equal(hadamardproduct_byname(list(U, U), list(Y, Y)), list(UY_expected, UY_expected))
   # And it works with data frames 
   DF <- data.frame(U = I(list()), Y = I(list()))
   DF[[1,"U"]] <- U
   DF[[2,"U"]] <- U
   DF[[1,"Y"]] <- Y
   DF[[2,"Y"]] <- Y
-  expect_equal(elementproduct_byname(DF$U, DF$Y), list(UY_expected, UY_expected))
+  expect_equal(hadamardproduct_byname(DF$U, DF$Y), list(UY_expected, UY_expected))
   DF_expected <- data.frame(U = I(list()), Y = I(list()), elementprods = I(list()), UUYY = I(list()))
   DF_expected[[1, "U"]] <- U
   DF_expected[[2, "U"]] <- U
@@ -395,33 +402,33 @@ test_that("elementproduct_byname works as expected", {
   # and DF_expected$UUYY to NULL to get a match.
   attr(DF_expected$elementprods, which = "class") <- NULL
   attr(DF_expected$UUYY, which = "class") <- NULL
-  expect_equal(DF %>% mutate(
-    elementprods = elementproduct_byname(U, Y), 
-    UUYY = elementproduct_byname(U, Y, U, Y)
+  expect_equal(DF %>% dplyr::mutate(
+    elementprods = hadamardproduct_byname(U, Y), 
+    UUYY = hadamardproduct_byname(U, Y, U, Y)
   ), 
   DF_expected)
   # Test with a constant multipliying a column of the DF
   DF_2 <- DF %>% 
-    mutate(
+    dplyr::mutate(
       c = 10,
-      A = elementproduct_byname(c, U)
+      A = hadamardproduct_byname(c, U)
     )
   for (i in c(1:2)) {
     expect_equal(DF_2$A[[i]], DF$U[[i]]*10)
   }
   constant <- 20
   DF_3 <- DF %>% 
-    mutate(
-      B = elementproduct_byname(constant, U)
+    dplyr::mutate(
+      B = hadamardproduct_byname(constant, U)
     )
   for (i in c(1:2)) {
     expect_equal(DF_3$B[[i]], DF$U[[i]]*20)
   }
   # Try with two constants multiplying a column of the DF.
   DF_3 <- DF_2 %>% 
-    mutate(
+    dplyr::mutate(
       d = 0.5,
-      B = elementproduct_byname(c, d, U)
+      B = hadamardproduct_byname(c, d, U)
     )
   for (i in c(1:2)) {
     expect_equal(DF_3$B[[i]], DF$U[[i]]*10*0.5)
@@ -430,9 +437,9 @@ test_that("elementproduct_byname works as expected", {
   # Try with a list of matrices and a single value.
   Ux2_expected <- matrix(c(2, 4, 6, 8), nrow = 2, ncol = 2, dimnames = dimnames(DF$U[[1]])) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementproduct_byname(DF$U, 2), list(Ux2_expected, Ux2_expected))
+  expect_equal(hadamardproduct_byname(DF$U, 2), list(Ux2_expected, Ux2_expected))
   # Try with a list of matrices and a single matrix
-  expect_equal(elementproduct_byname(DF$U, 
+  expect_equal(hadamardproduct_byname(DF$U, 
                                      matrix(c(2,2,
                                               2,2), 
                                             nrow = 2, ncol = 2, 
@@ -446,8 +453,8 @@ test_that("elementproduct_byname works as expected", {
 context("Quotients")
 ###########################################################
 
-test_that("elementquotient_byname works as expected", {
-  expect_equal(elementquotient_byname(100, 50), 2)
+test_that("quotient_byname works as expected", {
+  expect_equal(quotient_byname(100, 50), 2)
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
@@ -460,37 +467,37 @@ test_that("elementquotient_byname works as expected", {
                  setrowtype("Products") %>% setcoltype("Industries"))
   UoverY_expected <- matrix(c(1,1,1,1), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementquotient_byname(U, Y), UoverY_expected)
-  expect_equal(elementquotient_byname(U, 10), 
+  expect_equal(quotient_byname(U, Y), UoverY_expected)
+  expect_equal(quotient_byname(U, 10), 
                matrix(c(0.1, 0.2, 0.3, 0.4), nrow = 2, dimnames = dimnames(U)) %>% 
                  setrowtype("Products") %>% setcoltype("Industries"))
   tenoverY_expected <- matrix(c(10, 5, 10/3, 2.5), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementquotient_byname(10, Y), tenoverY_expected)
+  expect_equal(quotient_byname(10, Y), tenoverY_expected)
   # This also works with lists
-  expect_equal(elementquotient_byname(10, list(Y,Y)), list(tenoverY_expected, tenoverY_expected))
+  expect_equal(quotient_byname(10, list(Y,Y)), list(tenoverY_expected, tenoverY_expected))
   # Try more-complicated lists
-  expect_equal(elementquotient_byname(list(10, 10, 10), list(Y, Y, Y)), 
+  expect_equal(quotient_byname(list(10, 10, 10), list(Y, Y, Y)), 
                list(tenoverY_expected, tenoverY_expected, tenoverY_expected))
   mat12 <- matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
   mat34 <- matrix(c(3, 4), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
-  expect_equal(elementquotient_byname(list(mat12, mat34), list(2, 4)), 
+  expect_equal(quotient_byname(list(mat12, mat34), list(2, 4)), 
                list(mat12 / 2, mat34 / 4))
   
-  # Use dimnames(U), because after performing elementquotient_byname, 
+  # Use dimnames(U), because after performing quotient_byname, 
   # the rows and columns will be sorted alphabetically by name. 
   # U has rows and columns that are sorted alphabetically by name.
   Yover10_expected <- matrix(c(0.1, 0.2, 0.3, 0.4), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(elementquotient_byname(list(Y,Y), 10), list(Yover10_expected, Yover10_expected))
-  expect_equal(elementquotient_byname(list(U, U), list(Y, Y)), list(UoverY_expected, UoverY_expected))
+  expect_equal(quotient_byname(list(Y,Y), 10), list(Yover10_expected, Yover10_expected))
+  expect_equal(quotient_byname(list(U, U), list(Y, Y)), list(UoverY_expected, UoverY_expected))
   # Also works with data frames.
   DF <- data.frame(U = I(list()), Y = I(list()))
   DF[[1,"U"]] <- U
   DF[[2,"U"]] <- U
   DF[[1,"Y"]] <- Y
   DF[[2,"Y"]] <- Y
-  expect_equal(elementquotient_byname(DF$U, DF$Y), list(UoverY_expected, UoverY_expected))
+  expect_equal(quotient_byname(DF$U, DF$Y), list(UoverY_expected, UoverY_expected))
   DF_expected <- data.frame(U = I(list()), Y = I(list()), elementquotients = I(list()))
   DF_expected[[1, "U"]] <- U
   DF_expected[[2, "U"]] <- U
@@ -502,10 +509,10 @@ test_that("elementquotient_byname works as expected", {
   # Because DF$elementquotients is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$elementquotients to NULL to get a match.
   attr(DF_expected$elementquotients, which = "class") <- NULL
-  expect_equal(DF %>% mutate(elementquotients = elementquotient_byname(U, Y)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(elementquotients = quotient_byname(U, Y)), DF_expected)
 })
 
-test_that("detailed example of elementquotient_byname works as expected", {
+test_that("detailed example of quotient_byname works as expected", {
   Lv <- list(
     matrix(c(36.40956907, 
              86.56170245), nrow = 2, ncol = 1), 
@@ -524,14 +531,14 @@ test_that("detailed example of elementquotient_byname works as expected", {
                             0.794087179), nrow = 2, ncol = 1)) %>% 
     setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor") %>% 
     setrowtype("subcat") %>% setcoltype("factor")
-  expect_equal(elementquotient_byname(Lv, LV), expected)
+  expect_equal(quotient_byname(Lv, LV), expected)
   
   # This is the failure mode.
   # Somehow, LV is not maintained as a list. 
   # It comes in as a numeric vector.
   # Then, organize_args turns it into a funky list.
   LVnumeric <- c(123.3151731, 208.1079558, 285.6464036)
-  expect_equal(elementquotient_byname(Lv, LVnumeric), expected)
+  expect_equal(quotient_byname(Lv, LVnumeric), expected)
 
   # Now try these in a data frame
   DF <- data.frame(Lv = I(list()), LV = I(list()))
@@ -543,8 +550,8 @@ test_that("detailed example of elementquotient_byname works as expected", {
   DF[[2,"LV"]] <- LV[[2]]
   DF[[3,"LV"]] <- LV[[3]]
   DF2 <- DF %>% 
-    mutate(
-      wv = elementquotient_byname(Lv, LV)
+    dplyr::mutate(
+      wv = quotient_byname(Lv, LV)
     )
   expect_equal(DF2$wv, expected)
 })
@@ -554,23 +561,23 @@ test_that("detailed example of elementquotient_byname works as expected", {
 context("Element power")
 ###########################################################
 
-test_that("elementpow_byname works as expected", {
+test_that("pow_byname works as expected", {
   # Try with single numbers
-  expect_equal(elementpow_byname(2, 2), 4)
-  expect_equal(elementpow_byname(2, 3), 8)
-  expect_equal(elementpow_byname(-1, 3), -1)
-  expect_equal(elementpow_byname(-1, 4), 1)
-  expect_equal(elementpow_byname(-1000, 0), 1)
-  expect_equal(elementpow_byname(0, 500), 0)
-  expect_equal(elementpow_byname(2, -1), 0.5)
+  expect_equal(pow_byname(2, 2), 4)
+  expect_equal(pow_byname(2, 3), 8)
+  expect_equal(pow_byname(-1, 3), -1)
+  expect_equal(pow_byname(-1, 4), 1)
+  expect_equal(pow_byname(-1000, 0), 1)
+  expect_equal(pow_byname(0, 500), 0)
+  expect_equal(pow_byname(2, -1), 0.5)
   
   # Try with single matrices
   m <- matrix(2, nrow = 2, ncol = 3)
   sqrtm <- matrix(sqrt(2), nrow = 2, ncol = 3)
-  expect_equal(elementpow_byname(m, 0.5), sqrtm)
+  expect_equal(pow_byname(m, 0.5), sqrtm)
   
   # Try with a list of matrices
-  expect_equal(elementpow_byname(list(m, m), 0.5), list(sqrtm, sqrtm))
+  expect_equal(pow_byname(list(m, m), 0.5), list(sqrtm, sqrtm))
   
   # Try in a data frame
   DF <- data.frame(m = I(list()), pow = I(list()))
@@ -578,9 +585,9 @@ test_that("elementpow_byname works as expected", {
   DF[[2, "m"]] <- m
   DF[[1, "pow"]] <- 0.5
   DF[[2, "pow"]] <- -1
-  res <- DF %>% mutate(
-    sqrtm = elementpow_byname(m, 0.5),
-    mtopow = elementpow_byname(m, pow)
+  res <- DF %>% dplyr::mutate(
+    sqrtm = pow_byname(m, 0.5),
+    mtopow = pow_byname(m, pow)
   )
   expect_equal(res$sqrtm, list(sqrtm, sqrtm))
   expect_equal(res$mtopow, list(m^0.5, m^-1))
@@ -648,7 +655,7 @@ test_that("mean_byname works as expected", {
   # Because DF$means is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$means to NULL to get a match.
   attr(DF_expected$means, which = "class") <- NULL
-  expect_equal(DF %>% mutate(means = mean_byname(U, G)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(means = mean_byname(U, G)), DF_expected)
 })
 
 test_that("geometricmean_byname works as expected", {
@@ -710,7 +717,7 @@ test_that("geometricmean_byname works as expected", {
   attr(DF_expected$geomeans, which = "class") <- NULL
   attr(DF_expected$UGGgeomean, which = "class") <- NULL
   expect_equal(DF %>% 
-                 mutate(
+                 dplyr::mutate(
                    geomeans = geometricmean_byname(U, G), 
                    UGGgeomean = geometricmean_byname(U, G, G)
                  ), 
@@ -801,7 +808,7 @@ test_that("logarithmicmean_byname works as expected", {
   # Because DF$geomeans is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$geomeans to NULL to get a match.
   attr(DF_expected$logmeans, which = "class") <- NULL
-  expect_equal(DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(logmeans = logarithmicmean_byname(m1, m2)), DF_expected)
 })
 
 
@@ -869,7 +876,7 @@ test_that("equal_byname works as expected", {
   DF[[1,"matd"]] <- matd
   DF[[2,"matd"]] <- matd
   DF_2 <- DF %>% 
-    mutate(
+    dplyr::mutate(
       equal = equal_byname(matc, matd)
     )
   expect_equal(DF_2$equal, list(TRUE, TRUE))
@@ -946,6 +953,9 @@ test_that("samestructure_byname works as expected", {
   expect_true(all(samestructure_byname(list(U, U), list(U, U)) %>% as.logical()))
   expect_true(all(samestructure_byname(list(U, U), list(V, V)) %>% as.logical()))
   expect_true(all(samestructure_byname(list(V, V), list(U, U)) %>% as.logical()))
+  # Check when one or both of rowtype or coltype is NULL
+  expect_false(samestructure_byname(U, U %>% setrowtype(NULL)))
+  expect_false(samestructure_byname(U, U %>% setcoltype(NULL)))
 })
 
 test_that("make_pattern works as expected", {
@@ -979,7 +989,7 @@ test_that("list_of_rows_or_cols works as expected", {
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
-  DF <- DF %>% mutate(
+  DF <- DF %>% dplyr::mutate(
     extracted_rows = list_of_rows_or_cols(m, margin = 1), 
     extracted_cols = list_of_rows_or_cols(m, margin = 2)
   )
@@ -1062,18 +1072,18 @@ test_that("matrix multiplied by a constant in a data frame works", {
   temp[[1, "matrix"]] <- "A"
   temp[[1, "vals"]] <- matA
   mats <- temp %>% 
-    rename(
+    dplyr::rename(
       matrix.name = matrix,
       matrix = vals
     ) %>% 
-    spread(key = matrix.name, value = matrix) %>% 
+    tidyr::spread(key = matrix.name, value = matrix) %>% 
     # Duplicate the row to demonstrate byname operating simultaneously 
     # on all rows of the data frame.
     rbind(., .) %>% 
-    mutate(
+    dplyr::mutate(
       constant = make_list(x = 1:2, n = 2, lenx = 2),
       # Multiplies matrices in the sum column by corresponding constants in the c column.
-      product = elementproduct_byname(constant, A)
+      product = hadamardproduct_byname(constant, A)
     )
   expect_equal(mats$product[[1]], matrix(c(1, 3,
                                            2, 4),

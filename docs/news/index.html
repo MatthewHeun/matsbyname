@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.10</span>
       </span>
     </div>
 
@@ -118,9 +118,82 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0-4-10-2019-02-16" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-10-2019-02-16" class="anchor"></a>matsbyname 0.4.10 (2019-02-16)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Added CRAN installation instructions to README.Rmd, now that the package is on CRAN.</li>
+<li>Added CITATION file. <code><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation("matsbyname")</a></code> now gives useful information.</li>
+<li>Fixed a bug in <code>matrixproduct_byname</code> in which row and column types were not set correctly when one operand was a <code>matrix</code> and the other operand was <code>NA</code>.</li>
+</ul>
+</div>
+    <div id="matsbyname-0-4-9-2019-01-17" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-9-2019-01-17" class="anchor"></a>matsbyname 0.4.9 (2019-01-17)<small> 2019-01-25 </small>
+</h1>
+<ul>
+<li>Improved LICENSE file for submission to CRAN.</li>
+<li>First version to appear on CRAN.</li>
+<li>Added CRAN and lifecycle badges.</li>
+</ul>
+</div>
+    <div id="matsbyname-0-4-8-2019-01-16" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-8-2019-01-16" class="anchor"></a>matsbyname 0.4.8 (2019-01-16)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Improved cran-comments for submission to CRAN..</li>
+</ul>
+</div>
+    <div id="matsbyname-0-4-7-2019-01-07" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-7-2019-01-07" class="anchor"></a>matsbyname 0.4.7 (2019-01-07)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Cleaned up dependencies for testing.</li>
+</ul>
+</div>
+    <div id="matsbyname-0-4-6-2019-01-07" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-6-2019-01-07" class="anchor"></a>matsbyname 0.4.6 (2019-01-07)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Now all external function calls are fully qualified.</li>
+</ul>
+</div>
+    <div id="matsbyname-0-4-5-2019-01-07" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-5-2019-01-07" class="anchor"></a>matsbyname 0.4.5 (2019-01-07)<small> Unreleased </small>
+</h1>
+<ul>
+<li>New function <code><a href="../reference/elementapply_byname.html">elementapply_byname()</a></code> applies a function to an element of a matrix specified by <code>row</code> and <code>col</code> arguments.</li>
+<li>Breaking changes:
+<ul>
+<li>
+<code>elementproduct_byname()</code> changed to <code><a href="../reference/hadamardproduct_byname.html">hadamardproduct_byname()</a></code> to avoid name collision with <code><a href="../reference/elementapply_byname.html">elementapply_byname()</a></code>.</li>
+<li>
+<code>elementquotient_byname()</code> changed to <code><a href="../reference/quotient_byname.html">quotient_byname()</a></code>.</li>
+<li>
+<code>elementpow_byname()</code> changed to <code><a href="../reference/pow_byname.html">pow_byname()</a></code>.</li>
+<li>
+<code>elementexp_byname()</code> changed to <code><a href="../reference/exp_byname.html">exp_byname()</a></code>.</li>
+</ul>
+</li>
+</ul>
+</div>
+    <div id="matsbyname-0-4-4-2019-01-02" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0-4-4-2019-01-02" class="anchor"></a>matsbyname 0.4.4 (2019-01-02)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Added tests to achieve 100% code coverage.</li>
+</ul>
+</div>
     <div id="matsbyname-0-4-3-2019-01-02" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-4-3-2019-01-02" class="anchor"></a>matsbyname 0.4.3 (2019-01-02)</h1>
+<a href="#matsbyname-0-4-3-2019-01-02" class="anchor"></a>matsbyname 0.4.3 (2019-01-02)<small> Unreleased </small>
+</h1>
 <ul>
 <li>
 <code><a href="../reference/complete_rows_cols.html">complete_rows_cols()</a></code> is now agnostic about the order of columns in <code>fillrow</code> and the order of rows in <code>fillcol</code>.</li>
@@ -128,29 +201,33 @@
 </div>
     <div id="matsbyname-0-4-2-2019-01-02" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-4-2-2019-01-02" class="anchor"></a>matsbyname 0.4.2 (2019-01-02)</h1>
+<a href="#matsbyname-0-4-2-2019-01-02" class="anchor"></a>matsbyname 0.4.2 (2019-01-02)<small> Unreleased </small>
+</h1>
 <ul>
 <li>
-<code><a href="../reference/sort_rows_cols.html">sort_rows_cols()</a></code> now allows entires in roworder and colorder that are not presently names of rows or columns. Extraneous names are silently ignored.</li>
+<code><a href="../reference/sort_rows_cols.html">sort_rows_cols()</a></code> now allows entries in roworder and colorder that are not presently names of rows or columns. Extraneous names are silently ignored.</li>
 </ul>
 </div>
     <div id="matsbyname-0-4-1-2019-01-01" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-4-1-2019-01-01" class="anchor"></a>matsbyname 0.4.1 (2019-01-01)</h1>
+<a href="#matsbyname-0-4-1-2019-01-01" class="anchor"></a>matsbyname 0.4.1 (2019-01-01)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Adding code coverage badge.</li>
 </ul>
 </div>
     <div id="matsbyname-0-4-0-2018-12-27" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-4-0-2018-12-27" class="anchor"></a>matsbyname 0.4.0 (2018-12-27)</h1>
+<a href="#matsbyname-0-4-0-2018-12-27" class="anchor"></a>matsbyname 0.4.0 (2018-12-27)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Attempted first release to CRAN. (Failed.)</li>
 </ul>
 </div>
     <div id="matsbyname-0-3-8-2018-12-21" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-8-2018-12-21" class="anchor"></a>matsbyname 0.3.8 (2018-12-21)</h1>
+<a href="#matsbyname-0-3-8-2018-12-21" class="anchor"></a>matsbyname 0.3.8 (2018-12-21)<small> Unreleased </small>
+</h1>
 <ul>
 <li>
 <code><a href="../reference/fractionize_byname.html">fractionize_byname()</a></code> now correctly handles non-square matrices.</li>
@@ -158,7 +235,8 @@
 </div>
     <div id="matsbyname-0-3-7-2018-12-02" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-7-2018-12-02" class="anchor"></a>matsbyname 0.3.7 (2018-12-02)</h1>
+<a href="#matsbyname-0-3-7-2018-12-02" class="anchor"></a>matsbyname 0.3.7 (2018-12-02)<small> Unreleased </small>
+</h1>
 <ul>
 <li>
 <code><a href="../reference/hatinv_byname.html">hatinv_byname()</a></code> now handles <code>0</code> values in input vectors gracefully. By default, <code>0</code> values become <code>.Machine$double.xmax</code>.<br>
@@ -167,7 +245,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-3-6-2018-11-25" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-6-2018-11-25" class="anchor"></a>matsbyname 0.3.6 (2018-11-25)</h1>
+<a href="#matsbyname-0-3-6-2018-11-25" class="anchor"></a>matsbyname 0.3.6 (2018-11-25)<small> Unreleased </small>
+</h1>
 <ul>
 <li>
 <code><a href="../reference/iszero_byname.html">iszero_byname()</a></code> now checks if values of <code><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">abs(a)</a></code> are <code>&lt;= tol</code>. (Previously, <code><a href="../reference/iszero_byname.html">iszero_byname()</a></code> tested with <code>&lt; tol</code>.) This change allows the zero matrix to pass the test when <code>tol = 0</code>, as we would want.</li>
@@ -178,14 +257,16 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-3-5-2018-11-18" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-5-2018-11-18" class="anchor"></a>matsbyname 0.3.5 (2018-11-18)</h1>
+<a href="#matsbyname-0-3-5-2018-11-18" class="anchor"></a>matsbyname 0.3.5 (2018-11-18)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Now using <code><a href="https://www.rdocumentation.org/packages/base/topics/identical">identical()</a></code> instead of <code><a href="https://www.rdocumentation.org/packages/base/topics/Logic">isTRUE(all.equal())</a></code> for <code><a href="../reference/equal_byname.html">equal_byname()</a></code> function.</li>
 </ul>
 </div>
     <div id="matsbyname-0-3-4-2018-11-18" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-4-2018-11-18" class="anchor"></a>matsbyname 0.3.4 (2018-11-18)</h1>
+<a href="#matsbyname-0-3-4-2018-11-18" class="anchor"></a>matsbyname 0.3.4 (2018-11-18)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Added new function <code><a href="../reference/hatinv_byname.html">hatinv_byname()</a></code>.</li>
 <li>Documented defaults for arguments to <code>count_*</code> functions.</li>
@@ -194,7 +275,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-3-3-2018-10-29" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-3-2018-10-29" class="anchor"></a>matsbyname 0.3.3 (2018-10-29)</h1>
+<a href="#matsbyname-0-3-3-2018-10-29" class="anchor"></a>matsbyname 0.3.3 (2018-10-29)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Fix version number on pkgdown website.</li>
 <li>Updated many details of pkgdown website for better user navigation.</li>
@@ -202,7 +284,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-3-2-2018-10-29" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-2-2018-10-29" class="anchor"></a>matsbyname 0.3.2 (2018-10-29)</h1>
+<a href="#matsbyname-0-3-2-2018-10-29" class="anchor"></a>matsbyname 0.3.2 (2018-10-29)<small> Unreleased </small>
+</h1>
 <ul>
 <li>First release to CRAN didn’t work.</li>
 <li>Added online documentation at github with pkgdown.</li>
@@ -210,7 +293,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-3-1-2018-08-25" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-1-2018-08-25" class="anchor"></a>matsbyname 0.3.1 (2018-08-25)</h1>
+<a href="#matsbyname-0-3-1-2018-08-25" class="anchor"></a>matsbyname 0.3.1 (2018-08-25)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Updated to new version of Roxygen which changed line breaks in some .Rd files.</li>
 <li>First release to CRAN.</li>
@@ -218,14 +302,16 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-3-0-2018-06-20" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-3-0-2018-06-20" class="anchor"></a>matsbyname 0.3.0 (2018-06-20)</h1>
+<a href="#matsbyname-0-3-0-2018-06-20" class="anchor"></a>matsbyname 0.3.0 (2018-06-20)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Removed parallelism features introduced in v0.2.6. Detailed timings revealed that the parallel code was slower than single-thread code. This topic may be revisited in the future. But for now, it is best to remove the multicore code. So there are no longer any <code>mc.cores</code> arguments to <code>matsbyname</code> functions.</li>
 </ul>
 </div>
     <div id="matsbyname-0-2-9-2018-05-24" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-9-2018-05-24" class="anchor"></a>matsbyname 0.2.9 (2018-05-24)</h1>
+<a href="#matsbyname-0-2-9-2018-05-24" class="anchor"></a>matsbyname 0.2.9 (2018-05-24)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Beginnings of S3 class <code>matbyname</code>. Not sure if I want to keep it.</li>
 <li>Fixed an argument name error exposed by check.</li>
@@ -233,7 +319,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-2-8-2018-05-17" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-8-2018-05-17" class="anchor"></a>matsbyname 0.2.8 (2018-05-17)</h1>
+<a href="#matsbyname-0-2-8-2018-05-17" class="anchor"></a>matsbyname 0.2.8 (2018-05-17)<small> Unreleased </small>
+</h1>
 <ul>
 <li>New functions <code><a href="../reference/all_byname.html">all_byname()</a></code> and <code><a href="../reference/any_byname.html">any_byname()</a></code> make logical tests easy.</li>
 <li>New function <code><a href="../reference/replaceNaN_byname.html">replaceNaN_byname()</a></code> replaces <code>NaN</code> entries with a value (default is 0).</li>
@@ -241,7 +328,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-2-7-2018-04-15" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-7-2018-04-15" class="anchor"></a>matsbyname 0.2.7 (2018-04-15)</h1>
+<a href="#matsbyname-0-2-7-2018-04-15" class="anchor"></a>matsbyname 0.2.7 (2018-04-15)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Refactored most <code>*col*_byname</code> functions to call their respective <code>*row*_byname</code> functions with a transposed argument, thereby simplifying code.</li>
 <li>Fixed a bug caused by the above refactoring. In <code>select_cols_byname</code>, a <code>NULL</code> result terminated the executing thread.</li>
@@ -253,7 +341,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-2-6-2018-03-16" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-6-2018-03-16" class="anchor"></a>matsbyname 0.2.6 (2018-03-16)</h1>
+<a href="#matsbyname-0-2-6-2018-03-16" class="anchor"></a>matsbyname 0.2.6 (2018-03-16)<small> Unreleased </small>
+</h1>
 <div id="new-multicore-functionality-available-in-most-_byname-functions-" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-multicore-functionality-available-in-most-_byname-functions-" class="anchor"></a>New multicore functionality available in most <code>*_byname</code> functions.</h2>
@@ -273,7 +362,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-2-5-2018-03-13" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-5-2018-03-13" class="anchor"></a>matsbyname 0.2.5 (2018-03-13)</h1>
+<a href="#matsbyname-0-2-5-2018-03-13" class="anchor"></a>matsbyname 0.2.5 (2018-03-13)<small> Unreleased </small>
+</h1>
 <div id="new-apply_byname-functions-enable-api-improvements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-apply_byname-functions-enable-api-improvements" class="anchor"></a>New <code>*apply_byname</code> functions enable API improvements</h2>
@@ -307,28 +397,32 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-2-4-2018-03-08" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-4-2018-03-08" class="anchor"></a>matsbyname 0.2.4 (2018-03-08)</h1>
+<a href="#matsbyname-0-2-4-2018-03-08" class="anchor"></a>matsbyname 0.2.4 (2018-03-08)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Preparing for submission to CRAN. Changed many variable names in the APIs to standardize on “a” and “b” as names for matrix or list of matrices arguments.</li>
 </ul>
 </div>
     <div id="matsbyname-0-2-3-2018-03-08" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-3-2018-03-08" class="anchor"></a>matsbyname 0.2.3 (2018-03-08)</h1>
+<a href="#matsbyname-0-2-3-2018-03-08" class="anchor"></a>matsbyname 0.2.3 (2018-03-08)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Eliminate dependence (temporarily) on <code>matsindf</code>. Doing so allows <code>matsbyname</code> to be submitted first to CRAN. Also, Travis builds are now successful, having eliminated the circular dependence between <code>matsbyname</code> and <code>matsindf</code>.</li>
 </ul>
 </div>
     <div id="matsbyname-0-2-2-2018-03-02" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-2-2018-03-02" class="anchor"></a>matsbyname 0.2.2 (2018-03-02)</h1>
+<a href="#matsbyname-0-2-2-2018-03-02" class="anchor"></a>matsbyname 0.2.2 (2018-03-02)<small> Unreleased </small>
+</h1>
 <ul>
 <li>New function <code>elementpow_byname</code> raises all elements of a matrix to a power.</li>
 </ul>
 </div>
     <div id="matsbyname-0-2-1-2018-02-28" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-1-2018-02-28" class="anchor"></a>matsbyname 0.2.1 (2018-02-28)</h1>
+<a href="#matsbyname-0-2-1-2018-02-28" class="anchor"></a>matsbyname 0.2.1 (2018-02-28)<small> Unreleased </small>
+</h1>
 <ul>
 <li>
 <code>complete_rows_cols</code> now accepts <code>fillrow</code> and <code>fillcol</code> arguments. These arguments can be used (instead of the <code>fill</code> argument) to specify the values of filled rows and columns when completing a matrix. When conflicts arise, precedence among the <code>fill*</code> arguments is <code>fillrow</code> then <code>fillcol</code> then <code>fill</code>.</li>
@@ -336,28 +430,32 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="matsbyname-0-2-0-2018-02-23" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-2-0-2018-02-23" class="anchor"></a>matsbyname 0.2.0 (2018-02-23)</h1>
+<a href="#matsbyname-0-2-0-2018-02-23" class="anchor"></a>matsbyname 0.2.0 (2018-02-23)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Name change to <code>matsbyname</code>.</li>
 </ul>
 </div>
     <div id="byname-0-1-9-2018-02-14" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-9-2018-02-14" class="anchor"></a>byname 0.1.9 (2018-02-14)</h1>
+<a href="#byname-0-1-9-2018-02-14" class="anchor"></a>byname 0.1.9 (2018-02-14)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Now preserving names of list items in <code>*apply_byname</code> functions.</li>
 </ul>
 </div>
     <div id="byname-0-1-8-2018-02-14" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-8-2018-02-14" class="anchor"></a>byname 0.1.8 (2018-02-14)</h1>
+<a href="#byname-0-1-8-2018-02-14" class="anchor"></a>byname 0.1.8 (2018-02-14)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Added <code>applybyname</code> vignette.</li>
 </ul>
 </div>
     <div id="byname-0-1-7-2018-02-14" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-7-2018-02-14" class="anchor"></a>byname 0.1.7 (2018-02-14)</h1>
+<a href="#byname-0-1-7-2018-02-14" class="anchor"></a>byname 0.1.7 (2018-02-14)<small> Unreleased </small>
+</h1>
 <ul>
 <li>
 <code>unaryapply_byname</code> and <code>binaryapply_byname</code> now have <code>.FUNdots</code> arguments through which arguments to <code>FUN</code> should be passed. Use of the <code>...</code> argument is no longer possible. <code>...</code> is reserved for future changes to allow an unlimited number of arguments to some functions, such as <code>sum_byname</code>.</li>
@@ -366,7 +464,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="byname-0-1-6-2018-02-08" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-6-2018-02-08" class="anchor"></a>byname 0.1.6 (2018-02-08)</h1>
+<a href="#byname-0-1-6-2018-02-08" class="anchor"></a>byname 0.1.6 (2018-02-08)<small> Unreleased </small>
+</h1>
 <ul>
 <li>New functions <code>cumsum_byname</code>, <code>cumprod_byname</code>, and <code>cumapply_byname</code>.</li>
 <li>Miscellaneous improvements to documentation of many functions.</li>
@@ -374,14 +473,16 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="byname-0-1-5-2018-02-01" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-5-2018-02-01" class="anchor"></a>byname 0.1.5 (2018-02-01)</h1>
+<a href="#byname-0-1-5-2018-02-01" class="anchor"></a>byname 0.1.5 (2018-02-01)<small> Unreleased </small>
+</h1>
 <ul>
 <li>New functions <code>elementlog_byname</code> and <code>elementexp_byname</code>.</li>
 </ul>
 </div>
     <div id="byname-0-1-4-2018-01-31" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-4-2018-01-31" class="anchor"></a>byname 0.1.4 (2018-01-31)</h1>
+<a href="#byname-0-1-4-2018-01-31" class="anchor"></a>byname 0.1.4 (2018-01-31)<small> Unreleased </small>
+</h1>
 <ul>
 <li>New functions <code>unaryapply_byname</code> and <code>binaryapply_byname</code>. These functions have a <code>FUN</code> argument that allows an arbitrary function to be applied <code>_byname</code> to matrices or data frames containing matrices.
 <ul>
@@ -398,7 +499,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="byname-0-1-3-2018-01-27" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-3-2018-01-27" class="anchor"></a>byname 0.1.3 (2018-01-27)</h1>
+<a href="#byname-0-1-3-2018-01-27" class="anchor"></a>byname 0.1.3 (2018-01-27)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Fixed a vector vs. list bug that caused failure of binary <code>_byname</code> functions when one argument was a list and the other was a non-constant numeric vector.</li>
 <li>Simplified <code>complete_rows_cols_byname</code>. It no longer takes a <code>names</code> argument.</li>
@@ -407,7 +509,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="byname-0-1-2-2018-01-23" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-2-2018-01-23" class="anchor"></a>byname 0.1.2 (2018-01-23)</h1>
+<a href="#byname-0-1-2-2018-01-23" class="anchor"></a>byname 0.1.2 (2018-01-23)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Added the following functions:
 <ul>
@@ -425,7 +528,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="byname-0-1-1-2018-01-21" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1-1-2018-01-21" class="anchor"></a>byname 0.1.1 (2018-01-21)</h1>
+<a href="#byname-0-1-1-2018-01-21" class="anchor"></a>byname 0.1.1 (2018-01-21)<small> Unreleased </small>
+</h1>
 <ul>
 <li>Added the following functions:
 <ul>
@@ -442,7 +546,8 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
 </div>
     <div id="byname-0-1" class="section level1">
 <h1 class="page-header">
-<a href="#byname-0-1" class="anchor"></a>byname 0.1</h1>
+<a href="#byname-0-1" class="anchor"></a>byname 0.1<small> Unreleased </small>
+</h1>
 <p>Initial version.</p>
 </div>
   </div>
@@ -451,6 +556,13 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#matsbyname-0-4-10-2019-02-16">0.4.10</a></li>
+        <li><a href="#matsbyname-0-4-9-2019-01-17">0.4.9</a></li>
+        <li><a href="#matsbyname-0-4-8-2019-01-16">0.4.8</a></li>
+        <li><a href="#matsbyname-0-4-7-2019-01-07">0.4.7</a></li>
+        <li><a href="#matsbyname-0-4-6-2019-01-07">0.4.6</a></li>
+        <li><a href="#matsbyname-0-4-5-2019-01-07">0.4.5</a></li>
+        <li><a href="#matsbyname-0-4-4-2019-01-02">0.4.4</a></li>
         <li><a href="#matsbyname-0-4-3-2019-01-02">0.4.3</a></li>
         <li><a href="#matsbyname-0-4-2-2019-01-02">0.4.2</a></li>
         <li><a href="#matsbyname-0-4-1-2019-01-01">0.4.1</a></li>

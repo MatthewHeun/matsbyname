@@ -122,20 +122,20 @@ difference_byname <- function(minuend, subtrahend){
 #'
 #' @examples
 #' library(dplyr)
-#' elementpow_byname(2, 3)
+#' pow_byname(2, 3)
 #' m <- matrix(2, nrow = 2, ncol = 3, dimnames = list(paste0("r", 1:2), paste0("c", 1:3))) %>% 
 #'   setrowtype("rows") %>% setcoltype("cols")
-#' elementpow_byname(m, 2)
+#' pow_byname(m, 2)
 #' DF <- data.frame(m = I(list()), pow = I(list()))
 #' DF[[1, "m"]] <- m
 #' DF[[2, "m"]] <- m
 #' DF[[1, "pow"]] <- 0.5
 #' DF[[2, "pow"]] <- -1
 #' DF %>% mutate(
-#'   sqrtm = elementpow_byname(m, 0.5),
-#'   mtopow = elementpow_byname(m, pow)
+#'   sqrtm = pow_byname(m, 0.5),
+#'   mtopow = pow_byname(m, pow)
 #' )
-elementpow_byname <- function(a, pow){
+pow_byname <- function(a, pow){
   binaryapply_byname(`^`, a, pow)
 }
 
@@ -204,13 +204,15 @@ matrixproduct_byname <- function(...){
     sort_rows_cols()
 }
 
-#' Name-wise matrix element multiplication
+#' Name-wise matrix Hadamard multiplication
 #'
 #' Performs a union and sorting of names of rows and columns for both multiplicand and multiplier
 #' for each sequential multiplication step.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
 #' the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.
+#' 
+#' The Hadamard product is also known as the \code{entrywise} product.
 #'
 #' @param ... operands; constants, matrices, or lists of matrices 
 #'
@@ -220,7 +222,7 @@ matrixproduct_byname <- function(...){
 #'
 #' @examples
 #' library(dplyr)
-#' elementproduct_byname(2, 2)
+#' hadamardproduct_byname(2, 2)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -228,22 +230,22 @@ matrixproduct_byname <- function(...){
 #' G <- matrix(1:4, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' U * G # Not what is desired, because names aren't aligned
-#' elementproduct_byname(U, G)
-#' elementproduct_byname(U, G, G)
-#' elementproduct_byname(U, 0)
-#' elementproduct_byname(0, G)
+#' hadamardproduct_byname(U, G)
+#' hadamardproduct_byname(U, G, G)
+#' hadamardproduct_byname(U, 0)
+#' hadamardproduct_byname(0, G)
 #' # This also works with lists
-#' elementproduct_byname(list(U, U), list(G, G))
+#' hadamardproduct_byname(list(U, U), list(G, G))
 #' DF <- data.frame(U = I(list()), G = I(list()))
 #' DF[[1,"U"]] <- U
 #' DF[[2,"U"]] <- U
 #' DF[[1,"G"]] <- G
 #' DF[[2,"G"]] <- G
-#' elementproduct_byname(DF$U, DF$G)
-#' DF %>% mutate(elementprods = elementproduct_byname(U, G))
-elementproduct_byname <- function(...){
+#' hadamardproduct_byname(DF$U, DF$G)
+#' DF %>% mutate(entrywiseprods = hadamardproduct_byname(U, G))
+hadamardproduct_byname <- function(...){
   # Note that prod(1) returns 1, not 0.
-  # So elementproduct_byname returns the non-missing argument if only 1 argument is provided.
+  # So hadamardproduct_byname returns the non-missing argument if only 1 argument is provided.
   if (length(list(...)) == 1) {
     return(list(...)[[1]])
   }
@@ -252,6 +254,8 @@ elementproduct_byname <- function(...){
 
 #' Name-wise matrix element division
 #'
+#' Element-wise division of two matrices.
+#' 
 #' Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
 #' prior to element division.
 #' Zeroes are inserted for missing matrix elements.
@@ -267,7 +271,7 @@ elementproduct_byname <- function(...){
 #'
 #' @examples
 #' library(dplyr)
-#' elementquotient_byname(100, 50)
+#' quotient_byname(100, 50)
 #' commoditynames <- c("c1", "c2")
 #' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
@@ -275,21 +279,21 @@ elementproduct_byname <- function(...){
 #' G <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
 #'   setrowtype("Commodities") %>% setcoltype("Industries")
 #' U / G # Non-sensical.  Names aren't aligned
-#' elementquotient_byname(U, G)
-#' elementquotient_byname(U, 10)
-#' elementquotient_byname(10, G)
+#' quotient_byname(U, G)
+#' quotient_byname(U, 10)
+#' quotient_byname(10, G)
 #' # This also works with lists
-#' elementquotient_byname(10, list(G,G))
-#' elementquotient_byname(list(G,G), 10)
-#' elementquotient_byname(list(U, U), list(G, G))
+#' quotient_byname(10, list(G,G))
+#' quotient_byname(list(G,G), 10)
+#' quotient_byname(list(U, U), list(G, G))
 #' DF <- data.frame(U = I(list()), G = I(list()))
 #' DF[[1,"U"]] <- U
 #' DF[[2,"U"]] <- U
 #' DF[[1,"G"]] <- G
 #' DF[[2,"G"]] <- G
-#' elementquotient_byname(DF$U, DF$G)
-#' DF %>% mutate(elementquotients = elementquotient_byname(U, G))
-elementquotient_byname <- function(dividend, divisor){
+#' quotient_byname(DF$U, DF$G)
+#' DF %>% mutate(elementquotients = quotient_byname(U, G))
+quotient_byname <- function(dividend, divisor){
   binaryapply_byname(`/`, dividend, divisor)
 }
 
@@ -334,7 +338,8 @@ elementquotient_byname <- function(dividend, divisor){
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
 mean_byname <- function(...){
-  sum_byname(...) %>% elementquotient_byname(length(list(...)))
+  sum_byname(...) %>% 
+    quotient_byname(length(list(...)))
 }
 
 #' Name- and element-wise geometric mean of two matrices.
@@ -379,7 +384,8 @@ mean_byname <- function(...){
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
 geometricmean_byname <- function(...){
-  elementproduct_byname(...) %>% elementpow_byname(1/length(list(...)))
+  hadamardproduct_byname(...) %>% 
+    pow_byname(1/length(list(...)))
 }
 
 #' Name- and element-wise logarithmic mean of matrices
@@ -429,7 +435,7 @@ geometricmean_byname <- function(...){
 #' logarithmicmean_byname(DF$m1, DF$m2)
 #' DF %>% mutate(logmeans = logarithmicmean_byname(m1, m2))
 logarithmicmean_byname <- function(a, b, base = exp(1)){
-  logmean.func <- function(a, b, base) {
+  logmean_func <- function(a, b, base) {
     # At this point, our list is gone.  
     # a and b are single matrices or single numbers. 
     # Furthermore, a and b should have 
@@ -452,7 +458,7 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
     out %>%  
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
-  binaryapply_byname(logmean.func, a = a, b = b, .FUNdots = list(base = base))
+  binaryapply_byname(logmean_func, a = a, b = b, .FUNdots = list(base = base))
 }
 
 #' Compare two matrices "by name" for equality
@@ -489,10 +495,10 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
 equal_byname <- function(...){
-  equal.func <- function(a, b){
-    return(isTRUE(all.equal(a, b)))
+  equal_func <- function(a, b){
+    return(isTRUE(base::all.equal(a, b)))
   }
-  naryapplylogical_byname(equal.func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE)
 }
 
 #' Compare two matrices "by name" for exact equality
@@ -528,10 +534,10 @@ equal_byname <- function(...){
 #' dimnames(b) <- dimnames(a)
 #' identical_byname(a, b)
 identical_byname <- function(...){
-  identical.func <- function(a, b){
+  ident_func <- function(a, b){
     return(identical(a, b))
   }
-  naryapplylogical_byname(identical.func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(ident_func, ..., set_rowcoltypes = FALSE)
 }
 
 #' Test whether matrices or lists of matrices have same structure
@@ -560,7 +566,7 @@ identical_byname <- function(...){
 #' # Also works with lists
 #' samestructure_byname(list(U, U), list(U, U))
 samestructure_byname <- function(...){
-  samestruct.func <- function(a, b){
+  samestruct_func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
     }
@@ -590,7 +596,7 @@ samestructure_byname <- function(...){
     }
     return(TRUE)
   }
-  naryapplylogical_byname(samestruct.func, ..., 
+  naryapplylogical_byname(samestruct_func, ..., 
                           match_type = "none", set_rowcoltypes = FALSE, 
                           .organize = FALSE)
 }

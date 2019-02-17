@@ -28,12 +28,12 @@ abs_byname <- function(a){
 #' @export
 #'
 #' @examples
-#' elementlog_byname(exp(1))
+#' log_byname(exp(1))
 #' m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
-#' elementlog_byname(m)
-#' elementlog_byname(m, base = 10)
-elementlog_byname <- function(a, base = exp(1)){
+#' log_byname(m)
+#' log_byname(m, base = 10)
+log_byname <- function(a, base = exp(1)){
   unaryapply_byname(log, a = a, .FUNdots = list(base = base))
 }
 
@@ -48,12 +48,12 @@ elementlog_byname <- function(a, base = exp(1)){
 #' @export
 #'
 #' @examples
-#' elementexp_byname(1)
+#' exp_byname(1)
 #' m <- matrix(c(log(10),log(1),log(1),log(100)), 
 #'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
-#' elementexp_byname(m)
-elementexp_byname <- function(a){
+#' exp_byname(m)
+exp_byname <- function(a){
   unaryapply_byname(exp, a = a)
 }
 
@@ -122,8 +122,12 @@ transpose_byname <- function(a){
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
   hatize_func <- function(v){
+    # Check if this is the right size
+    if (!(nrow(v) == 1 | ncol(v) == 1)) {
+      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
+    }
     v_sorted <- sort_rows_cols(v)
-    out <- OpenMx::vec2diag(v_sorted)
+    out <- diag(as.numeric(v_sorted))
     if (ncol(v) == 1) {
       rownames(out) <- rownames(v_sorted)
       colnames(out) <- rownames(v_sorted)
@@ -131,13 +135,11 @@ hatize_byname <- function(v){
       # So, we must do so here.
       out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
     } else if (nrow(v) == 1) {
-      rownames(out) <- colnames(v)
-      colnames(out) <- colnames(v)
+      rownames(out) <- colnames(v_sorted)
+      colnames(out) <- colnames(v_sorted)
       # This function does not rely on unaryapply_byname to set row and column types.
       # So, we must do so here.
       out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
-    } else {
-      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
     return(out)
   }
@@ -225,7 +227,7 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' Row and column names are sorted on output.
 #'
 #' @param a the matrix whose names and dimensions are to be preserved in an identity matrix or vector
-#' @param margin determines whether an identity vector or matrix is returned
+#' @param margin determines whether an identity vector or matrix is returned. See details.
 #'
 #' @return An identity matrix or vector.
 #' 
@@ -244,7 +246,7 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' # This also works with lists
 #' identize_byname(list(M, M))
 identize_byname <- function(a, margin = c(1,2)){
-  identize.func <- function(a, margin){
+  identize_func <- function(a, margin){
     if (class(a) == "numeric" & length(a) == 1) {
       # Assume we have a single number here
       # Thus, we return 1.
@@ -256,7 +258,7 @@ identize_byname <- function(a, margin = c(1,2)){
     }
     
     if (length(margin) == 2 && all(margin %in% c(1,2))) {
-      # M is a matrix. 
+      # a is a matrix. 
       # Return the identity matrix with 1's on diagonal,
       # of same dimensions as a
       # and same names and types as a.
@@ -266,7 +268,7 @@ identize_byname <- function(a, margin = c(1,2)){
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     }
     
-    if (length(margin) != 1 || !margin %in% c(1,2)) {
+    if (length(margin) != 1 || !(margin %in% c(1,2))) {
       stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
     }
     
@@ -283,9 +285,9 @@ identize_byname <- function(a, margin = c(1,2)){
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     } 
     # Should never get here, but just in case:
-    stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
+    # stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(identize.func, a = a, .FUNdots = list(margin = margin), 
+  unaryapply_byname(identize_func, a = a, .FUNdots = list(margin = margin), 
                     rowcoltypes = "none")
 }
 
@@ -296,8 +298,9 @@ identize_byname <- function(a, margin = c(1,2)){
 #'
 #' @param a the matrix to be fractionized
 #' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
-#' If \code{2}, each entry in \code{a} is divided by its column's sum.
-#' If \code{c(1,2)}, each entry in \code{a} is divided by the sum of all entries in \code{a}.
+#' If \code{2} (columns), each entry in \code{a} is divided by its column's sum.
+#' If \code{c(1,2)} (both rows and columns), 
+#' each entry in \code{a} is divided by the sum of all entries in \code{a}.
 #'
 #' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
 #' @export
@@ -312,7 +315,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(a, margin){
-  fractionize.func <- function(a, margin){
+  fractionize_func <- function(a, margin){
     if (!"matrix" %in% class(a) && !"data.frame" %in% class(a)) {
       # Assume we have a single number here
       # By dividing a by itself, we could throw a division by zero error,
@@ -347,9 +350,9 @@ fractionize_byname <- function(a, margin){
       return(sweep(a, margin, colSums(a), `/`))
     } 
     # Should never get here, but just in case:
-    stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
+    # stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
-  unaryapply_byname(fractionize.func, a = a, .FUNdots = list(margin = margin), 
+  unaryapply_byname(fractionize_func, a = a, .FUNdots = list(margin = margin), 
                     rowcoltypes = "all")
 }
 
@@ -395,7 +398,7 @@ rowsums_byname <- function(a, colname = NA){
     # Set to NA so that we can try setting to coltype in rowsum.func
     colname <- NA_character_
   }
-  rowsum.func <- function(a, colname){
+  rowsum_func <- function(a, colname){
     if (is.na(colname)) {
       colname <- coltype(a)
     }
@@ -412,7 +415,7 @@ rowsums_byname <- function(a, colname = NA){
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
   }
-  unaryapply_byname(rowsum.func, a = a, .FUNdots = list(colname = colname), 
+  unaryapply_byname(rowsum_func, a = a, .FUNdots = list(colname = colname), 
                     rowcoltypes = "none")
 }
 
@@ -489,13 +492,13 @@ colsums_byname <- function(a, rowname = NA){
 #' )
 #' res$sums
 sumall_byname <- function(a){
-  sum.func <- function(a){
+  sum_func <- function(a){
     a %>%
       rowsums_byname %>%
       colsums_byname %>%
       as.numeric
   }
-  unaryapply_byname(sum.func, a = a, rowcoltypes = "none")
+  unaryapply_byname(sum_func, a = a, rowcoltypes = "none")
 }
 
 #' Row products, sorted by name
@@ -538,7 +541,7 @@ rowprods_byname <- function(a, colname = NA){
     # Set the column name to NA so we can change it in the function.
     colname <- NA_character_
   }
-  rowprod.func <- function(a, colname){
+  rowprod_func <- function(a, colname){
     if (is.na(colname)) {
       colname <- coltype(a)
     }
@@ -553,7 +556,7 @@ rowprods_byname <- function(a, colname = NA){
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
   }
-  unaryapply_byname(rowprod.func, a = a, .FUNdots = list(colname = colname), 
+  unaryapply_byname(rowprod_func, a = a, .FUNdots = list(colname = colname), 
                     rowcoltypes = "none")
 }
 
@@ -629,13 +632,13 @@ colprods_byname <- function(a, rowname = NA){
 #' )
 #' res$prods
 prodall_byname <- function(a){
-  prodall.func <- function(a){
+  prodall_func <- function(a){
     a %>%
       rowprods_byname() %>%
       colprods_byname() %>%
       as.numeric()
   }
-  unaryapply_byname(prodall.func, a = a, rowcoltypes = "none")
+  unaryapply_byname(prodall_func, a = a, rowcoltypes = "none")
 }
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
@@ -652,8 +655,6 @@ prodall_byname <- function(a){
 #' 
 #' @export
 #' 
-#' @importFrom magrittr %>%
-#' 
 #' @examples
 #' m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
@@ -669,13 +670,13 @@ prodall_byname <- function(a){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' Iminus_byname(m2)
 Iminus_byname <- function(a){
-  iminus.func <- function(a){
+  iminus_func <- function(a){
     A <- complete_and_sort(a) %>%
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
     difference_byname(identize_byname(A), A)
   }
-  unaryapply_byname(iminus.func, a = a, rowcoltypes = "all")
+  unaryapply_byname(iminus_func, a = a, rowcoltypes = "all")
 }
 
 
@@ -747,7 +748,7 @@ cumsum_byname <- function(a){
 #'   setrowtype("row") %>% setcoltype("col")
 #' cumprod_byname(list(m1, m2, m3))
 cumprod_byname <- function(a){
-  cumapply_byname(FUN = elementproduct_byname, a)
+  cumapply_byname(FUN = hadamardproduct_byname, a)
 }
 
 
@@ -768,11 +769,11 @@ cumprod_byname <- function(a){
 #' replaceNaN_byname(a)
 #' replaceNaN_byname(a, 42)
 replaceNaN_byname <- function(a, val = 0){
-  replace.func <- function(a){
+  replace_func <- function(a){
     a[is.nan(a)] <- val
     return(a)
   }
-  unaryapply_byname(replace.func, a = a, rowcoltypes = "all")
+  unaryapply_byname(replace_func, a = a, rowcoltypes = "all")
 }
 
 

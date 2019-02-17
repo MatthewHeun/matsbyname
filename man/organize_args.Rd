@@ -11,7 +11,7 @@ organize_args(a, b, match_type = "all", fill)
 
 \item{b}{the second argument to be organized}
 
-\item{match_type}{one of \code{"all"} or \code{"matmult"}.
+\item{match_type}{one of \code{"all"}, \code{"matmult"}, \code{"none"}.
 When both \code{a} and \code{b} are matrices,
 "\code{all}" (the default) indicates that
 rowtypes of \code{a} must match rowtypes of \code{b} and

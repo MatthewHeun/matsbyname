@@ -7,6 +7,9 @@
 
 <!-- *********** -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/matsbyname)](https://cran.r-project.org/package=matsbyname)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Travis-CI Build
 Status](https://travis-ci.org/MatthewHeun/matsbyname.svg?branch=master)](https://travis-ci.org/MatthewHeun/matsbyname)
 [![Coverage
@@ -14,12 +17,19 @@ status](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.s
 
 # matsbyname
 
-The `R` package `matsbyname` provides matrix mathematics that respects
-dimnames and provides row and column types.
+The `R` package `matsbyname` enables matrix mathematics wherein
+operations are performed “by name” and row and column types are allowed.
 
 ## Installation
 
-You can install `matsbyname` from github with:
+You can install `matsbyname` from CRAN with:
+
+``` r
+install.packages("matsbyname")
+```
+
+You can install a recent development version of `matsbyname` from github
+with:
 
 ``` r
 # install devtools if not already installed
@@ -31,13 +41,13 @@ devtools::install_github("MatthewHeun/matsbyname", build_vignettes = TRUE)
 
 ## History
 
-The functions in this package were used in the paper [Heun et al.
-(2018)](https://doi.org/10.1016/j.apenergy.2018.05.109).
+The functions in this package were used in  
+[Heun et al. (2018)](https://doi.org/10.1016/j.apenergy.2018.05.109).
 
 ## More Information
 
-Find more information, including vignettes and function documentation at
-<https://MatthewHeun.github.io/matsbyname/>.
+Find more information, including vignettes and function documentation,
+at <https://MatthewHeun.github.io/matsbyname/>.
 
 ## References
 

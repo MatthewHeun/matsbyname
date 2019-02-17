@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.10</span>
       </span>
     </div>
 
@@ -94,26 +94,28 @@
 <div id="matsbyname" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#matsbyname" class="anchor"></a>matsbyname</h1></div>
-<p>The <code>R</code> package <code>matsbyname</code> provides matrix mathematics that respects dimnames and provides row and column types.</p>
+<p>The <code>R</code> package <code>matsbyname</code> enables matrix mathematics wherein operations are performed “by name” and row and column types are allowed.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install <code>matsbyname</code> from github with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install devtools if not already installed</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># install.packages("devtools")</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"MatthewHeun/matsbyname"</span>)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># To build vignettes locally, use</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"MatthewHeun/matsbyname"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>You can install <code>matsbyname</code> from CRAN with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"matsbyname"</span>)</a></code></pre></div>
+<p>You can install a recent development version of <code>matsbyname</code> from github with:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># install devtools if not already installed</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"MatthewHeun/matsbyname"</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co"># To build vignettes locally, use</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"MatthewHeun/matsbyname"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
 <div id="history" class="section level2">
 <h2 class="hasAnchor">
 <a href="#history" class="anchor"></a>History</h2>
-<p>The functions in this package were used in the paper <a href="https://doi.org/10.1016/j.apenergy.2018.05.109">Heun et al. <span class="citation">(2018)</span></a>.</p>
+<p>The functions in this package were used in<br><a href="https://doi.org/10.1016/j.apenergy.2018.05.109">Heun et al. <span class="citation">(2018)</span></a>.</p>
 </div>
 <div id="more-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#more-information" class="anchor"></a>More Information</h2>
-<p>Find more information, including vignettes and function documentation at <a href="https://MatthewHeun.github.io/matsbyname/" class="uri">https://MatthewHeun.github.io/matsbyname/</a>.</p>
+<p>Find more information, including vignettes and function documentation, at <a href="https://MatthewHeun.github.io/matsbyname/" class="uri">https://MatthewHeun.github.io/matsbyname/</a>.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
@@ -131,6 +133,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=matsbyname">https://​cloud.r-project.org/​package=matsbyname</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/MatthewHeun/matsbyname">https://​github.com/​MatthewHeun/​matsbyname</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/MatthewHeun/matsbyname/issues">https://​github.com/​MatthewHeun/​matsbyname/​issues</a>
@@ -145,6 +149,12 @@
 </li>
 </ul>
 </div>
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing matsbyname</a></li>
+</ul>
+</div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
@@ -155,6 +165,8 @@
       <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=matsbyname"><img src="https://www.r-pkg.org/badges/version/matsbyname" alt="CRAN status"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a></li>
 <li><a href="https://travis-ci.org/MatthewHeun/matsbyname"><img src="https://travis-ci.org/MatthewHeun/matsbyname.svg?branch=master" alt="Travis-CI Build Status"></a></li>
 <li><a href="https://codecov.io/github/MatthewHeun/matsbyname?branch=master"><img src="https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
 </ul>

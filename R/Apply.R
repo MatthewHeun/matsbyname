@@ -21,8 +21,6 @@
 #'          \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
 #'                             Rather, \code{FUN} will set rowtype and coltype.}
 #'        }
-#' 
-#' @importFrom parallel mcMap
 #'
 #' @return the result of applying \code{FUN} "by name" to \code{a}.
 #' 
@@ -46,10 +44,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
     lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
     return(Map(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes) %>% 
              # Preserve names of a (if present) in the outgoing list.
-             set_names(names(a)))
-  }
-  if (is.null(a)) {
-    return(NULL)
+             magrittr::set_names(names(a)))
   }
   out <- do.call(FUN, c(list(a), .FUNdots))
 
@@ -71,9 +66,51 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
       setcoltype(coltype(a))
   } else if (rowcoltypes == "none") {
     # Do nothing. rowtype and coltype should have been set by FUN.
-  } else {
-    stop(paste("Unknown rowcoltypes argument in unaryapply_byname:", rowcoltypes))
   }
+  return(out)
+}
+
+
+#' Apply a function to an element of a matrix specified by rows and columns
+#' 
+#' \code{FUN} is applied to the element of \code{a} that is 
+#' 
+#' \code{row} and \code{col} can be any of row or column names or integer indices or a mix of both.
+#'
+#' @param FUN a unary function to be applied to specified rows and columns of \code{a}
+#' @param a the argument to \code{FUN}
+#' @param row the row name of the element to which \code{FUN} will be applied
+#' @param col the column name of the element to which \code{FUN} will be applied
+#' @param .FUNdots a list of additional arguments to \code{FUN}. (Default is \code{NULL}.)
+#'
+#' @return \code{a}, after \code{FUN} has been applied to the element at \code{row} and \code{col}
+#' 
+#' @export
+#'
+#' @examples
+#' divide <- function(x, divisor){
+#'   x/divisor
+#' }
+#' m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+#'   setrowtype("row") %>% setcoltype("col")
+#' elementapply_byname(divide, a = m, row = 1, col = 1, .FUNdots = list(divisor = 2))
+#' elementapply_byname(divide, a = m, row = 1, col = 2, .FUNdots = list(divisor = 10))
+#' elementapply_byname(divide, a = m, row = "r2", col = "c2", .FUNdots = list(divisor = 100))
+elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
+  if (is.null(a)) {
+    return(NULL)
+  }
+  if (is.list(a)) {
+    lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
+    lrow <- make_list(x = row, n = length(a), lenx = 1)
+    lcol <- make_list(x = col, n = length(a), lenx = 1)
+    lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+    return(Map(elementapply_byname, lfun, a, lrow, lcol, lFUNdots) %>% 
+             # Preserve names of a (if present) in the outgoing list.
+             magrittr::set_names(names(a)))
+  }
+  out <- a
+  out[row, col] <- do.call(FUN, c(list(a[row, col]), .FUNdots))
   return(out)
 }
 
@@ -135,7 +172,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
                  match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
              # If a and b have names, organize_args will have ensured that those names are same.
              # So we can set the names of the outgoing list to the names of a.
-             set_names(names(a)))
+             magrittr::set_names(names(a)))
   }
   out <- do.call(FUN, c(list(a), list(b), .FUNdots))
   
@@ -345,7 +382,7 @@ naryapplylogical_byname <- function(FUN, ...,
 #' cumapply_byname(sum, list(1, 2, 3, 4))
 #' cumapply_byname(sum_byname, list(1, 2, 3, 4))
 #' cumapply_byname(prod, list(1, 2, 3, 4))
-#' cumapply_byname(elementproduct_byname, list(1, 2, 3, 4))
+#' cumapply_byname(hadamardproduct_byname, list(1, 2, 3, 4))
 cumapply_byname <- function(FUN, a){
   # Check for pathological cases.
   if (length(a) == 0) {
@@ -370,6 +407,6 @@ cumapply_byname <- function(FUN, a){
     out[[i]] <- FUN(a[[i]], out[[i - 1]])
   }
   # Preserve names of a in the outgoing list.
-  out <- out %>% set_names(names(a))
+  out <- out %>% magrittr::set_names(names(a))
   return(out)
 }

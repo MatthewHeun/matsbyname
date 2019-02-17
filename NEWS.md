@@ -1,3 +1,51 @@
+# matsbyname 0.4.10 (2019-02-16)
+
+* Added CRAN installation instructions to README.Rmd, now that the package is on CRAN.
+* Added CITATION file. `citation("matsbyname")` now gives useful information.
+* Fixed a bug in `matrixproduct_byname` 
+  in which row and column types were not set correctly when one
+  operand was a `matrix` and the other operand was `NA`.
+
+
+# matsbyname 0.4.9 (2019-01-17)
+
+* Improved LICENSE file for submission to CRAN.
+* First version to appear on CRAN.
+* Added CRAN and lifecycle badges.
+
+
+# matsbyname 0.4.8 (2019-01-16)
+
+* Improved cran-comments for submission to CRAN..
+
+
+# matsbyname 0.4.7 (2019-01-07)
+
+* Cleaned up dependencies for testing.
+
+
+# matsbyname 0.4.6 (2019-01-07)
+
+* Now all external function calls are fully qualified. 
+
+
+# matsbyname 0.4.5 (2019-01-07)
+
+* New function `elementapply_byname()` applies a function to an element
+  of a matrix specified by `row` and `col` arguments.
+* Breaking changes: 
+    * `elementproduct_byname()` changed to `hadamardproduct_byname()`
+      to avoid name collision with `elementapply_byname()`.
+    * `elementquotient_byname()` changed to `quotient_byname()`.
+    * `elementpow_byname()` changed to `pow_byname()`.
+    * `elementexp_byname()` changed to `exp_byname()`.
+
+
+# matsbyname 0.4.4 (2019-01-02)
+
+* Added tests to achieve 100% code coverage.
+
+
 # matsbyname 0.4.3 (2019-01-02)
 
 * `complete_rows_cols()` is now agnostic about the order of columns in `fillrow`
@@ -6,7 +54,7 @@
 
 # matsbyname 0.4.2 (2019-01-02)
 
-* `sort_rows_cols()` now allows entires in roworder and colorder 
+* `sort_rows_cols()` now allows entries in roworder and colorder 
   that are not presently names of rows or columns. 
   Extraneous names are silently ignored.
 

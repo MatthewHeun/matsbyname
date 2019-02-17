@@ -1,15 +1,5 @@
 # Contains tests for the CompletingMatrices.R file in the byname package.
 
-# Need to put dplyr before testthat.
-# If not, the "matches" function in dplyr overrides the "matches" function in testthat,
-# and tests containing the string "(" don't work as expected.
-
-library(dplyr)
-library(magrittr)
-library(matsbyname)
-library(parallel)
-library(testthat)
-
 ###########################################################
 context("Sorting rows and columns")
 ###########################################################
@@ -106,7 +96,7 @@ test_that("sort_rows_cols works with different-length arguments for lists", {
   DF[[2, "m"]] <- mlist
   DF[[3, "m"]] <- mlist
   res <- DF %>% 
-    mutate(
+    dplyr::mutate(
       sorted = sort_rows_cols(m)
     )
   expect_equal(res$sorted[[1]][[1]], m_sorted)
@@ -152,6 +142,13 @@ test_that("sort_rows_cols duplicates a row when requested", {
                         2, 4), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r1"), c("c1", "c2"))) %>% 
                  setrowtype("row") %>% setcoltype("col"))
 })  
+
+test_that("sort_rows_cols works when sorting rows but rows are not named", {
+  m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(NULL, c("c1", "c2"))) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  # In this situation, nothing is done.  Expect that m will be returned.
+  expect_equal(sort_rows_cols(m, margin = 1), m)
+})
 
   
 ###########################################################
@@ -322,10 +319,13 @@ test_that("complete_rows_cols works as expected", {
   expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 2), 
                list(complete_m1_m2, complete_m1_m2))
   
+  # Check what happens when a is a list but m1 is a single matrix.
+  expect_equal(complete_rows_cols(a = list(m1,m1), mat = m2, margin = 1), list(m1, m1))
+  
   # Test what happens when matrices are missing row or column names or both.
   A <- matrix(1:4, nrow = 2)
   expect_equal(complete_rows_cols(A), A)
-  expect_equal(complete_rows_cols(A %>% set_rownames(c("r1", "r2")) %>% set_colnames(c("c1", "c2"))), 
+  expect_equal(complete_rows_cols(A %>% magrittr::set_rownames(c("r1", "r2")) %>% magrittr::set_colnames(c("c1", "c2"))), 
                matrix(c(1, 3, 0, 0, 
                         2, 4, 0, 0, 
                         0, 0, 0, 0,
@@ -336,7 +336,7 @@ test_that("complete_rows_cols works as expected", {
   
   # Test with list for x and NULL for matrix
   expect_equal(complete_rows_cols(a = list(A, A)), list(A, A))
-  B <- A %>% set_rownames(c("r1", "r2")) %>% set_colnames(c("c1", "c2")) %>% 
+  B <- A %>% magrittr::set_rownames(c("r1", "r2")) %>% magrittr::set_colnames(c("c1", "c2")) %>% 
     setrowtype("row") %>% setcoltype("col")
   B_completed <- matrix(c(1, 3, 0, 0, 
                           2, 4, 0, 0, 
@@ -350,6 +350,18 @@ test_that("complete_rows_cols works as expected", {
   B_filled <- matrix(42, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
   expect_equal(complete_rows_cols(mat = list(B, B), fill = 42), list(B_filled, B_filled))
+})
+
+test_that("completing fails when dimnames aren't present for a", {
+  a <- matrix(1:4, byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(NULL, c("c1", "c2")))
+  mata <- matrix(1:6, byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  expect_error(complete_rows_cols(a = a, mat = mata, margin = 1), 
+               "NULL dimnames for margin = 1 on a")
+  
+  b <- matrix(1:4, byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), NULL))
+  matb <- matrix(1:6, byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  expect_error(complete_rows_cols(a = b, mat = matb, margin = 2), 
+               "NULL dimnames for margin = 2 on a")
 })
 
 test_that("completing works when list is present and lists and ... have different lengths", {
