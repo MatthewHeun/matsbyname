@@ -11,7 +11,7 @@ Description: An implementation of matrix mathematics wherein operations are perf
 License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Imports:
     dplyr,
     Hmisc,

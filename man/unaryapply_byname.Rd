@@ -4,8 +4,12 @@
 \alias{unaryapply_byname}
 \title{Apply a unary function by name}
 \usage{
-unaryapply_byname(FUN, a, .FUNdots = NULL, rowcoltypes = c("all",
-  "transpose", "row", "col", "none"))
+unaryapply_byname(
+  FUN,
+  a,
+  .FUNdots = NULL,
+  rowcoltypes = c("all", "transpose", "row", "col", "none")
+)
 }
 \arguments{
 \item{FUN}{a unary function to be applied "by name" to \code{a}.}

@@ -4,8 +4,15 @@
 \alias{binaryapply_byname}
 \title{Apply a binary function "by name"}
 \usage{
-binaryapply_byname(FUN, a, b, .FUNdots = NULL, match_type = c("all",
-  "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE)
+binaryapply_byname(
+  FUN,
+  a,
+  b,
+  .FUNdots = NULL,
+  match_type = c("all", "matmult", "none"),
+  set_rowcoltypes = TRUE,
+  .organize = TRUE
+)
 }
 \arguments{
 \item{FUN}{a binary function to be applied "by name" to \code{a} and \code{b}.}

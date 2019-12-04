@@ -4,8 +4,11 @@
 \alias{count_vals_inrows_byname}
 \title{Count the number of matrix entries in rows that meet a criterion}
 \usage{
-count_vals_inrows_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=",
-  ">"), val = 0)
+count_vals_inrows_byname(
+  a,
+  compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
+  val = 0
+)
 }
 \arguments{
 \item{a}{a matrix or list of matrices whose values are to be counted by rows according to \code{compare_fun}}

@@ -4,8 +4,14 @@
 \alias{naryapply_byname}
 \title{Apply a function "by name" to any number of operands}
 \usage{
-naryapply_byname(FUN, ..., .FUNdots = NULL, match_type = c("all",
-  "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE)
+naryapply_byname(
+  FUN,
+  ...,
+  .FUNdots = NULL,
+  match_type = c("all", "matmult", "none"),
+  set_rowcoltypes = TRUE,
+  .organize = TRUE
+)
 }
 \arguments{
 \item{FUN}{a binary function to be applied "by name" to all operands in \code{...}.}
