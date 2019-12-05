@@ -1,5 +1,8 @@
+# matsbyname 0.4.11 (2019-12-04)
+
 * Maintenance release to get ready for R4.0.0.
-  Moving away from `class(a) == "matrix"` to `inherits(a, "matrix)`.
+  Moving away from `class(a) == "matrix"` to `inherits(a, "matrix)`, 
+  because `matrix` objects now inherit from both `matrix` and `array`.
 
 
 # matsbyname 0.4.10 (2019-02-16)
