@@ -234,7 +234,7 @@ list_of_rows_or_cols <- function(a, margin){
   lrc_func <- function(a, margin){
     stopifnot(length(margin) == 1)
     stopifnot(margin %in% c(1,2))
-    stopifnot("matrix" %in% class(a))
+    stopifnot(inherits(a, "matrix"))
     # Strategy: perform all operations with margin to be split into a list in columns.
     if (margin == 1) {
       # Caller requested rows to be split into list items.

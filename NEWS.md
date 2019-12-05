@@ -1,3 +1,7 @@
+* Maintenance release to get ready for R4.0.0.
+  Moving away from `class(a) == "matrix"` to `inherits(a, "matrix)`.
+
+
 # matsbyname 0.4.10 (2019-02-16)
 
 * Added CRAN installation instructions to README.Rmd, now that the package is on CRAN.

@@ -316,7 +316,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(a, margin){
   fractionize_func <- function(a, margin){
-    if (!"matrix" %in% class(a) && !"data.frame" %in% class(a)) {
+    if (!inherits(a, "matrix") && !inherits(a, "data.frame")) {
       # Assume we have a single number here
       # By dividing a by itself, we could throw a division by zero error,
       # which we would want to do.
