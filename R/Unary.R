@@ -247,7 +247,7 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' identize_byname(list(M, M))
 identize_byname <- function(a, margin = c(1,2)){
   identize_func <- function(a, margin){
-    if (class(a) == "numeric" & length(a) == 1) {
+    if (inherits(a, "numeric") & length(a) == 1) {
       # Assume we have a single number here
       # Thus, we return 1.
       return(1)
