@@ -4,7 +4,7 @@
   `matrix` objects now inherit from both `matrix` and `array`.
   Thus, code should no longer assume that `class(A)` returns an object of length 1 when `A` is a `matrix`.
   So, I eliminated all instances of `class(A) == "matrix"` in `if` statements
-  in favor of `inherits(A, "matrix)`.
+  in favor of `inherits(A, "matrix"")`.
   See https://developer.r-project.org/Blog/public/2019/11/09/when-you-think-class.-think-again/index.html
   for more details.
 
