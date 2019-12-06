@@ -4,8 +4,10 @@
 \alias{make_pattern}
 \title{Create regex patterns for row and column selection by name}
 \usage{
-make_pattern(row_col_names, pattern_type = c("exact", "leading",
-  "trailing", "anywhere"))
+make_pattern(
+  row_col_names,
+  pattern_type = c("exact", "leading", "trailing", "anywhere")
+)
 }
 \arguments{
 \item{row_col_names}{a vector of row and column names}

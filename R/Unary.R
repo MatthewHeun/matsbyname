@@ -247,7 +247,7 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' identize_byname(list(M, M))
 identize_byname <- function(a, margin = c(1,2)){
   identize_func <- function(a, margin){
-    if (class(a) == "numeric" & length(a) == 1) {
+    if (inherits(a, "numeric") & length(a) == 1) {
       # Assume we have a single number here
       # Thus, we return 1.
       return(1)
@@ -316,7 +316,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(a, margin){
   fractionize_func <- function(a, margin){
-    if (!"matrix" %in% class(a) && !"data.frame" %in% class(a)) {
+    if (!inherits(a, "matrix") && !inherits(a, "data.frame")) {
       # Assume we have a single number here
       # By dividing a by itself, we could throw a division by zero error,
       # which we would want to do.

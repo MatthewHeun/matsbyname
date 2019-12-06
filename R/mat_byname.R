@@ -45,7 +45,7 @@
 #' is.mat_byname(matrix(1:2))
 #' is.mat_byname(mat_byname(1:2))
 # is.mat_byname <- function(x) {
-#   if ("mat_byname" %in% class(x)) {
+#   if (inherits(x, "mat_byname")) {
 #     return(TRUE)
 #   }
 #   return(FALSE)
@@ -65,7 +65,7 @@
 #   if (is.null(x)) {
 #     stop("'x' must not be NULL in as.mat_byname.")
 #   }
-#   # if (!"matrix" %in% class(x)) {
+#   # if (!inherits(x, "matrix")) {
 #   #   stop("'x' must be of a matrix type in as.mat_byname.")
 #   # }
 #   class(x) <- c("mat_byname", class(x))

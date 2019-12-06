@@ -1,3 +1,14 @@
+# matsbyname 0.4.11 (2019-12-04)
+
+* Maintenance release to get ready for R4.0.0.
+  `matrix` objects now inherit from both `matrix` and `array`.
+  Thus, code should no longer assume that `class(A)` returns an object of length 1 when `A` is a `matrix`.
+  So, I eliminated all instances of `class(A) == "matrix"` in `if` statements
+  in favor of `inherits(A, "matrix)`.
+  See https://developer.r-project.org/Blog/public/2019/11/09/when-you-think-class.-think-again/index.html
+  for more details.
+
+
 # matsbyname 0.4.10 (2019-02-16)
 
 * Added CRAN installation instructions to README.Rmd, now that the package is on CRAN.

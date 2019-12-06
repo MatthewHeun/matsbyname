@@ -4,8 +4,7 @@
 \alias{compare_byname}
 \title{Compare matrix entries to a value}
 \usage{
-compare_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
-  val = 0)
+compare_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"), val = 0)
 }
 \arguments{
 \item{a}{a matrix or list of matrices whose values are to be counted according to \code{compare_fun}}

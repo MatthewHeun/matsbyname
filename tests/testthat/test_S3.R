@@ -6,7 +6,7 @@ context("Creating a mat_byname")
 # test_that("mat_byname works as expected", {
 #   expect_error(mat_byname(NULL), "'data' must be of a vector type, was 'NULL'")
 #   expect_true(is.na(mat_byname(NA)))
-#   expect_equal(class(mat_byname(matrix(1:2))), c("mat_byname","matrix"))
+#   expect_true(inherits(mat_byname(matrix(1:2))), c("mat_byname","matrix"))
 #   mbn <- mat_byname(c("a", "b"), nrow = 2, ncol = 1)
 #   expect_equal(mbn[1,1], "a")
 #   expect_equal(mbn[2,1], "b")
