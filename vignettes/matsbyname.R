@@ -1,4 +1,4 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -8,7 +8,7 @@ library(tidyr)
 library(matsbyname)
 # library(matsindf)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 productnames <- c("p1", "p2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames))
@@ -18,14 +18,14 @@ Y
 # This sum is nonsensical.  Neither row nor column names are respected.
 U + Y 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # Make a new version of Y (Y2), this time with dimnames in same order as U
 Y2 <- matrix(4:1, ncol = 2, dimnames = list(productnames, industrynames))
 Y2
 # Now the sum is sensible. Both row and column names are respected.
 U + Y2
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
 Y3
 # Nonsensical because neither row nor column names are respected. 
@@ -48,14 +48,14 @@ U_2000
 Y_2000
 U_2000 + Y_2000
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # The original U matrix is invertible.
 solve(U)
 # The version of U that contains zero rows and columns (U_2000)
 # is singular and cannot be inverted.
 tryCatch(solve(U_2000), error = function(err){print(err)})
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # Same as U + Y2, without needing to create Y2.
 sum_byname(U, Y)
 # Same as U_2000 + Y_2000, but U and Y3 are unmodified.
@@ -63,12 +63,12 @@ sum_byname(U, Y3)
 # Eliminate zero-filled rows and columns. Same result as solve(U).
 U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve()
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 U_2 <- matrix(1:4, ncol = 2) %>% 
   setrownames_byname(productnames) %>% setcolnames_byname(industrynames)
 U_2
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 A <- matrix(1:4, ncol = 2) %>% 
   setrownames_byname(productnames) %>% setcolnames_byname(industrynames) %>% 
   setrowtype("Products") %>% setcoltype("Industries")
@@ -82,26 +82,26 @@ C <- matrix(1:4, ncol = 2) %>%
   setrowtype("Industries") %>% setcoltype("Products")
 C
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 sum_byname(A, B)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 tryCatch(sum_byname(A, C), error = function(err){print(err)})
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 sum_byname(A, transpose_byname(C))
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 hadamardproduct_byname(A, B)
 quotient_byname(A, B)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 matrixproduct_byname(A, C)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 sum_byname(A, list(B, B))
 hadamardproduct_byname(list(A, A), B)
 matrixproduct_byname(list(A, A), list(C, C))

@@ -127,10 +127,10 @@
 
     <div id="matsbyname-0-4-11-2019-12-04" class="section level1">
 <h1 class="page-header">
-<a href="#matsbyname-0-4-11-2019-12-04" class="anchor"></a>matsbyname 0.4.11 (2019-12-04)<small> Unreleased </small>
+<a href="#matsbyname-0-4-11-2019-12-04" class="anchor"></a>matsbyname 0.4.11 (2019-12-04)<small> 2019-12-05 </small>
 </h1>
 <ul>
-<li>Maintenance release to get ready for R4.0.0. <code>matrix</code> objects now inherit from both <code>matrix</code> and <code>array</code>. Thus, code should no longer assume that <code><a href="https://rdrr.io/r/base/class.html">class(A)</a></code> returns an object of length 1 when <code>A</code> is a <code>matrix</code>. So, I eliminated all instances of <code>class(A) == "matrix"</code> in <code>if</code> statements in favor of <code>inherits(A, "matrix)</code>. See <a href="https://developer.r-project.org/Blog/public/2019/11/09/when-you-think-class.-think-again/index.html" class="uri">https://developer.r-project.org/Blog/public/2019/11/09/when-you-think-class.-think-again/index.html</a> for more details.</li>
+<li>Maintenance release to get ready for R4.0.0. <code>matrix</code> objects now inherit from both <code>matrix</code> and <code>array</code>. Thus, code should no longer assume that <code><a href="https://rdrr.io/r/base/class.html">class(A)</a></code> returns an object of length 1 when <code>A</code> is a <code>matrix</code>. So, I eliminated all instances of <code>class(A) == "matrix"</code> in <code>if</code> statements in favor of <code><a href="https://rdrr.io/r/base/class.html">inherits(A, "matrix")</a></code>. See <a href="https://developer.r-project.org/Blog/public/2019/11/09/when-you-think-class.-think-again/index.html" class="uri">https://developer.r-project.org/Blog/public/2019/11/09/when-you-think-class.-think-again/index.html</a> for more details.</li>
 </ul>
 </div>
     <div id="matsbyname-0-4-10-2019-02-16" class="section level1">

@@ -13,15 +13,15 @@ Language: en-US
 Encoding: UTF-8
 RoxygenNote: 7.0.2
 Imports:
-    dplyr,
     Hmisc,
     magrittr
 Suggests:
-    testthat,
+    covr,
+    dplyr,
     knitr,
     rmarkdown,
-    tidyr,
-    covr
+    testthat,
+    tidyr
 VignetteBuilder: 
     knitr
 URL: https://github.com/MatthewHeun/matsbyname
