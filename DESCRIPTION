@@ -13,11 +13,11 @@ Language: en-US
 Encoding: UTF-8
 RoxygenNote: 7.0.2
 Imports:
+    dplyr,
     Hmisc,
     magrittr
 Suggests:
     covr,
-    dplyr,
     knitr,
     rmarkdown,
     testthat,
