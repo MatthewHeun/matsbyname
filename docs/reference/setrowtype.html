@@ -221,7 +221,7 @@ and subsequent calls to <code>rowtype</code> will return <code>NULL</code>.</p>
 #&gt; c2  2  4
 #&gt; attr(,"rowtype")
 #&gt; [1] "Commodities"
-#&gt; </div><div class='input'><span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='no'>DF</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/mutate.html'>mutate</a></span>(<span class='kw'>newcol</span> <span class='kw'>=</span> <span class='fu'>setrowtype</span>(<span class='no'>U</span>, <span class='st'>"Commodities"</span>))
+#&gt; </div><div class='input'><span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='no'>DF</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>newcol</span> <span class='kw'>=</span> <span class='fu'>setrowtype</span>(<span class='no'>U</span>, <span class='st'>"Commodities"</span>))
 <span class='no'>DF</span>$<span class='no'>newcol</span><span class='kw'>[[</span><span class='fl'>1</span>]]</div><div class='output co'>#&gt;    i1 i2
 #&gt; c1  1  3
 #&gt; c2  2  4

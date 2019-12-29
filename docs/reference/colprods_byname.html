@@ -275,7 +275,7 @@ the row name is set to the row type as given by <code><a href='rowtype.html'>row
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Commodities"
-#&gt; </div><div class='input'><span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='no'>DF</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/mutate.html'>mutate</a></span>(
+#&gt; </div><div class='input'><span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='no'>DF</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(
   <span class='kw'>cs</span> <span class='kw'>=</span> <span class='fu'>colprods_byname</span>(<span class='no'>M</span>),
   <span class='kw'>cs2</span> <span class='kw'>=</span> <span class='fu'>colprods_byname</span>(<span class='no'>M</span>, <span class='kw'>rowname</span> <span class='kw'>=</span> <span class='st'>"prod"</span>)
 )

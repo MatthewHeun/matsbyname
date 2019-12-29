@@ -25,6 +25,8 @@
 #' @return the result of applying \code{FUN} "by name" to \code{a}.
 #' 
 #' @export
+#' 
+#' @importFrom dplyr mutate
 #'
 #' @examples
 #' productnames <- c("p1", "p2")
