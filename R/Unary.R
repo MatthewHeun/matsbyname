@@ -122,7 +122,7 @@ transpose_byname <- function(a){
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
   hatize_func <- function(v){
-    # Check if this is the right size
+    # Check if v is the right size
     if (!(nrow(v) == 1 | ncol(v) == 1)) {
       stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
