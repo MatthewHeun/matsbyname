@@ -1,3 +1,7 @@
+* Added section to vignette about `matsindf`.
+  This section could be re-added now that `matsindf` is now on CRAN.
+
+
 # matsbyname 0.4.11 (2019-12-04)
 
 * Maintenance release to get ready for R4.0.0.
