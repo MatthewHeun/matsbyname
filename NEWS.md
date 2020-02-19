@@ -1,5 +1,6 @@
 * Added section to vignette about `matsindf`.
   This section could be re-added now that `matsindf` is now on CRAN.
+* Added new function `vectorize_byname` that converts a matrix into a column vector.
 
 
 # matsbyname 0.4.11 (2019-12-04)

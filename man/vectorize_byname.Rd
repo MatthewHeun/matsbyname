@@ -34,4 +34,6 @@ vectorize_byname(m, sep = " -> ")
 # with some additional attributes.
 vectorize_byname(42)
 attributes(vectorize_byname(42))
+# If call with `NULL`, get `NULL` back
+vectorize_byname(NULL)
 }
