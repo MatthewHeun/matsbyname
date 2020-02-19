@@ -15,7 +15,7 @@ setcoltype(a, coltype)
 \code{a} with \code{coltype} attribute set.
 }
 \description{
-This function is a wrapper for \code{attr} so that 
+This function is a wrapper for \code{attr} so that
 setting can be accomplished by the pipe operator (\code{\%>\%}).
 Column types are strings stored in the \code{coltype} attribute.
 }

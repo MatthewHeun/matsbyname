@@ -34,9 +34,9 @@ Retaining columns takes precedence over removing columns, always.
 
 Some typical patterns are:
 \itemize{
-  \item{\code{^Electricity$|^Oil$}: column names that are EXACTLY \code{Electricity} or \code{Oil}.}
-  \item{\code{^Electricity|^Oil}: column names that START WITH \code{Electricity} or \code{Oil}.}
-  \item{\code{Electricity|Oil}: column names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
+\item{\code{^Electricity$|^Oil$}: column names that are EXACTLY \code{Electricity} or \code{Oil}.}
+\item{\code{^Electricity|^Oil}: column names that START WITH \code{Electricity} or \code{Oil}.}
+\item{\code{Electricity|Oil}: column names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
 }
 
 Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
@@ -45,7 +45,7 @@ Given a list of column names, a pattern can be constructed easily using the \cod
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 
-Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
+Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^})
 retain nothing and remove nothing.
 }
 \examples{

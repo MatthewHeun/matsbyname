@@ -20,11 +20,11 @@ If \code{a} is \code{NULL}, \code{NULL} is returned.
 If \code{a} is a constant, it is converted to a matrix and \code{rownames} are applied.
 If \code{a} is a matrix, \code{rownames} should be a vector of new row names
 that is as long as the number of rows in \code{a}.
-If \code{a} is a list of matrices, 
+If \code{a} is a list of matrices,
 \code{rownames} can also be a list, and it should be as long \code{a}.
 Or \code{rownames} can be a vector of row names which will be applied to every matrix in
 the list of \code{a}.
-Each item in the list should be a vector containing row names for the corresponding 
+Each item in the list should be a vector containing row names for the corresponding
 matrix in \code{a}.
 }
 \examples{

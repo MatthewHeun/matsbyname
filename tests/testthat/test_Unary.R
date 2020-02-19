@@ -320,6 +320,7 @@ context("Vectorize")
 ###########################################################
 
 test_that("vectorize_byname works as expected", {
+  # Try with a square matrix
   m <- matrix(c(1, 5,
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
@@ -329,12 +330,65 @@ test_that("vectorize_byname works as expected", {
                        4, 
                        5, 
                        5),
-                     nrow = 4,
-                     ncol = 1, 
+                     nrow = 4, ncol = 1, 
                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   actual <- vectorize_byname(m, sep = " -> ")
   expect_equal(actual, expected)
+  # Try with a rectangular matrix
+  m2 <- matrix(c(1, 2, 3,
+                 4, 5, 6),
+               nrow = 2, ncol = 3, byrow = TRUE,
+               dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expected2 <- matrix(c(1, 
+                       4, 
+                       2, 
+                       5, 
+                       3, 
+                       6),
+                     nrow = 6, ncol = 1,
+                     dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual2 <- vectorize_byname(m2, sep = " -> ")
+  expect_equal(actual2, expected2)
+  # Try with a single number
+  m3 <- 42
+  expected3 <- m3
+  dim(expected3) <- c(1, 1)
+  dimnames(expected3) <- list(c(NULL))
+  actual3 <- vectorize_byname(m3, sep = " -> ")
+  expect_equal(actual3, expected3)
+  # Try with a different separator
+  m4 <- matrix(c(1, 5,
+                 4, 5),
+               nrow = 2, ncol = 2, byrow = TRUE, 
+               dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expected4 <- matrix(c(1, 
+                        4, 
+                        5, 
+                        5),
+                      nrow = 4, ncol = 1, 
+                      dimnames = list(c("p1---i1", "p2---i1", "p1---i2", "p2---i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual4 <- vectorize_byname(m4, sep = "---")
+  expect_equal(actual4, expected4)
+  # Test with a matrix that is already a column vector
+  m5 <- matrix(c(1,
+                 2,
+                 3),
+               nrow = 3, ncol = 1,
+               dimnames = list(c("p1", "p2", "p3"), "i1")) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual5 <- vectorize_byname(m5, sep = "***")
+  expected5 <- matrix(c(1,
+                        2,
+                        3),
+                      nrow = 3, ncol = 1,
+                      dimnames = list(c("p1***i1", "p2***i1", "p3***i1"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(actual5, expected5)
 })
 
 

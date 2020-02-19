@@ -12,6 +12,7 @@ License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
 RoxygenNote: 7.0.2
+Roxygen: list(markdown = TRUE)
 Imports:
     dplyr,
     Hmisc,

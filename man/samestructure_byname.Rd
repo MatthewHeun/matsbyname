@@ -13,9 +13,9 @@ samestructure_byname(...)
 \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
 }
 \description{
-Matrices are said to have the same structure 
-if row and column types are identical 
-and 
+Matrices are said to have the same structure
+if row and column types are identical
+and
 if row and column names are identical.
 Values can be different.
 }

@@ -31,12 +31,12 @@ for every sequential invocation of \code{FUN}.
 If "\code{none}",
 neither coltypes nor rowtypes are checked by \code{\link{naryapply_byname}}.}
 
-\item{set_rowcoltypes}{tells whether to apply row and column types from 
-operands in \code{...} to the output of each sequential invocation of \code{FUN}. 
+\item{set_rowcoltypes}{tells whether to apply row and column types from
+operands in \code{...} to the output of each sequential invocation of \code{FUN}.
 Set \code{TRUE} (the default) to apply row and column types.
 Set \code{FALSE}, to \emph{not} apply row and column types to the output.}
 
-\item{.organize}{a boolean that tells whether or not to automatically 
+\item{.organize}{a boolean that tells whether or not to automatically
 complete operands in \code{...} relative to each other and
 sort the rows and columns of the completed matrices.
 This organizing is done on each sequential invocation of \code{FUN}.
@@ -52,19 +52,19 @@ Other arguments have similar meaning as \code{\link{binaryapply_byname}}.
 See details for more information.
 }
 \details{
-If only one \code{...} argument is supplied, 
+If only one \code{...} argument is supplied,
 \code{FUN} must be capable of handling one argument, and
 the call is routed to \code{\link{unaryapply_byname}}.
-When \code{set_rolcoltypes} is \code{TRUE}, 
-the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{all}", 
-but when \code{set_rowcoltypes} is \code{FALSE}, 
+When \code{set_rolcoltypes} is \code{TRUE},
+the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{all}",
+but when \code{set_rowcoltypes} is \code{FALSE},
 the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{none}".
 If finer control is desired, the caller should use \code{\link{unaryapply_byname}} directly.
 If more than one argument is passed in \code{...},
 \code{FUN} must be a binary function, but its use in by \code{\link{naryapply_byname}} is "n-ary."
 Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
 have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
-Thus, all of the operands in \code{...} must obey the rules of type matching 
+Thus, all of the operands in \code{...} must obey the rules of type matching
 when \code{match_type} is \code{TRUE}.
 
 \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.

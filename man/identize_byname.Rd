@@ -17,7 +17,7 @@ An identity matrix or vector.
 \description{
 Creates an identity matrix (\strong{I}) or vector (\strong{i}) of same size and with same names and
 same row and column types as \code{a}.
-If \code{margin = 1}, makes a column matrix filled with \code{1}s. 
+If \code{margin = 1}, makes a column matrix filled with \code{1}s.
 Row names and type are taken from row names and type of \code{a}.
 Column name and type are same as column type of \code{a}.
 If \code{margin = 2}, make a row matrix filled with \code{1}s.

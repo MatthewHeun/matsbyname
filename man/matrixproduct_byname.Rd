@@ -10,7 +10,7 @@ matrixproduct_byname(...)
 \item{...}{operands; constants, matrices, or lists of matrices
 
 Multiplies operands from left to right.
-Performs a union and sorting of multiplicand rows and multiplier columns by name 
+Performs a union and sorting of multiplicand rows and multiplier columns by name
 prior to multiplication.
 Zeroes are inserted for missing matrix elements.
 Doing so ensures that

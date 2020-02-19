@@ -31,12 +31,12 @@ for every sequential invocation of \code{FUN}.
 If "\code{none}",
 neither coltypes nor rowtypes are checked by \code{\link{naryapply_byname}}.}
 
-\item{set_rowcoltypes}{tells whether to apply row and column types from 
-operands in \code{...} to the output of each sequential invocation of \code{FUN}. 
+\item{set_rowcoltypes}{tells whether to apply row and column types from
+operands in \code{...} to the output of each sequential invocation of \code{FUN}.
 Set \code{TRUE} (the default) to apply row and column types.
 Set \code{FALSE}, to \emph{not} apply row and column types to the output.}
 
-\item{.organize}{a boolean that tells whether or not to automatically 
+\item{.organize}{a boolean that tells whether or not to automatically
 complete operands in \code{...} relative to each other and
 sort the rows and columns of the completed matrices.
 This organizing is done on each sequential invocation of \code{FUN}.
@@ -52,7 +52,7 @@ Numerical operands are interpreted as \code{0} is \code{FALSE}, and
 any other number is \code{TRUE}.
 }
 \details{
-This function is not exported, 
+This function is not exported,
 thereby retaining the right to future changes.
 }
 \examples{

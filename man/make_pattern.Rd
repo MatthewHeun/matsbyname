@@ -30,13 +30,13 @@ and \code{select_cols_byname}.
 \details{
 \code{pattern_type} controls the type of pattern created:
 \itemize{
-  \item{\code{exact} produces a pattern that selects row or column names by exact match.}
-  \item{\code{leading} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-        the beginnings of row or column names.}
-  \item{\code{trailing} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-        the ends of row or column names.}
-  \item{\code{anywhere} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-        any substring of row or column names.}
+\item{\code{exact} produces a pattern that selects row or column names by exact match.}
+\item{\code{leading} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+the beginnings of row or column names.}
+\item{\code{trailing} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+the ends of row or column names.}
+\item{\code{anywhere} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+any substring of row or column names.}
 }
 }
 \examples{

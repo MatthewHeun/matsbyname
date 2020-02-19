@@ -4,13 +4,11 @@
 #'
 #' Performs a union and sorting of addend and augend row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
-#' Treats missing or \code{NULL} operands as \code{0}.
-#' 
-#' <<Stuff here about cores.>>
+#' Treats missing or `NULL` operands as `0`.
 #' 
 #' @param ... operands: constants, matrices, or lists of matrices
 #'
-#' @return A matrix representing the name-wise sum of \code{addend} and \code{augend}
+#' @return A matrix representing the name-wise sum of `addend` and `augend`
 #' 
 #' @export
 #'
@@ -76,7 +74,7 @@ sum_byname <- function(...){
 #' Performs a union and sorting of row and column names prior to differencing.
 #' Zeroes are inserted for missing matrix elements.
 #'
-#' @return A matrix representing the name-wise difference between \code{minuend} and \code{subtrahend}
+#' @return A matrix representing the name-wise difference between `minuend` and `subtrahend`
 #' 
 #' @export
 #'

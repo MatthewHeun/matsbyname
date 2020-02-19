@@ -22,7 +22,7 @@ If operands are matrices, they are completed and sorted relative to one another 
 Comparisons are made by \code{identical(a, b)} so that variations among numbers
 within the computational precision will return \code{FALSE}.
 
-If fuzzy comparison is needed, use \code{\link{equal_byname}}, 
+If fuzzy comparison is needed, use \code{\link{equal_byname}},
 which compares using \code{isTRUE(all.equal(a, b))}.
 }
 \examples{

@@ -11,7 +11,7 @@ fractionize_byname(a, margin)
 
 \item{margin}{If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
 If \code{2} (columns), each entry in \code{a} is divided by its column's sum.
-If \code{c(1,2)} (both rows and columns), 
+If \code{c(1,2)} (both rows and columns),
 each entry in \code{a} is divided by the sum of all entries in \code{a}.}
 }
 \value{

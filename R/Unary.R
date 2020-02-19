@@ -300,7 +300,6 @@ identize_byname <- function(a, margin = c(1,2)){
 #' 
 #' `rowtype` and `coltype` attributes are retained in the event that 
 #' the resulting vector is re-matricized with the `matricize_byname` function later.
-#' The number of rows and columns of `a` are recorded in attribute `dims`.
 #'
 #' @param a the matrix to be vectorized
 #' @param sep a string to separate row names and col names in the resulting column vector. Default is " " (a space).
@@ -316,13 +315,25 @@ identize_byname <- function(a, margin = c(1,2)){
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' vectorize_byname(m, sep = " -> ")
+#' # If a single number is provided, the number will be returned as a 1x1 column vector 
+#' # with some additional attributes.
+#' vectorize_byname(42)
+#' attributes(vectorize_byname(42))
 vectorize_byname <- function(a, sep = " ") {
   vectorize_func <- function(a) {
+    if (!is.numeric(a)) {
+      stop("a is not numeric in vectorize_byname")
+    }
     vec <- a
-    dim(vec) <- c(nrow(vec) * ncol(vec), 1)
+    n_entries <- nrow(vec) * ncol(vec)
+    if (length(n_entries) == 0) {
+      # Probably have a single number
+      n_entries <- 1
+    }
+    dim(vec) <- c(n_entries, 1)
     # Figure out names
     vecrownames <- purrr::cross2(rownames(a), colnames(a)) %>% 
-      lapply(FUN = function(pair){paste0(pair[[1]], " -> ", pair[[2]])})
+      lapply(FUN = function(pair){paste0(pair[[1]], sep , pair[[2]])})
     # Put names on the rows of the vector and return
     vec %>% setrownames_byname(vecrownames)
   }

@@ -12,17 +12,16 @@ vectorize_byname(a, sep = " ")
 \item{sep}{a string to separate row names and col names in the resulting column vector. Default is " " (a space).}
 }
 \value{
-a vector with all elements of the matrix, with row names assigned as "rowname `sep` colname".
+a column vector containing all elements of \code{a}, with row names assigned as "rowname \code{sep} colname".
 }
 \description{
 Converts a matrix into a column vector.
 Each element of the matrix becomes an entry in the column vector,
-with rows named as "rowname `sep` colname" of the matrix entry.
+with rows named as "rowname \code{sep} colname" of the matrix entry.
 }
 \details{
-`rowtype` and `coltype` attributes are retained in the event that 
-the resulting vector is re-matricized with the `matricize_byname` function later.
-The number of rows and columns of `a` are recorded in attribute `dims`.
+\code{rowtype} and \code{coltype} attributes are retained in the event that
+the resulting vector is re-matricized with the \code{matricize_byname} function later.
 }
 \examples{
 m <- matrix(c(1, 5,
@@ -31,4 +30,8 @@ m <- matrix(c(1, 5,
             dimnames = list(c("p1", "p2"), c("i1", "i2"))) \%>\% 
   setrowtype("Products") \%>\% setcoltype("Industries")
 vectorize_byname(m, sep = " -> ")
+# If a single number is provided, the number will be returned as a 1x1 column vector 
+# with some additional attributes.
+vectorize_byname(42)
+attributes(vectorize_byname(42))
 }
