@@ -333,7 +333,6 @@ test_that("vectorize_byname works as expected", {
                      ncol = 1, 
                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  attr(expected, "matdims_byname") <- c(2, 2)
   actual <- vectorize_byname(m, sep = " -> ")
   expect_equal(actual, expected)
 })

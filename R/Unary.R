@@ -304,9 +304,8 @@ identize_byname <- function(a, margin = c(1,2)){
 #'
 #' @param a the matrix to be vectorized
 #' @param sep a string to separate row names and col names in the resulting column vector. Default is " " (a space).
-#' @param dimattr the name of the attribute in which the original dimensions of `a` are stored. Default is "matdims_byname".
 #'
-#' @return a vector with all elements of the matrix, with row names assigned as "rowname `sep` colname".
+#' @return a column vector containing all elements of `a`, with row names assigned as "rowname `sep` colname".
 #' 
 #' @export
 #'
@@ -317,7 +316,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' vectorize_byname(m, sep = " -> ")
-vectorize_byname <- function(a, sep = " ", dimattr = "matdims_byname") {
+vectorize_byname <- function(a, sep = " ") {
   vectorize_func <- function(a) {
     vec <- a
     dim(vec) <- c(nrow(vec) * ncol(vec), 1)
@@ -325,12 +324,7 @@ vectorize_byname <- function(a, sep = " ", dimattr = "matdims_byname") {
     vecrownames <- purrr::cross2(rownames(a), colnames(a)) %>% 
       lapply(FUN = function(pair){paste0(pair[[1]], " -> ", pair[[2]])})
     # Put names on the rows of the vector and return
-    out <- vec %>% 
-      setrownames_byname(vecrownames)
-    # Set an attribute "dimattr" to contain the original dimensions of a. 
-    # Doing this will allow re-creating the matrix later with matricize_byname.
-    attr(out, dimattr) <- dim(a)
-    return(out)
+    vec %>% setrownames_byname(vecrownames)
   }
   unaryapply_byname(vectorize_func, a = a, rowcoltypes = "none")
 }

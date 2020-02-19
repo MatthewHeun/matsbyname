@@ -4,14 +4,12 @@
 \alias{vectorize_byname}
 \title{Vectorize a matrix}
 \usage{
-vectorize_byname(a, sep = " ", dimattr = "matdims_byname")
+vectorize_byname(a, sep = " ")
 }
 \arguments{
 \item{a}{the matrix to be vectorized}
 
 \item{sep}{a string to separate row names and col names in the resulting column vector. Default is " " (a space).}
-
-\item{dimattr}{the name of the attribute in which the original dimensions of `a` are stored. Default is "matdims_byname".}
 }
 \value{
 a vector with all elements of the matrix, with row names assigned as "rowname `sep` colname".
