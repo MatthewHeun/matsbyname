@@ -49,7 +49,7 @@ ensure size conformity of matrix operands,
 they do not respect the names of rows and columns
 (known as <tt>dimnames</tt> in <tt>R</tt>).
 In the following example, 
-**U** represents a *use*matrix
+**U** represents a *use* matrix
 that contains the quantity of each product used by each industry,
 and 
 **Y** represents a *final demand* matrix
