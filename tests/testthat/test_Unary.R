@@ -391,6 +391,17 @@ test_that("vectorize_byname works as expected", {
   expect_equal(actual5, expected5)
   # Test with NULL. Should get NULL back.
   expect_true(is.null(vectorize_byname(NULL)))
+  # Test with NA.
+  expect_error(vectorize_byname(NA), "a is not numeric in vectorize_byname")
+  # Test with string
+  expect_error(vectorize_byname("a"), "a is not numeric in vectorize_byname")
+  # Test with a list of matrices
+  
+  
+  
+  
+  
+  
 })
 
 

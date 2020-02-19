@@ -299,7 +299,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' with rows named as "rowname `sep` colname" of the matrix entry.
 #' 
 #' `rowtype` and `coltype` attributes are retained in the event that 
-#' the resulting vector is re-matricized with the `matricize_byname` function later.
+#' the resulting vector is re-matricized with the [matricize_byname()] function later.
 #'
 #' @param a the matrix to be vectorized
 #' @param sep a string to separate row names and col names in the resulting column vector. Default is " " (a space).
@@ -314,12 +314,13 @@ identize_byname <- function(a, margin = c(1,2)){
 #'             nrow = 2, ncol = 2, byrow = TRUE, 
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
+#' m
 #' vectorize_byname(m, sep = " -> ")
 #' # If a single number is provided, the number will be returned as a 1x1 column vector 
 #' # with some additional attributes.
 #' vectorize_byname(42)
 #' attributes(vectorize_byname(42))
-#' # If call with `NULL`, get `NULL` back
+#' # If called with `NULL`, get `NULL` back
 #' vectorize_byname(NULL)
 vectorize_byname <- function(a, sep = " ") {
   vectorize_func <- function(a) {

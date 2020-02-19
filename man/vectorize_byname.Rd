@@ -21,7 +21,7 @@ with rows named as "rowname \code{sep} colname" of the matrix entry.
 }
 \details{
 \code{rowtype} and \code{coltype} attributes are retained in the event that
-the resulting vector is re-matricized with the \code{matricize_byname} function later.
+the resulting vector is re-matricized with the \code{\link[=matricize_byname]{matricize_byname()}} function later.
 }
 \examples{
 m <- matrix(c(1, 5,
@@ -29,11 +29,12 @@ m <- matrix(c(1, 5,
             nrow = 2, ncol = 2, byrow = TRUE, 
             dimnames = list(c("p1", "p2"), c("i1", "i2"))) \%>\% 
   setrowtype("Products") \%>\% setcoltype("Industries")
+m
 vectorize_byname(m, sep = " -> ")
 # If a single number is provided, the number will be returned as a 1x1 column vector 
 # with some additional attributes.
 vectorize_byname(42)
 attributes(vectorize_byname(42))
-# If call with `NULL`, get `NULL` back
+# If called with `NULL`, get `NULL` back
 vectorize_byname(NULL)
 }
