@@ -319,6 +319,8 @@ identize_byname <- function(a, margin = c(1,2)){
 #' # with some additional attributes.
 #' vectorize_byname(42)
 #' attributes(vectorize_byname(42))
+#' # If call with `NULL`, get `NULL` back
+#' vectorize_byname(NULL)
 vectorize_byname <- function(a, sep = " ") {
   vectorize_func <- function(a) {
     if (!is.numeric(a)) {

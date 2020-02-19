@@ -389,6 +389,8 @@ test_that("vectorize_byname works as expected", {
                       dimnames = list(c("p1***i1", "p2***i1", "p3***i1"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   expect_equal(actual5, expected5)
+  # Test with NULL. Should get NULL back.
+  expect_true(is.null(vectorize_byname(NULL)))
 })
 
 
