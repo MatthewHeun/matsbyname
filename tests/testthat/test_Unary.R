@@ -316,6 +316,30 @@ test_that("identize_byname works as expected", {
 
 
 ###########################################################
+context("Vectorize")
+###########################################################
+
+test_that("vectorize_byname works as expected", {
+  m <- matrix(c(1, 5,
+                4, 5),
+              nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expected <- matrix(c(1, 
+                       4, 
+                       5, 
+                       5),
+                     nrow = 4,
+                     ncol = 1, 
+                     dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  attr(expected, "matdims_byname") <- c(2, 2)
+  actual <- vectorize_byname(m, sep = " -> ")
+  expect_equal(actual, expected)
+})
+
+
+###########################################################
 context("Fractionize")
 ###########################################################
 

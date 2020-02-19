@@ -291,6 +291,45 @@ identize_byname <- function(a, margin = c(1,2)){
                     rowcoltypes = "none")
 }
 
+
+#' Vectorize a matrix
+#' 
+#' Converts a matrix into a column vector.
+#' Each element of the matrix becomes an entry in the column vector,
+#' with rows named as "rowname `sep` colname" of the matrix entry.
+#' 
+#' `rowtype` and `coltype` attributes are retained in the event that 
+#' the resulting vector is re-matricized with the `matricize_byname` function later.
+#' The number of rows and columns of `a` are recorded in attribute `dims`.
+#'
+#' @param a the matrix to be vectorized
+#' @param sep a string to separate row names and col names in the resulting column vector. Default is " " (a space).
+#' @param matdims_byname the name of the attribute in which the original dimensions of `a` are stored. Default is "matdims_byname".
+#'
+#' @return a vector with all elements of the matrix, with row names assigned as "rowname `sep` colname".
+#' 
+#' @export
+#'
+#' @examples
+vectorize_byname <- function(a, sep = " ", dimattr = "matdims_byname") {
+  vectorize_func <- function(a) {
+    vec <- a
+    dim(vec) <- c(nrow(vec) * ncol(vec), 1)
+    # Figure out names
+    vecrownames <- purrr::cross2(rownames(a), colnames(a)) %>% 
+      lapply(FUN = function(pair){paste0(pair[[1]], " -> ", pair[[2]])})
+    # Put names on the rows of the vector and return
+    out <- vec %>% 
+      setrownames_byname(vecrownames)
+    # Set an attribute "matdims" to contain the original dimensions of a. 
+    # Doing this will allow re-creating the matrix later with matricize_byname.
+    attr(out, dimattr) <- dim(a)
+    return(out)
+  }
+  unaryapply_byname(vectorize_func, a = a, rowcoltypes = "none")
+}
+
+
 #' Compute fractions of matrix entries
 #' 
 #' This function divides all entries in \code{a} by the specified sum,
@@ -303,6 +342,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' each entry in \code{a} is divided by the sum of all entries in \code{a}.
 #'
 #' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
+#' 
 #' @export
 #'
 #' @examples
