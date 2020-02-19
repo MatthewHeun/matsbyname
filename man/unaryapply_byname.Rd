@@ -18,18 +18,18 @@ unaryapply_byname(
 
 \item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
 
-\item{rowcoltypes}{a string that tells how to transfer row and column types of \code{a} to output. 
+\item{rowcoltypes}{a string that tells how to transfer row and column types of \code{a} to output.
 Options are:
 \itemize{
-  \item{\code{all}: transfer both row and column types of \code{a} directly to output.}
-  \item{\code{transpose}: rowtype of \code{a} becomes coltype of output;
-                          coltype of \code{a} becomes rowtype of output.
-                          "transpose" is helpful for \code{FUN}s that transpose 
-                          \code{a} upon output.}
-  \item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
-  \item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
-  \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
-                     Rather, \code{FUN} will set rowtype and coltype.}
+\item{\code{all}: transfer both row and column types of \code{a} directly to output.}
+\item{\code{transpose}: rowtype of \code{a} becomes coltype of output;
+coltype of \code{a} becomes rowtype of output.
+"transpose" is helpful for \code{FUN}s that transpose
+\code{a} upon output.}
+\item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
+\item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
+\item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}.
+Rather, \code{FUN} will set rowtype and coltype.}
 }}
 }
 \value{

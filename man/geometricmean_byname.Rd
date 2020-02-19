@@ -16,7 +16,7 @@ name-wise geometric mean of operands
 Gives the geometric mean of corresponding entries of \code{a} and \code{b}.
 }
 \details{
-This function performs a union and sorting of row and column names 
+This function performs a union and sorting of row and column names
 prior to performing geometric mean.
 Zeroes are inserted for missing matrix elements.
 }

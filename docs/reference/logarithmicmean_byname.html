@@ -36,8 +36,8 @@
 
 
 <meta property="og:title" content="Name- and element-wise logarithmic mean of matrices — logarithmicmean_byname" />
-<meta property="og:description" content="The logarithmic mean of corresponding entries of a and b is 
-0 if a = 0 or b = 0, 
+<meta property="og:description" content="The logarithmic mean of corresponding entries of a and b is
+0 if a = 0 or b = 0,
 a if a = b, or
 (b - a) / (log(b) - log(a)) otherwise." />
 <meta name="twitter:card" content="summary" />
@@ -132,8 +132,8 @@ a if a = b, or
     </div>
 
     <div class="ref-description">
-    <p>The logarithmic mean of corresponding entries of <code>a</code> and <code>b</code> is 
-<code>0</code> if <code>a = 0</code> or <code>b = 0</code>, 
+    <p>The logarithmic mean of corresponding entries of <code>a</code> and <code>b</code> is
+<code>0</code> if <code>a = 0</code> or <code>b = 0</code>,
 <code>a</code> if <code>a = b</code>, or
 <code>(b - a) / (log(b) - log(a))</code> otherwise.</p>
     </div>
@@ -160,14 +160,14 @@ a if a = b, or
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A matrix representing the name-wise logarithmic mean 
-        of <code>a</code> and <code>b</code>.</p>
+    <p>A matrix representing the name-wise logarithmic mean
+of <code>a</code> and <code>b</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function performs a union and sorting of row and column names 
+    <p>This function performs a union and sorting of row and column names
 prior to performing logarithmic mean.
 Zeroes are inserted for missing matrix elements.</p>
-<p>Internally, the third condition is implemented as 
+<p>Internally, the third condition is implemented as
 <code>(b - a) / log(b/a)</code>.</p>
 <p>Note that <code>(b - a) / log(b/a) = (a - b) / log(a/b)</code>,
 so logarithmic mean is commutative;

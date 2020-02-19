@@ -17,9 +17,6 @@ Performs a union and sorting of addend and augend row and column names prior to 
 Zeroes are inserted for missing matrix elements.
 Treats missing or \code{NULL} operands as \code{0}.
 }
-\details{
-<<Stuff here about cores.>>
-}
 \examples{
 library(dplyr)
 sum_byname(2, 2)

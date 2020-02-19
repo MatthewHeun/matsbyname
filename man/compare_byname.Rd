@@ -9,17 +9,17 @@ compare_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"), val = 0)
 \arguments{
 \item{a}{a matrix or list of matrices whose values are to be counted according to \code{compare_fun}}
 
-\item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}", 
+\item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}",
 "\code{<}", "\code{<=}", "\code{>=}", or "\code{>}". Default is "\code{==}".}
 
 \item{val}{a single value against which entries in matrix \code{a} are compared. Default is \code{0}.}
 }
 \value{
 a logical matrix of same size as \code{a} containing \code{TRUE} where the criterion is met,
-        \code{FALSE} otherwise
+\code{FALSE} otherwise
 }
 \description{
-Compares matrix entries to a value, 
+Compares matrix entries to a value,
 returning a matrix of same size as \code{a}
 containing \code{TRUE} or \code{FALSE} values
 as the result of applying \code{compare_fun} and \code{val}

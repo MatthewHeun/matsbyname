@@ -159,20 +159,20 @@ for the purposes of completing <code>a</code> with respect to <code>mat</code>.<
     </tr>
     <tr>
       <th>fill</th>
-      <td><p>rows and columns added to <code>a</code> will contain the value <code>fill</code>. 
+      <td><p>rows and columns added to <code>a</code> will contain the value <code>fill</code>.
 (Default is 0.)</p></td>
     </tr>
     <tr>
       <th>fillrow</th>
-      <td><p>a row vector of type <code>matrix</code> with same column names as <code>a</code>. 
-Any rows added to <code>a</code> will be <code>fillrow</code>.  
+      <td><p>a row vector of type <code>matrix</code> with same column names as <code>a</code>.
+Any rows added to <code>a</code> will be <code>fillrow</code>.
 If non-<code>NULL</code>, <code>fillrow</code> takes precedence over both <code>fillcol</code> and <code>fill</code>
 in the case of conflicts.</p></td>
     </tr>
     <tr>
       <th>fillcol</th>
-      <td><p>a column vector of type <code>matrix</code> with same row names as <code>a</code>. 
-Any columns added to <code>a</code> will be <code>fillcol</code>.  
+      <td><p>a column vector of type <code>matrix</code> with same row names as <code>a</code>.
+Any columns added to <code>a</code> will be <code>fillcol</code>.
 If non-<code>NULL</code>, <code>fillcol</code> takes precedence over <code>fill</code>
 in the case of conflicts.</p></td>
     </tr>
@@ -180,7 +180,7 @@ in the case of conflicts.</p></td>
       <th>margin</th>
       <td><p>specifies the subscript(s) in <code>a</code> over which completion will occur
 <code>margin</code> has nearly the same semantic meaning as in <code><a href='https://rdrr.io/r/base/apply.html'>apply</a></code>
-For rows only, give <code>1</code>; 
+For rows only, give <code>1</code>;
 for columns only, give <code>2</code>;
 for both rows and columns, give <code><a href='https://rdrr.io/r/base/c.html'>c(1,2)</a></code>, the default value.</p></td>
     </tr>
@@ -188,23 +188,23 @@ for both rows and columns, give <code><a href='https://rdrr.io/r/base/c.html'>c(
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A modified version of <code>a</code> possibly containing additional rows and columns 
+    <p>A modified version of <code>a</code> possibly containing additional rows and columns
 whose names are obtained from <code>matrix</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Note that <code>complete_rows_cols(mat1, mat2)</code> and <code>complete_rows_cols(mat2, mat1)</code> are 
+    <p>Note that <code>complete_rows_cols(mat1, mat2)</code> and <code>complete_rows_cols(mat2, mat1)</code> are
 not guaranteed to have the same order for rows and columns.
 (Nor are the values in the matrix guaranteed to have the same positions.)
 If <code><a href='https://rdrr.io/r/base/dimnames.html'>dimnames(mat)</a></code> is NULL, <code>a</code> is returned unmodified.
 If either <code>a</code> or <code>matrix</code> are missing names on a margin (row or column),
 an error is given.
 Matrices can be completed relative to themselves,
-meaning that <code>a</code> will be made square,  
+meaning that <code>a</code> will be made square,
 containing the union of row and column names from <code>a</code> itself.
 All added rows and columns will be created from one of the <code>fill*</code> arguments.
-When conflicts arise, precedence among the <code>fill*</code> arguments is 
+When conflicts arise, precedence among the <code>fill*</code> arguments is
 <code>fillrow</code> then <code>fillcol</code> then <code>fill</code>.
-Self-completion occurs if <code>a</code> is non-NULL and 
+Self-completion occurs if <code>a</code> is non-NULL and
 both <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(matrix)</a></code> and <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code>.
 Under these conditions, no warning is given.
 If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> and dimnames of <code>matrix</code> cannot be determined

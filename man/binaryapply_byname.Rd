@@ -34,11 +34,11 @@ If "\code{none}",
 neither coltypes nor rowtypes are checked.}
 
 \item{set_rowcoltypes}{tells whether to apply row and column types from \code{a} and \code{b}
-to the output. 
+to the output.
 Set \code{TRUE} (the default) to apply row and column types to the output.
 Set \code{FALSE}, to \emph{not} apply row and column types to the output.}
 
-\item{.organize}{a boolean that tells whether or not to automatically 
+\item{.organize}{a boolean that tells whether or not to automatically
 complete \code{a} and \code{b} relative to each other and
 sort the rows and columns of the completed matrices.
 Normally, this should be \code{TRUE} (the default).
@@ -48,7 +48,7 @@ However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
 the result of applying \code{FUN} "by name" to \code{a} and \code{b}.
 }
 \description{
-If either \code{a} or \code{b} is missing or \code{NULL}, 
+If either \code{a} or \code{b} is missing or \code{NULL},
 \code{0} is passed to \code{FUN} in its place.
 Note that if either \code{a} and \code{b} are lists, elements must be named the same.
 The names of list elements of \code{a} are applied to the output.

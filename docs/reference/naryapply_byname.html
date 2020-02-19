@@ -175,14 +175,14 @@ neither coltypes nor rowtypes are checked by <code>naryapply_byname</code>.</p><
     </tr>
     <tr>
       <th>set_rowcoltypes</th>
-      <td><p>tells whether to apply row and column types from 
-operands in <code>...</code> to the output of each sequential invocation of <code>FUN</code>. 
+      <td><p>tells whether to apply row and column types from
+operands in <code>...</code> to the output of each sequential invocation of <code>FUN</code>.
 Set <code>TRUE</code> (the default) to apply row and column types.
 Set <code>FALSE</code>, to <em>not</em> apply row and column types to the output.</p></td>
     </tr>
     <tr>
       <th>.organize</th>
-      <td><p>a boolean that tells whether or not to automatically 
+      <td><p>a boolean that tells whether or not to automatically
 complete operands in <code>...</code> relative to each other and
 sort the rows and columns of the completed matrices.
 This organizing is done on each sequential invocation of <code>FUN</code>.
@@ -196,19 +196,19 @@ However, if <code>FUN</code> takes over this responsibility, set to <code>FALSE<
     <p>the result of applying <code>FUN</code> to all operands in <code>...</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If only one <code>...</code> argument is supplied, 
+    <p>If only one <code>...</code> argument is supplied,
 <code>FUN</code> must be capable of handling one argument, and
 the call is routed to <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code>.
-When <code>set_rolcoltypes</code> is <code>TRUE</code>, 
-the <code>rowcoltypes</code> argument of <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code> is set to "<code>all</code>", 
-but when <code>set_rowcoltypes</code> is <code>FALSE</code>, 
+When <code>set_rolcoltypes</code> is <code>TRUE</code>,
+the <code>rowcoltypes</code> argument of <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code> is set to "<code>all</code>",
+but when <code>set_rowcoltypes</code> is <code>FALSE</code>,
 the <code>rowcoltypes</code> argument of <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code> is set to "<code>none</code>".
 If finer control is desired, the caller should use <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code> directly.
 If more than one argument is passed in <code>...</code>,
 <code>FUN</code> must be a binary function, but its use in by <code>naryapply_byname</code> is "n-ary."
 Arguments <code>match_type</code>, <code>set_rowcoltypes</code>, and <code>.organize</code>
 have same meaning as for <code><a href='binaryapply_byname.html'>binaryapply_byname</a></code>.
-Thus, all of the operands in <code>...</code> must obey the rules of type matching 
+Thus, all of the operands in <code>...</code> must obey the rules of type matching
 when <code>match_type</code> is <code>TRUE</code>.</p>
 <p><code>naryapply_byname</code> and <code><a href='cumapply_byname.html'>cumapply_byname</a></code> are similar.
 Their differences can be described by considering a data frame.

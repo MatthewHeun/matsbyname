@@ -158,10 +158,8 @@ organize_args <- function(a, b, match_type = "all", fill){
   return(list(a = outa, b = outb))
 }
 
-#' @title
 #' Create regex patterns for row and column selection by name
 #'
-#' @description
 #' This function is intended for use with the \code{select_rows_byname}
 #' and \code{select_cols_byname} functions.
 #' \code{make_pattern} correctly escapes special characters in \code{row_col_names},
@@ -171,7 +169,6 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' \code{select_rows_byname}
 #' and \code{select_cols_byname}.
 #'
-#' @details
 #' \code{pattern_type} controls the type of pattern created:
 #' \itemize{
 #'   \item{\code{exact} produces a pattern that selects row or column names by exact match.}
