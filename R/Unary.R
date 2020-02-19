@@ -304,13 +304,19 @@ identize_byname <- function(a, margin = c(1,2)){
 #'
 #' @param a the matrix to be vectorized
 #' @param sep a string to separate row names and col names in the resulting column vector. Default is " " (a space).
-#' @param matdims_byname the name of the attribute in which the original dimensions of `a` are stored. Default is "matdims_byname".
+#' @param dimattr the name of the attribute in which the original dimensions of `a` are stored. Default is "matdims_byname".
 #'
 #' @return a vector with all elements of the matrix, with row names assigned as "rowname `sep` colname".
 #' 
 #' @export
 #'
 #' @examples
+#' m <- matrix(c(1, 5,
+#'               4, 5),
+#'             nrow = 2, ncol = 2, byrow = TRUE, 
+#'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' vectorize_byname(m, sep = " -> ")
 vectorize_byname <- function(a, sep = " ", dimattr = "matdims_byname") {
   vectorize_func <- function(a) {
     vec <- a
@@ -321,7 +327,7 @@ vectorize_byname <- function(a, sep = " ", dimattr = "matdims_byname") {
     # Put names on the rows of the vector and return
     out <- vec %>% 
       setrownames_byname(vecrownames)
-    # Set an attribute "matdims" to contain the original dimensions of a. 
+    # Set an attribute "dimattr" to contain the original dimensions of a. 
     # Doing this will allow re-creating the matrix later with matricize_byname.
     attr(out, dimattr) <- dim(a)
     return(out)

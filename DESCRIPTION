@@ -15,7 +15,8 @@ RoxygenNote: 7.0.2
 Imports:
     dplyr,
     Hmisc,
-    magrittr
+    magrittr, 
+    purrr
 Suggests:
     covr,
     knitr,

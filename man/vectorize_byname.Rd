@@ -11,7 +11,7 @@ vectorize_byname(a, sep = " ", dimattr = "matdims_byname")
 
 \item{sep}{a string to separate row names and col names in the resulting column vector. Default is " " (a space).}
 
-\item{matdims_byname}{the name of the attribute in which the original dimensions of `a` are stored. Default is "matdims_byname".}
+\item{dimattr}{the name of the attribute in which the original dimensions of `a` are stored. Default is "matdims_byname".}
 }
 \value{
 a vector with all elements of the matrix, with row names assigned as "rowname `sep` colname".
@@ -25,4 +25,12 @@ with rows named as "rowname `sep` colname" of the matrix entry.
 `rowtype` and `coltype` attributes are retained in the event that 
 the resulting vector is re-matricized with the `matricize_byname` function later.
 The number of rows and columns of `a` are recorded in attribute `dims`.
+}
+\examples{
+m <- matrix(c(1, 5,
+              4, 5),
+            nrow = 2, ncol = 2, byrow = TRUE, 
+            dimnames = list(c("p1", "p2"), c("i1", "i2"))) \%>\% 
+  setrowtype("Products") \%>\% setcoltype("Industries")
+vectorize_byname(m, sep = " -> ")
 }
