@@ -321,20 +321,20 @@ context("Vectorize")
 
 test_that("vectorize_byname works as expected", {
   # Try with a square matrix
-  m <- matrix(c(1, 5,
+  m1 <- matrix(c(1, 5,
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
               dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  expected <- matrix(c(1, 
-                       4, 
-                       5, 
-                       5),
-                     nrow = 4, ncol = 1, 
-                     dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+  expected1 <- matrix(c(1, 
+                        4, 
+                        5, 
+                        5),
+                      nrow = 4, ncol = 1, 
+                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  actual <- vectorize_byname(m, sep = " -> ")
-  expect_equal(actual, expected)
+  actual1 <- vectorize_byname(m1, sep = " -> ")
+  expect_equal(actual1, expected1)
   # Try with a rectangular matrix
   m2 <- matrix(c(1, 2, 3,
                  4, 5, 6),
@@ -396,12 +396,10 @@ test_that("vectorize_byname works as expected", {
   # Test with string
   expect_error(vectorize_byname("a"), "a is not numeric in vectorize_byname")
   # Test with a list of matrices
-  
-  
-  
-  
-  
-  
+  list6 <- list(m1, m1)
+  actual6 <- vectorize_byname(list6, sep = " -> ")
+  expected6 <- list(expected1, expected1)
+  expect_equal(actual6, expected6)
 })
 
 
