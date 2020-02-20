@@ -333,7 +333,7 @@ test_that("vectorize_byname works as expected", {
                       nrow = 4, ncol = 1, 
                       dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  actual1 <- vectorize_byname(m1, sep = " -> ")
+  actual1 <- vectorize_byname(m1)
   expect_equal(actual1, expected1)
   # Try with a rectangular matrix
   m2 <- matrix(c(1, 2, 3,
@@ -350,14 +350,14 @@ test_that("vectorize_byname works as expected", {
                      nrow = 6, ncol = 1,
                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  actual2 <- vectorize_byname(m2, sep = " -> ")
+  actual2 <- vectorize_byname(m2)
   expect_equal(actual2, expected2)
   # Try with a single number
   m3 <- 42
   expected3 <- m3
   dim(expected3) <- c(1, 1)
   dimnames(expected3) <- list(c(NULL))
-  actual3 <- vectorize_byname(m3, sep = " -> ")
+  actual3 <- vectorize_byname(m3)
   expect_equal(actual3, expected3)
   # Try with a different separator
   m4 <- matrix(c(1, 5,
@@ -397,7 +397,7 @@ test_that("vectorize_byname works as expected", {
   expect_error(vectorize_byname("a"), "a is not numeric in vectorize_byname")
   # Test with a list of matrices
   list6 <- list(m1, m1)
-  actual6 <- vectorize_byname(list6, sep = " -> ")
+  actual6 <- vectorize_byname(list6)
   expected6 <- list(expected1, expected1)
   expect_equal(actual6, expected6)
 })

@@ -4,12 +4,13 @@
 \alias{vectorize_byname}
 \title{Vectorize a matrix}
 \usage{
-vectorize_byname(a, sep = " ")
+vectorize_byname(a, sep = " -> ")
 }
 \arguments{
 \item{a}{the matrix to be vectorized}
 
-\item{sep}{a string to separate row names and col names in the resulting column vector. Default is " " (a space).}
+\item{sep}{a string to separate row names and col names in the resulting column vector.
+Default is " -> " (an arrow indicating from row to column).}
 }
 \value{
 a column vector containing all elements of \code{a}, with row names assigned as "rowname \code{sep} colname".
@@ -18,6 +19,8 @@ a column vector containing all elements of \code{a}, with row names assigned as 
 Converts a matrix into a column vector.
 Each element of the matrix becomes an entry in the column vector,
 with rows named as "rowname \code{sep} colname" of the matrix entry.
+If "colname \code{sep} rowname" is desired,
+transpose the matrix first with \code{\link[=transpose_byname]{transpose_byname()}}.
 }
 \details{
 \code{rowtype} and \code{coltype} attributes are retained in the event that
