@@ -1095,7 +1095,7 @@ test_that("cumsum_byname works as expected", {
   expect_equal(cumsum_byname(mlist), expected)
   
   # Ensure that groups are respected in the context of mutate.
-  DF3 <- data.frame(grp = c("A", "A", "B"), m = I(mlist)) %>% 
+  DF3 <- tibble::tibble(grp = c("A", "A", "B"), m = mlist) %>% 
     dplyr::group_by(grp) %>% 
     dplyr::mutate(
       m2 = cumsum_byname(m)
@@ -1150,7 +1150,8 @@ test_that("cumprod_byname works as expected", {
   expect_equal(cumprod_byname(mlist), expected)
 
   # Ensure that groups are respected in the context of mutate.
-  DF3 <- data.frame(grp = c("A", "A", "B"), m = I(mlist)) %>%
+  # DF3 <- data.frame(grp = c("A", "A", "B"), m = I(mlist)) %>%
+  DF3 <- tibble::tibble(grp = c("A", "A", "B"), m = mlist) %>%
     dplyr::group_by(grp) %>%
     dplyr::mutate(
       m2 = cumprod_byname(m)
