@@ -11,6 +11,7 @@
   when creating the data frames for testing and
   (b) eliminate the use of `I()`, as 
   tibble is friendly to list columns. 
+* Added new function `matricize_byname()`.
 * Added section to vignette about `matsindf`.
   This section could be re-added now that `matsindf` is now on CRAN.
 * Added new function `vectorize_byname` that converts a matrix into a column vector.
