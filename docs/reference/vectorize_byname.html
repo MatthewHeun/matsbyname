@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply a function cumulatively to a list of matrices or numbers — cumapply_byname • matsbyname</title>
+<title>Vectorize a matrix — vectorize_byname • matsbyname</title>
 
 
 <!-- jquery -->
@@ -35,11 +35,10 @@
 
 
 
-<meta property="og:title" content="Apply a function cumulatively to a list of matrices or numbers — cumapply_byname" />
-<meta property="og:description" content="FUN must be a binary function that also accepts a single argument.
-The result is a list with first element FUN(a[[1]]).
-For i &amp;gt;= 2, elements are FUN(a[[i]], out[[i-1]]),
-where out is the result list." />
+<meta property="og:title" content="Vectorize a matrix — vectorize_byname" />
+<meta property="og:description" content="Converts a matrix into a column vector.
+Each element of the matrix becomes an entry in the column vector,
+with rows named as &quot;rowname sep colname&quot; of the matrix entry." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -126,93 +125,75 @@ where out is the result list." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply a function cumulatively to a list of matrices or numbers</h1>
-    <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Apply.R'><code>R/Apply.R</code></a></small>
-    <div class="hidden name"><code>cumapply_byname.Rd</code></div>
+    <h1>Vectorize a matrix</h1>
+    <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Unary.R'><code>R/Unary.R</code></a></small>
+    <div class="hidden name"><code>vectorize_byname.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>FUN</code> must be a binary function that also accepts a single argument.
-The result is a list with first element <code>FUN(a[[1]])</code>.
-For <code>i &gt;= 2</code>, elements are <code>FUN(a[[i]], out[[i-1]])</code>,
-where <code>out</code> is the result list.</p>
+    <p>Converts a matrix into a column vector.
+Each element of the matrix becomes an entry in the column vector,
+with rows named as "rowname <code>sep</code> colname" of the matrix entry.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cumapply_byname</span>(<span class='no'>FUN</span>, <span class='no'>a</span>)</pre>
+    <pre class="usage"><span class='fu'>vectorize_byname</span>(<span class='no'>a</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" "</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>FUN</th>
-      <td><p>the function to be applied</p></td>
+      <th>a</th>
+      <td><p>the matrix to be vectorized</p></td>
     </tr>
     <tr>
-      <th>a</th>
-      <td><p>the list of matrices or numbers to which <code>FUN</code> will be applied cumulatively</p></td>
+      <th>sep</th>
+      <td><p>a string to separate row names and col names in the resulting column vector. Default is " " (a space).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of same length as <code>a</code>
-containing the cumulative application of <code>FUN</code> to <code>a</code></p>
+    <p>a column vector containing all elements of <code>a</code>, with row names assigned as "rowname <code>sep</code> colname".</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code><a href='naryapply_byname.html'>naryapply_byname</a></code> and <code>cumapply_byname</code> are similar.
-Their differences can be described by considering a data frame.
-<code><a href='naryapply_byname.html'>naryapply_byname</a></code> applies <code>FUN</code> to several columns (variables) of the data frame.
-For example, <code><a href='sum_byname.html'>sum_byname</a></code> applied to several variables gives another column
-containing the sums across each row of the data frame.
-<code>cumapply_byname</code> applies <code>FUN</code> to successive entries in a single column.
-For example <code><a href='sum_byname.html'>sum_byname</a></code> applied to a single column gives the sum of all numbers in that column.</p>
+    <p><code>rowtype</code> and <code>coltype</code> attributes are retained in the event that
+the resulting vector is re-matricized with the <code>matricize_byname()</code> function later.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>sum</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1
+    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>5</span>,
+              <span class='fl'>4</span>, <span class='fl'>5</span>),
+            <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+            <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"p1"</span>, <span class='st'>"p2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i2"</span>))) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Products"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Industries"</span>)
+<span class='no'>m</span></div><div class='output co'>#&gt;    i1 i2
+#&gt; p1  1  5
+#&gt; p2  4  5
+#&gt; attr(,"rowtype")
+#&gt; [1] "Products"
+#&gt; attr(,"coltype")
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>vectorize_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>)</div><div class='output co'>#&gt;          [,1]
+#&gt; p1 -&gt; i1    1
+#&gt; p2 -&gt; i1    4
+#&gt; p1 -&gt; i2    5
+#&gt; p2 -&gt; i2    5
+#&gt; attr(,"rowtype")
+#&gt; [1] "Products"
+#&gt; attr(,"coltype")
+#&gt; [1] "Industries"</div><div class='input'><span class='co'># If a single number is provided, the number will be returned as a 1x1 column vector </span>
+<span class='co'># with some additional attributes.</span>
+<span class='fu'>vectorize_byname</span>(<span class='fl'>42</span>)</div><div class='output co'>#&gt;      [,1]
+#&gt; [1,]   42</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/attributes.html'>attributes</a></span>(<span class='fu'>vectorize_byname</span>(<span class='fl'>42</span>))</div><div class='output co'>#&gt; $dim
+#&gt; [1] 1 1
 #&gt; 
-#&gt; [[2]]
-#&gt; [1] 3
+#&gt; $dimnames
+#&gt; $dimnames[[1]]
+#&gt; NULL
 #&gt; 
-#&gt; [[3]]
-#&gt; [1] 6
+#&gt; $dimnames[[2]]
+#&gt; NULL
 #&gt; 
-#&gt; [[4]]
-#&gt; [1] 10
-#&gt; </div><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>sum_byname</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 3
-#&gt; 
-#&gt; [[3]]
-#&gt; [1] 6
-#&gt; 
-#&gt; [[4]]
-#&gt; [1] 10
-#&gt; </div><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>prod</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 2
-#&gt; 
-#&gt; [[3]]
-#&gt; [1] 6
-#&gt; 
-#&gt; [[4]]
-#&gt; [1] 24
-#&gt; </div><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>hadamardproduct_byname</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 2
-#&gt; 
-#&gt; [[3]]
-#&gt; [1] 6
-#&gt; 
-#&gt; [[4]]
-#&gt; [1] 24
-#&gt; </div></pre>
+#&gt; </div><div class='input'><span class='co'># If called with `NULL`, get `NULL` back</span>
+<span class='fu'>vectorize_byname</span>(<span class='kw'>NULL</span>)</div><div class='output co'>#&gt; NULL</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

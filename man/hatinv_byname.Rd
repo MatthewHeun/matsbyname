@@ -9,7 +9,7 @@ hatinv_byname(v, inf_becomes = .Machine$double.xmax)
 \arguments{
 \item{v}{the vector to be hatized and inverted}
 
-\item{inf_becomes}{a value to be substitute for any \code{Inf} produced by the inversion process. 
+\item{inf_becomes}{a value to be substitute for any \code{Inf} produced by the inversion process.
 Default is \code{.Machine$double.xmax}.
 If \code{FALSE} (the default), \code{Inf} is not handled differently.
 If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.}

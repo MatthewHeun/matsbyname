@@ -12,13 +12,16 @@ License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
 RoxygenNote: 7.1.0
+Roxygen: list(markdown = TRUE)
 Imports:
     dplyr,
     Hmisc,
-    magrittr
+    magrittr, 
+    purrr
 Suggests:
     covr,
     knitr,
+    matsindf,
     rmarkdown,
     testthat,
     tidyr

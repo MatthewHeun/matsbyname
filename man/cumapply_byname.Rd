@@ -12,8 +12,8 @@ cumapply_byname(FUN, a)
 \item{a}{the list of matrices or numbers to which \code{FUN} will be applied cumulatively}
 }
 \value{
-a list of same length as \code{a} 
-        containing the cumulative application of \code{FUN} to \code{a}
+a list of same length as \code{a}
+containing the cumulative application of \code{FUN} to \code{a}
 }
 \description{
 \code{FUN} must be a binary function that also accepts a single argument.

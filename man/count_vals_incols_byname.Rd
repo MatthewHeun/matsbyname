@@ -11,20 +11,20 @@ count_vals_incols_byname(
 )
 }
 \arguments{
-\item{a}{a matrix or list of matrices whose values are to be counted by columns 
+\item{a}{a matrix or list of matrices whose values are to be counted by columns
 according to \code{compare_fun}}
 
-\item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}", 
+\item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}",
 "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}"}
 
 \item{val}{the value against which matrix entries are compared. Default is \code{0}.}
 }
 \value{
-an \code{matrix} with a single row indicating the number of entries in \code{a} 
-        that meet the specified criterion in each column of \code{a}
+an \code{matrix} with a single row indicating the number of entries in \code{a}
+that meet the specified criterion in each column of \code{a}
 }
 \description{
-Expressions can be written in a natural way such as 
+Expressions can be written in a natural way such as
 \code{count_vals_incols_byname(m, "<=", 1)}.
 }
 \details{

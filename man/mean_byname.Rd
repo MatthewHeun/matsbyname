@@ -16,7 +16,7 @@ name-wise arithmetic mean of operands.
 Gives the arithmetic mean of operands in \code{...}.
 }
 \details{
-This function performs a union and sorting of row and column names 
+This function performs a union and sorting of row and column names
 prior to performing arithmetic mean.
 Zeroes are inserted for missing matrix elements.
 }

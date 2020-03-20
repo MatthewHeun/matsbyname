@@ -122,7 +122,7 @@ transpose_byname <- function(a){
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
   hatize_func <- function(v){
-    # Check if this is the right size
+    # Check if v is the right size
     if (!(nrow(v) == 1 | ncol(v) == 1)) {
       stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
@@ -291,6 +291,88 @@ identize_byname <- function(a, margin = c(1,2)){
                     rowcoltypes = "none")
 }
 
+
+#' Vectorize a matrix
+#' 
+#' Converts a matrix into a column vector.
+#' Each element of the matrix becomes an entry in the column vector,
+#' with rows named as "rowname `sep` colname" of the matrix entry.
+#' If "colname `sep` rowname" is desired, 
+#' transpose the matrix first with [transpose_byname()].
+#' 
+#' `rowtype` and `coltype` attributes are retained in the event that 
+#' the resulting vector is re-matricized with the [matricize_byname()] function later.
+#'
+#' @param a the matrix to be vectorized
+#' @param sep a string to separate row names and col names in the resulting column vector. 
+#'            Default is " -> " (an arrow indicating from row to column).
+#'
+#' @return a column vector containing all elements of `a`, with row names assigned as "rowname `sep` colname".
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1, 5,
+#'               4, 5),
+#'             nrow = 2, ncol = 2, byrow = TRUE, 
+#'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' m
+#' vectorize_byname(m, sep = " -> ")
+#' # If a single number is provided, the number will be returned as a 1x1 column vector 
+#' # with some additional attributes.
+#' vectorize_byname(42)
+#' attributes(vectorize_byname(42))
+#' # If called with `NULL`, get `NULL` back
+#' vectorize_byname(NULL)
+vectorize_byname <- function(a, sep = " -> ") {
+  vectorize_func <- function(a) {
+    if (!is.numeric(a)) {
+      stop("a is not numeric in vectorize_byname")
+    }
+    vec <- a
+    n_entries <- nrow(vec) * ncol(vec)
+    if (length(n_entries) == 0) {
+      # Probably have a single number
+      n_entries <- 1
+    }
+    dim(vec) <- c(n_entries, 1)
+    # Figure out names
+    vecrownames <- purrr::cross2(rownames(a), colnames(a)) %>% 
+      lapply(FUN = function(pair){paste0(pair[[1]], sep , pair[[2]])})
+    # Put names on the rows of the vector and return
+    vec %>% setrownames_byname(vecrownames)
+  }
+  unaryapply_byname(vectorize_func, a = a, rowcoltypes = "none")
+}
+
+
+#' Matricize a vector
+#'
+#' @param a a vector to be converted to a matrix based on its row or column names
+#' @param sep a string that separates prefixes (outgoing matrix rownames) and suffixes (outgoing matrix colnames)
+#'            in the names of the vector's
+#'            rows (for a column vector) or
+#'            columns (for a row vector).
+#'            Default is " -> " (an arrow).
+#'
+#' @return a matrix converted from vector `a`
+#' 
+#' @export
+#'
+#' @examples
+#' v <- matrix(c(1,
+#'               2,
+#'               3, 
+#'               4), 
+#'             nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' matricize_byname(v)
+matricize_byname <- function(a, sep = " -> ") {
+  
+}
+
+
 #' Compute fractions of matrix entries
 #' 
 #' This function divides all entries in \code{a} by the specified sum,
@@ -303,6 +385,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' each entry in \code{a} is divided by the sum of all entries in \code{a}.
 #'
 #' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
+#' 
 #' @export
 #'
 #' @examples

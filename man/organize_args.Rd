@@ -28,12 +28,12 @@ a list with two elements (named \code{a} and \code{b}) containing organized vers
 Organizes arguments of binary (2 arguments) \code{_byname} functions.
 Actions performed are:
 \itemize{
- \item{if only one argument is a list, make the other argument also a list of equal length.}
- \item{if both arguments are lists, ensure that they are same length.}
- \item{if one argument is a matrix and the other is a constant, make the constant into a matrix.}
- \item{ensures that row and column types match for \code{typematch_margins}.}
- \item{ensures that list item names match if both \code{a} and \code{b} are lists; 
-       no complaints are made if neither \code{a} nor \code{b} has names.}
- \item{completes and sorts the matrices.}
+\item{if only one argument is a list, make the other argument also a list of equal length.}
+\item{if both arguments are lists, ensure that they are same length.}
+\item{if one argument is a matrix and the other is a constant, make the constant into a matrix.}
+\item{ensures that row and column types match for \code{typematch_margins}.}
+\item{ensures that list item names match if both \code{a} and \code{b} are lists;
+no complaints are made if neither \code{a} nor \code{b} has names.}
+\item{completes and sorts the matrices.}
 }
 }

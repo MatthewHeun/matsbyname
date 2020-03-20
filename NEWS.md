@@ -1,4 +1,4 @@
-* Maintenance release to prepare for `dplyr` 1.0.0.
+* Maintenance to prepare for `dplyr` 1.0.0.
   Several tests in `matsbyname` needed a column of a data frame 
   constructed with `I()`.
   `dplyr::group_by()` now requires all groups to have same type, 
@@ -11,6 +11,9 @@
   when creating the data frames for testing and
   (b) eliminate the use of `I()`, as 
   tibble is friendly to list columns. 
+* Added section to vignette about `matsindf`.
+  This section could be re-added now that `matsindf` is now on CRAN.
+* Added new function `vectorize_byname` that converts a matrix into a column vector.
 
 
 # matsbyname 0.4.11 (2019-12-04)

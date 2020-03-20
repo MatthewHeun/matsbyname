@@ -11,13 +11,13 @@ logmean(a, b, base = exp(1))
 
 \item{b}{the second operand (must be non-negative)}
 
-\item{base}{the base of the logarithm used in this calculation. 
+\item{base}{the base of the logarithm used in this calculation.
 (Default is \code{exp(1)}.)}
 }
 \value{
 \code{0} if \code{a = 0} or \code{b = 0}; \code{x1} if \code{a == b}; and
-        \code{(a - b) / log(a/b, base = base)} 
-        for all other values of \code{a} and \code{b}
+\code{(a - b) / log(a/b, base = base)}
+for all other values of \code{a} and \code{b}
 }
 \description{
 Calculates the logarithmic mean of two numbers.
