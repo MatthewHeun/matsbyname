@@ -369,7 +369,32 @@ vectorize_byname <- function(a, sep = " -> ") {
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' matricize_byname(v)
 matricize_byname <- function(a, sep = " -> ") {
-  
+  matricize_func <- function(a) {
+    # Check if this is a column vector or a row vector
+    dimsa <- dim(a)
+    if (length(dimsa) != 2) {
+      stop("a must have length(dim(a)) == 2 in matricize_byname")
+    }
+    if (dimsa[[1]] == 1 & dimsa[[2]] != 1) {
+      # This is a row vector and not a 1x1 "vector".
+      # Transpose to a column vector, re-call this function, and transpose again before returning.
+      return(transpose_byname(a) %>% matricize_func() %>% transpose_byname())
+    }
+    # If we get here, we know we have a column vector.
+    # Gather row names.
+    vector_rownames <- dimnames(a)[[1]]
+    # Split row names at sep
+    matrix_row_col_pairs <- strsplit(vector_rownames, sep)
+    # Transpose to get all rownames first, all colnames second
+    matrix_row_col_names <- matrix_row_col_pairs %>% purrr::transpose()
+    # 
+    # Set up a concordance table rowname, rownumber, colname, colnumber, value
+    # 
+    # Create the matrix
+    
+    
+  } 
+  unaryapply_byname(matricize_func, a = a, rowcoltypes = "none")
 }
 
 

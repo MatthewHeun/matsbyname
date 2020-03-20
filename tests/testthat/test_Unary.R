@@ -404,6 +404,40 @@ test_that("vectorize_byname works as expected", {
 
 
 ###########################################################
+context("Matricize")
+###########################################################
+
+test_that("matricize_byname works as expected", {
+  v1 <- array(dim = c(2, 2, 2))
+  expect_error(matricize_byname(v1), "== 2 in matricize_byname")
+  
+  v2 <- matrix(c(1,
+                 2,
+                 3, 
+                 4), 
+               nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual2 <- matricize_byname(v2)
+  expected2 <- matrix(c(1, 3,
+                        2, 4),
+                      nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(actual2, expected2)
+                        
+
+  
+  # Be sure to test a row vector
+  # 
+  # 
+  # Be sure to test a 1x1 matrix
+  
+  
+  
+})
+
+
+
+###########################################################
 context("Fractionize")
 ###########################################################
 
