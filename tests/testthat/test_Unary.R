@@ -410,7 +410,8 @@ context("Matricize")
 test_that("matricize_byname works as expected", {
   v1 <- array(dim = c(2, 2, 2))
   expect_error(matricize_byname(v1), "== 2 in matricize_byname")
-  
+
+  # Try with a collumn vector  
   v2 <- matrix(c(1,
                  2,
                  3, 
@@ -420,21 +421,71 @@ test_that("matricize_byname works as expected", {
   actual2 <- matricize_byname(v2)
   expected2 <- matrix(c(1, 3,
                         2, 4),
-                      nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+                      nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   expect_equal(actual2, expected2)
                         
-
+  # Try with a row vector
+  v3 <- matrix(c(1, 2, 3, 4), 
+               nrow = 1, ncol = 4, dimnames = list(NULL, c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual3 <- matricize_byname(v3)
+  expected3 <- matrix(c(1, 3,
+                        2, 4),
+                      nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(actual3, expected3)
   
-  # Be sure to test a row vector
-  # 
-  # 
-  # Be sure to test a 1x1 matrix
+  # Try with a 1x1 matrix as a column vector.
+  v4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(c("p2 -> i1"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual4 <- matricize_byname(v4)
+  expected4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("p2", "i1")) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(actual4, expected4)
   
+  # Try with a 1x1 matrix as a row vector.
+  v5 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, c("p2 -> i1"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual5 <- matricize_byname(v5)
+  expected5 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("p2", "i1")) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(actual5, expected5)
   
-  
+  # Try with a non-square result
+  v6 <- matrix(c(1, 2, 3, 4, 5, 6),
+               nrow = 1, ncol = 6, dimnames = list(NULL, c("p1 -> i1", "p1 -> i2", 
+                                                           "p2 -> i1", "p2 -> i2",
+                                                           "p3 -> i1", "p3 -> i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual6 <- matricize_byname(v6)
+  expected6 <- matrix(c(1, 2, 
+                        3, 4, 
+                        5, 6),
+                      nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(actual6, expected6)
 })
 
+
+###########################################################
+context("Vectorize and Matricize")
+###########################################################
+
+test_that("vectorize and matricize are inverses of each other", {
+  m1 <- matrix(c(1, 2, 
+                 3, 4, 
+                 5, 6),
+               nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  v1 <- vectorize_byname(m1)
+  m2 <- matricize_byname(v1)
+  expect_equal(m2, m1)
+  # Do a regular transpose here (t), because transpose_byname switches rowtype and coltype.
+  v3 <- t(v1)
+  m4 <- matricize_byname(v3)
+  expect_equal(m4, m1)
+})
 
 
 ###########################################################

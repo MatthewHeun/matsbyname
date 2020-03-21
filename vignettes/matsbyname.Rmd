@@ -315,14 +315,14 @@ tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
 
 Analysts are encouraged 
 to set row and column types on matrices,
-thereby taking advantage of <tt>matsbyname</tt>'s
+thereby taking advantage of `matsbyname`'s
 type-tracking feature 
 to improve their matrix-based analyses.
 
 
-### <tt>*_byname</tt> functions work well with lists
+### `*_byname` functions work well with lists
 
-Another feature of the <tt>matsbyname</tt> package
+Another feature of the `matsbyname` package
 is that it works 
 when arguments to functions are lists of matrices,
 returning lists as appropriate.

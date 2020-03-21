@@ -349,7 +349,7 @@ vectorize_byname <- function(a, sep = " -> ") {
 
 #' Matricize a vector
 #'
-#' @param a a vector to be converted to a matrix based on its row or column names
+#' @param a a row (column) vector to be converted to a matrix based on its row (column) names
 #' @param sep a string that separates prefixes (outgoing matrix rownames) and suffixes (outgoing matrix colnames)
 #'            in the names of the vector's
 #'            rows (for a column vector) or
@@ -365,36 +365,84 @@ vectorize_byname <- function(a, sep = " -> ") {
 #'               2,
 #'               3, 
 #'               4), 
-#'             nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+#'             nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", 
+#'                                                   "p2 -> i1", 
+#'                                                   "p1 -> i2", 
+#'                                                   "p2 -> i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
+#' # Default separator is " -> ".
 #' matricize_byname(v)
 matricize_byname <- function(a, sep = " -> ") {
   matricize_func <- function(a) {
-    # Check if this is a column vector or a row vector
+    # Make sure we have the right number of dimensions, i.e. 2.
     dimsa <- dim(a)
     if (length(dimsa) != 2) {
       stop("a must have length(dim(a)) == 2 in matricize_byname")
     }
-    if (dimsa[[1]] == 1 & dimsa[[2]] != 1) {
+    # Check if this is a column vector or a row vector
+    if ((dimsa[[1]] == 1 & dimsa[[2]] != 1) | 
+        (dimsa[[1]] == 1 & dimsa[[2]] == 1 & is.null(dimnames(a)[[1]]))) {
       # This is a row vector and not a 1x1 "vector".
-      # Transpose to a column vector, re-call this function, and transpose again before returning.
-      return(transpose_byname(a) %>% matricize_func() %>% transpose_byname())
+      # Transpose to a column vector, then re-call this function.
+      return(transpose_byname(a) %>% matricize_func())
     }
     # If we get here, we know we have a column vector.
-    # Gather row names.
-    vector_rownames <- dimnames(a)[[1]]
+    # Gather row names of the vector.
+    rownames_a <- dimnames(a)[[1]]
     # Split row names at sep
-    matrix_row_col_pairs <- strsplit(vector_rownames, sep)
+    matrix_row_col_pairs <- strsplit(rownames_a, sep)
     # Transpose to get all rownames first, all colnames second
     matrix_row_col_names <- matrix_row_col_pairs %>% purrr::transpose()
-    # 
+    # Get the matrix row and column names separately.
+    .rownames <- matrix_row_col_names %>% 
+      magrittr::extract2(1) %>% 
+      unlist()
+    .colnames <- matrix_row_col_names %>% 
+      magrittr::extract2(2) %>% 
+      unlist()
+    uniquerownames <- unique(.rownames)
+    uniquecolnames <- unique(.colnames)
+    rid <- 1:length(uniquerownames)
+    cid <- 1:length(uniquecolnames)
+    # Identify row and column numbers
+    rnames <- "rownames"
+    cnames <- "colnames"
+    ridname <- "rid"
+    cidname <- "cid"
+    rownametable <- tibble::tibble(
+      1:length(uniquerownames),
+      uniquerownames
+    ) %>% magrittr::set_names(c(ridname, rnames))
+    colnametable <- tibble::tibble(
+      1:length(uniquecolnames),
+      uniquecolnames
+    ) %>% magrittr::set_names(c(cidname, cnames))
+
     # Set up a concordance table rowname, rownumber, colname, colnumber, value
-    # 
-    # Create the matrix
-    
-    
+    values <- "values"
+    mat_info <- tibble::tibble(
+      !!rnames := .rownames,
+      !!cnames := .colnames,
+      !!values := a[ , 1]
+    ) %>%
+      dplyr::left_join(rownametable, by = rnames) %>% 
+      dplyr::left_join(colnametable, by = cnames)
+      
+    # Create a zero matrix of correct dimension
+    m <- matrix(0, 
+                nrow = nrow(rownametable), ncol = nrow(colnametable), 
+                dimnames = list(rownametable[[rnames]], 
+                                colnametable[[cnames]]))
+    # Fill it with data from the concordance table
+    for (r in 1:nrow(mat_info)) {
+      rownum <- mat_info[[ridname]][r]
+      colnum <- mat_info[[cidname]][r]
+      value <- mat_info[[values]][r]
+      m[rownum, colnum] <- value
+    }
+    return(m)
   } 
-  unaryapply_byname(matricize_func, a = a, rowcoltypes = "none")
+  unaryapply_byname(matricize_func, a = a, rowcoltypes = "all")
 }
 
 
@@ -812,6 +860,7 @@ Iminus_byname <- function(a){
 #'
 #' @examples
 #' library(dplyr)
+#' library(tibble)
 #' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
 #'   setrowtype("row") %>% setcoltype("col")
 #' m2 <- matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>% 
@@ -820,7 +869,7 @@ Iminus_byname <- function(a){
 #'   setrowtype("row") %>% setcoltype("col")
 #' cumsum_byname(list(m1, m2, m3))
 #' # Groups are respected in the context of mutate.
-#' data.frame(grp = c("A", "A", "B"), m = I(list(m1, m2, m3))) %>% group_by(grp) %>% 
+#' tibble(grp = c("A", "A", "B"), m = list(m1, m2, m3)) %>% group_by(grp) %>% 
 #'   mutate(m2 = cumsum_byname(m))
 cumsum_byname <- function(a){
   cumapply_byname(FUN = sum_byname, a)

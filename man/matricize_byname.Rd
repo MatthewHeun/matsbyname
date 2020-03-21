@@ -7,7 +7,7 @@
 matricize_byname(a, sep = " -> ")
 }
 \arguments{
-\item{a}{a vector to be converted to a matrix based on its row or column names}
+\item{a}{a row (column) vector to be converted to a matrix based on its row (column) names}
 
 \item{sep}{a string that separates prefixes (outgoing matrix rownames) and suffixes (outgoing matrix colnames)
 in the names of the vector's
@@ -26,7 +26,11 @@ v <- matrix(c(1,
               2,
               3, 
               4), 
-            nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) \%>\% 
+            nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", 
+                                                  "p2 -> i1", 
+                                                  "p1 -> i2", 
+                                                  "p2 -> i2"))) \%>\% 
   setrowtype("Products") \%>\% setcoltype("Industries")
+# Default separator is " -> ".
 matricize_byname(v)
 }
