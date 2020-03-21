@@ -1,3 +1,5 @@
+# matsbyname 0.4.12 (2019-03-21)
+
 * Maintenance to prepare for `dplyr` 1.0.0.
   Several tests and examples in `matsbyname` needed a column of a data frame 
   constructed with `I()`.
@@ -11,7 +13,7 @@
   when creating the data frames for testing and
   (b) eliminate the use of `I()`, as 
   tibble is friendly to list columns. 
-* Added new function `matricize_byname()` that converts a colum (or row) vector into a matrix.
+* Added new function `matricize_byname()` that converts a column (or row) vector into a matrix.
   `matricize_byname()` is the inverse of `vectorize_byname()`.
 * Added new function `vectorize_byname` that converts a matrix into a column vector.
 * Added section to vignette about `matsindf`.
@@ -47,7 +49,7 @@
 
 # matsbyname 0.4.8 (2019-01-16)
 
-* Improved cran-comments for submission to CRAN..
+* Improved cran-comments.md for submission to CRAN.
 
 
 # matsbyname 0.4.7 (2019-01-07)
