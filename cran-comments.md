@@ -27,12 +27,18 @@ See `NEWS.md` for details.
             * WARNINGs: 0
             * NOTEs: 0
         * Ubuntu Linux 16.04 LTS, R-release, GCC
+            * ERRORs: 0
+            * WARNINGs: 0
+            * NOTEs: 0
         * Fedora Linux, R-devel, clang, gfortran
+            * ERRORs: 0
+            * WARNINGs: 0
+            * NOTEs: 0
 
 ## Downstream dependencies
 * Downstream dependencies were checked with `revdepcheck::revdep_check(num_workers = 4)`. 
     * Result: 
         * Wow, no problems at all. :)
-        * ✓ matsindf 0.3.3                       ── E: 0     | W: 0     | N: 0
+        * ✓ matsindf 0.3.3 ── E: 0     | W: 0     | N: 0
         * OK: 1
         * BROKEN: 0
