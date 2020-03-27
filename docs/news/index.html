@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.12</span>
       </span>
     </div>
 
@@ -125,6 +125,19 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0412-2019-03-21" class="section level1">
+<h1 class="page-header">
+<a href="#matsbyname-0412-2019-03-21" class="anchor"></a>matsbyname 0.4.12 (2019-03-21)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Maintenance to prepare for <code>dplyr</code> 1.0.0. Several tests and examples in <code>matsbyname</code> needed a column of a data frame constructed with <code><a href="https://rdrr.io/r/base/AsIs.html">I()</a></code>. <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">dplyr::group_by()</a></code> now requires all groups to have same type, but that wasn’t true in some tests, as some entries were <code>I&lt;list&gt;</code> (items in groups with more than one member) and others were <code>list</code> (items in single-item groups). The solution was to modify two test to
+(a) move from <code>data.frame</code> to <code>tibble</code> when creating the data frames for testing and
+(b) eliminate the use of <code><a href="https://rdrr.io/r/base/AsIs.html">I()</a></code>, as tibble is friendly to list columns.</li>
+<li>Added new function <code><a href="../reference/matricize_byname.html">matricize_byname()</a></code> that converts a column (or row) vector into a matrix. <code><a href="../reference/matricize_byname.html">matricize_byname()</a></code> is the inverse of <code><a href="../reference/vectorize_byname.html">vectorize_byname()</a></code>.</li>
+<li>Added new function <code>vectorize_byname</code> that converts a matrix into a column vector.</li>
+<li>Added section to vignette about <code>matsindf</code>. This section could be re-added now that <code>matsindf</code> is now on CRAN.</li>
+</ul>
+</div>
     <div id="matsbyname-0411-2019-12-04" class="section level1">
 <h1 class="page-header">
 <a href="#matsbyname-0411-2019-12-04" class="anchor"></a>matsbyname 0.4.11 (2019-12-04)<small> 2019-12-05 </small>
@@ -158,7 +171,7 @@
 <a href="#matsbyname-048-2019-01-16" class="anchor"></a>matsbyname 0.4.8 (2019-01-16)<small> Unreleased </small>
 </h1>
 <ul>
-<li>Improved cran-comments for submission to CRAN..</li>
+<li>Improved cran-comments.md for submission to CRAN.</li>
 </ul>
 </div>
     <div id="matsbyname-047-2019-01-07" class="section level1">
@@ -571,6 +584,7 @@ To choose a different value, set new argument <code>inf_becomes</code> to a nume
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#matsbyname-0412-2019-03-21">0.4.12</a></li>
         <li><a href="#matsbyname-0411-2019-12-04">0.4.11</a></li>
         <li><a href="#matsbyname-0410-2019-02-16">0.4.10</a></li>
         <li><a href="#matsbyname-049-2019-01-17">0.4.9</a></li>
