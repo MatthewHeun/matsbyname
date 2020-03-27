@@ -15,7 +15,7 @@ setrowtype(a, rowtype)
 \code{a} with rowtype attribute set to \code{rowtype}.
 }
 \description{
-This function is a wrapper for \code{attr} so that 
+This function is a wrapper for \code{attr} so that
 setting can be accomplished by the pipe operator (\code{\%>\%}).
 Row types are strings stored in the \code{rowtype} attribute.
 }

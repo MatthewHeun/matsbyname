@@ -11,7 +11,7 @@ cumsum_byname(a)
 }
 \value{
 a single number, list of numbers, a single matrix, or a list of matrices,
-        depending on the nature of \code{a}
+depending on the nature of \code{a}
 }
 \description{
 Provides cumulative sums along a list or column of a data frame.
@@ -19,17 +19,18 @@ If \code{a} is a single number, \code{a} is returned.
 If \code{a} is a list of numbers, a list representing the cumulative sum of the numbers is returned.
 If \code{a} is a single matrix, \code{a} is returned.
 If \code{a} is a list of matrices, a list representing the cumulative sum
-of the matrices is returned. 
-In this case, each entry in the returned list is sum "by name," 
+of the matrices is returned.
+In this case, each entry in the returned list is sum "by name,"
 such that row and column names of the matrices are respected.
 }
 \details{
-If cumulative sums are desired in the context of a data frame, 
+If cumulative sums are desired in the context of a data frame,
 groups in the data frame are respected if \code{mutate} is used.
 See examples.
 }
 \examples{
 library(dplyr)
+library(tibble)
 m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\% 
   setrowtype("row") \%>\% setcoltype("col")
 m2 <- matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) \%>\% 
@@ -38,6 +39,6 @@ m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) \%>\%
   setrowtype("row") \%>\% setcoltype("col")
 cumsum_byname(list(m1, m2, m3))
 # Groups are respected in the context of mutate.
-data.frame(grp = c("A", "A", "B"), m = I(list(m1, m2, m3))) \%>\% group_by(grp) \%>\% 
+tibble(grp = c("A", "A", "B"), m = list(m1, m2, m3)) \%>\% group_by(grp) \%>\% 
   mutate(m2 = cumsum_byname(m))
 }

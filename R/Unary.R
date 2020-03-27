@@ -122,12 +122,12 @@ transpose_byname <- function(a){
 #' hatize_byname(list(v, v))
 hatize_byname <- function(v){
   hatize_func <- function(v){
-    # Check if this is the right size
+    # Check if v is the right size
     if (!(nrow(v) == 1 | ncol(v) == 1)) {
       stop("matrix v must have at least one dimension of length 1 in hatize_byname")
     }
     v_sorted <- sort_rows_cols(v)
-    out <- OpenMx::vec2diag(v_sorted)
+    out <- diag(as.numeric(v_sorted))
     if (ncol(v) == 1) {
       rownames(out) <- rownames(v_sorted)
       colnames(out) <- rownames(v_sorted)
@@ -135,8 +135,8 @@ hatize_byname <- function(v){
       # So, we must do so here.
       out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
     } else if (nrow(v) == 1) {
-      rownames(out) <- colnames(v)
-      colnames(out) <- colnames(v)
+      rownames(out) <- colnames(v_sorted)
+      colnames(out) <- colnames(v_sorted)
       # This function does not rely on unaryapply_byname to set row and column types.
       # So, we must do so here.
       out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
@@ -227,7 +227,7 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' Row and column names are sorted on output.
 #'
 #' @param a the matrix whose names and dimensions are to be preserved in an identity matrix or vector
-#' @param margin determines whether an identity vector or matrix is returned
+#' @param margin determines whether an identity vector or matrix is returned. See details.
 #'
 #' @return An identity matrix or vector.
 #' 
@@ -247,7 +247,7 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' identize_byname(list(M, M))
 identize_byname <- function(a, margin = c(1,2)){
   identize_func <- function(a, margin){
-    if (class(a) == "numeric" & length(a) == 1) {
+    if (inherits(a, "numeric") & length(a) == 1) {
       # Assume we have a single number here
       # Thus, we return 1.
       return(1)
@@ -258,7 +258,7 @@ identize_byname <- function(a, margin = c(1,2)){
     }
     
     if (length(margin) == 2 && all(margin %in% c(1,2))) {
-      # M is a matrix. 
+      # a is a matrix. 
       # Return the identity matrix with 1's on diagonal,
       # of same dimensions as a
       # and same names and types as a.
@@ -291,6 +291,161 @@ identize_byname <- function(a, margin = c(1,2)){
                     rowcoltypes = "none")
 }
 
+
+#' Vectorize a matrix
+#' 
+#' Converts a matrix into a column vector.
+#' Each element of the matrix becomes an entry in the column vector,
+#' with rows named as "rowname `sep` colname" of the matrix entry.
+#' If "colname `sep` rowname" is desired, 
+#' transpose the matrix first with [transpose_byname()].
+#' 
+#' `rowtype` and `coltype` attributes are retained in the event that 
+#' the resulting vector is re-matricized with the [matricize_byname()] function later.
+#'
+#' @param a the matrix to be vectorized
+#' @param sep a string to separate row names and col names in the resulting column vector. 
+#'            Default is " -> " (an arrow indicating from row to column).
+#'
+#' @return a column vector containing all elements of `a`, with row names assigned as "rowname `sep` colname".
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1, 5,
+#'               4, 5),
+#'             nrow = 2, ncol = 2, byrow = TRUE, 
+#'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' m
+#' vectorize_byname(m, sep = " -> ")
+#' # If a single number is provided, the number will be returned as a 1x1 column vector 
+#' # with some additional attributes.
+#' vectorize_byname(42)
+#' attributes(vectorize_byname(42))
+#' # If called with `NULL`, get `NULL` back
+#' vectorize_byname(NULL)
+vectorize_byname <- function(a, sep = " -> ") {
+  vectorize_func <- function(a) {
+    if (!is.numeric(a)) {
+      stop("a is not numeric in vectorize_byname")
+    }
+    vec <- a
+    n_entries <- nrow(vec) * ncol(vec)
+    if (length(n_entries) == 0) {
+      # Probably have a single number
+      n_entries <- 1
+    }
+    dim(vec) <- c(n_entries, 1)
+    # Figure out names
+    vecrownames <- purrr::cross2(rownames(a), colnames(a)) %>% 
+      lapply(FUN = function(pair){paste0(pair[[1]], sep , pair[[2]])})
+    # Put names on the rows of the vector and return
+    vec %>% setrownames_byname(vecrownames)
+  }
+  unaryapply_byname(vectorize_func, a = a, rowcoltypes = "none")
+}
+
+
+#' Matricize a vector
+#'
+#' @param a a row (column) vector to be converted to a matrix based on its row (column) names
+#' @param sep a string that separates prefixes (outgoing matrix rownames) and suffixes (outgoing matrix colnames)
+#'            in the names of the vector's
+#'            rows (for a column vector) or
+#'            columns (for a row vector).
+#'            Default is " -> " (an arrow).
+#'
+#' @return a matrix converted from vector `a`
+#' 
+#' @export
+#'
+#' @examples
+#' v <- matrix(c(1,
+#'               2,
+#'               3, 
+#'               4), 
+#'             nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", 
+#'                                                   "p2 -> i1", 
+#'                                                   "p1 -> i2", 
+#'                                                   "p2 -> i2"))) %>% 
+#'   setrowtype("Products") %>% setcoltype("Industries")
+#' # Default separator is " -> ".
+#' matricize_byname(v)
+matricize_byname <- function(a, sep = " -> ") {
+  matricize_func <- function(a) {
+    # Make sure we have the right number of dimensions, i.e. 2.
+    dimsa <- dim(a)
+    if (length(dimsa) != 2) {
+      stop("a must have length(dim(a)) == 2 in matricize_byname")
+    }
+    # Check if this is a column vector or a row vector
+    if ((dimsa[[1]] == 1 & dimsa[[2]] != 1) | 
+        (dimsa[[1]] == 1 & dimsa[[2]] == 1 & is.null(dimnames(a)[[1]]))) {
+      # This is a row vector and not a 1x1 "vector".
+      # Transpose to a column vector, then re-call this function.
+      return(transpose_byname(a) %>% matricize_func())
+    }
+    # If we get here, we know we have a column vector.
+    # Gather row names of the vector.
+    rownames_a <- dimnames(a)[[1]]
+    # Split row names at sep
+    matrix_row_col_pairs <- strsplit(rownames_a, sep)
+    # Transpose to get all rownames first, all colnames second
+    matrix_row_col_names <- matrix_row_col_pairs %>% purrr::transpose()
+    # Get the matrix row and column names separately.
+    .rownames <- matrix_row_col_names %>% 
+      magrittr::extract2(1) %>% 
+      unlist()
+    .colnames <- matrix_row_col_names %>% 
+      magrittr::extract2(2) %>% 
+      unlist()
+    uniquerownames <- unique(.rownames)
+    uniquecolnames <- unique(.colnames)
+    rid <- 1:length(uniquerownames)
+    cid <- 1:length(uniquecolnames)
+    # Identify row and column numbers
+    rnames <- "rownames"
+    cnames <- "colnames"
+    ridname <- "rid"
+    cidname <- "cid"
+    rownametable <- tibble::tibble(
+      1:length(uniquerownames),
+      uniquerownames
+    ) %>% magrittr::set_names(c(ridname, rnames))
+    colnametable <- tibble::tibble(
+      1:length(uniquecolnames),
+      uniquecolnames
+    ) %>% magrittr::set_names(c(cidname, cnames))
+
+    # Set up a concordance table rowname, rownumber, colname, colnumber, value
+    values <- "values"
+    mat_info <- tibble::tibble(
+      !!rnames := .rownames,
+      !!cnames := .colnames,
+      !!values := a[ , 1]
+    ) %>%
+      dplyr::left_join(rownametable, by = rnames) %>% 
+      dplyr::left_join(colnametable, by = cnames)
+      
+    # Create a zero matrix of correct dimension
+    m <- matrix(0, 
+                nrow = nrow(rownametable), ncol = nrow(colnametable), 
+                dimnames = list(rownametable[[rnames]], 
+                                colnametable[[cnames]]))
+    # Fill it with data from the concordance table
+    for (r in 1:nrow(mat_info)) {
+      rownum <- mat_info[[ridname]][r]
+      colnum <- mat_info[[cidname]][r]
+      value <- mat_info[[values]][r]
+      m[rownum, colnum] <- value
+    }
+    return(m)
+  } 
+  unaryapply_byname(matricize_func, a = a, rowcoltypes = "all")
+}
+
+
 #' Compute fractions of matrix entries
 #' 
 #' This function divides all entries in \code{a} by the specified sum,
@@ -298,10 +453,12 @@ identize_byname <- function(a, margin = c(1,2)){
 #'
 #' @param a the matrix to be fractionized
 #' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
-#' If \code{2}, each entry in \code{a} is divided by its column's sum.
-#' If \code{c(1,2)}, each entry in \code{a} is divided by the sum of all entries in \code{a}.
+#' If \code{2} (columns), each entry in \code{a} is divided by its column's sum.
+#' If \code{c(1,2)} (both rows and columns), 
+#' each entry in \code{a} is divided by the sum of all entries in \code{a}.
 #'
 #' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
+#' 
 #' @export
 #'
 #' @examples
@@ -315,7 +472,7 @@ identize_byname <- function(a, margin = c(1,2)){
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(a, margin){
   fractionize_func <- function(a, margin){
-    if (!"matrix" %in% class(a) && !"data.frame" %in% class(a)) {
+    if (!inherits(a, "matrix") && !inherits(a, "data.frame")) {
       # Assume we have a single number here
       # By dividing a by itself, we could throw a division by zero error,
       # which we would want to do.
@@ -703,6 +860,7 @@ Iminus_byname <- function(a){
 #'
 #' @examples
 #' library(dplyr)
+#' library(tibble)
 #' m1 <- matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
 #'   setrowtype("row") %>% setcoltype("col")
 #' m2 <- matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>% 
@@ -711,7 +869,7 @@ Iminus_byname <- function(a){
 #'   setrowtype("row") %>% setcoltype("col")
 #' cumsum_byname(list(m1, m2, m3))
 #' # Groups are respected in the context of mutate.
-#' data.frame(grp = c("A", "A", "B"), m = I(list(m1, m2, m3))) %>% group_by(grp) %>% 
+#' tibble(grp = c("A", "A", "B"), m = list(m1, m2, m3)) %>% group_by(grp) %>% 
 #'   mutate(m2 = cumsum_byname(m))
 cumsum_byname <- function(a){
   cumapply_byname(FUN = sum_byname, a)

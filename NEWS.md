@@ -1,3 +1,57 @@
+# matsbyname 0.4.12 (2019-03-21)
+
+* Maintenance to prepare for `dplyr` 1.0.0.
+  Several tests and examples in `matsbyname` needed a column of a data frame 
+  constructed with `I()`.
+  `dplyr::group_by()` now requires all groups to have same type, 
+  but that wasn't true in some tests, as some entries were `I<list>`
+  (items in groups with more than one member)
+  and others were `list`
+  (items in single-item groups). 
+  The solution was to modify two test to
+  (a) move from `data.frame` to `tibble` 
+  when creating the data frames for testing and
+  (b) eliminate the use of `I()`, as 
+  tibble is friendly to list columns. 
+* Added new function `matricize_byname()` that converts a column (or row) vector into a matrix.
+  `matricize_byname()` is the inverse of `vectorize_byname()`.
+* Added new function `vectorize_byname` that converts a matrix into a column vector.
+* Added section to vignette about `matsindf`.
+  This section could be re-added now that `matsindf` is now on CRAN.
+
+
+# matsbyname 0.4.11 (2019-12-04)
+
+* Maintenance release to get ready for R4.0.0.
+  `matrix` objects now inherit from both `matrix` and `array`.
+  Thus, code should no longer assume that `class(A)` returns an object of length 1 when `A` is a `matrix`.
+  So, I eliminated all instances of `class(A) == "matrix"` in `if` statements
+  in favor of `inherits(A, "matrix")`.
+  See https://developer.r-project.org/Blog/public/2019/11/09/when-you-think-class.-think-again/index.html
+  for more details.
+
+
+# matsbyname 0.4.10 (2019-02-16)
+
+* Added CRAN installation instructions to README.Rmd, now that the package is on CRAN.
+* Added CITATION file. `citation("matsbyname")` now gives useful information.
+* Fixed a bug in `matrixproduct_byname` 
+  in which row and column types were not set correctly when one
+  operand was a `matrix` and the other operand was `NA`.
+
+
+# matsbyname 0.4.9 (2019-01-17)
+
+* Improved LICENSE file for submission to CRAN.
+* First version to appear on CRAN.
+* Added CRAN and lifecycle badges.
+
+
+# matsbyname 0.4.8 (2019-01-16)
+
+* Improved cran-comments.md for submission to CRAN.
+
+
 # matsbyname 0.4.7 (2019-01-07)
 
 * Cleaned up dependencies for testing.

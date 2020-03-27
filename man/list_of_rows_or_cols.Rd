@@ -15,10 +15,10 @@ list_of_rows_or_cols(a, margin)
 a named list of rows or columns extracted from \code{m}
 }
 \description{
-This function takes matrix \code{m} and converts it to a list of 
+This function takes matrix \code{m} and converts it to a list of
 single-row (if \code{margin == 1}) or single-column(if \code{margin == 2})
 matrices.
-Each item in the list is named for its row (if \code{margin == 1}) 
+Each item in the list is named for its row (if \code{margin == 1})
 or column (if \code{margin == 2}).
 }
 \details{

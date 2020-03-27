@@ -49,7 +49,7 @@ ensure size conformity of matrix operands,
 they do not respect the names of rows and columns
 (known as <tt>dimnames</tt> in <tt>R</tt>).
 In the following example, 
-**U** represents a *use*matrix
+**U** represents a *use* matrix
 that contains the quantity of each product used by each industry,
 and 
 **Y** represents a *final demand* matrix
@@ -92,7 +92,7 @@ to ensure name conformity.
 ```{r}
 Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
 Y3
-# Nonsensical because neither row nor column names are respected. 
+# Nonsensical because neither row names nor column names are respected. 
 # The "p3" rows and "i3" columns of Y3 have been added to 
 # "p2" rows and "i2" columns of U.
 # Row and column names for the sum are taken from the first operand (U).
@@ -315,14 +315,14 @@ tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
 
 Analysts are encouraged 
 to set row and column types on matrices,
-thereby taking advantage of <tt>matsbyname</tt>'s
+thereby taking advantage of `matsbyname`'s
 type-tracking feature 
 to improve their matrix-based analyses.
 
 
-### <tt>*_byname</tt> functions work well with lists
+### `*_byname` functions work well with lists
 
-Another feature of the <tt>matsbyname</tt> package
+Another feature of the `matsbyname` package
 is that it works 
 when arguments to functions are lists of matrices,
 returning lists as appropriate.
@@ -334,112 +334,112 @@ matrixproduct_byname(list(A, A), list(C, C))
 ```
 
 
-<!-- ### <tt>matsbyname</tt> works well with <tt>matsindf</tt> -->
+### <tt>matsbyname</tt> works well with <tt>matsindf</tt>
 
-<!-- The <tt>matsindf</tt> package provides functions that collapse -->
-<!-- [tidy](http://tidyr.tidyverse.org/articles/tidy-data.html) data frames -->
-<!-- of matrix elements into data frames of matrices. -->
-<!-- Data frames of matrices,  -->
-<!-- such as those created by <tt>matsindf</tt>, -->
-<!-- are like magic spreadsheets  -->
-<!-- in which single cells contain entire matrices. -->
+The <tt>matsindf</tt> package provides functions that collapse
+[tidy](http://tidyr.tidyverse.org/articles/tidy-data.html) data frames
+of matrix elements into data frames of matrices.
+Data frames of matrices,
+such as those created by <tt>matsindf</tt>,
+are like magic spreadsheets
+in which single cells contain entire matrices.
 
-<!-- The following example demonstrates an approach to creating a data frame of matrices. -->
+The following example demonstrates an approach to creating a data frame of matrices.
 
-<!-- ```{r} -->
-<!-- tidy <- data.frame( -->
-<!--   matrix = c("A", "A", "A", "A", "B", "B", "B", "B"), -->
-<!--   row = c("p1", "p1", "p2", "p2", "p1", "p1", "p2", "p2"), -->
-<!--   col = c("i1", "i2", "i1", "i2", "i1", "i2", "i1", "i2"), -->
-<!--   vals = c(1, 3, 2, 4, 8, 6, 7, 5) -->
-<!-- ) %>%  -->
-<!--   mutate( -->
-<!--     rowtype = "Industries", -->
-<!--     coltype  = "Products" -->
-<!--   ) -->
-<!-- tidy -->
-<!-- mats <- tidy %>%  -->
-<!--   group_by(matrix) %>%  -->
-<!--   collapse_to_matrices(matnames = "matrix", values = "vals",  -->
-<!--                        rownames = "row", colnames = "col",  -->
-<!--                        rowtypes = "rowtype", coltypes = "coltype") %>%  -->
-<!--   rename( -->
-<!--     matrix.name = matrix, -->
-<!--     matrix = vals -->
-<!--   ) -->
-<!-- mats -->
-<!-- mats$matrix[[1]] -->
-<!-- mats$matrix[[2]] -->
-<!-- ``` -->
-
-
-<!-- ## Using <tt>matsbyname</tt> with <tt>matsindf</tt> -->
-
-<!-- Because  -->
-
-<!-- * <tt>matsbyname</tt> works well with lists and  -->
-<!-- * data frame columns are implemented as lists and -->
-<!-- * the <tt>matsindf</tt> package can create data frames of matrices and -->
-<!-- * the [<tt>tidyr</tt>](http://tidyr.tidyverse.org) and  -->
-<!-- [<tt>dplyr</tt>](http://dplyr.tidyverse.org) packages work with data frames, -->
-
-<!-- <tt>matsbyname</tt> functions can be used with  -->
-<!-- [<tt>tidyr</tt>](http://tidyr.tidyverse.org) and  -->
-<!-- [<tt>dplyr</tt>](http://dplyr.tidyverse.org) functions  -->
-<!-- (such as -->
-<!-- <tt>spread</tt> and <tt>mutate</tt>) -->
-<!-- to perform matrix algebra within data frames -->
-<!-- of matrices. -->
-<!-- A single <tt>matsbyname</tt> instruction performs the same operation -->
-<!-- on all rows of the data frame. -->
-<!-- Loops begone! -->
-
-<!-- ```{r} -->
-<!-- result <- mats %>%  -->
-<!--   spread(key = matrix.name, value = matrix) %>%  -->
-<!--   # Duplicate the row to demonstrate byname operating simultaneously  -->
-<!--   # on all rows of the data frame. -->
-<!--   rbind(., .) %>%  -->
-<!--   mutate( -->
-<!--     # Create a column of constants. -->
-<!--     c = make_list(x = 1:2, n = 2, lenx = 2), -->
-<!--     # Sum all rows of the data frame with a single instruction. -->
-<!--     sum = sum_byname(A, B), -->
-<!--     # Multiply matrices in the sum column by corresponding constants in the c column. -->
-<!--     product = hadamardproduct_byname(c, sum) -->
-<!--   ) -->
-<!-- result -->
-<!-- result$sum[[1]] -->
-<!-- result$sum[[2]] -->
-<!-- result$product[[1]] -->
-<!-- result$product[[2]] -->
-<!-- ``` -->
+```{r}
+tidy <- data.frame(
+  matrix = c("A", "A", "A", "A", "B", "B", "B", "B"),
+  row = c("p1", "p1", "p2", "p2", "p1", "p1", "p2", "p2"),
+  col = c("i1", "i2", "i1", "i2", "i1", "i2", "i1", "i2"),
+  vals = c(1, 3, 2, 4, 8, 6, 7, 5)
+) %>%
+  mutate(
+    rowtype = "Industries",
+    coltype  = "Products"
+  )
+tidy
+mats <- tidy %>%
+  group_by(matrix) %>%
+  matsindf::collapse_to_matrices(matnames = "matrix", matvals = "vals",
+                                 rownames = "row", colnames = "col",
+                                 rowtypes = "rowtype", coltypes = "coltype") %>%
+  rename(
+    matrix.name = matrix,
+    matrix = vals
+  )
+mats
+mats$matrix[[1]]
+mats$matrix[[2]]
+```
 
 
-<!-- ## Suggested workflow using <tt>matsbyname</tt> and <tt>matsindf</tt> -->
+## Using `matsbyname` with `matsindf`
 
-<!-- A suggested analysis workflow is as follows: -->
+Because
 
-<!-- * Munge data into tidy data frame with columns for  -->
-<!-- matrix name, element value, -->
-<!-- row name, column name,  -->
-<!-- row type, and column type, -->
-<!-- similar to <tt>tidy</tt> above. -->
-<!-- * Use <tt>matsindf::collapse_to_matrices</tt> -->
-<!-- to create a data frame of matrices with columns for matrix names and  -->
-<!-- matrices themselves, -->
-<!-- similar to <tt>mats</tt> above. -->
-<!-- * <tt>tidyr::spread</tt> the matrices to obtain a data frame with columns for each matrix, -->
-<!-- similar to <tt>result</tt> above. -->
-<!-- * Perform matrix algebra operations on the columns of matrices -->
-<!-- using <tt>*_byname</tt> functions. -->
-<!-- * <tt>tidyr::gather</tt> the columns into a data frame with a single column of matrices. -->
-<!-- * Use <tt>matsindf::expand_to_tidy</tt> to create a tidy data frame of matrix elements. -->
-<!-- * <tt>tidyr::spread</tt> the data as necessary. -->
-<!-- * Graph or perform other manipulations of the data. -->
+* `matsbyname` works well with lists, and
+* data frame columns are implemented as lists, and
+* the <tt>matsindf</tt> package can create data frames of matrices, and
+* the [tidyr](http://tidyr.tidyverse.org) and
+[dplyr](http://dplyr.tidyverse.org) packages work with data frames,
 
-<!-- For more information and a detailed example of this workflow,  -->
-<!-- see <tt>vignette(\"matsindf\")</tt>. -->
+`matsbyname` functions can be used with
+[tidyr](http://tidyr.tidyverse.org) and
+[dplyr](http://dplyr.tidyverse.org) functions
+(such as
+`spread` and `mutate`)
+to perform matrix algebra within data frames
+of matrices.
+A single `matsbyname` instruction performs the same operation
+on all rows of a `matsindf` data frame.
+Loops begone!
+
+```{r}
+result <- mats %>%
+  tidyr::spread(key = matrix.name, value = matrix) %>%
+  # Duplicate the row to demonstrate byname operating simultaneously
+  # on all rows of the data frame.
+  dplyr::bind_rows(., .) %>%
+  dplyr::mutate(
+    # Create a column of constants.
+    c = make_list(x = 1:2, n = 2, lenx = 2),
+    # Sum all rows of the data frame with a single instruction.
+    sum = sum_byname(A, B),
+    # Multiply matrices in the sum column by corresponding constants in the c column.
+    product = hadamardproduct_byname(c, sum)
+  )
+result
+result$sum[[1]]
+result$sum[[2]]
+result$product[[1]]
+result$product[[2]]
+```
+
+
+## Suggested workflow using <tt>matsbyname</tt> and <tt>matsindf</tt>
+
+A suggested analysis workflow is as follows:
+
+* Munge data into tidy data frame with columns for
+matrix name, element value,
+row name, column name,
+row type, and column type,
+similar to <tt>tidy</tt> above.
+* Use <tt>matsindf::collapse_to_matrices</tt>
+to create a data frame of matrices with columns for matrix names and
+matrices themselves,
+similar to <tt>mats</tt> above.
+* <tt>tidyr::spread</tt> the matrices to obtain a data frame with columns for each matrix,
+similar to <tt>result</tt> above.
+* Perform matrix algebra operations on the columns of matrices
+using <tt>*_byname</tt> functions.
+* <tt>tidyr::gather</tt> the columns into a data frame with a single column of matrices.
+* Use <tt>matsindf::expand_to_tidy</tt> to create a tidy data frame of matrix elements.
+* <tt>tidyr::spread</tt> the data as necessary.
+* Graph or perform other manipulations of the data.
+
+For more information and a detailed example of this workflow,
+see the vignette for the `matsindf` package.
 
 
 ## Summary

@@ -11,7 +11,7 @@ cumprod_byname(a)
 }
 \value{
 a single number, list of numbers, a single matrix, or a list of matrices,
-        depending on the nature of \code{a}
+depending on the nature of \code{a}
 }
 \description{
 Provides cumulative element-products along a list or column of a data frame.
@@ -19,8 +19,8 @@ If \code{a} is a single number, \code{a} is returned.
 If \code{a} is a list of numbers, a list representing the cumulative product of the numbers is returned.
 If \code{a} is a single matrix, \code{a} is returned.
 If \code{a} is a list of matrices, a list representing the cumulative product
-of the matrices is returned. 
-In this case, each entry in the returned list is product "by name," 
+of the matrices is returned.
+In this case, each entry in the returned list is product "by name,"
 such that row and column names of the matrices are respected.
 }
 \details{

@@ -1,5 +1,10 @@
 # This file contains functions that apply other functions to 
-# matrices or data frames of matrices
+# matrices or data frames of matrices.
+
+# Note that the directive "@importFrom dplyr mutate" in the unaryapply_byname function
+# is meant to eliminate a warning on CRAN, specifically
+#   Namespace in Imports field not imported from: ‘dplyr’
+#   All declared Imports should be used.
 
 #' Apply a unary function by name
 #' 
@@ -25,6 +30,8 @@
 #' @return the result of applying \code{FUN} "by name" to \code{a}.
 #' 
 #' @export
+#' 
+#' @importFrom dplyr mutate
 #'
 #' @examples
 #' productnames <- c("p1", "p2")

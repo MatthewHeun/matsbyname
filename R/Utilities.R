@@ -17,7 +17,7 @@
 #'
 #' @param a the first argument to be organized
 #' @param b the second argument to be organized
-#' @param match_type one of \code{"all"} or \code{"matmult"}.
+#' @param match_type one of \code{"all"}, \code{"matmult"}, \code{"none"}.
 #' When both \code{a} and \code{b} are matrices,
 #' "\code{all}" (the default) indicates that
 #' rowtypes of \code{a} must match rowtypes of \code{b} and
@@ -84,21 +84,33 @@ organize_args <- function(a, b, match_type = "all", fill){
   }
   
   # Neither a nor b are lists.
-  # We don't know if one or both a and b is a matrix.
-  # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
-  if (!is.matrix(a) & is.matrix(b)) {
-    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b)) %>%
-      setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
-  } else if (is.matrix(a) & !is.matrix(b)) {
-    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a)) %>%
-      setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
-  }
-  
-  # Assume that both a and b are now matrices.
-  # Need to check whether matchtype is a known type.
+  # First check whether matchtype is a known value.
   if (!match_type %in% c("all", "matmult", "none"))  {
     stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
+  # We don't know if one or both a and b is a matrix.
+  # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
+  if (!is.matrix(a) & is.matrix(b)) {
+    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
+    if (match_type == "all") {
+      a <- a %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
+    } 
+    if (match_type == "matmult") {
+      a <- a %>% setcoltype(rowtype(b))
+    }
+    # If matchtype == "none", we don't to anything.
+  } else if (is.matrix(a) & !is.matrix(b)) {
+    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
+    if (match_type == "all") {
+      b <- b %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+    }
+    if (match_type == "matmult") {
+      b <- b %>% setrowtype(coltype(a))
+    }
+    # If matchtype == "none", we don't to anything.
+  }
+  
+  # Assume that both a and b are now matrices.
   
   # Verify that row and column types are appropriate.
   if (match_type == "all") {
@@ -146,10 +158,8 @@ organize_args <- function(a, b, match_type = "all", fill){
   return(list(a = outa, b = outb))
 }
 
-#' @title
 #' Create regex patterns for row and column selection by name
 #'
-#' @description
 #' This function is intended for use with the \code{select_rows_byname}
 #' and \code{select_cols_byname} functions.
 #' \code{make_pattern} correctly escapes special characters in \code{row_col_names},
@@ -159,7 +169,6 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' \code{select_rows_byname}
 #' and \code{select_cols_byname}.
 #'
-#' @details
 #' \code{pattern_type} controls the type of pattern created:
 #' \itemize{
 #'   \item{\code{exact} produces a pattern that selects row or column names by exact match.}
@@ -222,7 +231,7 @@ list_of_rows_or_cols <- function(a, margin){
   lrc_func <- function(a, margin){
     stopifnot(length(margin) == 1)
     stopifnot(margin %in% c(1,2))
-    stopifnot("matrix" %in% class(a))
+    stopifnot(inherits(a, "matrix"))
     # Strategy: perform all operations with margin to be split into a list in columns.
     if (margin == 1) {
       # Caller requested rows to be split into list items.
@@ -317,7 +326,7 @@ getcolnames_byname <- function(a){
 #' setrownames_byname(m, c("a", "b"))
 #' setrownames_byname(m %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("c", "d"))
 #' m %>% setrownames_byname(NULL)
-#' m %>% setrownames_byname(NA)
+#' m %>% setrownames_byname(c(NA, NA))
 #' 2 %>% setrownames_byname("row")
 #' # This also works for lists
 #' setrownames_byname(list(m,m), c("a", "b"))
@@ -340,7 +349,7 @@ setrownames_byname <- function(a, rownames){
     } else {
       out <- a
     }
-    if (is.null(rownames) || is.na(rownames)) {
+    if (is.null(rownames)) {
       # replace with default row names
       rownames(out) <- NULL
     } else {

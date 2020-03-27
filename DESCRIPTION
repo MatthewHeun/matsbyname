@@ -1,8 +1,8 @@
 Package: matsbyname
 Type: Package
 Title: An Implementation of Matrix Mathematics
-Version: 0.4.7
-Date: 2019-01-07
+Version: 0.4.12
+Date: 2020-03-21
 Authors@R: c(person("Matthew", "Heun", role = c("aut", "cre"),
                      comment = c(ORCID = "0000-0002-7438-214X"),
                      email = "matthew.heun@me.com"))
@@ -11,18 +11,22 @@ Description: An implementation of matrix mathematics wherein operations are perf
 License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
+Roxygen: list(markdown = TRUE)
 Imports:
     dplyr,
     Hmisc,
-    magrittr,
-    OpenMx
+    magrittr, 
+    purrr, 
+    rlang,
+    tibble
 Suggests:
-    testthat,
+    covr,
     knitr,
+    matsindf,
     rmarkdown,
-    tidyr,
-    covr
+    testthat,
+    tidyr
 VignetteBuilder: 
     knitr
 URL: https://github.com/MatthewHeun/matsbyname

@@ -15,21 +15,21 @@ logarithmicmean_byname(a, b, base = exp(1))
 (Default is \code{base = exp(1)}.)}
 }
 \value{
-A matrix representing the name-wise logarithmic mean 
-        of \code{a} and \code{b}.
+A matrix representing the name-wise logarithmic mean
+of \code{a} and \code{b}.
 }
 \description{
-The logarithmic mean of corresponding entries of \code{a} and \code{b} is 
-\code{0} if \code{a = 0} or \code{b = 0}, 
+The logarithmic mean of corresponding entries of \code{a} and \code{b} is
+\code{0} if \code{a = 0} or \code{b = 0},
 \code{a} if \code{a = b}, or
 \code{(b - a) / (log(b) - log(a))} otherwise.
 }
 \details{
-This function performs a union and sorting of row and column names 
+This function performs a union and sorting of row and column names
 prior to performing logarithmic mean.
 Zeroes are inserted for missing matrix elements.
 
-Internally, the third condition is implemented as 
+Internally, the third condition is implemented as
 \code{(b - a) / log(b/a)}.
 
 Note that \code{(b - a) / log(b/a) = (a - b) / log(a/b)},

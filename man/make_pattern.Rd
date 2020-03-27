@@ -4,8 +4,10 @@
 \alias{make_pattern}
 \title{Create regex patterns for row and column selection by name}
 \usage{
-make_pattern(row_col_names, pattern_type = c("exact", "leading",
-  "trailing", "anywhere"))
+make_pattern(
+  row_col_names,
+  pattern_type = c("exact", "leading", "trailing", "anywhere")
+)
 }
 \arguments{
 \item{row_col_names}{a vector of row and column names}
@@ -28,13 +30,13 @@ and \code{select_cols_byname}.
 \details{
 \code{pattern_type} controls the type of pattern created:
 \itemize{
-  \item{\code{exact} produces a pattern that selects row or column names by exact match.}
-  \item{\code{leading} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-        the beginnings of row or column names.}
-  \item{\code{trailing} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-        the ends of row or column names.}
-  \item{\code{anywhere} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-        any substring of row or column names.}
+\item{\code{exact} produces a pattern that selects row or column names by exact match.}
+\item{\code{leading} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+the beginnings of row or column names.}
+\item{\code{trailing} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+the ends of row or column names.}
+\item{\code{anywhere} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+any substring of row or column names.}
 }
 }
 \examples{

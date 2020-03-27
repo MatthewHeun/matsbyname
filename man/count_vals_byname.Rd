@@ -4,23 +4,26 @@
 \alias{count_vals_byname}
 \title{Count the number of matrix entries that meet a criterion}
 \usage{
-count_vals_byname(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
-  val = 0)
+count_vals_byname(
+  a,
+  compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
+  val = 0
+)
 }
 \arguments{
 \item{a}{a matrix or list of matrices whose values are to be counted according to \code{compare_fun}}
 
-\item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}", 
+\item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}",
 "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}".}
 
 \item{val}{the value against which matrix entries are compared. Default is \code{0}.}
 }
 \value{
-an integer indicating the number of entries in \code{a} 
-        that meet the specified criterion
+an integer indicating the number of entries in \code{a}
+that meet the specified criterion
 }
 \description{
-Expressions can be written in a natural way such as 
+Expressions can be written in a natural way such as
 \code{count_vals_byname(m, "<=", 1)}.
 }
 \details{

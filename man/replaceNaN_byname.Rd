@@ -15,7 +15,7 @@ replaceNaN_byname(a, val = 0)
 a matrix or list of matrices in which all \code{NaN} are replaced by \code{val}
 }
 \description{
-In a matrix or within matrices in a list, 
+In a matrix or within matrices in a list,
 replace all \code{NaN} matrix values with \code{val}.
 }
 \examples{
