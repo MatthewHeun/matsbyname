@@ -182,9 +182,10 @@ test_that("transpose_byname works with lists of lists", {
   DF[[1,"listofm"]] <- listofm
   DF[[2,"listofm"]] <- listofm
   
-  res <- DF %>% dplyr::mutate(
-    listofmT = transpose_byname(listofm)
-  )
+  res <- DF %>% 
+    dplyr::mutate(
+      listofmT = transpose_byname(listofm)
+    )
   expect_equal(res$listofmT[[1]][[1]], mT)
   expect_equal(res$listofmT[[1]][[2]], mT)
   expect_equal(res$listofmT[[2]][[1]], mT)
