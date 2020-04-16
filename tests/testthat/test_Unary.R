@@ -1110,6 +1110,17 @@ test_that("setting row names works as expected", {
   expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r3", "r4"), c("r3", "r4")))
 })
 
+
+test_that("setting row names works with different names for each matrix", {
+  m <- matrix(c(1, 2, 
+                3, 4), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  mlist <- list(m, m, m)
+  new_rownames <- list(c("a", "b"), c("c", "d"), c("e", "f"))
+  renamed <- setrownames_byname(mlist, rownames = new_rownames)
+  expect_equal(getrownames_byname(renamed), new_rownames)
+})
+
+
 test_that("setting col names works as expected", {
   m1 <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Commodities")
