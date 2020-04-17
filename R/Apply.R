@@ -102,25 +102,28 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
         
         if (all(unlist(arg_lengths) == length(a))) {
           # Likely want to apply .FUNdots to each of the items in a.
-          # lFUNdots <- .FUNdots
-          # Make an empty data frame with the same number of rows as we have elemetns in a.
+          # We need a slightly different structure for .FUNdots.
+          # To get this new structure, we'll first make a data frame
+          # in which each row is a set of arguments to FUN.
+          # Then, we'll pull each row individually
+          # for each call to FUN.
+          # To start, make an empty data frame with the same number of rows as we have elements in a.
           DF <- data.frame()[1:length(a), ]
-          # Fill the data frame with each argument in .FUNdots
+          # Fill the data frame by columns with each argument in .FUNdots
           for (i in 1:length(.FUNdots)) {
             DF[[i]] <- I(.FUNdots[[i]])
           }
+          # Set data frame columns to be same as the argument names in .FUNdots.
           DF <- DF %>% magrittr::set_names(names(.FUNdots))
           # Eliminate row names
           rownames(DF) <- NULL
-          # Build a list of rows, each of which will be a set of arguments later.
+          # Build a list of rows, each of which will be a set of arguments for one call to FUN.
           lFUNdots <- list()
           for (i in 1:nrow(DF)) {
             lFUNdots[[i]] <- DF[i, ] %>% 
-              magrittr::set_names(names(.FUNdots))
+              # Transfer names from the columns of DF to each set of arguments
+              magrittr::set_names(names(DF))
           }
-          # Undo the first level of the list.
-          # lFUNdots <- lFUNdots %>%
-          #   unlist(recursive = FALSE) 
         } else if (all(unlist(arg_lengths) == 1)) {
           # Replicate the values to apply along a
           lFUNdots <- lapply(.FUNdots, function(arg) {
@@ -142,16 +145,10 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
       # Replicate .FUNdots to equal length(a)
       lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
     }
-    # Execute the function along a
-    out <- list()
-    for (i in 1:length(a)) {
-      out[[i]] <- do.call(unaryapply_byname, c(list(FUN = FUN, a = a[[i]]), .FUNdots = list(lFUNdots[[i]]), list(rowcoltypes = rowcoltypes)))
-      if (!is.null(names(a[[i]]))) {
-        out[[i]] <- out[[i]] %>% magrittr::set_names(names(a[[i]]))
-      }
-    }
-    # Return the list
-    return(out)
+    # Now that we have created lFUNdots appropriately, Map to get our result.
+    return(Map(unaryapply_byname, list(FUN), a, lFUNdots, rowcoltypes = rowcoltypes) %>%
+             # Preserve names of a (if present) in the outgoing list.
+             magrittr::set_names(names(a)))
   }
   
   # a is not a list.
