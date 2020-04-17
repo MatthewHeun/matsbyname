@@ -88,11 +88,39 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
     if (is.list(.FUNdots)) {
       # If .FUNdots has 2 levels of lists, the caller has specified arguments for each and every a in a's list.
       if (is.list(.FUNdots[[1]])) {
-        # Do a recursive descent into .FUNdots to look at lengths for each item
-        arg_lengths <- rapply(.FUNdots, length, how = "list")
+        # # Do a recursive descent into .FUNdots to look at lengths for each item
+        # arg_lengths <- rapply(.FUNdots, length, how = "list")
+        
+        # The "second level" of .FUNdots is (potentially) a list of values for each argument to FUN. 
+        # If the number of values for each argument to FUN matches the length of a, 
+        # it is likely that the caller wants each of these items applied to FUN via a mapping.
+        # Figure out the structure of the sizes of the arguments supplied in .FUNdots..
+        arg_lengths <- list()
+        for (i in 1:length(.FUNdots)) {
+          arg_lengths[[i]] <- length(.FUNdots[[i]])
+        }
+        
         if (all(unlist(arg_lengths) == length(a))) {
           # Likely want to apply .FUNdots to each of the items in a.
-          lFUNdots <- .FUNdots
+          # lFUNdots <- .FUNdots
+          # Make an empty data frame with the same number of rows as we have elemetns in a.
+          DF <- data.frame()[1:length(a), ]
+          # Fill the data frame with each argument in .FUNdots
+          for (i in 1:length(.FUNdots)) {
+            DF[[i]] <- I(.FUNdots[[i]])
+          }
+          DF <- DF %>% magrittr::set_names(names(.FUNdots))
+          # Eliminate row names
+          rownames(DF) <- NULL
+          # Build a list of rows, each of which will be a set of arguments later.
+          lFUNdots <- list()
+          for (i in 1:nrow(DF)) {
+            lFUNdots[[i]] <- DF[i, ] %>% 
+              magrittr::set_names(names(.FUNdots))
+          }
+          # Undo the first level of the list.
+          # lFUNdots <- lFUNdots %>%
+          #   unlist(recursive = FALSE) 
         } else if (all(unlist(arg_lengths) == 1)) {
           # Replicate the values to apply along a
           lFUNdots <- lapply(.FUNdots, function(arg) {
