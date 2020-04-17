@@ -74,6 +74,7 @@ test_that("sums of matrices works as expected", {
   expect_error(sum_byname(U, V), "rowtype")
 })
 
+
 test_that("sums of matrices in lists and data frames works as expected", {
   # Define a data frame to be used with testing below.
   DF <- data.frame(U = I(list()), Y = I(list()), Z = I(list()))
@@ -97,6 +98,7 @@ test_that("sums of matrices in lists and data frames works as expected", {
   # And sum_byname should work with more than 2 operands.
   expect_equal(sum_byname(DF$U, DF$Y, DF$Z), list(UYZ, UYZ))
 })
+
 
 test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
   ulist <- list(U, U)
@@ -127,6 +129,7 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
   expect_equal(res$bigsum[[2]][[1]], UYZ)
   expect_equal(res$bigsum[[2]][[2]], UYZ)
 })
+
 
 test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
   # Now check to see what happens when one of the operands
@@ -325,6 +328,7 @@ test_that("matrixproduct_byname works as expected", {
                DF_expected)
 })
 
+
 test_that("matrix product with NA is correct", {
   Z <- 42 %>% setrowtype("Product") %>% setcoltype("Industry")
   D <- 42 %>% setrowtype("Industry") %>% setcoltype("Product")
@@ -343,6 +347,7 @@ test_that("matrix product with NA is correct", {
   expect_equal(matrixproduct_byname(Z2, NA), 
                matrix(NA_real_, nrow = 2, ncol = 2, dimnames = dimnames(Z2)) %>% setrowtype(rowtype(Z2)))
 })
+
 
 test_that("hadamardproduct_byname works as expected", {
   expect_equal(hadamardproduct_byname(2, 2), 4)
@@ -512,6 +517,7 @@ test_that("quotient_byname works as expected", {
   expect_equal(DF %>% dplyr::mutate(elementquotients = quotient_byname(U, Y)), DF_expected)
 })
 
+
 test_that("detailed example of quotient_byname works as expected", {
   Lv <- list(
     matrix(c(36.40956907, 
@@ -573,11 +579,21 @@ test_that("pow_byname works as expected", {
   
   # Try with single matrices
   m <- matrix(2, nrow = 2, ncol = 3)
+  one_over_m <- matrix(0.5, nrow = 2, ncol = 3)
   sqrtm <- matrix(sqrt(2), nrow = 2, ncol = 3)
+  identity <- matrix(1, nrow = 2, ncol = 3)
+  squarem <- matrix(4, nrow = 2, ncol = 3)
+  
+  expect_equal(pow_byname(m, -1), one_over_m)
+  expect_equal(pow_byname(m, 0), identity)
   expect_equal(pow_byname(m, 0.5), sqrtm)
+  expect_equal(pow_byname(m, 0), identity)
+  expect_equal(pow_byname(m, 2), squarem)
   
   # Try with a list of matrices
   expect_equal(pow_byname(list(m, m), 0.5), list(sqrtm, sqrtm))
+  expect_equal(pow_byname(list(m, m), pow = list(0.5, 1)), list(sqrtm, m))
+  expect_equal(pow_byname(list(m, m, m, m, m), pow = list(-1, 0, 0.5, 1, 2)), list(one_over_m, identity, sqrtm, m, squarem))
   
   # Try in a data frame
   DF <- data.frame(m = I(list()), pow = I(list()))
