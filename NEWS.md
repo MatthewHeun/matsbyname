@@ -1,3 +1,6 @@
+* Added additional tests for new features
+    * Now up to 766 tests, all passing.
+    * Code coverage remains at 100%.
 * Fixed a bug in `unaryapply_byname()`, 
   which was not correctly handling a rectangular two-dimensional list of arguments to `FUN` supplied in  `.FUNdots`.
   A rectangular two-dimensional list of arguments in `.FUNdots` is now interpreted as follows:

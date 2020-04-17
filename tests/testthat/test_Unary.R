@@ -645,6 +645,7 @@ m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
 n1 <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
 n2 <- setcolnames_byname(m, c("a1", "a2", "b1", "b2"))
 
+
 test_that("matrix row selection by name with exact matches (^name$) works as expected", {
   # Select only the first row (i1)
   expect_equal(select_rows_byname(m, retain_pattern = "^i1$"), 
@@ -682,6 +683,7 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
                  setrowtype(rowtype(crazymat)) %>% setcoltype(coltype(crazymat)))
 })
 
+
 test_that("matrix row selection by name with inexact matches works as expected", {
   # Matches first two rows, because partial match is OK.
   expect_equal(select_rows_byname(n1, retain_pattern = "^a"), 
@@ -691,12 +693,14 @@ test_that("matrix row selection by name with inexact matches works as expected",
                n1[c(3,4), ] %>% setrowtype(rowtype(n1)) %>% setcoltype(coltype(n1)))
 })
 
+
 test_that("matrix row selection by name with inexact matches and multiple selectors", {
   # The retain_pattern selects all rows whose names start with "a" or "b".
   # This approach should retain rows with names "a1", "a2", "b1", and "b2", i.e.,
   # all rows in n1.
   expect_equal(select_rows_byname(n1, retain_pattern = "^a|^b"), n1)
 })
+
 
 test_that("matrix row selection by name in lists works as expected", {
   # Use same row names for each item in the list
@@ -753,6 +757,7 @@ test_that("matrix column selection by name with exact matches (^name$) works as 
   expect_equal(select_cols_byname(m, remove_pattern = "^x$"), m)
 })
 
+
 test_that("matrix column selection by name with inexact matches works as expected", {
   # Matches first two columns, because partial match is OK.
   expect_equal(select_cols_byname(n2, retain_pattern = "^a"), 
@@ -762,12 +767,14 @@ test_that("matrix column selection by name with inexact matches works as expecte
                n2[ , c(3,4)] %>% setrowtype(rowtype(n2)) %>% setcoltype(coltype(n2)))
 })
 
+
 test_that("matrix column selection by name with inexact matches and multiple selectors", {
   # The retain_pattern selects all columns whose names start with "a" or "b".
   # This approach should retain columns with names "a1", "a2", "b1", and "b2", i.e.,
   # all columns in n2.
   expect_equal(select_cols_byname(n2, retain_pattern = "^a|^b"), n2)
 })
+
 
 test_that("matrix column selection by name in lists works as expected", {
   # Use same column names for each item in the list
@@ -827,6 +834,7 @@ test_that("rowsums_byname works as expected", {
   expect_equal(DF %>% dplyr::mutate(mi = rowsums_byname(m)), DF_expected)
 })
 
+
 test_that("colsums_byname works as expected", {
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
@@ -856,6 +864,7 @@ test_that("colsums_byname works as expected", {
   attr(DF_expected$iTm, which = "class") <- NULL
   expect_equal(DF %>% dplyr::mutate(iTm = colsums_byname(m)), DF_expected)
 })
+
 
 test_that("sumall_byname works as expected", {
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
@@ -919,6 +928,7 @@ test_that("rowprods_byname works as expected", {
   expect_equal(DF %>% dplyr::mutate(mi = rowprods_byname(m)), DF_expected)
 })
 
+
 test_that("colprods_byname works as expected", {
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
@@ -948,6 +958,7 @@ test_that("colprods_byname works as expected", {
   attr(DF_expected$iTm, which = "class") <- NULL
   expect_equal(DF %>% dplyr::mutate(iTm = colprods_byname(m)), DF_expected)
 })
+
 
 test_that("prodall_byname works as expected", {
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
@@ -1182,7 +1193,6 @@ test_that("setting column names works with different names for each matrix", {
 })
 
 
-
 ###########################################################
 context("Row and column types")
 ###########################################################
@@ -1219,6 +1229,18 @@ test_that("setcoltype and coltype works as expected", {
   expect_equal(coltype(Ul), list("Industries", "Industries"))
   Ul2 <- setcoltype(list(U,U), coltype = "Junk")
   expect_equal(coltype(Ul2), list("Junk", "Junk"))
+  # Check that it works when the lists are not same structure as a.
+  Ul3 <- setcoltype(list(U,U), coltype = list("Junk", "Junk"))
+  expect_equal(coltype(Ul3), list("Junk", "Junk"))
+  Ul4 <- setcoltype(list(U,U,U), coltype = list("Junk", "Junk", "Bogus"))
+  expect_equal(coltype(Ul4), list("Junk", "Junk", "Bogus"))
+  Ul5 <- setcoltype(list(U,U,U), coltype = c("Bogus"))
+  expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
+  Ul6 <- setcoltype(list(U,U,U), coltype = list("Bogus"))
+  expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
+  # This one should fail, becuase length of coltype is neither 1 nor length(a), namely 3.
+  expect_error(setcoltype(list(U,U,U), coltype = list("Bogus", "Bogus")), "when .FUNdots is a list, each item \\(argument\\) must have length 1 or length\\(a\\)")
+  
   # Also works for data frames
   DF <- data.frame(U = I(list()))
   DF[[1,"U"]] <- U
@@ -1227,6 +1249,9 @@ test_that("setcoltype and coltype works as expected", {
   expect_equal(coltype(DF2), list("Industries", "Industries"))
   DF3 <- DF %>% dplyr::mutate(newcol = setcoltype(U, "Industries"))
   expect_equal(DF3$newcol %>% coltype, list("Industries", "Industries"))
+  
+  # Check that it works for vectors supplied to .FUNdots
+  
 })
 
 
@@ -1248,6 +1273,7 @@ test_that("setrownames_byname works as expected", {
   expect_equal(2 %>% setrownames_byname("row"), 
                matrix(2, nrow = 1, ncol = 1, dimnames = list(c("row"), NULL)))
 })
+
 
 test_that("setcolnames_byname works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%

@@ -117,6 +117,15 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
           arg_lengths[[i]] <- length(.FUNdots[[i]])
         }
         
+        if (all(unlist(arg_lengths) == 1)) {
+          # Replicate the values to apply along a
+          for (i in 1:length(.FUNdots)) {
+            .FUNdots[[i]] <- rep.int(.FUNdots[[i]], times = length(a))
+            # Recalculate arg lengths so that we can drop into the next if statement.
+            arg_lengths[[i]] <- length(.FUNdots[[i]])
+          }
+        }
+
         if (all(unlist(arg_lengths) == length(a))) {
           # Likely want to apply .FUNdots to each of the items in a.
           # We need a slightly different structure for .FUNdots.
@@ -141,19 +150,14 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
               # Transfer names from the columns of DF to each set of arguments
               magrittr::set_names(names(DF))
           }
-        } else if (all(unlist(arg_lengths) == 1)) {
-          # Replicate the values to apply along a
-          lFUNdots <- lapply(.FUNdots, function(arg) {
-            make_list(x = arg, n = length(a), lenx = 1)
-          })
         } else {
           # a and .FUNdots are lists.
           # But the structure of .FUNdots doesn't match expectations
+          # (i.e., length of each item in .FUNdots is neither 1 nor length(a))
           # and .FUNdots does not consist of single-value arguments.
           # So we don't quite know what to do here.
-          # Best bet is to try to use .FUNdots as supplied by the caller
-          # and hope for the best!
-          lFUNdots <- .FUNdots
+          # Throw an error.
+          stop("when .FUNdots is a list, each item (argument) must have length 1 or length(a)")
         }
       }
     }
