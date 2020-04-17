@@ -1,3 +1,5 @@
+# matsbyname 0.4.13 (2020-04-17)
+
 * Added additional tests for new features
     * Now up to 766 tests, all passing.
     * Code coverage remains at 100%.
@@ -12,7 +14,7 @@
   The length of the second dimension of `.FUNdots` must be equal to the length of `a`.
 
 
-# matsbyname 0.4.12 (2019-03-21)
+# matsbyname 0.4.12 (2020-03-21)
 
 * Maintenance to prepare for `dplyr` 1.0.0.
   Several tests and examples in `matsbyname` needed a column of a data frame 
