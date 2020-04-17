@@ -1119,6 +1119,14 @@ test_that("setting row names works with different names for each matrix", {
   new_rownames <- list(c("a", "b"), c("c", "d"), c("e", "f"))
   renamed <- setrownames_byname(mlist, rownames = new_rownames)
   expect_equal(getrownames_byname(renamed), new_rownames)
+  
+  # Try this in a data frame
+  DF <- data.frame(mcol = I(mlist), rownames_col = I(new_rownames))
+  DF_renamed <- DF %>% 
+    dplyr::mutate(
+      mcol_2 = setrownames_byname(mcol, rownames = rownames_col)
+    )
+  expect_equal(getrownames_byname(DF_renamed$mcol_2), new_rownames)
 })
 
 
@@ -1153,6 +1161,26 @@ test_that("setting col names works as expected", {
     )
   expect_equal(list(colnames(DF3$mcol2[[1]]), colnames(DF3$mcol2[[2]])), list(c("c1", "c2", "c3"), c("c1", "c2", "c3")))
 })
+
+
+test_that("setting column names works with different names for each matrix", {
+  m <- matrix(c(1, 2,
+                3, 4, 
+                5, 6), nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  mlist <- list(m, m, m)
+  new_colnames <- list(c("a", "b"), c("c", "d"), c("e", "f"))
+  renamed <- setcolnames_byname(mlist, colnames = new_colnames)
+  expect_equal(getcolnames_byname(renamed), new_colnames)
+  
+  # Try this in a data frame
+  DF <- data.frame(mcol = I(mlist), colnames_col = I(new_colnames))
+  DF_renamed <- DF %>% 
+    dplyr::mutate(
+      mcol_2 = setcolnames_byname(mcol, colnames = colnames_col)
+    )
+  expect_equal(getcolnames_byname(DF_renamed$mcol_2), new_colnames)
+})
+
 
 
 ###########################################################
