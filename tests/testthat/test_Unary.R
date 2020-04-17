@@ -1249,9 +1249,6 @@ test_that("setcoltype and coltype works as expected", {
   expect_equal(coltype(DF2), list("Industries", "Industries"))
   DF3 <- DF %>% dplyr::mutate(newcol = setcoltype(U, "Industries"))
   expect_equal(DF3$newcol %>% coltype, list("Industries", "Industries"))
-  
-  # Check that it works for vectors supplied to .FUNdots
-  
 })
 
 
