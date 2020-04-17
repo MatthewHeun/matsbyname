@@ -36,7 +36,20 @@ Rather, \code{FUN} will set rowtype and coltype.}
 the result of applying \code{FUN} "by name" to \code{a}.
 }
 \description{
-Note that if \code{a} is a list, the names of \code{a} are applied to the output.
+\code{FUN} is applied to \code{a} using additional arguments \code{.FUNdots} to \code{FUN}.
+If \code{a} is a list, the names of \code{a} are applied to the output.
+}
+\details{
+Note that \code{.FUNdots} can be a rectangular two-dimensional list of arguments to \code{FUN}.
+If so, \code{.FUNdots} is interpreted as follows:
+\itemize{
+\item The first dimension of \code{.FUNdots} contains named arguments to \code{FUN}.
+\item The second dimension of \code{.FUNdots} contains unique values of the named arguments
+to be applied along the list that is \code{a}.
+}
+
+The length of the first dimension of \code{.FUNdots} is the number of arguments supplied to \code{FUN}.
+The length of the second dimension of \code{.FUNdots} must be equal to the length of \code{a}.
 }
 \examples{
 productnames <- c("p1", "p2")

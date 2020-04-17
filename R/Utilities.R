@@ -240,11 +240,12 @@ list_of_rows_or_cols <- function(a, margin){
     } else {
       out <- a
     }
-    lapply(seq_len(ncol(out)), function(i){
+    out <- lapply(seq_len(ncol(out)), function(i){
       matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>%
         setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
     }) %>%
       magrittr::set_names(colnames(out))
+    return(out)
   }
   unaryapply_byname(lrc_func, a = a, .FUNdots = list(margin = margin), 
                     rowcoltypes = "none")
