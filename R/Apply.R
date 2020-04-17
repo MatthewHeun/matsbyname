@@ -8,7 +8,17 @@
 
 #' Apply a unary function by name
 #' 
-#' Note that if \code{a} is a list, the names of \code{a} are applied to the output.
+#' `FUN` is applied to `a` using additional arguments `.FUNdots` to `FUN`.
+#' If `a` is a list, the names of `a` are applied to the output.
+#' 
+#' Note that `.FUNdots` can be a rectangular two-dimensional list of arguments to `FUN`. 
+#' If so, `.FUNdots` is interpreted as follows:
+#' * The first dimension of `.FUNdots` contains named arguments to `FUN`.
+#' * The second dimension of `.FUNdots` contains unique values of the named arguments
+#'   to be applied along the list that is `a`.
+#'
+#' The length of the first dimension of `.FUNdots` is the number of arguments supplied to `FUN`.
+#' The length of the second dimension of `.FUNdots` must be equal to the length of `a`.
 #'
 #' @param FUN a unary function to be applied "by name" to \code{a}.
 #' @param a the argument to \code{FUN}.
@@ -42,6 +52,15 @@
 #' unaryapply_byname(`-`, U)
 unaryapply_byname <- function(FUN, a, .FUNdots = NULL, 
                               rowcoltypes = c("all", "transpose", "row", "col", "none")){
+  
+  # This is old code that didn't properly handle cases where 
+  # we wanted to apply different .FUNdots to each a.
+  # Commented on 16 April 2020, after fixing the bug
+  # with un-commented code below. 
+  # The commented code below can probably be deleted
+  # after such time as I think things are working with all 
+  # other code that relies on matsbyname.
+  
   # rowcoltypes <- match.arg(rowcoltypes)
   # if (is.null(a)) {
   #   return(NULL)
@@ -75,8 +94,6 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   #   # Do nothing. rowtype and coltype should have been set by FUN.
   # }
   # return(out)
-  
-  
   
   rowcoltypes <- match.arg(rowcoltypes)
   if (is.null(a)) {
@@ -174,7 +191,6 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
     # Do nothing. rowtype and coltype should have been set by FUN.
   }
   return(out)
-  
 }
 
 
