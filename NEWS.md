@@ -1,3 +1,4 @@
+* Now using new `prepare_.FUNdots()` function in all `*apply_byname()` functions.
 * Refactored new code for `unaryapply_byname()` into function `prepare_.FUNdots()`, 
   so it can be used in other `*apply_byname()` functions.
 
