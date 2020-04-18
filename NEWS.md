@@ -1,6 +1,6 @@
 # matsbyname 0.4.13 (2020-04-17)
 
-* Added additional tests for new features
+* Added additional tests for bug fixes.
     * Now up to 766 tests, all passing.
     * Code coverage remains at 100%.
 * Fixed a bug in `unaryapply_byname()`, 
