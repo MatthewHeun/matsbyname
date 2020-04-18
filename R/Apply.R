@@ -20,24 +20,24 @@
 #' The length of the first dimension of `.FUNdots` is the number of arguments supplied to `FUN`.
 #' The length of the second dimension of `.FUNdots` must be equal to the length of `a`.
 #'
-#' @param FUN a unary function to be applied "by name" to \code{a}.
-#' @param a the argument to \code{FUN}.
-#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
-#' @param rowcoltypes a string that tells how to transfer row and column types of \code{a} to output. 
+#' @param FUN a unary function to be applied "by name" to `a`.
+#' @param a the argument to `FUN`.
+#' @param .FUNdots a list of additional named arguments passed to `FUN`.
+#' @param rowcoltypes a string that tells how to transfer row and column types of `a` to output. 
 #'        Options are:
 #'        \itemize{
-#'          \item{\code{all}: transfer both row and column types of \code{a} directly to output.}
-#'          \item{\code{transpose}: rowtype of \code{a} becomes coltype of output;
-#'                                  coltype of \code{a} becomes rowtype of output.
-#'                                  "transpose" is helpful for \code{FUN}s that transpose 
-#'                                  \code{a} upon output.}
-#'          \item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
-#'          \item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
-#'          \item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}. 
-#'                             Rather, \code{FUN} will set rowtype and coltype.}
+#'          \item{"all": transfer both row and column types of `a` directly to output.}
+#'          \item{"transpose": rowtype of `a` becomes coltype of output;
+#'                                  coltype of `a` becomes rowtype of output.
+#'                                  "transpose" is helpful for `FUN`s that transpose 
+#'                                  `a` upon output.}
+#'          \item{"row": rowtype of `a` becomes both rowtype and coltype of output.}
+#'          \item{"col": coltype of `a` becomes both rowtype and coltype of output.}
+#'          \item{"none": rowtype and coltype not set by `unaryapply_byname`. 
+#'                             Rather, `FUN` will set rowtype and coltype.}
 #'        }
 #'
-#' @return the result of applying \code{FUN} "by name" to \code{a}.
+#' @return the result of applying `FUN` "by name" to `a`.
 #' 
 #' @export
 #' 
@@ -53,119 +53,12 @@
 unaryapply_byname <- function(FUN, a, .FUNdots = NULL, 
                               rowcoltypes = c("all", "transpose", "row", "col", "none")){
   
-  # This is old code that didn't properly handle cases where 
-  # we wanted to apply different .FUNdots to each a.
-  # Commented on 16 April 2020, after fixing the bug
-  # with un-commented code below. 
-  # The commented code below can probably be deleted
-  # after such time as I think things are working with all 
-  # other code that relies on matsbyname.
-  
-  # rowcoltypes <- match.arg(rowcoltypes)
-  # if (is.null(a)) {
-  #   return(NULL)
-  # }
-  # if (is.list(a)) {
-  #   lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
-  #   lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
-  #   return(Map(unaryapply_byname, lfun, a, lFUNdots, rowcoltypes = rowcoltypes) %>% 
-  #            # Preserve names of a (if present) in the outgoing list.
-  #            magrittr::set_names(names(a)))
-  # }
-  # out <- do.call(FUN, c(list(a), .FUNdots))
-  # 
-  # if (rowcoltypes == "all") {
-  #   out <- out %>%
-  #     setrowtype(rowtype(a)) %>%
-  #     setcoltype(coltype(a))
-  # } else if (rowcoltypes == "transpose") {
-  #   out <- out %>%
-  #     setrowtype(coltype(a)) %>%
-  #     setcoltype(rowtype(a))
-  # } else if (rowcoltypes == "row") {
-  #   out <- out %>%
-  #     setrowtype(rowtype(a)) %>%
-  #     setcoltype(rowtype(a))
-  # } else if (rowcoltypes == "col") {
-  #   out <- out %>%
-  #     setrowtype(coltype(a)) %>%
-  #     setcoltype(coltype(a))
-  # } else if (rowcoltypes == "none") {
-  #   # Do nothing. rowtype and coltype should have been set by FUN.
-  # }
-  # return(out)
-  
   rowcoltypes <- match.arg(rowcoltypes)
   if (is.null(a)) {
     return(NULL)
   }
 
-  # lFUNdots <- NULL
   if (is.list(a)) {
-    # if (is.list(.FUNdots)) {
-    #   # If .FUNdots has 2 levels of lists, the caller has specified arguments for each and every a in a's list.
-    #   if (is.list(.FUNdots[[1]])) {
-    #     # # Do a recursive descent into .FUNdots to look at lengths for each item
-    #     # arg_lengths <- rapply(.FUNdots, length, how = "list")
-    #     
-    #     # The "second level" of .FUNdots is (potentially) a list of values for each argument to FUN. 
-    #     # If the number of values for each argument to FUN matches the length of a, 
-    #     # it is likely that the caller wants each of these items applied to FUN via a mapping.
-    #     # Figure out the structure of the sizes of the arguments supplied in .FUNdots..
-    #     arg_lengths <- list()
-    #     for (i in 1:length(.FUNdots)) {
-    #       arg_lengths[[i]] <- length(.FUNdots[[i]])
-    #     }
-    #     
-    #     if (all(unlist(arg_lengths) == 1)) {
-    #       # Replicate the values to apply along a
-    #       for (i in 1:length(.FUNdots)) {
-    #         .FUNdots[[i]] <- rep.int(.FUNdots[[i]], times = length(a))
-    #         # Recalculate arg lengths so that we can drop into the next if statement.
-    #         arg_lengths[[i]] <- length(.FUNdots[[i]])
-    #       }
-    #     }
-    # 
-    #     if (all(unlist(arg_lengths) == length(a))) {
-    #       # Likely want to apply .FUNdots to each of the items in a.
-    #       # We need a slightly different structure for .FUNdots.
-    #       # To get this new structure, we'll first make a data frame
-    #       # in which each row is a set of arguments to FUN.
-    #       # Then, we'll pull each row individually
-    #       # for each call to FUN.
-    #       # To start, make an empty data frame with the same number of rows as we have elements in a.
-    #       DF <- data.frame()[1:length(a), ]
-    #       # Fill the data frame by columns with each argument in .FUNdots
-    #       for (i in 1:length(.FUNdots)) {
-    #         DF[[i]] <- I(.FUNdots[[i]])
-    #       }
-    #       # Set data frame columns to be same as the argument names in .FUNdots.
-    #       DF <- DF %>% magrittr::set_names(names(.FUNdots))
-    #       # Eliminate row names
-    #       rownames(DF) <- NULL
-    #       # Build a list of rows, each of which will be a set of arguments for one call to FUN.
-    #       lFUNdots <- list()
-    #       for (i in 1:nrow(DF)) {
-    #         lFUNdots[[i]] <- DF[i, ] %>% 
-    #           # Transfer names from the columns of DF to each set of arguments
-    #           magrittr::set_names(names(DF))
-    #       }
-    #     } else {
-    #       # a and .FUNdots are lists.
-    #       # But the structure of .FUNdots doesn't match expectations
-    #       # (i.e., length of each item in .FUNdots is neither 1 nor length(a))
-    #       # and .FUNdots does not consist of single-value arguments.
-    #       # So we don't quite know what to do here.
-    #       # Throw an error.
-    #       stop("when .FUNdots is a list, each item (argument) must have length 1 or length(a)")
-    #     }
-    #   }
-    # }
-    # if (is.null(lFUNdots)) {
-    #   # .FUNdots is not a list OR .FUNdots is a list but isn't a 2-level list.
-    #   # Replicate .FUNdots to equal length(a)
-    #   lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
-    # }
     lFUNdots <- prepare_.FUNdots(a, .FUNdots)
     # Now that we have created lFUNdots appropriately, Map to get our result.
     return(Map(unaryapply_byname, list(FUN), a, lFUNdots, rowcoltypes = rowcoltypes) %>%
@@ -199,6 +92,24 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 }
 
 
+#' Prepare the `.FUNdots` argument for `*apply_byname` functions.
+#' 
+#' This is a helper function for the various `*apply_byname` functions.
+#' 
+#' 
+#' This function looks at several cases. 
+#' 
+#'   * If `.FUNdots` is not a `list`, this function attempts to recycle `.FUNdots` for use with `*apply_byname`.
+#'   * If `.FUNdots` is a `list` in which each top-level element (argument to `FUN`) has length 1, 
+#'     this function recycles each element of `.FUNdots` for use across `a`.
+#'   * If `.FUNdots` is a `list` in which each top-level element (argument to `FUN`) has same length as `a`, 
+#'     this function reorders `.FUNdots` for use across `a`.
+#' 
+#' @param a the main argument to an `*apply_byname` function.
+#' @param .FUNdots additional arguments to be applied to `FUN` in one of the `*apply_byname` functions.
+#'
+#' @return a reconfigured version of `.FUNdots`, ready for use by an `*apply_byname` function.
+#'
 prepare_.FUNdots <- function(a, .FUNdots) {
   lFUNdots <- NULL
   if (is.list(.FUNdots)) {
@@ -271,17 +182,17 @@ prepare_.FUNdots <- function(a, .FUNdots) {
 
 #' Apply a function to an element of a matrix specified by rows and columns
 #' 
-#' \code{FUN} is applied to the element of \code{a} that is 
+#' `FUN` is applied to the element of `a` that is specified by `row` and `col`.
 #' 
-#' \code{row} and \code{col} can be any of row or column names or integer indices or a mix of both.
+#' `row` and `col` can be any of row or column names or integer indices or a mix of both.
 #'
-#' @param FUN a unary function to be applied to specified rows and columns of \code{a}
-#' @param a the argument to \code{FUN}
-#' @param row the row name of the element to which \code{FUN} will be applied
-#' @param col the column name of the element to which \code{FUN} will be applied
-#' @param .FUNdots a list of additional arguments to \code{FUN}. (Default is \code{NULL}.)
+#' @param FUN a unary function to be applied to specified rows and columns of `a`
+#' @param a the argument to `FUN`
+#' @param row the row name of the element to which `FUN` will be applied
+#' @param col the column name of the element to which `FUN` will be applied
+#' @param .FUNdots a list of additional arguments to `FUN`. (Default is `NULL`.)
 #'
-#' @return \code{a}, after \code{FUN} has been applied to the element at \code{row} and \code{col}
+#' @return `a`, after `FUN` has been applied to the element at `row` and `col`
 #' 
 #' @export
 #'
@@ -302,7 +213,6 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
     lrow <- make_list(x = row, n = length(a), lenx = 1)
     lcol <- make_list(x = col, n = length(a), lenx = 1)
-    # lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1) 
     lFUNdots <- prepare_.FUNdots(a, .FUNdots)
     return(Map(elementapply_byname, lfun, a, lrow, lcol, lFUNdots) %>% 
              # Preserve names of a (if present) in the outgoing list.
@@ -366,7 +276,6 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   }
   if (is.list(a) & is.list(b)) {
     lfun <- replicate(n = max(length(a), length(b)), expr = FUN, simplify = FALSE)
-    # lFUNdots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
     lFUNdots <- prepare_.FUNdots(a, .FUNdots)
     return(Map(binaryapply_byname, lfun, a, b, lFUNdots,
                  match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
@@ -557,24 +466,24 @@ naryapplylogical_byname <- function(FUN, ...,
 
 #' Apply a function cumulatively to a list of matrices or numbers
 #' 
-#' \code{FUN} must be a binary function that also accepts a single argument.
-#' The result is a list with first element \code{FUN(a[[1]])}.
-#' For \code{i >= 2}, elements are \code{FUN(a[[i]], out[[i-1]])},
-#' where \code{out} is the result list.
+#' `FUN` must be a binary function that also accepts a single argument.
+#' The result is a list with first element `FUN(a[[1]])`.
+#' For `i >= 2`, elements are `FUN(a[[i]], out[[i-1]])`,
+#' where `out` is the result list.
 #' 
-#' \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
+#' `naryapply_byname()` and `cumapply_byname()` are similar.
 #' Their differences can be described by considering a data frame.
-#' \code{\link{naryapply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
-#' For example, \code{\link{sum_byname}} applied to several variables gives another column
+#' `naryapply_byname()` applies `FUN` to several columns (variables) of the data frame.
+#' For example, `sum_byname()` applied to several variables gives another column
 #' containing the sums across each row of the data frame.
-#' \code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
-#' For example \code{\link{sum_byname}} applied to a single column gives the sum of all numbers in that column.
+#' `cumapply_byname()` applies `FUN` to successive entries in a single column.
+#' For example `sum_byname()` applied to a single column gives the sum of all numbers in that column.
 #'
 #' @param FUN  the function to be applied
-#' @param   a  the list of matrices or numbers to which \code{FUN} will be applied cumulatively
+#' @param   a  the list of matrices or numbers to which `FUN` will be applied cumulatively
 #'
-#' @return a list of same length as \code{a} 
-#'         containing the cumulative application of \code{FUN} to \code{a}
+#' @return a list of same length as `a` 
+#'         containing the cumulative application of `FUN` to `a`
 #' 
 #' @export
 #'

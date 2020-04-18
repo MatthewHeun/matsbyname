@@ -22,13 +22,13 @@ For \code{i >= 2}, elements are \code{FUN(a[[i]], out[[i-1]])},
 where \code{out} is the result list.
 }
 \details{
-\code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
+\code{naryapply_byname()} and \code{cumapply_byname()} are similar.
 Their differences can be described by considering a data frame.
-\code{\link{naryapply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
-For example, \code{\link{sum_byname}} applied to several variables gives another column
+\code{naryapply_byname()} applies \code{FUN} to several columns (variables) of the data frame.
+For example, \code{sum_byname()} applied to several variables gives another column
 containing the sums across each row of the data frame.
-\code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
-For example \code{\link{sum_byname}} applied to a single column gives the sum of all numbers in that column.
+\code{cumapply_byname()} applies \code{FUN} to successive entries in a single column.
+For example \code{sum_byname()} applied to a single column gives the sum of all numbers in that column.
 }
 \examples{
 cumapply_byname(sum, list(1, 2, 3, 4))
