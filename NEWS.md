@@ -1,3 +1,7 @@
+* Refactored new code for `unaryapply_byname()` into function `prepare_.FUNdots()`, 
+  so it can be used in other `*apply_byname()` functions.
+
+
 # matsbyname 0.4.13 (2020-04-17)
 
 * Added additional tests for bug fixes.

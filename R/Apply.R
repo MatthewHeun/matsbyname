@@ -100,72 +100,73 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
     return(NULL)
   }
 
-  lFUNdots <- NULL
+  # lFUNdots <- NULL
   if (is.list(a)) {
-    if (is.list(.FUNdots)) {
-      # If .FUNdots has 2 levels of lists, the caller has specified arguments for each and every a in a's list.
-      if (is.list(.FUNdots[[1]])) {
-        # # Do a recursive descent into .FUNdots to look at lengths for each item
-        # arg_lengths <- rapply(.FUNdots, length, how = "list")
-        
-        # The "second level" of .FUNdots is (potentially) a list of values for each argument to FUN. 
-        # If the number of values for each argument to FUN matches the length of a, 
-        # it is likely that the caller wants each of these items applied to FUN via a mapping.
-        # Figure out the structure of the sizes of the arguments supplied in .FUNdots..
-        arg_lengths <- list()
-        for (i in 1:length(.FUNdots)) {
-          arg_lengths[[i]] <- length(.FUNdots[[i]])
-        }
-        
-        if (all(unlist(arg_lengths) == 1)) {
-          # Replicate the values to apply along a
-          for (i in 1:length(.FUNdots)) {
-            .FUNdots[[i]] <- rep.int(.FUNdots[[i]], times = length(a))
-            # Recalculate arg lengths so that we can drop into the next if statement.
-            arg_lengths[[i]] <- length(.FUNdots[[i]])
-          }
-        }
-
-        if (all(unlist(arg_lengths) == length(a))) {
-          # Likely want to apply .FUNdots to each of the items in a.
-          # We need a slightly different structure for .FUNdots.
-          # To get this new structure, we'll first make a data frame
-          # in which each row is a set of arguments to FUN.
-          # Then, we'll pull each row individually
-          # for each call to FUN.
-          # To start, make an empty data frame with the same number of rows as we have elements in a.
-          DF <- data.frame()[1:length(a), ]
-          # Fill the data frame by columns with each argument in .FUNdots
-          for (i in 1:length(.FUNdots)) {
-            DF[[i]] <- I(.FUNdots[[i]])
-          }
-          # Set data frame columns to be same as the argument names in .FUNdots.
-          DF <- DF %>% magrittr::set_names(names(.FUNdots))
-          # Eliminate row names
-          rownames(DF) <- NULL
-          # Build a list of rows, each of which will be a set of arguments for one call to FUN.
-          lFUNdots <- list()
-          for (i in 1:nrow(DF)) {
-            lFUNdots[[i]] <- DF[i, ] %>% 
-              # Transfer names from the columns of DF to each set of arguments
-              magrittr::set_names(names(DF))
-          }
-        } else {
-          # a and .FUNdots are lists.
-          # But the structure of .FUNdots doesn't match expectations
-          # (i.e., length of each item in .FUNdots is neither 1 nor length(a))
-          # and .FUNdots does not consist of single-value arguments.
-          # So we don't quite know what to do here.
-          # Throw an error.
-          stop("when .FUNdots is a list, each item (argument) must have length 1 or length(a)")
-        }
-      }
-    }
-    if (is.null(lFUNdots)) {
-      # .FUNdots is not a list OR .FUNdots is a list but isn't a 2-level list.
-      # Replicate .FUNdots to equal length(a)
-      lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
-    }
+    # if (is.list(.FUNdots)) {
+    #   # If .FUNdots has 2 levels of lists, the caller has specified arguments for each and every a in a's list.
+    #   if (is.list(.FUNdots[[1]])) {
+    #     # # Do a recursive descent into .FUNdots to look at lengths for each item
+    #     # arg_lengths <- rapply(.FUNdots, length, how = "list")
+    #     
+    #     # The "second level" of .FUNdots is (potentially) a list of values for each argument to FUN. 
+    #     # If the number of values for each argument to FUN matches the length of a, 
+    #     # it is likely that the caller wants each of these items applied to FUN via a mapping.
+    #     # Figure out the structure of the sizes of the arguments supplied in .FUNdots..
+    #     arg_lengths <- list()
+    #     for (i in 1:length(.FUNdots)) {
+    #       arg_lengths[[i]] <- length(.FUNdots[[i]])
+    #     }
+    #     
+    #     if (all(unlist(arg_lengths) == 1)) {
+    #       # Replicate the values to apply along a
+    #       for (i in 1:length(.FUNdots)) {
+    #         .FUNdots[[i]] <- rep.int(.FUNdots[[i]], times = length(a))
+    #         # Recalculate arg lengths so that we can drop into the next if statement.
+    #         arg_lengths[[i]] <- length(.FUNdots[[i]])
+    #       }
+    #     }
+    # 
+    #     if (all(unlist(arg_lengths) == length(a))) {
+    #       # Likely want to apply .FUNdots to each of the items in a.
+    #       # We need a slightly different structure for .FUNdots.
+    #       # To get this new structure, we'll first make a data frame
+    #       # in which each row is a set of arguments to FUN.
+    #       # Then, we'll pull each row individually
+    #       # for each call to FUN.
+    #       # To start, make an empty data frame with the same number of rows as we have elements in a.
+    #       DF <- data.frame()[1:length(a), ]
+    #       # Fill the data frame by columns with each argument in .FUNdots
+    #       for (i in 1:length(.FUNdots)) {
+    #         DF[[i]] <- I(.FUNdots[[i]])
+    #       }
+    #       # Set data frame columns to be same as the argument names in .FUNdots.
+    #       DF <- DF %>% magrittr::set_names(names(.FUNdots))
+    #       # Eliminate row names
+    #       rownames(DF) <- NULL
+    #       # Build a list of rows, each of which will be a set of arguments for one call to FUN.
+    #       lFUNdots <- list()
+    #       for (i in 1:nrow(DF)) {
+    #         lFUNdots[[i]] <- DF[i, ] %>% 
+    #           # Transfer names from the columns of DF to each set of arguments
+    #           magrittr::set_names(names(DF))
+    #       }
+    #     } else {
+    #       # a and .FUNdots are lists.
+    #       # But the structure of .FUNdots doesn't match expectations
+    #       # (i.e., length of each item in .FUNdots is neither 1 nor length(a))
+    #       # and .FUNdots does not consist of single-value arguments.
+    #       # So we don't quite know what to do here.
+    #       # Throw an error.
+    #       stop("when .FUNdots is a list, each item (argument) must have length 1 or length(a)")
+    #     }
+    #   }
+    # }
+    # if (is.null(lFUNdots)) {
+    #   # .FUNdots is not a list OR .FUNdots is a list but isn't a 2-level list.
+    #   # Replicate .FUNdots to equal length(a)
+    #   lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+    # }
+    lFUNdots <- prepare_.FUNdots(a, .FUNdots)
     # Now that we have created lFUNdots appropriately, Map to get our result.
     return(Map(unaryapply_byname, list(FUN), a, lFUNdots, rowcoltypes = rowcoltypes) %>%
              # Preserve names of a (if present) in the outgoing list.
@@ -195,6 +196,76 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
     # Do nothing. rowtype and coltype should have been set by FUN.
   }
   return(out)
+}
+
+
+prepare_.FUNdots <- function(a, .FUNdots) {
+  lFUNdots <- NULL
+  if (is.list(.FUNdots)) {
+    # If .FUNdots has 2 levels of lists, the caller has specified arguments for each and every a in a's list.
+    if (is.list(.FUNdots[[1]])) {
+      # # Do a recursive descent into .FUNdots to look at lengths for each item
+      # arg_lengths <- rapply(.FUNdots, length, how = "list")
+      
+      # The "second level" of .FUNdots is (potentially) a list of values for each argument to FUN. 
+      # If the number of values for each argument to FUN matches the length of a, 
+      # it is likely that the caller wants each of these items applied to FUN via a mapping.
+      # Figure out the structure of the sizes of the arguments supplied in .FUNdots..
+      arg_lengths <- list()
+      for (i in 1:length(.FUNdots)) {
+        arg_lengths[[i]] <- length(.FUNdots[[i]])
+      }
+      
+      if (all(unlist(arg_lengths) == 1)) {
+        # Replicate the values to apply along a
+        for (i in 1:length(.FUNdots)) {
+          .FUNdots[[i]] <- rep.int(.FUNdots[[i]], times = length(a))
+          # Recalculate arg lengths so that we can drop into the next if statement.
+          arg_lengths[[i]] <- length(.FUNdots[[i]])
+        }
+      }
+      
+      if (all(unlist(arg_lengths) == length(a))) {
+        # Likely want to apply .FUNdots to each of the items in a.
+        # We need a slightly different structure for .FUNdots.
+        # To get this new structure, we'll first make a data frame
+        # in which each row is a set of arguments to FUN.
+        # Then, we'll pull each row individually
+        # for each call to FUN.
+        # To start, make an empty data frame with the same number of rows as we have elements in a.
+        DF <- data.frame()[1:length(a), ]
+        # Fill the data frame by columns with each argument in .FUNdots
+        for (i in 1:length(.FUNdots)) {
+          DF[[i]] <- I(.FUNdots[[i]])
+        }
+        # Set data frame columns to be same as the argument names in .FUNdots.
+        DF <- DF %>% magrittr::set_names(names(.FUNdots))
+        # Eliminate row names
+        rownames(DF) <- NULL
+        # Build a list of rows, each of which will be a set of arguments for one call to FUN.
+        lFUNdots <- list()
+        for (i in 1:nrow(DF)) {
+          lFUNdots[[i]] <- DF[i, ] %>% 
+            # Transfer names from the columns of DF to each set of arguments
+            magrittr::set_names(names(DF))
+        }
+      } else {
+        # a and .FUNdots are lists.
+        # But the structure of .FUNdots doesn't match expectations
+        # (i.e., length of each item in .FUNdots is neither 1 nor length(a))
+        # and .FUNdots does not consist of single-value arguments.
+        # So we don't quite know what to do here.
+        # Throw an error.
+        stop("when .FUNdots is a list, each item (argument) must have length 1 or length(a)")
+      }
+    }
+  }
+  if (is.null(lFUNdots)) {
+    # .FUNdots is not a list OR .FUNdots is a list but isn't a 2-level list.
+    # Replicate .FUNdots to equal length(a)
+    lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+  }
+  return(lFUNdots)
 }
 
 
@@ -231,7 +302,8 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
     lrow <- make_list(x = row, n = length(a), lenx = 1)
     lcol <- make_list(x = col, n = length(a), lenx = 1)
-    lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+    # lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1) 
+    lFUNdots <- prepare_.FUNdots(a, .FUNdots)
     return(Map(elementapply_byname, lfun, a, lrow, lcol, lFUNdots) %>% 
              # Preserve names of a (if present) in the outgoing list.
              magrittr::set_names(names(a)))
@@ -294,7 +366,8 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   }
   if (is.list(a) & is.list(b)) {
     lfun <- replicate(n = max(length(a), length(b)), expr = FUN, simplify = FALSE)
-    lFUNdots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
+    # lFUNdots <- make_list(x = .FUNdots, n = max(length(a), length(b)), lenx = 1)
+    lFUNdots <- prepare_.FUNdots(a, .FUNdots)
     return(Map(binaryapply_byname, lfun, a, b, lFUNdots,
                  match_type = match_type, set_rowcoltypes = set_rowcoltypes, .organize = .organize) %>% 
              # If a and b have names, organize_args will have ensured that those names are same.
