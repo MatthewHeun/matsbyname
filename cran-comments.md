@@ -40,6 +40,9 @@ See `NEWS.md` for details.
 ## Downstream dependencies
 * Downstream dependencies were checked with `revdepcheck::revdep_check(num_workers = 4)`. 
     * Result: 
+        * ✓ matsindf 0.3.4 ── E: 0 | W: 0 | N: 0
+            * OK: 1
+            * BROKEN: 0
         * failures.md
             * Wow, no problems at all. :)
         * problems.md
