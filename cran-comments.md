@@ -1,9 +1,9 @@
 ## Context
-`matsbyname` v0.4.12 is a maintenance release to prepare for dplyr 1.0.0.
+`matsbyname` v0.4.13 is a bug fix release.
 See `NEWS.md` for details. 
 
-## Test environments (7 in total) and R CMD check results
-* local macOS X install 10.15.3 (Catalina), R3.6.3
+## Test environments (8 in total) and R CMD check results
+* local macOS X install 10.15.4 (Catalina), R3.6.3
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
@@ -16,7 +16,7 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2020-03-11 r77925)
+    * `devtools::check_win_devel()`, R version 4.0.0 RC (2020-04-17 r78247)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -34,11 +34,19 @@ See `NEWS.md` for details.
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 0
+* GitHub actions:
+    * macOS-latest (3.6)
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
 
 ## Downstream dependencies
 * Downstream dependencies were checked with `revdepcheck::revdep_check(num_workers = 4)`. 
     * Result: 
-        * Wow, no problems at all. :)
-        * ✓ matsindf 0.3.3 ── E: 0     | W: 0     | N: 0
-        * OK: 1
-        * BROKEN: 0
+        * ✓ matsindf 0.3.4 ── E: 0 | W: 0 | N: 0
+            * OK: 1
+            * BROKEN: 0
+        * failures.md
+            * Wow, no problems at all. :)
+        * problems.md
+            * Wow, no problems at all. :)

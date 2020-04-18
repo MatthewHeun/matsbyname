@@ -1,4 +1,20 @@
-# matsbyname 0.4.12 (2019-03-21)
+# matsbyname 0.4.13 (2020-04-17)
+
+* Added additional tests for bug fixes.
+    * Now up to 766 tests, all passing.
+    * Code coverage remains at 100%.
+* Fixed a bug in `unaryapply_byname()`, 
+  which was not correctly handling a rectangular two-dimensional list of arguments to `FUN` supplied in  `.FUNdots`.
+  A rectangular two-dimensional list of arguments in `.FUNdots` is now interpreted as follows:
+  * First dimension contains named arguments to `FUN`.
+  * Second dimension contains unique values of the named arguments
+    to be applied along the main argument `a`.
+
+  The length of the first dimension of `.FUNdots` is the number of arguments supplied to `FUN`.
+  The length of the second dimension of `.FUNdots` must be equal to the length of `a`.
+
+
+# matsbyname 0.4.12 (2020-03-21)
 
 * Maintenance to prepare for `dplyr` 1.0.0.
   Several tests and examples in `matsbyname` needed a column of a data frame 

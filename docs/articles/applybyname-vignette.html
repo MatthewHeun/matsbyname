@@ -6,19 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Writing Custom Functions for matsbyname • matsbyname</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Writing Custom Functions for matsbyname">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="matsbyname">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
       </span>
     </div>
 
@@ -67,7 +67,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/MatthewHeun/matsbyname">
+  <a href="https://github.com/MatthewHeun/matsbyname/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -85,10 +85,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Writing Custom Functions for matsbyname</h1>
+      <h1 data-toc-skip>Writing Custom Functions for matsbyname</h1>
                         <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2020-03-21</h4>
+            <h4 class="date">2020-04-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/master/vignettes/applybyname-vignette.Rmd"><code>vignettes/applybyname-vignette.Rmd</code></a></small>
       <div class="hidden name"><code>applybyname-vignette.Rmd</code></div>
@@ -217,9 +217,9 @@
 </tbody>
 </table>
 <p>A simple example follows.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>U &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>), <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>))) <span class="op">%&gt;%</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a>U</span></code></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">U</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">1</span>:<span class="fl">4</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">dimnames</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>))) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)
+<span class="no">U</span></pre></body></html></div>
 <pre><code>##    i1 i2
 ## p1  1  3
 ## p2  2  4
@@ -227,7 +227,7 @@
 ## [1] "Products"
 ## attr(,"coltype")
 ## [1] "Industries"</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="../reference/difference_byname.html">difference_byname</a></span>(<span class="dv">0</span>, U)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="../reference/difference_byname.html">difference_byname</a></span>(<span class="fl">0</span>, <span class="no">U</span>)</pre></body></html></div>
 <pre><code>##    i1 i2
 ## p1 -1 -3
 ## p2 -2 -4
@@ -235,7 +235,7 @@
 ## [1] "Products"
 ## attr(,"coltype")
 ## [1] "Industries"</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span>(<span class="st">`</span><span class="dt">-</span><span class="st">`</span>, U)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span>(<span class="no">`-`</span>, <span class="no">U</span>)</pre></body></html></div>
 <pre><code>##    i1 i2
 ## p1 -1 -3
 ## p2 -2 -4
@@ -250,12 +250,12 @@
 </h2>
 <p><code>elementapply_byname</code> applies <code>FUN</code> to a single matrix, a list of matrices, or (if used with <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code>) a column in a data frame that contains matrices.</p>
 <p>A simple example follows.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>divide &lt;-<span class="st"> </span><span class="cf">function</span>(x, divisor){</span>
-<span id="cb7-2"><a href="#cb7-2"></a>  x<span class="op">/</span>divisor</span>
-<span id="cb7-3"><a href="#cb7-3"></a>}</span>
-<span id="cb7-4"><a href="#cb7-4"></a>m &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>), <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"r1"</span>, <span class="st">"r2"</span>), <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"c1"</span>, <span class="st">"c2"</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"row"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"col"</span>)</span>
-<span id="cb7-6"><a href="#cb7-6"></a>m</span></code></pre></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">divide</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">x</span>, <span class="no">divisor</span>){
+  <span class="no">x</span>/<span class="no">divisor</span>
+}
+<span class="no">m</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>:<span class="fl">4</span>), <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">dimnames</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"r1"</span>, <span class="st">"r2"</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"c1"</span>, <span class="st">"c2"</span>))) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"row"</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"col"</span>)
+<span class="no">m</span></pre></body></html></div>
 <pre><code>##    c1 c2
 ## r1  1  3
 ## r2  2  4
@@ -263,7 +263,7 @@
 ## [1] "row"
 ## attr(,"coltype")
 ## [1] "col"</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw"><a href="../reference/elementapply_byname.html">elementapply_byname</a></span>(divide, <span class="dt">a =</span> m, <span class="dt">row =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">.FUNdots =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">divisor =</span> <span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="../reference/elementapply_byname.html">elementapply_byname</a></span>(<span class="no">divide</span>, <span class="kw">a</span> <span class="kw">=</span> <span class="no">m</span>, <span class="kw">row</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">.FUNdots</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">divisor</span> <span class="kw">=</span> <span class="fl">2</span>))</pre></body></html></div>
 <pre><code>##     c1 c2
 ## r1 0.5  3
 ## r2 2.0  4
@@ -307,9 +307,9 @@
 <p>The <code>rowcoltypes</code> argument (a boolean) tells whether to apply row and column types from <code>a</code> and <code>b</code> to the output.</p>
 <p>The <code>.organize</code> argument (a boolean) tells whether to automatically complete <code>a</code> and <code>b</code> relative to each other and sort the rows and columns of the completed matrices. Normally, this should be <code>TRUE</code> (the default).</p>
 <p>A simple example follows.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>U &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>), <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>))) <span class="op">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)</span>
-<span id="cb11-3"><a href="#cb11-3"></a>U</span></code></pre></div>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">U</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">1</span>:<span class="fl">4</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">dimnames</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"p1"</span>, <span class="st">"p2"</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i1"</span>, <span class="st">"i2"</span>))) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)
+<span class="no">U</span></pre></body></html></div>
 <pre><code>##    i1 i2
 ## p1  1  3
 ## p2  2  4
@@ -317,9 +317,9 @@
 ## [1] "Products"
 ## attr(,"coltype")
 ## [1] "Industries"</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>Y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"p2"</span>, <span class="st">"p1"</span>), <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i2"</span>, <span class="st">"i1"</span>))) <span class="op">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span><span class="kw"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)</span>
-<span id="cb13-3"><a href="#cb13-3"></a>Y</span></code></pre></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">Y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">1</span>:<span class="fl">4</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">dimnames</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"p2"</span>, <span class="st">"p1"</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i2"</span>, <span class="st">"i1"</span>))) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span>(<span class="st">"Products"</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span>(<span class="st">"Industries"</span>)
+<span class="no">Y</span></pre></body></html></div>
 <pre><code>##    i2 i1
 ## p2  1  3
 ## p1  2  4
@@ -327,7 +327,7 @@
 ## [1] "Products"
 ## attr(,"coltype")
 ## [1] "Industries"</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="../reference/sum_byname.html">sum_byname</a></span>(U, Y)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span>(<span class="no">U</span>, <span class="no">Y</span>)</pre></body></html></div>
 <pre><code>##    i1 i2
 ## p1  5  5
 ## p2  5  5
@@ -335,7 +335,7 @@
 ## [1] "Products"
 ## attr(,"coltype")
 ## [1] "Industries"</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw"><a href="../reference/binaryapply_byname.html">binaryapply_byname</a></span>(<span class="st">`</span><span class="dt">+</span><span class="st">`</span>, U, Y)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="../reference/binaryapply_byname.html">binaryapply_byname</a></span>(<span class="no">`+`</span>, <span class="no">U</span>, <span class="no">Y</span>)</pre></body></html></div>
 <pre><code>##    i1 i2
 ## p1  5  5
 ## p2  5  5
@@ -350,7 +350,7 @@
 </h2>
 <p><code>cumapply_byname</code> applies <code>FUN</code> cumulatively to a list of numbers, a list of matrices, or (if used with <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate</a></code>) a column of a data frame. <code>FUN</code> must be a binary function that also allows a single argument. The result is a list with first element <code>FUN(m[[1]])</code>. For <code>i &gt;= 2</code>, elements of the resulting list are <code>FUN(m[[i]], out[[i-1]])</code>, where <code>out</code> is the result list.</p>
 <p>Simple examples follow.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw"><a href="../reference/cumapply_byname.html">cumapply_byname</a></span>(sum_byname, <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="../reference/cumapply_byname.html">cumapply_byname</a></span>(<span class="no">sum_byname</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>))</pre></body></html></div>
 <pre><code>## [[1]]
 ## [1] 1
 ## 
@@ -362,7 +362,7 @@
 ## 
 ## [[4]]
 ## [1] 10</code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw"><a href="../reference/cumapply_byname.html">cumapply_byname</a></span>(hadamardproduct_byname, <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="../reference/cumapply_byname.html">cumapply_byname</a></span>(<span class="no">hadamardproduct_byname</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>))</pre></body></html></div>
 <pre><code>## [[1]]
 ## [1] 1
 ## 
@@ -382,22 +382,11 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#introduction">Introduction</a></li>
-      <li><a href="#how-the-apply_byname-functions-work">How the <code>*apply_byname</code> functions work</a></li>
-      <li><a href="#unaryapply_byname"><code>unaryapply_byname</code></a></li>
-      <li><a href="#elementapply_byname"><code>elementapply_byname</code></a></li>
-      <li><a href="#binaryapply_byname"><code>binaryapply_byname</code></a></li>
-      <li><a href="#cumapply_byname"><code>cumapply_byname</code></a></li>
-      <li><a href="#summary">Summary</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
@@ -408,7 +397,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

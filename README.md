@@ -7,16 +7,21 @@
 
 <!-- *********** -->
 
+<!-- badges: start -->
+
 [![CRAN
 status](https://www.r-pkg.org/badges/version/matsbyname)](https://cran.r-project.org/package=matsbyname)
 [![lifecycle](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![R build
+status](https://github.com/MatthewHeun/matsbyname/workflows/check-master-develop/badge.svg)](https://github.com/MatthewHeun/matsbyname/actions)
 [![Travis-CI Build
 Status](https://travis-ci.org/MatthewHeun/matsbyname.svg?branch=master)](https://travis-ci.org/MatthewHeun/matsbyname)
 [![Coverage
 status](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://codecov.io/github/MatthewHeun/matsbyname?branch=master)
+<!-- badges: end -->
 
 # matsbyname
 
@@ -44,8 +49,8 @@ devtools::install_github("MatthewHeun/matsbyname", build_vignettes = TRUE)
 
 ## History
 
-The functions in this package were used in  
-[Heun et al. (2018)](https://doi.org/10.1016/j.apenergy.2018.05.109).
+The functions in this package were used in [Heun et
+al. (2018)](https://doi.org/10.1016/j.apenergy.2018.05.109).
 
 ## More Information
 
