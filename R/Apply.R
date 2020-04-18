@@ -19,23 +19,18 @@
 #'
 #' The length of the first dimension of `.FUNdots` is the number of arguments supplied to `FUN`.
 #' The length of the second dimension of `.FUNdots` must be equal to the length of `a`.
+#' 
+#' Options for the `rowcoltypes` argument are:
+#'   * "all": transfer both row and column types of `a` directly to output.
+#'   * "transpose": rowtype of `a` becomes coltype of output; coltype of `a` becomes rowtype of output. "transpose" is helpful for `FUN`s that transpose `a` upon output.
+#'   * "row": rowtype of `a` becomes both rowtype and coltype of output.
+#'   * "col": coltype of `a` becomes both rowtype and coltype of output.
+#'   * "none": rowtype and coltype not set by `unaryapply_byname`. Rather, `FUN` will set rowtype and coltype.
 #'
 #' @param FUN a unary function to be applied "by name" to `a`.
 #' @param a the argument to `FUN`.
 #' @param .FUNdots a list of additional named arguments passed to `FUN`.
-#' @param rowcoltypes a string that tells how to transfer row and column types of `a` to output. 
-#'        Options are:
-#'        \itemize{
-#'          \item{"all": transfer both row and column types of `a` directly to output.}
-#'          \item{"transpose": rowtype of `a` becomes coltype of output;
-#'                                  coltype of `a` becomes rowtype of output.
-#'                                  "transpose" is helpful for `FUN`s that transpose 
-#'                                  `a` upon output.}
-#'          \item{"row": rowtype of `a` becomes both rowtype and coltype of output.}
-#'          \item{"col": coltype of `a` becomes both rowtype and coltype of output.}
-#'          \item{"none": rowtype and coltype not set by `unaryapply_byname`. 
-#'                             Rather, `FUN` will set rowtype and coltype.}
-#'        }
+#' @param rowcoltypes a string that tells how to transfer row and column types of `a` to output. See `details`.
 #'
 #' @return the result of applying `FUN` "by name" to `a`.
 #' 
@@ -225,35 +220,35 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
 
 #' Apply a binary function "by name"
 #' 
-#' If either \code{a} or \code{b} is missing or \code{NULL}, 
-#' \code{0} is passed to \code{FUN} in its place.
-#' Note that if either \code{a} and \code{b} are lists, elements must be named the same.
-#' The names of list elements of \code{a} are applied to the output.
+#' If either `a` or `b` is missing or `NULL`, 
+#' `0` is passed to `FUN` in its place.
+#' Note that if either `a` and `b` are lists, elements must be named the same.
+#' The names of list elements of `a` are applied to the output.
 #'
-#' @param FUN a binary function to be applied "by name" to \code{a} and \code{b}.
-#' @param a the first operand for \code{FUN}.
-#' @param b the second operand for \code{FUN}.
-#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
-#' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
-#'        When both \code{a} and \code{b} are matrices,
-#'        "\code{all}" (the default) indicates that
-#'        rowtypes of \code{a} must match rowtypes of \code{b} and
-#'        coltypes of \code{a} must match coltypes of \code{b}.
-#'        If "\code{matmult}",
-#'        coltypes of \code{a} must match rowtypes of \code{b}.
-#'        If "\code{none}",
+#' @param FUN a binary function to be applied "by name" to `a` and `b`.
+#' @param a the first operand for `FUN`.
+#' @param b the second operand for `FUN`.
+#' @param .FUNdots a list of additional named arguments passed to `FUN.`
+#' @param match_type one of "all", "matmult", or "none".
+#'        When both `a` and `b` are matrices,
+#'        "all" (the default) indicates that
+#'        rowtypes of `a` must match rowtypes of `b` and
+#'        coltypes of `a` must match coltypes of `b`.
+#'        If "matmult",
+#'        coltypes of `a` must match rowtypes of `b`.
+#'        If "none",
 #'        neither coltypes nor rowtypes are checked. 
-#' @param set_rowcoltypes tells whether to apply row and column types from \code{a} and \code{b}
+#' @param set_rowcoltypes tells whether to apply row and column types from `a` and `b`
 #'        to the output. 
-#'        Set \code{TRUE} (the default) to apply row and column types to the output.
-#'        Set \code{FALSE}, to \emph{not} apply row and column types to the output.
+#'        Set `TRUE` (the default) to apply row and column types to the output.
+#'        Set `FALSE`, to *not* apply row and column types to the output.
 #' @param .organize a boolean that tells whether or not to automatically 
-#'        complete \code{a} and \code{b} relative to each other and
+#'        complete `a` and `b` relative to each other and
 #'        sort the rows and columns of the completed matrices.
-#'        Normally, this should be \code{TRUE} (the default).
-#'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
+#'        Normally, this should be `TRUE` (the default).
+#'        However, if `FUN` takes over this responsibility, set to `FALSE`.
 #'
-#' @return the result of applying \code{FUN} "by name" to \code{a} and \code{b}.
+#' @return the result of applying `FUN` "by name" to `a` and `b`.
 #' 
 #' @export
 #'
@@ -309,58 +304,58 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 
 #' Apply a function "by name" to any number of operands
 #' 
-#' Applies \code{FUN} to all operands in \code{...}.
-#' Other arguments have similar meaning as \code{\link{binaryapply_byname}}.
+#' Applies `FUN` to all operands in `...`.
+#' Other arguments have similar meaning as `binaryapply_byname()`.
 #' See details for more information.
 #' 
-#' If only one \code{...} argument is supplied, 
-#' \code{FUN} must be capable of handling one argument, and
-#' the call is routed to \code{\link{unaryapply_byname}}.
-#' When \code{set_rolcoltypes} is \code{TRUE}, 
-#' the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{all}", 
-#' but when \code{set_rowcoltypes} is \code{FALSE}, 
-#' the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{none}".
-#' If finer control is desired, the caller should use \code{\link{unaryapply_byname}} directly.
-#' If more than one argument is passed in \code{...},
-#' \code{FUN} must be a binary function, but its use in by \code{\link{naryapply_byname}} is "n-ary."
-#' Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
-#' have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
-#' Thus, all of the operands in \code{...} must obey the rules of type matching 
-#' when \code{match_type} is \code{TRUE}.
+#' If only one `...` argument is supplied, 
+#' `FUN` must be capable of handling one argument, and
+#' the call is routed to `unaryapply_byname()`.
+#' When `set_rowcoltypes` is `TRUE`, 
+#' the `rowcoltypes` argument of `unaryapply_byname()` is set to "all", 
+#' but when `set_rowcoltypes` is `FALSE`, 
+#' the `rowcoltypes` argument of `unaryapply_byname()` is set to "none".
+#' If finer control is desired, the caller should use `unaryapply_byname()` directly.
+#' If more than one argument is passed in `...`,
+#' `FUN` must be a binary function, but its use in by `naryapply_byname()` is "n-ary."
+#' Arguments `match_type`, `set_rowcoltypes`, and `.organize`
+#' have same meaning as for `binaryapply_byname()`.
+#' Thus, all of the operands in `...` must obey the rules of type matching 
+#' when `match_type` is `TRUE`.
 #' 
-#' \code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
+#' `naryapply_byname()` and `cumapply_byname()` are similar.
 #' Their differences can be described by considering a data frame.
-#' \code{\link{naryapply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
-#' For example, \code{\link{sum_byname}} applied to several variables gives another column
+#' `naryapply_byname()` applies `FUN` to several columns (variables) of the data frame.
+#' For example, `sum_byname()` applied to several variables gives another column
 #' containing the sums across each row of the data frame.
-#' \code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
-#' For example \code{\link{sum_byname}} applied to a single column gives the sum of all numbers in that column.
+#' `cumapply_byname()` applies `FUN` to successive entries in a single column.
+#' For example `sum_byname()` applied to a single column gives the sum of all numbers in that column.
 #'
-#' @param FUN a binary function to be applied "by name" to all operands in \code{...}.
-#' @param ... the operands for \code{FUN}.
-#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
-#' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
-#'        When \code{...} are matrices,
-#'        "\code{all}" (the default) indicates that
-#'        rowtypes of all \code{...} matrices must match and
-#'        coltypes of all \code{...} matrices must match.
-#'        If "\code{matmult}",
+#' @param FUN a binary function to be applied "by name" to all operands in `...`.
+#' @param ... the operands for `FUN`.
+#' @param .FUNdots a list of additional named arguments passed to `FUN`.
+#' @param match_type one of "all", "matmult", or "none".
+#'        When `...` are matrices,
+#'        "all" (the default) indicates that
+#'        rowtypes of all `...` matrices must match and
+#'        coltypes of all `...` matrices must match.
+#'        If "matmult",
 #'        the coltype of the first operand must match the rowtype of the second operand
-#'        for every sequential invocation of \code{FUN}.
-#'        If "\code{none}",
-#'        neither coltypes nor rowtypes are checked by \code{\link{naryapply_byname}}. 
+#'        for every sequential invocation of `FUN`.
+#'        If "none",
+#'        neither coltypes nor rowtypes are checked by `naryapply_byname()`. 
 #' @param set_rowcoltypes tells whether to apply row and column types from 
-#'        operands in \code{...} to the output of each sequential invocation of \code{FUN}. 
-#'        Set \code{TRUE} (the default) to apply row and column types.
-#'        Set \code{FALSE}, to \emph{not} apply row and column types to the output.
+#'        operands in `...` to the output of each sequential invocation of `FUN`. 
+#'        Set `TRUE` (the default) to apply row and column types.
+#'        Set `FALSE`, to *not* apply row and column types to the output.
 #' @param .organize a boolean that tells whether or not to automatically 
-#'        complete operands in \code{...} relative to each other and
+#'        complete operands in `...` relative to each other and
 #'        sort the rows and columns of the completed matrices.
-#'        This organizing is done on each sequential invocation of \code{FUN}.
-#'        Normally, this should be \code{TRUE} (the default).
-#'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
+#'        This organizing is done on each sequential invocation of `FUN`.
+#'        Normally, this should be `TRUE` (the default).
+#'        However, if `FUN` takes over this responsibility, set to `FALSE`.
 #'        
-#' @return the result of applying \code{FUN} to all operands in \code{...}
+#' @return the result of applying `FUN` to all operands in `...`
 #' 
 #' @export
 #'
@@ -392,37 +387,37 @@ naryapply_byname <- function(FUN, ...,
 #' Apply a function logically to numbers, matrices, or lists of numbers or matrices
 #' 
 #' Operands should be logical, although numerical operands are accepted.
-#' Numerical operands are interpreted as \code{0} is \code{FALSE}, and
-#' any other number is \code{TRUE}.
+#' Numerical operands are interpreted as `0` is `FALSE`, and
+#' any other number is `TRUE`.
 #' 
 #' This function is not exported, 
 #' thereby retaining the right to future changes.
 #'
 #' @param FUN a binary function (that returns logical values) to be applied over operands 
 #' @param ... operands; constants, matrices, or lists of matrices
-#' @param .FUNdots a list of additional named arguments passed to \code{FUN}.
-#' @param match_type one of "\code{all}", "\code{matmult}", or "\code{none}".
-#'        When \code{...} are matrices,
-#'        "\code{all}" (the default) indicates that
-#'        rowtypes of all \code{...} matrices must match and
-#'        coltypes of all \code{...} matrices must match.
-#'        If "\code{matmult}",
+#' @param .FUNdots a list of additional named arguments passed to `FUN`.
+#' @param match_type one of "all", "matmult", or "none".
+#'        When `...` are matrices,
+#'        "all" (the default) indicates that
+#'        rowtypes of all `...` matrices must match and
+#'        coltypes of all `...` matrices must match.
+#'        If "matmult",
 #'        the coltype of the first operand must match the rowtype of the second operand
-#'        for every sequential invocation of \code{FUN}.
-#'        If "\code{none}",
-#'        neither coltypes nor rowtypes are checked by \code{\link{naryapply_byname}}. 
+#'        for every sequential invocation of `FUN`.
+#'        If "none",
+#'        neither coltypes nor rowtypes are checked by `naryapply_byname()`. 
 #' @param set_rowcoltypes tells whether to apply row and column types from 
-#'        operands in \code{...} to the output of each sequential invocation of \code{FUN}. 
-#'        Set \code{TRUE} (the default) to apply row and column types.
-#'        Set \code{FALSE}, to \emph{not} apply row and column types to the output.
+#'        operands in `...` to the output of each sequential invocation of `FUN`. 
+#'        Set `TRUE` (the default) to apply row and column types.
+#'        Set `FALSE`, to *not* apply row and column types to the output.
 #' @param .organize a boolean that tells whether or not to automatically 
-#'        complete operands in \code{...} relative to each other and
+#'        complete operands in `...` relative to each other and
 #'        sort the rows and columns of the completed matrices.
-#'        This organizing is done on each sequential invocation of \code{FUN}.
-#'        Normally, this should be \code{TRUE} (the default).
-#'        However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.
+#'        This organizing is done on each sequential invocation of `FUN`.
+#'        Normally, this should be `TRUE` (the default).
+#'        However, if `FUN` takes over this responsibility, set to `FALSE`.
 #'        
-#' @return the result of \code{FUN} applied logically to \code{...}
+#' @return the result of `FUN` applied logically to `...`
 #'
 #' @examples
 #' matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, TRUE)

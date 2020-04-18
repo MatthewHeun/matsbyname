@@ -21,16 +21,16 @@ binaryapply_byname(
 
 \item{b}{the second operand for \code{FUN}.}
 
-\item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
+\item{.FUNdots}{a list of additional named arguments passed to \code{FUN.}}
 
-\item{match_type}{one of "\code{all}", "\code{matmult}", or "\code{none}".
+\item{match_type}{one of "all", "matmult", or "none".
 When both \code{a} and \code{b} are matrices,
-"\code{all}" (the default) indicates that
+"all" (the default) indicates that
 rowtypes of \code{a} must match rowtypes of \code{b} and
 coltypes of \code{a} must match coltypes of \code{b}.
-If "\code{matmult}",
+If "matmult",
 coltypes of \code{a} must match rowtypes of \code{b}.
-If "\code{none}",
+If "none",
 neither coltypes nor rowtypes are checked.}
 
 \item{set_rowcoltypes}{tells whether to apply row and column types from \code{a} and \code{b}
