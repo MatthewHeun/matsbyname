@@ -20,16 +20,16 @@ naryapplylogical_byname(
 
 \item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
 
-\item{match_type}{one of "\code{all}", "\code{matmult}", or "\code{none}".
+\item{match_type}{one of "all", "matmult", or "none".
 When \code{...} are matrices,
-"\code{all}" (the default) indicates that
+"all" (the default) indicates that
 rowtypes of all \code{...} matrices must match and
 coltypes of all \code{...} matrices must match.
-If "\code{matmult}",
+If "matmult",
 the coltype of the first operand must match the rowtype of the second operand
 for every sequential invocation of \code{FUN}.
-If "\code{none}",
-neither coltypes nor rowtypes are checked by \code{\link{naryapply_byname}}.}
+If "none",
+neither coltypes nor rowtypes are checked by \code{naryapply_byname()}.}
 
 \item{set_rowcoltypes}{tells whether to apply row and column types from
 operands in \code{...} to the output of each sequential invocation of \code{FUN}.

@@ -21,7 +21,7 @@ elementapply_byname(FUN, a, row, col, .FUNdots = NULL)
 \code{a}, after \code{FUN} has been applied to the element at \code{row} and \code{col}
 }
 \description{
-\code{FUN} is applied to the element of \code{a} that is
+\code{FUN} is applied to the element of \code{a} that is specified by \code{row} and \code{col}.
 }
 \details{
 \code{row} and \code{col} can be any of row or column names or integer indices or a mix of both.
