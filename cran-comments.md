@@ -16,7 +16,10 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2020-03-11 r77925)
+    * `devtools::check_win_devel()`, R version 4.0.0 RC (2020-04-17 r78247)
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
         * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
