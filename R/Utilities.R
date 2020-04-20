@@ -422,35 +422,44 @@ setcolnames_byname <- function(a, colnames){
 #' @export
 #'
 #' @examples
-rename_to_pref_suff_byname <- function(a, sep, keep, margin) {
+rename_to_pref_suff_byname <- function(a, sep, keep, margin = c(1, 2)) {
   
   rename_func <- function(a, sep, keep = c("prefix", "suffix"), margin = c(1, 2)) {
     # At this point, a should be a single matrix.
     keep <- match.arg(keep)
-    assertthat::assert_that(margin %in% c(1, 2))
+    assertthat::assert_that(all(margin %in% c(1, 2)))
     
     if (2 %in% margin) {
       # Want to rename columns.
       # Easier to transpose, re-call ourselves to rename rows, and then transpose again.
-      a <- t(a) %>% rename_func(sep = sep, keep = keep, margin = 1) %>% t(a)
+      a <- t(a) %>% rename_func(sep = sep, keep = keep, margin = 1) %>% t()
     }
     if (1 %in% margin) {
       # Want to rename rows
       # Get current row names
       rnames <- rownames(a)
       # Calculate new rownames
-      
+      separated <- strsplit(rnames, split = sep, fixed = TRUE)
+      if (keep == "prefix") {
+        new_rnames <- lapply(separated, function(x) {
+          # Keep only the first of the separated items
+          x[[1]]
+        })
+      } else if (keep == "suffix") {
+        
+        new_rnames <- lapply(separated, function(x) {
+          # Keep only the last of the separated items
+          x[[length(x)]]
+        })
+      }
       # Set new rownames
       rownames(a) <- new_rnames
     }
     return(a)
     
   }
-  
-  
   unaryapply_byname(rename_func, a = a, 
                     .FUNdots = list(sep = sep, keep = keep, margin = margin))
-  
 }
 
 

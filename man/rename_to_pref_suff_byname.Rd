@@ -4,7 +4,7 @@
 \alias{rename_to_pref_suff_byname}
 \title{Rename matrix rows and columns by prefix and suffix}
 \usage{
-rename_to_pref_suff_byname(a, sep, keep, margin)
+rename_to_pref_suff_byname(a, sep, keep, margin = c(1, 2))
 }
 \arguments{
 \item{a}{a matrix or list of matrices whose rows or columns will be renamed}
