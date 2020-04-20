@@ -1113,3 +1113,69 @@ any_byname <- function(a){
   }
   unaryapply_byname(FUN = any_func, a = a, rowcoltypes = "none")
 }
+
+
+#' Aggregate rows and columns in a matrix
+#' 
+#' Rows (`margin  1`), columns (`margin = 2`), or both (`margin = c(1, 2)`, the default)
+#' are aggregated according to `aggregation_map`.
+#' 
+#' When `aggregation_map` is `NULL` (the default), 
+#' rows (or columns or both) of same name are aggregated together. 
+#' 
+#' If `aggregation_map` is not `NULL`, it must be a named list.
+#' The name of each `aggregation_map` item is the name of a row or column in `a` that will contain the specified aggregation.
+#' The value of each item in `aggregation_map` must be a vector of names of rows or columns in `a`.
+#' The names in the value are aggregated and inserted into `a` with the name of the value.
+#' For example `aggregation_map = list(new_row = c("r1", "r2"))` 
+#' will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row 
+#' whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
+#' 
+#' The items in `aggregation_map` are interpreted as regular expressions, and 
+#' they are escaped using `Hmisc::escapeRegex()` prior to use.
+#'
+#' @param a a matrix or list of matrices whose rows or columns are to be aggregated
+#' @param aggregation_map a named list of rows or columns to be aggregated (or `NULL`). See `details`.
+#' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both
+#' @param pattern_type See `make_pattern()`.
+#'
+#' @return a version of `a` with aggregated rows and/or columns
+#' 
+#' @export
+#'
+#' @examples
+aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), pattern_type = "exact") {
+  
+  agg_func <- function(a, aggregation_map, margin, pattern_type) {
+    # If we get here, a should be a single matrix.
+    assertthat::assert_that(all(margin %in% c(1, 2)))
+    if (2 %in% margin) {
+      # Want to aggregate columns.
+      # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
+      out <- transpose_byname(a) %>% agg_func(aggregation_map = aggregation_map, margin = 1, pattern_type = pattern_type) %>% transpose_byname()
+    }
+    if (1 %in% margin) {
+      for (i in 1:length(aggregation_map)) {
+        # Isolate rows to be aggregated
+        select_pattern <- make_pattern(row_col_names = aggregation_map[[i]], pattern_type = pattern_type)
+        rows_to_aggregate <- select_rows_byname(a, retain_pattern = select_pattern)
+        if (!is.null(rows_to_aggregate)) {
+          # Sum the isolated rows (if any)
+          aggregated_rows <- colsums_byname(rows_to_aggregate, rowname = names(aggregation_map[i]))
+          # If we found rows to aggregate, subtract from a the rows that were aggregated and add the aggregated rows
+          out <- difference_byname(a, rows_to_aggregate) %>% 
+            # Eliminate the empty rows?
+            clean_byname(margin = 1) %>% 
+            sum_byname(aggregated_rows)
+        } else {
+          # Nothing to aggregate
+          out <- a
+        }
+      }
+    }
+    return(out)
+  }
+
+  unaryapply_byname(agg_func, a = a, 
+                    .FUNdots = list(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type))
+}

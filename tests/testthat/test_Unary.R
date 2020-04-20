@@ -1279,3 +1279,41 @@ test_that("any_byname works as expected", {
   expect_equal(any_byname(list(n,n)), list(TRUE, TRUE))
   
 })
+
+
+###########################################################
+context("Aggregate")
+###########################################################
+
+test_that("aggregate works as expected", {
+  m <- matrix(1:9, nrow = 3, byrow = TRUE,
+              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+  expected <- matrix(c(5, 7, 9,
+                       7, 8, 9), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r3"), c("c1", "c2", "c3")))
+  actual <- aggregate_byname(m, aggregation_map = list(a = c("r1", "r2")))
+  expect_equal(actual, expected)
+  
+  # Try with wrong margin.
+  # This will try to aggregate r1 and r2 in columns, but there are no r1 or r2 columns.
+  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r1", "r2")), margin = 2), m)
+  
+  # Try to aggregate with only 1 row.
+  # Should get same thing with a renamed column
+  expected <- m
+  dimnames(expected) <- list(c("r1", "a", "r3"), c("c1", "c2", "c3"))
+  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r2")), margin = 1) %>% sort_rows_cols(margin = 1, roworder = dimnames(expected)[[1]]), expected)
+  
+  # Aggregate with a map that contains rows that don't exist.
+  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r4", "r5", "42", "supercalifragilisticexpialidocious")), margin = 1), m)
+})
+
+
+test_that("aggregate works as expected for NULL aggregation_map", {
+  m <- matrix(1:9, nrow = 3, byrow = TRUE,
+              dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
+  expected <- matrix(c(11, 13, 15,
+                       1, 2, 3), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
+  expect_equal(aggregate_byname(m), expected)
+})

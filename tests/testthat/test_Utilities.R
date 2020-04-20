@@ -384,6 +384,26 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
 })
 
 
+test_that("setting ideitical row/col names is OK", {
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), nrow = 3, byrow = TRUE, 
+              dimnames = list(c("a -> b", "a -> c", "r3"), c("a -> b", "a -> z")))
+  expected <- m
+  rownames(expected) <- c("a", "a", "r3")
+  colnames(expected) <- c("a", "a")
+  # The next call will create duplicate row names and column names in m. 
+  actual <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+  # Interestingly the command View(actual) or View(expected)
+  # shows row names that aren't true. 
+  # The 2nd row of actual and expected is shown as "a.1", 
+  # but the underlying objects have simply "a".
+  # (The column names are shown correctly.)
+  # This test ensures that R isn't messing with the actual row and column names on the objects.
+  expect_equal(actual, expected)
+})
+
+
 ###########################################################
 context("Row and column types")
 ###########################################################

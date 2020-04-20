@@ -12,7 +12,7 @@ make_pattern(
 \arguments{
 \item{row_col_names}{a vector of row and column names}
 
-\item{pattern_type}{one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}.}
+\item{pattern_type}{one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".}
 }
 \value{
 an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.

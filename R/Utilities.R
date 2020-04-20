@@ -181,7 +181,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' }
 #'
 #' @param row_col_names a vector of row and column names
-#' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}.
+#' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".
 #'
 #' @return an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
 #' 
@@ -460,7 +460,9 @@ rename_rowcol_to_pref_suff_byname <- function(a, sep, keep, margin = c(1, 2)) {
         })
       }
       # Set new rownames
-      rownames(a) <- new_rnames
+      # rownames(a) <- new_rnames  # Row names are automatically made valid. We don't want that.
+      new_dimnames <- list(new_rnames, colnames(a))
+      dimnames(a) <- new_dimnames
     }
     return(a)
     
@@ -623,7 +625,7 @@ coltype <- function(a){
 #' }
 #'
 #' Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-#' \code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
+#' \code{\link{make_pattern}} escapes regex strings using `Hmisc::escapeRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
 #'

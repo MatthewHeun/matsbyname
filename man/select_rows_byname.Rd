@@ -42,7 +42,7 @@ Some typical patterns are:
 }
 
 Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-\code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
+\code{\link{make_pattern}} escapes regex strings using \code{Hmisc::escapeRegex()}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 }

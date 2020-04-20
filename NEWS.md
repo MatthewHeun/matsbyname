@@ -1,5 +1,5 @@
 * Added additional tests for bug fixes and new features.
-    * Now up to 782 tests, all passing.
+    * Now up to 783 tests, all passing.
     * Code coverage remains at 100%.
 * Added new function `rename_rowcol_to_pref_suff_byname()` which 
   renames rows or columns to prefixes or suffixes in row and column names.
