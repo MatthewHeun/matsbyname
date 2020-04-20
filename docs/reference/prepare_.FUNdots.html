@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply a function cumulatively to a list of matrices or numbers — cumapply_byname • matsbyname</title>
+<title>Prepare the <code>.FUNdots</code> argument for <code>*apply_byname</code> functions. — prepare_.FUNdots • matsbyname</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,8 @@
 
 
 
-<meta property="og:title" content="Apply a function cumulatively to a list of matrices or numbers — cumapply_byname" />
-<meta property="og:description" content="FUN must be a binary function that also accepts a single argument.
-The result is a list with first element FUN(a[[1]]).
-For i &amp;gt;= 2, elements are FUN(a[[i]], out[[i-1]]),
-where out is the result list." />
+<meta property="og:title" content="Prepare the <code>.FUNdots</code> argument for <code>*apply_byname</code> functions. — prepare_.FUNdots" />
+<meta property="og:description" content="This is a helper function for the various *apply_byname functions." />
 
 
 
@@ -129,93 +126,44 @@ where out is the result list." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply a function cumulatively to a list of matrices or numbers</h1>
+    <h1>Prepare the <code>.FUNdots</code> argument for <code>*apply_byname</code> functions.</h1>
     <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Apply.R'><code>R/Apply.R</code></a></small>
-    <div class="hidden name"><code>cumapply_byname.Rd</code></div>
+    <div class="hidden name"><code>prepare_.FUNdots.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>FUN</code> must be a binary function that also accepts a single argument.
-The result is a list with first element <code>FUN(a[[1]])</code>.
-For <code>i &gt;= 2</code>, elements are <code>FUN(a[[i]], out[[i-1]])</code>,
-where <code>out</code> is the result list.</p>
+    <p>This is a helper function for the various <code>*apply_byname</code> functions.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cumapply_byname</span>(<span class='no'>FUN</span>, <span class='no'>a</span>)</pre>
+    <pre class="usage"><span class='fu'>prepare_.FUNdots</span>(<span class='no'>a</span>, <span class='no'>.FUNdots</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>FUN</th>
-      <td><p>the function to be applied</p></td>
+      <th>a</th>
+      <td><p>the main argument to an <code>*apply_byname</code> function.</p></td>
     </tr>
     <tr>
-      <th>a</th>
-      <td><p>the list of matrices or numbers to which <code>FUN</code> will be applied cumulatively</p></td>
+      <th>.FUNdots</th>
+      <td><p>additional arguments to be applied to <code>FUN</code> in one of the <code>*apply_byname</code> functions.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of same length as <code>a</code>
-containing the cumulative application of <code>FUN</code> to <code>a</code></p>
+    <p>a reconfigured version of <code>.FUNdots</code>, ready for use by an <code>*apply_byname</code> function.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code><a href='naryapply_byname.html'>naryapply_byname()</a></code> and <code>cumapply_byname()</code> are similar.
-Their differences can be described by considering a data frame.
-<code><a href='naryapply_byname.html'>naryapply_byname()</a></code> applies <code>FUN</code> to several columns (variables) of the data frame.
-For example, <code><a href='sum_byname.html'>sum_byname()</a></code> applied to several variables gives another column
-containing the sums across each row of the data frame.
-<code>cumapply_byname()</code> applies <code>FUN</code> to successive entries in a single column.
-For example <code><a href='sum_byname.html'>sum_byname()</a></code> applied to a single column gives the sum of all numbers in that column.</p>
+    <p>This function looks at several cases.</p><ul>
+<li><p>If <code>.FUNdots</code> is not a <code>list</code>, this function attempts to recycle <code>.FUNdots</code> for use with <code>*apply_byname</code>.</p></li>
+<li><p>If <code>.FUNdots</code> is a <code>list</code> in which each top-level element (argument to <code>FUN</code>) has length 1,
+this function recycles each element of <code>.FUNdots</code> for use across <code>a</code>.</p></li>
+<li><p>If <code>.FUNdots</code> is a <code>list</code> in which each top-level element (argument to <code>FUN</code>) has same length as <code>a</code>,
+this function reorders <code>.FUNdots</code> for use across <code>a</code>.</p></li>
+</ul>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>sum</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 3
-#&gt; 
-#&gt; [[3]]
-#&gt; [1] 6
-#&gt; 
-#&gt; [[4]]
-#&gt; [1] 10
-#&gt; </div><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>sum_byname</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 3
-#&gt; 
-#&gt; [[3]]
-#&gt; [1] 6
-#&gt; 
-#&gt; [[4]]
-#&gt; [1] 10
-#&gt; </div><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>prod</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 2
-#&gt; 
-#&gt; [[3]]
-#&gt; [1] 6
-#&gt; 
-#&gt; [[4]]
-#&gt; [1] 24
-#&gt; </div><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>hadamardproduct_byname</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 2
-#&gt; 
-#&gt; [[3]]
-#&gt; [1] 6
-#&gt; 
-#&gt; [[4]]
-#&gt; [1] 24
-#&gt; </div></pre>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

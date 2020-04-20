@@ -91,10 +91,40 @@ test_that("bad margins in clean_byname work as expected", {
   
 })
 
+
 test_that("cleaning both rows and cols works as expected", {
   m <- matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   expect_equal(clean_byname(m), 
                matrix(1:3, nrow = 3, ncol = 1, dimnames = list(c("r1", "r2", "r3"), "c2")))
+})
+
+
+test_that("cleaning a vector works as expected", {
+  v <- matrix(c(0, 
+                0, 
+                0, 
+                42), nrow = 4, dimnames = list(c("r1", "r2", "r3", "r4"), c("c1")))
+  expect_equal(clean_byname(v), 
+               matrix(42, dimnames = list(c("r4"), c("c1"))))
+})
+
+
+test_that("cleaning works with unnamed rows and/or columns", {
+  v <- matrix(c(0, 
+                0, 
+                0, 
+                42), nrow = 4, dimnames = list(c("r1", "r2", "r3", "r4")))
+  expect_equal(clean_byname(v), 
+               matrix(42, nrow = 1, byrow = TRUE, dimnames = list(c("r4"), c(NULL))))
+  
+  
+  unnamed <- matrix(c(1, 2, 0,
+                      3, 4, 0,
+                      5, 6, 0,
+                      0, 0, 0), nrow = 4, byrow = TRUE)
+  expect_equal(clean_byname(unnamed), matrix(c(1, 2,
+                                               3, 4, 
+                                               5, 6), nrow = 3, byrow = TRUE))
 })
 
 

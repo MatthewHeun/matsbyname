@@ -741,13 +741,16 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
     } else {
       stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
     }
-    keepcols <- apply(b, 2, function(x) {!all(x == clean_value)})
-    keepcolnames <- names(which(keepcols))
-    c <- select_cols_byname(a = b, retain_pattern = make_pattern(row_col_names = keepcolnames, pattern_type = "exact"))
+    keepcols <- apply(b, 2, function(x) {
+      !all(x == clean_value)
+    })
+    # keepcolnames <- names(which(keepcols))
+    # c <- select_cols_byname(a = b, retain_pattern = make_pattern(row_col_names = keepcolnames, pattern_type = "exact"))
+    cleaned <- b[ , keepcols, drop = FALSE]
     if (margin == 1) {
-      return(transpose_byname(c))
+      return(transpose_byname(cleaned))
     } else if (margin == 2) {
-      return(c)
+      return(cleaned)
     }
   }
   unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 

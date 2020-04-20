@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(tidyr)
 library(matsbyname)
-# library(matsindf)
+library(matsindf)
 
 ## -----------------------------------------------------------------------------
 productnames <- c("p1", "p2")

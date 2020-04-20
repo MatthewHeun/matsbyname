@@ -161,18 +161,7 @@ If <code>a</code> is a list, the names of <code>a</code> are applied to the outp
     </tr>
     <tr>
       <th>rowcoltypes</th>
-      <td><p>a string that tells how to transfer row and column types of <code>a</code> to output.
-Options are:</p><ul>
-<li><p><code>all</code>: transfer both row and column types of <code>a</code> directly to output.</p></li>
-<li><p><code>transpose</code>: rowtype of <code>a</code> becomes coltype of output;
-coltype of <code>a</code> becomes rowtype of output.
-"transpose" is helpful for <code>FUN</code>s that transpose
-<code>a</code> upon output.</p></li>
-<li><p><code>row</code>: rowtype of <code>a</code> becomes both rowtype and coltype of output.</p></li>
-<li><p><code>col</code>: coltype of <code>a</code> becomes both rowtype and coltype of output.</p></li>
-<li><p><code>none</code>: rowtype and coltype not set by <code>unaryapply_byname</code>.
-Rather, <code>FUN</code> will set rowtype and coltype.</p></li>
-</ul></td>
+      <td><p>a string that tells how to transfer row and column types of <code>a</code> to output. See <code>details</code>.</p></td>
     </tr>
     </table>
 
@@ -190,6 +179,14 @@ to be applied along the list that is <code>a</code>.</p></li>
 
 <p>The length of the first dimension of <code>.FUNdots</code> is the number of arguments supplied to <code>FUN</code>.
 The length of the second dimension of <code>.FUNdots</code> must be equal to the length of <code>a</code>.</p>
+<p>Options for the <code>rowcoltypes</code> argument are:</p><ul>
+<li><p>"all": transfer both row and column types of <code>a</code> directly to output.</p></li>
+<li><p>"transpose": rowtype of <code>a</code> becomes coltype of output; coltype of <code>a</code> becomes rowtype of output. "transpose" is helpful for <code>FUN</code>s that transpose <code>a</code> upon output.</p></li>
+<li><p>"row": rowtype of <code>a</code> becomes both rowtype and coltype of output.</p></li>
+<li><p>"col": coltype of <code>a</code> becomes both rowtype and coltype of output.</p></li>
+<li><p>"none": rowtype and coltype not set by <code>unaryapply_byname</code>. Rather, <code>FUN</code> will set rowtype and coltype.</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>productnames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"p1"</span>, <span class='st'>"p2"</span>)
