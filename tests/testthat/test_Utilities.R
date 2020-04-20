@@ -306,6 +306,18 @@ test_that("setting column names works with different names for each matrix", {
 })
 
 
+test_that("renaming rows to prefix works as expected", {
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), nrow = 3, byrow = TRUE, 
+              dimnames = list(c("a -> b", "r2", "r3"), c("c1", "c2")))
+  expected <- m
+  rownames(expected) <- c("a", "r2", "r3")
+  actual <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix", margin = 1)
+  expect_equal(actual, expected)
+})
+
+
 ###########################################################
 context("Row and column types")
 ###########################################################

@@ -397,6 +397,63 @@ setcolnames_byname <- function(a, colnames){
     transpose_byname()
 }
 
+
+#' Rename matrix rows and columns by prefix and suffix
+#' 
+#' It can be convenient to rename rows or columns of matrices 
+#' based on retaining prefixes *before* a separator or suffixes *after* a separator.
+#' This functions provides that capability.
+#' 
+#' Note that the `keep` parameter tells which to retain, 
+#' prefixes *before* a separator or suffixes *after* a separator.
+#' 
+#' When `keep` is "prefix", all characters to the right of the first (leftmost) separator and the separator itself are dropped from the names. 
+#' When `keep` is "suffix", all characters to the left of the last (rightmost) separator and the separator itself are dropped from the names. 
+#' 
+#' If `sep` is not found in a name, that name is unchanged.
+#' 
+#' @param a a matrix or list of matrices whose rows or columns will be renamed
+#' @param sep a string that identifies the separator between prefix and suffix
+#' @param keep one of "prefix" or "suffix" indicating which part of the row or column name to retain
+#' @param margin one of `1`, `2`, or `c(1, 2)` where `1` indicates rows and `2` indicates columns
+#'
+#' @return `a` with potentially different row or column names
+#' 
+#' @export
+#'
+#' @examples
+rename_to_pref_suff_byname <- function(a, sep, keep, margin) {
+  
+  rename_func <- function(a, sep, keep = c("prefix", "suffix"), margin = c(1, 2)) {
+    # At this point, a should be a single matrix.
+    keep <- match.arg(keep)
+    assertthat::assert_that(margin %in% c(1, 2))
+    
+    if (2 %in% margin) {
+      # Want to rename columns.
+      # Easier to transpose, re-call ourselves to rename rows, and then transpose again.
+      a <- t(a) %>% rename_func(sep = sep, keep = keep, margin = 1) %>% t(a)
+    }
+    if (1 %in% margin) {
+      # Want to rename rows
+      # Get current row names
+      rnames <- rownames(a)
+      # Calculate new rownames
+      
+      # Set new rownames
+      rownames(a) <- new_rnames
+    }
+    return(a)
+    
+  }
+  
+  
+  unaryapply_byname(rename_func, a = a, 
+                    .FUNdots = list(sep = sep, keep = keep, margin = margin))
+  
+}
+
+
 #' Sets row type for a matrix or a list of matrices
 #'
 #' This function is a wrapper for \code{attr} so that 
