@@ -313,16 +313,16 @@ test_that("renaming rows to prefix or suffix works as expected", {
               dimnames = list(c("a -> b", "r2", "r3"), c("c1", "c2")))
   expected <- m
   rownames(expected) <- c("a", "r2", "r3")
-  actual <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix", margin = 1)
+  actual <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "prefix", margin = 1)
   expect_equal(actual, expected)
   
   expected <- m
   rownames(expected) <- c("b", "r2", "r3")
-  actual <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix", margin = 1)
+  actual <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "suffix", margin = 1)
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), sep = " -> ", keep = "suffix", margin = 1)
+  actual <- rename_rowcol_to_pref_suff_byname(list(m, m), sep = " -> ", keep = "suffix", margin = 1)
   expect_equal(actual, list(expected, expected))
 })
 
@@ -334,21 +334,21 @@ test_that("renaming columns to prefix or suffix works as expected", {
               dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
   expected <- m
   colnames(expected) <- c("a", "c")
-  actual <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix", margin = 2)
+  actual <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "prefix", margin = 2)
   expect_equal(actual, expected)
   
   expected <- m
   colnames(expected) <- c("b", "d")
-  actual <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix", margin = 2)
+  actual <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "suffix", margin = 2)
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), sep = " -> ", keep = "suffix", margin = 2)
+  actual <- rename_rowcol_to_pref_suff_byname(list(m, m), sep = " -> ", keep = "suffix", margin = 2)
   expect_equal(actual, list(expected, expected))
   
   # Check that row and column types are preserved
   m <- m %>% setrowtype("Rows") %>% setcoltype("Cols")
-  res <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+  res <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
   expect_equal(rowtype(res), "Rows")
   expect_equal(coltype(res), "Cols")
 })
@@ -363,22 +363,22 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
   rownames(expected) <- c("a", "r2", "r3")
   colnames(expected) <- c("a", "c")
   # Default is margin = c(1, 2)
-  actual <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+  actual <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
   expect_equal(actual, expected)
   
   expected <- m
   rownames(expected) <- c("b", "r2", "r3")
   colnames(expected) <- c("b", "d")
-  actual <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+  actual <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), sep = " -> ", keep = "suffix")
+  actual <- rename_rowcol_to_pref_suff_byname(list(m, m), sep = " -> ", keep = "suffix")
   expect_equal(actual, list(expected, expected))
 
   # Check that row and column types are preserved
   m <- m %>% setrowtype("Rows") %>% setcoltype("Cols")
-  res <- rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+  res <- rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
   expect_equal(rowtype(res), "Rows")
   expect_equal(coltype(res), "Cols")
 })
