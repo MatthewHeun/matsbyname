@@ -1,3 +1,8 @@
+* Added additional tests for bug fixes.
+    * Now up to 769 tests, all passing.
+    * Code coverage remains at 100%.
+* Fixed a bug in `clean_byname()` which caused 
+  a `NULL` response when unnamed rows or columns were present.
 * Now using new `prepare_.FUNdots()` function in all `*apply_byname()` functions.
 * Refactored new code for `unaryapply_byname()` into function `prepare_.FUNdots()`, 
   so it can be used in other `*apply_byname()` functions.
