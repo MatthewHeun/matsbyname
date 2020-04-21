@@ -1158,7 +1158,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
       if (2 %in% margin) {
         rcnames[["cnames"]] <- colnames(a)
       }
-      aggregation_map <- sapply(rcnames, USE.NAMES = FALSE, FUN = function(x) {
+      aggregation_map <- lapply(rcnames, FUN = function(x) {
         # x is one of the sets of row or column names
         # Look for all duplicated names in x
         dupes <- x[duplicated(x)]
@@ -1167,37 +1167,46 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
         }
         # Get rid of extras to get the list of names to aggregate
         names_to_aggregate <- unique(dupes)
+        names_to_aggregate <- magrittr::set_names(names_to_aggregate, names_to_aggregate)
         return(names_to_aggregate)
       }) %>% 
+        magrittr::set_names(NULL) %>% 
+        unique() %>% 
         unlist()
-      aggregation_map <- magrittr::set_names(aggregation_map, aggregation_map)
       # If we still have a NULL aggregation_map (i.e., we didn't find any rows or cols that need to be aggregated),
       # just return our original matrix (a).
       if (is.null(aggregation_map)) {
         return(a)
       }
     }
+    out <- a
     if (2 %in% margin) {
       # Want to aggregate columns.
       # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
-      out <- transpose_byname(a) %>% agg_func(aggregation_map = aggregation_map, margin = 1, pattern_type = pattern_type) %>% transpose_byname()
+      out <- t(a) %>% 
+        agg_func(aggregation_map = aggregation_map, margin = 1, pattern_type = pattern_type) %>% 
+        t()
     }
     if (1 %in% margin) {
       for (i in 1:length(aggregation_map)) {
         # Isolate rows to be aggregated
         select_pattern <- make_pattern(row_col_names = aggregation_map[[i]], pattern_type = pattern_type)
-        rows_to_aggregate <- select_rows_byname(a, retain_pattern = select_pattern)
+        rows_to_aggregate <- select_rows_byname(out, retain_pattern = select_pattern)
         if (!is.null(rows_to_aggregate)) {
           # Sum the isolated rows (if any)
-          aggregated_rows <- colsums_byname(rows_to_aggregate, rowname = names(aggregation_map[i]))
+          # aggregated_rows <- colsums_byname(rows_to_aggregate, rowname = names(aggregation_map[i]))
+          aggregated_rows <- colSums(rows_to_aggregate) %>% 
+            # Sadly, colSums simplifies 1-dimensional output to a vector. 
+            # So, remake the matrix.
+            matrix(nrow = 1, dimnames = list(c(aggregation_map[i]), c(colnames(rows_to_aggregate))))
           # If we found rows to aggregate, remove from a the rows that were aggregated and ...
-          out <- a %>% 
+          out <- out %>% 
             select_rows_byname(remove_pattern = select_pattern) %>% 
             # ... add the aggregated rows back in
-            sum_byname(aggregated_rows)
-        } else {
-          # Nothing to aggregate
-          out <- a
+            # sum_byname(aggregated_rows)
+            rbind(aggregated_rows) %>% 
+            # Note: Can't sort on columns, because they are not guaranteed to be unique.
+            sort_rows_cols(margin = 1)
         }
       }
     }

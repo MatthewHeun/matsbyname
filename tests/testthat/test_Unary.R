@@ -1322,10 +1322,23 @@ test_that("aggregate works as expected for NULL aggregation_map", {
   # And, again should get the expected result, because we're asking for margin = c(1, 2), the default
   expect_equal(aggregate_byname(m, margin = 1), expected)
   
+  # Now aggregate on both rows and columns when some names are duplicated in both rows and cols.
+  # First, try to aggregate on rows.
   m2 <- matrix(1:9, nrow = 3, byrow = TRUE,
                dimnames = list(c("r1", "a", "a"), c("b", "b", "c3")))
-  expected2 <- matrix(c(24, 15,
+  expected2 <- matrix(c(11, 13, 15,
+                        1, 2, 3), nrow = 2, byrow = TRUE, dimnames = list(c("a", "r1"), c("b", "b", "c3")))
+  expect_equal(aggregate_byname(m2, margin = 1), expected2)
+  
+  # Now try to aggregate on columns
+  expected3 <- matrix(c(3, 3,
+                        9, 6,
+                        15, 9), nrow = 3, byrow = TRUE, dimnames = list(c("r1", "a", "a"), c("b", "c3")))
+  expect_equal(aggregate_byname(m2, margin = 2), expected3)
+  
+  # Now try to aggregate both rows and columns.
+  expected4 <- matrix(c(24, 15,
                         3, 3), nrow = 2, byrow = TRUE,
                       dimnames = list(c("a", "r1"), c("b", "c3")))
-  expect_equal(aggregate_byname(m2), expected2)
+  expect_equal(aggregate_byname(m2), expected4)
 })
