@@ -1,5 +1,5 @@
 * Added additional tests for bug fixes and new features.
-    * Now up to 788 tests, all passing.
+    * Now up to 793 tests, all passing.
     * Code coverage remains at 100%.
 * Added new function `aggregate_byname()` which
   aggregates rows, columns, or both, according to an `aggregation_map`.
