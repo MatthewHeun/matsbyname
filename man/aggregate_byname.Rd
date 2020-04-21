@@ -41,4 +41,7 @@ whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
 
 The items in \code{aggregation_map} are interpreted as regular expressions, and
 they are escaped using \code{Hmisc::escapeRegex()} prior to use.
+
+Note that aggregation on one margin only will sort only the aggregated margin, because
+the other margin is not guaranteed to have unique names.
 }

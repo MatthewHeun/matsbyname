@@ -1133,6 +1133,9 @@ any_byname <- function(a){
 #' 
 #' The items in `aggregation_map` are interpreted as regular expressions, and 
 #' they are escaped using `Hmisc::escapeRegex()` prior to use.
+#' 
+#' Note that aggregation on one margin only will sort only the aggregated margin, because
+#' the other margin is not guaranteed to have unique names.
 #'
 #' @param a a matrix or list of matrices whose rows or columns are to be aggregated
 #' @param aggregation_map a named list of rows or columns to be aggregated (or `NULL`). See `details`.
