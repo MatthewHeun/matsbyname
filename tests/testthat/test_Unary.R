@@ -1320,7 +1320,7 @@ test_that("aggregate works as expected for NULL aggregation_map", {
   # Now we should get the expected result
   expect_equal(aggregate_byname(m, margin = 1), expected)
   # And, again should get the expected result, because we're asking for margin = c(1, 2), the default
-  expect_equal(aggregate_byname(m, margin = 1), expected)
+  expect_equal(aggregate_byname(m), expected)
   
   # Now aggregate on both rows and columns when some names are duplicated in both rows and cols.
   # First, try to aggregate on rows.
@@ -1341,4 +1341,14 @@ test_that("aggregate works as expected for NULL aggregation_map", {
                         3, 3), nrow = 2, byrow = TRUE,
                       dimnames = list(c("a", "r1"), c("b", "c3")))
   expect_equal(aggregate_byname(m2), expected4)
+})
+
+
+test_that("aggregate works as expected for lists", {
+  
+})
+
+
+test_that("aggregate works as expected in data frames", {
+  
 })
