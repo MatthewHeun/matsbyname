@@ -401,22 +401,30 @@ setcolnames_byname <- function(a, colnames){
 #' Rename matrix rows and columns by prefix and suffix
 #' 
 #' It can be convenient to rename rows or columns of matrices 
-#' based on retaining prefixes *before* a separator or suffixes *after* a separator
-#' in the row and column names.
-#' This functions provides that capability.
+#' based on retaining prefixes or suffixes.
+#' This function provides that capability.
 #' 
-#' Note that the `keep` parameter tells which to retain, 
-#' prefixes *before* a separator or suffixes *after* a separator.
+#' A prefix is defined by an opening string (`prefix_open`) and a closing string (`prefix_close`).
+#' A suffix is defined by an opening string (`suffix_open`) and a closing string (`suffix_close`).
+#' If `sep` is provided and none of `prefix_open`, `prefix_close`, `suffix_open`, and `suffix_close` are provided,
+#' default arguments become:
+#'     * `prefix_open`: "",
+#'     * `prefix_close`: `sep`, 
+#'     * `suffix_open`: `sep`, and
+#'     * `suffix_close`: "".
+#'     
+#' The `keep` parameter tells which portion to retain (prefixes or suffixes), 
 #' 
-#' When `keep` is "prefix", all characters to the left of the first (leftmost) separator are retained in the row and/or column names.
-#' When `keep` is "suffix", all characters to the right of the last (rightmost) separator are retained in the row and/or column names.
-#' 
-#' If `sep` is not found in a row and/or column name, that name is unchanged.
+#' If prefixes or suffixes are not found in a row and/or column name, that name is unchanged.
 #' 
 #' @param a a matrix or list of matrices whose rows or columns will be renamed
 #' @param sep a string that identifies the separator between prefix and suffix
 #' @param keep one of "prefix" or "suffix" indicating which part of the row or column name to retain
 #' @param margin one of `1`, `2`, or `c(1, 2)` where `1` indicates rows and `2` indicates columns
+#' @param prefix_open a string that identifies the beginning of a prefix. Default is `sep`.
+#' @param prefix_close a string that identifies the ending of a prefix. Default is "".
+#' @param suffix_open a string that identifies the beginning of a suffix. Default is "".
+#' @param suffix_close a string that identifies the beginning of a suffix. Default is `sep`.
 #'
 #' @return `a` with potentially different row or column names
 #' 
@@ -427,9 +435,11 @@ setcolnames_byname <- function(a, colnames){
 #'               3, 4, 
 #'               5, 6), nrow = 3, byrow = TRUE, 
 #'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
-#' rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
-#' rename_rowcol_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
-rename_rowcol_to_pref_suff_byname <- function(a, sep, keep, margin = c(1, 2)) {
+#' rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+#' rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+rename_to_pref_suff_byname <- function(a, sep, keep, margin = c(1, 2), 
+                                       prefix_open = "", prefix_close = sep, 
+                                       suffix_open = sep, suffix_close = "") {
   
   rename_func <- function(a, sep, keep = c("prefix", "suffix"), margin = c(1, 2)) {
     # At this point, a should be a single matrix.
