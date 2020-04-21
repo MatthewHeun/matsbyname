@@ -1282,7 +1282,7 @@ test_that("any_byname works as expected", {
 
 
 ###########################################################
-context("Aggregate")
+context("Aggregation")
 ###########################################################
 
 test_that("aggregate works as expected", {
@@ -1315,5 +1315,17 @@ test_that("aggregate works as expected for NULL aggregation_map", {
   expected <- matrix(c(11, 13, 15,
                        1, 2, 3), nrow = 2, byrow = TRUE,
                      dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
-  expect_equal(aggregate_byname(m), expected)
+  # Nothing should change, because we're asking for aggregation by columns which have no repeated names.
+  expect_equal(aggregate_byname(m, margin = 2), m)
+  # Now we should get the expected result
+  expect_equal(aggregate_byname(m, margin = 1), expected)
+  # And, again should get the expected result, because we're asking for margin = c(1, 2), the default
+  expect_equal(aggregate_byname(m, margin = 1), expected)
+  
+  m2 <- matrix(1:9, nrow = 3, byrow = TRUE,
+               dimnames = list(c("r1", "a", "a"), c("b", "b", "c3")))
+  expected2 <- matrix(c(24, 15,
+                        3, 3), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("a", "r1"), c("b", "c3")))
+  expect_equal(aggregate_byname(m2), expected2)
 })

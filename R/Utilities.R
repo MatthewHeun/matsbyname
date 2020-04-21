@@ -601,7 +601,7 @@ coltype <- function(a){
                     rowcoltypes = "none")
 }
 
-#' Select rows of a matrix (or list of matrices) by name
+#' Select (or de-select) rows of a matrix (or list of matrices) by name
 #'
 #' Arguments indicate which rows are to be retained and which are to be removed.
 #' For maximum flexibility, arguments are extended regex patterns

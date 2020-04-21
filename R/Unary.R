@@ -1149,6 +1149,34 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
   agg_func <- function(a, aggregation_map, margin, pattern_type) {
     # If we get here, a should be a single matrix.
     assertthat::assert_that(all(margin %in% c(1, 2)))
+    # Create our own aggregation_map if it is NULL
+    if (is.null(aggregation_map)) {
+      rcnames <- list()
+      if (1 %in% margin) {
+        rcnames[["rnames"]] <- rownames(a)
+      }
+      if (2 %in% margin) {
+        rcnames[["cnames"]] <- colnames(a)
+      }
+      aggregation_map <- sapply(rcnames, USE.NAMES = FALSE, FUN = function(x) {
+        # x is one of the sets of row or column names
+        # Look for all duplicated names in x
+        dupes <- x[duplicated(x)]
+        if (length(dupes) == 0) {
+          return(NULL)
+        }
+        # Get rid of extras to get the list of names to aggregate
+        names_to_aggregate <- unique(dupes)
+        return(names_to_aggregate)
+      }) %>% 
+        unlist()
+      aggregation_map <- magrittr::set_names(aggregation_map, aggregation_map)
+      # If we still have a NULL aggregation_map (i.e., we didn't find any rows or cols that need to be aggregated),
+      # just return our original matrix (a).
+      if (is.null(aggregation_map)) {
+        return(a)
+      }
+    }
     if (2 %in% margin) {
       # Want to aggregate columns.
       # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
@@ -1162,10 +1190,10 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
         if (!is.null(rows_to_aggregate)) {
           # Sum the isolated rows (if any)
           aggregated_rows <- colsums_byname(rows_to_aggregate, rowname = names(aggregation_map[i]))
-          # If we found rows to aggregate, subtract from a the rows that were aggregated and add the aggregated rows
-          out <- difference_byname(a, rows_to_aggregate) %>% 
-            # Eliminate the empty rows?
-            clean_byname(margin = 1) %>% 
+          # If we found rows to aggregate, remove from a the rows that were aggregated and ...
+          out <- a %>% 
+            select_rows_byname(remove_pattern = select_pattern) %>% 
+            # ... add the aggregated rows back in
             sum_byname(aggregated_rows)
         } else {
           # Nothing to aggregate

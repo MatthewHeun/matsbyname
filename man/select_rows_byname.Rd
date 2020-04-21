@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utilities.R
 \name{select_rows_byname}
 \alias{select_rows_byname}
-\title{Select rows of a matrix (or list of matrices) by name}
+\title{Select (or de-select) rows of a matrix (or list of matrices) by name}
 \usage{
 select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^")
 }
