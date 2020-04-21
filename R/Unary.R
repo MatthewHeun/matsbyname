@@ -1198,7 +1198,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
           aggregated_rows <- colSums(rows_to_aggregate) %>% 
             # Sadly, colSums simplifies 1-dimensional output to a vector. 
             # So, remake the matrix.
-            matrix(nrow = 1, dimnames = list(c(aggregation_map[i]), c(colnames(rows_to_aggregate))))
+            matrix(nrow = 1, dimnames = list(c(names(aggregation_map[i])), c(colnames(rows_to_aggregate))))
           # If we found rows to aggregate, remove from a the rows that were aggregated and ...
           out <- out %>% 
             select_rows_byname(remove_pattern = select_pattern) %>% 
