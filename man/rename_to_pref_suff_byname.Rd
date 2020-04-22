@@ -6,7 +6,7 @@
 \usage{
 rename_to_pref_suff_byname(
   a,
-  sep,
+  sep = NULL,
   keep,
   margin = c(1, 2),
   prefix_open = "",

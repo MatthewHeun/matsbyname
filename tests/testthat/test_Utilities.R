@@ -384,7 +384,7 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
 })
 
 
-test_that("setting ideitical row/col names is OK", {
+test_that("setting identical row/col names is OK", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 

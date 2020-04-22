@@ -437,48 +437,99 @@ setcolnames_byname <- function(a, colnames){
 #'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
 #' rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
 #' rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
-rename_to_pref_suff_byname <- function(a, sep, keep, margin = c(1, 2), 
+rename_to_pref_suff_byname <- function(a, sep = NULL, keep, margin = c(1, 2), 
                                        prefix_open = "", prefix_close = sep, 
                                        suffix_open = sep, suffix_close = "") {
   
-  rename_func <- function(a, sep, keep = c("prefix", "suffix"), margin = c(1, 2)) {
+  rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), 
+                          prefix_open, prefix_close,
+                          suffix_open, suffix_close) {
     # At this point, a should be a single matrix.
     keep <- match.arg(keep)
     assertthat::assert_that(all(margin %in% c(1, 2)))
     
     if (2 %in% margin) {
       # Want to rename columns.
-      # Easier to transpose, re-call ourselves to rename rows, and then transpose again.
-      a <- t(a) %>% rename_func(sep = sep, keep = keep, margin = 1) %>% t()
+      # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
+      a <- t(a) %>% rename_func(keep = keep, margin = 1, 
+                                prefix_open = prefix_open,
+                                prefix_close = prefix_close,
+                                suffix_open = suffix_open,
+                                suffix_close = suffix_close) %>% t()
     }
     if (1 %in% margin) {
-      # Want to rename rows
-      # Get current row names
-      rnames <- rownames(a)
-      # Calculate new rownames
-      separated <- strsplit(rnames, split = sep, fixed = TRUE)
-      if (keep == "prefix") {
-        new_rnames <- lapply(separated, function(x) {
-          # Keep only the first of the separated items
-          x[[1]]
-        })
-      } else if (keep == "suffix") {
-        
-        new_rnames <- lapply(separated, function(x) {
-          # Keep only the last of the separated items
-          x[[length(x)]]
-        })
-      }
-      # Set new rownames
+      ###### Rewrite this section to account for the open and close arguments.
+      
+      # Check with IEATools::switch_notation_notlist
+      
+      
+      # # Want to rename rows
+      # # Get current row names
+      # rnames <- rownames(a)
+      # # Calculate new rownames
+      # separated <- strsplit(rnames, split = sep, fixed = TRUE)
+      # if (keep == "prefix") {
+      #   new_rnames <- lapply(separated, function(x) {
+      #     # Keep only the first of the separated items
+      #     x[[1]]
+      #   })
+      # } else if (keep == "suffix") {
+      #   
+      #   new_rnames <- lapply(separated, function(x) {
+      #     # Keep only the last of the separated items
+      #     x[[length(x)]]
+      #   })
+      # }
+      # # Set new rownames
       # rownames(a) <- new_rnames  # Row names are automatically made valid. We don't want that.
-      new_dimnames <- list(new_rnames, colnames(a))
-      dimnames(a) <- new_dimnames
+
+      
+      
+      ##### End part that needs to be rewritten to account for open and close arguments
+
+      # Get current row names
+      new_rnames <- rownames(a)
+      
+      if (keep == "suffix") {
+        # If we want to keep suffixes, we can simply 
+        # (a) reverse the string and the suffix_open/suffix_close arguments
+        # (b) act as though we want to keep prefixes
+        # (c) reverse the results
+        new_rnames <- stringi::stri_reverse(new_rnames)
+        prefix_open <- stringi::stri_reverse(suffix_close)
+        prefix_close <- stringi::stri_reverse(suffix_open)
+      }
+
+      # Strip off prefix_open from the start of the names
+      new_rnames <- sub(pattern = paste0("^", prefix_open), replacement = "", x = new_rnames)
+      # Strip off rightmost prefix_close and everything to the right.
+      # Do this by reversing both the string and prefix_close and 
+      # eliminating everything up to the first reversed prefix_close.
+      # Then, reverse the string again.
+      # See 
+      # https://stackoverflow.com/questions/7124778/how-to-match-anything-up-until-this-sequence-of-characters-in-a-regular-expres 
+      # for details about the regex pattern.
+      new_rnames <- sub(pattern = paste0("^(.*?)", Hmisc::escapeRegex(stringi::stri_reverse(prefix_close))),
+                        replacement = "", 
+                        x = stringi::stri_reverse(new_rnames)) %>% 
+        stringi::stri_reverse()
+
+      if (keep == "suffix") {
+        # Here is the (c) reverse the results part
+        new_rnames <- stringi::stri_reverse(new_rnames)
+      }
+      
+      rownames(a) <- new_rnames
     }
     return(a)
     
   }
   unaryapply_byname(rename_func, a = a, 
-                    .FUNdots = list(sep = sep, keep = keep, margin = margin))
+                    .FUNdots = list(keep = keep, margin = margin, 
+                                    prefix_open = prefix_open,
+                                    prefix_close = prefix_close,
+                                    suffix_open = suffix_open,
+                                    suffix_close = suffix_close))
 }
 
 
