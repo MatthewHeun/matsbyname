@@ -158,6 +158,39 @@ organize_args <- function(a, b, match_type = "all", fill){
   return(list(a = outa, b = outb))
 }
 
+
+#' Prepare a margin argument
+#' 
+#' This is a helper function for many `*_byname` functions.
+#' 
+#' It is erroneous to specify a vector argument, say, `margin = c(1, 2)` when applying
+#' the `*_byname` functions to unary list of `a`.
+#' Rather, one should specify, say, `margin = list(c(1, 2)`
+#' to avoid ambiguity.
+#' This function returns a list value for `vector_arg` 
+#' if `a` is a list, `vector_arg` is not a list, and `vector_arg` has length greater than `1`.
+#'
+#' @param a a matrix or list of matrices
+#' @param vector_arg the vector argument over which to apply a calculation
+#'
+#' @return `vector_arg`, possibly modified when `a` is a list 
+#'
+#' @examples
+#' m <- matrix(c(2, 2))
+#' matsbyname:::prep_vector_arg(list(m, m), vector_arg = c(1,2))
+prep_vector_arg <- function(a, vector_arg) {
+  if (is.list(a) & !is.list(vector_arg) & length(vector_arg) > 1 & length(vector_arg) != length(a)) {
+    # Need to make this a list for it to work correctly for replication purposes when a is a list.
+    vector_arg <- list(vector_arg)
+  }
+  if (!is.list(a) & is.list(vector_arg)) {
+    # We can unlist this vector_arg to use it directly.
+    vector_arg <- unlist(vector_arg, recursive = FALSE)
+  }
+  vector_arg
+}
+
+
 #' Create regex patterns for row and column selection by name
 #'
 #' This function is intended for use with the \code{select_rows_byname}
@@ -228,9 +261,11 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
 list_of_rows_or_cols <- function(a, margin){
+  margin <- prep_vector_arg(a, margin)
+  
   lrc_func <- function(a, margin){
     stopifnot(length(margin) == 1)
-    stopifnot(margin %in% c(1,2))
+    stopifnot(margin == 1 | margin == 2)
     stopifnot(inherits(a, "matrix"))
     # Strategy: perform all operations with margin to be split into a list in columns.
     if (margin == 1) {
@@ -339,6 +374,7 @@ getcolnames_byname <- function(a){
 #' DF <- DF %>% mutate(m = setrownames_byname(m, c("r1", "r2")))
 #' DF$m[[1]]
 setrownames_byname <- function(a, rownames){
+  rownames <- prep_vector_arg(a, rownames)
   if (is.null(a)) {
     return(NULL)
   }
@@ -391,6 +427,9 @@ setcolnames_byname <- function(a, colnames){
   if (is.null(a)) {
     return(NULL)
   }
+  if (is.list(a) & !is.list(colnames)) {
+    colnames <- list(colnames)
+  }
   a %>% 
     transpose_byname() %>% 
     setrownames_byname(rownames = colnames) %>% 
@@ -441,6 +480,8 @@ rename_to_pref_suff_byname <- function(a, sep = NULL, keep, margin = c(1, 2),
                                        prefix_open = "", prefix_close = sep, 
                                        suffix_open = sep, suffix_close = "") {
   
+  margin <- prep_vector_arg(a, margin)
+
   rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), 
                           prefix_open, prefix_close,
                           suffix_open, suffix_close) {
@@ -457,36 +498,8 @@ rename_to_pref_suff_byname <- function(a, sep = NULL, keep, margin = c(1, 2),
                                 suffix_open = suffix_open,
                                 suffix_close = suffix_close) %>% t()
     }
+    
     if (1 %in% margin) {
-      ###### Rewrite this section to account for the open and close arguments.
-      
-      # Check with IEATools::switch_notation_notlist
-      
-      
-      # # Want to rename rows
-      # # Get current row names
-      # rnames <- rownames(a)
-      # # Calculate new rownames
-      # separated <- strsplit(rnames, split = sep, fixed = TRUE)
-      # if (keep == "prefix") {
-      #   new_rnames <- lapply(separated, function(x) {
-      #     # Keep only the first of the separated items
-      #     x[[1]]
-      #   })
-      # } else if (keep == "suffix") {
-      #   
-      #   new_rnames <- lapply(separated, function(x) {
-      #     # Keep only the last of the separated items
-      #     x[[length(x)]]
-      #   })
-      # }
-      # # Set new rownames
-      # rownames(a) <- new_rnames  # Row names are automatically made valid. We don't want that.
-
-      
-      
-      ##### End part that needs to be rewritten to account for open and close arguments
-
       # Get current row names
       new_rnames <- rownames(a)
       
@@ -861,34 +874,59 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' DF2[[2, "m2"]] <- m2
 #' DF2 %>% clean_byname(margin = c(1, 2), clean_value = -20)
 clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
-  if (1 %in% margin & 2 %in% margin) {
-    # Clean both dimensions of a.
-    cleaned1 <- clean_byname(a, margin = 1, clean_value = clean_value)
-    cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
-    return(cleaned2)
-  }
+  margin <- prep_vector_arg(a, margin)
+  
+  # if (1 %in% margin & 2 %in% margin) {
+  #   # Clean both dimensions of a.
+  #   cleaned1 <- clean_byname(a, margin = 1, clean_value = clean_value)
+  #   cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
+  #   return(cleaned2)
+  # }
+  # clean_func <- function(a, margin, clean_value){
+  #   if (margin == 1) {
+  #     # Want to clean rows. Code below assumes want to clean columns.
+  #     # Transpose and then transpose again before returning.
+  #     b <- transpose_byname(a)
+  #   } else if (margin == 2) {
+  #     b <- a
+  #   } else {
+  #     stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
+  #   }
+  #   keepcols <- apply(b, 2, function(x) {
+  #     !all(x == clean_value)
+  #   })
+  #   cleaned <- b[ , keepcols, drop = FALSE]
+  #   if (margin == 1) {
+  #     return(transpose_byname(cleaned))
+  #   } else if (margin == 2) {
+  #     return(cleaned)
+  #   }
+  # }
+  # unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
+  #                   rowcoltypes = "all")
+  
+  
   clean_func <- function(a, margin, clean_value){
-    if (margin == 1) {
+    assertthat::assert_that(1 %in% margin | 2 %in% margin, msg = paste("margin =", margin, "in clean_byname(). Must be 1 or 2."))
+    out <- a
+    if (1 %in% margin) {
       # Want to clean rows. Code below assumes want to clean columns.
       # Transpose and then transpose again before returning.
-      b <- transpose_byname(a)
-    } else if (margin == 2) {
-      b <- a
-    } else {
-      stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
+      out <- transpose_byname(out) %>% 
+        clean_func(margin = 2, clean_value = clean_value) %>% 
+        transpose_byname()
     }
-    keepcols <- apply(b, 2, function(x) {
-      !all(x == clean_value)
-    })
-    cleaned <- b[ , keepcols, drop = FALSE]
-    if (margin == 1) {
-      return(transpose_byname(cleaned))
-    } else if (margin == 2) {
-      return(cleaned)
-    }
+    if (2 %in% margin) {
+      keepcols <- apply(out, 2, function(x) {
+        !all(x == clean_value)
+      })
+      out <- out[ , keepcols, drop = FALSE]
+    } 
+    return(out)
   }
   unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
                     rowcoltypes = "all")
+  
 }
 
 #' Test whether this is the zero matrix

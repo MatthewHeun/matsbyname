@@ -87,7 +87,7 @@ context("Cleaning")
 test_that("bad margins in clean_byname work as expected", {
   m <- matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   expect_error(clean_byname(m, margin = 42), 
-               "margin = 42 in clean_byname. Must be 1 or 2.")
+               "margin = 42 in clean_byname\\(\\). Must be 1 or 2.")
   
 })
 
@@ -216,21 +216,29 @@ test_that("setting row names works as expected", {
   expect_equal(rownames(m5), c(NA_character_, NA_character_))
   # This also works for lists
   l1 <- list(m1,m1)
-  l2 <- setrownames_byname(l1, c("a", "b"))
+  l2 <- setrownames_byname(l1, rownames = list(c("a", "b")))
   expect_equal(list(rownames(l2[[1]]), rownames(l2[[2]])), list(c("a", "b"), c("a", "b")))
+  # Try without using a named argument (rownames) to see if they are inferred
+  l2 <- setrownames_byname(l1, list(c("a", "b")))
+  expect_equal(list(rownames(l2[[1]]), rownames(l2[[2]])), list(c("a", "b"), c("a", "b")))
+  # Try without a list. This should fail, because a is applied to the first matrix and b is applied to the second matrix.
+  # But each matrix needs 2 rownames.
+  expect_error(setrownames_byname(l1, c("a", "b")), 
+               "length of 'dimnames' \\[1\\] not equal to array extent")
+  
   # This also works with data frames
   DF1 <- data.frame(mcol = I(list()))
   DF1[[1,"mcol"]] <- m1
   DF1[[2,"mcol"]] <- m1
   DF2 <- DF1 %>% 
     dplyr::mutate(
-      mcol2 = setrownames_byname(mcol, c("r1", "r2"))
+      mcol2 = setrownames_byname(mcol, list(c("r1", "r2")))
     )
   expect_equal(rownames(DF2$mcol2[[1]]), c("r1", "r2"))
   expect_equal(rownames(DF2$mcol2[[2]]), c("r1", "r2"))
   DF3 <- DF1 %>% 
     dplyr::mutate(
-      mcol2 = setrownames_byname(mcol, c("r3", "r4"))
+      mcol2 = setrownames_byname(mcol, list(c("r3", "r4")))
     )
   expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r3", "r4"), c("r3", "r4")))
 })
@@ -373,7 +381,7 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), sep = " -> ", keep = "suffix")
+  actual <- rename_to_pref_suff_byname(list(m, m), margin = list(c(1, 2)), sep = " -> ", keep = "suffix")
   expect_equal(actual, list(expected, expected))
 
   # Check that row and column types are preserved
@@ -415,6 +423,50 @@ test_that("renaming with full prefix identifiers works as expected.", {
   actual <- rename_to_pref_suff_byname(m, keep = "prefix", prefix_open = "", prefix_close = " [")
   expect_equal(actual, expected)
   
+  expected2 <- m
+  dimnames(expected2) <- list(c("a", "c", "e"), c("g [h]", "i [j]"))
+  actual2 <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 1, prefix_open = "", prefix_close = " [")
+  expect_equal(actual2, expected2)
+  
+  expected3 <- m
+  dimnames(expected3) <- list(c("a [b]", "c [d]", "e [f]"), c("g", "i"))
+  actual3 <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 2, prefix_open = "", prefix_close = " [")
+  expect_equal(actual3, expected3)
+  
+  expected4 <- m
+  dimnames(expected4) <- list(c("b", "d", "f"), c("h", "j"))
+  actual4 <- rename_to_pref_suff_byname(m, keep = "suffix", suffix_open = " [", suffix_close = "]")
+  expect_equal(actual4, expected4)
+
+  expected5 <- m
+  dimnames(expected5) <- list(c("b", "d", "f"), c("g [h]", "i [j]"))
+  actual5 <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 1, suffix_open = " [", suffix_close = "]")
+  expect_equal(expected5, actual5)
+
+  expected6 <- m
+  dimnames(expected6) <- list(c("a [b]", "c [d]", "e [f]"), c("h", "j"))
+  actual6 <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, suffix_open = " [", suffix_close = "]")
+  expect_equal(expected6, actual6)
+  
+  # Try with a list
+  actual_list <- rename_to_pref_suff_byname(list(m, m), keep = "prefix", margin = 1, prefix_open = "", prefix_close = " [")
+  expect_equal(actual_list[[1]], expected2)
+  expect_equal(actual_list[[2]], expected2)
+  
+  # Try in a data frame
+  DF <- tibble::tibble(m = list(m, m, m, m, m, m), keep = c("prefix", "prefix", "prefix", "suffix", "suffix", "suffix"), 
+                       margin = list(c(1, 2), 1, 2, c(1, 2), 1, 2),
+                       prefix_open = "", prefix_close = " [", 
+                       suffix_open = " [", suffix_close = "]", 
+                       expected = list(expected, expected2, expected3, expected4, expected5, expected6))
+  
+  res <- DF %>% 
+    dplyr::mutate(
+      actual = rename_to_pref_suff_byname(m, keep = keep, margin = margin, 
+                                          prefix_open = prefix_open, prefix_close = prefix_close,
+                                          suffix_open = suffix_open, suffix_close = suffix_close)
+    )
+  expect_equal(res$actual, res$expected)
 })
 
 
@@ -464,7 +516,8 @@ test_that("setcoltype and coltype works as expected", {
   Ul6 <- setcoltype(list(U,U,U), coltype = list("Bogus"))
   expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
   # This one should fail, becuase length of coltype is neither 1 nor length(a), namely 3.
-  expect_error(setcoltype(list(U,U,U), coltype = list("Bogus", "Bogus")), "when .FUNdots is a list, each item \\(argument\\) must have length 1 or length\\(a\\)")
+  expect_error(setcoltype(list(U,U,U), coltype = list("Bogus", "Bogus")), 
+               "In prepare_.FUNdots\\(\\), when both 'a' and '.FUNdots' are lists, each top-level argument in .FUNdots must have length = 1 or length = length\\(a\\) \\(= 3\\). Found length = 2 for argument 'coltype', which is a list.")
   
   # Also works for data frames
   DF <- data.frame(U = I(list()))

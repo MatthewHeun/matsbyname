@@ -87,6 +87,8 @@ library("magrittr")
 complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, 
                                fillrow = NULL, fillcol = NULL, 
                                margin = c(1,2)){
+  margin <- prep_vector_arg(a, margin)
+  
   if (is.null(a) & is.null(mat)) {
     stop("Both a and mat are NULL in complete_rows_cols.")
   }
@@ -342,7 +344,9 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
 #' sort_rows_cols(a = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
 #' # Both columns and rows sorted, rows by the list, columns in natural order.
 #' sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
-sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
+sort_rows_cols <- function(a, margin = c(1,2), roworder = NA, colorder = NA){
+  margin <- prep_vector_arg(a, margin)
+  
   sort_func <- function(a, margin, roworder, colorder){
     # Gather rowtype and coltype so we can apply those later.
     rt <- rowtype(a)
@@ -451,6 +455,7 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
 #' # Also works with lists
 #' complete_and_sort(list(m1,m1), list(m2,m2))
 complete_and_sort <- function(a, b, fill = 0, margin = c(1,2), roworder = NA, colorder = NA){
+  margin <- prep_vector_arg(a, margin)
   if (missing(b)) {
     a <- complete_rows_cols(a, fill = fill, margin = margin)
     a <- sort_rows_cols(a, roworder = roworder, colorder = colorder)

@@ -295,14 +295,14 @@ test_that("identize_byname works as expected", {
   expect_equal(identize_byname(m, margin = c(2,1)), mI_expected)
   
   # This also works with lists
-  expect_equal(identize_byname(list(m, m)), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(list(m, m, m)), list(mI_expected, mI_expected, mI_expected))
   # This also works for data frames
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
-  expect_equal(identize_byname(DF$m), list(mI_expected, mI_expected))
-  expect_equal(identize_byname(DF$m, margin = c(1,2)), list(mI_expected, mI_expected))
-  expect_equal(identize_byname(DF$m, margin = c(2,1)), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(1, 2))), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(1,2))), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(2,1))), list(mI_expected, mI_expected))
   DF_expected <- data.frame(m = I(list()), mI = I(list()))
   DF_expected[[1,"m"]] <- m
   DF_expected[[2,"m"]] <- m
@@ -312,7 +312,7 @@ test_that("identize_byname works as expected", {
   # Because DF$mI is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$mI to NULL to get a match.
   attr(DF_expected$mI, which = "class") <- NULL
-  expect_equal(DF %>% dplyr::mutate(mI = identize_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(mI = identize_byname(m, margin = list(c(1, 2)))), DF_expected)
 })
 
 
@@ -357,7 +357,7 @@ test_that("vectorize_byname works as expected", {
   m3 <- 42
   expected3 <- m3
   dim(expected3) <- c(1, 1)
-  dimnames(expected3) <- list(c(NULL))
+  dimnames(expected3) <- NULL
   actual3 <- vectorize_byname(m3)
   expect_equal(actual3, expected3)
   # Try with a different separator
@@ -554,7 +554,7 @@ test_that("fractionze_byname works as expected", {
     dplyr::mutate(
       F_row = fractionize_byname(M, margin = 1),
       F_col = fractionize_byname(M, margin = 2),
-      F_tot = fractionize_byname(M, margin = c(2,1))
+      F_tot = fractionize_byname(M, margin = list(c(2,1)))
     )
   
   expect_equal(DF2$F_row, list(expectedM_rows, expectedM_rows))

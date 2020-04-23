@@ -217,14 +217,17 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #'
 #' Creates an identity matrix (\strong{I}) or vector (\strong{i}) of same size and with same names and
 #' same row and column types as \code{a}.
-#' If \code{margin = 1}, makes a column matrix filled with \code{1}s. 
-#' Row names and type are taken from row names and type of \code{a}.
-#' Column name and type are same as column type of \code{a}.
-#' If \code{margin = 2}, make a row matrix filled with \code{1}s.
-#' Column names and type are taken from column name and type of \code{a}.
-#' Row name and type are same as row type of \code{a}.
-#' If \code{c(1,2)} (the default), make an identity matrix with \code{1}s on the diagonal.
-#' Row and column names are sorted on output.
+#' 
+#' Behaviour for different values of `margin` are as follows:
+#' 
+#'   * If \code{margin = 1}, makes a column matrix filled with \code{1}s. 
+#'     Row names and type are taken from row names and type of \code{a}.
+#'     Column name and type are same as column type of \code{a}.
+#'   * If \code{margin = 2}, make a row matrix filled with \code{1}s.
+#'     Column names and type are taken from column name and type of \code{a}.
+#'     Row name and type are same as row type of \code{a}.
+#'   * If \code{list(c(1,2))} (the default), make an identity matrix with \code{1}s on the diagonal.
+#'     Row and column names are sorted on output.
 #'
 #' @param a the matrix whose names and dimensions are to be preserved in an identity matrix or vector
 #' @param margin determines whether an identity vector or matrix is returned. See details.
@@ -245,7 +248,9 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' identize_byname(N)
 #' # This also works with lists
 #' identize_byname(list(M, M))
-identize_byname <- function(a, margin = c(1,2)){
+identize_byname <- function(a, margin = c(1,2)) {
+  margin <- prep_vector_arg(a, margin)
+
   identize_func <- function(a, margin){
     if (inherits(a, "numeric") & length(a) == 1) {
       # Assume we have a single number here
@@ -272,13 +277,13 @@ identize_byname <- function(a, margin = c(1,2)){
       stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
     }
     
-    if (margin == 1)  {
+    if (1 %in% margin)  {
       # Return a column vector containing 1's
       return(matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1) %>% 
                setrownames_byname(rownames(a)) %>% setcolnames_byname(coltype(a)) %>% 
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     }
-    if (margin == 2) {
+    if (2 %in% margin) {
       # Return a row vector containing 1's
       return(matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a)) %>% 
                setrownames_byname(rowtype(a)) %>% setcolnames_byname(colnames(a)) %>% 
@@ -471,6 +476,8 @@ matricize_byname <- function(a, sep = " -> ") {
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(a, margin){
+  margin <- prep_vector_arg(a, margin)
+
   fractionize_func <- function(a, margin){
     if (!inherits(a, "matrix") && !inherits(a, "data.frame")) {
       # Assume we have a single number here
@@ -493,13 +500,13 @@ fractionize_byname <- function(a, margin){
       stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
     }
     
-    if (margin == 1) {
+    if (1 %in% margin) {
       # Divide each entry by its row sum
       # Do this with (a*i)_hat_inv * a
       # return(matrixproduct_byname(a %>% rowsums_byname %>% hatize_byname %>% invert_byname, a))
       return(sweep(a, margin, rowSums(a), `/`))
     }
-    if (margin == 2) {
+    if (2 %in% margin) {
       # Divide each entry by its column sum
       # Do this with a * (i^T * a)_hat_inv
       # return(matrixproduct_byname(a, colsums_byname(a) %>% hatize_byname %>% invert_byname))
@@ -1148,6 +1155,7 @@ any_byname <- function(a){
 #'
 #' @examples
 aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), pattern_type = "exact") {
+  margin <- prep_vector_arg(a, margin)
   
   agg_func <- function(a, aggregation_map, margin, pattern_type) {
     # If we get here, a should be a single matrix.
