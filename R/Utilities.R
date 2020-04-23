@@ -702,6 +702,8 @@ coltype <- function(a){
 #' \code{\link{make_pattern}} escapes regex strings using `Hmisc::escapeRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
+#' 
+#' Note that if all rows are removed from `a`, `NULL` is returned.
 #'
 #' @param a a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to retain.
@@ -753,12 +755,17 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
         stop("neither retain_pattern nor remove_pattern are different from default.")
       }
       # Remove
+      # Check to see if we will remove all rows from a
+      rows_remaining <- nrow(a) - length(remove_indices)
+      if (rows_remaining <= 0) {
+        return(NULL)
+      }
       return(a[-remove_indices , ] %>%
                # When only 1 row is selected, the natural result will be a numeric vector
                # We want to ensure that the return value is a matrix
                # with correct rowtype and coltype.
                # Thus, we need to take these additional steps.
-               matrix(nrow = nrow(a) - length(remove_indices),
+               matrix(nrow = rows_remaining,
                       dimnames = list(dimnames(a)[[1]][setdiff(1:nrow(a), remove_indices)],
                                       dimnames(a)[[2]])) %>%
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
@@ -806,6 +813,8 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' 
 #' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
 #' retain nothing and remove nothing.
+#' 
+#' Note that if all columns are removed from `a`, `NULL` is returned.
 #' 
 #' @param a a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.

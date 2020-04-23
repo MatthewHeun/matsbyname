@@ -127,39 +127,6 @@ prepare_.FUNdots <- function(a, .FUNdots) {
 
   assertthat::assert_that(is.list(.FUNdots), msg = ".FUNdots must be a list in prepare_.FUNdots")
   
-  # # Every item in .FUNdots that is not itself a list should be made into a list
-  # for (i in 1:length(.FUNdots)) {
-  #   if (is.list(.FUNdots[[i]])) {
-  #     len <- length(.FUNdots[[i]])
-  #     assertthat::assert_that(len == length(a) | len == 1, msg = "Each item in .FUNdots must have length 1 or length(a) in prepare_.FUNdots")
-  #     # Make sure it has length of a
-  #     if (len == 1) {
-  #       .FUNdots[[i]] <- make_list(.FUNdots[[i]][[1]], n = length(a), lenx = 1)
-  #     }
-  #   } else {
-  #     # This item is NOT a list.
-  #     # Turn it into a list of correct length
-  #     # Check its length now
-  #     len <- length(.FUNdots[[i]])
-  #     assertthat::assert_that(len == length(a) | len == 1, msg = "arguments must have length 1 or length(a) in prepare_.FUNdots")
-  #     if (len == length(a)) {
-  #       # Assume that the caller has provided a character vector or numeric vector that has everything needed.
-  #       .FUNdots[[i]] <- as.list(.FUNdots[[i]])
-  #     } else if (len == 1) {
-  #       # Assume that the caller wants this item replicated.
-  #       .FUNdots[[i]] <- make_list(.FUNdots[[i]], n = length(a), lenx = 1)
-  #     } 
-  #     # And set name of every item to the name of this entry in .FUNdots
-  #     # names(.FUNdots[[i]]) <- rep_len(names(.FUNdots)[[i]], length(a))
-  #   }
-  # }
-  # # At this point, .FUNdots should be a list that is essentially a column-wise description of a data frame.
-  # # Variables are columns, and rows are observations.
-  # # But we later need an inverted version of this list.
-  # # I.e., we need top level to be the observations and second level to be variables.
-  # # So invert this list.
-  # purrr::transpose(.FUNdots)
-  
   for (i in 1:length(.FUNdots)) {
     if (is.list(.FUNdots[[i]])) {
       if (is.list(a)) {

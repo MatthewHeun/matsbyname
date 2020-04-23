@@ -47,6 +47,8 @@ suitably escaped.
 
 Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^})
 retain nothing and remove nothing.
+
+Note that if all columns are removed from \code{a}, \code{NULL} is returned.
 }
 \examples{
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%

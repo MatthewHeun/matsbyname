@@ -44,6 +44,17 @@ test_that("an error is generated when no retain or remove patterns are default",
                "neither retain_pattern nor remove_pattern are different from default")
 })
 
+
+test_that("selecting rows and columns works even when everything is removed", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Try to remove all rows
+  expect_null(select_rows_byname(m, remove_pattern = "^r"))
+  # Try to remove all columns
+  expect_null(select_cols_byname(m, remove_pattern = "^c"))
+})
+
+
 test_that("selecting rows and columns works even when there is a NULL situation", {
   # Check the degenerate condition.
   expect_null(select_rows_byname(a = NULL))

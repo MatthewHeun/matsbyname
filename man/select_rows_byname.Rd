@@ -45,6 +45,8 @@ Given a list of row names, a pattern can be constructed easily using the \code{m
 \code{\link{make_pattern}} escapes regex strings using \code{Hmisc::escapeRegex()}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
+
+Note that if all rows are removed from \code{a}, \code{NULL} is returned.
 }
 \examples{
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
