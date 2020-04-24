@@ -382,7 +382,7 @@ sort_rows_cols <- function(a, margin = c(1,2), roworder = NA, colorder = NA){
     if (1 %in% margin & nrow(a) > 1) {
       # Sort rows
       if (length(unique(rownames(a))) != length(rownames(a))) {
-        dupes <- unique(duplicated(rownames(a)))
+        dupes <- rownames(a)[duplicated(rownames(a))] %>% unique()
         stop(paste0("Row names not unique. Duplicated row names are: ", paste0(dupes, collapse = ", ")))
       }
       # Trim items from roworder that do not appear as names in rownames(a)
@@ -391,7 +391,7 @@ sort_rows_cols <- function(a, margin = c(1,2), roworder = NA, colorder = NA){
     }
     if (2 %in% margin & ncol(a) > 1) {
       if (length(unique(colnames(a))) != length(colnames(a))) {
-        dupes <- unique(duplicated(colnames(a)))
+        dupes <- colnames(a)[duplicated(colnames(a))] %>% unique()
         stop(paste0("Column names not unique. Duplicated column names are: ", paste0(unique(dupes), collapse = ", ")))
       }
       # Trim items from colorder that do not appear as names in colnames(a)

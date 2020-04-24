@@ -1470,6 +1470,13 @@ test_that("aggregate works as expected in data frames", {
 })
 
 
+test_that("aggregate works when removing multiple rows", {
+  a <- matrix(1:4, nrow = 4, dimnames = list(c("a", "a", "b", "b"), "c1"))
+  e <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "b"), "c1"))
+  expect_equal(aggregate_byname(a), e)
+})
+
+
 test_that("aggregate_to_pref_suff_byname() works as expected", {
   m <- matrix((1:9), byrow = TRUE, nrow = 3, 
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))

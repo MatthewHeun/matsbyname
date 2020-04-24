@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utilities.R
 \name{prep_vector_arg}
 \alias{prep_vector_arg}
-\title{Prepare a margin argument}
+\title{Prepare a vector argument}
 \usage{
 prep_vector_arg(a, vector_arg)
 }
@@ -18,12 +18,15 @@ prep_vector_arg(a, vector_arg)
 This is a helper function for many \verb{*_byname} functions.
 }
 \details{
-It is erroneous to specify a vector argument, say, \code{margin = c(1, 2)} when applying
+It is potentially ambiguous to specify a vector argument, say, \code{margin = c(1, 2)} when applying
 the \verb{*_byname} functions to unary list of \code{a}.
 Rather, one should specify, say, \verb{margin = list(c(1, 2)}
 to avoid ambiguity.
-This function returns a list value for \code{vector_arg}
-if \code{a} is a list, \code{vector_arg} is not a list, and \code{vector_arg} has length greater than \code{1}.
+If \code{a} is a list,
+\code{vector_arg} is not a list and has length > 1 and length not equal to the length of a,,
+this function returns a list value for \code{vector_arg}.
+If \code{a} is not a list and \code{vector_arg} is a list,
+this function returns an un-recursive, unlisted version of \code{vecvtor_arg}.
 }
 \examples{
 m <- matrix(c(2, 2))

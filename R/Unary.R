@@ -1251,12 +1251,12 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
           } else {
             # out is not NULL, we we need to add the aggregated rows to the remaining rows.
             out <- out %>% 
-              rbind(aggregated_rows) %>% 
-              # Note: Can't sort on columns, because they are not guaranteed to be unique.
-              sort_rows_cols(margin = 1)
+              rbind(aggregated_rows) 
           }
         }
       }
+      # Note: Can't sort on columns, because they are not guaranteed to be unique.
+      out <- sort_rows_cols(out, margin = 1)
     }
     return(out)
   }

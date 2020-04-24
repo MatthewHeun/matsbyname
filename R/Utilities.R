@@ -159,16 +159,19 @@ organize_args <- function(a, b, match_type = "all", fill){
 }
 
 
-#' Prepare a margin argument
+#' Prepare a vector argument
 #' 
 #' This is a helper function for many `*_byname` functions.
 #' 
-#' It is erroneous to specify a vector argument, say, `margin = c(1, 2)` when applying
+#' It is potentially ambiguous to specify a vector argument, say, `margin = c(1, 2)` when applying
 #' the `*_byname` functions to unary list of `a`.
 #' Rather, one should specify, say, `margin = list(c(1, 2)`
 #' to avoid ambiguity.
-#' This function returns a list value for `vector_arg` 
-#' if `a` is a list, `vector_arg` is not a list, and `vector_arg` has length greater than `1`.
+#' If `a` is a list, 
+#' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,, 
+#' this function returns a list value for `vector_arg`.
+#' If `a` is not a list and `vector_arg` is a list, 
+#' this function returns an un-recursive, unlisted version of `vecvtor_arg`.
 #'
 #' @param a a matrix or list of matrices
 #' @param vector_arg the vector argument over which to apply a calculation
