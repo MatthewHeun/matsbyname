@@ -1154,6 +1154,37 @@ any_byname <- function(a){
 #' @export
 #'
 #' @examples
+#' library(dplyr)
+#' library(tibble)
+#' m <- matrix(1:9, byrow = TRUE, nrow = 3, 
+#'             dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' # Aggregate all rows by establishing an aggregation map (am)
+#' am <- list(new_row = c("r1", "r2"))
+#' aggregate_byname(m, aggregation_map = am, margin = 1)
+#' # aggregate_byname() also works with lists and in data frames
+#' m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1")))
+#' m2 <- matrix(1:4, byrow = TRUE, nrow = 2, 
+#'              dimnames = list(c("a", "a"), c("a", "a")))
+#' m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
+#'              dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1")))
+#' DF <- tibble(m = list(m1, m1, m1, m2, m2, m2, m3, m3, m3), 
+#'              margin = list(1, 2, c(1,2), 1, 2, c(1, 2), 1, 2, c(1, 2))) %>% 
+#'   mutate(
+#'     aggregated = aggregate_byname(m, margin = margin), 
+#'   )
+#' m1
+#' DF$aggregated[[1]] # by rows
+#' DF$aggregated[[2]] # by cols
+#' DF$aggregated[[3]] # by rows and cols
+#' m2
+#' DF$aggregated[[4]] # by rows
+#' DF$aggregated[[5]] # by cols
+#' DF$aggregated[[6]] # by rows and cols
+#' m3
+#' DF$aggregated[[7]] # by rows
+#' DF$aggregated[[8]] # by cols
+#' DF$aggregated[[9]] # by rows and cols
 aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), pattern_type = "exact") {
   margin <- prep_vector_arg(a, margin)
   
@@ -1232,4 +1263,53 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 
   unaryapply_byname(agg_func, a = a, 
                     .FUNdots = list(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type))
+}
+
+
+#' Aggregate to prefixes or suffixex
+#' 
+#' Row and column names are often constructed in the form 
+#' `prefix_open` `prefix` `prefix_close` `suffix_open` `suffix` `suffix_close`.
+#' This function performs aggregation by prefix or suffix.
+#' 
+#' This function is a convenience function, as it bundles sequential calls to two helper functions,
+#' `rename_to_pref_suff_byname()` and `aggregate_byname()`.
+#' All arguments are passed to the helper functions.
+#'
+#' @param a a matrix of list of matrices to be aggregated by prefix or suffix
+#' @param aggregation_map see `aggregate_byname()`
+#' @param sep see `rename_to_pref_suff_byname()`
+#' @param keep see `rename_to_pref_suff_byname()`
+#' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both
+#' @param prefix_open see `rename_to_pref_suff_byname()`
+#' @param prefix_close see `rename_to_pref_suff_byname()`
+#' @param suffix_open see `rename_to_pref_suff_byname()`
+#' @param suffix_close see `rename_to_pref_suff_byname()`
+#' @param pattern_type see `aggregate_byname()`
+#'
+#' @return an aggregated version of `a`
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix((1:9), byrow = TRUE, nrow = 3, 
+#'             dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
+#' m
+#' # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
+#' # Doing renaming like this (without also aggregating) is potentially dangerous, because  
+#' # some rows and some columns have same names.
+#' aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+#' # Aggregation by suffix reduces the number of rows and columns, 
+#' # because there are same suffixes in both rows and columns
+#' aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
+                                       sep = NULL, keep, margin = c(1, 2), 
+                                       prefix_open = "", prefix_close = sep, 
+                                       suffix_open = sep, suffix_close = "", 
+                                       pattern_type = "exact") {
+  a %>% 
+    rename_to_pref_suff_byname(sep = sep, keep = keep, margin = margin,
+                               prefix_open = prefix_open, prefix_close = prefix_close, 
+                               suffix_open = suffix_open, suffix_close = suffix_close) %>% 
+    aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
 }
