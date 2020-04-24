@@ -2,10 +2,11 @@
     * Now up to 827 tests, all passing.
     * Code coverage remains at 100%.
     
+* Better error messages for `sort_rows_cols()`. 
+  Now telling which row or column names are duplicates.
 * Added function `aggregate_pref_suff_byname()` that combines
   `rename_to_pref_suff_byname()` and 
   `aggregate_byname()`.
-  
 * Fixed a crashing bug that appeared when `aggregate_byname()` collapsed all rows or columns 
   into a single row or single column or both.
 * Added new function `aggregate_byname()` which
