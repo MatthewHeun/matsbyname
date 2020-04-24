@@ -79,5 +79,5 @@ For example \code{sum_byname()} applied to a single column gives the sum of all 
 naryapply_byname(FUN = sum_byname, 2, 3)
 naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2)
 # Routes to unaryapply_byname
-naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2)
+naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = list(2))
 }

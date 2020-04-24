@@ -37,12 +37,12 @@ m \%>\% setrownames_byname(NULL)
 m \%>\% setrownames_byname(c(NA, NA))
 2 \%>\% setrownames_byname("row")
 # This also works for lists
-setrownames_byname(list(m,m), c("a", "b"))
+setrownames_byname(list(m,m), list(c("a", "b")))
 DF <- data.frame(m = I(list()))
 DF[[1,"m"]] <- m
 DF[[2,"m"]] <- m
-setrownames_byname(DF$m, c("r1", "r2"))
-setrownames_byname(DF$m, c("c", "d"))
-DF <- DF \%>\% mutate(m = setrownames_byname(m, c("r1", "r2")))
+setrownames_byname(DF$m, list(c("r1", "r2")))
+setrownames_byname(DF$m, list(c("c", "d")))
+DF <- DF \%>\% mutate(m = setrownames_byname(m, list(c("r1", "r2"))))
 DF$m[[1]]
 }

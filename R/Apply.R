@@ -408,7 +408,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' naryapply_byname(FUN = sum_byname, 2, 3)
 #' naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2)
 #' # Routes to unaryapply_byname
-#' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2)
+#' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = list(2))
 naryapply_byname <- function(FUN, ..., 
                              .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
                              set_rowcoltypes = TRUE, .organize = TRUE){

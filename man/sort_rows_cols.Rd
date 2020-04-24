@@ -55,10 +55,10 @@ sort_rows_cols(n) # Sorts columns, because only one row.
 sort_rows_cols(list(m,m)) # Sorts rows and columns for both m's.
 # Sort rows only for first one, sort rows and columns for second one.  
 # Row order is applied to all m's.  Column order is natural.
-sort_rows_cols(a = list(m,m), margin = 1, roworder = c("r5", "r3", "r1"))
+sort_rows_cols(a = list(m,m), margin = 1, roworder = list(c("r5", "r3", "r1")))
 # Columns are sorted as default, because no colorder is given.
 # roworder is ignored. 
-sort_rows_cols(a = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
+sort_rows_cols(a = list(m,m), margin = 2, roworder = list(c("r5", "r3", "r1")))
 # Both columns and rows sorted, rows by the list, columns in natural order.
-sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
+sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = list(c("r5", "r3", "r1")))
 }
