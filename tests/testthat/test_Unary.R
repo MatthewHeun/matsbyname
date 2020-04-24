@@ -1384,6 +1384,20 @@ test_that("aggregate works when all rows collapse", {
 })
 
 
+test_that("aggregate works when aggregating all rows with an aggregation map", {
+  m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
+               dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3 <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
+               dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Aggregate all rows
+  am <- list(new_row = c("r1", "r2"))
+  a3 <- aggregate_byname(m3, aggregation_map = am, margin = 1)
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e3)
+})
+
+
 test_that("aggregate works as expected in data frames", {
   m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -1430,4 +1444,27 @@ test_that("aggregate works as expected in data frames", {
   expect_true(all(res$equal))
   
   # Now add an aggregation map
+  am <- list(new_row = c("r1", "r2"))
+  e4row <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
+                  dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e4col <- m3
+  e4both <- e4row
+  
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e4row)
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 2), e4col)
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = c(1, 2)), e4both)
+  
+  DF2 <- tibble::tibble(
+    m = list(m3, m3, m3), 
+    margin = list(1, 2, c(1, 2)), 
+    expected = list(e4row, e4col, e4both), 
+    am = make_list(am, 3, lenx = 1)
+  )
+  res2 <- DF2 %>% 
+    dplyr::mutate(
+      actual = aggregate_byname(m, margin = margin, aggregation_map = am), 
+      equal = all.equal(actual, expected)
+    )
+  expect_true(all(res2$equal))
 })
