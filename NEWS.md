@@ -1,3 +1,5 @@
+# matsbyname 0.4.14 (2020-05-01)
+
 * Added additional tests for bug fixes and new features.
     * Now up to 829 tests, all passing.
     * Test coverage remains at 100%.

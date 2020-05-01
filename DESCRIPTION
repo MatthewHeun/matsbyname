@@ -1,8 +1,8 @@
 Package: matsbyname
 Type: Package
 Title: An Implementation of Matrix Mathematics
-Version: 0.4.13
-Date: 2020-04-17
+Version: 0.4.14
+Date: 2020-05-01
 Authors@R: c(person("Matthew", "Heun", role = c("aut", "cre"),
                      comment = c(ORCID = "0000-0002-7438-214X"),
                      email = "matthew.heun@me.com"))
