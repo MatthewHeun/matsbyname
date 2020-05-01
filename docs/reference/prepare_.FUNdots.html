@@ -146,21 +146,71 @@
     </tr>
     <tr>
       <th>.FUNdots</th>
-      <td><p>additional arguments to be applied to <code>FUN</code> in one of the <code>*apply_byname</code> functions.</p></td>
+      <td><p>a list of additional arguments to be applied to <code>FUN</code> in one of the <code>*apply_byname</code> functions.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a reconfigured version of <code>.FUNdots</code>, ready for use by an <code>*apply_byname</code> function.</p>
+    <p>a reconfigured version of <code>.FUNdots</code>, ready for use by an <code>*apply_byname</code> function.</p><ul>
+<li><p>both a and the item of .FUNdots are lists</p><ul>
+<li><p>if the item of .FUNdots (a list itself) has length different from 1 or length(a), throw an error</p></li>
+<li><p>if the item of .FUNdots (a list itself) has length 1, replicate the single item to be a list of length = length(a)</p></li>
+<li><p>if the item of .FUNdots (a list itself) has length = length(a), use the item of .FUNdots as is</p></li>
+</ul></li>
+<li><p>a is NOT a list, but the item of .FUNdots IS a list</p><ul>
+<li><p>pass the argument along and hope for the best.  This situation is probably an error.
+If so, it will become apparent soon.</p></li>
+</ul></li>
+<li><p>a is a list but the item (argument) of .FUNdots is NOT a list
+This situation could be ambiguous.
+Let's say the list of <code>a</code> values has length 2, and an argument <code>margin = c(1, 2)</code>.
+Should <code>margin = 1</code> be applied to <code>a[[1]]</code> and <code>margin = 2</code> be applied to <code>a[[2]]</code>?
+Or should <code>margin = c(1, 2)</code> be applied to both <code>a[[1]]</code> and <code>a[[2]]</code>?
+This ambiguity should be handled by using the function <code><a href='prep_vector_arg.html'>prep_vector_arg()</a></code>
+within the function that calls <code><a href='unaryapply_byname.html'>unaryapply_byname()</a></code>.
+For an example, see <code><a href='identize_byname.html'>identize_byname()</a></code>.
+When the arguments are coming in from a data frame, there will be no ambiguity,
+but the information will not be coming <code>.FUNdots[[i]]</code> as a list.
+Optimizing for the data frame case,
+this function allows vectors of length equal to the length of the list <code>a</code>,
+interpreting such vectors as applying in sequence to each <code>a</code> in turn.
+So the algorithm is as follows:</p><ul>
+<li><p>if a non-NULL item of .FUNdots (which is not a list) has
+length other than 1 or length(a), throw an error.</p></li>
+<li><p>if a non-NULL item of .FUNdots (which is not a list) has length = 1,
+replicate that single item to be a list of length = length(a).</p></li>
+<li><p>if a non-NULL item of .FUNdots (which is not a list) has length = length(a),
+leave it as-is.</p></li>
+</ul></li>
+<li><p>neither a nor the item of .FUNdots is a list</p><ul>
+<li><p>a should have length = 1, but a single matrix reports its length as the number of elementes of the matrix.
+So, we can't check length in this situation.</p></li>
+<li><p>the item of .FUNdots is assumed to have length 1 and passed along</p></li>
+</ul></li>
+</ul>
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function looks at several cases.</p><ul>
-<li><p>If <code>.FUNdots</code> is not a <code>list</code>, this function attempts to recycle <code>.FUNdots</code> for use with <code>*apply_byname</code>.</p></li>
-<li><p>If <code>.FUNdots</code> is a <code>list</code> in which each top-level element (argument to <code>FUN</code>) has length 1,
-this function recycles each element of <code>.FUNdots</code> for use across <code>a</code>.</p></li>
-<li><p>If <code>.FUNdots</code> is a <code>list</code> in which each top-level element (argument to <code>FUN</code>) has same length as <code>a</code>,
-this function reorders <code>.FUNdots</code> for use across <code>a</code>.</p></li>
+    <p>We have four cases between a and any single item of .FUNdots:</p><ul>
+<li><p>both a and the item of .FUNdots are lists</p><ul>
+<li><p>if the item of .FUNdots (a list itself) has length different from 1 or length(a), throw an error</p></li>
+<li><p>if the item of .FUNdots (a list itself) has length 1, replicate the single item to be a list of length = length(a)</p></li>
+<li><p>if the item of .FUNdots (a list itself) has length = length(a), use the item of .FUNdots as is</p></li>
+</ul></li>
+<li><p>a is a list but the item (argument) of .FUNdots is NOT a list</p><ul>
+<li><p>if the item of .FUNdots (which is not a list) has length != 1, throw an error,
+because there is ambiguity how the item of .FUNdots should be treated.</p></li>
+<li><p>if the item of .FUNdots (which is not a list) has length = 1, replicate that single item to be a list of length = length(a)</p></li>
+</ul></li>
+<li><p>a is NOT a list, but the item of .FUNdots IS a list</p><ul>
+<li><p>pass the argument along and hope for the best.  This situation is probably an error.  If so, it will become apparent soon.</p></li>
+</ul></li>
+<li><p>neither a nor the item of .FUNdots is a list</p><ul>
+<li><p>a should have length = 1, but a single matrix reports its length as the number of elementes of the matrix.
+So, we can't check length in this situation.</p></li>
+<li><p>the item of .FUNdots is assumed to have length 1 and passed along</p></li>
+</ul></li>
 </ul>
 
 

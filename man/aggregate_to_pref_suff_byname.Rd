@@ -2,7 +2,7 @@
 % Please edit documentation in R/Unary.R
 \name{aggregate_to_pref_suff_byname}
 \alias{aggregate_to_pref_suff_byname}
-\title{Aggregate to prefixes or suffixex}
+\title{Aggregate to prefixes or suffixes}
 \usage{
 aggregate_to_pref_suff_byname(
   a,

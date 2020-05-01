@@ -1266,7 +1266,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 }
 
 
-#' Aggregate to prefixes or suffixex
+#' Aggregate to prefixes or suffixes
 #' 
 #' Row and column names are often constructed in the form 
 #' `prefix_open` `prefix` `prefix_close` `suffix_open` `suffix` `suffix_close`.

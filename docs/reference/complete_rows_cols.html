@@ -279,10 +279,10 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
 #&gt; c1  0  0  0  0  0
 #&gt; c2  0  0  0  0  0
 #&gt; </div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m1</span>,<span class='no'>m1</span>), <span class='kw'>mat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m2</span>,<span class='no'>m2</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt;    c1 c2 c3 c4
-#&gt; r1  1  4  0  0
-#&gt; r2  2  5  0  0
-#&gt; r3  3  6  0  0
+#&gt;    c1 c2
+#&gt; r1  1  4
+#&gt; r2  2  5
+#&gt; r3  3  6
 #&gt; 
 #&gt; [[2]]
 #&gt;    c1 c2 c3 c4
@@ -316,20 +316,18 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
                    <span class='kw'>mat</span> <span class='kw'>=</span> <span class='fu'><a href='make_list.html'>make_list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>,
                                           <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r10"</span>, <span class='st'>"r11"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c10"</span>, <span class='st'>"c11"</span>))),
                                    <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>lenx</span> <span class='kw'>=</span> <span class='fl'>1</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt;     c1 c2 c10 c11
-#&gt; r1   1  4   0   0
-#&gt; r2   2  5   0   0
-#&gt; r3   3  6   0   0
-#&gt; r10  0  0   0   0
-#&gt; r11  0  0   0   0
+#&gt;     c1 c2
+#&gt; r1   1  4
+#&gt; r2   2  5
+#&gt; r3   3  6
+#&gt; r10  0  0
+#&gt; r11  0  0
 #&gt; 
 #&gt; [[2]]
-#&gt;     c1 c2 c10 c11
-#&gt; r1   1  4   0   0
-#&gt; r2   2  5   0   0
-#&gt; r3   3  6   0   0
-#&gt; r10  0  0   0   0
-#&gt; r11  0  0   0   0
+#&gt;    c1 c2 c10 c11
+#&gt; r1  1  4   0   0
+#&gt; r2  2  5   0   0
+#&gt; r3  3  6   0   0
 #&gt; </div><div class='input'><span class='co'># fillrow or fillcol can be specified</span>
 <span class='no'>a</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>11</span>, <span class='fl'>12</span>, <span class='fl'>21</span>, <span class='fl'>22</span>), <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>,
             <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r1"</span>, <span class='st'>"r2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>)))

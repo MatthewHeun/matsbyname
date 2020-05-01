@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vectorize a matrix — vectorize_byname • matsbyname</title>
+<title>Rename matrix rows and columns by prefix and suffix — rename_to_pref_suff_byname • matsbyname</title>
 
 
 <!-- jquery -->
@@ -39,12 +39,10 @@
 
 
 
-<meta property="og:title" content="Vectorize a matrix — vectorize_byname" />
-<meta property="og:description" content="Converts a matrix into a column vector.
-Each element of the matrix becomes an entry in the column vector,
-with rows named as &quot;rowname sep colname&quot; of the matrix entry.
-If &quot;colname sep rowname&quot; is desired,
-transpose the matrix first with transpose_byname()." />
+<meta property="og:title" content="Rename matrix rows and columns by prefix and suffix — rename_to_pref_suff_byname" />
+<meta property="og:description" content="It can be convenient to rename rows or columns of matrices
+based on retaining prefixes or suffixes.
+This function provides that capability." />
 
 
 
@@ -130,70 +128,93 @@ transpose the matrix first with transpose_byname()." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Vectorize a matrix</h1>
-    <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Unary.R'><code>R/Unary.R</code></a></small>
-    <div class="hidden name"><code>vectorize_byname.Rd</code></div>
+    <h1>Rename matrix rows and columns by prefix and suffix</h1>
+    <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Utilities.R'><code>R/Utilities.R</code></a></small>
+    <div class="hidden name"><code>rename_to_pref_suff_byname.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Converts a matrix into a column vector.
-Each element of the matrix becomes an entry in the column vector,
-with rows named as "rowname <code>sep</code> colname" of the matrix entry.
-If "colname <code>sep</code> rowname" is desired,
-transpose the matrix first with <code><a href='transpose_byname.html'>transpose_byname()</a></code>.</p>
+    <p>It can be convenient to rename rows or columns of matrices
+based on retaining prefixes or suffixes.
+This function provides that capability.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vectorize_byname</span>(<span class='no'>a</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>)</pre>
+    <pre class="usage"><span class='fu'>rename_to_pref_suff_byname</span>(
+  <span class='no'>a</span>,
+  <span class='kw'>sep</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>keep</span>,
+  <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>),
+  <span class='kw'>prefix_open</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>prefix_close</span> <span class='kw'>=</span> <span class='no'>sep</span>,
+  <span class='kw'>suffix_open</span> <span class='kw'>=</span> <span class='no'>sep</span>,
+  <span class='kw'>suffix_close</span> <span class='kw'>=</span> <span class='st'>""</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>a</th>
-      <td><p>the matrix to be vectorized</p></td>
+      <td><p>a matrix or list of matrices whose rows or columns will be renamed</p></td>
     </tr>
     <tr>
       <th>sep</th>
-      <td><p>a string to separate row names and col names in the resulting column vector.
-Default is " -&gt; " (an arrow indicating from row to column).</p></td>
+      <td><p>a string that identifies the separator between prefix and suffix</p></td>
+    </tr>
+    <tr>
+      <th>keep</th>
+      <td><p>one of "prefix" or "suffix" indicating which part of the row or column name to retain</p></td>
+    </tr>
+    <tr>
+      <th>margin</th>
+      <td><p>one of <code>1</code>, <code>2</code>, or <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> where <code>1</code> indicates rows and <code>2</code> indicates columns</p></td>
+    </tr>
+    <tr>
+      <th>prefix_open</th>
+      <td><p>a string that identifies the beginning of a prefix. Default is <code>sep</code>.</p></td>
+    </tr>
+    <tr>
+      <th>prefix_close</th>
+      <td><p>a string that identifies the ending of a prefix. Default is "".</p></td>
+    </tr>
+    <tr>
+      <th>suffix_open</th>
+      <td><p>a string that identifies the beginning of a suffix. Default is "".</p></td>
+    </tr>
+    <tr>
+      <th>suffix_close</th>
+      <td><p>a string that identifies the beginning of a suffix. Default is <code>sep</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a column vector containing all elements of <code>a</code>, with row names assigned as "rowname <code>sep</code> colname".</p>
+    <p><code>a</code> with potentially different row or column names</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>rowtype</code> and <code>coltype</code> attributes are retained in the event that
-the resulting vector is re-matricized with the <code><a href='matricize_byname.html'>matricize_byname()</a></code> function later.</p>
+    <p>A prefix is defined by an opening string (<code>prefix_open</code>) and a closing string (<code>prefix_close</code>).
+A suffix is defined by an opening string (<code>suffix_open</code>) and a closing string (<code>suffix_close</code>).
+If <code>sep</code> is provided and none of <code>prefix_open</code>, <code>prefix_close</code>, <code>suffix_open</code>, and <code>suffix_close</code> are provided,
+default arguments become:
+* <code>prefix_open</code>: "",
+* <code>prefix_close</code>: <code>sep</code>,
+* <code>suffix_open</code>: <code>sep</code>, and
+* <code>suffix_close</code>: "".</p>
+<p>The <code>keep</code> parameter tells which portion to retain (prefixes or suffixes),</p>
+<p>If prefixes or suffixes are not found in a row and/or column name, that name is unchanged.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>5</span>,
-              <span class='fl'>4</span>, <span class='fl'>5</span>),
-            <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-            <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"p1"</span>, <span class='st'>"p2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i2"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Products"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Industries"</span>)
-<span class='no'>m</span></div><div class='output co'>#&gt;    i1 i2
-#&gt; p1  1  5
-#&gt; p2  4  5
-#&gt; attr(,"rowtype")
-#&gt; [1] "Products"
-#&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>vectorize_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>)</div><div class='output co'>#&gt;          [,1]
-#&gt; p1 -&gt; i1    1
-#&gt; p2 -&gt; i1    4
-#&gt; p1 -&gt; i2    5
-#&gt; p2 -&gt; i2    5
-#&gt; attr(,"rowtype")
-#&gt; [1] "Products"
-#&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='co'># If a single number is provided, the number will be returned as a 1x1 column vector </span>
-<span class='co'># with some additional attributes.</span>
-<span class='fu'>vectorize_byname</span>(<span class='fl'>42</span>)</div><div class='output co'>#&gt;      [,1]
-#&gt; [1,]   42</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/attributes.html'>attributes</a></span>(<span class='fu'>vectorize_byname</span>(<span class='fl'>42</span>))</div><div class='output co'>#&gt; $dim
-#&gt; [1] 1 1
-#&gt; </div><div class='input'><span class='co'># If called with `NULL`, get `NULL` back</span>
-<span class='fu'>vectorize_byname</span>(<span class='kw'>NULL</span>)</div><div class='output co'>#&gt; NULL</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>,
+              <span class='fl'>3</span>, <span class='fl'>4</span>,
+              <span class='fl'>5</span>, <span class='fl'>6</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+            <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"a -&gt; b"</span>, <span class='st'>"r2"</span>, <span class='st'>"r3"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"a -&gt; b"</span>, <span class='st'>"c -&gt; d"</span>)))
+<span class='fu'>rename_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"prefix"</span>)</div><div class='output co'>#&gt;    a c
+#&gt; a  1 2
+#&gt; r2 3 4
+#&gt; r3 5 6</div><div class='input'><span class='fu'>rename_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"suffix"</span>)</div><div class='output co'>#&gt;    b d
+#&gt; b  1 2
+#&gt; r2 3 4
+#&gt; r3 5 6</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
