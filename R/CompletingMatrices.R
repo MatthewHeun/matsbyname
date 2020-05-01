@@ -87,6 +87,8 @@ library("magrittr")
 complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, 
                                fillrow = NULL, fillcol = NULL, 
                                margin = c(1,2)){
+  margin <- prep_vector_arg(a, margin)
+  
   if (is.null(a) & is.null(mat)) {
     stop("Both a and mat are NULL in complete_rows_cols.")
   }
@@ -336,13 +338,15 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
 #' sort_rows_cols(list(m,m)) # Sorts rows and columns for both m's.
 #' # Sort rows only for first one, sort rows and columns for second one.  
 #' # Row order is applied to all m's.  Column order is natural.
-#' sort_rows_cols(a = list(m,m), margin = 1, roworder = c("r5", "r3", "r1"))
+#' sort_rows_cols(a = list(m,m), margin = 1, roworder = list(c("r5", "r3", "r1")))
 #' # Columns are sorted as default, because no colorder is given.
 #' # roworder is ignored. 
-#' sort_rows_cols(a = list(m,m), margin = 2, roworder = c("r5", "r3", "r1"))
+#' sort_rows_cols(a = list(m,m), margin = 2, roworder = list(c("r5", "r3", "r1")))
 #' # Both columns and rows sorted, rows by the list, columns in natural order.
-#' sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1"))
-sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
+#' sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = list(c("r5", "r3", "r1")))
+sort_rows_cols <- function(a, margin = c(1,2), roworder = NA, colorder = NA){
+  margin <- prep_vector_arg(a, margin)
+  
   sort_func <- function(a, margin, roworder, colorder){
     # Gather rowtype and coltype so we can apply those later.
     rt <- rowtype(a)
@@ -378,7 +382,8 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
     if (1 %in% margin & nrow(a) > 1) {
       # Sort rows
       if (length(unique(rownames(a))) != length(rownames(a))) {
-        stop("Row names not unique.")
+        dupes <- rownames(a)[duplicated(rownames(a))] %>% unique()
+        stop(paste0("Row names not unique. Duplicated row names are: ", paste0(dupes, collapse = ", ")))
       }
       # Trim items from roworder that do not appear as names in rownames(a)
       roworder <- roworder[roworder %in% rownames(a)]
@@ -386,7 +391,8 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
     }
     if (2 %in% margin & ncol(a) > 1) {
       if (length(unique(colnames(a))) != length(colnames(a))) {
-        stop("Column names not unique.")
+        dupes <- colnames(a)[duplicated(colnames(a))] %>% unique()
+        stop(paste0("Column names not unique. Duplicated column names are: ", paste0(unique(dupes), collapse = ", ")))
       }
       # Trim items from colorder that do not appear as names in colnames(a)
       colorder <- colorder[colorder %in% colnames(a)]
@@ -451,6 +457,7 @@ sort_rows_cols <- function(a, margin=c(1,2), roworder = NA, colorder = NA){
 #' # Also works with lists
 #' complete_and_sort(list(m1,m1), list(m2,m2))
 complete_and_sort <- function(a, b, fill = 0, margin = c(1,2), roworder = NA, colorder = NA){
+  margin <- prep_vector_arg(a, margin)
   if (missing(b)) {
     a <- complete_rows_cols(a, fill = fill, margin = margin)
     a <- sort_rows_cols(a, roworder = roworder, colorder = colorder)

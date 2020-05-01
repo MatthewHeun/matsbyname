@@ -20,6 +20,8 @@
 #' The length of the first dimension of `.FUNdots` is the number of arguments supplied to `FUN`.
 #' The length of the second dimension of `.FUNdots` must be equal to the length of `a`.
 #' 
+#' See `prepare_.FUNdots()` for more details on the `.FUNdots` argument.
+#' 
 #' Options for the `rowcoltypes` argument are:
 #'   * "all": transfer both row and column types of `a` directly to output.
 #'   * "transpose": rowtype of `a` becomes coltype of output; coltype of `a` becomes rowtype of output. "transpose" is helpful for `FUN`s that transpose `a` upon output.
@@ -53,8 +55,9 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
     return(NULL)
   }
 
+  lFUNdots <- prepare_.FUNdots(a, .FUNdots)
+
   if (is.list(a)) {
-    lFUNdots <- prepare_.FUNdots(a, .FUNdots)
     # Now that we have created lFUNdots appropriately, Map to get our result.
     return(Map(unaryapply_byname, list(FUN), a, lFUNdots, rowcoltypes = rowcoltypes) %>%
              # Preserve names of a (if present) in the outgoing list.
@@ -62,7 +65,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   }
   
   # a is not a list.
-  out <- do.call(FUN, c(list(a), .FUNdots))
+  out <- do.call(FUN, c(list(a), lFUNdots))
 
   if (rowcoltypes == "all") {
     out <- out %>%
@@ -91,87 +94,129 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #' 
 #' This is a helper function for the various `*apply_byname` functions.
 #' 
-#' 
-#' This function looks at several cases. 
-#' 
-#'   * If `.FUNdots` is not a `list`, this function attempts to recycle `.FUNdots` for use with `*apply_byname`.
-#'   * If `.FUNdots` is a `list` in which each top-level element (argument to `FUN`) has length 1, 
-#'     this function recycles each element of `.FUNdots` for use across `a`.
-#'   * If `.FUNdots` is a `list` in which each top-level element (argument to `FUN`) has same length as `a`, 
-#'     this function reorders `.FUNdots` for use across `a`.
+#' We have four cases between a and any single item of .FUNdots:
+#'   * both a and the item of .FUNdots are lists
+#'       - if the item of .FUNdots (a list itself) has length different from 1 or length(a), throw an error
+#'       - if the item of .FUNdots (a list itself) has length 1, replicate the single item to be a list of length = length(a)
+#'       - if the item of .FUNdots (a list itself) has length = length(a), use the item of .FUNdots as is
+#'   * a is a list but the item (argument) of .FUNdots is NOT a list
+#'       - if the item of .FUNdots (which is not a list) has length != 1, throw an error, 
+#'         because there is ambiguity how the item of .FUNdots should be treated.
+#'       - if the item of .FUNdots (which is not a list) has length = 1, replicate that single item to be a list of length = length(a)
+#'   * a is NOT a list, but the item of .FUNdots IS a list
+#'       - pass the argument along and hope for the best.  This situation is probably an error.  If so, it will become apparent soon.
+#'   * neither a nor the item of .FUNdots is a list
+#'       - a should have length = 1, but a single matrix reports its length as the number of elementes of the matrix.
+#'         So, we can't check length in this situation.
+#'       - the item of .FUNdots is assumed to have length 1 and passed along
 #' 
 #' @param a the main argument to an `*apply_byname` function.
-#' @param .FUNdots additional arguments to be applied to `FUN` in one of the `*apply_byname` functions.
+#' @param .FUNdots a list of additional arguments to be applied to `FUN` in one of the `*apply_byname` functions.
 #'
 #' @return a reconfigured version of `.FUNdots`, ready for use by an `*apply_byname` function.
 #'
 prepare_.FUNdots <- function(a, .FUNdots) {
-  lFUNdots <- NULL
-  if (is.list(.FUNdots)) {
-    # If .FUNdots has 2 levels of lists, the caller has specified arguments for each and every a in a's list.
-    if (is.list(.FUNdots[[1]])) {
-      # # Do a recursive descent into .FUNdots to look at lengths for each item
-      # arg_lengths <- rapply(.FUNdots, length, how = "list")
-      
-      # The "second level" of .FUNdots is (potentially) a list of values for each argument to FUN. 
-      # If the number of values for each argument to FUN matches the length of a, 
-      # it is likely that the caller wants each of these items applied to FUN via a mapping.
-      # Figure out the structure of the sizes of the arguments supplied in .FUNdots..
-      arg_lengths <- list()
-      for (i in 1:length(.FUNdots)) {
-        arg_lengths[[i]] <- length(.FUNdots[[i]])
-      }
-      
-      if (all(unlist(arg_lengths) == 1)) {
-        # Replicate the values to apply along a
-        for (i in 1:length(.FUNdots)) {
-          .FUNdots[[i]] <- rep.int(.FUNdots[[i]], times = length(a))
-          # Recalculate arg lengths so that we can drop into the next if statement.
-          arg_lengths[[i]] <- length(.FUNdots[[i]])
-        }
-      }
-      
-      if (all(unlist(arg_lengths) == length(a))) {
-        # Likely want to apply .FUNdots to each of the items in a.
-        # We need a slightly different structure for .FUNdots.
-        # To get this new structure, we'll first make a data frame
-        # in which each row is a set of arguments to FUN.
-        # Then, we'll pull each row individually
-        # for each call to FUN.
-        # To start, make an empty data frame with the same number of rows as we have elements in a.
-        DF <- data.frame()[1:length(a), ]
-        # Fill the data frame by columns with each argument in .FUNdots
-        for (i in 1:length(.FUNdots)) {
-          DF[[i]] <- I(.FUNdots[[i]])
-        }
-        # Set data frame columns to be same as the argument names in .FUNdots.
-        DF <- DF %>% magrittr::set_names(names(.FUNdots))
-        # Eliminate row names
-        rownames(DF) <- NULL
-        # Build a list of rows, each of which will be a set of arguments for one call to FUN.
-        lFUNdots <- list()
-        for (i in 1:nrow(DF)) {
-          lFUNdots[[i]] <- DF[i, ] %>% 
-            # Transfer names from the columns of DF to each set of arguments
-            magrittr::set_names(names(DF))
+  
+  if (is.null(.FUNdots)) {
+    if (is.list(a)) {
+      return(make_list(NULL, n = length(a), lenx = 1))
+    } else {
+      return(NULL)
+    }
+  }
+
+  assertthat::assert_that(is.list(.FUNdots), msg = ".FUNdots must be a list in prepare_.FUNdots")
+  
+  for (i in 1:length(.FUNdots)) {
+    if (is.list(.FUNdots[[i]])) {
+      if (is.list(a)) {
+        #'   * both a and the item of .FUNdots are lists
+        #'       - if the item of .FUNdots (a list itself) has length different from 1 or length(a), throw an error
+        #'       - if the item of .FUNdots (a list itself) has length 1, replicate the single item to be a list of length = length(a)
+        #'       - if the item of .FUNdots (a list itself) has length = length(a), use the item of .FUNdots as is
+        len <- length(.FUNdots[[i]])
+        assertthat::assert_that(len == length(a) | len == 1, 
+                                msg = paste0("In prepare_.FUNdots(), when both 'a' and '.FUNdots' are lists, ",
+                                             "each top-level argument in .FUNdots ",
+                                             "must have length = 1 or length = length(a) (= ",
+                                             length(a), "). ",
+                                             "Found length = ", 
+                                             length(.FUNdots[[i]]), " for argument '", 
+                                             names(.FUNdots)[[i]], 
+                                             "', which is a list."))
+        if (len == 1) {
+          # Replicate the item of .FUNdots to match length of a.
+          .FUNdots[[i]] <- make_list(.FUNdots[[i]][[1]], n = length(a), lenx = 1)
         }
       } else {
-        # a and .FUNdots are lists.
-        # But the structure of .FUNdots doesn't match expectations
-        # (i.e., length of each item in .FUNdots is neither 1 nor length(a))
-        # and .FUNdots does not consist of single-value arguments.
-        # So we don't quite know what to do here.
-        # Throw an error.
-        stop("when .FUNdots is a list, each item (argument) must have length 1 or length(a)")
+        #'   * a is NOT a list, but the item of .FUNdots IS a list
+        #'       - pass the argument along and hope for the best.  This situation is probably an error.  
+        #'         If so, it will become apparent soon.
+
+        # We do nothing here.
+      }
+    } else {
+      if (is.list(a)) {
+        #'   * a is a list but the item (argument) of .FUNdots is NOT a list
+        #'     This situation could be ambiguous. 
+        #'     Let's say the list of `a` values has length 2, and an argument `margin = c(1, 2)`. 
+        #'     Should `margin = 1` be applied to `a[[1]]` and `margin = 2` be applied to `a[[2]]`?
+        #'     Or should `margin = c(1, 2)` be applied to both `a[[1]]` and `a[[2]]`?
+        #'     This ambiguity should be handled by using the function `prep_vector_arg()`
+        #'     within the function that calls `unaryapply_byname()`.
+        #'     For an example, see `identize_byname()`.
+        #'     When the arguments are coming in from a data frame, there will be no ambiguity,
+        #'     but the information will not be coming `.FUNdots[[i]]` as a list.
+        #'     Optimizing for the data frame case, 
+        #'     this function allows vectors of length equal to the length of the list `a`, 
+        #'     interpreting such vectors as applying in sequence to each `a` in turn.
+        #'     So the algorithm is as follows:
+        #'       - if a non-NULL item of .FUNdots (which is not a list) has
+        #'         length other than 1 or length(a), throw an error. 
+        #'       - if a non-NULL item of .FUNdots (which is not a list) has length = 1, 
+        #'         replicate that single item to be a list of length = length(a).
+        #'       - if a non-NULL item of .FUNdots (which is not a list) has length = length(a),
+        #'         leave it as-is.
+        assertthat::assert_that(is.null(.FUNdots[[i]]) | length(.FUNdots[[i]]) == 1 | length(.FUNdots[[i]]) == length(a), 
+                                        msg = paste0("In prepare_.FUNdots(), when 'a' is a list, but an entry in '.FUNdots' is not a list, ",
+                                                     "every top-level argument in .FUNdots ",
+                                                     "must be NULL or have length = 1 or length = length(a) (= ",
+                                                     length(a), "). ",
+                                                     "Found length = ", 
+                                                     length(.FUNdots[[i]]), " for argument '", 
+                                                     names(.FUNdots)[[i]], 
+                                                     "', which is not a list. ", 
+                                                     "Consider converting argument '",
+                                                     names(.FUNdots)[[i]], 
+                                                     "' into a list of length 1."))
+        if (is.null(.FUNdots[[i]]) | length(.FUNdots[[i]]) == 1) {
+          .FUNdots[[i]] <- make_list(.FUNdots[[i]], n = length(a), lenx = 1)
+        }
+        # Otherwise, do nothing.
+
+      } else {
+        #'   * neither a nor the item of .FUNdots is a list
+        #'       - a should have length = 1, but a single matrix reports its length as the number of elementes of the matrix.
+        #'         So, we can't check length in this situation.
+        #'       - the item of .FUNdots is assumed to have length 1 and passed along
+        
+        # We do nothing here.
       }
     }
   }
-  if (is.null(lFUNdots)) {
-    # .FUNdots is not a list OR .FUNdots is a list but isn't a 2-level list.
-    # Replicate .FUNdots to equal length(a)
-    lFUNdots <- make_list(x = .FUNdots, n = length(a), lenx = 1)  
+  if (is.list(a)) {
+    # At this point, .FUNdots should be a list that is essentially a column-wise data frame
+    # with variables in columns (top level of the list) and observations (different values of the variables) in rows.
+    # But we later need an inverted version of this list for the purpose of mapping.
+    # I.e., we need top level of the list to be the observations to be mapped 
+    # and the second level of the list to be variables for each case.
+    # So invert this list using the transpose function.
+    return(purrr::transpose(.FUNdots))
   }
-  return(lFUNdots)
+  # There is no need to invert the .FUNdots list.
+  # In fact, inverting it adds another layer to the list, which we don't want. 
+  # So just return it.
+  return(.FUNdots)
 }
 
 
@@ -363,7 +408,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' naryapply_byname(FUN = sum_byname, 2, 3)
 #' naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2)
 #' # Routes to unaryapply_byname
-#' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2)
+#' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = list(2))
 naryapply_byname <- function(FUN, ..., 
                              .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
                              set_rowcoltypes = TRUE, .organize = TRUE){

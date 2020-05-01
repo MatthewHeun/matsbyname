@@ -17,14 +17,19 @@ An identity matrix or vector.
 \description{
 Creates an identity matrix (\strong{I}) or vector (\strong{i}) of same size and with same names and
 same row and column types as \code{a}.
-If \code{margin = 1}, makes a column matrix filled with \code{1}s.
+}
+\details{
+Behaviour for different values of \code{margin} are as follows:
+\itemize{
+\item If \code{margin = 1}, makes a column matrix filled with \code{1}s.
 Row names and type are taken from row names and type of \code{a}.
 Column name and type are same as column type of \code{a}.
-If \code{margin = 2}, make a row matrix filled with \code{1}s.
+\item If \code{margin = 2}, make a row matrix filled with \code{1}s.
 Column names and type are taken from column name and type of \code{a}.
 Row name and type are same as row type of \code{a}.
-If \code{c(1,2)} (the default), make an identity matrix with \code{1}s on the diagonal.
+\item If \code{list(c(1,2))} (the default), make an identity matrix with \code{1}s on the diagonal.
 Row and column names are sorted on output.
+}
 }
 \examples{
 M <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("c", 1:4))) \%>\%

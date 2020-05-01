@@ -20,6 +20,7 @@ Imports:
     magrittr, 
     purrr, 
     rlang,
+    stringi,
     tibble
 Suggests:
     covr,

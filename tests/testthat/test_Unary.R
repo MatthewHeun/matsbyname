@@ -295,14 +295,14 @@ test_that("identize_byname works as expected", {
   expect_equal(identize_byname(m, margin = c(2,1)), mI_expected)
   
   # This also works with lists
-  expect_equal(identize_byname(list(m, m)), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(list(m, m, m)), list(mI_expected, mI_expected, mI_expected))
   # This also works for data frames
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
-  expect_equal(identize_byname(DF$m), list(mI_expected, mI_expected))
-  expect_equal(identize_byname(DF$m, margin = c(1,2)), list(mI_expected, mI_expected))
-  expect_equal(identize_byname(DF$m, margin = c(2,1)), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(1, 2))), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(1,2))), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(2,1))), list(mI_expected, mI_expected))
   DF_expected <- data.frame(m = I(list()), mI = I(list()))
   DF_expected[[1,"m"]] <- m
   DF_expected[[2,"m"]] <- m
@@ -312,7 +312,7 @@ test_that("identize_byname works as expected", {
   # Because DF$mI is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$mI to NULL to get a match.
   attr(DF_expected$mI, which = "class") <- NULL
-  expect_equal(DF %>% dplyr::mutate(mI = identize_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(mI = identize_byname(m, margin = list(c(1, 2)))), DF_expected)
 })
 
 
@@ -357,7 +357,7 @@ test_that("vectorize_byname works as expected", {
   m3 <- 42
   expected3 <- m3
   dim(expected3) <- c(1, 1)
-  dimnames(expected3) <- list(c(NULL))
+  dimnames(expected3) <- NULL
   actual3 <- vectorize_byname(m3)
   expect_equal(actual3, expected3)
   # Try with a different separator
@@ -554,7 +554,7 @@ test_that("fractionze_byname works as expected", {
     dplyr::mutate(
       F_row = fractionize_byname(M, margin = 1),
       F_col = fractionize_byname(M, margin = 2),
-      F_tot = fractionize_byname(M, margin = c(2,1))
+      F_tot = fractionize_byname(M, margin = list(c(2,1)))
     )
   
   expect_equal(DF2$F_row, list(expectedM_rows, expectedM_rows))
@@ -1322,6 +1322,12 @@ test_that("aggregate works as expected for NULL aggregation_map", {
   # And, again should get the expected result, because we're asking for margin = c(1, 2), the default
   expect_equal(aggregate_byname(m), expected)
   
+  m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e1 <- m1
+  expect_equal(aggregate_byname(m1), e1)
+  expect_equal(aggregate_byname(list(m1)), list(e1))
+  
   # Now aggregate on both rows and columns when some names are duplicated in both rows and cols.
   # First, try to aggregate on rows.
   m2 <- matrix(1:9, nrow = 3, byrow = TRUE,
@@ -1345,10 +1351,156 @@ test_that("aggregate works as expected for NULL aggregation_map", {
 
 
 test_that("aggregate works as expected for lists", {
-  
+  m <- matrix(1:9, nrow = 3, byrow = TRUE,
+              dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
+  expected <- matrix(c(11, 13, 15,
+                       1, 2, 3), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
+  expect_equal(aggregate_byname(list(m, m, m)), list(expected, expected, expected))
+
+  expect_equal(aggregate_byname(list(m, m), margin = list(c(1, 2))), list(expected, expected))
+
+  # Also check that row and column type are preserved
+  m2 <- matrix(1:9, nrow = 3, byrow = TRUE, 
+               dimnames = list(c("b", "a", "a"), c("e", "d", "d"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected2 <- matrix(c(28, 11,
+                        5, 1), nrow = 2, byrow = TRUE, 
+                      dimnames = list(c("a", "b"), c("d", "e"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(aggregate_byname(m2), expected2)
+  expect_equal(aggregate_byname(list(m2)), list(expected2))
+  expect_equal(aggregate_byname(list(m2, m2), margin = list(c(1, 2))), list(expected2, expected2))
+  expect_equal(aggregate_byname(list(m2, m2, m2, m2)), list(expected2, expected2, expected2, expected2))
+})
+
+
+test_that("aggregate works when all rows collapse", {
+  m <- matrix(1:6, byrow = TRUE, nrow = 2, 
+              dimnames = list(c("a", "a"), c("c1", "c2", "c3")))
+  e <- matrix(c(5, 7, 9), byrow = TRUE, nrow = 1, 
+              dimnames = list(c("a"), c("c1", "c2", "c3")))
+  expect_equal(aggregate_byname(m), e)
+})
+
+
+test_that("aggregate works when aggregating all rows with an aggregation map", {
+  m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
+               dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3 <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
+               dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Aggregate all rows
+  am <- list(new_row = c("r1", "r2"))
+  a3 <- aggregate_byname(m3, aggregation_map = am, margin = 1)
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e3)
 })
 
 
 test_that("aggregate works as expected in data frames", {
+  m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e1 <- m1
+  m2 <- matrix(1:4, byrow = TRUE, nrow = 2, 
+               dimnames = list(c("a", "a"), c("a", "a")))
+  e2row <- matrix(c(4, 6), byrow = TRUE, nrow = 1, 
+                  dimnames = list(c("a"), c("a", "a")))
+  e2col <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "a"), c("a")))
+  e2both <- matrix(10, nrow = 1,
+               dimnames = list(c("a"), c("a")))
+  m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
+               dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3row <- matrix(c(11, 13, 15, 
+                    1, 2, 3), byrow = TRUE, nrow = 2,
+                  dimnames = list(c("r1", "r2"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3col <- matrix(c(5, 1, 
+                    11, 4, 
+                    17, 7), byrow = TRUE, nrow = 3, 
+                  dimnames = list(c("r2", "r1", "r1"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3both <- matrix(c(28, 11, 
+                     5, 1), byrow = TRUE, nrow = 2, 
+                   dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
   
+  expect_equal(aggregate_byname(m2, margin = 1), e2row)
+  expect_equal(aggregate_byname(m3, margin = 1), e3row)
+  expect_equal(aggregate_byname(m3, margin = c(1, 2)), e3both)
+  
+  DF <- tibble::tibble(m = list(m1, m1, m1, m2, m2, m2, m3, m3, m3), 
+                       margin = list(1, 2, c(1,2), 1, 2, c(1, 2), 1, 2, c(1, 2)), 
+                       expected = list(e1, e1, e1, e2row, e2col, e2both, e3row, e3col, e3both))
+  
+  expect_equal(aggregate_byname(DF$m, margin = DF$margin), DF$expected)
+  
+  res <- DF %>% 
+    dplyr::mutate(
+      actual = aggregate_byname(m, margin = margin), 
+      equal = all.equal(actual, expected)
+    )
+  expect_true(all(res$equal))
+  
+  # Now add an aggregation map
+  am <- list(new_row = c("r1", "r2"))
+  e4row <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
+                  dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e4col <- m3
+  e4both <- matrix(c(28, 11, 
+                     5, 1), byrow = TRUE, nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e4row)
+  # The next call should fail, because we're 
+  # trying to aggregate on columns, but
+  # we're using an aggregation_map designed for rows.
+  # The aggregation fails to produce any changes in the data frame.
+  # When the aggregate_byname function tries to sort the columns, 
+  # it encounters duplicated row names and fails.
+  expect_error(aggregate_byname(m3, aggregation_map = am, margin = 2), "Row names not unique. Duplicated row names are: c1")
+  # The next call should fail, because we're trying to aggregate on both rows and columns (margin = c(1, 2)), but
+  # the aggregation_map only aggregates by rows.
+  # When we try to sum across both margins, 
+  # there is a duplicate name ("c1"), which causes a problem.
+  expect_error(aggregate_byname(m3, aggregation_map = am, margin = c(1, 2)), "Row names not unique. Duplicated row names are: c1")
+  
+  # The next call should work.
+  expect_equal(aggregate_byname(m3), e4both)
+  
+  DF2 <- tibble::tibble(
+    m = list(m3, m3, m3), 
+    margin = list(1, 2, c(1, 2)), 
+    expected = list(e4row, e3col, e4both), 
+    am = list(am, NULL, NULL)
+  )
+  res2 <- DF2 %>% 
+    dplyr::mutate(
+      actual = aggregate_byname(m, margin = margin, aggregation_map = am), 
+      equal = all.equal(actual, expected)
+    )
+  expect_true(all(res2$equal))
+})
+
+
+test_that("aggregate works when removing multiple rows", {
+  a <- matrix(1:4, nrow = 4, dimnames = list(c("a", "a", "b", "b"), "c1"))
+  e <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "b"), "c1"))
+  expect_equal(aggregate_byname(a), e)
+})
+
+
+test_that("aggregate_to_pref_suff_byname() works as expected", {
+  m <- matrix((1:9), byrow = TRUE, nrow = 3, 
+              dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
+  # Aggregate by prefixes should do no more than rename, because all prefixes are different
+  expect_equal(aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix"), 
+               rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix"))
+  # Aggregate by suffixes should do a lot, because several prefixes are same.
+  expect_equal(aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix"), 
+               m %>% 
+                 rename_to_pref_suff_byname(sep = " -> ", keep = "suffix") %>% 
+                 aggregate_byname())
 })

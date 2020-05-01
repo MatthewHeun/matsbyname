@@ -39,6 +39,8 @@ to be applied along the list that is \code{a}.
 The length of the first dimension of \code{.FUNdots} is the number of arguments supplied to \code{FUN}.
 The length of the second dimension of \code{.FUNdots} must be equal to the length of \code{a}.
 
+See \code{prepare_.FUNdots()} for more details on the \code{.FUNdots} argument.
+
 Options for the \code{rowcoltypes} argument are:
 \itemize{
 \item "all": transfer both row and column types of \code{a} directly to output.

@@ -196,10 +196,18 @@ matrixproduct_byname <- function(...){
   # are completed and sorted, but rows and cols of the output of the 
   # %*% operation are not guaranteed to be sorted.
   # Thus, we sort_rows_cols() prior to returning.
-  naryapply_byname(`%*%`, ..., match_type = "matmult") %>% 
+  out <- naryapply_byname(`%*%`, ..., match_type = "matmult") %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
-    sort_rows_cols()
+    # We have to specify the margin explicity,
+    # because we cannot rely upon the default value for margin.
+    # If our matrices have length 2, 
+    # sort_rows_cols will assume that we want to sort
+    # margin = 1 for the first matrix and
+    # margin = 2 for the second matrix.
+    # By specifying list(c(1, 2)), we explicitly say that we want 
+    # both margins sorted for all matrices.
+    sort_rows_cols(margin = list(c(1, 2)))
 }
 
 #' Name-wise matrix Hadamard multiplication

@@ -45,3 +45,36 @@ they are escaped using \code{Hmisc::escapeRegex()} prior to use.
 Note that aggregation on one margin only will sort only the aggregated margin, because
 the other margin is not guaranteed to have unique names.
 }
+\examples{
+library(dplyr)
+library(tibble)
+m <- matrix(1:9, byrow = TRUE, nrow = 3, 
+            dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) \%>\% 
+  setrowtype("rows") \%>\% setcoltype("cols")
+# Aggregate all rows by establishing an aggregation map (am)
+am <- list(new_row = c("r1", "r2"))
+aggregate_byname(m, aggregation_map = am, margin = 1)
+# aggregate_byname() also works with lists and in data frames
+m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1")))
+m2 <- matrix(1:4, byrow = TRUE, nrow = 2, 
+             dimnames = list(c("a", "a"), c("a", "a")))
+m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
+             dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1")))
+DF <- tibble(m = list(m1, m1, m1, m2, m2, m2, m3, m3, m3), 
+             margin = list(1, 2, c(1,2), 1, 2, c(1, 2), 1, 2, c(1, 2))) \%>\% 
+  mutate(
+    aggregated = aggregate_byname(m, margin = margin), 
+  )
+m1
+DF$aggregated[[1]] # by rows
+DF$aggregated[[2]] # by cols
+DF$aggregated[[3]] # by rows and cols
+m2
+DF$aggregated[[4]] # by rows
+DF$aggregated[[5]] # by cols
+DF$aggregated[[6]] # by rows and cols
+m3
+DF$aggregated[[7]] # by rows
+DF$aggregated[[8]] # by cols
+DF$aggregated[[9]] # by rows and cols
+}
