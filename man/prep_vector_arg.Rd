@@ -18,7 +18,7 @@ prep_vector_arg(a, vector_arg)
 This is a helper function for many \verb{*_byname} functions.
 }
 \details{
-It is potentially ambiguous to specify a vector argument, say, \code{margin = c(1, 2)} when applying
+It is potentially ambiguous to specify a vector or matrix argument, say, \code{margin = c(1, 2)} when applying
 the \verb{*_byname} functions to unary list of \code{a}.
 Rather, one should specify, say, \verb{margin = list(c(1, 2)}
 to avoid ambiguity.

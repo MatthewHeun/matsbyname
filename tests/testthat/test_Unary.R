@@ -1449,17 +1449,32 @@ test_that("aggregate works as expected in data frames", {
                   dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
   e4col <- m3
-  e4both <- e4row
+  e4both <- matrix(c(28, 11, 
+                     5, 1), byrow = TRUE, nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
   
   expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e4row)
-  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 2), e4col)
-  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = c(1, 2)), e4both)
+  # The next call should fail, because we're 
+  # trying to aggregate on columns, but
+  # we're using an aggregation_map designed for rows.
+  # The aggregation fails to produce any changes in the data frame.
+  # When the aggregate_byname function tries to sort the columns, 
+  # it encounters duplicated row names and fails.
+  expect_error(aggregate_byname(m3, aggregation_map = am, margin = 2), "Row names not unique. Duplicated row names are: c1")
+  # The next call should fail, because we're trying to aggregate on both rows and columns (margin = c(1, 2)), but
+  # the aggregation_map only aggregates by rows.
+  # When we try to sum across both margins, 
+  # there is a duplicate name ("c1"), which causes a problem.
+  expect_error(aggregate_byname(m3, aggregation_map = am, margin = c(1, 2)), "Row names not unique. Duplicated row names are: c1")
+  
+  # The next call should work.
+  expect_equal(aggregate_byname(m3), e4both)
   
   DF2 <- tibble::tibble(
     m = list(m3, m3, m3), 
     margin = list(1, 2, c(1, 2)), 
-    expected = list(e4row, e4col, e4both), 
-    am = make_list(am, 3, lenx = 1)
+    expected = list(e4row, e3col, e4both), 
+    am = list(am, NULL, NULL)
   )
   res2 <- DF2 %>% 
     dplyr::mutate(

@@ -1,7 +1,7 @@
 * Added additional tests for bug fixes and new features.
     * Now up to 827 tests, all passing.
-    * Code coverage remains at 100%.
-    
+    * Test coverage remains at 100%.
+* Enhanced `prep_vector_arg()` to duplicate matrices when present as the vector_arg.
 * Better error messages for `sort_rows_cols()`. 
   Now telling which row or column names are duplicates.
 * Added function `aggregate_pref_suff_byname()` that combines

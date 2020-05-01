@@ -163,7 +163,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' 
 #' This is a helper function for many `*_byname` functions.
 #' 
-#' It is potentially ambiguous to specify a vector argument, say, `margin = c(1, 2)` when applying
+#' It is potentially ambiguous to specify a vector or matrix argument, say, `margin = c(1, 2)` when applying
 #' the `*_byname` functions to unary list of `a`.
 #' Rather, one should specify, say, `margin = list(c(1, 2)`
 #' to avoid ambiguity.
@@ -171,7 +171,9 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,, 
 #' this function returns a list value for `vector_arg`.
 #' If `a` is not a list and `vector_arg` is a list, 
-#' this function returns an un-recursive, unlisted version of `vecvtor_arg`.
+#' this function returns an un-recursive, unlisted version of `vector_arg`.
+#' 
+#' Note that if `vector_arg` is a single matrix, it is automatically enclosed by a list when `a` is a list.
 #'
 #' @param a a matrix or list of matrices
 #' @param vector_arg the vector argument over which to apply a calculation
@@ -182,14 +184,26 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' m <- matrix(c(2, 2))
 #' matsbyname:::prep_vector_arg(list(m, m), vector_arg = c(1,2))
 prep_vector_arg <- function(a, vector_arg) {
-  if (is.list(a) & !is.list(vector_arg) & length(vector_arg) > 1 & length(vector_arg) != length(a)) {
-    # Need to make this a list for it to work correctly for replication purposes when a is a list.
-    vector_arg <- list(vector_arg)
+  if (is.list(a)) {
+    if (is.matrix(vector_arg)) {
+      # Supplied a single matrix argument.
+      # Convert to a list.
+      vector_arg <- list(vector_arg)
+    }
+    if (!is.list(vector_arg) & length(vector_arg) > 1 & length(vector_arg) != length(a)) {
+      # We probably want to make vector_arg into a list.
+      # (I could have bundled this condition with is.matrix above, but
+      # the code is easier to read this way.)
+      vector_arg <- list(vector_arg)
+    }
+  } else {
+    # a is not a list
+    if (is.list(vector_arg)) {
+      # We can unlist this vector_arg to use it directly.
+      vector_arg <- unlist(vector_arg, recursive = FALSE)
+    }
   }
-  if (!is.list(a) & is.list(vector_arg)) {
-    # We can unlist this vector_arg to use it directly.
-    vector_arg <- unlist(vector_arg, recursive = FALSE)
-  }
+
   vector_arg
 }
 
