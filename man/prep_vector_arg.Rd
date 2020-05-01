@@ -26,7 +26,9 @@ If \code{a} is a list,
 \code{vector_arg} is not a list and has length > 1 and length not equal to the length of a,,
 this function returns a list value for \code{vector_arg}.
 If \code{a} is not a list and \code{vector_arg} is a list,
-this function returns an un-recursive, unlisted version of \code{vecvtor_arg}.
+this function returns an un-recursive, unlisted version of \code{vector_arg}.
+
+Note that if \code{vector_arg} is a single matrix, it is automatically enclosed by a list when \code{a} is a list.
 }
 \examples{
 m <- matrix(c(2, 2))

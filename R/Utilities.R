@@ -179,21 +179,16 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' @param vector_arg the vector argument over which to apply a calculation
 #'
 #' @return `vector_arg`, possibly modified when `a` is a list 
+#' 
+#' @export
 #'
 #' @examples
 #' m <- matrix(c(2, 2))
 #' matsbyname:::prep_vector_arg(list(m, m), vector_arg = c(1,2))
 prep_vector_arg <- function(a, vector_arg) {
   if (is.list(a)) {
-    if (is.matrix(vector_arg)) {
-      # Supplied a single matrix argument.
-      # Convert to a list.
-      vector_arg <- list(vector_arg)
-    }
-    if (!is.list(vector_arg) & length(vector_arg) > 1 & length(vector_arg) != length(a)) {
+    if (is.matrix(vector_arg) | (!is.list(vector_arg) & length(vector_arg) > 1 & length(vector_arg) != length(a))) {
       # We probably want to make vector_arg into a list.
-      # (I could have bundled this condition with is.matrix above, but
-      # the code is easier to read this way.)
       vector_arg <- list(vector_arg)
     }
   } else {

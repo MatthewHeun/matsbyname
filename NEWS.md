@@ -1,5 +1,5 @@
 * Added additional tests for bug fixes and new features.
-    * Now up to 827 tests, all passing.
+    * Now up to 829 tests, all passing.
     * Test coverage remains at 100%.
 * Enhanced `prep_vector_arg()` to duplicate matrices when present as the vector_arg.
 * Better error messages for `sort_rows_cols()`. 
