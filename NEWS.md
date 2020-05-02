@@ -1,3 +1,32 @@
+# matsbyname 0.4.14 (2020-05-01)
+
+* Added additional tests for bug fixes and new features.
+    * Now up to 829 tests, all passing.
+    * Test coverage remains at 100%.
+* Enhanced `prep_vector_arg()` to duplicate matrices when present as the vector_arg.
+* Better error messages for `sort_rows_cols()`. 
+  Now telling which row or column names are duplicates.
+* Added function `aggregate_pref_suff_byname()` that combines
+  `rename_to_pref_suff_byname()` and 
+  `aggregate_byname()`.
+* Fixed a crashing bug that appeared when `aggregate_byname()` collapsed all rows or columns 
+  into a single row or single column or both.
+* Added new function `aggregate_byname()` which
+  aggregates rows, columns, or both, according to an `aggregation_map`.
+  I wanted to add this function for a long time, and I finally found a reason, 
+  namely the need to aggregate by prefixes or suffixes in the `IEATools` package.
+  Furthermore, the `aggregation_map` idea seems to be solid.
+  Note that `aggregation_map = NULL` (the default) aggregates
+  rows with same names and columns with same names.
+* Added function `rename_rowcol_to_pref_suff_byname()` which 
+  renames rows or columns to prefixes or suffixes in row and column names.
+* Fixed a bug in `clean_byname()` which caused 
+  a `NULL` response when unnamed rows or columns were present.
+* Now using new `prepare_.FUNdots()` function in all `*apply_byname()` functions.
+* Refactored new code for `unaryapply_byname()` into function `prepare_.FUNdots()`, 
+  so it can be used in other `*apply_byname()` functions.
+
+
 # matsbyname 0.4.13 (2020-04-17)
 
 * Added additional tests for bug fixes.
@@ -210,57 +239,44 @@
 
 # matsbyname 0.2.6 (2018-03-16)
 
-## New multicore functionality available in most `*_byname` functions.
+* New multicore functionality available in most `*_byname` functions.
+    - New functions `set_mc_cores` and `get_mc_cores` to set and get package-wide `mc.cores` variable.
+      Default is `1`, so all functions work as previously unless `mc.cores` is more than `1`.
+    - Alternatively, specify the `mc.cores` argument of any function 
+      to specify the number of cores to be used for an individual calculation.
+      Default is `get_mc_cores()`.
+      A useful approach is to `set_mc_cores(detectCores(logical = FALSE))`.
 
-* New functions `set_mc_cores` and `get_mc_cores` to set and get package-wide `mc.cores` variable.
-     Default is `1`, so all functions work as previously unless `mc.cores` is more than `1`.
-     
-* Alternatively, specify the `mc.cores` argument of any function 
-     to specify the number of cores to be used for an individual calculation.
-     Default is `get_mc_cores()`.
-     A useful approach is to `set_mc_cores(detectCores(logical = FALSE))`.
-     
-## Suggested usage 
 
-* `sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4)` to send each sum to a different core.
-
-* `set_mc_cores(4L); sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4); set_mc_cores(1L)` 
+* Suggested usage 
+    - `sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4)` to send each sum to a different core.
+    - `set_mc_cores(4L); sum_byname(list(1,2,3,4), list(1,2,3,4), mc.cores = 4); set_mc_cores(1L)` 
      to do the same thing and set the package-wide value back to `1`.
 
 
 # matsbyname 0.2.5 (2018-03-13)
 
-## New `*apply_byname` functions enable API improvements
+* New `*apply_byname` functions enable API improvements
+    - These are API changes, but they shouldn't affect any existing code,
+      because calls to binary functions will "just work."
+    - `naryapply_byname`: enables `...` arguments
+    - `naryapplylogical_byname`: enables logical functions
+    - Add `...` arguments for functions that deserve them.
 
-* These are API changes, but they shouldn't affect any existing code,
-  because calls to binary functions will "just work."
-  
-* `naryapply_byname`: enables `...` arguments
 
-* `naryapplylogical_byname`: enables logical functions
+* New functions with `...` arguments including
+    - `sum_byname`
+    - `matrixproduct_byname`
+    - `elementproduct_byname`
+    - `mean_byname`
+    - `geometricmean_byname`
+    - `equal_byname`
+    - `samestructure_byname`
 
-* Add `...` arguments for functions that deserve them.
 
-## New functions with `...` arguments including
-
-* `sum_byname`
-
-* `matrixproduct_byname`
-
-* `elementproduct_byname`
-
-* `mean_byname`
-
-* `geometricmean_byname`
-
-* `equal_byname`
-
-* `samestructure_byname`
-
-## New `and_byname(...)` function that provides logical and "by name."
-
-* The infrastructure is in place to 
-  add other logical functions in the future: `or_byname`, `xor_byname`, and `not_byname`.
+* New `and_byname(...)` function that provides logical and "by name."
+    - The infrastructure is in place to 
+      add other logical functions in the future: `or_byname`, `xor_byname`, and `not_byname`.
 
 
 # matsbyname 0.2.4 (2018-03-08)

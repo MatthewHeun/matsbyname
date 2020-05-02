@@ -158,6 +158,51 @@ organize_args <- function(a, b, match_type = "all", fill){
   return(list(a = outa, b = outb))
 }
 
+
+#' Prepare a vector argument
+#' 
+#' This is a helper function for many `*_byname` functions.
+#' 
+#' It is potentially ambiguous to specify a vector or matrix argument, say, `margin = c(1, 2)` when applying
+#' the `*_byname` functions to unary list of `a`.
+#' Rather, one should specify, say, `margin = list(c(1, 2)`
+#' to avoid ambiguity.
+#' If `a` is a list, 
+#' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,, 
+#' this function returns a list value for `vector_arg`.
+#' If `a` is not a list and `vector_arg` is a list, 
+#' this function returns an un-recursive, unlisted version of `vector_arg`.
+#' 
+#' Note that if `vector_arg` is a single matrix, it is automatically enclosed by a list when `a` is a list.
+#'
+#' @param a a matrix or list of matrices
+#' @param vector_arg the vector argument over which to apply a calculation
+#'
+#' @return `vector_arg`, possibly modified when `a` is a list 
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(2, 2))
+#' matsbyname:::prep_vector_arg(list(m, m), vector_arg = c(1,2))
+prep_vector_arg <- function(a, vector_arg) {
+  if (is.list(a)) {
+    if (is.matrix(vector_arg) | (!is.list(vector_arg) & length(vector_arg) > 1 & length(vector_arg) != length(a))) {
+      # We probably want to make vector_arg into a list.
+      vector_arg <- list(vector_arg)
+    }
+  } else {
+    # a is not a list
+    if (is.list(vector_arg)) {
+      # We can unlist this vector_arg to use it directly.
+      vector_arg <- unlist(vector_arg, recursive = FALSE)
+    }
+  }
+
+  vector_arg
+}
+
+
 #' Create regex patterns for row and column selection by name
 #'
 #' This function is intended for use with the \code{select_rows_byname}
@@ -181,7 +226,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' }
 #'
 #' @param row_col_names a vector of row and column names
-#' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}.
+#' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".
 #'
 #' @return an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
 #' 
@@ -228,9 +273,11 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
 #' list_of_rows_or_cols(m, margin = 1)
 #' list_of_rows_or_cols(m, margin = 2)
 list_of_rows_or_cols <- function(a, margin){
+  margin <- prep_vector_arg(a, margin)
+  
   lrc_func <- function(a, margin){
     stopifnot(length(margin) == 1)
-    stopifnot(margin %in% c(1,2))
+    stopifnot(margin == 1 | margin == 2)
     stopifnot(inherits(a, "matrix"))
     # Strategy: perform all operations with margin to be split into a list in columns.
     if (margin == 1) {
@@ -330,15 +377,16 @@ getcolnames_byname <- function(a){
 #' m %>% setrownames_byname(c(NA, NA))
 #' 2 %>% setrownames_byname("row")
 #' # This also works for lists
-#' setrownames_byname(list(m,m), c("a", "b"))
+#' setrownames_byname(list(m,m), list(c("a", "b")))
 #' DF <- data.frame(m = I(list()))
 #' DF[[1,"m"]] <- m
 #' DF[[2,"m"]] <- m
-#' setrownames_byname(DF$m, c("r1", "r2"))
-#' setrownames_byname(DF$m, c("c", "d"))
-#' DF <- DF %>% mutate(m = setrownames_byname(m, c("r1", "r2")))
+#' setrownames_byname(DF$m, list(c("r1", "r2")))
+#' setrownames_byname(DF$m, list(c("c", "d")))
+#' DF <- DF %>% mutate(m = setrownames_byname(m, list(c("r1", "r2"))))
 #' DF$m[[1]]
 setrownames_byname <- function(a, rownames){
+  rownames <- prep_vector_arg(a, rownames)
   if (is.null(a)) {
     return(NULL)
   }
@@ -391,11 +439,124 @@ setcolnames_byname <- function(a, colnames){
   if (is.null(a)) {
     return(NULL)
   }
+  if (is.list(a) & !is.list(colnames)) {
+    colnames <- list(colnames)
+  }
   a %>% 
     transpose_byname() %>% 
     setrownames_byname(rownames = colnames) %>% 
     transpose_byname()
 }
+
+
+#' Rename matrix rows and columns by prefix and suffix
+#' 
+#' It can be convenient to rename rows or columns of matrices 
+#' based on retaining prefixes or suffixes.
+#' This function provides that capability.
+#' 
+#' A prefix is defined by an opening string (`prefix_open`) and a closing string (`prefix_close`).
+#' A suffix is defined by an opening string (`suffix_open`) and a closing string (`suffix_close`).
+#' If `sep` is provided and none of `prefix_open`, `prefix_close`, `suffix_open`, and `suffix_close` are provided,
+#' default arguments become:
+#'     * `prefix_open`: "",
+#'     * `prefix_close`: `sep`, 
+#'     * `suffix_open`: `sep`, and
+#'     * `suffix_close`: "".
+#'     
+#' The `keep` parameter tells which portion to retain (prefixes or suffixes), 
+#' 
+#' If prefixes or suffixes are not found in a row and/or column name, that name is unchanged.
+#' 
+#' @param a a matrix or list of matrices whose rows or columns will be renamed
+#' @param sep a string that identifies the separator between prefix and suffix
+#' @param keep one of "prefix" or "suffix" indicating which part of the row or column name to retain
+#' @param margin one of `1`, `2`, or `c(1, 2)` where `1` indicates rows and `2` indicates columns
+#' @param prefix_open a string that identifies the beginning of a prefix. Default is `sep`.
+#' @param prefix_close a string that identifies the ending of a prefix. Default is "".
+#' @param suffix_open a string that identifies the beginning of a suffix. Default is "".
+#' @param suffix_close a string that identifies the beginning of a suffix. Default is `sep`.
+#'
+#' @return `a` with potentially different row or column names
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1, 2, 
+#'               3, 4, 
+#'               5, 6), nrow = 3, byrow = TRUE, 
+#'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+#' rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+#' rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+rename_to_pref_suff_byname <- function(a, sep = NULL, keep, margin = c(1, 2), 
+                                       prefix_open = "", prefix_close = sep, 
+                                       suffix_open = sep, suffix_close = "") {
+  
+  margin <- prep_vector_arg(a, margin)
+
+  rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), 
+                          prefix_open, prefix_close,
+                          suffix_open, suffix_close) {
+    # At this point, a should be a single matrix.
+    keep <- match.arg(keep)
+    assertthat::assert_that(all(margin %in% c(1, 2)))
+    
+    if (2 %in% margin) {
+      # Want to rename columns.
+      # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
+      a <- t(a) %>% rename_func(keep = keep, margin = 1, 
+                                prefix_open = prefix_open,
+                                prefix_close = prefix_close,
+                                suffix_open = suffix_open,
+                                suffix_close = suffix_close) %>% t()
+    }
+    
+    if (1 %in% margin) {
+      # Get current row names
+      new_rnames <- rownames(a)
+      
+      if (keep == "suffix") {
+        # If we want to keep suffixes, we can simply 
+        # (a) reverse the string and the suffix_open/suffix_close arguments
+        # (b) act as though we want to keep prefixes
+        # (c) reverse the results
+        new_rnames <- stringi::stri_reverse(new_rnames)
+        prefix_open <- stringi::stri_reverse(suffix_close)
+        prefix_close <- stringi::stri_reverse(suffix_open)
+      }
+
+      # Strip off prefix_open from the start of the names
+      new_rnames <- sub(pattern = paste0("^", prefix_open), replacement = "", x = new_rnames)
+      # Strip off rightmost prefix_close and everything to the right.
+      # Do this by reversing both the string and prefix_close and 
+      # eliminating everything up to the first reversed prefix_close.
+      # Then, reverse the string again.
+      # See 
+      # https://stackoverflow.com/questions/7124778/how-to-match-anything-up-until-this-sequence-of-characters-in-a-regular-expres 
+      # for details about the regex pattern.
+      new_rnames <- sub(pattern = paste0("^(.*?)", Hmisc::escapeRegex(stringi::stri_reverse(prefix_close))),
+                        replacement = "", 
+                        x = stringi::stri_reverse(new_rnames)) %>% 
+        stringi::stri_reverse()
+
+      if (keep == "suffix") {
+        # Here is the (c) reverse the results part
+        new_rnames <- stringi::stri_reverse(new_rnames)
+      }
+      
+      rownames(a) <- new_rnames
+    }
+    return(a)
+    
+  }
+  unaryapply_byname(rename_func, a = a, 
+                    .FUNdots = list(keep = keep, margin = margin, 
+                                    prefix_open = prefix_open,
+                                    prefix_close = prefix_close,
+                                    suffix_open = suffix_open,
+                                    suffix_close = suffix_close))
+}
+
 
 #' Sets row type for a matrix or a list of matrices
 #'
@@ -526,7 +687,7 @@ coltype <- function(a){
                     rowcoltypes = "none")
 }
 
-#' Select rows of a matrix (or list of matrices) by name
+#' Select (or de-select) rows of a matrix (or list of matrices) by name
 #'
 #' Arguments indicate which rows are to be retained and which are to be removed.
 #' For maximum flexibility, arguments are extended regex patterns
@@ -550,9 +711,11 @@ coltype <- function(a){
 #' }
 #'
 #' Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-#' \code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
+#' \code{\link{make_pattern}} escapes regex strings using `Hmisc::escapeRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
+#' 
+#' Note that if all rows are removed from `a`, `NULL` is returned.
 #'
 #' @param a a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to retain.
@@ -604,12 +767,17 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
         stop("neither retain_pattern nor remove_pattern are different from default.")
       }
       # Remove
+      # Check to see if we will remove all rows from a
+      rows_remaining <- nrow(a) - length(remove_indices)
+      if (rows_remaining <= 0) {
+        return(NULL)
+      }
       return(a[-remove_indices , ] %>%
                # When only 1 row is selected, the natural result will be a numeric vector
                # We want to ensure that the return value is a matrix
                # with correct rowtype and coltype.
                # Thus, we need to take these additional steps.
-               matrix(nrow = nrow(a) - length(remove_indices),
+               matrix(nrow = rows_remaining,
                       dimnames = list(dimnames(a)[[1]][setdiff(1:nrow(a), remove_indices)],
                                       dimnames(a)[[2]])) %>%
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
@@ -657,6 +825,8 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' 
 #' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
 #' retain nothing and remove nothing.
+#' 
+#' Note that if all columns are removed from `a`, `NULL` is returned.
 #' 
 #' @param a a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
@@ -725,33 +895,59 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' DF2[[2, "m2"]] <- m2
 #' DF2 %>% clean_byname(margin = c(1, 2), clean_value = -20)
 clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
-  if (1 %in% margin & 2 %in% margin) {
-    # Clean both dimensions of a.
-    cleaned1 <- clean_byname(a, margin = 1, clean_value = clean_value)
-    cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
-    return(cleaned2)
-  }
+  margin <- prep_vector_arg(a, margin)
+  
+  # if (1 %in% margin & 2 %in% margin) {
+  #   # Clean both dimensions of a.
+  #   cleaned1 <- clean_byname(a, margin = 1, clean_value = clean_value)
+  #   cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
+  #   return(cleaned2)
+  # }
+  # clean_func <- function(a, margin, clean_value){
+  #   if (margin == 1) {
+  #     # Want to clean rows. Code below assumes want to clean columns.
+  #     # Transpose and then transpose again before returning.
+  #     b <- transpose_byname(a)
+  #   } else if (margin == 2) {
+  #     b <- a
+  #   } else {
+  #     stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
+  #   }
+  #   keepcols <- apply(b, 2, function(x) {
+  #     !all(x == clean_value)
+  #   })
+  #   cleaned <- b[ , keepcols, drop = FALSE]
+  #   if (margin == 1) {
+  #     return(transpose_byname(cleaned))
+  #   } else if (margin == 2) {
+  #     return(cleaned)
+  #   }
+  # }
+  # unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
+  #                   rowcoltypes = "all")
+  
+  
   clean_func <- function(a, margin, clean_value){
-    if (margin == 1) {
+    assertthat::assert_that(1 %in% margin | 2 %in% margin, msg = paste("margin =", margin, "in clean_byname(). Must be 1 or 2."))
+    out <- a
+    if (1 %in% margin) {
       # Want to clean rows. Code below assumes want to clean columns.
       # Transpose and then transpose again before returning.
-      b <- transpose_byname(a)
-    } else if (margin == 2) {
-      b <- a
-    } else {
-      stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
+      out <- transpose_byname(out) %>% 
+        clean_func(margin = 2, clean_value = clean_value) %>% 
+        transpose_byname()
     }
-    keepcols <- apply(b, 2, function(x) {!all(x == clean_value)})
-    keepcolnames <- names(which(keepcols))
-    c <- select_cols_byname(a = b, retain_pattern = make_pattern(row_col_names = keepcolnames, pattern_type = "exact"))
-    if (margin == 1) {
-      return(transpose_byname(c))
-    } else if (margin == 2) {
-      return(c)
-    }
+    if (2 %in% margin) {
+      keepcols <- apply(out, 2, function(x) {
+        !all(x == clean_value)
+      })
+      out <- out[ , keepcols, drop = FALSE]
+    } 
+    return(out)
   }
   unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
                     rowcoltypes = "all")
+  
 }
 
 #' Test whether this is the zero matrix

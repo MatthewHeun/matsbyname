@@ -110,7 +110,7 @@ test_that("naryapply_byname works as expected", {
   expect_equal(naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2), 0)
   
   # Try with a unary function.
-  expect_equal(naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2), list(1, 4, 9))
+  expect_equal(naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = list(2)), list(1, 4, 9))
   
   # Try with naryapplylogical_byname
   expect_false(matsbyname:::naryapplylogical_byname(FUN = iszero_byname, 42))

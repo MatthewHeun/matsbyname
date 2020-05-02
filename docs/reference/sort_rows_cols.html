@@ -75,7 +75,7 @@ the same order." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
       </span>
     </div>
 
@@ -216,19 +216,19 @@ Extraneous column names (column names in <code>colorder</code> that do not appea
 <span class='fu'>sort_rows_cols</span>(<span class='no'>n</span>) <span class='co'># Sorts columns, because only one row.</span></div><div class='output co'>#&gt;      c1 c2
 #&gt; [1,]  2  1</div><div class='input'><span class='co'># Also works with lists</span>
 <span class='fu'>sort_rows_cols</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>)) <span class='co'># Sorts rows and columns for both m's.</span></div><div class='output co'>#&gt; [[1]]
-#&gt;    c2 c4
-#&gt; r1  6  3
-#&gt; r3  4  1
-#&gt; r5  5  2
+#&gt;    c4 c2
+#&gt; r1  3  6
+#&gt; r3  1  4
+#&gt; r5  2  5
 #&gt; 
 #&gt; [[2]]
 #&gt;    c2 c4
-#&gt; r1  6  3
 #&gt; r3  4  1
 #&gt; r5  5  2
+#&gt; r1  6  3
 #&gt; </div><div class='input'><span class='co'># Sort rows only for first one, sort rows and columns for second one.  </span>
 <span class='co'># Row order is applied to all m's.  Column order is natural.</span>
-<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>)))</div><div class='output co'>#&gt; [[1]]
 #&gt;    c4 c2
 #&gt; r5  2  5
 #&gt; r3  1  4
@@ -241,7 +241,7 @@ Extraneous column names (column names in <code>colorder</code> that do not appea
 #&gt; r1  3  6
 #&gt; </div><div class='input'><span class='co'># Columns are sorted as default, because no colorder is given.</span>
 <span class='co'># roworder is ignored. </span>
-<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>)))</div><div class='output co'>#&gt; [[1]]
 #&gt;    c2 c4
 #&gt; r3  4  1
 #&gt; r5  5  2
@@ -253,16 +253,16 @@ Extraneous column names (column names in <code>colorder</code> that do not appea
 #&gt; r5  5  2
 #&gt; r1  6  3
 #&gt; </div><div class='input'><span class='co'># Both columns and rows sorted, rows by the list, columns in natural order.</span>
-<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt;    c2 c4
-#&gt; r5  5  2
-#&gt; r3  4  1
-#&gt; r1  6  3
+<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>)))</div><div class='output co'>#&gt; [[1]]
+#&gt;    c4 c2
+#&gt; r5  2  5
+#&gt; r3  1  4
+#&gt; r1  3  6
 #&gt; 
 #&gt; [[2]]
 #&gt;    c2 c4
-#&gt; r5  5  2
 #&gt; r3  4  1
+#&gt; r5  5  2
 #&gt; r1  6  3
 #&gt; </div></pre>
   </div>

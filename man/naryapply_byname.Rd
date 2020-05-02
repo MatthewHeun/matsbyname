@@ -20,16 +20,16 @@ naryapply_byname(
 
 \item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
 
-\item{match_type}{one of "\code{all}", "\code{matmult}", or "\code{none}".
+\item{match_type}{one of "all", "matmult", or "none".
 When \code{...} are matrices,
-"\code{all}" (the default) indicates that
+"all" (the default) indicates that
 rowtypes of all \code{...} matrices must match and
 coltypes of all \code{...} matrices must match.
-If "\code{matmult}",
+If "matmult",
 the coltype of the first operand must match the rowtype of the second operand
 for every sequential invocation of \code{FUN}.
-If "\code{none}",
-neither coltypes nor rowtypes are checked by \code{\link{naryapply_byname}}.}
+If "none",
+neither coltypes nor rowtypes are checked by \code{naryapply_byname()}.}
 
 \item{set_rowcoltypes}{tells whether to apply row and column types from
 operands in \code{...} to the output of each sequential invocation of \code{FUN}.
@@ -48,36 +48,36 @@ the result of applying \code{FUN} to all operands in \code{...}
 }
 \description{
 Applies \code{FUN} to all operands in \code{...}.
-Other arguments have similar meaning as \code{\link{binaryapply_byname}}.
+Other arguments have similar meaning as \code{binaryapply_byname()}.
 See details for more information.
 }
 \details{
 If only one \code{...} argument is supplied,
 \code{FUN} must be capable of handling one argument, and
-the call is routed to \code{\link{unaryapply_byname}}.
-When \code{set_rolcoltypes} is \code{TRUE},
-the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{all}",
+the call is routed to \code{unaryapply_byname()}.
+When \code{set_rowcoltypes} is \code{TRUE},
+the \code{rowcoltypes} argument of \code{unaryapply_byname()} is set to "all",
 but when \code{set_rowcoltypes} is \code{FALSE},
-the \code{rowcoltypes} argument of \code{\link{unaryapply_byname}} is set to "\code{none}".
-If finer control is desired, the caller should use \code{\link{unaryapply_byname}} directly.
+the \code{rowcoltypes} argument of \code{unaryapply_byname()} is set to "none".
+If finer control is desired, the caller should use \code{unaryapply_byname()} directly.
 If more than one argument is passed in \code{...},
-\code{FUN} must be a binary function, but its use in by \code{\link{naryapply_byname}} is "n-ary."
+\code{FUN} must be a binary function, but its use in by \code{naryapply_byname()} is "n-ary."
 Arguments \code{match_type}, \code{set_rowcoltypes}, and \code{.organize}
-have same meaning as for \code{\link[matsbyname]{binaryapply_byname}}.
+have same meaning as for \code{binaryapply_byname()}.
 Thus, all of the operands in \code{...} must obey the rules of type matching
 when \code{match_type} is \code{TRUE}.
 
-\code{\link{naryapply_byname}} and \code{\link{cumapply_byname}} are similar.
+\code{naryapply_byname()} and \code{cumapply_byname()} are similar.
 Their differences can be described by considering a data frame.
-\code{\link{naryapply_byname}} applies \code{FUN} to several columns (variables) of the data frame.
-For example, \code{\link{sum_byname}} applied to several variables gives another column
+\code{naryapply_byname()} applies \code{FUN} to several columns (variables) of the data frame.
+For example, \code{sum_byname()} applied to several variables gives another column
 containing the sums across each row of the data frame.
-\code{\link{cumapply_byname}} applies \code{FUN} to successive entries in a single column.
-For example \code{\link{sum_byname}} applied to a single column gives the sum of all numbers in that column.
+\code{cumapply_byname()} applies \code{FUN} to successive entries in a single column.
+For example \code{sum_byname()} applied to a single column gives the sum of all numbers in that column.
 }
 \examples{
 naryapply_byname(FUN = sum_byname, 2, 3)
 naryapply_byname(FUN = sum_byname, 2, 3, 4, -4, -3, -2)
 # Routes to unaryapply_byname
-naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = 2)
+naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = list(2))
 }

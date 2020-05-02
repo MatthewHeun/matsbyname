@@ -41,15 +41,7 @@
 
 <meta property="og:title" content="Named identity matrix or vector — identize_byname" />
 <meta property="og:description" content="Creates an identity matrix (I) or vector (i) of same size and with same names and
-same row and column types as a.
-If margin = 1, makes a column matrix filled with 1s.
-Row names and type are taken from row names and type of a.
-Column name and type are same as column type of a.
-If margin = 2, make a row matrix filled with 1s.
-Column names and type are taken from column name and type of a.
-Row name and type are same as row type of a.
-If c(1,2) (the default), make an identity matrix with 1s on the diagonal.
-Row and column names are sorted on output." />
+same row and column types as a." />
 
 
 
@@ -81,7 +73,7 @@ Row and column names are sorted on output." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
       </span>
     </div>
 
@@ -142,15 +134,7 @@ Row and column names are sorted on output." />
 
     <div class="ref-description">
     <p>Creates an identity matrix (<strong>I</strong>) or vector (<strong>i</strong>) of same size and with same names and
-same row and column types as <code>a</code>.
-If <code>margin = 1</code>, makes a column matrix filled with <code>1</code>s.
-Row names and type are taken from row names and type of <code>a</code>.
-Column name and type are same as column type of <code>a</code>.
-If <code>margin = 2</code>, make a row matrix filled with <code>1</code>s.
-Column names and type are taken from column name and type of <code>a</code>.
-Row name and type are same as row type of <code>a</code>.
-If <code><a href='https://rdrr.io/r/base/c.html'>c(1,2)</a></code> (the default), make an identity matrix with <code>1</code>s on the diagonal.
-Row and column names are sorted on output.</p>
+same row and column types as <code>a</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>identize_byname</span>(<span class='no'>a</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>))</pre>
@@ -171,6 +155,19 @@ Row and column names are sorted on output.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An identity matrix or vector.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Behaviour for different values of <code>margin</code> are as follows:</p><ul>
+<li><p>If <code>margin = 1</code>, makes a column matrix filled with <code>1</code>s.
+Row names and type are taken from row names and type of <code>a</code>.
+Column name and type are same as column type of <code>a</code>.</p></li>
+<li><p>If <code>margin = 2</code>, make a row matrix filled with <code>1</code>s.
+Column names and type are taken from column name and type of <code>a</code>.
+Row name and type are same as row type of <code>a</code>.</p></li>
+<li><p>If <code><a href='https://rdrr.io/r/base/list.html'>list(c(1,2))</a></code> (the default), make an identity matrix with <code>1</code>s on the diagonal.
+Row and column names are sorted on output.</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>M</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>1</span>:<span class='fl'>16</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>dimnames</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"i"</span>, <span class='fl'>1</span>:<span class='fl'>4</span>)), <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>4</span>))) <span class='kw'>%&gt;%</span>
@@ -214,22 +211,19 @@ Row and column names are sorted on output.</p>
 #&gt; attr(,"coltype")
 #&gt; [1] "Commodities"</div><div class='input'><span class='co'># This also works with lists</span>
 <span class='fu'>identize_byname</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>M</span>, <span class='no'>M</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt;    c1 c2 c3 c4
-#&gt; i1  1  0  0  0
-#&gt; i2  0  1  0  0
-#&gt; i3  0  0  1  0
-#&gt; i4  0  0  0  1
+#&gt;    Commodities
+#&gt; i1           1
+#&gt; i2           1
+#&gt; i3           1
+#&gt; i4           1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Commodities"
 #&gt; 
 #&gt; [[2]]
-#&gt;    c1 c2 c3 c4
-#&gt; i1  1  0  0  0
-#&gt; i2  0  1  0  0
-#&gt; i3  0  0  1  0
-#&gt; i4  0  0  0  1
+#&gt;            c1 c2 c3 c4
+#&gt; Industries  1  1  1  1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")

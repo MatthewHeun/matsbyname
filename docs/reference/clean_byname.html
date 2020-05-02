@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
       </span>
     </div>
 
@@ -201,12 +201,14 @@ contains exclusively <code>clean_value</code>, the row or column is deleted from
 <span class='no'>DF2</span><span class='kw'>[[</span><span class='fl'>2</span>, <span class='st'>"m2"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m2</span>
 <span class='no'>DF2</span> <span class='kw'>%&gt;%</span> <span class='fu'>clean_byname</span>(<span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>clean_value</span> <span class='kw'>=</span> -<span class='fl'>20</span>)</div><div class='output co'>#&gt; $m2
 #&gt; $m2[[1]]
-#&gt;    c1 c2
-#&gt; r3  0  0
+#&gt;    c1 c2  c3
+#&gt; r3  0  0 -20
 #&gt; 
 #&gt; $m2[[2]]
-#&gt;    c1 c2
-#&gt; r3  0  0
+#&gt;     c1  c2
+#&gt; r1 -20 -20
+#&gt; r2 -20 -20
+#&gt; r3   0   0
 #&gt; 
 #&gt; </div></pre>
   </div>

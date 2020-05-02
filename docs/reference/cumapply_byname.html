@@ -75,7 +75,7 @@ where out is the result list." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
       </span>
     </div>
 
@@ -162,13 +162,13 @@ where <code>out</code> is the result list.</p>
 containing the cumulative application of <code>FUN</code> to <code>a</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code><a href='naryapply_byname.html'>naryapply_byname</a></code> and <code>cumapply_byname</code> are similar.
+    <p><code><a href='naryapply_byname.html'>naryapply_byname()</a></code> and <code>cumapply_byname()</code> are similar.
 Their differences can be described by considering a data frame.
-<code><a href='naryapply_byname.html'>naryapply_byname</a></code> applies <code>FUN</code> to several columns (variables) of the data frame.
-For example, <code><a href='sum_byname.html'>sum_byname</a></code> applied to several variables gives another column
+<code><a href='naryapply_byname.html'>naryapply_byname()</a></code> applies <code>FUN</code> to several columns (variables) of the data frame.
+For example, <code><a href='sum_byname.html'>sum_byname()</a></code> applied to several variables gives another column
 containing the sums across each row of the data frame.
-<code>cumapply_byname</code> applies <code>FUN</code> to successive entries in a single column.
-For example <code><a href='sum_byname.html'>sum_byname</a></code> applied to a single column gives the sum of all numbers in that column.</p>
+<code>cumapply_byname()</code> applies <code>FUN</code> to successive entries in a single column.
+For example <code><a href='sum_byname.html'>sum_byname()</a></code> applied to a single column gives the sum of all numbers in that column.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>cumapply_byname</span>(<span class='no'>sum</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>))</div><div class='output co'>#&gt; [[1]]

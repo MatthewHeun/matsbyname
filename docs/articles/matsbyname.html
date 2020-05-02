@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
 </h1>
                         <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2020-04-17</h4>
+            <h4 class="date">2020-05-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/master/vignettes/matsbyname.Rmd"><code>vignettes/matsbyname.Rmd</code></a></small>
       <div class="hidden name"><code>matsbyname.Rmd</code></div>
@@ -364,14 +364,7 @@
 <span class="co">#&gt; attr(,"coltype")</span>
 <span class="co">#&gt; [1] "Industries"</span></pre></body></html></div>
 <p>Note that <strong>A</strong> and <strong>C</strong> can be matrix-multiplied, because the column type of <strong>A</strong> and the row type of <strong>C</strong> are identical (<tt>Industries</tt>). The result is a <tt>Products</tt>-by-<tt>Products</tt> matrix.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(<span class="no">A</span>, <span class="no">C</span>)
-<span class="co">#&gt;    p1 p2</span>
-<span class="co">#&gt; p1  7 15</span>
-<span class="co">#&gt; p2 10 22</span>
-<span class="co">#&gt; attr(,"rowtype")</span>
-<span class="co">#&gt; [1] "Products"</span>
-<span class="co">#&gt; attr(,"coltype")</span>
-<span class="co">#&gt; [1] "Products"</span></pre></body></html></div>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(<span class="no">A</span>, <span class="no">C</span>)</pre></body></html></div>
 <p>However, <strong>A</strong> and <strong>B</strong> cannot be matrix-multiplied, because the column type of <strong>A</strong> (<tt>Industries</tt>) and the row type of <strong>B</strong> (<tt>Products</tt>) are different.</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span>(<span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(<span class="no">A</span>, <span class="no">B</span>), <span class="kw">error</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">err</span>){<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">err</span>)})
 <span class="co">#&gt; &lt;simpleError in organize_args(a, b, fill = 0, match_type = match_type): coltype(a) != rowtype(b): Industries != Products.&gt;</span></pre></body></html></div>
@@ -417,24 +410,7 @@
 <span class="co">#&gt; [1] "Products"</span>
 <span class="co">#&gt; attr(,"coltype")</span>
 <span class="co">#&gt; [1] "Industries"</span>
-<span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">A</span>, <span class="no">A</span>), <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">C</span>, <span class="no">C</span>))
-<span class="co">#&gt; [[1]]</span>
-<span class="co">#&gt;    p1 p2</span>
-<span class="co">#&gt; p1  7 15</span>
-<span class="co">#&gt; p2 10 22</span>
-<span class="co">#&gt; attr(,"rowtype")</span>
-<span class="co">#&gt; [1] "Products"</span>
-<span class="co">#&gt; attr(,"coltype")</span>
-<span class="co">#&gt; [1] "Products"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[2]]</span>
-<span class="co">#&gt;    p1 p2</span>
-<span class="co">#&gt; p1  7 15</span>
-<span class="co">#&gt; p2 10 22</span>
-<span class="co">#&gt; attr(,"rowtype")</span>
-<span class="co">#&gt; [1] "Products"</span>
-<span class="co">#&gt; attr(,"coltype")</span>
-<span class="co">#&gt; [1] "Products"</span></pre></body></html></div>
+<span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">A</span>, <span class="no">A</span>), <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">C</span>, <span class="no">C</span>))</pre></body></html></div>
 </div>
 <div id="matsbyname-works-well-with-matsindf" class="section level3">
 <h3 class="hasAnchor">
@@ -471,10 +447,6 @@
     <span class="kw">matrix.name</span> <span class="kw">=</span> <span class="no">matrix</span>,
     <span class="kw">matrix</span> <span class="kw">=</span> <span class="no">vals</span>
   )
-<span class="co">#&gt; Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.</span>
-<span class="co">#&gt; Please use the `.add` argument instead.</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
 <span class="no">mats</span>
 <span class="co">#&gt;   matrix.name     matrix</span>
 <span class="co">#&gt; 1           A 1, 2, 3, 4</span>

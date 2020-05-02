@@ -18,19 +18,7 @@ unaryapply_byname(
 
 \item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
 
-\item{rowcoltypes}{a string that tells how to transfer row and column types of \code{a} to output.
-Options are:
-\itemize{
-\item{\code{all}: transfer both row and column types of \code{a} directly to output.}
-\item{\code{transpose}: rowtype of \code{a} becomes coltype of output;
-coltype of \code{a} becomes rowtype of output.
-"transpose" is helpful for \code{FUN}s that transpose
-\code{a} upon output.}
-\item{\code{row}: rowtype of \code{a} becomes both rowtype and coltype of output.}
-\item{\code{col}: coltype of \code{a} becomes both rowtype and coltype of output.}
-\item{\code{none}: rowtype and coltype not set by \code{unaryapply_byname}.
-Rather, \code{FUN} will set rowtype and coltype.}
-}}
+\item{rowcoltypes}{a string that tells how to transfer row and column types of \code{a} to output. See \code{details}.}
 }
 \value{
 the result of applying \code{FUN} "by name" to \code{a}.
@@ -50,6 +38,17 @@ to be applied along the list that is \code{a}.
 
 The length of the first dimension of \code{.FUNdots} is the number of arguments supplied to \code{FUN}.
 The length of the second dimension of \code{.FUNdots} must be equal to the length of \code{a}.
+
+See \code{prepare_.FUNdots()} for more details on the \code{.FUNdots} argument.
+
+Options for the \code{rowcoltypes} argument are:
+\itemize{
+\item "all": transfer both row and column types of \code{a} directly to output.
+\item "transpose": rowtype of \code{a} becomes coltype of output; coltype of \code{a} becomes rowtype of output. "transpose" is helpful for \code{FUN}s that transpose \code{a} upon output.
+\item "row": rowtype of \code{a} becomes both rowtype and coltype of output.
+\item "col": coltype of \code{a} becomes both rowtype and coltype of output.
+\item "none": rowtype and coltype not set by \code{unaryapply_byname}. Rather, \code{FUN} will set rowtype and coltype.
+}
 }
 \examples{
 productnames <- c("p1", "p2")

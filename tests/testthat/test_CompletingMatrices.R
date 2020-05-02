@@ -57,24 +57,24 @@ test_that("sort_rows_cols works as expected", {
   sortedm <- matrix(c(6, 3,
                       4, 1,
                       5, 2), byrow = TRUE, nrow = 3, dimnames = list(c("r1", "r3", "r5"), c("c2", "c4")))
-  expect_equal(sort_rows_cols(list(m,m)), list(sortedm, sortedm))
+  expect_equal(sort_rows_cols(list(m,m), margin = list(c(1, 2))), list(sortedm, sortedm))
   # Sort only row with a special order.
   sorted1 <- matrix(c(2, 5, 
                       1, 4,
                       3, 6), byrow = TRUE, nrow = 3, dimnames = list(c("r5", "r3", "r1"), c("c4", "c2")))
-  expect_equal(sort_rows_cols(a = list(m,m), margin = 1, roworder = c("r5", "r3", "r1")), 
+  expect_equal(sort_rows_cols(a = list(m,m), margin = 1, roworder = list(c("r5", "r3", "r1"))), 
                list(sorted1, sorted1))
   # Columns are sorted as default, because no colorder is given.
   sorted2 <- matrix(c(4, 1, 
                       5, 2,
                       6, 3), byrow = TRUE, nrow = 3, dimnames = list(c("r3", "r5", "r1"), c("c2", "c4")))
-  expect_equal(sort_rows_cols(a = list(m,m), margin = 2, roworder = c("r5", "r3", "r1")), 
+  expect_equal(sort_rows_cols(a = list(m,m), margin = 2, roworder = list(c("r5", "r3", "r1"))), 
                list(sorted2, sorted2))
   # Both columns and rows sorted, rows by the list, columns in natural order.
   sorted3 <- matrix(c(5, 2,
                       4, 1,
                       6, 3), byrow = TRUE, nrow = 3, dimnames = list(c("r5", "r3", "r1"), c("c2", "c4")))
-  expect_equal(sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = c("r5", "r3", "r1")), 
+  expect_equal(sort_rows_cols(a = list(m,m), margin = list(c(1,2)), roworder = list(c("r5", "r3", "r1"))), 
                list(sorted3, sorted3))
   
   # Ensure that rowtypes and coltypes, if present, are maintained
@@ -88,16 +88,21 @@ test_that("sort_rows_cols works with different-length arguments for lists", {
   m_sorted <- matrix(c(2, 1, 4, 3), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
   mlist <- list(m, m)
-  expect_equal(sort_rows_cols(mlist, margin = c(1,2), roworder = c("r1", "r2"), colorder = NA), 
+  expect_equal(sort_rows_cols(mlist, margin = list(c(1,2)), roworder = list(c("r1", "r2")), colorder = NA), 
                list(m_sorted, m_sorted))
   # Now try in a matrix with a list of lists
-  DF <- data.frame(m = I(list()))
+  DF <- data.frame(m = I(list()), margin = I(list()))
   DF[[1, "m"]] <- mlist
   DF[[2, "m"]] <- mlist
   DF[[3, "m"]] <- mlist
+  marginlist <- list(c(1, 2), c(1, 2))
+  DF[[1, "margin"]] <- marginlist
+  DF[[2, "margin"]] <- marginlist
+  DF[[3, "margin"]] <- marginlist
   res <- DF %>% 
     dplyr::mutate(
-      sorted = sort_rows_cols(m)
+      # sorted = sort_rows_cols(m, margin = list(c(1, 2)))
+      sorted = sort_rows_cols(m, margin = margin)
     )
   expect_equal(res$sorted[[1]][[1]], m_sorted)
   expect_equal(res$sorted[[1]][[2]], m_sorted)
@@ -106,6 +111,7 @@ test_that("sort_rows_cols works with different-length arguments for lists", {
   expect_equal(res$sorted[[3]][[1]], m_sorted)
   expect_equal(res$sorted[[1]][[2]], m_sorted)
 })
+
 
 test_that("sort_rows_cols works when specifying a row or col name that isn't present in a", {
   m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))) %>% 
@@ -312,8 +318,8 @@ test_that("complete_rows_cols works as expected", {
   
   
   # Also works with lists
-  expect_equal(complete_rows_cols(a = list(m1,m1)), list(complete_rows_cols(m1), complete_rows_cols(m1)))
-  expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2)), list(complete_m1_m2, complete_m1_m2))
+  expect_equal(complete_rows_cols(a = list(m1,m1), margin = list(c(1, 2))), list(complete_rows_cols(m1), complete_rows_cols(m1)))
+  expect_equal(complete_rows_cols(a = list(m1,m1), margin = list(c(1, 2)), mat = list(m2,m2)), list(complete_m1_m2, complete_m1_m2))
   # No changes because r2, r3 already present in m1
   expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 1), list(m1, m1))
   expect_equal(complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 2), 
@@ -681,7 +687,7 @@ test_that("complete_and_sort works as expected", {
                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))))
   
   # Also works with lists
-  expect_equal(complete_and_sort(list(m1,m1), list(m2,m2)), 
+  expect_equal(complete_and_sort(list(m1,m1), list(m2,m2), margin = list(c(1, 2))), 
                list(a = list(m1m2_completed$a, m1m2_completed$a), b = list(m1m2_completed$b, m1m2_completed$b)))
   
   # Should return unmodified matrices if row or column names are missing.

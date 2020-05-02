@@ -79,7 +79,7 @@ set the m2 argument to transpose_byname(m2)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
       </span>
     </div>
 
@@ -333,32 +333,29 @@ If only one of <code>m1</code> or <code>m2</code> has dimnames, an error is thro
 #&gt; </div><div class='input'><span class='co'># Also works with lists</span>
 <span class='fu'>complete_and_sort</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m1</span>,<span class='no'>m1</span>), <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m2</span>,<span class='no'>m2</span>))</div><div class='output co'>#&gt; $a
 #&gt; $a[[1]]
-#&gt;    c1 c2 c3 c4
-#&gt; r1  4  1  0  0
-#&gt; r2  5  2  0  0
-#&gt; r3  6  3  0  0
-#&gt; r4  0  0  0  0
+#&gt;    c2 c1
+#&gt; r1  1  4
+#&gt; r2  2  5
+#&gt; r3  3  6
+#&gt; r4  0  0
 #&gt; 
 #&gt; $a[[2]]
 #&gt;    c1 c2 c3 c4
 #&gt; r1  4  1  0  0
 #&gt; r2  5  2  0  0
 #&gt; r3  6  3  0  0
-#&gt; r4  0  0  0  0
 #&gt; 
 #&gt; 
 #&gt; $b
 #&gt; $b[[1]]
-#&gt;    c1 c2 c3 c4
-#&gt; r1  0  0  0  0
-#&gt; r2  0  0  0  0
-#&gt; r3  0  7  9 11
-#&gt; r4  0  8 10 12
+#&gt;    c2 c3 c4
+#&gt; r1  0  0  0
+#&gt; r2  0  0  0
+#&gt; r3  7  9 11
+#&gt; r4  8 10 12
 #&gt; 
 #&gt; $b[[2]]
 #&gt;    c1 c2 c3 c4
-#&gt; r1  0  0  0  0
-#&gt; r2  0  0  0  0
 #&gt; r3  0  7  9 11
 #&gt; r4  0  8 10 12
 #&gt; 

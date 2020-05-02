@@ -295,14 +295,14 @@ test_that("identize_byname works as expected", {
   expect_equal(identize_byname(m, margin = c(2,1)), mI_expected)
   
   # This also works with lists
-  expect_equal(identize_byname(list(m, m)), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(list(m, m, m)), list(mI_expected, mI_expected, mI_expected))
   # This also works for data frames
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
-  expect_equal(identize_byname(DF$m), list(mI_expected, mI_expected))
-  expect_equal(identize_byname(DF$m, margin = c(1,2)), list(mI_expected, mI_expected))
-  expect_equal(identize_byname(DF$m, margin = c(2,1)), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(1, 2))), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(1,2))), list(mI_expected, mI_expected))
+  expect_equal(identize_byname(DF$m, margin = list(c(2,1))), list(mI_expected, mI_expected))
   DF_expected <- data.frame(m = I(list()), mI = I(list()))
   DF_expected[[1,"m"]] <- m
   DF_expected[[2,"m"]] <- m
@@ -312,7 +312,7 @@ test_that("identize_byname works as expected", {
   # Because DF$mI is created from an actual calculation, its class is NULL.
   # Need to set the class of DF_expected$mI to NULL to get a match.
   attr(DF_expected$mI, which = "class") <- NULL
-  expect_equal(DF %>% dplyr::mutate(mI = identize_byname(m)), DF_expected)
+  expect_equal(DF %>% dplyr::mutate(mI = identize_byname(m, margin = list(c(1, 2)))), DF_expected)
 })
 
 
@@ -357,7 +357,7 @@ test_that("vectorize_byname works as expected", {
   m3 <- 42
   expected3 <- m3
   dim(expected3) <- c(1, 1)
-  dimnames(expected3) <- list(c(NULL))
+  dimnames(expected3) <- NULL
   actual3 <- vectorize_byname(m3)
   expect_equal(actual3, expected3)
   # Try with a different separator
@@ -554,7 +554,7 @@ test_that("fractionze_byname works as expected", {
     dplyr::mutate(
       F_row = fractionize_byname(M, margin = 1),
       F_col = fractionize_byname(M, margin = 2),
-      F_tot = fractionize_byname(M, margin = c(2,1))
+      F_tot = fractionize_byname(M, margin = list(c(2,1)))
     )
   
   expect_equal(DF2$F_row, list(expectedM_rows, expectedM_rows))
@@ -1061,232 +1061,6 @@ test_that("matrix cleaning works as expected", {
 
 
 ###########################################################
-context("Row and column naming")
-###########################################################
-
-test_that("getting row names works as expected", {
-  m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
-  expect_equal(getrownames_byname(m), c("i1", "i2"))
-  # This also works for lists
-  expect_equal(getrownames_byname(list(m,m)), list(c("i1", "i2"), c("i1", "i2")))
-  # Also works for data frames
-  DF <- data.frame(m = I(list()))
-  DF[[1,"m"]] <- m
-  DF[[2,"m"]] <- m
-  expect_equal(getrownames_byname(DF$m), list(c("i1", "i2"), c("i1", "i2")))
-})
-
-test_that("getting column names works as expected", {
-  m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
-  expect_equal(getcolnames_byname(m), c("p1", "p2", "p3"))
-  # This also works for lists
-  expect_equal(getcolnames_byname(list(m,m)), list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
-  # Also works for data frames
-  DF <- data.frame(m = I(list()))
-  DF[[1,"m"]] <- m
-  DF[[2,"m"]] <- m
-  expect_equal(getcolnames_byname(DF$m), list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
-})
-
-test_that("setting row names works as expected", {
-  m1 <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
-    setrowtype("Industries") %>% setcoltype("Commodities")
-  m2 <- setrownames_byname(m1, c("a", "b"))
-  expect_equal(rownames(m2), c("a", "b"))
-  m3 <- setrownames_byname(m1 %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("c", "d"))
-  expect_equal(rownames(m3), c("c", "d"))
-  m4 <- m1 %>% setrownames_byname(NULL)
-  expect_null(rownames(m4))
-  m5 <- m1 %>% setrownames_byname(c(NA, NA))
-  expect_equal(rownames(m5), c(NA_character_, NA_character_))
-  # This also works for lists
-  l1 <- list(m1,m1)
-  l2 <- setrownames_byname(l1, c("a", "b"))
-  expect_equal(list(rownames(l2[[1]]), rownames(l2[[2]])), list(c("a", "b"), c("a", "b")))
-  # This also works with data frames
-  DF1 <- data.frame(mcol = I(list()))
-  DF1[[1,"mcol"]] <- m1
-  DF1[[2,"mcol"]] <- m1
-  DF2 <- DF1 %>% 
-    dplyr::mutate(
-      mcol2 = setrownames_byname(mcol, c("r1", "r2"))
-    )
-  expect_equal(rownames(DF2$mcol2[[1]]), c("r1", "r2"))
-  expect_equal(rownames(DF2$mcol2[[2]]), c("r1", "r2"))
-  DF3 <- DF1 %>% 
-    dplyr::mutate(
-      mcol2 = setrownames_byname(mcol, c("r3", "r4"))
-    )
-  expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r3", "r4"), c("r3", "r4")))
-})
-
-
-test_that("setting row names works with different names for each matrix", {
-  m <- matrix(c(1, 2, 
-                3, 4), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2")))
-  mlist <- list(m, m, m)
-  new_rownames <- list(c("a", "b"), c("c", "d"), c("e", "f"))
-  renamed <- setrownames_byname(mlist, rownames = new_rownames)
-  expect_equal(getrownames_byname(renamed), new_rownames)
-  
-  # Try this in a data frame
-  DF <- data.frame(mcol = I(mlist), rownames_col = I(new_rownames))
-  DF_renamed <- DF %>% 
-    dplyr::mutate(
-      mcol_2 = setrownames_byname(mcol, rownames = rownames_col)
-    )
-  expect_equal(getrownames_byname(DF_renamed$mcol_2), new_rownames)
-})
-
-
-test_that("setting col names works as expected", {
-  m1 <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
-    setrowtype("Industries") %>% setcoltype("Commodities")
-  m2 <- setcolnames_byname(m1, c("a", "b", "c"))
-  expect_equal(colnames(m2), c("a", "b", "c"))
-  m3 <- setcolnames_byname(m1 %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("d", "e", "f"))
-  expect_equal(colnames(m3), c("d", "e", "f"))
-  m4 <- m1 %>% setcolnames_byname(NULL)
-  expect_null(colnames(m4))
-  m5 <- m1 %>% setcolnames_byname(c(NA, NA, NA))
-  expect_equal(colnames(m5), c(NA_character_, NA_character_, NA_character_))
-  # This also works for lists
-  l1 <- list(m1,m1)
-  l2 <- setcolnames_byname(l1, c("a", "b", "c"))
-  expect_equal(list(colnames(l2[[1]]), colnames(l2[[2]])), list(c("a", "b", "c"), c("a", "b", "c")))
-  # This also works with data frames
-  DF1 <- data.frame(mcol = I(list()))
-  DF1[[1,"mcol"]] <- m1
-  DF1[[2,"mcol"]] <- m1
-  DF2 <- DF1 %>% 
-    dplyr::mutate(
-      mcol2 = setcolnames_byname(mcol, c("c1", "c2", "c3"))
-    )
-  expect_equal(colnames(DF2$mcol2[[1]]), c("c1", "c2", "c3"))
-  expect_equal(colnames(DF2$mcol2[[2]]), c("c1", "c2", "c3"))
-  DF3 <- DF1 %>% 
-    dplyr::mutate(
-      mcol2 = setcolnames_byname(mcol, c("c1", "c2", "c3"))
-    )
-  expect_equal(list(colnames(DF3$mcol2[[1]]), colnames(DF3$mcol2[[2]])), list(c("c1", "c2", "c3"), c("c1", "c2", "c3")))
-})
-
-
-test_that("setting column names works with different names for each matrix", {
-  m <- matrix(c(1, 2,
-                3, 4, 
-                5, 6), nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
-  mlist <- list(m, m, m)
-  new_colnames <- list(c("a", "b"), c("c", "d"), c("e", "f"))
-  renamed <- setcolnames_byname(mlist, colnames = new_colnames)
-  expect_equal(getcolnames_byname(renamed), new_colnames)
-  
-  # Try this in a data frame
-  DF <- data.frame(mcol = I(mlist), colnames_col = I(new_colnames))
-  DF_renamed <- DF %>% 
-    dplyr::mutate(
-      mcol_2 = setcolnames_byname(mcol, colnames = colnames_col)
-    )
-  expect_equal(getcolnames_byname(DF_renamed$mcol_2), new_colnames)
-})
-
-
-###########################################################
-context("Row and column types")
-###########################################################
-
-test_that("setrowtype and rowtype works as expected", {
-  productnames <- c("p1", "p2")
-  industrynames <- c("i1", "i2")
-  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products")
-  expect_null(U %>% setrowtype(NULL) %>% rowtype())
-  expect_equal(rowtype(U), "Products")
-  # This also works for lists
-  Ul <- setrowtype(list(U,U), rowtype = "Products")
-  expect_equal(rowtype(Ul), list("Products", "Products"))
-  Ul2 <- setrowtype(list(U,U), rowtype = "Junk")
-  expect_equal(rowtype(Ul2), list("Junk", "Junk"))
-  # Also works for data frames
-  DF <- data.frame(U = I(list()))
-  DF[[1,"U"]] <- U
-  DF[[2,"U"]] <- U
-  DF2 <- setrowtype(DF$U, "Products")
-  expect_equal(rowtype(DF2), list("Products", "Products"))
-  DF3 <- DF %>% dplyr::mutate(newcol = setrowtype(U, "Products"))
-  expect_equal(DF3$newcol %>% rowtype, list("Products", "Products"))
-})
-
-test_that("setcoltype and coltype works as expected", {
-  productnames <- c("p1", "p2")
-  industrynames <- c("i1", "i2")
-  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setcoltype("Industries")
-  expect_null(U %>% setcoltype(NULL) %>% coltype())
-  expect_equal(coltype(U), "Industries")
-  # This also works for lists
-  Ul <- setcoltype(list(U,U), coltype = "Industries")
-  expect_equal(coltype(Ul), list("Industries", "Industries"))
-  Ul2 <- setcoltype(list(U,U), coltype = "Junk")
-  expect_equal(coltype(Ul2), list("Junk", "Junk"))
-  # Check that it works when the lists are not same structure as a.
-  Ul3 <- setcoltype(list(U,U), coltype = list("Junk", "Junk"))
-  expect_equal(coltype(Ul3), list("Junk", "Junk"))
-  Ul4 <- setcoltype(list(U,U,U), coltype = list("Junk", "Junk", "Bogus"))
-  expect_equal(coltype(Ul4), list("Junk", "Junk", "Bogus"))
-  Ul5 <- setcoltype(list(U,U,U), coltype = c("Bogus"))
-  expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
-  Ul6 <- setcoltype(list(U,U,U), coltype = list("Bogus"))
-  expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
-  # This one should fail, becuase length of coltype is neither 1 nor length(a), namely 3.
-  expect_error(setcoltype(list(U,U,U), coltype = list("Bogus", "Bogus")), "when .FUNdots is a list, each item \\(argument\\) must have length 1 or length\\(a\\)")
-  
-  # Also works for data frames
-  DF <- data.frame(U = I(list()))
-  DF[[1,"U"]] <- U
-  DF[[2,"U"]] <- U
-  DF2 <- setcoltype(DF$U, "Industries")
-  expect_equal(coltype(DF2), list("Industries", "Industries"))
-  DF3 <- DF %>% dplyr::mutate(newcol = setcoltype(U, "Industries"))
-  expect_equal(DF3$newcol %>% coltype, list("Industries", "Industries"))
-})
-
-
-###########################################################
-context("Row and column names")
-###########################################################
-
-test_that("setrownames_byname works as expected", {
-  m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
-    setrowtype("Industries") %>% setcoltype("Commodities")
-  m2 <- setrownames_byname(m, c("a", "b"))
-  expect_equal(m %>% setrownames_byname(c("a", "b")) %>% rownames(), 
-               c("a", "b"))
-  expect_equal(m %>% setrownames_byname(rownames(m2)) %>% rownames(), c("a", "b"))
-  expect_equal(m %>% setrownames_byname(c("c", "d")) %>% rownames(), c("c", "d"))
-  expect_null(m %>% setrownames_byname(NULL) %>% rownames())
-  expect_equal(m %>% setrownames_byname(c(NA, NA)) %>% rownames(), c(NA_character_, NA_character_))
-  # The function should convert the constant to a matrix and apply the row name
-  expect_equal(2 %>% setrownames_byname("row"), 
-               matrix(2, nrow = 1, ncol = 1, dimnames = list(c("row"), NULL)))
-})
-
-
-test_that("setcolnames_byname works as expected", {
-  m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
-    setrowtype("Industries") %>% setcoltype("Commodities")
-  expect_equal(m %>% setcolnames_byname(c("a", "b", "c")) %>% colnames(), 
-               c("a", "b", "c"))
-  expect_equal(m %>% setcolnames_byname(c("d", "e", "f")) %>% colnames(), c("d", "e", "f"))
-  expect_null(m %>% setcolnames_byname(NULL) %>% colnames())
-  expect_equal(m %>% setcolnames_byname(c(NA, NA, NA)) %>% colnames(), c(NA_character_, NA_character_, NA_character_))
-  # The function should convert the constant to a matrix and apply the col name
-  expect_equal(2 %>% setcolnames_byname("col"), 
-               matrix(2, nrow = 1, ncol = 1, dimnames = list(NULL, c("col"))))
-})
-
-
-###########################################################
 context("Cumulative sum")
 ###########################################################
 
@@ -1504,4 +1278,229 @@ test_that("any_byname works as expected", {
   expect_equal(all_byname(list(n,n)), list(FALSE, FALSE))
   expect_equal(any_byname(list(n,n)), list(TRUE, TRUE))
   
+})
+
+
+###########################################################
+context("Aggregation")
+###########################################################
+
+test_that("aggregate works as expected", {
+  m <- matrix(1:9, nrow = 3, byrow = TRUE,
+              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+  expected <- matrix(c(5, 7, 9,
+                       7, 8, 9), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r3"), c("c1", "c2", "c3")))
+  actual <- aggregate_byname(m, aggregation_map = list(a = c("r1", "r2")))
+  expect_equal(actual, expected)
+  
+  # Try with wrong margin.
+  # This will try to aggregate r1 and r2 in columns, but there are no r1 or r2 columns.
+  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r1", "r2")), margin = 2), m)
+  
+  # Try to aggregate with only 1 row.
+  # Should get same thing with a renamed column
+  expected <- m
+  dimnames(expected) <- list(c("r1", "a", "r3"), c("c1", "c2", "c3"))
+  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r2")), margin = 1) %>% sort_rows_cols(margin = 1, roworder = dimnames(expected)[[1]]), expected)
+  
+  # Aggregate with a map that contains rows that don't exist.
+  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r4", "r5", "42", "supercalifragilisticexpialidocious")), margin = 1), m)
+})
+
+
+test_that("aggregate works as expected for NULL aggregation_map", {
+  m <- matrix(1:9, nrow = 3, byrow = TRUE,
+              dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
+  expected <- matrix(c(11, 13, 15,
+                       1, 2, 3), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
+  # Nothing should change, because we're asking for aggregation by columns which have no repeated names.
+  expect_equal(aggregate_byname(m, margin = 2), m)
+  # Now we should get the expected result
+  expect_equal(aggregate_byname(m, margin = 1), expected)
+  # And, again should get the expected result, because we're asking for margin = c(1, 2), the default
+  expect_equal(aggregate_byname(m), expected)
+  
+  m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e1 <- m1
+  expect_equal(aggregate_byname(m1), e1)
+  expect_equal(aggregate_byname(list(m1)), list(e1))
+  
+  # Now aggregate on both rows and columns when some names are duplicated in both rows and cols.
+  # First, try to aggregate on rows.
+  m2 <- matrix(1:9, nrow = 3, byrow = TRUE,
+               dimnames = list(c("r1", "a", "a"), c("b", "b", "c3")))
+  expected2 <- matrix(c(11, 13, 15,
+                        1, 2, 3), nrow = 2, byrow = TRUE, dimnames = list(c("a", "r1"), c("b", "b", "c3")))
+  expect_equal(aggregate_byname(m2, margin = 1), expected2)
+  
+  # Now try to aggregate on columns
+  expected3 <- matrix(c(3, 3,
+                        9, 6,
+                        15, 9), nrow = 3, byrow = TRUE, dimnames = list(c("r1", "a", "a"), c("b", "c3")))
+  expect_equal(aggregate_byname(m2, margin = 2), expected3)
+  
+  # Now try to aggregate both rows and columns.
+  expected4 <- matrix(c(24, 15,
+                        3, 3), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("a", "r1"), c("b", "c3")))
+  expect_equal(aggregate_byname(m2), expected4)
+})
+
+
+test_that("aggregate works as expected for lists", {
+  m <- matrix(1:9, nrow = 3, byrow = TRUE,
+              dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
+  expected <- matrix(c(11, 13, 15,
+                       1, 2, 3), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
+  expect_equal(aggregate_byname(list(m, m, m)), list(expected, expected, expected))
+
+  expect_equal(aggregate_byname(list(m, m), margin = list(c(1, 2))), list(expected, expected))
+
+  # Also check that row and column type are preserved
+  m2 <- matrix(1:9, nrow = 3, byrow = TRUE, 
+               dimnames = list(c("b", "a", "a"), c("e", "d", "d"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected2 <- matrix(c(28, 11,
+                        5, 1), nrow = 2, byrow = TRUE, 
+                      dimnames = list(c("a", "b"), c("d", "e"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(aggregate_byname(m2), expected2)
+  expect_equal(aggregate_byname(list(m2)), list(expected2))
+  expect_equal(aggregate_byname(list(m2, m2), margin = list(c(1, 2))), list(expected2, expected2))
+  expect_equal(aggregate_byname(list(m2, m2, m2, m2)), list(expected2, expected2, expected2, expected2))
+})
+
+
+test_that("aggregate works when all rows collapse", {
+  m <- matrix(1:6, byrow = TRUE, nrow = 2, 
+              dimnames = list(c("a", "a"), c("c1", "c2", "c3")))
+  e <- matrix(c(5, 7, 9), byrow = TRUE, nrow = 1, 
+              dimnames = list(c("a"), c("c1", "c2", "c3")))
+  expect_equal(aggregate_byname(m), e)
+})
+
+
+test_that("aggregate works when aggregating all rows with an aggregation map", {
+  m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
+               dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3 <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
+               dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Aggregate all rows
+  am <- list(new_row = c("r1", "r2"))
+  a3 <- aggregate_byname(m3, aggregation_map = am, margin = 1)
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e3)
+})
+
+
+test_that("aggregate works as expected in data frames", {
+  m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e1 <- m1
+  m2 <- matrix(1:4, byrow = TRUE, nrow = 2, 
+               dimnames = list(c("a", "a"), c("a", "a")))
+  e2row <- matrix(c(4, 6), byrow = TRUE, nrow = 1, 
+                  dimnames = list(c("a"), c("a", "a")))
+  e2col <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "a"), c("a")))
+  e2both <- matrix(10, nrow = 1,
+               dimnames = list(c("a"), c("a")))
+  m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
+               dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3row <- matrix(c(11, 13, 15, 
+                    1, 2, 3), byrow = TRUE, nrow = 2,
+                  dimnames = list(c("r1", "r2"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3col <- matrix(c(5, 1, 
+                    11, 4, 
+                    17, 7), byrow = TRUE, nrow = 3, 
+                  dimnames = list(c("r2", "r1", "r1"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e3both <- matrix(c(28, 11, 
+                     5, 1), byrow = TRUE, nrow = 2, 
+                   dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(aggregate_byname(m2, margin = 1), e2row)
+  expect_equal(aggregate_byname(m3, margin = 1), e3row)
+  expect_equal(aggregate_byname(m3, margin = c(1, 2)), e3both)
+  
+  DF <- tibble::tibble(m = list(m1, m1, m1, m2, m2, m2, m3, m3, m3), 
+                       margin = list(1, 2, c(1,2), 1, 2, c(1, 2), 1, 2, c(1, 2)), 
+                       expected = list(e1, e1, e1, e2row, e2col, e2both, e3row, e3col, e3both))
+  
+  expect_equal(aggregate_byname(DF$m, margin = DF$margin), DF$expected)
+  
+  res <- DF %>% 
+    dplyr::mutate(
+      actual = aggregate_byname(m, margin = margin), 
+      equal = all.equal(actual, expected)
+    )
+  expect_true(all(res$equal))
+  
+  # Now add an aggregation map
+  am <- list(new_row = c("r1", "r2"))
+  e4row <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
+                  dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  e4col <- m3
+  e4both <- matrix(c(28, 11, 
+                     5, 1), byrow = TRUE, nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e4row)
+  # The next call should fail, because we're 
+  # trying to aggregate on columns, but
+  # we're using an aggregation_map designed for rows.
+  # The aggregation fails to produce any changes in the data frame.
+  # When the aggregate_byname function tries to sort the columns, 
+  # it encounters duplicated row names and fails.
+  expect_error(aggregate_byname(m3, aggregation_map = am, margin = 2), "Row names not unique. Duplicated row names are: c1")
+  # The next call should fail, because we're trying to aggregate on both rows and columns (margin = c(1, 2)), but
+  # the aggregation_map only aggregates by rows.
+  # When we try to sum across both margins, 
+  # there is a duplicate name ("c1"), which causes a problem.
+  expect_error(aggregate_byname(m3, aggregation_map = am, margin = c(1, 2)), "Row names not unique. Duplicated row names are: c1")
+  
+  # The next call should work.
+  expect_equal(aggregate_byname(m3), e4both)
+  
+  DF2 <- tibble::tibble(
+    m = list(m3, m3, m3), 
+    margin = list(1, 2, c(1, 2)), 
+    expected = list(e4row, e3col, e4both), 
+    am = list(am, NULL, NULL)
+  )
+  res2 <- DF2 %>% 
+    dplyr::mutate(
+      actual = aggregate_byname(m, margin = margin, aggregation_map = am), 
+      equal = all.equal(actual, expected)
+    )
+  expect_true(all(res2$equal))
+})
+
+
+test_that("aggregate works when removing multiple rows", {
+  a <- matrix(1:4, nrow = 4, dimnames = list(c("a", "a", "b", "b"), "c1"))
+  e <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "b"), "c1"))
+  expect_equal(aggregate_byname(a), e)
+})
+
+
+test_that("aggregate_to_pref_suff_byname() works as expected", {
+  m <- matrix((1:9), byrow = TRUE, nrow = 3, 
+              dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
+  # Aggregate by prefixes should do no more than rename, because all prefixes are different
+  expect_equal(aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix"), 
+               rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix"))
+  # Aggregate by suffixes should do a lot, because several prefixes are same.
+  expect_equal(aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix"), 
+               m %>% 
+                 rename_to_pref_suff_byname(sep = " -> ", keep = "suffix") %>% 
+                 aggregate_byname())
 })

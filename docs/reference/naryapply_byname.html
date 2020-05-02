@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Apply a function "by name" to any number of operands — naryapply_byname" />
 <meta property="og:description" content="Applies FUN to all operands in ....
-Other arguments have similar meaning as binaryapply_byname.
+Other arguments have similar meaning as binaryapply_byname().
 See details for more information." />
 
 
@@ -74,7 +74,7 @@ See details for more information." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@ See details for more information." />
 
     <div class="ref-description">
     <p>Applies <code>FUN</code> to all operands in <code>...</code>.
-Other arguments have similar meaning as <code><a href='binaryapply_byname.html'>binaryapply_byname</a></code>.
+Other arguments have similar meaning as <code><a href='binaryapply_byname.html'>binaryapply_byname()</a></code>.
 See details for more information.</p>
     </div>
 
@@ -165,16 +165,16 @@ See details for more information.</p>
     </tr>
     <tr>
       <th>match_type</th>
-      <td><p>one of "<code>all</code>", "<code>matmult</code>", or "<code>none</code>".
+      <td><p>one of "all", "matmult", or "none".
 When <code>...</code> are matrices,
-"<code>all</code>" (the default) indicates that
+"all" (the default) indicates that
 rowtypes of all <code>...</code> matrices must match and
 coltypes of all <code>...</code> matrices must match.
-If "<code>matmult</code>",
+If "matmult",
 the coltype of the first operand must match the rowtype of the second operand
 for every sequential invocation of <code>FUN</code>.
-If "<code>none</code>",
-neither coltypes nor rowtypes are checked by <code>naryapply_byname</code>.</p></td>
+If "none",
+neither coltypes nor rowtypes are checked by <code>naryapply_byname()</code>.</p></td>
     </tr>
     <tr>
       <th>set_rowcoltypes</th>
@@ -201,29 +201,29 @@ However, if <code>FUN</code> takes over this responsibility, set to <code>FALSE<
 
     <p>If only one <code>...</code> argument is supplied,
 <code>FUN</code> must be capable of handling one argument, and
-the call is routed to <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code>.
-When <code>set_rolcoltypes</code> is <code>TRUE</code>,
-the <code>rowcoltypes</code> argument of <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code> is set to "<code>all</code>",
+the call is routed to <code><a href='unaryapply_byname.html'>unaryapply_byname()</a></code>.
+When <code>set_rowcoltypes</code> is <code>TRUE</code>,
+the <code>rowcoltypes</code> argument of <code><a href='unaryapply_byname.html'>unaryapply_byname()</a></code> is set to "all",
 but when <code>set_rowcoltypes</code> is <code>FALSE</code>,
-the <code>rowcoltypes</code> argument of <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code> is set to "<code>none</code>".
-If finer control is desired, the caller should use <code><a href='unaryapply_byname.html'>unaryapply_byname</a></code> directly.
+the <code>rowcoltypes</code> argument of <code><a href='unaryapply_byname.html'>unaryapply_byname()</a></code> is set to "none".
+If finer control is desired, the caller should use <code><a href='unaryapply_byname.html'>unaryapply_byname()</a></code> directly.
 If more than one argument is passed in <code>...</code>,
-<code>FUN</code> must be a binary function, but its use in by <code>naryapply_byname</code> is "n-ary."
+<code>FUN</code> must be a binary function, but its use in by <code>naryapply_byname()</code> is "n-ary."
 Arguments <code>match_type</code>, <code>set_rowcoltypes</code>, and <code>.organize</code>
-have same meaning as for <code><a href='binaryapply_byname.html'>binaryapply_byname</a></code>.
+have same meaning as for <code><a href='binaryapply_byname.html'>binaryapply_byname()</a></code>.
 Thus, all of the operands in <code>...</code> must obey the rules of type matching
 when <code>match_type</code> is <code>TRUE</code>.</p>
-<p><code>naryapply_byname</code> and <code><a href='cumapply_byname.html'>cumapply_byname</a></code> are similar.
+<p><code>naryapply_byname()</code> and <code><a href='cumapply_byname.html'>cumapply_byname()</a></code> are similar.
 Their differences can be described by considering a data frame.
-<code>naryapply_byname</code> applies <code>FUN</code> to several columns (variables) of the data frame.
-For example, <code><a href='sum_byname.html'>sum_byname</a></code> applied to several variables gives another column
+<code>naryapply_byname()</code> applies <code>FUN</code> to several columns (variables) of the data frame.
+For example, <code><a href='sum_byname.html'>sum_byname()</a></code> applied to several variables gives another column
 containing the sums across each row of the data frame.
-<code><a href='cumapply_byname.html'>cumapply_byname</a></code> applies <code>FUN</code> to successive entries in a single column.
-For example <code><a href='sum_byname.html'>sum_byname</a></code> applied to a single column gives the sum of all numbers in that column.</p>
+<code><a href='cumapply_byname.html'>cumapply_byname()</a></code> applies <code>FUN</code> to successive entries in a single column.
+For example <code><a href='sum_byname.html'>sum_byname()</a></code> applied to a single column gives the sum of all numbers in that column.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>naryapply_byname</span>(<span class='kw'>FUN</span> <span class='kw'>=</span> <span class='no'>sum_byname</span>, <span class='fl'>2</span>, <span class='fl'>3</span>)</div><div class='output co'>#&gt; [1] 5</div><div class='input'><span class='fu'>naryapply_byname</span>(<span class='kw'>FUN</span> <span class='kw'>=</span> <span class='no'>sum_byname</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, -<span class='fl'>4</span>, -<span class='fl'>3</span>, -<span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='co'># Routes to unaryapply_byname</span>
-<span class='fu'>naryapply_byname</span>(<span class='kw'>FUN</span> <span class='kw'>=</span> <span class='no'>`^`</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>), <span class='kw'>.FUNdots</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>naryapply_byname</span>(<span class='kw'>FUN</span> <span class='kw'>=</span> <span class='no'>`^`</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>), <span class='kw'>.FUNdots</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>2</span>))</div><div class='output co'>#&gt; [[1]]
 #&gt; [1] 1
 #&gt; 
 #&gt; [[2]]

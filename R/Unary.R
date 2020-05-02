@@ -217,14 +217,17 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #'
 #' Creates an identity matrix (\strong{I}) or vector (\strong{i}) of same size and with same names and
 #' same row and column types as \code{a}.
-#' If \code{margin = 1}, makes a column matrix filled with \code{1}s. 
-#' Row names and type are taken from row names and type of \code{a}.
-#' Column name and type are same as column type of \code{a}.
-#' If \code{margin = 2}, make a row matrix filled with \code{1}s.
-#' Column names and type are taken from column name and type of \code{a}.
-#' Row name and type are same as row type of \code{a}.
-#' If \code{c(1,2)} (the default), make an identity matrix with \code{1}s on the diagonal.
-#' Row and column names are sorted on output.
+#' 
+#' Behaviour for different values of `margin` are as follows:
+#' 
+#'   * If \code{margin = 1}, makes a column matrix filled with \code{1}s. 
+#'     Row names and type are taken from row names and type of \code{a}.
+#'     Column name and type are same as column type of \code{a}.
+#'   * If \code{margin = 2}, make a row matrix filled with \code{1}s.
+#'     Column names and type are taken from column name and type of \code{a}.
+#'     Row name and type are same as row type of \code{a}.
+#'   * If \code{list(c(1,2))} (the default), make an identity matrix with \code{1}s on the diagonal.
+#'     Row and column names are sorted on output.
 #'
 #' @param a the matrix whose names and dimensions are to be preserved in an identity matrix or vector
 #' @param margin determines whether an identity vector or matrix is returned. See details.
@@ -245,7 +248,9 @@ hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
 #' identize_byname(N)
 #' # This also works with lists
 #' identize_byname(list(M, M))
-identize_byname <- function(a, margin = c(1,2)){
+identize_byname <- function(a, margin = c(1,2)) {
+  margin <- prep_vector_arg(a, margin)
+
   identize_func <- function(a, margin){
     if (inherits(a, "numeric") & length(a) == 1) {
       # Assume we have a single number here
@@ -272,13 +277,13 @@ identize_byname <- function(a, margin = c(1,2)){
       stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
     }
     
-    if (margin == 1)  {
+    if (1 %in% margin)  {
       # Return a column vector containing 1's
       return(matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1) %>% 
                setrownames_byname(rownames(a)) %>% setcolnames_byname(coltype(a)) %>% 
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     }
-    if (margin == 2) {
+    if (2 %in% margin) {
       # Return a row vector containing 1's
       return(matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a)) %>% 
                setrownames_byname(rowtype(a)) %>% setcolnames_byname(colnames(a)) %>% 
@@ -471,6 +476,8 @@ matricize_byname <- function(a, sep = " -> ") {
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
 fractionize_byname <- function(a, margin){
+  margin <- prep_vector_arg(a, margin)
+
   fractionize_func <- function(a, margin){
     if (!inherits(a, "matrix") && !inherits(a, "data.frame")) {
       # Assume we have a single number here
@@ -493,13 +500,13 @@ fractionize_byname <- function(a, margin){
       stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
     }
     
-    if (margin == 1) {
+    if (1 %in% margin) {
       # Divide each entry by its row sum
       # Do this with (a*i)_hat_inv * a
       # return(matrixproduct_byname(a %>% rowsums_byname %>% hatize_byname %>% invert_byname, a))
       return(sweep(a, margin, rowSums(a), `/`))
     }
-    if (margin == 2) {
+    if (2 %in% margin) {
       # Divide each entry by its column sum
       # Do this with a * (i^T * a)_hat_inv
       # return(matrixproduct_byname(a, colsums_byname(a) %>% hatize_byname %>% invert_byname))
@@ -1112,4 +1119,197 @@ any_byname <- function(a){
     any(a)
   }
   unaryapply_byname(FUN = any_func, a = a, rowcoltypes = "none")
+}
+
+
+#' Aggregate rows and columns in a matrix
+#' 
+#' Rows (`margin  1`), columns (`margin = 2`), or both (`margin = c(1, 2)`, the default)
+#' are aggregated according to `aggregation_map`.
+#' 
+#' When `aggregation_map` is `NULL` (the default), 
+#' rows (or columns or both) of same name are aggregated together. 
+#' 
+#' If `aggregation_map` is not `NULL`, it must be a named list.
+#' The name of each `aggregation_map` item is the name of a row or column in `a` that will contain the specified aggregation.
+#' The value of each item in `aggregation_map` must be a vector of names of rows or columns in `a`.
+#' The names in the value are aggregated and inserted into `a` with the name of the value.
+#' For example `aggregation_map = list(new_row = c("r1", "r2"))` 
+#' will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row 
+#' whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
+#' 
+#' The items in `aggregation_map` are interpreted as regular expressions, and 
+#' they are escaped using `Hmisc::escapeRegex()` prior to use.
+#' 
+#' Note that aggregation on one margin only will sort only the aggregated margin, because
+#' the other margin is not guaranteed to have unique names.
+#'
+#' @param a a matrix or list of matrices whose rows or columns are to be aggregated
+#' @param aggregation_map a named list of rows or columns to be aggregated (or `NULL`). See `details`.
+#' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both
+#' @param pattern_type See `make_pattern()`.
+#'
+#' @return a version of `a` with aggregated rows and/or columns
+#' 
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' library(tibble)
+#' m <- matrix(1:9, byrow = TRUE, nrow = 3, 
+#'             dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' # Aggregate all rows by establishing an aggregation map (am)
+#' am <- list(new_row = c("r1", "r2"))
+#' aggregate_byname(m, aggregation_map = am, margin = 1)
+#' # aggregate_byname() also works with lists and in data frames
+#' m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1")))
+#' m2 <- matrix(1:4, byrow = TRUE, nrow = 2, 
+#'              dimnames = list(c("a", "a"), c("a", "a")))
+#' m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
+#'              dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1")))
+#' DF <- tibble(m = list(m1, m1, m1, m2, m2, m2, m3, m3, m3), 
+#'              margin = list(1, 2, c(1,2), 1, 2, c(1, 2), 1, 2, c(1, 2))) %>% 
+#'   mutate(
+#'     aggregated = aggregate_byname(m, margin = margin), 
+#'   )
+#' m1
+#' DF$aggregated[[1]] # by rows
+#' DF$aggregated[[2]] # by cols
+#' DF$aggregated[[3]] # by rows and cols
+#' m2
+#' DF$aggregated[[4]] # by rows
+#' DF$aggregated[[5]] # by cols
+#' DF$aggregated[[6]] # by rows and cols
+#' m3
+#' DF$aggregated[[7]] # by rows
+#' DF$aggregated[[8]] # by cols
+#' DF$aggregated[[9]] # by rows and cols
+aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), pattern_type = "exact") {
+  margin <- prep_vector_arg(a, margin)
+  
+  agg_func <- function(a, aggregation_map, margin, pattern_type) {
+    # If we get here, a should be a single matrix.
+    assertthat::assert_that(all(margin %in% c(1, 2)))
+    # Create our own aggregation_map if it is NULL
+    if (is.null(aggregation_map)) {
+      rcnames <- list()
+      if (1 %in% margin) {
+        rcnames[["rnames"]] <- rownames(a)
+      }
+      if (2 %in% margin) {
+        rcnames[["cnames"]] <- colnames(a)
+      }
+      aggregation_map <- lapply(rcnames, FUN = function(x) {
+        # x is one of the sets of row or column names
+        # Look for all duplicated names in x
+        dupes <- x[duplicated(x)]
+        if (length(dupes) == 0) {
+          return(NULL)
+        }
+        # Get rid of extras to get the list of names to aggregate
+        names_to_aggregate <- unique(dupes)
+        names_to_aggregate <- magrittr::set_names(names_to_aggregate, names_to_aggregate)
+        return(names_to_aggregate)
+      }) %>% 
+        magrittr::set_names(NULL) %>% 
+        unique() %>% 
+        unlist()
+      # If we still have a NULL aggregation_map (i.e., we didn't find any rows or cols that need to be aggregated),
+      # just return our original matrix (a).
+      if (is.null(aggregation_map)) {
+        return(a)
+      }
+    }
+    out <- a
+    if (2 %in% margin) {
+      # Want to aggregate columns.
+      # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
+      out <- t(a) %>% 
+        agg_func(aggregation_map = aggregation_map, margin = 1, pattern_type = pattern_type) %>% 
+        t()
+    }
+    if (1 %in% margin) {
+      for (i in 1:length(aggregation_map)) {
+        # Isolate rows to be aggregated
+        select_pattern <- make_pattern(row_col_names = aggregation_map[[i]], pattern_type = pattern_type)
+        rows_to_aggregate <- select_rows_byname(out, retain_pattern = select_pattern)
+        if (!is.null(rows_to_aggregate)) {
+          # Sum the isolated rows (if any)
+          # aggregated_rows <- colsums_byname(rows_to_aggregate, rowname = names(aggregation_map[i]))
+          aggregated_rows <- colSums(rows_to_aggregate) %>% 
+            # Sadly, colSums simplifies 1-dimensional output to a vector. 
+            # So, remake the matrix.
+            matrix(nrow = 1, dimnames = list(c(names(aggregation_map[i])), c(colnames(rows_to_aggregate))))
+          # If we found rows to aggregate, remove from a the rows that were aggregated and ...
+          out <- out %>% 
+            select_rows_byname(remove_pattern = select_pattern)
+          if (is.null(out)) {
+            # If we aggregated all rows that were in a, out will be NULL. 
+            # In that case, we can return the aggregated rows that we pulled out.
+            out <- aggregated_rows
+          } else {
+            # out is not NULL, we we need to add the aggregated rows to the remaining rows.
+            out <- out %>% 
+              rbind(aggregated_rows) 
+          }
+        }
+      }
+      # Note: Can't sort on columns, because they are not guaranteed to be unique.
+      out <- sort_rows_cols(out, margin = 1)
+    }
+    return(out)
+  }
+
+  unaryapply_byname(agg_func, a = a, 
+                    .FUNdots = list(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type))
+}
+
+
+#' Aggregate to prefixes or suffixes
+#' 
+#' Row and column names are often constructed in the form 
+#' `prefix_open` `prefix` `prefix_close` `suffix_open` `suffix` `suffix_close`.
+#' This function performs aggregation by prefix or suffix.
+#' 
+#' This function is a convenience function, as it bundles sequential calls to two helper functions,
+#' `rename_to_pref_suff_byname()` and `aggregate_byname()`.
+#' All arguments are passed to the helper functions.
+#'
+#' @param a a matrix of list of matrices to be aggregated by prefix or suffix
+#' @param aggregation_map see `aggregate_byname()`
+#' @param sep see `rename_to_pref_suff_byname()`
+#' @param keep see `rename_to_pref_suff_byname()`
+#' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both
+#' @param prefix_open see `rename_to_pref_suff_byname()`
+#' @param prefix_close see `rename_to_pref_suff_byname()`
+#' @param suffix_open see `rename_to_pref_suff_byname()`
+#' @param suffix_close see `rename_to_pref_suff_byname()`
+#' @param pattern_type see `aggregate_byname()`
+#'
+#' @return an aggregated version of `a`
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix((1:9), byrow = TRUE, nrow = 3, 
+#'             dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
+#' m
+#' # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
+#' # Doing renaming like this (without also aggregating) is potentially dangerous, because  
+#' # some rows and some columns have same names.
+#' aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+#' # Aggregation by suffix reduces the number of rows and columns, 
+#' # because there are same suffixes in both rows and columns
+#' aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
+                                       sep = NULL, keep, margin = c(1, 2), 
+                                       prefix_open = "", prefix_close = sep, 
+                                       suffix_open = sep, suffix_close = "", 
+                                       pattern_type = "exact") {
+  a %>% 
+    rename_to_pref_suff_byname(sep = sep, keep = keep, margin = margin,
+                               prefix_open = prefix_open, prefix_close = prefix_close, 
+                               suffix_open = suffix_open, suffix_close = suffix_close) %>% 
+    aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
 }

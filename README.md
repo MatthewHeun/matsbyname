@@ -1,3 +1,5 @@
+matsbyname
+================
 
 <!-- *********** -->
 
@@ -22,8 +24,6 @@ Status](https://travis-ci.org/MatthewHeun/matsbyname.svg?branch=master)](https:/
 [![Coverage
 status](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://codecov.io/github/MatthewHeun/matsbyname?branch=master)
 <!-- badges: end -->
-
-# matsbyname
 
 The `R` package `matsbyname` enables matrix mathematics wherein
 operations are performed “by name” and row and column types are allowed.

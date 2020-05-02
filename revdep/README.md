@@ -2,21 +2,21 @@
 
 |field    |value                        |
 |:--------|:----------------------------|
-|version  |R version 3.6.3 (2020-02-29) |
+|version  |R version 4.0.0 (2020-04-24) |
 |os       |macOS Catalina 10.15.4       |
-|system   |x86_64, darwin15.6.0         |
+|system   |x86_64, darwin17.0           |
 |ui       |RStudio                      |
 |language |(EN)                         |
 |collate  |en_US.UTF-8                  |
 |ctype    |en_US.UTF-8                  |
 |tz       |America/Detroit              |
-|date     |2020-04-17                   |
+|date     |2020-05-01                   |
 
 # Dependencies
 
 |package      |old      |new      |Δ  |
 |:------------|:--------|:--------|:--|
-|matsbyname   |0.4.12   |0.4.13   |*  |
+|matsbyname   |0.4.13   |0.4.14   |*  |
 |acepack      |1.4.1    |1.4.1    |   |
 |assertthat   |0.2.1    |0.2.1    |   |
 |backports    |1.1.6    |1.1.6    |   |
@@ -57,7 +57,7 @@
 |mime         |0.9      |0.9      |   |
 |munsell      |0.5.0    |0.5.0    |   |
 |pillar       |1.4.3    |1.4.3    |   |
-|pkgbuild     |1.0.6    |1.0.6    |   |
+|pkgbuild     |1.0.7    |1.0.7    |   |
 |pkgconfig    |2.0.3    |2.0.3    |   |
 |pkgload      |1.0.2    |1.0.2    |   |
 |plogr        |0.2.0    |0.2.0    |   |
@@ -77,13 +77,13 @@
 |stringi      |1.4.6    |1.4.6    |   |
 |stringr      |1.4.0    |1.4.0    |   |
 |testthat     |2.3.2    |2.3.2    |   |
-|tibble       |3.0.0    |3.0.0    |   |
+|tibble       |3.0.1    |3.0.1    |   |
 |tidyselect   |1.0.0    |1.0.0    |   |
 |utf8         |1.1.4    |1.1.4    |   |
 |vctrs        |0.2.4    |0.2.4    |   |
 |viridis      |0.5.1    |0.5.1    |   |
 |viridisLite  |0.3.0    |0.3.0    |   |
-|withr        |2.1.2    |2.1.2    |   |
+|withr        |2.2.0    |2.2.0    |   |
 |xfun         |0.13     |0.13     |   |
 |yaml         |2.2.1    |2.2.1    |   |
 
