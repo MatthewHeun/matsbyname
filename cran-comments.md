@@ -1,31 +1,32 @@
 ## Context
-`matsbyname` v0.4.13 is a bug fix release.
+`matsbyname` v0.4.14 adds one new feature (aggregation) and fixes several bugs.
 See `NEWS.md` for details. 
 
 ## Test environments (8 in total) and R CMD check results
-* local macOS X install 10.15.4 (Catalina), R3.6.3
+* local macOS X install 10.15.4 (Catalina), R4.0.0
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* TRAVIS-CI: Ubuntu 16.04.6, R3.6.2
+* TRAVIS-CI: Ubuntu 16.04.6, R4.0.0
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
 * Windows (on win-builder):
     * `devtools::check_win_release()`, R version 3.6.3 (2020-02-29)
-        * ERRORs: 0
-        * WARNINGs: 0
-        * NOTEs: 0
-    * `devtools::check_win_devel()`, R version 4.0.0 RC (2020-04-17 r78247)
+        * ERRORs: 
+        * WARNINGs: 
+        * NOTEs: 
+    * `devtools::check_win_devel()`, R Under development (unstable) (2020-04-30 r78335)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
         * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
-            * ERRORs: 0
+            * ERRORs: 1
             * WARNINGs: 0
             * NOTEs: 0
+            * The error is: ERROR: dependencies 'dplyr', 'purrr', 'rlang', 'stringi', 'tibble' are not available for package 'matsbyname'  This appears to be a temporary configuration problem for this test rig only.
         * Ubuntu Linux 16.04 LTS, R-release, GCC
             * ERRORs: 0
             * WARNINGs: 0
@@ -35,7 +36,7 @@ See `NEWS.md` for details.
             * WARNINGs: 0
             * NOTEs: 0
 * GitHub actions:
-    * macOS-latest (3.6)
+    * macOS-latest, R version 3.6.3 (2020-02-29)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0

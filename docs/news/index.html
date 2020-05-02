@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
       </span>
     </div>
 
@@ -129,6 +129,28 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0414-2020-05-01" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.14">
+<a href="#matsbyname-0414-2020-05-01" class="anchor"></a>matsbyname 0.4.14 (2020-05-01)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Added additional tests for bug fixes and new features.
+<ul>
+<li>Now up to 829 tests, all passing.</li>
+<li>Test coverage remains at 100%.</li>
+</ul>
+</li>
+<li>Enhanced <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> to duplicate matrices when present as the vector_arg.</li>
+<li>Better error messages for <code><a href="../reference/sort_rows_cols.html">sort_rows_cols()</a></code>. Now telling which row or column names are duplicates.</li>
+<li>Added function <code>aggregate_pref_suff_byname()</code> that combines <code><a href="../reference/rename_to_pref_suff_byname.html">rename_to_pref_suff_byname()</a></code> and <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>.</li>
+<li>Fixed a crashing bug that appeared when <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code> collapsed all rows or columns into a single row or single column or both.</li>
+<li>Added new function <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code> which aggregates rows, columns, or both, according to an <code>aggregation_map</code>. I wanted to add this function for a long time, and I finally found a reason, namely the need to aggregate by prefixes or suffixes in the <code>IEATools</code> package. Furthermore, the <code>aggregation_map</code> idea seems to be solid. Note that <code>aggregation_map = NULL</code> (the default) aggregates rows with same names and columns with same names.</li>
+<li>Added function <code>rename_rowcol_to_pref_suff_byname()</code> which renames rows or columns to prefixes or suffixes in row and column names.</li>
+<li>Fixed a bug in <code><a href="../reference/clean_byname.html">clean_byname()</a></code> which caused a <code>NULL</code> response when unnamed rows or columns were present.</li>
+<li>Now using new <code><a href="../reference/prepare_.FUNdots.html">prepare_.FUNdots()</a></code> function in all <code>*apply_byname()</code> functions.</li>
+<li>Refactored new code for <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> into function <code><a href="../reference/prepare_.FUNdots.html">prepare_.FUNdots()</a></code>, so it can be used in other <code>*apply_byname()</code> functions.</li>
+</ul>
+</div>
     <div id="matsbyname-0413-2020-04-17" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.13">
 <a href="#matsbyname-0413-2020-04-17" class="anchor"></a>matsbyname 0.4.13 (2020-04-17)<small> 2020-04-18 </small>
