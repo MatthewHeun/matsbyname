@@ -168,7 +168,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' Rather, one should specify, say, `margin = list(c(1, 2)`
 #' to avoid ambiguity.
 #' If `a` is a list, 
-#' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,, 
+#' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,
 #' this function returns a list value for `vector_arg`.
 #' If `a` is not a list and `vector_arg` is a list, 
 #' this function returns an un-recursive, unlisted version of `vector_arg`.
