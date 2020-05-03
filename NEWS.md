@@ -1,3 +1,7 @@
+* Eliminated a warning in GitHub actions about `README.md` requiring
+  a nonempty `<title>` element.    
+
+
 # matsbyname 0.4.14 (2020-05-01)
 
 * Added additional tests for bug fixes and new features.
