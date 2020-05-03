@@ -1188,17 +1188,17 @@ any_byname <- function(a){
 aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), pattern_type = "exact") {
   margin <- prep_vector_arg(a, margin)
   
-  agg_func <- function(a, aggregation_map, margin, pattern_type) {
+  agg_func <- function(a_mat, aggregation_map, margin, pattern_type) {
     # If we get here, a should be a single matrix.
     assertthat::assert_that(all(margin %in% c(1, 2)))
     # Create our own aggregation_map if it is NULL
     if (is.null(aggregation_map)) {
       rcnames <- list()
       if (1 %in% margin) {
-        rcnames[["rnames"]] <- rownames(a)
+        rcnames[["rnames"]] <- rownames(a_mat)
       }
       if (2 %in% margin) {
-        rcnames[["cnames"]] <- colnames(a)
+        rcnames[["cnames"]] <- colnames(a_mat)
       }
       aggregation_map <- lapply(rcnames, FUN = function(x) {
         # x is one of the sets of row or column names
@@ -1218,14 +1218,14 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
       # If we still have a NULL aggregation_map (i.e., we didn't find any rows or cols that need to be aggregated),
       # just return our original matrix (a).
       if (is.null(aggregation_map)) {
-        return(a)
+        return(a_mat)
       }
     }
-    out <- a
+    out <- a_mat
     if (2 %in% margin) {
       # Want to aggregate columns.
       # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
-      out <- t(a) %>% 
+      out <- t(a_mat) %>% 
         agg_func(aggregation_map = aggregation_map, margin = 1, pattern_type = pattern_type) %>% 
         t()
     }
@@ -1261,7 +1261,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
     return(out)
   }
 
-  unaryapply_byname(agg_func, a = a, 
+  unaryapply_byname(agg_func, a, 
                     .FUNdots = list(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type))
 }
 
