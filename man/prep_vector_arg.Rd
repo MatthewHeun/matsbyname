@@ -23,7 +23,7 @@ the \verb{*_byname} functions to unary list of \code{a}.
 Rather, one should specify, say, \verb{margin = list(c(1, 2)}
 to avoid ambiguity.
 If \code{a} is a list,
-\code{vector_arg} is not a list and has length > 1 and length not equal to the length of a,,
+\code{vector_arg} is not a list and has length > 1 and length not equal to the length of a,
 this function returns a list value for \code{vector_arg}.
 If \code{a} is not a list and \code{vector_arg} is a list,
 this function returns an un-recursive, unlisted version of \code{vector_arg}.
