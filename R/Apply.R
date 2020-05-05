@@ -143,7 +143,10 @@ prepare_.FUNdots <- function(a, .FUNdots) {
                                              "Found length = ", 
                                              length(.FUNdots[[i]]), " for argument '", 
                                              names(.FUNdots)[[i]], 
-                                             "', which is a list."))
+                                             "', which is a list. ", 
+                                             "Consider wrapping argument '", 
+                                             names(.FUNdots)[[i]], 
+                                             "' in a list()."))
         if (len == 1) {
           # Replicate the item of .FUNdots to match length of a.
           .FUNdots[[i]] <- make_list(.FUNdots[[i]][[1]], n = length(a), lenx = 1)
