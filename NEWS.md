@@ -1,3 +1,15 @@
+* Added additional tests for new features.
+    * Now up to 876 tests, all passing.
+    * Test coverage remains at 100%.
+* New functions for manipulating names of rows and columns:
+  `notation_vec()`, 
+  `arrow_notation()`, 
+  `paren_notation()`,
+  `split_pref_suff()`,
+  `join_pref_suff()`,
+  `flip_pref_suff()`,
+  `switch_notation()`, and
+  `switch_notation_byname()`.
 * Eliminated a warning in GitHub actions about `README.md` requiring
   a nonempty `<title>` element.    
 
