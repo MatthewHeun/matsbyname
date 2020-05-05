@@ -1027,3 +1027,5 @@ logmean <- function(a, b, base = exp(1)){
   (a - b) / log(a/b, base = base)
 }
 
+
+
