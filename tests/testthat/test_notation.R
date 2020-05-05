@@ -163,9 +163,9 @@ test_that("switch_notation_byname works as expected", {
   colnames(e4) <- c("e -> f", "g -> h")
   e4 <- e4 %>% setrowtype("Industries -> Products") %>% setcoltype("Products -> Industries")
   expect_equal(switch_notation_byname(m4, 
-                                              from = paren_notation(), 
-                                              to = arrow_notation(), 
-                                              flip = TRUE), 
+                                      from = paren_notation(), 
+                                      to = arrow_notation(), 
+                                      flip = TRUE), 
                e4)
   
   # Try with a list

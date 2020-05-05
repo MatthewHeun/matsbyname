@@ -50,7 +50,7 @@
 #' @param margin `1` for rows, `2` for columns, or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
 #'
 #' @return for `notation_vec()`, `arrow_notation()`, and `paren_notation()`, 
-#'           a string list with named items `pref_start`, `pref_end`, `suff_start`, and `suff_end`;
+#'           a string vector with named items `pref_start`, `pref_end`, `suff_start`, and `suff_end`;
 #'         for `split_pref_suff()`, a string list with named items `pref` and `suff`; 
 #'         for `join_pref_suff()`, `slip_pref_suff()`, and `switch_notation()`, 
 #'           a string list in notation format specified by various `notation` arguments, including
@@ -62,14 +62,30 @@
 #' notation_vec()
 #' arrow_notation()
 #' paren_notation()
-#' 
+#' split_pref_suff("a -> b", notation = arrow_notation())
+#' flip_pref_suff("a [b]", notation = paren_notation())
+#' switch_notation("a -> b", from = arrow_notation(), to = paren_notation())
+#' switch_notation("a -> b", from = arrow_notation(), to = paren_notation(), 
+#'                 flip = TRUE)
+#' m <- matrix(c(1, 2, 
+#'               3, 4), nrow = 2, ncol = 2, byrow = TRUE, 
+#'             dimnames = list(c("b [a]", "d [c]"), c("f [e]", "h [g]"))) %>% 
+#'   setrowtype("Products [Industries]") %>% setcoltype("Industries [Products]")
+#' m
+#' switch_notation_byname(m, from = paren_notation(), to = arrow_notation(), 
+#'                        flip = TRUE)
+#' # Also works for lists.
+#' # Note that margin must be specified as a list here.
+#' switch_notation_byname(list(m, m), margin = list(c(1, 2)), 
+#'                        from = paren_notation(), 
+#'                        to = arrow_notation(), flip = TRUE)
 #' @name row-col-notation
 NULL
 
 
 #' @export
 #' @rdname row-col-notation
-notation_vec <- function(sep = "",
+notation_vec <- function(sep = " -> ",
                          pref_start = "", pref_end = "", 
                          suff_start = "", suff_end = "") {
   if (all(nchar(c(pref_start, pref_end, suff_start, suff_end)) == 0) & nchar(sep) != 0) {

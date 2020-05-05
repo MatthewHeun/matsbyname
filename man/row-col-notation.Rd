@@ -13,7 +13,7 @@
 \title{Row and column notation}
 \usage{
 notation_vec(
-  sep = "",
+  sep = " -> ",
   pref_start = "",
   pref_end = "",
   suff_start = "",
@@ -65,7 +65,7 @@ Default is \code{arrow_notation()}.}
 }
 \value{
 for \code{notation_vec()}, \code{arrow_notation()}, and \code{paren_notation()},
-a string list with named items \code{pref_start}, \code{pref_end}, \code{suff_start}, and \code{suff_end};
+a string vector with named items \code{pref_start}, \code{pref_end}, \code{suff_start}, and \code{suff_end};
 for \code{split_pref_suff()}, a string list with named items \code{pref} and \code{suff};
 for \code{join_pref_suff()}, \code{slip_pref_suff()}, and \code{switch_notation()},
 a string list in notation format specified by various \code{notation} arguments, including
@@ -111,5 +111,21 @@ E.g., "a -> b" in arrow notation means that "a" is the prefix and "b" is the suf
 notation_vec()
 arrow_notation()
 paren_notation()
-
+split_pref_suff("a -> b", notation = arrow_notation())
+flip_pref_suff("a [b]", notation = paren_notation())
+switch_notation("a -> b", from = arrow_notation(), to = paren_notation())
+switch_notation("a -> b", from = arrow_notation(), to = paren_notation(), 
+                flip = TRUE)
+m <- matrix(c(1, 2, 
+              3, 4), nrow = 2, ncol = 2, byrow = TRUE, 
+            dimnames = list(c("b [a]", "d [c]"), c("f [e]", "h [g]"))) \%>\% 
+  setrowtype("Products [Industries]") \%>\% setcoltype("Industries [Products]")
+m
+switch_notation_byname(m, from = paren_notation(), to = arrow_notation(), 
+                       flip = TRUE)
+# Also works for lists.
+# Note that margin must be specified as a list here.
+switch_notation_byname(list(m, m), margin = list(c(1, 2)), 
+                       from = paren_notation(), 
+                       to = arrow_notation(), flip = TRUE)
 }
