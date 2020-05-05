@@ -30,7 +30,7 @@
 #' `pref_start`, `pref_end`, `suff_start`, and `suff_end` are 
 #' set appropriately.
 #' 
-#' None of the strings in a notation list are considered part of the prefix or suffix.
+#' None of the strings in a notation vector are considered part of the prefix or suffix.
 #' E.g., "a -> b" in arrow notation means that "a" is the prefix and "b" is the suffix.
 #'
 #' @param sep a string separator between prefix and suffix. Default is " -> ".
