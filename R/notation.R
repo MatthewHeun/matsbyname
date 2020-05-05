@@ -13,7 +13,8 @@
 #'                    separator (" -> ") between prefix and suffix.
 #' * `arrow_notation()` builds a list of notation symbols that provides an arrow separator (" -> ")
 #'                      between prefix and suffix.
-#' * `bracket_notation()` builds a list of notation symbols that provides square brackets ("prefix \[suffix\]") around the suffix.
+#' * `paren_notation()` builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
+#' * `bracket_notation()` builds a list of notation symbols that provides square brackets around the suffix ("prefix \[suffix\]").
 #' * `split_pref_suff()` splits prefixes from suffixes, returning each in a list with names `pref` and `suff`. 
 #'                       If no delimiters are found, `x` is returned in the `pref` item, unmodified.
 #' * `join_pref_suff()` joins prefixes and suffixes, the inverse of `split_pref_suff()`.

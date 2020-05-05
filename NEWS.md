@@ -5,6 +5,7 @@
   `notation_vec()`, 
   `arrow_notation()`, 
   `paren_notation()`,
+  `bracket_notation()`,
   `split_pref_suff()`,
   `join_pref_suff()`,
   `flip_pref_suff()`,

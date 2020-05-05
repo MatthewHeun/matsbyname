@@ -89,7 +89,8 @@ By default, it builds a list of notation symbols that provides an arrow
 separator (" -> ") between prefix and suffix.
 \item \code{arrow_notation()} builds a list of notation symbols that provides an arrow separator (" -> ")
 between prefix and suffix.
-\item \code{bracket_notation()} builds a list of notation symbols that provides square brackets ("prefix [suffix]") around the suffix.
+\item \code{paren_notation()} builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
+\item \code{bracket_notation()} builds a list of notation symbols that provides square brackets around the suffix ("prefix [suffix]").
 \item \code{split_pref_suff()} splits prefixes from suffixes, returning each in a list with names \code{pref} and \code{suff}.
 If no delimiters are found, \code{x} is returned in the \code{pref} item, unmodified.
 \item \code{join_pref_suff()} joins prefixes and suffixes, the inverse of \code{split_pref_suff()}.
