@@ -4,12 +4,12 @@
 \alias{matricize_byname}
 \title{Matricize a vector}
 \usage{
-matricize_byname(a, notation_list)
+matricize_byname(a, notation)
 }
 \arguments{
 \item{a}{a row (column) vector to be converted to a matrix based on its row (column) names.}
 
-\item{notation_list}{a string vector created by \code{row_col_notation_list()} that identifies the notation for row and column names.}
+\item{notation}{a string vector created by \code{notation_vec()} that identifies the notation for row and column names.}
 }
 \value{
 a matrix created from vector \code{a}.
@@ -28,5 +28,5 @@ v <- matrix(c(1,
                                                   "p2 -> i2"))) \%>\% 
   setrowtype("Products -> Industries")
 # Default separator is " -> ".
-matricize_byname(v, notation_list = arrow_notation_list())
+matricize_byname(v, notation = arrow_notation())
 }

@@ -4,12 +4,12 @@
 \alias{vectorize_byname}
 \title{Vectorize a matrix}
 \usage{
-vectorize_byname(a, notation_list)
+vectorize_byname(a, notation)
 }
 \arguments{
 \item{a}{the matrix to be vectorized.}
 
-\item{notation_list}{a string list created by \code{row_col_notation_list()}.}
+\item{notation}{a string list created by \code{notation_vec()}.}
 }
 \value{
 a column vector containing all elements of \code{a}, with row names assigned as "rowname \code{sep} colname".
@@ -32,9 +32,9 @@ m <- matrix(c(1, 5,
             dimnames = list(c("p1", "p2"), c("i1", "i2"))) \%>\% 
   setrowtype("Products") \%>\% setcoltype("Industries")
 m
-vectorize_byname(m, notation_list = arrow_notation_list())
+vectorize_byname(m, notation = arrow_notation())
 # If a single number is provided, the number will be returned as a 1x1 column vector 
 # with some additional attributes.
-vectorize_byname(42, notation_list = arrow_notation_list())
-attributes(vectorize_byname(42, notation_list = arrow_notation_list()))
+vectorize_byname(42, notation = arrow_notation())
+attributes(vectorize_byname(42, notation = arrow_notation()))
 }

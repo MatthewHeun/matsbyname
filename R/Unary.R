@@ -309,7 +309,7 @@ identize_byname <- function(a, margin = c(1,2)) {
 #' the resulting vector is re-matricized with the [matricize_byname()] function later.
 #'
 #' @param a the matrix to be vectorized.
-#' @param notation_list a string list created by `row_col_notation_list()`.
+#' @param notation a string list created by `notation_vec()`.
 #'
 #' @return a column vector containing all elements of `a`, with row names assigned as "rowname `sep` colname".
 #' 
@@ -322,19 +322,19 @@ identize_byname <- function(a, margin = c(1,2)) {
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' m
-#' vectorize_byname(m, notation_list = arrow_notation_list())
+#' vectorize_byname(m, notation = arrow_notation())
 #' # If a single number is provided, the number will be returned as a 1x1 column vector 
 #' # with some additional attributes.
-#' vectorize_byname(42, notation_list = arrow_notation_list())
-#' attributes(vectorize_byname(42, notation_list = arrow_notation_list()))
-vectorize_byname <- function(a, notation_list) {
+#' vectorize_byname(42, notation = arrow_notation())
+#' attributes(vectorize_byname(42, notation = arrow_notation()))
+vectorize_byname <- function(a, notation) {
   if (is.null(a)) {
     return(NULL)
   }
-  if (is.null(notation_list)) {
+  if (is.null(notation)) {
     return(a)
   }
-  vectorize_func <- function(a_mat, notation_list) {
+  vectorize_func <- function(a_mat, notation) {
     # At this point, a_mat should be a single matrix.
     if (!is.numeric(a_mat)) {
       stop("a is not numeric in vectorize_byname")
@@ -346,11 +346,11 @@ vectorize_byname <- function(a, notation_list) {
       n_entries <- 1
     }
     dim(vec) <- c(n_entries, 1)
-    # Figure out names, based on notation_list
+    # Figure out names, based on notation
     new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>% 
       lapply(FUN = function(ps) {
         ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
-          join_pref_suff(notation_list = notation_list)
+          join_pref_suff(notation = notation)
       })
     
     # Put names on the rows of the vector
@@ -360,21 +360,21 @@ vectorize_byname <- function(a, notation_list) {
     
     # Change the rowtype and coltype if both are not NULL
     if (!is.null(rt <- rowtype(a_mat)) & !is.null(ct <- coltype(a_mat))) {
-      new_rowtype <- join_pref_suff(list(pref = rt, suff = ct), notation_list = notation_list)
+      new_rowtype <- join_pref_suff(list(pref = rt, suff = ct), notation = notation)
       vec <- vec %>% 
         setrowtype(new_rowtype) %>% 
         setcoltype(NULL)
     }
     return(vec)
   }
-  unaryapply_byname(vectorize_func, a = a, .FUNdots = list(notation_list = notation_list), rowcoltypes = "none")
+  unaryapply_byname(vectorize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
 }
 
 
 #' Matricize a vector
 #'
 #' @param a a row (column) vector to be converted to a matrix based on its row (column) names.
-#' @param notation_list a string vector created by `row_col_notation_list()` that identifies the notation for row and column names.
+#' @param notation a string vector created by `notation_vec()` that identifies the notation for row and column names.
 #'
 #' @return a matrix created from vector `a`.
 #' 
@@ -391,9 +391,9 @@ vectorize_byname <- function(a, notation_list) {
 #'                                                   "p2 -> i2"))) %>% 
 #'   setrowtype("Products -> Industries")
 #' # Default separator is " -> ".
-#' matricize_byname(v, notation_list = arrow_notation_list())
-matricize_byname <- function(a, notation_list) {
-  matricize_func <- function(a_mat, notation_list) {
+#' matricize_byname(v, notation = arrow_notation())
+matricize_byname <- function(a, notation) {
+  matricize_func <- function(a_mat, notation) {
     # At this point, we should have a single matrix a_mat.
     # Make sure we have the right number of dimensions, i.e. 2.
     dimsa_mat <- dim(a_mat)
@@ -405,13 +405,13 @@ matricize_byname <- function(a, notation_list) {
         (dimsa_mat[[1]] == 1 & dimsa_mat[[2]] == 1 & is.null(dimnames(a_mat)[[1]]))) {
       # This is a row vector and not a 1x1 "vector".
       # Transpose to a column vector, then re-call this function.
-      return(transpose_byname(a_mat) %>% matricize_func(notation_list))
+      return(transpose_byname(a_mat) %>% matricize_func(notation))
     }
     # If we get here, we know we have a column vector.
     # Gather row names of the vector.
     rownames_a <- dimnames(a_mat)[[1]]
-    # Split row names by notation_list
-    matrix_row_col_names <- split_pref_suff(rownames_a, notation_list = notation_list)
+    # Split row names by notation
+    matrix_row_col_names <- split_pref_suff(rownames_a, notation = notation)
     if (nrow(a_mat) > 1) {
       # We have more than 1 row of names.
       # Thus, we need to transpose the list.
@@ -466,10 +466,10 @@ matricize_byname <- function(a, notation_list) {
     }
     # Add row and column types after splitting the rowtype of a_mat
     rt <- rowtype(a_mat)
-    rctypes <- split_pref_suff(rt, notation_list = notation_list)
+    rctypes <- split_pref_suff(rt, notation = notation)
     m %>% setrowtype(rctypes[["pref"]]) %>% setcoltype(rctypes[["suff"]])
   } 
-  unaryapply_byname(matricize_func, a = a, .FUNdots = list(notation_list = notation_list), rowcoltypes = "none")
+  unaryapply_byname(matricize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
 }
 
 
