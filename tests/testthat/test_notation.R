@@ -101,7 +101,7 @@ test_that("flip_pref_suff works as expected", {
 })
 
 
-test_that("switch_row_col_notation works as expected", {
+test_that("switch_notation works as expected", {
   # Start with a degenerate case
   expect_equal(switch_notation("a", from = arrow_notation(), to = paren_notation()), "a")
   expect_equal(switch_notation("a", from = paren_notation(), to = arrow_notation()), "a")
