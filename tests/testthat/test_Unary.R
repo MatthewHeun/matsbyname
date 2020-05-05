@@ -336,6 +336,8 @@ test_that("vectorize_byname works as expected", {
     setrowtype("Products -> Industries") %>% setcoltype(NULL)
   actual1 <- vectorize_byname(m1, notation = arrow_notation())
   expect_equal(actual1, expected1)
+  # Try with null notation
+  expect_equal(vectorize_byname(m1, notation = NULL), m1)
   # Try with a rectangular matrix
   m2 <- matrix(c(1, 2, 3,
                  4, 5, 6),
