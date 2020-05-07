@@ -350,7 +350,7 @@ vectorize_byname <- function(a, notation) {
     new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>% 
       lapply(FUN = function(ps) {
         ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
-          join_pref_suff(notation = notation)
+          paste_pref_suff(notation = notation)
       })
     
     # Put names on the rows of the vector
@@ -360,7 +360,7 @@ vectorize_byname <- function(a, notation) {
     
     # Change the rowtype and coltype if both are not NULL
     if (!is.null(rt <- rowtype(a_mat)) & !is.null(ct <- coltype(a_mat))) {
-      new_rowtype <- join_pref_suff(list(pref = rt, suff = ct), notation = notation)
+      new_rowtype <- paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
       vec <- vec %>% 
         setrowtype(new_rowtype) %>% 
         setcoltype(NULL)

@@ -17,7 +17,7 @@
 #' * `bracket_notation()` builds a list of notation symbols that provides square brackets around the suffix ("prefix \[suffix\]").
 #' * `split_pref_suff()` splits prefixes from suffixes, returning each in a list with names `pref` and `suff`. 
 #'                       If no delimiters are found, `x` is returned in the `pref` item, unmodified.
-#' * `join_pref_suff()` joins prefixes and suffixes, the inverse of `split_pref_suff()`.
+#' * `paste_pref_suff(()` paste0's prefixes and suffixes, the inverse of `split_pref_suff()`.
 #' * `flip_pref_suff()` switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 #'                      the suffix becomes the prefix.
 #'                      E.g., "a -> b" becomes "b -> a" or "a \[b\]" becomes "b \[a\]".
@@ -55,7 +55,7 @@
 #' @return for `notation_vec()`, `arrow_notation()`, and `bracket_notation()`, 
 #'           a string vector with named items `pref_start`, `pref_end`, `suff_start`, and `suff_end`;
 #'         for `split_pref_suff()`, a string list with named items `pref` and `suff`; 
-#'         for `join_pref_suff()`, `slip_pref_suff()`, and `switch_notation()`, 
+#'         for `paste_pref_suff()`, `slip_pref_suff()`, and `switch_notation()`, 
 #'           a string list in notation format specified by various `notation` arguments, including
 #'           `from`, and `to`, 
 #'         for `switch_row_col_notation_byname()`, matrices with row and column names with switched notation, 
@@ -170,7 +170,7 @@ split_pref_suff <- function(x, notation = arrow_notation()) {
 
 #' @export
 #' @rdname row-col-notation
-join_pref_suff <- function(ps = list(pref = pref, suff = suff), pref = NULL, suff = NULL, notation = arrow_notation()) {
+paste_pref_suff <- function(ps = list(pref = pref, suff = suff), pref = NULL, suff = NULL, notation = arrow_notation()) {
   join_func <- function(ps) {
     out <- paste0(notation[["pref_start"]], ps[["pref"]], notation[["pref_end"]])
     if (notation[["pref_end"]] != notation[["suff_start"]]) {
@@ -224,7 +224,7 @@ switch_notation <- function(x, from, to, flip = FALSE) {
     if (flip) {
       ps <- list(pref = ps$suff, suff = ps$pref)
     }
-    join_pref_suff(ps, notation = to)
+    paste_pref_suff(ps, notation = to)
   }
   
   if (length(x) > 1) {

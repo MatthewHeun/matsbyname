@@ -66,32 +66,32 @@ test_that("split_pref_suff works properly", {
 
 test_that("join_pref_suff works properly", {
   ps <- list(pref = "a", suff = "b")
-  expect_equal(join_pref_suff(ps, notation = arrow_notation()), "a -> b")
+  expect_equal(paste_pref_suff(ps, notation = arrow_notation()), "a -> b")
   # Make sure that they are the inverse of each other
-  expect_equal(join_pref_suff(ps, notation = arrow_notation()) %>% 
+  expect_equal(paste_pref_suff(ps, notation = arrow_notation()) %>% 
                  split_pref_suff(notation = arrow_notation()), ps)
   # Try with paren notation list
-  expect_equal(join_pref_suff(ps, notation = bracket_notation()) %>% 
+  expect_equal(paste_pref_suff(ps, notation = bracket_notation()) %>% 
                  split_pref_suff(notation = bracket_notation()), ps)
   # Try with a wacky notation list
   amp_nl <- notation_vec(sep = "&&&&&&&&")
-  expect_equal(join_pref_suff(ps, notation = amp_nl) %>% 
+  expect_equal(paste_pref_suff(ps, notation = amp_nl) %>% 
                  split_pref_suff(notation = amp_nl), ps)
   paren_nl <- notation_vec(pref_start = "(", pref_end = ")", 
                                     suff_start = "(", suff_end = ")")
-  expect_equal(join_pref_suff(ps, notation = paren_nl) %>% 
+  expect_equal(paste_pref_suff(ps, notation = paren_nl) %>% 
                  split_pref_suff(notation = paren_nl), ps)
   # Try to join lists
-  expect_equal(join_pref_suff(list(list(pref = "a", suff = "b"), list(pref = "c", suff = "d"))), list("a -> b", "c -> d"))
+  expect_equal(paste_pref_suff(list(list(pref = "a", suff = "b"), list(pref = "c", suff = "d"))), list("a -> b", "c -> d"))
   # Try to split then join lists
   joined <- list("a -> b", "c -> d")
   expect_equal(split_pref_suff(joined, notation = arrow_notation()) %>% 
-                 join_pref_suff(notation = arrow_notation()), 
+                 paste_pref_suff(notation = arrow_notation()), 
                joined)
   
   # Try with lists in the pref and suff arguments.
-  expect_equal(join_pref_suff(pref = "a", suff = "b", notation = arrow_notation()), "a -> b")
-  joined <- join_pref_suff(pref = list("a", "c"), suff = list("b", "d"), notation = arrow_notation())
+  expect_equal(paste_pref_suff(pref = "a", suff = "b", notation = arrow_notation()), "a -> b")
+  joined <- paste_pref_suff(pref = list("a", "c"), suff = list("b", "d"), notation = arrow_notation())
   expect_equal(joined, c("a -> b","c -> d"))
 })
 

@@ -7,7 +7,7 @@
 \alias{paren_notation}
 \alias{bracket_notation}
 \alias{split_pref_suff}
-\alias{join_pref_suff}
+\alias{paste_pref_suff}
 \alias{flip_pref_suff}
 \alias{switch_notation}
 \alias{switch_notation_byname}
@@ -29,7 +29,7 @@ bracket_notation(suff_start = " [", suff_end = "]")
 
 split_pref_suff(x, notation = arrow_notation())
 
-join_pref_suff(
+paste_pref_suff(
   ps = list(pref = pref, suff = suff),
   pref = NULL,
   suff = NULL,
@@ -79,7 +79,7 @@ Default is \code{arrow_notation()}.}
 for \code{notation_vec()}, \code{arrow_notation()}, and \code{bracket_notation()},
 a string vector with named items \code{pref_start}, \code{pref_end}, \code{suff_start}, and \code{suff_end};
 for \code{split_pref_suff()}, a string list with named items \code{pref} and \code{suff};
-for \code{join_pref_suff()}, \code{slip_pref_suff()}, and \code{switch_notation()},
+for \code{paste_pref_suff()}, \code{slip_pref_suff()}, and \code{switch_notation()},
 a string list in notation format specified by various \code{notation} arguments, including
 \code{from}, and \code{to},
 for \code{switch_row_col_notation_byname()}, matrices with row and column names with switched notation,
@@ -102,7 +102,7 @@ between prefix and suffix.
 \item \code{bracket_notation()} builds a list of notation symbols that provides square brackets around the suffix ("prefix [suffix]").
 \item \code{split_pref_suff()} splits prefixes from suffixes, returning each in a list with names \code{pref} and \code{suff}.
 If no delimiters are found, \code{x} is returned in the \code{pref} item, unmodified.
-\item \code{join_pref_suff()} joins prefixes and suffixes, the inverse of \code{split_pref_suff()}.
+\item \verb{paste_pref_suff(()} paste0's prefixes and suffixes, the inverse of \code{split_pref_suff()}.
 \item \code{flip_pref_suff()} switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 the suffix becomes the prefix.
 E.g., "a -> b" becomes "b -> a" or "a [b]" becomes "b [a]".
