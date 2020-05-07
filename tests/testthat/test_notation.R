@@ -88,6 +88,10 @@ test_that("join_pref_suff works properly", {
   expect_equal(split_pref_suff(joined, notation = arrow_notation()) %>% 
                  join_pref_suff(notation = arrow_notation()), 
                joined)
+  
+  # Try with lists in the pref and suff arguments.
+  joined <- join_pref_suff(pref = list("a", "c"), suff = list("b", "d"), notation = arrow_notation())
+  expect_equal(joined, c("a -> b","c -> d"))
 })
 
 
