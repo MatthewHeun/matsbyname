@@ -1498,11 +1498,11 @@ test_that("aggregate_to_pref_suff_byname() works as expected", {
   m <- matrix((1:9), byrow = TRUE, nrow = 3, 
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
   # Aggregate by prefixes should do no more than rename, because all prefixes are different
-  expect_equal(aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix"), 
-               rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix"))
+  expect_equal(aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation()), 
+               rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation()))
   # Aggregate by suffixes should do a lot, because several prefixes are same.
-  expect_equal(aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix"), 
+  expect_equal(aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation()), 
                m %>% 
-                 rename_to_pref_suff_byname(sep = " -> ", keep = "suffix") %>% 
+                 rename_to_pref_suff_byname(keep = "suffix", notation = arrow_notation()) %>% 
                  aggregate_byname())
 })

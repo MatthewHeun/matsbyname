@@ -1299,15 +1299,11 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' All arguments are passed to the helper functions.
 #'
 #' @param a a matrix of list of matrices to be aggregated by prefix or suffix
-#' @param aggregation_map see `aggregate_byname()`
-#' @param sep see `rename_to_pref_suff_byname()`
-#' @param keep see `rename_to_pref_suff_byname()`
-#' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both
-#' @param prefix_open see `rename_to_pref_suff_byname()`
-#' @param prefix_close see `rename_to_pref_suff_byname()`
-#' @param suffix_open see `rename_to_pref_suff_byname()`
-#' @param suffix_close see `rename_to_pref_suff_byname()`
-#' @param pattern_type see `aggregate_byname()`
+#' @param aggregation_map See `aggregate_byname()`.
+#' @param notation See `matsbyname::notation_vec()`. 
+#' @param keep See `rename_to_pref_suff_byname()`
+#' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both.
+#' @param pattern_type See `aggregate_byname()`.
 #'
 #' @return an aggregated version of `a`
 #' 
@@ -1325,13 +1321,9 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' # because there are same suffixes in both rows and columns
 #' aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
 aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
-                                       sep = NULL, keep, margin = c(1, 2), 
-                                       prefix_open = "", prefix_close = sep, 
-                                       suffix_open = sep, suffix_close = "", 
-                                       pattern_type = "exact") {
+                                          keep, margin = c(1, 2), notation,
+                                          pattern_type = "exact") {
   a %>% 
-    rename_to_pref_suff_byname(sep = sep, keep = keep, margin = margin,
-                               prefix_open = prefix_open, prefix_close = prefix_close, 
-                               suffix_open = suffix_open, suffix_close = suffix_close) %>% 
+    rename_to_pref_suff_byname(keep = keep, margin = margin, notation = notation) %>% 
     aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
 }

@@ -7,36 +7,24 @@
 aggregate_to_pref_suff_byname(
   a,
   aggregation_map = NULL,
-  sep = NULL,
   keep,
   margin = c(1, 2),
-  prefix_open = "",
-  prefix_close = sep,
-  suffix_open = sep,
-  suffix_close = "",
+  notation,
   pattern_type = "exact"
 )
 }
 \arguments{
 \item{a}{a matrix of list of matrices to be aggregated by prefix or suffix}
 
-\item{aggregation_map}{see \code{aggregate_byname()}}
+\item{aggregation_map}{See \code{aggregate_byname()}.}
 
-\item{sep}{see \code{rename_to_pref_suff_byname()}}
+\item{keep}{See \code{rename_to_pref_suff_byname()}}
 
-\item{keep}{see \code{rename_to_pref_suff_byname()}}
+\item{margin}{the dimension over which aggregation is to be performed; \code{1} for rows, \code{2} for columns, or \code{c(1, 2)} for both.}
 
-\item{margin}{the dimension over which aggregation is to be performed; \code{1} for rows, \code{2} for columns, or \code{c(1, 2)} for both}
+\item{notation}{See \code{matsbyname::notation_vec()}.}
 
-\item{prefix_open}{see \code{rename_to_pref_suff_byname()}}
-
-\item{prefix_close}{see \code{rename_to_pref_suff_byname()}}
-
-\item{suffix_open}{see \code{rename_to_pref_suff_byname()}}
-
-\item{suffix_close}{see \code{rename_to_pref_suff_byname()}}
-
-\item{pattern_type}{see \code{aggregate_byname()}}
+\item{pattern_type}{See \code{aggregate_byname()}.}
 }
 \value{
 an aggregated version of \code{a}

@@ -468,16 +468,13 @@ setcolnames_byname <- function(a, colnames){
 #' 
 #' If prefixes or suffixes are not found in a row and/or column name, that name is unchanged.
 #' 
-#' @param a a matrix or list of matrices whose rows or columns will be renamed
-#' @param sep a string that identifies the separator between prefix and suffix
-#' @param keep one of "prefix" or "suffix" indicating which part of the row or column name to retain
-#' @param margin one of `1`, `2`, or `c(1, 2)` where `1` indicates rows and `2` indicates columns
-#' @param prefix_open a string that identifies the beginning of a prefix. Default is `sep`.
-#' @param prefix_close a string that identifies the ending of a prefix. Default is "".
-#' @param suffix_open a string that identifies the beginning of a suffix. Default is "".
-#' @param suffix_close a string that identifies the beginning of a suffix. Default is `sep`.
+#' @param a a matrix or list of matrices whose rows or columns will be renamed.
+#' @param sep a string that identifies the separator between prefix and suffix.
+#' @param keep one of "prefix" or "suffix" indicating which part of the row or column name to retain.
+#' @param margin one of `1`, `2`, or `c(1, 2)` where `1` indicates rows and `2` indicates columns.
+#' @param notation See `notation_vec()`.
 #'
-#' @return `a` with potentially different row or column names
+#' @return `a` with potentially different row or column names.
 #' 
 #' @export
 #'
@@ -488,15 +485,12 @@ setcolnames_byname <- function(a, colnames){
 #'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
 #' rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
 #' rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
-rename_to_pref_suff_byname <- function(a, sep = NULL, keep, margin = c(1, 2), 
-                                       prefix_open = "", prefix_close = sep, 
-                                       suffix_open = sep, suffix_close = "") {
+rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
   
   margin <- prep_vector_arg(a, margin)
+  notation <- prep_vector_arg(a, notation)
 
-  rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), 
-                          prefix_open, prefix_close,
-                          suffix_open, suffix_close) {
+  rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), notation) {
     # At this point, a should be a single matrix.
     keep <- match.arg(keep)
     assertthat::assert_that(all(margin %in% c(1, 2)))
@@ -504,57 +498,34 @@ rename_to_pref_suff_byname <- function(a, sep = NULL, keep, margin = c(1, 2),
     if (2 %in% margin) {
       # Want to rename columns.
       # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
-      a <- t(a) %>% rename_func(keep = keep, margin = 1, 
-                                prefix_open = prefix_open,
-                                prefix_close = prefix_close,
-                                suffix_open = suffix_open,
-                                suffix_close = suffix_close) %>% t()
+      a <- t(a) %>% rename_func(keep = keep, margin = 1, notation) %>% t()
     }
     
     if (1 %in% margin) {
-      # Get current row names
-      new_rnames <- rownames(a)
-      
-      if (keep == "suffix") {
-        # If we want to keep suffixes, we can simply 
-        # (a) reverse the string and the suffix_open/suffix_close arguments
-        # (b) act as though we want to keep prefixes
-        # (c) reverse the results
-        new_rnames <- stringi::stri_reverse(new_rnames)
-        prefix_open <- stringi::stri_reverse(suffix_close)
-        prefix_close <- stringi::stri_reverse(suffix_open)
+      ps <- rownames(a) %>% 
+        split_pref_suff(notation = notation)
+      if (keep == "prefix") {
+        # If prefixes are desired, simply transpose the list and grab the "pref" item.
+        new_rnames <- ps %>% 
+          purrr::transpose() %>% 
+          magrittr::extract2("pref")
+      } else {
+        # We want the suffix.
+        # Be careful for rows in which a suffix was not found.
+        # In that case, return the prefix.
+        new_rnames <- lapply(ps, FUN = function(x) {
+          if (is.null(x[["suff"]])) {
+            return(x[["pref"]])
+          }
+          return(x[["suff"]])
+        })
       }
-
-      # Strip off prefix_open from the start of the names
-      new_rnames <- sub(pattern = paste0("^", prefix_open), replacement = "", x = new_rnames)
-      # Strip off rightmost prefix_close and everything to the right.
-      # Do this by reversing both the string and prefix_close and 
-      # eliminating everything up to the first reversed prefix_close.
-      # Then, reverse the string again.
-      # See 
-      # https://stackoverflow.com/questions/7124778/how-to-match-anything-up-until-this-sequence-of-characters-in-a-regular-expres 
-      # for details about the regex pattern.
-      new_rnames <- sub(pattern = paste0("^(.*?)", Hmisc::escapeRegex(stringi::stri_reverse(prefix_close))),
-                        replacement = "", 
-                        x = stringi::stri_reverse(new_rnames)) %>% 
-        stringi::stri_reverse()
-
-      if (keep == "suffix") {
-        # Here is the (c) reverse the results part
-        new_rnames <- stringi::stri_reverse(new_rnames)
-      }
-      
       rownames(a) <- new_rnames
     }
+
     return(a)
-    
   }
-  unaryapply_byname(rename_func, a = a, 
-                    .FUNdots = list(keep = keep, margin = margin, 
-                                    prefix_open = prefix_open,
-                                    prefix_close = prefix_close,
-                                    suffix_open = suffix_open,
-                                    suffix_close = suffix_close))
+  unaryapply_byname(rename_func, a = a, .FUNdots = list(keep = keep, margin = margin, notation = notation))
 }
 
 
