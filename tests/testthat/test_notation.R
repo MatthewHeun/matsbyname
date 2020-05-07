@@ -188,4 +188,17 @@ test_that("switch_notation_byname works as expected", {
                                               to = list(arrow_notation()), 
                                               flip = TRUE), 
                list(e4, e4))
+  
+  # Try degenerate case of no row and column types.
+  m5 <- matrix(c(1, 2, 
+                 3, 4), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("a -> b", "c -> d"), c("c1", "c2")))
+  
+  expected <- m5
+  rownames(expected) <- c("b [a]", "d [c]")
+  actual <- switch_notation_byname(m5, from = arrow_notation(), to = bracket_notation(), flip = TRUE)
+  expect_equal(rownames(actual), rownames(expected))
+  expect_null(rowtype(actual))
+  expect_null(coltype(actual))
+  expect_equal(actual, expected)
+  
 })

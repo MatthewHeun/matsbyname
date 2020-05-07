@@ -241,7 +241,7 @@ switch_notation_byname <- function(a, margin = c(1, 2), from, to, flip = FALSE) 
   from <- prep_vector_arg(a, from)
   to <- prep_vector_arg(a, to)
   switch_func <- function(a_mat, margin, from, to, flip) {
-    # When we get here, we should have a single matrix m.
+    # When we get here, we should have a single matrix a_mat.
     assertthat::assert_that(all(margin %in% c(1, 2)), msg = paste0("In switch_notation_byname, margin must be 1, 2, or both. ", 
                                                                    "Found margin = ", paste(margin, collapse = ", ")))
     
@@ -262,11 +262,13 @@ switch_notation_byname <- function(a, margin = c(1, 2), from, to, flip = FALSE) 
                                               from = from, to = to, flip = flip)
       # Set row names to the new row names
       out <- setrownames_byname(out, new_rownames)
-      # Perform the same transformation on the row type
-      old_rowtype <- rowtype(out)
-      new_rowtype <- switch_notation(old_rowtype, 
-                                             from = from, to = to, flip = flip)
-      out <- out %>% setrowtype(new_rowtype)
+      # Perform the same transformation on the row type, but only if we had a rowtype in a_mat
+      if (!is.null(rowtype(out))) {
+        old_rowtype <- rowtype(out)
+        new_rowtype <- switch_notation(old_rowtype, 
+                                       from = from, to = to, flip = flip)
+        out <- out %>% setrowtype(new_rowtype)
+      }
     }
     # Return the result
     return(out)
