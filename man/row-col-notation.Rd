@@ -30,9 +30,9 @@ bracket_notation(suff_start = " [", suff_end = "]")
 split_pref_suff(x, notation = arrow_notation())
 
 join_pref_suff(
-  pref,
-  suff,
   ps = list(pref = pref, suff = suff),
+  pref = NULL,
+  suff = NULL,
   notation = arrow_notation()
 )
 
@@ -59,11 +59,11 @@ switch_notation_byname(a, margin = c(1, 2), from, to, flip = FALSE)
 \code{notation_vec()}, \code{arrow_notation()}, or \code{bracket_notation()}.
 Default is \code{arrow_notation()}.}
 
-\item{pref}{a string or list of strings that are prefixes.}
-
-\item{suff}{a string of list of strings that are suffixes.}
-
 \item{ps}{a list of prefixes and suffixes in which each item of the list is itself a list with two items named \code{pref} and \code{suff}.}
+
+\item{pref}{a string or list of strings that are prefixes. Default is \code{NULL}.}
+
+\item{suff}{a string of list of strings that are suffixes. Default is \code{NULL}.}
 
 \item{from}{the \code{notation} to switch \emph{away from}.}
 
