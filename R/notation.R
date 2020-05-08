@@ -257,9 +257,8 @@ switch_notation_byname <- function(a, margin = c(1, 2), from, to, flip = FALSE) 
     if (1 %in% margin) {
       # Get the row names
       old_rownames <- getrownames_byname(out)
-      # call func all all row names to create new row names
-      new_rownames <- switch_notation(old_rownames, 
-                                              from = from, to = to, flip = flip)
+      # call func on old row names to create new row names
+      new_rownames <- switch_notation(old_rownames, from = from, to = to, flip = flip)
       # Set row names to the new row names
       out <- setrownames_byname(out, new_rownames)
       # Perform the same transformation on the row type, but only if we had a rowtype in a_mat
