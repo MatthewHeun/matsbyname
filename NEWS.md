@@ -1,5 +1,5 @@
 * Added additional tests for new features.
-    * Now up to 886 tests, all passing.
+    * Now up to 887 tests, all passing.
     * Test coverage remains at 100%.
 * New functions for manipulating names of rows and columns:
   `notation_vec()`, 
