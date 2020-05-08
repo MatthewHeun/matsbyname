@@ -345,13 +345,13 @@ test_that("vectorize_byname works as expected", {
                dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   expected2 <- matrix(c(1, 
-                       4, 
-                       2, 
-                       5, 
-                       3, 
-                       6),
-                     nrow = 6, ncol = 1,
-                     dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
+                        4, 
+                        2, 
+                        5, 
+                        3, 
+                        6),
+                      nrow = 6, ncol = 1,
+                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
     setrowtype("Products -> Industries") %>% setcoltype(NULL)
   actual2 <- vectorize_byname(m2, notation = arrow_notation())
   expect_equal(actual2, expected2)
@@ -403,6 +403,25 @@ test_that("vectorize_byname works as expected", {
   actual6 <- vectorize_byname(list6, notation = list(arrow_notation()))
   expected6 <- list(expected1, expected1)
   expect_equal(actual6, expected6)
+})
+
+
+test_that("vectorize works with 4 matrices", {
+  m <- matrix(c(1, 5,
+                4, 5),
+              nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  l <- list(m, m, m, m)
+  actual <- vectorize_byname(l, notation = list(arrow_notation()))
+  e <- matrix(c(1, 
+                4, 
+                5, 
+                5),
+              nrow = 4, ncol = 1, 
+              dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  expect_equal(actual, list(e, e, e, e))
 })
 
 
