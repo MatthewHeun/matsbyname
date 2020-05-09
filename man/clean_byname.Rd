@@ -2,26 +2,35 @@
 % Please edit documentation in R/Utilities.R
 \name{clean_byname}
 \alias{clean_byname}
-\title{Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}}
+\title{Clean (delete) rows or columns of matrices that contain exclusively \code{clean_value}}
 \usage{
-clean_byname(a, margin = c(1, 2), clean_value = 0)
+clean_byname(a, margin = c(1, 2), clean_value = 0, tol = 0)
 }
 \arguments{
 \item{a}{the matrix to be cleaned}
 
 \item{margin}{the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
-or \code{c(1,2)} for both rows and columns. Default is \code{c(1,2)}.}
+or \code{c(1, 2)} for both rows and columns. Default is \code{c(1, 2)}.}
 
-\item{clean_value}{the undesirable value. Default is \code{0}.
+\item{clean_value}{the undesirable value. Default is \code{0}.}
+
+\item{tol}{the tolerance with which any value is deemed equal to \code{clean_value}. Default is \code{0}.
 
 When a row (when \code{margin = 1}) or a column (when \code{margin = 2})
-contains exclusively \code{clean_value}, the row or column is deleted from the matrix.}
+contains exclusively \code{clean_value} (within \code{tol}), the row or column is deleted from the matrix.}
 }
 \value{
-a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{clean_value}.
+a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{clean_value.}
 }
 \description{
-Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
+Cleaning is performed when all entries in a row or column or both, depending on the value of \code{margin}
+are within \verb{+/- tol} of \code{clean_value}.
+Internally, values are deemed within +/- of tol when
+\code{abs(x - clean_value) <= tol}.
+}
+\details{
+If there is concern about machine precision, you might want to call this function with
+\code{tol = .Machine$double.eps}.
 }
 \examples{
 m <- matrix(c(-20, 1, -20, 2), nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))

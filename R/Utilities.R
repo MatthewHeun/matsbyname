@@ -469,7 +469,6 @@ setcolnames_byname <- function(a, colnames){
 #' If prefixes or suffixes are not found in a row and/or column name, that name is unchanged.
 #' 
 #' @param a a matrix or list of matrices whose rows or columns will be renamed.
-#' @param sep a string that identifies the separator between prefix and suffix.
 #' @param keep one of "prefix" or "suffix" indicating which part of the row or column name to retain.
 #' @param margin one of `1`, `2`, or `c(1, 2)` where `1` indicates rows and `2` indicates columns.
 #' @param notation See `notation_vec()`.
@@ -483,8 +482,9 @@ setcolnames_byname <- function(a, colnames){
 #'               3, 4, 
 #'               5, 6), nrow = 3, byrow = TRUE, 
 #'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
-#' rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
-#' rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+#' m
+#' rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+#' rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
 rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
   
   margin <- prep_vector_arg(a, margin)
@@ -830,17 +830,26 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
     transpose_byname()
 }
 
-#' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
+#' Clean (delete) rows or columns of matrices that contain exclusively `clean_value`
+#' 
+#' Cleaning is performed when all entries in a row or column or both, depending on the value of `margin`
+#' are within `+/- tol` of `clean_value`.
+#' Internally, values are deemed within +/- of tol when 
+#' `abs(x - clean_value) <= tol`.
+#' 
+#' If there is concern about machine precision, you might want to call this function with 
+#' `tol = .Machine$double.eps`.
 #'
 #' @param a the matrix to be cleaned
-#' @param margin the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
-#' or \code{c(1,2)} for both rows and columns. Default is \code{c(1,2)}.
-#' @param clean_value the undesirable value. Default is \code{0}.
+#' @param margin the dimension over which cleaning should occur, `1` for rows, `2` for columns,
+#'               or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
+#' @param clean_value the undesirable value. Default is `0`.
+#' @param tol the tolerance with which any value is deemed equal to `clean_value`. Default is `0`.
 #'
-#' When a row (when \code{margin = 1}) or a column (when \code{margin = 2})
-#' contains exclusively \code{clean_value}, the row or column is deleted from the matrix.
+#' When a row (when `margin = 1`) or a column (when `margin = 2`)
+#' contains exclusively `clean_value` (within `tol`), the row or column is deleted from the matrix.
 #'
-#' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{clean_value}.
+#' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively `clean_value.`
 #' 
 #' @export
 #'
@@ -865,58 +874,31 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' DF2[[1, "m2"]] <- m2
 #' DF2[[2, "m2"]] <- m2
 #' DF2 %>% clean_byname(margin = c(1, 2), clean_value = -20)
-clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
+clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
   margin <- prep_vector_arg(a, margin)
+  clean_value <- prep_vector_arg(a, clean_value)
+  tol = prep_vector_arg(a, tol)
   
-  # if (1 %in% margin & 2 %in% margin) {
-  #   # Clean both dimensions of a.
-  #   cleaned1 <- clean_byname(a, margin = 1, clean_value = clean_value)
-  #   cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
-  #   return(cleaned2)
-  # }
-  # clean_func <- function(a, margin, clean_value){
-  #   if (margin == 1) {
-  #     # Want to clean rows. Code below assumes want to clean columns.
-  #     # Transpose and then transpose again before returning.
-  #     b <- transpose_byname(a)
-  #   } else if (margin == 2) {
-  #     b <- a
-  #   } else {
-  #     stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
-  #   }
-  #   keepcols <- apply(b, 2, function(x) {
-  #     !all(x == clean_value)
-  #   })
-  #   cleaned <- b[ , keepcols, drop = FALSE]
-  #   if (margin == 1) {
-  #     return(transpose_byname(cleaned))
-  #   } else if (margin == 2) {
-  #     return(cleaned)
-  #   }
-  # }
-  # unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
-  #                   rowcoltypes = "all")
-  
-  
-  clean_func <- function(a, margin, clean_value){
+  clean_func <- function(a, margin, clean_value, tol){
     assertthat::assert_that(1 %in% margin | 2 %in% margin, msg = paste("margin =", margin, "in clean_byname(). Must be 1 or 2."))
     out <- a
     if (1 %in% margin) {
       # Want to clean rows. Code below assumes want to clean columns.
       # Transpose and then transpose again before returning.
       out <- transpose_byname(out) %>% 
-        clean_func(margin = 2, clean_value = clean_value) %>% 
+        clean_func(margin = 2, clean_value = clean_value, tol = tol) %>% 
         transpose_byname()
     }
     if (2 %in% margin) {
       keepcols <- apply(out, 2, function(x) {
-        !all(x == clean_value)
+        # !all(x == clean_value)
+        !all(abs(x - clean_value) <= tol)
       })
       out <- out[ , keepcols, drop = FALSE]
     } 
     return(out)
   }
-  unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
+  unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value, tol = tol), 
                     rowcoltypes = "all")
   
 }

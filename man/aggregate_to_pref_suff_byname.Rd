@@ -45,9 +45,9 @@ m <- matrix((1:9), byrow = TRUE, nrow = 3,
 m
 # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 # Doing renaming like this (without also aggregating) is potentially dangerous, because  
-# some rows and some columns have same names.
-aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+# some rows and some columns could end up with same names.
+aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
 # Aggregation by suffix reduces the number of rows and columns, 
 # because there are same suffixes in both rows and columns
-aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
 }
