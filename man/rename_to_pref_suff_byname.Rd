@@ -14,8 +14,6 @@ rename_to_pref_suff_byname(a, keep, margin = c(1, 2), notation)
 \item{margin}{one of \code{1}, \code{2}, or \code{c(1, 2)} where \code{1} indicates rows and \code{2} indicates columns.}
 
 \item{notation}{See \code{notation_vec()}.}
-
-\item{sep}{a string that identifies the separator between prefix and suffix.}
 }
 \value{
 \code{a} with potentially different row or column names.
@@ -44,6 +42,7 @@ m <- matrix(c(1, 2,
               3, 4, 
               5, 6), nrow = 3, byrow = TRUE, 
             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
-rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
-rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+m
+rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
 }

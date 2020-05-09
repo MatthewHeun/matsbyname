@@ -1,6 +1,8 @@
 * Added additional tests for new features.
-    * Now up to 887 tests, all passing.
+    * Now up to 889 tests, all passing.
     * Test coverage remains at 100%.
+* Added `tol` argument to `clean_byname()`, allowing for 
+  machine precision issues to be addressed.
 * New functions for manipulating names of rows and columns:
   `notation_vec()`, 
   `arrow_notation()`, 

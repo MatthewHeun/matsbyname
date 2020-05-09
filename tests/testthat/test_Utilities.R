@@ -139,6 +139,21 @@ test_that("cleaning works with unnamed rows and/or columns", {
 })
 
 
+test_that("cleaning works with tolerance", {
+  unnamed <- matrix(c(1, 2, 0.1,
+                      3, 4, -0.1,
+                      5, 6, 0.05,
+                      0.01, -0.01, -0.05), nrow = 4, byrow = TRUE)
+  expect_equal(clean_byname(unnamed, tol = 0.1), matrix(c(1, 2,
+                                                          3, 4, 
+                                                          5, 6), nrow = 3, byrow = TRUE))
+  # Tighten tolerance to get different result.
+  expect_equal(clean_byname(unnamed, tol = 0.0999), matrix(c(1, 2, 0.1, 
+                                                             3, 4, -0.1,
+                                                             5, 6, 0.05), nrow = 3, byrow = TRUE))
+})
+
+
 ###########################################################
 context("Is zero")
 ###########################################################
