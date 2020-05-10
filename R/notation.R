@@ -240,6 +240,7 @@ switch_notation_byname <- function(a, margin = c(1, 2), from, to, flip = FALSE) 
   margin <- prep_vector_arg(a, margin)
   from <- prep_vector_arg(a, from)
   to <- prep_vector_arg(a, to)
+  flip <- prep_vector_arg(a, flip)
   switch_func <- function(a_mat, margin, from, to, flip) {
     # When we get here, we should have a single matrix a_mat.
     assertthat::assert_that(all(margin %in% c(1, 2)), msg = paste0("In switch_notation_byname, margin must be 1, 2, or both. ", 

@@ -200,5 +200,16 @@ test_that("switch_notation_byname works as expected", {
   expect_null(rowtype(actual))
   expect_null(coltype(actual))
   expect_equal(actual, expected)
+})
+
+
+test_that("switch_notation_byname works well when flip is a list", {
+  m <- matrix(c(1, 2, 
+                3, 4), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("a", "b"), c("d [c]", "f [e]"))) %>% 
+    setrowtype("rows") %>% setcoltype("Industries [Products]")
+  e <- m
+  colnames(e) <- c("c -> d", "e -> f")
+  e <- e %>% setcoltype("Products -> Industries")
+  expect_equal(switch_notation_byname(m, from = bracket_notation(), to = arrow_notation(), flip = list(TRUE)), e)
   
 })
