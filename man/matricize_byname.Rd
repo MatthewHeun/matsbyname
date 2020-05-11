@@ -9,13 +9,14 @@ matricize_byname(a, notation)
 \arguments{
 \item{a}{a row (column) vector to be converted to a matrix based on its row (column) names.}
 
-\item{notation}{a string vector created by \code{notation_vec()} that identifies the notation for row and column names.}
+\item{notation}{a string vector created by \code{notation_vec()} that identifies the notation for row or column names.}
 }
 \value{
 a matrix created from vector \code{a}.
 }
 \description{
-Matricize a vector
+Converts a vector with rows or columns named according to \code{notation}
+into a matrix.
 }
 \examples{
 v <- matrix(c(1,

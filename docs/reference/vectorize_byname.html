@@ -42,9 +42,8 @@
 <meta property="og:title" content="Vectorize a matrix — vectorize_byname" />
 <meta property="og:description" content="Converts a matrix into a column vector.
 Each element of the matrix becomes an entry in the column vector,
-with rows named as &quot;rowname sep colname&quot; of the matrix entry.
-If &quot;colname sep rowname&quot; is desired,
-transpose the matrix first with transpose_byname()." />
+with rows named via the notation argument.
+Callers may want to transpose the matrix first with transpose_byname()." />
 
 
 
@@ -141,9 +140,8 @@ transpose the matrix first with transpose_byname()." />
     <div class="ref-description">
     <p>Converts a matrix into a column vector.
 Each element of the matrix becomes an entry in the column vector,
-with rows named as "rowname <code>sep</code> colname" of the matrix entry.
-If "colname <code>sep</code> rowname" is desired,
-transpose the matrix first with <code><a href='transpose_byname.html'>transpose_byname()</a></code>.</p>
+with rows named via the <code>notation</code> argument.
+Callers may want to transpose the matrix first with <code><a href='transpose_byname.html'>transpose_byname()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>vectorize_byname</span>(<span class='no'>a</span>, <span class='no'>notation</span>)</pre>
@@ -157,7 +155,7 @@ transpose the matrix first with <code><a href='transpose_byname.html'>transpose_
     </tr>
     <tr>
       <th>notation</th>
-      <td><p>a string list created by <code><a href='row-col-notation.html'>notation_vec()</a></code>.</p></td>
+      <td><p>a string vector created by <code><a href='row-col-notation.html'>notation_vec()</a></code>.</p></td>
     </tr>
     </table>
 
@@ -166,8 +164,7 @@ transpose the matrix first with <code><a href='transpose_byname.html'>transpose_
     <p>a column vector containing all elements of <code>a</code>, with row names assigned as "rowname <code>sep</code> colname".</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>rowtype</code> and <code>coltype</code> attributes are retained in the event that
-the resulting vector is re-matricized with the <code><a href='matricize_byname.html'>matricize_byname()</a></code> function later.</p>
+    <p>The <code>notation</code> argument is also applied to <code>rowtype</code> and <code>coltype</code> attributes.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>5</span>,

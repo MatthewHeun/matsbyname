@@ -301,15 +301,13 @@ identize_byname <- function(a, margin = c(1,2)) {
 #' 
 #' Converts a matrix into a column vector.
 #' Each element of the matrix becomes an entry in the column vector,
-#' with rows named as "rowname `sep` colname" of the matrix entry.
-#' If "colname `sep` rowname" is desired, 
-#' transpose the matrix first with [transpose_byname()].
+#' with rows named via the `notation` argument.
+#' Callers may want to transpose the matrix first with `transpose_byname()`.
 #' 
-#' `rowtype` and `coltype` attributes are retained in the event that 
-#' the resulting vector is re-matricized with the [matricize_byname()] function later.
+#' The `notation` argument is also applied to `rowtype` and `coltype` attributes.
 #'
 #' @param a the matrix to be vectorized.
-#' @param notation a string list created by `notation_vec()`.
+#' @param notation a string vector created by `notation_vec()`.
 #'
 #' @return a column vector containing all elements of `a`, with row names assigned as "rowname `sep` colname".
 #' 
@@ -372,9 +370,12 @@ vectorize_byname <- function(a, notation) {
 
 
 #' Matricize a vector
+#' 
+#' Converts a vector with rows or columns named according to `notation`
+#' into a matrix.
 #'
 #' @param a a row (column) vector to be converted to a matrix based on its row (column) names.
-#' @param notation a string vector created by `notation_vec()` that identifies the notation for row and column names.
+#' @param notation a string vector created by `notation_vec()` that identifies the notation for row or column names.
 #'
 #' @return a matrix created from vector `a`.
 #' 

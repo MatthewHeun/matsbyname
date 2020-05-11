@@ -218,9 +218,8 @@
 <span class="co">#&gt; [1,]    4    6</span></pre></body></html></div>
 <p><code>margin = c(1, 2)</code> is interpreted by <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> as "use <code>margin = 1</code> for the first <code>m</code> in the list, and use <code>margin = 2</code> for the second <code>m</code> in the list.</p>
 <p>Now we see why passing <code>margin = c(1, 2)</code> failed for a list of length <code>3</code> (<code><a href="https://rdrr.io/r/base/list.html">list(m, m, m)</a></code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. But the third <code>m</code> had no margin available for it.</p>
-<p>We also see why passing <code>margin = c(1, 2)</code> was successful for a list of length <code>2</code> (<code><a href="https://rdrr.io/r/base/list.html">list(m, m)</a></code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. There we exactly as many items in margin (2) as items in <code>m</code> (2).</p>
-<p>Now that we understand the problem, how do we fix it?<br>
-In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in <code><a href="https://rdrr.io/r/base/list.html">list(m, m, m)</a></code>? Or, better yet, how could we apply <code>margin = 1</code> to the first <code>m</code>, <code>margin = 2</code> to the second <code>m</code>, and <code>margin = c(1, 2)</code> to the third <code>m</code>?</p>
+<p>We also see why passing <code>margin = c(1, 2)</code> was successful for a list of length <code>2</code> (<code><a href="https://rdrr.io/r/base/list.html">list(m, m)</a></code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. In that case, we had exactly as many items in margin (2) as items in the list passed to <code>a</code> (2).</p>
+<p>Now that we understand the problem, how do we fix it? In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in <code><a href="https://rdrr.io/r/base/list.html">list(m, m, m)</a></code>? Or, better yet, how could we apply <code>margin = 1</code> to the first <code>m</code>, <code>margin = 2</code> to the second <code>m</code>, and <code>margin = c(1, 2)</code> to the third <code>m</code>?</p>
 </div>
 <div id="the-fix" class="section level2">
 <h2 class="hasAnchor">
@@ -234,7 +233,7 @@ In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in
 <div id="wrap-vector-arguments-in-a-list" class="section level3">
 <h3 class="hasAnchor">
 <a href="#wrap-vector-arguments-in-a-list" class="anchor"></a>Wrap vector arguments in a list</h3>
-<p>If the caller is more specific, flexibility is gained. By wrapping <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code>, the caller indicates “Take this margin (<code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code>), replicate it as many times as we have items in our <code>a</code> list, and use one <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> for each item in the list.”</p>
+<p>If the caller is more specific, flexibility is gained. By wrapping <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code>, the caller indicates “Take this margin (<code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code>), replicate it as many times as we have items in our <code>a</code> list, using one <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> for each item in the list.”</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu">mysum</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)))
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; [1] 10</span>
@@ -269,7 +268,7 @@ In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in
 <div id="use-the-prep_vector_arg-function" class="section level3">
 <h3 class="hasAnchor">
 <a href="#use-the-prep_vector_arg-function" class="anchor"></a>Use the <code>prep_vector_arg()</code> function</h3>
-<p>To the extent possible, the programmer should remove burdens on users of their functions. So, it would be helpful if there were a way to automatically wrap in lists. To that end, <code>matsbyname</code> includes <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code>. <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> uses heuristics to wrap vector arguments in lists, if needed and when possible.</p>
+<p>To the extent possible, programmers should remove burdens on users of their functions. So, it would be helpful if there were a way to automatically wrap vector arguments in lists. To that end, <code>matsbyname</code> includes the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> function. <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> uses heuristics to wrap vector arguments in lists, if needed and when possible.</p>
 <p><code>mysum2()</code> demonstrates the use of <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code>.</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">mysum2</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">a</span>, <span class="no">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)) {
   <span class="no">margin</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/prep_vector_arg.html">prep_vector_arg</a></span>(<span class="no">a</span>, <span class="no">margin</span>)
@@ -326,11 +325,15 @@ In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in
 <a href="#use-a-data-frame" class="anchor"></a>Use a data frame</h3>
 <p>The reason <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> cannot <em>always</em> wrap vector arguments in a list is that data frame columns are extracted as vectors when they are atomic.</p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">DF2</span> <span class="kw">&lt;-</span> <span class="kw pkg">tibble</span><span class="kw ns">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span>(<span class="kw">mcol</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))
-<span class="no">DF2</span>$<span class="no">margin</span>
-<span class="co">#&gt; [1] 1 2</span>
+<span class="no">DF2</span>
+<span class="co">#&gt; # A tibble: 2 x 2</span>
+<span class="co">#&gt;   mcol              margin</span>
+<span class="co">#&gt;   &lt;list&gt;             &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 &lt;int[,2] [2 × 2]&gt;      1</span>
+<span class="co">#&gt; 2 &lt;int[,2] [2 × 2]&gt;      2</span>
 <span class="no">DF2</span>$<span class="no">margin</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>()
 <span class="co">#&gt; [1] "numeric"</span></pre></body></html></div>
-<p>It would be a mistake to wrap <code>DF$margin</code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code> for the following call to <code>mysum2</code>, because the caller’s intent is clearly "apply <code>margin = 1</code> for the first row and <code>margin = 2</code> for the second row.</p>
+<p>It would be a mistake to wrap <code>DF2$margin</code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code> for the following call to <code>mysum2</code>, because the caller’s intent is clearly "apply <code>margin = 1</code> for the first row and <code>margin = 2</code> for the second row.</p>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">res2</span> <span class="kw">&lt;-</span> <span class="no">DF2</span> <span class="kw">%&gt;%</span>
   <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(
     <span class="kw">sums</span> <span class="kw">=</span> <span class="fu">mysum2</span>(<span class="no">mcol</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="no">margin</span>)
@@ -344,7 +347,7 @@ In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    4    6</span></pre></body></html></div>
-<p>The good news is that within the context of a data frame, the caller’s intent will always be clear.</p>
+<p>The good news is that within the context of a data frame, the caller’s intent is unambiguous.</p>
 <div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">DF3</span> <span class="kw">&lt;-</span> <span class="kw pkg">tibble</span><span class="kw ns">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span>(<span class="kw">mcol</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))) <span class="kw">%&gt;%</span>
   <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(
     <span class="kw">sumcol</span> <span class="kw">=</span> <span class="fu">mysum2</span>(<span class="no">mcol</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="no">margin</span>)
@@ -365,7 +368,7 @@ In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in
 <div id="summary" class="section level2">
 <h2 class="hasAnchor">
 <a href="#summary" class="anchor"></a>Summary</h2>
-<p>Dealing with vector arguments to the various <code>*apply_byname()</code> functions can be tricky. But there exist three ways to solve any problems that arise:</p>
+<p>Dealing with vector arguments to the various <code>*apply_byname()</code> functions can be tricky. But there are three ways to solve any problems that arise:</p>
 <ul>
 <li>wrap vector arguments in a list (a caller fix),</li>
 <li>use the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> function (a programmer fix), and</li>

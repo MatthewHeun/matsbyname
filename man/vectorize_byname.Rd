@@ -9,7 +9,7 @@ vectorize_byname(a, notation)
 \arguments{
 \item{a}{the matrix to be vectorized.}
 
-\item{notation}{a string list created by \code{notation_vec()}.}
+\item{notation}{a string vector created by \code{notation_vec()}.}
 }
 \value{
 a column vector containing all elements of \code{a}, with row names assigned as "rowname \code{sep} colname".
@@ -17,13 +17,11 @@ a column vector containing all elements of \code{a}, with row names assigned as 
 \description{
 Converts a matrix into a column vector.
 Each element of the matrix becomes an entry in the column vector,
-with rows named as "rowname \code{sep} colname" of the matrix entry.
-If "colname \code{sep} rowname" is desired,
-transpose the matrix first with \code{\link[=transpose_byname]{transpose_byname()}}.
+with rows named via the \code{notation} argument.
+Callers may want to transpose the matrix first with \code{transpose_byname()}.
 }
 \details{
-\code{rowtype} and \code{coltype} attributes are retained in the event that
-the resulting vector is re-matricized with the \code{\link[=matricize_byname]{matricize_byname()}} function later.
+The \code{notation} argument is also applied to \code{rowtype} and \code{coltype} attributes.
 }
 \examples{
 m <- matrix(c(1, 5,
