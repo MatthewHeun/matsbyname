@@ -123,9 +123,9 @@ But the third `m` had no margin available for it.
 
 We also see why passing `margin = c(1, 2)` was successful for a list of length `2` (`list(m, m)`):
 `unaryapply_byname()` applied `margin = 1` for the first `m`, `margin = 2` for the second `m`.
-There we exactly as many items in margin (2) as items in `m` (2).
+In that case, we had exactly as many items in margin (2) as items in the list passed to `a` (2).
 
-Now that we understand the problem, how do we fix it?  
+Now that we understand the problem, how do we fix it?
 In other words, how can we apply `margin = c(1, 2)` to all entries in `list(m, m, m)`?
 Or, better yet, how could we apply 
 `margin = 1` to the first `m`, 
@@ -149,7 +149,7 @@ If the caller is more specific, flexibility is gained.
 By wrapping `c(1, 2)` in a `list()`, the caller indicates 
 "Take this margin (`c(1, 2)`), 
 replicate it as many times as we have items in our `a` list, 
-and use one `c(1, 2)` for each item in the list."
+using one `c(1, 2)` for each item in the list."
 
 ```{r}
 mysum(list(m, m, m), margin = list(c(1, 2)))
@@ -171,9 +171,9 @@ tryCatch(mysum(list(m, m, m), margin = list(1, 2)),
 
 ### Use the `prep_vector_arg()` function
 
-To the extent possible, the programmer should remove burdens on users of their functions.
-So, it would be helpful if there were a way to automatically wrap in lists.
-To that end, `matsbyname` includes `prep_vector_arg()`.
+To the extent possible, programmers should remove burdens on users of their functions.
+So, it would be helpful if there were a way to automatically wrap vector arguments in lists.
+To that end, `matsbyname` includes the `prep_vector_arg()` function.
 `prep_vector_arg()` uses heuristics to wrap vector arguments in lists, 
 if needed and when possible.
 
@@ -235,11 +235,11 @@ is that data frame columns are extracted as vectors when they are atomic.
 
 ```{r}
 DF2 <- tibble::tibble(mcol = list(m, m), margin = c(1, 2))
-DF2$margin
+DF2
 DF2$margin %>% class()
 ```
 
-It would be a mistake to wrap `DF$margin` in a `list()` 
+It would be a mistake to wrap `DF2$margin` in a `list()` 
 for the following call to `mysum2`, because
 the caller's intent is clearly 
 "apply `margin = 1` for the first row and 
@@ -253,7 +253,7 @@ res2 <- DF2 %>%
 res2$sums
 ```
 
-The good news is that within the context of a data frame, the caller's intent will always be clear.
+The good news is that within the context of a data frame, the caller's intent is unambiguous.
 
 ```{r}
 DF3 <- tibble::tibble(mcol = list(m, m, m), margin = list(1, c(1, 2), c(1, 2))) %>% 
@@ -266,7 +266,7 @@ DF3$sumcol
 ## Summary
 
 Dealing with vector arguments to the various `*apply_byname()` functions can be tricky.
-But there exist three ways to solve any problems that arise:
+But there are three ways to solve any problems that arise:
 
 * wrap vector arguments in a list (a caller fix), 
 * use the `prep_vector_arg()` function (a programmer fix), and 
