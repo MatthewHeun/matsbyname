@@ -102,6 +102,9 @@ transpose the matrix first with transpose_byname()." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
+    </li>
+    <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
     </li>
   </ul>
@@ -143,19 +146,18 @@ If "colname <code>sep</code> rowname" is desired,
 transpose the matrix first with <code><a href='transpose_byname.html'>transpose_byname()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vectorize_byname</span>(<span class='no'>a</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>)</pre>
+    <pre class="usage"><span class='fu'>vectorize_byname</span>(<span class='no'>a</span>, <span class='no'>notation</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>a</th>
-      <td><p>the matrix to be vectorized</p></td>
+      <td><p>the matrix to be vectorized.</p></td>
     </tr>
     <tr>
-      <th>sep</th>
-      <td><p>a string to separate row names and col names in the resulting column vector.
-Default is " -&gt; " (an arrow indicating from row to column).</p></td>
+      <th>notation</th>
+      <td><p>a string list created by <code><a href='row-col-notation.html'>notation_vec()</a></code>.</p></td>
     </tr>
     </table>
 
@@ -179,21 +181,18 @@ the resulting vector is re-matricized with the <code><a href='matricize_byname.h
 #&gt; attr(,"rowtype")
 #&gt; [1] "Products"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>vectorize_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>)</div><div class='output co'>#&gt;          [,1]
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>vectorize_byname</span>(<span class='no'>m</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'><a href='row-col-notation.html'>arrow_notation</a></span>())</div><div class='output co'>#&gt;          [,1]
 #&gt; p1 -&gt; i1    1
 #&gt; p2 -&gt; i1    4
 #&gt; p1 -&gt; i2    5
 #&gt; p2 -&gt; i2    5
 #&gt; attr(,"rowtype")
-#&gt; [1] "Products"
-#&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='co'># If a single number is provided, the number will be returned as a 1x1 column vector </span>
+#&gt; [1] "Products -&gt; Industries"</div><div class='input'><span class='co'># If a single number is provided, the number will be returned as a 1x1 column vector </span>
 <span class='co'># with some additional attributes.</span>
-<span class='fu'>vectorize_byname</span>(<span class='fl'>42</span>)</div><div class='output co'>#&gt;      [,1]
-#&gt; [1,]   42</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/attributes.html'>attributes</a></span>(<span class='fu'>vectorize_byname</span>(<span class='fl'>42</span>))</div><div class='output co'>#&gt; $dim
+<span class='fu'>vectorize_byname</span>(<span class='fl'>42</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'><a href='row-col-notation.html'>arrow_notation</a></span>())</div><div class='output co'>#&gt;      [,1]
+#&gt; [1,]   42</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/attributes.html'>attributes</a></span>(<span class='fu'>vectorize_byname</span>(<span class='fl'>42</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'><a href='row-col-notation.html'>arrow_notation</a></span>()))</div><div class='output co'>#&gt; $dim
 #&gt; [1] 1 1
-#&gt; </div><div class='input'><span class='co'># If called with `NULL`, get `NULL` back</span>
-<span class='fu'>vectorize_byname</span>(<span class='kw'>NULL</span>)</div><div class='output co'>#&gt; NULL</div></pre>
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
