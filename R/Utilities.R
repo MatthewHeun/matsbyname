@@ -168,7 +168,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' Rather, one should specify, say, `margin = list(c(1, 2)`
 #' to avoid ambiguity.
 #' If `a` is a list, 
-#' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,, 
+#' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,
 #' this function returns a list value for `vector_arg`.
 #' If `a` is not a list and `vector_arg` is a list, 
 #' this function returns an un-recursive, unlisted version of `vector_arg`.
@@ -468,16 +468,12 @@ setcolnames_byname <- function(a, colnames){
 #' 
 #' If prefixes or suffixes are not found in a row and/or column name, that name is unchanged.
 #' 
-#' @param a a matrix or list of matrices whose rows or columns will be renamed
-#' @param sep a string that identifies the separator between prefix and suffix
-#' @param keep one of "prefix" or "suffix" indicating which part of the row or column name to retain
-#' @param margin one of `1`, `2`, or `c(1, 2)` where `1` indicates rows and `2` indicates columns
-#' @param prefix_open a string that identifies the beginning of a prefix. Default is `sep`.
-#' @param prefix_close a string that identifies the ending of a prefix. Default is "".
-#' @param suffix_open a string that identifies the beginning of a suffix. Default is "".
-#' @param suffix_close a string that identifies the beginning of a suffix. Default is `sep`.
+#' @param a a matrix or list of matrices whose rows or columns will be renamed.
+#' @param keep one of "prefix" or "suffix" indicating which part of the row or column name to retain.
+#' @param margin one of `1`, `2`, or `c(1, 2)` where `1` indicates rows and `2` indicates columns.
+#' @param notation See `notation_vec()`.
 #'
-#' @return `a` with potentially different row or column names
+#' @return `a` with potentially different row or column names.
 #' 
 #' @export
 #'
@@ -486,17 +482,15 @@ setcolnames_byname <- function(a, colnames){
 #'               3, 4, 
 #'               5, 6), nrow = 3, byrow = TRUE, 
 #'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
-#' rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
-#' rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
-rename_to_pref_suff_byname <- function(a, sep = NULL, keep, margin = c(1, 2), 
-                                       prefix_open = "", prefix_close = sep, 
-                                       suffix_open = sep, suffix_close = "") {
+#' m
+#' rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+#' rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
   
   margin <- prep_vector_arg(a, margin)
+  notation <- prep_vector_arg(a, notation)
 
-  rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), 
-                          prefix_open, prefix_close,
-                          suffix_open, suffix_close) {
+  rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), notation) {
     # At this point, a should be a single matrix.
     keep <- match.arg(keep)
     assertthat::assert_that(all(margin %in% c(1, 2)))
@@ -504,57 +498,61 @@ rename_to_pref_suff_byname <- function(a, sep = NULL, keep, margin = c(1, 2),
     if (2 %in% margin) {
       # Want to rename columns.
       # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
-      a <- t(a) %>% rename_func(keep = keep, margin = 1, 
-                                prefix_open = prefix_open,
-                                prefix_close = prefix_close,
-                                suffix_open = suffix_open,
-                                suffix_close = suffix_close) %>% t()
+      a <- transpose_byname(a) %>% 
+        rename_func(keep = keep, margin = 1, notation) %>% 
+        transpose_byname()
     }
     
     if (1 %in% margin) {
-      # Get current row names
-      new_rnames <- rownames(a)
-      
-      if (keep == "suffix") {
-        # If we want to keep suffixes, we can simply 
-        # (a) reverse the string and the suffix_open/suffix_close arguments
-        # (b) act as though we want to keep prefixes
-        # (c) reverse the results
-        new_rnames <- stringi::stri_reverse(new_rnames)
-        prefix_open <- stringi::stri_reverse(suffix_close)
-        prefix_close <- stringi::stri_reverse(suffix_open)
+      ps <- rownames(a) %>% 
+        split_pref_suff(notation = notation)
+      if (keep == "prefix") {
+        # If prefixes are desired, simply transpose the list and grab the "pref" item.
+        new_rnames <- ps %>% 
+          purrr::transpose() %>% 
+          magrittr::extract2("pref")
+        # Also deal with rowtype, but only if there was a rowtype for a.
+        new_rt <- rowtype(a)
+        if (!is.null(new_rt)) {
+          new_rt <- rowtype(a) %>% 
+            split_pref_suff(notation = notation) %>% 
+            magrittr::extract2("pref")
+        }
+      } else {
+        # We want the suffix.
+        # Be careful for rows in which a suffix was not found.
+        # In that case, return the prefix.
+        new_rnames <- lapply(ps, FUN = function(x) {
+          if (is.null(x[["suff"]])) {
+            return(x[["pref"]])
+          }
+          return(x[["suff"]])
+        })
+        # Also deal with rowtype, but only if there was a rowtype for a.
+        new_rt <- rowtype(a)
+        if (!is.null(new_rt)) {
+          new_rt <- rowtype(a) %>% 
+            split_pref_suff(notation = notation) %>% 
+            magrittr::extract2("suff")
+          if (is.null(new_rt)) {
+            # There was no suffix, so return the prefix.
+            new_rt <- rowtype(a) %>% 
+              split_pref_suff(notation = notation) %>% 
+              magrittr::extract2("pref")
+          }
+        }
       }
-
-      # Strip off prefix_open from the start of the names
-      new_rnames <- sub(pattern = paste0("^", prefix_open), replacement = "", x = new_rnames)
-      # Strip off rightmost prefix_close and everything to the right.
-      # Do this by reversing both the string and prefix_close and 
-      # eliminating everything up to the first reversed prefix_close.
-      # Then, reverse the string again.
-      # See 
-      # https://stackoverflow.com/questions/7124778/how-to-match-anything-up-until-this-sequence-of-characters-in-a-regular-expres 
-      # for details about the regex pattern.
-      new_rnames <- sub(pattern = paste0("^(.*?)", Hmisc::escapeRegex(stringi::stri_reverse(prefix_close))),
-                        replacement = "", 
-                        x = stringi::stri_reverse(new_rnames)) %>% 
-        stringi::stri_reverse()
-
-      if (keep == "suffix") {
-        # Here is the (c) reverse the results part
-        new_rnames <- stringi::stri_reverse(new_rnames)
-      }
-      
+      # Set new rownames
       rownames(a) <- new_rnames
+      # Set new rowtype
+      a <- setrowtype(a, new_rt)
     }
+
     return(a)
-    
   }
-  unaryapply_byname(rename_func, a = a, 
-                    .FUNdots = list(keep = keep, margin = margin, 
-                                    prefix_open = prefix_open,
-                                    prefix_close = prefix_close,
-                                    suffix_open = suffix_open,
-                                    suffix_close = suffix_close))
+  unaryapply_byname(rename_func, a = a,
+                    .FUNdots = list(keep = keep, margin = margin, notation = notation), 
+                    rowcoltypes = "none")
 }
 
 
@@ -859,17 +857,26 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
     transpose_byname()
 }
 
-#' Cleans (deletes) rows or columns of matrices that contain exclusively \code{clean_value}
+#' Clean (delete) rows or columns of matrices that contain exclusively `clean_value`
+#' 
+#' Cleaning is performed when all entries in a row or column or both, depending on the value of `margin`
+#' are within `+/- tol` of `clean_value`.
+#' Internally, values are deemed within +/- of tol when 
+#' `abs(x - clean_value) <= tol`.
+#' 
+#' If there is concern about machine precision, you might want to call this function with 
+#' `tol = .Machine$double.eps`.
 #'
 #' @param a the matrix to be cleaned
-#' @param margin the dimension over which cleaning should occur, \code{1} for rows, \code{2} for columns,
-#' or \code{c(1,2)} for both rows and columns. Default is \code{c(1,2)}.
-#' @param clean_value the undesirable value. Default is \code{0}.
+#' @param margin the dimension over which cleaning should occur, `1` for rows, `2` for columns,
+#'               or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
+#' @param clean_value the undesirable value. Default is `0`.
+#' @param tol the tolerance with which any value is deemed equal to `clean_value`. Default is `0`.
 #'
-#' When a row (when \code{margin = 1}) or a column (when \code{margin = 2})
-#' contains exclusively \code{clean_value}, the row or column is deleted from the matrix.
+#' When a row (when `margin = 1`) or a column (when `margin = 2`)
+#' contains exclusively `clean_value` (within `tol`), the row or column is deleted from the matrix.
 #'
-#' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{clean_value}.
+#' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively `clean_value.`
 #' 
 #' @export
 #'
@@ -894,58 +901,31 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' DF2[[1, "m2"]] <- m2
 #' DF2[[2, "m2"]] <- m2
 #' DF2 %>% clean_byname(margin = c(1, 2), clean_value = -20)
-clean_byname <- function(a, margin = c(1, 2), clean_value = 0){
+clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
   margin <- prep_vector_arg(a, margin)
+  clean_value <- prep_vector_arg(a, clean_value)
+  tol = prep_vector_arg(a, tol)
   
-  # if (1 %in% margin & 2 %in% margin) {
-  #   # Clean both dimensions of a.
-  #   cleaned1 <- clean_byname(a, margin = 1, clean_value = clean_value)
-  #   cleaned2 <- clean_byname(cleaned1, margin = 2, clean_value = clean_value)
-  #   return(cleaned2)
-  # }
-  # clean_func <- function(a, margin, clean_value){
-  #   if (margin == 1) {
-  #     # Want to clean rows. Code below assumes want to clean columns.
-  #     # Transpose and then transpose again before returning.
-  #     b <- transpose_byname(a)
-  #   } else if (margin == 2) {
-  #     b <- a
-  #   } else {
-  #     stop(paste("margin =", margin, "in clean_byname. Must be 1 or 2."))
-  #   }
-  #   keepcols <- apply(b, 2, function(x) {
-  #     !all(x == clean_value)
-  #   })
-  #   cleaned <- b[ , keepcols, drop = FALSE]
-  #   if (margin == 1) {
-  #     return(transpose_byname(cleaned))
-  #   } else if (margin == 2) {
-  #     return(cleaned)
-  #   }
-  # }
-  # unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
-  #                   rowcoltypes = "all")
-  
-  
-  clean_func <- function(a, margin, clean_value){
+  clean_func <- function(a, margin, clean_value, tol){
     assertthat::assert_that(1 %in% margin | 2 %in% margin, msg = paste("margin =", margin, "in clean_byname(). Must be 1 or 2."))
     out <- a
     if (1 %in% margin) {
       # Want to clean rows. Code below assumes want to clean columns.
       # Transpose and then transpose again before returning.
       out <- transpose_byname(out) %>% 
-        clean_func(margin = 2, clean_value = clean_value) %>% 
+        clean_func(margin = 2, clean_value = clean_value, tol = tol) %>% 
         transpose_byname()
     }
     if (2 %in% margin) {
       keepcols <- apply(out, 2, function(x) {
-        !all(x == clean_value)
+        # !all(x == clean_value)
+        !all(abs(x - clean_value) <= tol)
       })
       out <- out[ , keepcols, drop = FALSE]
     } 
     return(out)
   }
-  unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value), 
+  unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value, tol = tol), 
                     rowcoltypes = "all")
   
 }
@@ -1026,4 +1006,6 @@ logmean <- function(a, b, base = exp(1)){
   }
   (a - b) / log(a/b, base = base)
 }
+
+
 

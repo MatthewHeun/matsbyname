@@ -1,3 +1,30 @@
+# matsbyname 0.4.15 (2020-05-29)
+
+* Added additional tests for new features.
+    * Now up to 900 tests, all passing.
+    * Test coverage remains at 100%.
+* Added `tol` argument to `clean_byname()`, allowing for 
+  machine precision issues to be addressed.
+* Ensured that all old functions, such as
+  `rename_to_pref_suff_byname()`, 
+  `aggregate_byname()`, and 
+  `aggregate_to_pref_suff_byname()`
+  respect notation when using notation to renaming 
+  rows and columns. 
+* New functions for manipulating names of rows and columns:
+  `notation_vec()`, 
+  `arrow_notation()`, 
+  `paren_notation()`,
+  `bracket_notation()`,
+  `split_pref_suff()`,
+  `join_pref_suff()`,
+  `flip_pref_suff()`,
+  `switch_notation()`, and
+  `switch_notation_byname()`.
+* Eliminated a warning in GitHub actions about `README.md` requiring
+  a nonempty `<title>` element.    
+
+
 # matsbyname 0.4.14 (2020-05-01)
 
 * Added additional tests for bug fixes and new features.

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Aggregate to prefixes or suffixes — aggregate_to_pref_suff_byname • matsbyname</title>
+<title>Aggregate a matrix to prefixes or suffixes of row and/or column names — aggregate_to_pref_suff_byname • matsbyname</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,12 @@
 
 
 
-<meta property="og:title" content="Aggregate to prefixes or suffixes — aggregate_to_pref_suff_byname" />
+<meta property="og:title" content="Aggregate a matrix to prefixes or suffixes of row and/or column names — aggregate_to_pref_suff_byname" />
 <meta property="og:description" content="Row and column names are often constructed in the form
-prefix_open prefix prefix_close suffix_open suffix suffix_close.
-This function performs aggregation by prefix or suffix." />
+prefix_start prefix prefix_end suffix_start suffix suffix_end
+and described by a notation vector.
+(See notation_vec().)
+This function performs aggregation by prefix or suffix according to a notation vector.." />
 
 
 
@@ -74,7 +76,7 @@ This function performs aggregation by prefix or suffix." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
       </span>
     </div>
 
@@ -99,6 +101,9 @@ This function performs aggregation by prefix or suffix." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
+    </li>
     <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
     </li>
@@ -128,27 +133,25 @@ This function performs aggregation by prefix or suffix." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Aggregate to prefixes or suffixes</h1>
+    <h1>Aggregate a matrix to prefixes or suffixes of row and/or column names</h1>
     <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Unary.R'><code>R/Unary.R</code></a></small>
     <div class="hidden name"><code>aggregate_to_pref_suff_byname.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Row and column names are often constructed in the form
-<code>prefix_open</code> <code>prefix</code> <code>prefix_close</code> <code>suffix_open</code> <code>suffix</code> <code>suffix_close</code>.
-This function performs aggregation by prefix or suffix.</p>
+<code>prefix_start</code> <code>prefix</code> <code>prefix_end</code> <code>suffix_start</code> <code>suffix</code> <code>suffix_end</code>
+and described by a notation vector.
+(See <code><a href='row-col-notation.html'>notation_vec()</a></code>.)
+This function performs aggregation by prefix or suffix according to a notation vector..</p>
     </div>
 
     <pre class="usage"><span class='fu'>aggregate_to_pref_suff_byname</span>(
   <span class='no'>a</span>,
   <span class='kw'>aggregation_map</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>sep</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>keep</span>,
   <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>),
-  <span class='kw'>prefix_open</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>prefix_close</span> <span class='kw'>=</span> <span class='no'>sep</span>,
-  <span class='kw'>suffix_open</span> <span class='kw'>=</span> <span class='no'>sep</span>,
-  <span class='kw'>suffix_close</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='no'>notation</span>,
   <span class='kw'>pattern_type</span> <span class='kw'>=</span> <span class='st'>"exact"</span>
 )</pre>
 
@@ -161,39 +164,23 @@ This function performs aggregation by prefix or suffix.</p>
     </tr>
     <tr>
       <th>aggregation_map</th>
-      <td><p>see <code><a href='aggregate_byname.html'>aggregate_byname()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>sep</th>
-      <td><p>see <code><a href='rename_to_pref_suff_byname.html'>rename_to_pref_suff_byname()</a></code></p></td>
+      <td><p>See <code><a href='aggregate_byname.html'>aggregate_byname()</a></code>.</p></td>
     </tr>
     <tr>
       <th>keep</th>
-      <td><p>see <code><a href='rename_to_pref_suff_byname.html'>rename_to_pref_suff_byname()</a></code></p></td>
+      <td><p>See <code><a href='rename_to_pref_suff_byname.html'>rename_to_pref_suff_byname()</a></code></p></td>
     </tr>
     <tr>
       <th>margin</th>
-      <td><p>the dimension over which aggregation is to be performed; <code>1</code> for rows, <code>2</code> for columns, or <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> for both</p></td>
+      <td><p>the dimension over which aggregation is to be performed; <code>1</code> for rows, <code>2</code> for columns, or <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> for both.</p></td>
     </tr>
     <tr>
-      <th>prefix_open</th>
-      <td><p>see <code><a href='rename_to_pref_suff_byname.html'>rename_to_pref_suff_byname()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>prefix_close</th>
-      <td><p>see <code><a href='rename_to_pref_suff_byname.html'>rename_to_pref_suff_byname()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>suffix_open</th>
-      <td><p>see <code><a href='rename_to_pref_suff_byname.html'>rename_to_pref_suff_byname()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>suffix_close</th>
-      <td><p>see <code><a href='rename_to_pref_suff_byname.html'>rename_to_pref_suff_byname()</a></code></p></td>
+      <th>notation</th>
+      <td><p>See <code><a href='row-col-notation.html'>notation_vec()</a></code>.</p></td>
     </tr>
     <tr>
       <th>pattern_type</th>
-      <td><p>see <code><a href='aggregate_byname.html'>aggregate_byname()</a></code></p></td>
+      <td><p>See <code><a href='aggregate_byname.html'>aggregate_byname()</a></code>.</p></td>
     </tr>
     </table>
 
@@ -214,13 +201,13 @@ All arguments are passed to the helper functions.</p>
 #&gt; r2 -&gt; b       4       5       6
 #&gt; r3 -&gt; a       7       8       9</div><div class='input'><span class='co'># Aggregation by prefixes does nothing more than rename, because all prefixes are different.</span>
 <span class='co'># Doing renaming like this (without also aggregating) is potentially dangerous, because  </span>
-<span class='co'># some rows and some columns have same names.</span>
-<span class='fu'>aggregate_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"prefix"</span>)</div><div class='output co'>#&gt;    c1 c2 c3
+<span class='co'># some rows and some columns could end up with same names.</span>
+<span class='fu'>aggregate_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"prefix"</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'><a href='row-col-notation.html'>arrow_notation</a></span>())</div><div class='output co'>#&gt;    c1 c2 c3
 #&gt; r1  1  2  3
 #&gt; r2  4  5  6
 #&gt; r3  7  8  9</div><div class='input'><span class='co'># Aggregation by suffix reduces the number of rows and columns, </span>
 <span class='co'># because there are same suffixes in both rows and columns</span>
-<span class='fu'>aggregate_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"suffix"</span>)</div><div class='output co'>#&gt;    y z
+<span class='fu'>aggregate_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"suffix"</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'><a href='row-col-notation.html'>arrow_notation</a></span>())</div><div class='output co'>#&gt;    y z
 #&gt; a 17 7
 #&gt; b 16 5</div></pre>
   </div>

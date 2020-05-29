@@ -301,16 +301,13 @@ identize_byname <- function(a, margin = c(1,2)) {
 #' 
 #' Converts a matrix into a column vector.
 #' Each element of the matrix becomes an entry in the column vector,
-#' with rows named as "rowname `sep` colname" of the matrix entry.
-#' If "colname `sep` rowname" is desired, 
-#' transpose the matrix first with [transpose_byname()].
+#' with rows named via the `notation` argument.
+#' Callers may want to transpose the matrix first with `transpose_byname()`.
 #' 
-#' `rowtype` and `coltype` attributes are retained in the event that 
-#' the resulting vector is re-matricized with the [matricize_byname()] function later.
+#' The `notation` argument is also applied to `rowtype` and `coltype` attributes.
 #'
-#' @param a the matrix to be vectorized
-#' @param sep a string to separate row names and col names in the resulting column vector. 
-#'            Default is " -> " (an arrow indicating from row to column).
+#' @param a the matrix to be vectorized.
+#' @param notation a string vector created by `notation_vec()`.
 #'
 #' @return a column vector containing all elements of `a`, with row names assigned as "rowname `sep` colname".
 #' 
@@ -323,45 +320,64 @@ identize_byname <- function(a, margin = c(1,2)) {
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' m
-#' vectorize_byname(m, sep = " -> ")
+#' vectorize_byname(m, notation = arrow_notation())
 #' # If a single number is provided, the number will be returned as a 1x1 column vector 
 #' # with some additional attributes.
-#' vectorize_byname(42)
-#' attributes(vectorize_byname(42))
-#' # If called with `NULL`, get `NULL` back
-#' vectorize_byname(NULL)
-vectorize_byname <- function(a, sep = " -> ") {
-  vectorize_func <- function(a) {
-    if (!is.numeric(a)) {
+#' vectorize_byname(42, notation = arrow_notation())
+#' attributes(vectorize_byname(42, notation = arrow_notation()))
+vectorize_byname <- function(a, notation) {
+  if (is.null(a)) {
+    return(NULL)
+  }
+  if (is.null(notation)) {
+    return(a)
+  }
+  vectorize_func <- function(a_mat, notation) {
+    # At this point, a_mat should be a single matrix.
+    if (!is.numeric(a_mat)) {
       stop("a is not numeric in vectorize_byname")
     }
-    vec <- a
+    vec <- a_mat
     n_entries <- nrow(vec) * ncol(vec)
     if (length(n_entries) == 0) {
       # Probably have a single number
       n_entries <- 1
     }
     dim(vec) <- c(n_entries, 1)
-    # Figure out names
-    vecrownames <- purrr::cross2(rownames(a), colnames(a)) %>% 
-      lapply(FUN = function(pair){paste0(pair[[1]], sep , pair[[2]])})
-    # Put names on the rows of the vector and return
-    vec %>% setrownames_byname(vecrownames)
+    # Figure out names, based on notation
+    new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>% 
+      lapply(FUN = function(ps) {
+        ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
+          paste_pref_suff(notation = notation)
+      })
+    
+    # Put names on the rows of the vector
+    vec <- vec %>% setrownames_byname(new_rownames) %>% 
+      # Eliminate the column names
+      setcolnames_byname(NULL)
+    
+    # Change the rowtype and coltype if both are not NULL
+    if (!is.null(rt <- rowtype(a_mat)) & !is.null(ct <- coltype(a_mat))) {
+      new_rowtype <- paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
+      vec <- vec %>% 
+        setrowtype(new_rowtype) %>% 
+        setcoltype(NULL)
+    }
+    return(vec)
   }
-  unaryapply_byname(vectorize_func, a = a, rowcoltypes = "none")
+  unaryapply_byname(vectorize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
 }
 
 
 #' Matricize a vector
+#' 
+#' Converts a vector with rows or columns named according to `notation`
+#' into a matrix.
 #'
-#' @param a a row (column) vector to be converted to a matrix based on its row (column) names
-#' @param sep a string that separates prefixes (outgoing matrix rownames) and suffixes (outgoing matrix colnames)
-#'            in the names of the vector's
-#'            rows (for a column vector) or
-#'            columns (for a row vector).
-#'            Default is " -> " (an arrow).
+#' @param a a row (column) vector to be converted to a matrix based on its row (column) names.
+#' @param notation a string vector created by `notation_vec()` that identifies the notation for row or column names.
 #'
-#' @return a matrix converted from vector `a`
+#' @return a matrix created from vector `a`.
 #' 
 #' @export
 #'
@@ -374,30 +390,34 @@ vectorize_byname <- function(a, sep = " -> ") {
 #'                                                   "p2 -> i1", 
 #'                                                   "p1 -> i2", 
 #'                                                   "p2 -> i2"))) %>% 
-#'   setrowtype("Products") %>% setcoltype("Industries")
+#'   setrowtype("Products -> Industries")
 #' # Default separator is " -> ".
-#' matricize_byname(v)
-matricize_byname <- function(a, sep = " -> ") {
-  matricize_func <- function(a) {
+#' matricize_byname(v, notation = arrow_notation())
+matricize_byname <- function(a, notation) {
+  matricize_func <- function(a_mat, notation) {
+    # At this point, we should have a single matrix a_mat.
     # Make sure we have the right number of dimensions, i.e. 2.
-    dimsa <- dim(a)
-    if (length(dimsa) != 2) {
+    dimsa_mat <- dim(a_mat)
+    if (length(dimsa_mat) != 2) {
       stop("a must have length(dim(a)) == 2 in matricize_byname")
     }
     # Check if this is a column vector or a row vector
-    if ((dimsa[[1]] == 1 & dimsa[[2]] != 1) | 
-        (dimsa[[1]] == 1 & dimsa[[2]] == 1 & is.null(dimnames(a)[[1]]))) {
+    if ((dimsa_mat[[1]] == 1 & dimsa_mat[[2]] != 1) | 
+        (dimsa_mat[[1]] == 1 & dimsa_mat[[2]] == 1 & is.null(dimnames(a_mat)[[1]]))) {
       # This is a row vector and not a 1x1 "vector".
       # Transpose to a column vector, then re-call this function.
-      return(transpose_byname(a) %>% matricize_func())
+      return(transpose_byname(a_mat) %>% matricize_func(notation))
     }
     # If we get here, we know we have a column vector.
     # Gather row names of the vector.
-    rownames_a <- dimnames(a)[[1]]
-    # Split row names at sep
-    matrix_row_col_pairs <- strsplit(rownames_a, sep)
-    # Transpose to get all rownames first, all colnames second
-    matrix_row_col_names <- matrix_row_col_pairs %>% purrr::transpose()
+    rownames_a <- dimnames(a_mat)[[1]]
+    # Split row names by notation
+    matrix_row_col_names <- split_pref_suff(rownames_a, notation = notation)
+    if (nrow(a_mat) > 1) {
+      # We have more than 1 row of names.
+      # Thus, we need to transpose the list.
+      matrix_row_col_names <- purrr::transpose(matrix_row_col_names)
+    }
     # Get the matrix row and column names separately.
     .rownames <- matrix_row_col_names %>% 
       magrittr::extract2(1) %>% 
@@ -428,7 +448,7 @@ matricize_byname <- function(a, sep = " -> ") {
     mat_info <- tibble::tibble(
       !!rnames := .rownames,
       !!cnames := .colnames,
-      !!values := a[ , 1]
+      !!values := a_mat[ , 1]
     ) %>%
       dplyr::left_join(rownametable, by = rnames) %>% 
       dplyr::left_join(colnametable, by = cnames)
@@ -445,9 +465,12 @@ matricize_byname <- function(a, sep = " -> ") {
       value <- mat_info[[values]][r]
       m[rownum, colnum] <- value
     }
-    return(m)
+    # Add row and column types after splitting the rowtype of a_mat
+    rt <- rowtype(a_mat)
+    rctypes <- split_pref_suff(rt, notation = notation)
+    m %>% setrowtype(rctypes[["pref"]]) %>% setcoltype(rctypes[["suff"]])
   } 
-  unaryapply_byname(matricize_func, a = a, rowcoltypes = "all")
+  unaryapply_byname(matricize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
 }
 
 
@@ -1188,17 +1211,17 @@ any_byname <- function(a){
 aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), pattern_type = "exact") {
   margin <- prep_vector_arg(a, margin)
   
-  agg_func <- function(a, aggregation_map, margin, pattern_type) {
+  agg_func <- function(a_mat, aggregation_map, margin, pattern_type) {
     # If we get here, a should be a single matrix.
     assertthat::assert_that(all(margin %in% c(1, 2)))
     # Create our own aggregation_map if it is NULL
     if (is.null(aggregation_map)) {
       rcnames <- list()
       if (1 %in% margin) {
-        rcnames[["rnames"]] <- rownames(a)
+        rcnames[["rnames"]] <- rownames(a_mat)
       }
       if (2 %in% margin) {
-        rcnames[["cnames"]] <- colnames(a)
+        rcnames[["cnames"]] <- colnames(a_mat)
       }
       aggregation_map <- lapply(rcnames, FUN = function(x) {
         # x is one of the sets of row or column names
@@ -1218,14 +1241,14 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
       # If we still have a NULL aggregation_map (i.e., we didn't find any rows or cols that need to be aggregated),
       # just return our original matrix (a).
       if (is.null(aggregation_map)) {
-        return(a)
+        return(a_mat)
       }
     }
-    out <- a
+    out <- a_mat
     if (2 %in% margin) {
       # Want to aggregate columns.
       # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
-      out <- t(a) %>% 
+      out <- t(a_mat) %>% 
         agg_func(aggregation_map = aggregation_map, margin = 1, pattern_type = pattern_type) %>% 
         t()
     }
@@ -1261,31 +1284,29 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
     return(out)
   }
 
-  unaryapply_byname(agg_func, a = a, 
+  unaryapply_byname(agg_func, a, 
                     .FUNdots = list(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type))
 }
 
 
-#' Aggregate to prefixes or suffixes
+#' Aggregate a matrix to prefixes or suffixes of row and/or column names
 #' 
 #' Row and column names are often constructed in the form 
-#' `prefix_open` `prefix` `prefix_close` `suffix_open` `suffix` `suffix_close`.
-#' This function performs aggregation by prefix or suffix.
+#' `prefix_start` `prefix` `prefix_end` `suffix_start` `suffix` `suffix_end`
+#' and described by a notation vector.
+#' (See `notation_vec()`.)
+#' This function performs aggregation by prefix or suffix according to a notation vector..
 #' 
 #' This function is a convenience function, as it bundles sequential calls to two helper functions,
 #' `rename_to_pref_suff_byname()` and `aggregate_byname()`.
 #' All arguments are passed to the helper functions.
 #'
 #' @param a a matrix of list of matrices to be aggregated by prefix or suffix
-#' @param aggregation_map see `aggregate_byname()`
-#' @param sep see `rename_to_pref_suff_byname()`
-#' @param keep see `rename_to_pref_suff_byname()`
-#' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both
-#' @param prefix_open see `rename_to_pref_suff_byname()`
-#' @param prefix_close see `rename_to_pref_suff_byname()`
-#' @param suffix_open see `rename_to_pref_suff_byname()`
-#' @param suffix_close see `rename_to_pref_suff_byname()`
-#' @param pattern_type see `aggregate_byname()`
+#' @param aggregation_map See `aggregate_byname()`.
+#' @param notation See `notation_vec()`. 
+#' @param keep See `rename_to_pref_suff_byname()`
+#' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both.
+#' @param pattern_type See `aggregate_byname()`.
 #'
 #' @return an aggregated version of `a`
 #' 
@@ -1297,19 +1318,15 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' m
 #' # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 #' # Doing renaming like this (without also aggregating) is potentially dangerous, because  
-#' # some rows and some columns have same names.
-#' aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+#' # some rows and some columns could end up with same names.
+#' aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
 #' # Aggregation by suffix reduces the number of rows and columns, 
 #' # because there are same suffixes in both rows and columns
-#' aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+#' aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
 aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
-                                       sep = NULL, keep, margin = c(1, 2), 
-                                       prefix_open = "", prefix_close = sep, 
-                                       suffix_open = sep, suffix_close = "", 
-                                       pattern_type = "exact") {
+                                          keep, margin = c(1, 2), notation,
+                                          pattern_type = "exact") {
   a %>% 
-    rename_to_pref_suff_byname(sep = sep, keep = keep, margin = margin,
-                               prefix_open = prefix_open, prefix_close = prefix_close, 
-                               suffix_open = suffix_open, suffix_close = suffix_close) %>% 
+    rename_to_pref_suff_byname(keep = keep, margin = margin, notation = notation) %>% 
     aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
 }

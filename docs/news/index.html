@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
       </span>
     </div>
 
@@ -96,6 +96,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
+    </li>
     <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
     </li>
@@ -129,9 +132,26 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0415-2020-05-29" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.15">
+<a href="#matsbyname-0415-2020-05-29" class="anchor"></a>matsbyname 0.4.15 (2020-05-29)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Added additional tests for new features.
+<ul>
+<li>Now up to 900 tests, all passing.</li>
+<li>Test coverage remains at 100%.</li>
+</ul>
+</li>
+<li>Added <code>tol</code> argument to <code><a href="../reference/clean_byname.html">clean_byname()</a></code>, allowing for machine precision issues to be addressed.</li>
+<li>Ensured that all old functions, such as <code><a href="../reference/rename_to_pref_suff_byname.html">rename_to_pref_suff_byname()</a></code>, <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>, and <code><a href="../reference/aggregate_to_pref_suff_byname.html">aggregate_to_pref_suff_byname()</a></code> respect notation when using notation to renaming rows and columns.</li>
+<li>New functions for manipulating names of rows and columns: <code><a href="../reference/row-col-notation.html">notation_vec()</a></code>, <code><a href="../reference/row-col-notation.html">arrow_notation()</a></code>, <code><a href="../reference/row-col-notation.html">paren_notation()</a></code>, <code><a href="../reference/row-col-notation.html">bracket_notation()</a></code>, <code><a href="../reference/row-col-notation.html">split_pref_suff()</a></code>, <code>join_pref_suff()</code>, <code><a href="../reference/row-col-notation.html">flip_pref_suff()</a></code>, <code><a href="../reference/row-col-notation.html">switch_notation()</a></code>, and <code><a href="../reference/row-col-notation.html">switch_notation_byname()</a></code>.</li>
+<li>Eliminated a warning in GitHub actions about <code>README.md</code> requiring a nonempty <code>&lt;title&gt;</code> element.</li>
+</ul>
+</div>
     <div id="matsbyname-0414-2020-05-01" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.14">
-<a href="#matsbyname-0414-2020-05-01" class="anchor"></a>matsbyname 0.4.14 (2020-05-01)<small> Unreleased </small>
+<a href="#matsbyname-0414-2020-05-01" class="anchor"></a>matsbyname 0.4.14 (2020-05-01)<small> 2020-05-01 </small>
 </h1>
 <ul>
 <li>Added additional tests for bug fixes and new features.

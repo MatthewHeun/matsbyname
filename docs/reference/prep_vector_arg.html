@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
       </span>
     </div>
 
@@ -97,6 +97,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
+    </li>
     <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
     </li>
@@ -160,7 +163,7 @@ the <code>*_byname</code> functions to unary list of <code>a</code>.
 Rather, one should specify, say, <code>margin = list(c(1, 2)</code>
 to avoid ambiguity.
 If <code>a</code> is a list,
-<code>vector_arg</code> is not a list and has length &gt; 1 and length not equal to the length of a,,
+<code>vector_arg</code> is not a list and has length &gt; 1 and length not equal to the length of a,
 this function returns a list value for <code>vector_arg</code>.
 If <code>a</code> is not a list and <code>vector_arg</code> is a list,
 this function returns an un-recursive, unlisted version of <code>vector_arg</code>.</p>

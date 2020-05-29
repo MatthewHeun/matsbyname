@@ -4,22 +4,19 @@
 \alias{matricize_byname}
 \title{Matricize a vector}
 \usage{
-matricize_byname(a, sep = " -> ")
+matricize_byname(a, notation)
 }
 \arguments{
-\item{a}{a row (column) vector to be converted to a matrix based on its row (column) names}
+\item{a}{a row (column) vector to be converted to a matrix based on its row (column) names.}
 
-\item{sep}{a string that separates prefixes (outgoing matrix rownames) and suffixes (outgoing matrix colnames)
-in the names of the vector's
-rows (for a column vector) or
-columns (for a row vector).
-Default is " -> " (an arrow).}
+\item{notation}{a string vector created by \code{notation_vec()} that identifies the notation for row or column names.}
 }
 \value{
-a matrix converted from vector \code{a}
+a matrix created from vector \code{a}.
 }
 \description{
-Matricize a vector
+Converts a vector with rows or columns named according to \code{notation}
+into a matrix.
 }
 \examples{
 v <- matrix(c(1,
@@ -30,7 +27,7 @@ v <- matrix(c(1,
                                                   "p2 -> i1", 
                                                   "p1 -> i2", 
                                                   "p2 -> i2"))) \%>\% 
-  setrowtype("Products") \%>\% setcoltype("Industries")
+  setrowtype("Products -> Industries")
 # Default separator is " -> ".
-matricize_byname(v)
+matricize_byname(v, notation = arrow_notation())
 }

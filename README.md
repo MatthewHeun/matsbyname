@@ -1,5 +1,3 @@
-matsbyname
-================
 
 <!-- *********** -->
 
@@ -8,6 +6,8 @@ matsbyname
 <!-- Be sure to edit README.Rmd and generate the README.md file by Cmd/Ctl-shift-K -->
 
 <!-- *********** -->
+
+# matsbyname
 
 <!-- badges: start -->
 

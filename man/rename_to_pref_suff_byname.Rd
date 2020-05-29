@@ -4,36 +4,19 @@
 \alias{rename_to_pref_suff_byname}
 \title{Rename matrix rows and columns by prefix and suffix}
 \usage{
-rename_to_pref_suff_byname(
-  a,
-  sep = NULL,
-  keep,
-  margin = c(1, 2),
-  prefix_open = "",
-  prefix_close = sep,
-  suffix_open = sep,
-  suffix_close = ""
-)
+rename_to_pref_suff_byname(a, keep, margin = c(1, 2), notation)
 }
 \arguments{
-\item{a}{a matrix or list of matrices whose rows or columns will be renamed}
+\item{a}{a matrix or list of matrices whose rows or columns will be renamed.}
 
-\item{sep}{a string that identifies the separator between prefix and suffix}
+\item{keep}{one of "prefix" or "suffix" indicating which part of the row or column name to retain.}
 
-\item{keep}{one of "prefix" or "suffix" indicating which part of the row or column name to retain}
+\item{margin}{one of \code{1}, \code{2}, or \code{c(1, 2)} where \code{1} indicates rows and \code{2} indicates columns.}
 
-\item{margin}{one of \code{1}, \code{2}, or \code{c(1, 2)} where \code{1} indicates rows and \code{2} indicates columns}
-
-\item{prefix_open}{a string that identifies the beginning of a prefix. Default is \code{sep}.}
-
-\item{prefix_close}{a string that identifies the ending of a prefix. Default is "".}
-
-\item{suffix_open}{a string that identifies the beginning of a suffix. Default is "".}
-
-\item{suffix_close}{a string that identifies the beginning of a suffix. Default is \code{sep}.}
+\item{notation}{See \code{notation_vec()}.}
 }
 \value{
-\code{a} with potentially different row or column names
+\code{a} with potentially different row or column names.
 }
 \description{
 It can be convenient to rename rows or columns of matrices
@@ -59,6 +42,7 @@ m <- matrix(c(1, 2,
               3, 4, 
               5, 6), nrow = 3, byrow = TRUE, 
             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
-rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
-rename_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+m
+rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
 }

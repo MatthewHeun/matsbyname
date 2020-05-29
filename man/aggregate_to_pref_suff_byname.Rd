@@ -2,49 +2,39 @@
 % Please edit documentation in R/Unary.R
 \name{aggregate_to_pref_suff_byname}
 \alias{aggregate_to_pref_suff_byname}
-\title{Aggregate to prefixes or suffixes}
+\title{Aggregate a matrix to prefixes or suffixes of row and/or column names}
 \usage{
 aggregate_to_pref_suff_byname(
   a,
   aggregation_map = NULL,
-  sep = NULL,
   keep,
   margin = c(1, 2),
-  prefix_open = "",
-  prefix_close = sep,
-  suffix_open = sep,
-  suffix_close = "",
+  notation,
   pattern_type = "exact"
 )
 }
 \arguments{
 \item{a}{a matrix of list of matrices to be aggregated by prefix or suffix}
 
-\item{aggregation_map}{see \code{aggregate_byname()}}
+\item{aggregation_map}{See \code{aggregate_byname()}.}
 
-\item{sep}{see \code{rename_to_pref_suff_byname()}}
+\item{keep}{See \code{rename_to_pref_suff_byname()}}
 
-\item{keep}{see \code{rename_to_pref_suff_byname()}}
+\item{margin}{the dimension over which aggregation is to be performed; \code{1} for rows, \code{2} for columns, or \code{c(1, 2)} for both.}
 
-\item{margin}{the dimension over which aggregation is to be performed; \code{1} for rows, \code{2} for columns, or \code{c(1, 2)} for both}
+\item{notation}{See \code{notation_vec()}.}
 
-\item{prefix_open}{see \code{rename_to_pref_suff_byname()}}
-
-\item{prefix_close}{see \code{rename_to_pref_suff_byname()}}
-
-\item{suffix_open}{see \code{rename_to_pref_suff_byname()}}
-
-\item{suffix_close}{see \code{rename_to_pref_suff_byname()}}
-
-\item{pattern_type}{see \code{aggregate_byname()}}
+\item{pattern_type}{See \code{aggregate_byname()}.}
 }
 \value{
 an aggregated version of \code{a}
 }
 \description{
 Row and column names are often constructed in the form
-\code{prefix_open} \code{prefix} \code{prefix_close} \code{suffix_open} \code{suffix} \code{suffix_close}.
-This function performs aggregation by prefix or suffix.
+\code{prefix_start} \code{prefix} \code{prefix_end} \code{suffix_start} \code{suffix} \code{suffix_end}
+and described by a notation vector.
+(See \code{notation_vec()}.)
+This function performs aggregation by prefix or suffix according to a notation vector..
 }
 \details{
 This function is a convenience function, as it bundles sequential calls to two helper functions,
@@ -57,9 +47,9 @@ m <- matrix((1:9), byrow = TRUE, nrow = 3,
 m
 # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 # Doing renaming like this (without also aggregating) is potentially dangerous, because  
-# some rows and some columns have same names.
-aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix")
+# some rows and some columns could end up with same names.
+aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
 # Aggregation by suffix reduces the number of rows and columns, 
 # because there are same suffixes in both rows and columns
-aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix")
+aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
 }

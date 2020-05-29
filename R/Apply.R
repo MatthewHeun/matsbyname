@@ -106,7 +106,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
 #'   * a is NOT a list, but the item of .FUNdots IS a list
 #'       - pass the argument along and hope for the best.  This situation is probably an error.  If so, it will become apparent soon.
 #'   * neither a nor the item of .FUNdots is a list
-#'       - a should have length = 1, but a single matrix reports its length as the number of elementes of the matrix.
+#'       - a should have length = 1, but a single matrix reports its length as the number of elements of the matrix.
 #'         So, we can't check length in this situation.
 #'       - the item of .FUNdots is assumed to have length 1 and passed along
 #' 
@@ -143,7 +143,10 @@ prepare_.FUNdots <- function(a, .FUNdots) {
                                              "Found length = ", 
                                              length(.FUNdots[[i]]), " for argument '", 
                                              names(.FUNdots)[[i]], 
-                                             "', which is a list."))
+                                             "', which is a list. ", 
+                                             "Consider wrapping argument '", 
+                                             names(.FUNdots)[[i]], 
+                                             "' in a list()."))
         if (len == 1) {
           # Replicate the item of .FUNdots to match length of a.
           .FUNdots[[i]] <- make_list(.FUNdots[[i]][[1]], n = length(a), lenx = 1)
@@ -196,7 +199,7 @@ prepare_.FUNdots <- function(a, .FUNdots) {
 
       } else {
         #'   * neither a nor the item of .FUNdots is a list
-        #'       - a should have length = 1, but a single matrix reports its length as the number of elementes of the matrix.
+        #'       - a should have length = 1, but a single matrix reports its length as the number of elements of the matrix.
         #'         So, we can't check length in this situation.
         #'       - the item of .FUNdots is assumed to have length 1 and passed along
         

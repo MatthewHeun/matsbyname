@@ -323,7 +323,7 @@ context("Vectorize")
 test_that("vectorize_byname works as expected", {
   # Try with a square matrix
   m1 <- matrix(c(1, 5,
-                4, 5),
+                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
               dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
@@ -333,9 +333,11 @@ test_that("vectorize_byname works as expected", {
                         5),
                       nrow = 4, ncol = 1, 
                       dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  actual1 <- vectorize_byname(m1)
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  actual1 <- vectorize_byname(m1, notation = arrow_notation())
   expect_equal(actual1, expected1)
+  # Try with null notation
+  expect_equal(vectorize_byname(m1, notation = NULL), m1)
   # Try with a rectangular matrix
   m2 <- matrix(c(1, 2, 3,
                  4, 5, 6),
@@ -343,22 +345,22 @@ test_that("vectorize_byname works as expected", {
                dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   expected2 <- matrix(c(1, 
-                       4, 
-                       2, 
-                       5, 
-                       3, 
-                       6),
-                     nrow = 6, ncol = 1,
-                     dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  actual2 <- vectorize_byname(m2)
+                        4, 
+                        2, 
+                        5, 
+                        3, 
+                        6),
+                      nrow = 6, ncol = 1,
+                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  actual2 <- vectorize_byname(m2, notation = arrow_notation())
   expect_equal(actual2, expected2)
   # Try with a single number
   m3 <- 42
   expected3 <- m3
   dim(expected3) <- c(1, 1)
   dimnames(expected3) <- NULL
-  actual3 <- vectorize_byname(m3)
+  actual3 <- vectorize_byname(m3, notation = arrow_notation())
   expect_equal(actual3, expected3)
   # Try with a different separator
   m4 <- matrix(c(1, 5,
@@ -372,8 +374,8 @@ test_that("vectorize_byname works as expected", {
                         5),
                       nrow = 4, ncol = 1, 
                       dimnames = list(c("p1---i1", "p2---i1", "p1---i2", "p2---i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  actual4 <- vectorize_byname(m4, sep = "---")
+    setrowtype("Products---Industries") %>% setcoltype(NULL)
+  actual4 <- vectorize_byname(m4, notation = notation_vec(sep = "---"))
   expect_equal(actual4, expected4)
   # Test with a matrix that is already a column vector
   m5 <- matrix(c(1,
@@ -382,25 +384,44 @@ test_that("vectorize_byname works as expected", {
                nrow = 3, ncol = 1,
                dimnames = list(c("p1", "p2", "p3"), "i1")) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  actual5 <- vectorize_byname(m5, sep = "***")
+  actual5 <- vectorize_byname(m5, notation = notation_vec(sep = "***"))
   expected5 <- matrix(c(1,
                         2,
                         3),
                       nrow = 3, ncol = 1,
                       dimnames = list(c("p1***i1", "p2***i1", "p3***i1"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
+    setrowtype("Products***Industries") %>% setcoltype(NULL)
   expect_equal(actual5, expected5)
   # Test with NULL. Should get NULL back.
-  expect_true(is.null(vectorize_byname(NULL)))
+  expect_null(vectorize_byname(NULL, NULL))
   # Test with NA.
-  expect_error(vectorize_byname(NA), "a is not numeric in vectorize_byname")
+  expect_error(vectorize_byname(NA, notation = arrow_notation()), "a is not numeric in vectorize_byname")
   # Test with string
-  expect_error(vectorize_byname("a"), "a is not numeric in vectorize_byname")
+  expect_error(vectorize_byname("a", notation = arrow_notation()), "a is not numeric in vectorize_byname")
   # Test with a list of matrices
   list6 <- list(m1, m1)
-  actual6 <- vectorize_byname(list6)
+  actual6 <- vectorize_byname(list6, notation = list(arrow_notation()))
   expected6 <- list(expected1, expected1)
   expect_equal(actual6, expected6)
+})
+
+
+test_that("vectorize works with 4 matrices", {
+  m <- matrix(c(1, 5,
+                4, 5),
+              nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  l <- list(m, m, m, m)
+  actual <- vectorize_byname(l, notation = list(arrow_notation()))
+  e <- matrix(c(1, 
+                4, 
+                5, 
+                5),
+              nrow = 4, ncol = 1, 
+              dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  expect_equal(actual, list(e, e, e, e))
 })
 
 
@@ -410,16 +431,16 @@ context("Matricize")
 
 test_that("matricize_byname works as expected", {
   v1 <- array(dim = c(2, 2, 2))
-  expect_error(matricize_byname(v1), "== 2 in matricize_byname")
+  expect_error(matricize_byname(v1, notation = arrow_notation()), "== 2 in matricize_byname")
 
-  # Try with a collumn vector  
+  # Try with a column vector  
   v2 <- matrix(c(1,
                  2,
                  3, 
                  4), 
                nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  actual2 <- matricize_byname(v2)
+    setrowtype("Products -> Industries")
+  actual2 <- matricize_byname(v2, notation = arrow_notation())
   expected2 <- matrix(c(1, 3,
                         2, 4),
                       nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
@@ -429,8 +450,8 @@ test_that("matricize_byname works as expected", {
   # Try with a row vector
   v3 <- matrix(c(1, 2, 3, 4), 
                nrow = 1, ncol = 4, dimnames = list(NULL, c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  actual3 <- matricize_byname(v3)
+    setcoltype("Products -> Industries")
+  actual3 <- matricize_byname(v3, notation = arrow_notation())
   expected3 <- matrix(c(1, 3,
                         2, 4),
                       nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
@@ -439,16 +460,16 @@ test_that("matricize_byname works as expected", {
   
   # Try with a 1x1 matrix as a column vector.
   v4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(c("p2 -> i1"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  actual4 <- matricize_byname(v4)
+    setrowtype("Products -> Industries")
+  actual4 <- matricize_byname(v4, notation = arrow_notation())
   expected4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("p2", "i1")) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   expect_equal(actual4, expected4)
   
   # Try with a 1x1 matrix as a row vector.
   v5 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, c("p2 -> i1"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  actual5 <- matricize_byname(v5)
+    setcoltype("Products -> Industries")
+  actual5 <- matricize_byname(v5, notation = arrow_notation())
   expected5 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("p2", "i1")) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   expect_equal(actual5, expected5)
@@ -458,8 +479,8 @@ test_that("matricize_byname works as expected", {
                nrow = 1, ncol = 6, dimnames = list(NULL, c("p1 -> i1", "p1 -> i2", 
                                                            "p2 -> i1", "p2 -> i2",
                                                            "p3 -> i1", "p3 -> i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  actual6 <- matricize_byname(v6)
+    setcoltype("Products -> Industries")
+  actual6 <- matricize_byname(v6, notation = arrow_notation())
   expected6 <- matrix(c(1, 2, 
                         3, 4, 
                         5, 6),
@@ -479,12 +500,12 @@ test_that("vectorize and matricize are inverses of each other", {
                  5, 6),
                nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  v1 <- vectorize_byname(m1)
-  m2 <- matricize_byname(v1)
+  v1 <- vectorize_byname(m1, notation = arrow_notation())
+  m2 <- matricize_byname(v1, notation = arrow_notation())
   expect_equal(m2, m1)
   # Do a regular transpose here (t), because transpose_byname switches rowtype and coltype.
-  v3 <- t(v1)
-  m4 <- matricize_byname(v3)
+  v3 <- transpose_byname(v1)
+  m4 <- matricize_byname(v3, notation = arrow_notation())
   expect_equal(m4, m1)
 })
 
@@ -1496,11 +1517,22 @@ test_that("aggregate_to_pref_suff_byname() works as expected", {
   m <- matrix((1:9), byrow = TRUE, nrow = 3, 
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
   # Aggregate by prefixes should do no more than rename, because all prefixes are different
-  expect_equal(aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "prefix"), 
-               rename_to_pref_suff_byname(m, sep = " -> ", keep = "prefix"))
+  expect_equal(aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation()), 
+               rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation()))
   # Aggregate by suffixes should do a lot, because several prefixes are same.
-  expect_equal(aggregate_to_pref_suff_byname(m, sep = " -> ", keep = "suffix"), 
+  expect_equal(aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation()), 
                m %>% 
-                 rename_to_pref_suff_byname(sep = " -> ", keep = "suffix") %>% 
+                 rename_to_pref_suff_byname(keep = "suffix", notation = arrow_notation()) %>% 
                  aggregate_byname())
+})
+
+
+test_that("aggregate_to_pref_suff_byname() handles types correctly", {
+  m <- matrix((1:9), byrow = TRUE, nrow = 3, 
+              dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y"))) %>% 
+    setrowtype("row -> letter") %>% setcoltype("col -> letter")
+  
+  res <- aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+  expect_equal(rowtype(res), "letter")
+  expect_equal(coltype(res), "letter")
 })

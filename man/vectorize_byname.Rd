@@ -4,13 +4,12 @@
 \alias{vectorize_byname}
 \title{Vectorize a matrix}
 \usage{
-vectorize_byname(a, sep = " -> ")
+vectorize_byname(a, notation)
 }
 \arguments{
-\item{a}{the matrix to be vectorized}
+\item{a}{the matrix to be vectorized.}
 
-\item{sep}{a string to separate row names and col names in the resulting column vector.
-Default is " -> " (an arrow indicating from row to column).}
+\item{notation}{a string vector created by \code{notation_vec()}.}
 }
 \value{
 a column vector containing all elements of \code{a}, with row names assigned as "rowname \code{sep} colname".
@@ -18,13 +17,11 @@ a column vector containing all elements of \code{a}, with row names assigned as 
 \description{
 Converts a matrix into a column vector.
 Each element of the matrix becomes an entry in the column vector,
-with rows named as "rowname \code{sep} colname" of the matrix entry.
-If "colname \code{sep} rowname" is desired,
-transpose the matrix first with \code{\link[=transpose_byname]{transpose_byname()}}.
+with rows named via the \code{notation} argument.
+Callers may want to transpose the matrix first with \code{transpose_byname()}.
 }
 \details{
-\code{rowtype} and \code{coltype} attributes are retained in the event that
-the resulting vector is re-matricized with the \code{\link[=matricize_byname]{matricize_byname()}} function later.
+The \code{notation} argument is also applied to \code{rowtype} and \code{coltype} attributes.
 }
 \examples{
 m <- matrix(c(1, 5,
@@ -33,11 +30,9 @@ m <- matrix(c(1, 5,
             dimnames = list(c("p1", "p2"), c("i1", "i2"))) \%>\% 
   setrowtype("Products") \%>\% setcoltype("Industries")
 m
-vectorize_byname(m, sep = " -> ")
+vectorize_byname(m, notation = arrow_notation())
 # If a single number is provided, the number will be returned as a 1x1 column vector 
 # with some additional attributes.
-vectorize_byname(42)
-attributes(vectorize_byname(42))
-# If called with `NULL`, get `NULL` back
-vectorize_byname(NULL)
+vectorize_byname(42, notation = arrow_notation())
+attributes(vectorize_byname(42, notation = arrow_notation()))
 }

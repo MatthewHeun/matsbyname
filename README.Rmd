@@ -1,5 +1,4 @@
 ---
-title: "matsbyname"
 output: github_document
 bibliography: vignettes/References.bib
 ---
@@ -8,6 +7,17 @@ bibliography: vignettes/References.bib
 <!-- Note: README.md is generated from README.Rmd.   -->
 <!-- Be sure to edit README.Rmd and generate the README.md file by Cmd/Ctl-shift-K -->
 <!-- *********** -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# matsbyname
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/matsbyname)](https://cran.r-project.org/package=matsbyname)

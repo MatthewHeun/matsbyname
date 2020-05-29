@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Cleans (deletes) rows or columns of matrices that contain exclusively <code>clean_value</code> — clean_byname • matsbyname</title>
+<title>Clean (delete) rows or columns of matrices that contain exclusively <code>clean_value</code> — clean_byname • matsbyname</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="Cleans (deletes) rows or columns of matrices that contain exclusively <code>clean_value</code> — clean_byname" />
-<meta property="og:description" content="Cleans (deletes) rows or columns of matrices that contain exclusively clean_value" />
+<meta property="og:title" content="Clean (delete) rows or columns of matrices that contain exclusively <code>clean_value</code> — clean_byname" />
+<meta property="og:description" content="Cleaning is performed when all entries in a row or column or both, depending on the value of margin
+are within +/- tol of clean_value.
+Internally, values are deemed within +/- of tol when
+abs(x - clean_value) &amp;lt;= tol." />
 
 
 
@@ -72,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
       </span>
     </div>
 
@@ -97,6 +100,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
+    </li>
     <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
     </li>
@@ -126,16 +132,19 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Cleans (deletes) rows or columns of matrices that contain exclusively <code>clean_value</code></h1>
+    <h1>Clean (delete) rows or columns of matrices that contain exclusively <code>clean_value</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Utilities.R'><code>R/Utilities.R</code></a></small>
     <div class="hidden name"><code>clean_byname.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Cleans (deletes) rows or columns of matrices that contain exclusively <code>clean_value</code></p>
+    <p>Cleaning is performed when all entries in a row or column or both, depending on the value of <code>margin</code>
+are within <code>+/- tol</code> of <code>clean_value</code>.
+Internally, values are deemed within +/- of tol when
+<code>abs(x - clean_value) &lt;= tol</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>clean_byname</span>(<span class='no'>a</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>clean_value</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
+    <pre class="usage"><span class='fu'>clean_byname</span>(<span class='no'>a</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>clean_value</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,19 +156,27 @@
     <tr>
       <th>margin</th>
       <td><p>the dimension over which cleaning should occur, <code>1</code> for rows, <code>2</code> for columns,
-or <code><a href='https://rdrr.io/r/base/c.html'>c(1,2)</a></code> for both rows and columns. Default is <code><a href='https://rdrr.io/r/base/c.html'>c(1,2)</a></code>.</p></td>
+or <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> for both rows and columns. Default is <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code>.</p></td>
     </tr>
     <tr>
       <th>clean_value</th>
-      <td><p>the undesirable value. Default is <code>0</code>.</p>
+      <td><p>the undesirable value. Default is <code>0</code>.</p></td>
+    </tr>
+    <tr>
+      <th>tol</th>
+      <td><p>the tolerance with which any value is deemed equal to <code>clean_value</code>. Default is <code>0</code>.</p>
 <p>When a row (when <code>margin = 1</code>) or a column (when <code>margin = 2</code>)
-contains exclusively <code>clean_value</code>, the row or column is deleted from the matrix.</p></td>
+contains exclusively <code>clean_value</code> (within <code>tol</code>), the row or column is deleted from the matrix.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a "cleaned" matrix, expunged of rows or columns that contain exclusively <code>clean_value</code>.</p>
+    <p>a "cleaned" matrix, expunged of rows or columns that contain exclusively <code>clean_value.</code></p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If there is concern about machine precision, you might want to call this function with
+<code>tol = .Machine$double.eps</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>20</span>, <span class='fl'>1</span>, -<span class='fl'>20</span>, <span class='fl'>2</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r1"</span>, <span class='st'>"r2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>)))

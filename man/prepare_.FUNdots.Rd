@@ -49,7 +49,7 @@ leave it as-is.
 }
 \item neither a nor the item of .FUNdots is a list
 \itemize{
-\item a should have length = 1, but a single matrix reports its length as the number of elementes of the matrix.
+\item a should have length = 1, but a single matrix reports its length as the number of elements of the matrix.
 So, we can't check length in this situation.
 \item the item of .FUNdots is assumed to have length 1 and passed along
 }
@@ -79,7 +79,7 @@ because there is ambiguity how the item of .FUNdots should be treated.
 }
 \item neither a nor the item of .FUNdots is a list
 \itemize{
-\item a should have length = 1, but a single matrix reports its length as the number of elementes of the matrix.
+\item a should have length = 1, but a single matrix reports its length as the number of elements of the matrix.
 So, we can't check length in this situation.
 \item the item of .FUNdots is assumed to have length 1 and passed along
 }

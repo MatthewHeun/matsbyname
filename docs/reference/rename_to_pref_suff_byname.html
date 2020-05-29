@@ -74,7 +74,7 @@ This function provides that capability." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
       </span>
     </div>
 
@@ -99,6 +99,9 @@ This function provides that capability." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
+    </li>
     <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
     </li>
@@ -139,57 +142,32 @@ based on retaining prefixes or suffixes.
 This function provides that capability.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rename_to_pref_suff_byname</span>(
-  <span class='no'>a</span>,
-  <span class='kw'>sep</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>keep</span>,
-  <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>),
-  <span class='kw'>prefix_open</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>prefix_close</span> <span class='kw'>=</span> <span class='no'>sep</span>,
-  <span class='kw'>suffix_open</span> <span class='kw'>=</span> <span class='no'>sep</span>,
-  <span class='kw'>suffix_close</span> <span class='kw'>=</span> <span class='st'>""</span>
-)</pre>
+    <pre class="usage"><span class='fu'>rename_to_pref_suff_byname</span>(<span class='no'>a</span>, <span class='no'>keep</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='no'>notation</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>a</th>
-      <td><p>a matrix or list of matrices whose rows or columns will be renamed</p></td>
-    </tr>
-    <tr>
-      <th>sep</th>
-      <td><p>a string that identifies the separator between prefix and suffix</p></td>
+      <td><p>a matrix or list of matrices whose rows or columns will be renamed.</p></td>
     </tr>
     <tr>
       <th>keep</th>
-      <td><p>one of "prefix" or "suffix" indicating which part of the row or column name to retain</p></td>
+      <td><p>one of "prefix" or "suffix" indicating which part of the row or column name to retain.</p></td>
     </tr>
     <tr>
       <th>margin</th>
-      <td><p>one of <code>1</code>, <code>2</code>, or <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> where <code>1</code> indicates rows and <code>2</code> indicates columns</p></td>
+      <td><p>one of <code>1</code>, <code>2</code>, or <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> where <code>1</code> indicates rows and <code>2</code> indicates columns.</p></td>
     </tr>
     <tr>
-      <th>prefix_open</th>
-      <td><p>a string that identifies the beginning of a prefix. Default is <code>sep</code>.</p></td>
-    </tr>
-    <tr>
-      <th>prefix_close</th>
-      <td><p>a string that identifies the ending of a prefix. Default is "".</p></td>
-    </tr>
-    <tr>
-      <th>suffix_open</th>
-      <td><p>a string that identifies the beginning of a suffix. Default is "".</p></td>
-    </tr>
-    <tr>
-      <th>suffix_close</th>
-      <td><p>a string that identifies the beginning of a suffix. Default is <code>sep</code>.</p></td>
+      <th>notation</th>
+      <td><p>See <code><a href='row-col-notation.html'>notation_vec()</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>a</code> with potentially different row or column names</p>
+    <p><code>a</code> with potentially different row or column names.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>A prefix is defined by an opening string (<code>prefix_open</code>) and a closing string (<code>prefix_close</code>).
@@ -208,10 +186,13 @@ default arguments become:
               <span class='fl'>3</span>, <span class='fl'>4</span>,
               <span class='fl'>5</span>, <span class='fl'>6</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
             <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"a -&gt; b"</span>, <span class='st'>"r2"</span>, <span class='st'>"r3"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"a -&gt; b"</span>, <span class='st'>"c -&gt; d"</span>)))
-<span class='fu'>rename_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"prefix"</span>)</div><div class='output co'>#&gt;    a c
+<span class='no'>m</span></div><div class='output co'>#&gt;        a -&gt; b c -&gt; d
+#&gt; a -&gt; b      1      2
+#&gt; r2          3      4
+#&gt; r3          5      6</div><div class='input'><span class='fu'>rename_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"prefix"</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'><a href='row-col-notation.html'>arrow_notation</a></span>())</div><div class='output co'>#&gt;    a c
 #&gt; a  1 2
 #&gt; r2 3 4
-#&gt; r3 5 6</div><div class='input'><span class='fu'>rename_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"suffix"</span>)</div><div class='output co'>#&gt;    b d
+#&gt; r3 5 6</div><div class='input'><span class='fu'>rename_to_pref_suff_byname</span>(<span class='no'>m</span>, <span class='kw'>keep</span> <span class='kw'>=</span> <span class='st'>"suffix"</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'><a href='row-col-notation.html'>arrow_notation</a></span>())</div><div class='output co'>#&gt;    b d
 #&gt; b  1 2
 #&gt; r2 3 4
 #&gt; r3 5 6</div></pre>
