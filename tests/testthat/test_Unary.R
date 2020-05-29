@@ -1525,3 +1525,14 @@ test_that("aggregate_to_pref_suff_byname() works as expected", {
                  rename_to_pref_suff_byname(keep = "suffix", notation = arrow_notation()) %>% 
                  aggregate_byname())
 })
+
+
+test_that("aggregate_to_pref_suff_byname() handles types correctly", {
+  m <- matrix((1:9), byrow = TRUE, nrow = 3, 
+              dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y"))) %>% 
+    setrowtype("row -> letter") %>% setcoltype("col -> letter")
+  
+  res <- aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+  expect_equal(rowtype(res), "letter")
+  expect_equal(coltype(res), "letter")
+})

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Unary.R
 \name{aggregate_to_pref_suff_byname}
 \alias{aggregate_to_pref_suff_byname}
-\title{Aggregate to prefixes or suffixes}
+\title{Aggregate a matrix to prefixes or suffixes of row and/or column names}
 \usage{
 aggregate_to_pref_suff_byname(
   a,
@@ -22,7 +22,7 @@ aggregate_to_pref_suff_byname(
 
 \item{margin}{the dimension over which aggregation is to be performed; \code{1} for rows, \code{2} for columns, or \code{c(1, 2)} for both.}
 
-\item{notation}{See \code{matsbyname::notation_vec()}.}
+\item{notation}{See \code{notation_vec()}.}
 
 \item{pattern_type}{See \code{aggregate_byname()}.}
 }
@@ -31,8 +31,10 @@ an aggregated version of \code{a}
 }
 \description{
 Row and column names are often constructed in the form
-\code{prefix_open} \code{prefix} \code{prefix_close} \code{suffix_open} \code{suffix} \code{suffix_close}.
-This function performs aggregation by prefix or suffix.
+\code{prefix_start} \code{prefix} \code{prefix_end} \code{suffix_start} \code{suffix} \code{suffix_end}
+and described by a notation vector.
+(See \code{notation_vec()}.)
+This function performs aggregation by prefix or suffix according to a notation vector..
 }
 \details{
 This function is a convenience function, as it bundles sequential calls to two helper functions,

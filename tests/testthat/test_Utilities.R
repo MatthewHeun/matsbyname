@@ -418,6 +418,26 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
 })
 
 
+test_that("renaming rows and cols to pref and suff also changes rowtype and coltype", {
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), nrow = 3, byrow = TRUE, 
+              dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j"))) %>% 
+    setrowtype("Industry -> Product") %>% setcoltype("Product -> Industry")
+  res <- rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+  expect_equal(rownames(res), c("a", "c", "e"))
+  expect_equal(colnames(res), c("g", "i"))
+  expect_equal(rowtype(res), "Industry")
+  expect_equal(coltype(res), "Product")
+
+  res2 <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+  expect_equal(rownames(res2), c("b", "d", "f"))
+  expect_equal(colnames(res2), c("h", "j"))
+  expect_equal(rowtype(res2), "Product")
+  expect_equal(coltype(res2), "Industry")
+})
+
+
 test_that("setting identical row/col names is OK", {
   m <- matrix(c(1, 2, 
                 3, 4, 

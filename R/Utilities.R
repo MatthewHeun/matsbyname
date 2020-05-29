@@ -498,7 +498,9 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
     if (2 %in% margin) {
       # Want to rename columns.
       # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
-      a <- t(a) %>% rename_func(keep = keep, margin = 1, notation) %>% t()
+      a <- transpose_byname(a) %>% 
+        rename_func(keep = keep, margin = 1, notation) %>% 
+        transpose_byname()
     }
     
     if (1 %in% margin) {
@@ -509,6 +511,13 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
         new_rnames <- ps %>% 
           purrr::transpose() %>% 
           magrittr::extract2("pref")
+        # Also deal with rowtype, but only if there was a rowtype for a.
+        new_rt <- rowtype(a)
+        if (!is.null(new_rt)) {
+          new_rt <- rowtype(a) %>% 
+            split_pref_suff(notation = notation) %>% 
+            magrittr::extract2("pref")
+        }
       } else {
         # We want the suffix.
         # Be careful for rows in which a suffix was not found.
@@ -519,13 +528,31 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
           }
           return(x[["suff"]])
         })
+        # Also deal with rowtype, but only if there was a rowtype for a.
+        new_rt <- rowtype(a)
+        if (!is.null(new_rt)) {
+          new_rt <- rowtype(a) %>% 
+            split_pref_suff(notation = notation) %>% 
+            magrittr::extract2("suff")
+          if (is.null(new_rt)) {
+            # There was no suffix, so return the prefix.
+            new_rt <- rowtype(a) %>% 
+              split_pref_suff(notation = notation) %>% 
+              magrittr::extract2("pref")
+          }
+        }
       }
+      # Set new rownames
       rownames(a) <- new_rnames
+      # Set new rowtype
+      a <- setrowtype(a, new_rt)
     }
 
     return(a)
   }
-  unaryapply_byname(rename_func, a = a, .FUNdots = list(keep = keep, margin = margin, notation = notation))
+  unaryapply_byname(rename_func, a = a,
+                    .FUNdots = list(keep = keep, margin = margin, notation = notation), 
+                    rowcoltypes = "none")
 }
 
 

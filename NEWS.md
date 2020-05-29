@@ -1,8 +1,14 @@
 * Added additional tests for new features.
-    * Now up to 889 tests, all passing.
+    * Now up to 900 tests, all passing.
     * Test coverage remains at 100%.
 * Added `tol` argument to `clean_byname()`, allowing for 
   machine precision issues to be addressed.
+* Ensured that all old functions, such as
+  `rename_to_pref_suff_byname()`, 
+  `aggregate_byname()`, and 
+  `aggregate_to_pref_suff_byname()`
+  respect notation when using notation to renaming 
+  rows and columns. 
 * New functions for manipulating names of rows and columns:
   `notation_vec()`, 
   `arrow_notation()`, 

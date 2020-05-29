@@ -1289,11 +1289,13 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 }
 
 
-#' Aggregate to prefixes or suffixes
+#' Aggregate a matrix to prefixes or suffixes of row and/or column names
 #' 
 #' Row and column names are often constructed in the form 
-#' `prefix_open` `prefix` `prefix_close` `suffix_open` `suffix` `suffix_close`.
-#' This function performs aggregation by prefix or suffix.
+#' `prefix_start` `prefix` `prefix_end` `suffix_start` `suffix` `suffix_end`
+#' and described by a notation vector.
+#' (See `notation_vec()`.)
+#' This function performs aggregation by prefix or suffix according to a notation vector..
 #' 
 #' This function is a convenience function, as it bundles sequential calls to two helper functions,
 #' `rename_to_pref_suff_byname()` and `aggregate_byname()`.
@@ -1301,7 +1303,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #'
 #' @param a a matrix of list of matrices to be aggregated by prefix or suffix
 #' @param aggregation_map See `aggregate_byname()`.
-#' @param notation See `matsbyname::notation_vec()`. 
+#' @param notation See `notation_vec()`. 
 #' @param keep See `rename_to_pref_suff_byname()`
 #' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both.
 #' @param pattern_type See `aggregate_byname()`.
