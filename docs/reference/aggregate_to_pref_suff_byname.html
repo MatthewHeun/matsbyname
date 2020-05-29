@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Aggregate to prefixes or suffixes — aggregate_to_pref_suff_byname • matsbyname</title>
+<title>Aggregate a matrix to prefixes or suffixes of row and/or column names — aggregate_to_pref_suff_byname • matsbyname</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,12 @@
 
 
 
-<meta property="og:title" content="Aggregate to prefixes or suffixes — aggregate_to_pref_suff_byname" />
+<meta property="og:title" content="Aggregate a matrix to prefixes or suffixes of row and/or column names — aggregate_to_pref_suff_byname" />
 <meta property="og:description" content="Row and column names are often constructed in the form
-prefix_open prefix prefix_close suffix_open suffix suffix_close.
-This function performs aggregation by prefix or suffix." />
+prefix_start prefix prefix_end suffix_start suffix suffix_end
+and described by a notation vector.
+(See notation_vec().)
+This function performs aggregation by prefix or suffix according to a notation vector.." />
 
 
 
@@ -74,7 +76,7 @@ This function performs aggregation by prefix or suffix." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
       </span>
     </div>
 
@@ -131,15 +133,17 @@ This function performs aggregation by prefix or suffix." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Aggregate to prefixes or suffixes</h1>
+    <h1>Aggregate a matrix to prefixes or suffixes of row and/or column names</h1>
     <small class="dont-index">Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/R/Unary.R'><code>R/Unary.R</code></a></small>
     <div class="hidden name"><code>aggregate_to_pref_suff_byname.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Row and column names are often constructed in the form
-<code>prefix_open</code> <code>prefix</code> <code>prefix_close</code> <code>suffix_open</code> <code>suffix</code> <code>suffix_close</code>.
-This function performs aggregation by prefix or suffix.</p>
+<code>prefix_start</code> <code>prefix</code> <code>prefix_end</code> <code>suffix_start</code> <code>suffix</code> <code>suffix_end</code>
+and described by a notation vector.
+(See <code><a href='row-col-notation.html'>notation_vec()</a></code>.)
+This function performs aggregation by prefix or suffix according to a notation vector..</p>
     </div>
 
     <pre class="usage"><span class='fu'>aggregate_to_pref_suff_byname</span>(
@@ -172,7 +176,7 @@ This function performs aggregation by prefix or suffix.</p>
     </tr>
     <tr>
       <th>notation</th>
-      <td><p>See <code><a href='row-col-notation.html'>matsbyname::notation_vec()</a></code>.</p></td>
+      <td><p>See <code><a href='row-col-notation.html'>notation_vec()</a></code>.</p></td>
     </tr>
     <tr>
       <th>pattern_type</th>
