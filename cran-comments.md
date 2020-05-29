@@ -31,21 +31,22 @@ See `NEWS.md` for details.
             * WARNINGs: 1 
             * NOTEs: 0
             * The errors and warning appear to be caused by mal-configuration of this test rig.
+              This is the *only* rig where errors occur.
                 * `#> there is no package called 'data.table'`
                 * `#> there is no package called 'utf8'`
         * Ubuntu Linux 16.04 LTS, R-release, GCC
-            * ERRORs: 
-            * WARNINGs: 
-            * NOTEs: 
+            * ERRORs: 0
+            * WARNINGs: 0
+            * NOTEs: 0
         * Fedora Linux, R-devel, clang, gfortran
-            * ERRORs: 
-            * WARNINGs: 
-            * NOTEs: 
+            * ERRORs: 0
+            * WARNINGs: 0
+            * NOTEs: 0
 * GitHub actions:
     * macOS-latest, R version 3.6.3 (2020-02-29)
-        * ERRORs: 
-        * WARNINGs: 
-        * NOTEs: 
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
 
 ## Downstream dependencies
 * Downstream dependencies were checked with `revdepcheck::revdep_check(num_workers = 4)`. 
