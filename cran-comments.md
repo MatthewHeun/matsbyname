@@ -20,16 +20,19 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2020-04-30 r78335)
-        * ERRORs: 
-        * WARNINGs: 
-        * NOTEs: 
+    * `devtools::check_win_devel()`, R Under development (unstable) (2020-05-26 r78577)
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
         * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
-            * ERRORs: 
-            * WARNINGs: 
-            * NOTEs: 
+            * ERRORs: 2
+            * WARNINGs: 1 
+            * NOTEs: 0
+            * The errors and warning appear to be caused by mal-configuration of this test rig.
+                * `#> there is no package called 'data.table'`
+                * `#> there is no package called 'utf8'`
         * Ubuntu Linux 16.04 LTS, R-release, GCC
             * ERRORs: 
             * WARNINGs: 
