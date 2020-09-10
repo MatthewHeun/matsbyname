@@ -1,3 +1,6 @@
+* Fixed a warning emitted from `stringi`.
+
+
 # matsbyname 0.4.15 (2020-05-29)
 
 * Added additional tests for new features.
