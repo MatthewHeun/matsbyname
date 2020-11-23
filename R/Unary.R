@@ -114,18 +114,53 @@ transpose_byname <- function(a){
 #' @examples
 #' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
+#' hatize_byname(v)
 #' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
 #'   setrowtype(NA) %>% setcoltype("Commodities")
-#' hatize_byname(v)
 #' hatize_byname(r)
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
+#' # A 1x1 column vector is a degenerate case. 
+#' # Row names and rowtype are transferred to the column.
+#' matrix(42, nrow = 1, ncol = 1, dimnames = list("r1")) %>% 
+#'   setrowtype("Product -> Industry") %>% 
+#'   hatize_byname()
+#' # A 1x1 row vector is a degenerate case. 
+#' # Column names and coltype are transferred to the row.
+#' matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, "c1")) %>% 
+#'   setcoltype("Industry -> Product") %>% 
+#'   hatize_byname()
+#' # A 1x1 matrix with both row and column names generates a failure.
+#' \dontrun{
+#' matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+#'   setrowtype("Product -> Industry") %>% 
+#'   setcoltype("Industry -> Product") %>% 
+#'   hatize_byname()
+#' }
 hatize_byname <- function(v){
   hatize_func <- function(v){
     # Check if v is the right size
     if (!(nrow(v) == 1 | ncol(v) == 1)) {
-      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
+      stop("matrix v must have at least one dimension of length 1 in hatize_byname()")
     }
+    # Check if v is 1x1 (i.e., both row and column have dimension of length 1)
+    if (nrow(v) == 1 & ncol(v) == 1) {
+      out <- v
+      if (is.null(colnames(out)) & !is.null(rownames(out))) {
+        # We have a 1x1 column vector.
+        # Apply the row name to the column, set the coltype to row rowtype, and return.
+        colnames(out) <- rownames(out)
+        return(out %>% setcoltype(rowtype(out)))
+      } else if (!is.null(colnames(out)) & is.null(rownames(out))) {
+        # We have a 1x1 row vector.
+        # Apply the column name to the row, set the rowtype to the coltype, and return.
+        rownames(out) <- colnames(out)
+        return(out %>% setrowtype(coltype(out)))
+      } else {
+        stop("1x1 matrix v must have one dimension without a name in hatize_byname()")
+      }
+    }
+    # We have an nx1 or a 1xn vector
     v_sorted <- sort_rows_cols(v)
     out <- diag(as.numeric(v_sorted))
     if (ncol(v) == 1) {

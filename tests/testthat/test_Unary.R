@@ -254,6 +254,46 @@ test_that("hatize_byname works as expected", {
 })
 
 
+test_that("hatize_byname works with a simple vector", {
+  # I'm running into a bug where hatize doesn't work on a 1x1 vector that lacks a column name
+  # Verify that a 2x1 vector works correctly.
+  v1 <- matrix(c(1, 
+                 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"))) %>% 
+    setrowtype("Product -> Industry")
+  v1_hat <- hatize_byname(v1)
+  v1_hat_expected <- matrix(c(1, 0,
+                              0, 2), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("r1", "r2"))) %>% 
+    setrowtype("Product -> Industry") %>% 
+    setcoltype("Product -> Industry")
+  expect_equal(v1_hat, v1_hat_expected)
+  
+  # Now try with a 1x1 column vector
+  v2 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1")) %>% 
+    setrowtype("Product -> Industry")
+  v2_hat <- hatize_byname(v2)
+  v2_hat_expected <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "r1")) %>% 
+    setrowtype("Product -> Industry") %>% 
+    setcoltype("Product -> Industry")
+  expect_equal(v2_hat, v2_hat_expected)
+  
+  # Try with a 1x1 row vector
+  v3 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, "c1")) %>% 
+    setcoltype("Industry -> Product")
+  v3_hat <- hatize_byname(v3)
+  v3_hat_expected <- matrix(42, nrow = 1, ncol = 1, dimnames = list("c1", "c1")) %>% 
+    setrowtype("Industry -> Product") %>% 
+    setcoltype("Industry -> Product")
+  expect_equal(v3_hat, v3_hat_expected)
+  
+  # Try with 1x1 vector with both dimensions named.
+  # This should fail, because one dimension must lack a name.
+  v4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+    setrowtype("Product -> Industry") %>% 
+    setcoltype("Industry -> Product")
+  expect_error(hatize_byname(v4), "1x1 matrix v must have one dimension without a name in hatize_byname()")
+})
+
+
 ###########################################################
 context("Identize")
 ###########################################################
