@@ -1,4 +1,6 @@
-* Test coverage remains at 100 %.
+* Fixed a bug in `colsums_byname()` and `rowsums_byname()`
+  where setting the `rowname` or `colname` argument to `NULL`
+  did not result in an empty row name or column name.
 * Fixed a bug in `hatize_byname()` where a 1x1 vector
   gave error:
   `length of 'dimnames' [1] not equal to array extent`.
@@ -6,6 +8,7 @@
 * Fixed a warning emitted from `stringi`.
 * New tests for new code.  
   Now up to 904 tests, all passing.
+* Test coverage remains at 100 %.
 
 
 # matsbyname 0.4.15 (2020-05-29)

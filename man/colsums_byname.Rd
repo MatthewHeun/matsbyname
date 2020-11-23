@@ -19,8 +19,9 @@ Calculates column sums for a matrix by premultiplying by an identity vector (con
 In contrast to \code{colSums} (which returns a \code{numeric} result),
 the return value from \code{colsums_byname} is a matrix.
 An optional \code{rowname} for the resulting row vector can be supplied.
-If \code{rowname} is \code{NULL} or \code{NA} (the default),
+If \code{rowname} is \code{NA} (the default),
 the row name is set to the row type as given by \code{rowtype(a)}.
+If \code{rowname} is set to \code{NULL}, the row name is returned empty.
 }
 \examples{
 library(dplyr)
