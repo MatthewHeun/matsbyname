@@ -146,7 +146,7 @@ Each item in the list is named for its row (if <code>margin == 1</code>)
 or column (if <code>margin == 2</code>).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>list_of_rows_or_cols</span>(<span class='no'>a</span>, <span class='no'>margin</span>)</pre>
+    <pre class="usage"><span class='fu'>list_of_rows_or_cols</span><span class='op'>(</span><span class='va'>a</span>, <span class='va'>margin</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,11 +169,12 @@ or column (if <code>margin == 2</code>).</p>
     <p>Note that the result provides column vectors, regardless of the value of <code>margin</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>6</span>),
-            <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-            <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"p1"</span>, <span class='st'>"p2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i2"</span>, <span class='st'>"i3"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='kw'>rowtype</span> <span class='kw'>=</span> <span class='st'>"Products"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='kw'>coltype</span> <span class='kw'>=</span> <span class='st'>"Industries"</span>)
-<span class='fu'>list_of_rows_or_cols</span>(<span class='no'>m</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; $p1
+    <pre class="examples"><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span>, 
+            nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>3</span>, 
+            dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"p1"</span>, <span class='st'>"p2"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"i1"</span>, <span class='st'>"i2"</span>, <span class='st'>"i3"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span>rowtype <span class='op'>=</span> <span class='st'>"Products"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span>coltype <span class='op'>=</span> <span class='st'>"Industries"</span><span class='op'>)</span>
+<span class='fu'>list_of_rows_or_cols</span><span class='op'>(</span><span class='va'>m</span>, margin <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $p1
 #&gt;    p1
 #&gt; i1  1
 #&gt; i2  3
@@ -192,7 +193,8 @@ or column (if <code>margin == 2</code>).</p>
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Products"
-#&gt; </div><div class='input'><span class='fu'>list_of_rows_or_cols</span>(<span class='no'>m</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; $i1
+#&gt; </div><div class='input'><span class='fu'>list_of_rows_or_cols</span><span class='op'>(</span><span class='va'>m</span>, margin <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $i1
 #&gt;    i1
 #&gt; p1  1
 #&gt; p2  2
@@ -234,7 +236,7 @@ or column (if <code>margin == 2</code>).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

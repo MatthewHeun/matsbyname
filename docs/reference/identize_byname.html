@@ -140,7 +140,7 @@ same row and column types as a." />
 same row and column types as <code>a</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>identize_byname</span>(<span class='no'>a</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>))</pre>
+    <pre class="usage"><span class='fu'>identize_byname</span><span class='op'>(</span><span class='va'>a</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,9 +173,10 @@ Row and column names are sorted on output.</p></li>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>M</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>1</span>:<span class='fl'>16</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>dimnames</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"i"</span>, <span class='fl'>1</span>:<span class='fl'>4</span>)), <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>4</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodities"</span>)
-<span class='fu'>identize_byname</span>(<span class='no'>M</span>)</div><div class='output co'>#&gt;    c1 c2 c3 c4
+    <pre class="examples"><div class='input'><span class='va'>M</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>16</span>, ncol <span class='op'>=</span> <span class='fl'>4</span>, dimnames<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"i"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"c"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Industries"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Commodities"</span><span class='op'>)</span>
+<span class='fu'>identize_byname</span><span class='op'>(</span><span class='va'>M</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    c1 c2 c3 c4
 #&gt; i1  1  0  0  0
 #&gt; i2  0  1  0  0
 #&gt; i3  0  0  1  0
@@ -183,7 +184,8 @@ Row and column names are sorted on output.</p></li>
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Commodities"</div><div class='input'><span class='fu'>identize_byname</span>(<span class='no'>M</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))</div><div class='output co'>#&gt;    c1 c2 c3 c4
+#&gt; [1] "Commodities"</div><div class='input'><span class='fu'>identize_byname</span><span class='op'>(</span><span class='va'>M</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    c1 c2 c3 c4
 #&gt; i1  1  0  0  0
 #&gt; i2  0  1  0  0
 #&gt; i3  0  0  1  0
@@ -191,7 +193,8 @@ Row and column names are sorted on output.</p></li>
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Commodities"</div><div class='input'><span class='fu'>identize_byname</span>(<span class='no'>M</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt;    Commodities
+#&gt; [1] "Commodities"</div><div class='input'><span class='fu'>identize_byname</span><span class='op'>(</span><span class='va'>M</span>, margin <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    Commodities
 #&gt; i1           1
 #&gt; i2           1
 #&gt; i3           1
@@ -199,21 +202,24 @@ Row and column names are sorted on output.</p></li>
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Commodities"</div><div class='input'><span class='fu'>identize_byname</span>(<span class='no'>M</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt;            c1 c2 c3 c4
+#&gt; [1] "Commodities"</div><div class='input'><span class='fu'>identize_byname</span><span class='op'>(</span><span class='va'>M</span>, margin <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            c1 c2 c3 c4
 #&gt; Industries  1  1  1  1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Commodities"</div><div class='input'><span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>21</span>, -<span class='fl'>12</span>, -<span class='fl'>21</span>, -<span class='fl'>10</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"a"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"a"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodities"</span>)
-<span class='fu'>identize_byname</span>(<span class='no'>N</span>)</div><div class='output co'>#&gt;   b a
+#&gt; [1] "Commodities"</div><div class='input'><span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>21</span>, <span class='op'>-</span><span class='fl'>12</span>, <span class='op'>-</span><span class='fl'>21</span>, <span class='op'>-</span><span class='fl'>10</span><span class='op'>)</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"b"</span>, <span class='st'>"a"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"b"</span>, <span class='st'>"a"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Industries"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Commodities"</span><span class='op'>)</span>
+<span class='fu'>identize_byname</span><span class='op'>(</span><span class='va'>N</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   b a
 #&gt; b 1 0
 #&gt; a 0 1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Commodities"</div><div class='input'><span class='co'># This also works with lists</span>
-<span class='fu'>identize_byname</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>M</span>, <span class='no'>M</span>))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>identize_byname</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>M</span>, <span class='va'>M</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    Commodities
 #&gt; i1           1
 #&gt; i2           1
@@ -247,7 +253,7 @@ Row and column names are sorted on output.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

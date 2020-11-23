@@ -138,7 +138,7 @@
     <p>Gives the result of raising all elements of a matrix or list of matrices to a power.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pow_byname</span>(<span class='no'>a</span>, <span class='no'>pow</span>)</pre>
+    <pre class="usage"><span class='fu'>pow_byname</span><span class='op'>(</span><span class='va'>a</span>, <span class='va'>pow</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,24 +158,27 @@
     <p><code>a</code> with each element raised to <code>pow</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'>pow_byname</span>(<span class='fl'>2</span>, <span class='fl'>3</span>)</div><div class='output co'>#&gt; [1] 8</div><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>2</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"r"</span>, <span class='fl'>1</span>:<span class='fl'>2</span>), <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>3</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"rows"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"cols"</span>)
-<span class='fu'>pow_byname</span>(<span class='no'>m</span>, <span class='fl'>2</span>)</div><div class='output co'>#&gt;    c1 c2 c3
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='fu'>pow_byname</span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 8</div><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>2</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>3</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"r"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"c"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"rows"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"cols"</span><span class='op'>)</span>
+<span class='fu'>pow_byname</span><span class='op'>(</span><span class='va'>m</span>, <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    c1 c2 c3
 #&gt; r1  4  4  4
 #&gt; r2  4  4  4
 #&gt; attr(,"rowtype")
 #&gt; [1] "rows"
 #&gt; attr(,"coltype")
-#&gt; [1] "cols"</div><div class='input'><span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>m</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()), <span class='kw'>pow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()))
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>1</span>, <span class='st'>"m"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m</span>
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>2</span>, <span class='st'>"m"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m</span>
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>1</span>, <span class='st'>"pow"</span>]] <span class='kw'>&lt;-</span> <span class='fl'>0.5</span>
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>2</span>, <span class='st'>"pow"</span>]] <span class='kw'>&lt;-</span> -<span class='fl'>1</span>
-<span class='no'>DF</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(
-  <span class='kw'>sqrtm</span> <span class='kw'>=</span> <span class='fu'>pow_byname</span>(<span class='no'>m</span>, <span class='fl'>0.5</span>),
-  <span class='kw'>mtopow</span> <span class='kw'>=</span> <span class='fu'>pow_byname</span>(<span class='no'>m</span>, <span class='no'>pow</span>)
-)</div><div class='output co'>#&gt;              m pow                                                      sqrtm
+#&gt; [1] "cols"</div><div class='input'><span class='va'>DF</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>m <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>, pow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>1</span>, <span class='st'>"m"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>m</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>2</span>, <span class='st'>"m"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>m</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>1</span>, <span class='st'>"pow"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.5</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>2</span>, <span class='st'>"pow"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='op'>-</span><span class='fl'>1</span>
+<span class='va'>DF</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>
+  sqrtm <span class='op'>=</span> <span class='fu'>pow_byname</span><span class='op'>(</span><span class='va'>m</span>, <span class='fl'>0.5</span><span class='op'>)</span>,
+  mtopow <span class='op'>=</span> <span class='fu'>pow_byname</span><span class='op'>(</span><span class='va'>m</span>, <span class='va'>pow</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt;              m pow                                                      sqrtm
 #&gt; 1 2, 2, 2,.... 0.5 1.414214, 1.414214, 1.414214, 1.414214, 1.414214, 1.414214
 #&gt; 2 2, 2, 2,....  -1 1.414214, 1.414214, 1.414214, 1.414214, 1.414214, 1.414214
 #&gt;                                                       mtopow
@@ -196,7 +199,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

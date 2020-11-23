@@ -27,9 +27,12 @@ If \code{rowname} is set to \code{NULL}, the row name is returned empty.
 library(dplyr)
 m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
+m
 colsums_byname(m)
 colsums_byname(m, rowname = "E.ktoe")
-m \%>\% colsums_byname \%>\% rowsums_byname
+m \%>\% 
+  colsums_byname() \%>\% 
+  rowsums_byname()
 # This also works with lists
 colsums_byname(list(m, m))
 colsums_byname(list(m, m), rowname = "E.ktoe")

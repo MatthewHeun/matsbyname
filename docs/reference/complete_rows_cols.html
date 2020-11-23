@@ -142,14 +142,14 @@ between <code>a</code> and <code>m</code>,
 with missing data represented by the value for <code>fill</code> (0, by default).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>complete_rows_cols</span>(
-  <span class='kw'>a</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fill</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>fillrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fillcol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>complete_rows_cols</span><span class='op'>(</span>
+  a <span class='op'>=</span> <span class='cn'>NULL</span>,
+  mat <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fill <span class='op'>=</span> <span class='fl'>0</span>,
+  fillrow <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fillcol <span class='op'>=</span> <span class='cn'>NULL</span>,
+  margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -218,55 +218,66 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
 <code>a</code> is completed relative to itself and a warning is given.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>6</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>3</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r1"</span>, <span class='st'>"r2"</span>, <span class='st'>"r3"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>)))
-<span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>7</span>:<span class='fl'>12</span>), <span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>3</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r2"</span>, <span class='st'>"r3"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c2"</span>, <span class='st'>"c3"</span>, <span class='st'>"c4"</span>)))
-<span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='no'>m2</span>) <span class='co'># Adds empty column c4</span></div><div class='output co'>#&gt;    c1 c2 c3 c4
+    <pre class="examples"><div class='input'><span class='va'>m1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>3</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r1"</span>, <span class='st'>"r2"</span>, <span class='st'>"r3"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>m2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>7</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>)</span>, ncol<span class='op'>=</span><span class='fl'>3</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r2"</span>, <span class='st'>"r3"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c2"</span>, <span class='st'>"c3"</span>, <span class='st'>"c4"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='va'>m2</span><span class='op'>)</span> <span class='co'># Adds empty column c4</span>
+</div><div class='output co'>#&gt;    c1 c2 c3 c4
 #&gt; r1  1  4  0  0
 #&gt; r2  2  5  0  0
-#&gt; r3  3  6  0  0</div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='no'>m2</span>)) <span class='co'># Creates r2, r3 columns; c2, c3, c4 rows</span></div><div class='output co'>#&gt;    c1 c2 r2 r3
+#&gt; r3  3  6  0  0</div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>m2</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># Creates r2, r3 columns; c2, c3, c4 rows</span>
+</div><div class='output co'>#&gt;    c1 c2 r2 r3
 #&gt; r1  1  4  0  0
 #&gt; r2  2  5  0  0
 #&gt; r3  3  6  0  0
 #&gt; c2  0  0  0  0
 #&gt; c3  0  0  0  0
-#&gt; c4  0  0  0  0</div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='no'>m2</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>) <span class='co'># No changes because r2 and r3 already present in m1</span></div><div class='output co'>#&gt;    c1 c2
+#&gt; c4  0  0  0  0</div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='va'>m2</span>, margin <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='co'># No changes because r2 and r3 already present in m1</span>
+</div><div class='output co'>#&gt;    c1 c2
 #&gt; r1  1  4
 #&gt; r2  2  5
-#&gt; r3  3  6</div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='no'>m2</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>) <span class='co'># Adds empty columns c3 and c4</span></div><div class='output co'>#&gt;    c1 c2 c3 c4
+#&gt; r3  3  6</div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='va'>m2</span>, margin <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='co'># Adds empty columns c3 and c4</span>
+</div><div class='output co'>#&gt;    c1 c2 c3 c4
 #&gt; r1  1  4  0  0
 #&gt; r2  2  5  0  0
-#&gt; r3  3  6  0  0</div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='no'>m2</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>) <span class='co'># Adds empty rows c2, c3, c4</span></div><div class='output co'>#&gt;    c1 c2
+#&gt; r3  3  6  0  0</div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>m2</span><span class='op'>)</span>, margin <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='co'># Adds empty rows c2, c3, c4</span>
+</div><div class='output co'>#&gt;    c1 c2
 #&gt; r1  1  4
 #&gt; r2  2  5
 #&gt; r3  3  6
 #&gt; c2  0  0
 #&gt; c3  0  0
-#&gt; c4  0  0</div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='no'>m2</span>, <span class='kw'>fill</span> <span class='kw'>=</span> <span class='fl'>100</span>) <span class='co'># Adds columns c3 and c4 with 100's</span></div><div class='output co'>#&gt;    c1 c2  c3  c4
+#&gt; c4  0  0</div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='va'>m2</span>, fill <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span> <span class='co'># Adds columns c3 and c4 with 100's</span>
+</div><div class='output co'>#&gt;    c1 c2  c3  c4
 #&gt; r1  1  4 100 100
 #&gt; r2  2  5 100 100
-#&gt; r3  3  6 100 100</div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='no'>m1</span>) <span class='co'># Nothing added, because everything already present</span></div><div class='output co'>#&gt;    c1 c2
+#&gt; r3  3  6 100 100</div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='va'>m1</span><span class='op'>)</span> <span class='co'># Nothing added, because everything already present</span>
+</div><div class='output co'>#&gt;    c1 c2
 #&gt; r1  1  4
 #&gt; r2  2  5
-#&gt; r3  3  6</div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='no'>m1</span>)) <span class='co'># Adds empty c1, c2 rows; Adds empty r1, r2, r3 columns</span></div><div class='output co'>#&gt;    c1 c2 r1 r2 r3
+#&gt; r3  3  6</div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>m1</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># Adds empty c1, c2 rows; Adds empty r1, r2, r3 columns</span>
+</div><div class='output co'>#&gt;    c1 c2 r1 r2 r3
 #&gt; r1  1  4  0  0  0
 #&gt; r2  2  5  0  0  0
 #&gt; r3  3  6  0  0  0
 #&gt; c1  0  0  0  0  0
 #&gt; c2  0  0  0  0  0</div><div class='input'><span class='co'># Same as previous. With missing matrix, complete relative to transpose of m1.</span>
-<span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>)</div><div class='output co'>#&gt;    c1 c2 r1 r2 r3
+<span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt;    c1 c2 r1 r2 r3
 #&gt; r1  1  4  0  0  0
 #&gt; r2  2  5  0  0  0
 #&gt; r3  3  6  0  0  0
 #&gt; c1  0  0  0  0  0
 #&gt; c2  0  0  0  0  0</div><div class='input'><span class='co'># Adds rows r10, r11; cols c10, c11</span>
-<span class='fu'>complete_rows_cols</span>(<span class='no'>m1</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-                              <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r10"</span>, <span class='st'>"r11"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c10"</span>, <span class='st'>"c11"</span>))))</div><div class='output co'>#&gt;     c1 c2 c10 c11
+<span class='fu'>complete_rows_cols</span><span class='op'>(</span><span class='va'>m1</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>0</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, 
+                              dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r10"</span>, <span class='st'>"r11"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c10"</span>, <span class='st'>"c11"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt;     c1 c2 c10 c11
 #&gt; r1   1  4   0   0
 #&gt; r2   2  5   0   0
 #&gt; r3   3  6   0   0
 #&gt; r10  0  0   0   0
 #&gt; r11  0  0   0   0</div><div class='input'><span class='co'># Also works with lists</span>
-<span class='fu'>complete_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m1</span>,<span class='no'>m1</span>))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>complete_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m1</span>,<span class='va'>m1</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c1 c2 r1 r2 r3
 #&gt; r1  1  4  0  0  0
 #&gt; r2  2  5  0  0  0
@@ -281,7 +292,8 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
 #&gt; r3  3  6  0  0  0
 #&gt; c1  0  0  0  0  0
 #&gt; c2  0  0  0  0  0
-#&gt; </div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m1</span>,<span class='no'>m1</span>), <span class='kw'>mat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m2</span>,<span class='no'>m2</span>))</div><div class='output co'>#&gt; [[1]]
+#&gt; </div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m1</span>,<span class='va'>m1</span><span class='op'>)</span>, mat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m2</span>,<span class='va'>m2</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c1 c2
 #&gt; r1  1  4
 #&gt; r2  2  5
@@ -293,7 +305,8 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
 #&gt; r2  2  5  0  0
 #&gt; r3  3  6  0  0
 #&gt; </div><div class='input'><span class='co'># No changes because r2, r3 already present in m1</span>
-<span class='fu'>complete_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m1</span>,<span class='no'>m1</span>), <span class='kw'>mat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m2</span>,<span class='no'>m2</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>complete_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m1</span>,<span class='va'>m1</span><span class='op'>)</span>, mat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m2</span>,<span class='va'>m2</span><span class='op'>)</span>, margin <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c1 c2
 #&gt; r1  1  4
 #&gt; r2  2  5
@@ -304,7 +317,8 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
 #&gt; r1  1  4
 #&gt; r2  2  5
 #&gt; r3  3  6
-#&gt; </div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m1</span>,<span class='no'>m1</span>), <span class='kw'>mat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m2</span>,<span class='no'>m2</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; [[1]]
+#&gt; </div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m1</span>,<span class='va'>m1</span><span class='op'>)</span>, mat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m2</span>,<span class='va'>m2</span><span class='op'>)</span>, margin <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c1 c2 c3 c4
 #&gt; r1  1  4  0  0
 #&gt; r2  2  5  0  0
@@ -315,10 +329,11 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
 #&gt; r1  1  4  0  0
 #&gt; r2  2  5  0  0
 #&gt; r3  3  6  0  0
-#&gt; </div><div class='input'><span class='fu'>complete_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m1</span>,<span class='no'>m1</span>),
-                   <span class='kw'>mat</span> <span class='kw'>=</span> <span class='fu'><a href='make_list.html'>make_list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-                                          <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r10"</span>, <span class='st'>"r11"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c10"</span>, <span class='st'>"c11"</span>))),
-                                   <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>lenx</span> <span class='kw'>=</span> <span class='fl'>1</span>))</div><div class='output co'>#&gt; [[1]]
+#&gt; </div><div class='input'><span class='fu'>complete_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m1</span>,<span class='va'>m1</span><span class='op'>)</span>, 
+                   mat <span class='op'>=</span> <span class='fu'><a href='make_list.html'>make_list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>0</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, 
+                                          dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r10"</span>, <span class='st'>"r11"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c10"</span>, <span class='st'>"c11"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>, 
+                                   n <span class='op'>=</span> <span class='fl'>2</span>, lenx <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;     c1 c2
 #&gt; r1   1  4
 #&gt; r2   2  5
@@ -332,13 +347,14 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
 #&gt; r2  2  5   0   0
 #&gt; r3  3  6   0   0
 #&gt; </div><div class='input'><span class='co'># fillrow or fillcol can be specified</span>
-<span class='no'>a</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>11</span>, <span class='fl'>12</span>, <span class='fl'>21</span>, <span class='fl'>22</span>), <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-            <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r1"</span>, <span class='st'>"r2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>)))
-<span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>6</span>), <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-            <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r1"</span>, <span class='st'>"r2"</span>, <span class='st'>"r3"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>)))
-<span class='no'>fillrow</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>31</span>, <span class='fl'>32</span>), <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-                  <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"r42"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>)))
-<span class='fu'>complete_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='no'>a</span>, <span class='kw'>mat</span> <span class='kw'>=</span> <span class='no'>b</span>, <span class='kw'>fillrow</span> <span class='kw'>=</span> <span class='no'>fillrow</span>)</div><div class='output co'>#&gt;    c1 c2
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>11</span>, <span class='fl'>12</span>, <span class='fl'>21</span>, <span class='fl'>22</span><span class='op'>)</span>, byrow <span class='op'>=</span> <span class='cn'>TRUE</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, 
+            dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r1"</span>, <span class='st'>"r2"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span>, byrow <span class='op'>=</span> <span class='cn'>TRUE</span>, nrow <span class='op'>=</span> <span class='fl'>3</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, 
+            dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r1"</span>, <span class='st'>"r2"</span>, <span class='st'>"r3"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>fillrow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>31</span>, <span class='fl'>32</span><span class='op'>)</span>, byrow <span class='op'>=</span> <span class='cn'>TRUE</span>, nrow <span class='op'>=</span> <span class='fl'>1</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, 
+                  dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"r42"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>complete_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='va'>a</span>, mat <span class='op'>=</span> <span class='va'>b</span>, fillrow <span class='op'>=</span> <span class='va'>fillrow</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    c1 c2
 #&gt; r1 11 12
 #&gt; r2 21 22
 #&gt; r3 31 32</div></pre>
@@ -357,7 +373,7 @@ If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(names)</a></code> an
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

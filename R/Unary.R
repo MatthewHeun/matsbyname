@@ -598,6 +598,7 @@ fractionize_byname <- function(a, margin){
 #' library(dplyr)
 #' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' m
 #' rowsums_byname(m)
 #' rowsums_byname(m, "E.ktoe")
 #' # This also works with lists
@@ -663,9 +664,12 @@ rowsums_byname <- function(a, colname = NA){
 #' library(dplyr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' m
 #' colsums_byname(m)
 #' colsums_byname(m, rowname = "E.ktoe")
-#' m %>% colsums_byname %>% rowsums_byname
+#' m %>% 
+#'   colsums_byname() %>% 
+#'   rowsums_byname()
 #' # This also works with lists
 #' colsums_byname(list(m, m))
 #' colsums_byname(list(m, m), rowname = "E.ktoe")
