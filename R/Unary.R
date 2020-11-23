@@ -581,22 +581,24 @@ fractionize_byname <- function(a, margin){
 #' Row sums, sorted by name
 #'
 #' Calculates row sums for a matrix by post-multiplying by an identity vector (containing all 1's).
-#' In contrast to \code{rowSums} (which returns a \code{numeric} result),
-#' the return value from \code{rowsums_byname} is a matrix.
-#' An optional \code{colname} for the resulting column vector can be supplied.
-#' If \code{colname} is \code{NULL} or \code{NA} (the default),
-#' the column name is set to the column type as given by \code{coltype(a)}.
+#' In contrast to `rowSums` (which returns a `numeric` result),
+#' the return value from `rowsums_byname` is a matrix.
+#' An optional `colname` for the resulting column vector can be supplied.
+#' If `colname` is `NULL` or `NA` (the default),
+#' the column name is set to the column type as given by `coltype(a)`.
+#' If `colname` is set to `NULL`, the column name is returned empty.
 #'
-#' @param a a matrix or list of matrices from which row sums are desired.
-#' @param colname name of the output column containing row sums
+#' @param a A matrix or list of matrices from which row sums are desired.
+#' @param colname The name of the output column containing row sums.
 #'
-#' @return a column vector of type \code{matrix} containing the row sums of \code{m}
+#' @return A column vector of type `matrix` containing the row sums of `m`
 #' @export
 #'
 #' @examples
 #' library(dplyr)
 #' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' m
 #' rowsums_byname(m)
 #' rowsums_byname(m, "E.ktoe")
 #' # This also works with lists
@@ -615,13 +617,15 @@ fractionize_byname <- function(a, margin){
 #' # Nonsensical
 #' \dontrun{rowsums_byname(NULL)}
 rowsums_byname <- function(a, colname = NA){
-  if (is.null(colname)) {
-    # Set to NA so that we can try setting to coltype in rowsum.func
-    colname <- NA_character_
-  }
+  # if (is.null(colname)) {
+  #   # Set to NA so that we can try setting to coltype in rowsum.func
+  #   colname <- NA_character_
+  # }
   rowsum_func <- function(a, colname){
-    if (is.na(colname)) {
-      colname <- coltype(a)
+    if (!is.null(colname)) {
+      if (is.na(colname)) {
+        colname <- coltype(a)
+      }
     }
     rowSums(a) %>%
       # Preserve matrix structure (i.e., result will be a column vector of type matrix)
@@ -643,25 +647,29 @@ rowsums_byname <- function(a, colname = NA){
 #' Column sums, sorted by name
 #'
 #' Calculates column sums for a matrix by premultiplying by an identity vector (containing all 1's).
-#' In contrast to \code{colSums} (which returns a \code{numeric} result),
-#' the return value from \code{colsums_byname} is a matrix.
-#' An optional \code{rowname} for the resulting row vector can be supplied.
-#' If \code{rowname} is \code{NULL} or \code{NA} (the default),
-#' the row name is set to the row type as given by \code{rowtype(a)}.
+#' In contrast to `colSums` (which returns a `numeric` result),
+#' the return value from `colsums_byname` is a matrix.
+#' An optional `rowname` for the resulting row vector can be supplied.
+#' If `rowname` is `NA` (the default),
+#' the row name is set to the row type as given by `rowtype(a)`.
+#' If `rowname` is set to `NULL`, the row name is returned empty.
 #'
 #' @param a a matrix or list of matrices from which column sums are desired.
 #' @param rowname name of the output row containing column sums.
 #'
-#' @return a row vector of type \code{matrix} containing the column sums of \code{a}.
+#' @return a row vector of type `matrix` containing the column sums of `a`.
 #' @export
 #'
 #' @examples
 #' library(dplyr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' m
 #' colsums_byname(m)
 #' colsums_byname(m, rowname = "E.ktoe")
-#' m %>% colsums_byname %>% rowsums_byname
+#' m %>% 
+#'   colsums_byname() %>% 
+#'   rowsums_byname()
 #' # This also works with lists
 #' colsums_byname(list(m, m))
 #' colsums_byname(list(m, m), rowname = "E.ktoe")

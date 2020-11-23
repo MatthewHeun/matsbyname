@@ -146,7 +146,7 @@ Doing so ensures that
 the dimensions of the multiplicand and multiplier are be conformable for each sequential multiplication.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hadamardproduct_byname</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,45 +165,52 @@ the dimensions of the multiplicand and multiplier are be conformable for each se
     <p>The Hadamard product is also known as the <code>entrywise</code> product.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'>hadamardproduct_byname</span>(<span class='fl'>2</span>, <span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] 4</div><div class='input'><span class='no'>commoditynames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>)
-<span class='no'>industrynames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i2"</span>)
-<span class='no'>U</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>commoditynames</span>, <span class='no'>industrynames</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Commodities"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Industries"</span>)
-<span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span>(<span class='no'>commoditynames</span>), <span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span>(<span class='no'>industrynames</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Commodities"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Industries"</span>)
-<span class='no'>U</span> * <span class='no'>G</span> <span class='co'># Not what is desired, because names aren't aligned</span></div><div class='output co'>#&gt;    i1 i2
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 4</div><div class='input'><span class='va'>commoditynames</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span>
+<span class='va'>industrynames</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"i1"</span>, <span class='st'>"i2"</span><span class='op'>)</span>
+<span class='va'>U</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>commoditynames</span>, <span class='va'>industrynames</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Commodities"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Industries"</span><span class='op'>)</span>
+<span class='va'>G</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span><span class='op'>(</span><span class='va'>commoditynames</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span><span class='op'>(</span><span class='va'>industrynames</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Commodities"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Industries"</span><span class='op'>)</span>
+<span class='va'>U</span> <span class='op'>*</span> <span class='va'>G</span> <span class='co'># Not what is desired, because names aren't aligned</span>
+</div><div class='output co'>#&gt;    i1 i2
 #&gt; c1  1  9
 #&gt; c2  4 16
 #&gt; attr(,"rowtype")
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hadamardproduct_byname</span>(<span class='no'>U</span>, <span class='no'>G</span>)</div><div class='output co'>#&gt;    i1 i2
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='va'>U</span>, <span class='va'>G</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    i1 i2
 #&gt; c1  4  6
 #&gt; c2  6  4
 #&gt; attr(,"rowtype")
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hadamardproduct_byname</span>(<span class='no'>U</span>, <span class='no'>G</span>, <span class='no'>G</span>)</div><div class='output co'>#&gt;    i1 i2
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='va'>U</span>, <span class='va'>G</span>, <span class='va'>G</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    i1 i2
 #&gt; c1 16 12
 #&gt; c2 18  4
 #&gt; attr(,"rowtype")
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hadamardproduct_byname</span>(<span class='no'>U</span>, <span class='fl'>0</span>)</div><div class='output co'>#&gt;    i1 i2
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='va'>U</span>, <span class='fl'>0</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    i1 i2
 #&gt; c1  0  0
 #&gt; c2  0  0
 #&gt; attr(,"rowtype")
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hadamardproduct_byname</span>(<span class='fl'>0</span>, <span class='no'>G</span>)</div><div class='output co'>#&gt;    i1 i2
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='fl'>0</span>, <span class='va'>G</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    i1 i2
 #&gt; c1  0  0
 #&gt; c2  0  0
 #&gt; attr(,"rowtype")
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
 #&gt; [1] "Industries"</div><div class='input'><span class='co'># This also works with lists</span>
-<span class='fu'>hadamardproduct_byname</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>U</span>, <span class='no'>U</span>), <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>G</span>, <span class='no'>G</span>))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>U</span>, <span class='va'>U</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>G</span>, <span class='va'>G</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    i1 i2
 #&gt; c1  4  6
 #&gt; c2  6  4
@@ -220,12 +227,13 @@ the dimensions of the multiplicand and multiplier are be conformable for each se
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
 #&gt; [1] "Industries"
-#&gt; </div><div class='input'><span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>U</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()), <span class='kw'>G</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()))
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>1</span>,<span class='st'>"U"</span>]] <span class='kw'>&lt;-</span> <span class='no'>U</span>
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>2</span>,<span class='st'>"U"</span>]] <span class='kw'>&lt;-</span> <span class='no'>U</span>
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>1</span>,<span class='st'>"G"</span>]] <span class='kw'>&lt;-</span> <span class='no'>G</span>
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>2</span>,<span class='st'>"G"</span>]] <span class='kw'>&lt;-</span> <span class='no'>G</span>
-<span class='fu'>hadamardproduct_byname</span>(<span class='no'>DF</span>$<span class='no'>U</span>, <span class='no'>DF</span>$<span class='no'>G</span>)</div><div class='output co'>#&gt; [[1]]
+#&gt; </div><div class='input'><span class='va'>DF</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>U <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>, G <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>1</span>,<span class='st'>"U"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>U</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>2</span>,<span class='st'>"U"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>U</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>1</span>,<span class='st'>"G"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>G</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>2</span>,<span class='st'>"G"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>G</span>
+<span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='va'>DF</span><span class='op'>$</span><span class='va'>U</span>, <span class='va'>DF</span><span class='op'>$</span><span class='va'>G</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    i1 i2
 #&gt; c1  4  6
 #&gt; c2  6  4
@@ -242,7 +250,8 @@ the dimensions of the multiplicand and multiplier are be conformable for each se
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
 #&gt; [1] "Industries"
-#&gt; </div><div class='input'><span class='no'>DF</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>entrywiseprods</span> <span class='kw'>=</span> <span class='fu'>hadamardproduct_byname</span>(<span class='no'>U</span>, <span class='no'>G</span>))</div><div class='output co'>#&gt;            U          G entrywiseprods
+#&gt; </div><div class='input'><span class='va'>DF</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>entrywiseprods <span class='op'>=</span> <span class='fu'>hadamardproduct_byname</span><span class='op'>(</span><span class='va'>U</span>, <span class='va'>G</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            U          G entrywiseprods
 #&gt; 1 1, 2, 3, 4 1, 2, 3, 4     4, 6, 6, 4
 #&gt; 2 1, 2, 3, 4 1, 2, 3, 4     4, 6, 6, 4</div></pre>
   </div>
@@ -260,7 +269,7 @@ the dimensions of the multiplicand and multiplier are be conformable for each se
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

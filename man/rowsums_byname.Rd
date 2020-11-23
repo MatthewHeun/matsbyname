@@ -7,12 +7,12 @@
 rowsums_byname(a, colname = NA)
 }
 \arguments{
-\item{a}{a matrix or list of matrices from which row sums are desired.}
+\item{a}{A matrix or list of matrices from which row sums are desired.}
 
-\item{colname}{name of the output column containing row sums}
+\item{colname}{The name of the output column containing row sums.}
 }
 \value{
-a column vector of type \code{matrix} containing the row sums of \code{m}
+A column vector of type \code{matrix} containing the row sums of \code{m}
 }
 \description{
 Calculates row sums for a matrix by post-multiplying by an identity vector (containing all 1's).
@@ -21,11 +21,13 @@ the return value from \code{rowsums_byname} is a matrix.
 An optional \code{colname} for the resulting column vector can be supplied.
 If \code{colname} is \code{NULL} or \code{NA} (the default),
 the column name is set to the column type as given by \code{coltype(a)}.
+If \code{colname} is set to \code{NULL}, the column name is returned empty.
 }
 \examples{
 library(dplyr)
 m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
+m
 rowsums_byname(m)
 rowsums_byname(m, "E.ktoe")
 # This also works with lists

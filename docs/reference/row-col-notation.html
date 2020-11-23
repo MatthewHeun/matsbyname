@@ -198,34 +198,34 @@ set appropriately.</p>
 E.g., "a -&gt; b" in arrow notation means that "a" is the prefix and "b" is the suffix.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>notation_vec</span>(
-  <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" -&gt; "</span>,
-  <span class='kw'>pref_start</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>pref_end</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>suff_start</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>suff_end</span> <span class='kw'>=</span> <span class='st'>""</span>
-)
+    <pre class="usage"><span class='fu'>notation_vec</span><span class='op'>(</span>
+  sep <span class='op'>=</span> <span class='st'>" -&gt; "</span>,
+  pref_start <span class='op'>=</span> <span class='st'>""</span>,
+  pref_end <span class='op'>=</span> <span class='st'>""</span>,
+  suff_start <span class='op'>=</span> <span class='st'>""</span>,
+  suff_end <span class='op'>=</span> <span class='st'>""</span>
+<span class='op'>)</span>
 
-<span class='fu'>arrow_notation</span>()
+<span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>paren_notation</span>(<span class='kw'>suff_start</span> <span class='kw'>=</span> <span class='st'>" ("</span>, <span class='kw'>suff_end</span> <span class='kw'>=</span> <span class='st'>")"</span>)
+<span class='fu'>paren_notation</span><span class='op'>(</span>suff_start <span class='op'>=</span> <span class='st'>" ("</span>, suff_end <span class='op'>=</span> <span class='st'>")"</span><span class='op'>)</span>
 
-<span class='fu'>bracket_notation</span>(<span class='kw'>suff_start</span> <span class='kw'>=</span> <span class='st'>" ["</span>, <span class='kw'>suff_end</span> <span class='kw'>=</span> <span class='st'>"]"</span>)
+<span class='fu'>bracket_notation</span><span class='op'>(</span>suff_start <span class='op'>=</span> <span class='st'>" ["</span>, suff_end <span class='op'>=</span> <span class='st'>"]"</span><span class='op'>)</span>
 
-<span class='fu'>split_pref_suff</span>(<span class='no'>x</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'>arrow_notation</span>())
+<span class='fu'>split_pref_suff</span><span class='op'>(</span><span class='va'>x</span>, notation <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>paste_pref_suff</span>(
-  <span class='kw'>ps</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>pref</span> <span class='kw'>=</span> <span class='no'>pref</span>, <span class='kw'>suff</span> <span class='kw'>=</span> <span class='no'>suff</span>),
-  <span class='kw'>pref</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>suff</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'>arrow_notation</span>()
-)
+<span class='fu'>paste_pref_suff</span><span class='op'>(</span>
+  ps <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>pref <span class='op'>=</span> <span class='va'>pref</span>, suff <span class='op'>=</span> <span class='va'>suff</span><span class='op'>)</span>,
+  pref <span class='op'>=</span> <span class='cn'>NULL</span>,
+  suff <span class='op'>=</span> <span class='cn'>NULL</span>,
+  notation <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span>
 
-<span class='fu'>flip_pref_suff</span>(<span class='no'>x</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'>arrow_notation</span>())
+<span class='fu'>flip_pref_suff</span><span class='op'>(</span><span class='va'>x</span>, notation <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>switch_notation</span>(<span class='no'>x</span>, <span class='no'>from</span>, <span class='no'>to</span>, <span class='kw'>flip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>switch_notation</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>from</span>, <span class='va'>to</span>, flip <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'>switch_notation_byname</span>(<span class='no'>a</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='no'>from</span>, <span class='no'>to</span>, <span class='kw'>flip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>switch_notation_byname</span><span class='op'>(</span><span class='va'>a</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, <span class='va'>from</span>, <span class='va'>to</span>, flip <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -306,27 +306,36 @@ for <code>switch_row_col_notation_byname()</code>, matrices with row and column 
 per arguments.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>notation_vec</span>()</div><div class='output co'>#&gt; pref_start   pref_end suff_start   suff_end 
-#&gt;         ""     " -&gt; "     " -&gt; "         "" </div><div class='input'><span class='fu'>arrow_notation</span>()</div><div class='output co'>#&gt; pref_start   pref_end suff_start   suff_end 
-#&gt;         ""     " -&gt; "     " -&gt; "         "" </div><div class='input'><span class='fu'>bracket_notation</span>()</div><div class='output co'>#&gt; pref_start   pref_end suff_start   suff_end 
-#&gt;         ""       " ["       " ["        "]" </div><div class='input'><span class='fu'>split_pref_suff</span>(<span class='st'>"a -&gt; b"</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'>arrow_notation</span>())</div><div class='output co'>#&gt; $pref
+    <pre class="examples"><div class='input'><span class='fu'>notation_vec</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; pref_start   pref_end suff_start   suff_end 
+#&gt;         ""     " -&gt; "     " -&gt; "         "" </div><div class='input'><span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; pref_start   pref_end suff_start   suff_end 
+#&gt;         ""     " -&gt; "     " -&gt; "         "" </div><div class='input'><span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; pref_start   pref_end suff_start   suff_end 
+#&gt;         ""       " ["       " ["        "]" </div><div class='input'><span class='fu'>split_pref_suff</span><span class='op'>(</span><span class='st'>"a -&gt; b"</span>, notation <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $pref
 #&gt; [1] "a"
 #&gt; 
 #&gt; $suff
 #&gt; [1] "b"
-#&gt; </div><div class='input'><span class='fu'>flip_pref_suff</span>(<span class='st'>"a [b]"</span>, <span class='kw'>notation</span> <span class='kw'>=</span> <span class='fu'>bracket_notation</span>())</div><div class='output co'>#&gt; [1] "b [a]"</div><div class='input'><span class='fu'>switch_notation</span>(<span class='st'>"a -&gt; b"</span>, <span class='kw'>from</span> <span class='kw'>=</span> <span class='fu'>arrow_notation</span>(), <span class='kw'>to</span> <span class='kw'>=</span> <span class='fu'>bracket_notation</span>())</div><div class='output co'>#&gt; [1] "a [b]"</div><div class='input'><span class='fu'>switch_notation</span>(<span class='st'>"a -&gt; b"</span>, <span class='kw'>from</span> <span class='kw'>=</span> <span class='fu'>arrow_notation</span>(), <span class='kw'>to</span> <span class='kw'>=</span> <span class='fu'>bracket_notation</span>(),
-                <span class='kw'>flip</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "b [a]"</div><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>,
-              <span class='fl'>3</span>, <span class='fl'>4</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-            <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"b [a]"</span>, <span class='st'>"d [c]"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"f [e]"</span>, <span class='st'>"h [g]"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Products [Industries]"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Industries [Products]"</span>)
-<span class='no'>m</span></div><div class='output co'>#&gt;       f [e] h [g]
+#&gt; </div><div class='input'><span class='fu'>flip_pref_suff</span><span class='op'>(</span><span class='st'>"a [b]"</span>, notation <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "b [a]"</div><div class='input'><span class='fu'>switch_notation</span><span class='op'>(</span><span class='st'>"a -&gt; b"</span>, from <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>, to <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "a [b]"</div><div class='input'><span class='fu'>switch_notation</span><span class='op'>(</span><span class='st'>"a -&gt; b"</span>, from <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>, to <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span>, 
+                flip <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "b [a]"</div><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, 
+              <span class='fl'>3</span>, <span class='fl'>4</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, byrow <span class='op'>=</span> <span class='cn'>TRUE</span>, 
+            dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"b [a]"</span>, <span class='st'>"d [c]"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"f [e]"</span>, <span class='st'>"h [g]"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Products [Industries]"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Industries [Products]"</span><span class='op'>)</span>
+<span class='va'>m</span>
+</div><div class='output co'>#&gt;       f [e] h [g]
 #&gt; b [a]     1     2
 #&gt; d [c]     3     4
 #&gt; attr(,"rowtype")
 #&gt; [1] "Products [Industries]"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries [Products]"</div><div class='input'><span class='fu'>switch_notation_byname</span>(<span class='no'>m</span>, <span class='kw'>from</span> <span class='kw'>=</span> <span class='fu'>bracket_notation</span>(), <span class='kw'>to</span> <span class='kw'>=</span> <span class='fu'>arrow_notation</span>(),
-                       <span class='kw'>flip</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;        e -&gt; f g -&gt; h
+#&gt; [1] "Industries [Products]"</div><div class='input'><span class='fu'>switch_notation_byname</span><span class='op'>(</span><span class='va'>m</span>, from <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span>, to <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>, 
+                       flip <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;        e -&gt; f g -&gt; h
 #&gt; a -&gt; b      1      2
 #&gt; c -&gt; d      3      4
 #&gt; attr(,"rowtype")
@@ -334,9 +343,10 @@ per arguments.</p>
 #&gt; attr(,"coltype")
 #&gt; [1] "Products -&gt; Industries"</div><div class='input'><span class='co'># Also works for lists.</span>
 <span class='co'># Note that margin must be specified as a list here.</span>
-<span class='fu'>switch_notation_byname</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>, <span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>)),
-                       <span class='kw'>from</span> <span class='kw'>=</span> <span class='fu'>bracket_notation</span>(),
-                       <span class='kw'>to</span> <span class='kw'>=</span> <span class='fu'>arrow_notation</span>(), <span class='kw'>flip</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>switch_notation_byname</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>, <span class='va'>m</span><span class='op'>)</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>, 
+                       from <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span>, 
+                       to <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>, flip <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;        e -&gt; f g -&gt; h
 #&gt; a -&gt; b      1      2
 #&gt; c -&gt; d      3      4
@@ -369,7 +379,7 @@ per arguments.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

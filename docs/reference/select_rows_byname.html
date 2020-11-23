@@ -142,7 +142,7 @@ For maximum flexibility, arguments are extended regex patterns
 that are matched against row names.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>select_rows_byname</span>(<span class='no'>a</span>, <span class='kw'>retain_pattern</span> <span class='kw'>=</span> <span class='st'>"$^"</span>, <span class='kw'>remove_pattern</span> <span class='kw'>=</span> <span class='st'>"$^"</span>)</pre>
+    <pre class="usage"><span class='fu'>select_rows_byname</span><span class='op'>(</span><span class='va'>a</span>, retain_pattern <span class='op'>=</span> <span class='st'>"$^"</span>, remove_pattern <span class='op'>=</span> <span class='st'>"$^"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -188,22 +188,25 @@ suitably escaped.</p>
 <p>Note that if all rows are removed from <code>a</code>, <code>NULL</code> is returned.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>1</span>:<span class='fl'>16</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>dimnames</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"i"</span>, <span class='fl'>1</span>:<span class='fl'>4</span>)), <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"p"</span>, <span class='fl'>1</span>:<span class='fl'>4</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodities"</span>)
-<span class='fu'>select_rows_byname</span>(<span class='no'>m</span>, <span class='kw'>retain_pattern</span> <span class='kw'>=</span> <span class='fu'><a href='make_pattern.html'>make_pattern</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i4"</span>), <span class='kw'>pattern_type</span> <span class='kw'>=</span> <span class='st'>"exact"</span>))</div><div class='output co'>#&gt;    p1 p2 p3 p4
+    <pre class="examples"><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>16</span>, ncol <span class='op'>=</span> <span class='fl'>4</span>, dimnames<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"i"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"p"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Industries"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Commodities"</span><span class='op'>)</span>
+<span class='fu'>select_rows_byname</span><span class='op'>(</span><span class='va'>m</span>, retain_pattern <span class='op'>=</span> <span class='fu'><a href='make_pattern.html'>make_pattern</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"i1"</span>, <span class='st'>"i4"</span><span class='op'>)</span>, pattern_type <span class='op'>=</span> <span class='st'>"exact"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    p1 p2 p3 p4
 #&gt; i1  1  5  9 13
 #&gt; i4  4  8 12 16
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Commodities"</div><div class='input'><span class='fu'>select_rows_byname</span>(<span class='no'>m</span>, <span class='kw'>remove_pattern</span> <span class='kw'>=</span> <span class='fu'><a href='make_pattern.html'>make_pattern</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"i1"</span>, <span class='st'>"i3"</span>), <span class='kw'>pattern_type</span> <span class='kw'>=</span> <span class='st'>"exact"</span>))</div><div class='output co'>#&gt;    p1 p2 p3 p4
+#&gt; [1] "Commodities"</div><div class='input'><span class='fu'>select_rows_byname</span><span class='op'>(</span><span class='va'>m</span>, remove_pattern <span class='op'>=</span> <span class='fu'><a href='make_pattern.html'>make_pattern</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"i1"</span>, <span class='st'>"i3"</span><span class='op'>)</span>, pattern_type <span class='op'>=</span> <span class='st'>"exact"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    p1 p2 p3 p4
 #&gt; i2  2  6 10 14
 #&gt; i4  4  8 12 16
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Commodities"</div><div class='input'><span class='co'># Also works for lists and data frames</span>
-<span class='fu'>select_rows_byname</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>retain_pattern</span> <span class='kw'>=</span> <span class='st'>"^i1$|^i4$"</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>select_rows_byname</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>,<span class='va'>m</span><span class='op'>)</span>, retain_pattern <span class='op'>=</span> <span class='st'>"^i1$|^i4$"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    p1 p2 p3 p4
 #&gt; i1  1  5  9 13
 #&gt; i4  4  8 12 16
@@ -236,7 +239,7 @@ suitably escaped.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -144,7 +144,7 @@ any other matrix with the same row and column names will have
 the same order.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sort_rows_cols</span>(<span class='no'>a</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>colorder</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>a</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, roworder <span class='op'>=</span> <span class='cn'>NA</span>, colorder <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,40 +185,50 @@ Extraneous column names (column names in <code>colorder</code> that do not appea
     <p>Default sort order is given by <code><a href='https://rdrr.io/r/base/sort.html'>base::sort()</a></code> with <code>decreasing = FALSE</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>6</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>3</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r3"</span>, <span class='st'>"r5"</span>, <span class='st'>"r1"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c4"</span>, <span class='st'>"c2"</span>)))
-<span class='fu'>sort_rows_cols</span>(<span class='no'>m</span>)</div><div class='output co'>#&gt;    c2 c4
+    <pre class="examples"><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>3</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r3"</span>, <span class='st'>"r5"</span>, <span class='st'>"r1"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c4"</span>, <span class='st'>"c2"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    c2 c4
 #&gt; r1  6  3
 #&gt; r3  4  1
-#&gt; r5  5  2</div><div class='input'><span class='fu'>sort_rows_cols</span>(<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='no'>m</span>))</div><div class='output co'>#&gt;    r1 r3 r5
+#&gt; r5  5  2</div><div class='input'><span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    r1 r3 r5
 #&gt; c2  6  4  5
-#&gt; c4  3  1  2</div><div class='input'><span class='fu'>sort_rows_cols</span>(<span class='no'>m</span>, <span class='kw'>margin</span><span class='kw'>=</span><span class='fl'>1</span>) <span class='co'># Sorts rows</span></div><div class='output co'>#&gt;    c4 c2
+#&gt; c4  3  1  2</div><div class='input'><span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>m</span>, margin<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span> <span class='co'># Sorts rows</span>
+</div><div class='output co'>#&gt;    c4 c2
 #&gt; r1  3  6
 #&gt; r3  1  4
-#&gt; r5  2  5</div><div class='input'><span class='fu'>sort_rows_cols</span>(<span class='no'>m</span>, <span class='kw'>margin</span><span class='kw'>=</span><span class='fl'>2</span>) <span class='co'># Sorts columns</span></div><div class='output co'>#&gt;    c2 c4
+#&gt; r5  2  5</div><div class='input'><span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>m</span>, margin<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span> <span class='co'># Sorts columns</span>
+</div><div class='output co'>#&gt;    c2 c4
 #&gt; r3  4  1
 #&gt; r5  5  2
-#&gt; r1  6  3</div><div class='input'><span class='no'>v</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>5</span>), <span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>1</span>, <span class='kw'>dimnames</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"r"</span>, <span class='fl'>1</span>:<span class='fl'>5</span>)), <span class='st'>"c1"</span>)) <span class='co'># Column vector</span>
-<span class='fu'>sort_rows_cols</span>(<span class='no'>v</span>)</div><div class='output co'>#&gt;    c1
+#&gt; r1  6  3</div><div class='input'><span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span>, ncol<span class='op'>=</span><span class='fl'>1</span>, dimnames<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"r"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"c1"</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># Column vector</span>
+<span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    c1
 #&gt; r1  5
 #&gt; r2  4
 #&gt; r3  3
 #&gt; r4  2
-#&gt; r5  1</div><div class='input'><span class='fu'>sort_rows_cols</span>(<span class='no'>v</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>) <span class='co'># Sorts rows</span></div><div class='output co'>#&gt;    c1
+#&gt; r5  1</div><div class='input'><span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>v</span>, margin <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='co'># Sorts rows</span>
+</div><div class='output co'>#&gt;    c1
 #&gt; r1  5
 #&gt; r2  4
 #&gt; r3  3
 #&gt; r4  2
-#&gt; r5  1</div><div class='input'><span class='fu'>sort_rows_cols</span>(<span class='no'>v</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>) <span class='co'># No effect: only one column</span></div><div class='output co'>#&gt;    c1
+#&gt; r5  1</div><div class='input'><span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>v</span>, margin <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='co'># No effect: only one column</span>
+</div><div class='output co'>#&gt;    c1
 #&gt; r5  1
 #&gt; r4  2
 #&gt; r3  3
 #&gt; r2  4
-#&gt; r1  5</div><div class='input'><span class='no'>r</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>4</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>1</span>, <span class='kw'>dimnames</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"r1"</span>, <span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>4</span>)))) <span class='co'># Row vector</span>
-<span class='fu'>sort_rows_cols</span>(<span class='no'>r</span>) <span class='co'># Sorts columns</span></div><div class='output co'>#&gt;    c1 c2 c3 c4
-#&gt; r1  4  3  2  1</div><div class='input'><span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>NULL</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c2"</span>, <span class='st'>"c1"</span>))) <span class='co'># No row name</span>
-<span class='fu'>sort_rows_cols</span>(<span class='no'>n</span>) <span class='co'># Sorts columns, because only one row.</span></div><div class='output co'>#&gt;      c1 c2
+#&gt; r1  5</div><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>1</span>, dimnames<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"r1"</span>, <span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"c"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># Row vector</span>
+<span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='co'># Sorts columns</span>
+</div><div class='output co'>#&gt;    c1 c2 c3 c4
+#&gt; r1  4  3  2  1</div><div class='input'><span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>1</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='cn'>NULL</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c2"</span>, <span class='st'>"c1"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># No row name</span>
+<span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span> <span class='co'># Sorts columns, because only one row.</span>
+</div><div class='output co'>#&gt;      c1 c2
 #&gt; [1,]  2  1</div><div class='input'><span class='co'># Also works with lists</span>
-<span class='fu'>sort_rows_cols</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>)) <span class='co'># Sorts rows and columns for both m's.</span></div><div class='output co'>#&gt; [[1]]
+<span class='fu'>sort_rows_cols</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>,<span class='va'>m</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># Sorts rows and columns for both m's.</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c4 c2
 #&gt; r1  3  6
 #&gt; r3  1  4
@@ -231,7 +241,8 @@ Extraneous column names (column names in <code>colorder</code> that do not appea
 #&gt; r1  6  3
 #&gt; </div><div class='input'><span class='co'># Sort rows only for first one, sort rows and columns for second one.  </span>
 <span class='co'># Row order is applied to all m's.  Column order is natural.</span>
-<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>)))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>sort_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>,<span class='va'>m</span><span class='op'>)</span>, margin <span class='op'>=</span> <span class='fl'>1</span>, roworder <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c4 c2
 #&gt; r5  2  5
 #&gt; r3  1  4
@@ -244,7 +255,8 @@ Extraneous column names (column names in <code>colorder</code> that do not appea
 #&gt; r1  3  6
 #&gt; </div><div class='input'><span class='co'># Columns are sorted as default, because no colorder is given.</span>
 <span class='co'># roworder is ignored. </span>
-<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>)))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>sort_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>,<span class='va'>m</span><span class='op'>)</span>, margin <span class='op'>=</span> <span class='fl'>2</span>, roworder <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c2 c4
 #&gt; r3  4  1
 #&gt; r5  5  2
@@ -256,7 +268,8 @@ Extraneous column names (column names in <code>colorder</code> that do not appea
 #&gt; r5  5  2
 #&gt; r1  6  3
 #&gt; </div><div class='input'><span class='co'># Both columns and rows sorted, rows by the list, columns in natural order.</span>
-<span class='fu'>sort_rows_cols</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>), <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>roworder</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span>)))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>sort_rows_cols</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>,<span class='va'>m</span><span class='op'>)</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span>, roworder <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r5"</span>, <span class='st'>"r3"</span>, <span class='st'>"r1"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c4 c2
 #&gt; r5  2  5
 #&gt; r3  1  4
@@ -283,7 +296,7 @@ Extraneous column names (column names in <code>colorder</code> that do not appea
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

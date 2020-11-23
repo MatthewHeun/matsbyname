@@ -877,7 +877,9 @@ test_that("rowsums_byname works as expected", {
   expect_equal(rowsums_byname(list(m, m), "E.ktoe"), 
                list(rowsumsm_expected %>% setcolnames_byname("E.ktoe"), 
                     rowsumsm_expected %>% setcolnames_byname("E.ktoe")))
-  expect_equal(rowsums_byname(list(m, m), NULL), list(rowsumsm_expected, rowsumsm_expected))
+  rowsum_expected_no_colname <- rowsumsm_expected %>% 
+    magrittr::set_colnames(NULL)
+  expect_equal(rowsums_byname(list(m, m), NULL), list(rowsum_expected_no_colname, rowsum_expected_no_colname))
   # Also works with data frames
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
@@ -908,7 +910,9 @@ test_that("colsums_byname works as expected", {
   expect_equal(colsums_byname(list(m, m), "E.ktoe"), 
                list(colsumsm_expected %>% setrownames_byname("E.ktoe"), 
                     colsumsm_expected %>% setrownames_byname("E.ktoe")))
-  expect_equal(colsums_byname(list(m, m), NULL), list(colsumsm_expected, colsumsm_expected))
+  colsum_expected_no_colname <- colsumsm_expected %>% 
+    magrittr::set_rownames(NULL)
+  expect_equal(colsums_byname(list(m, m), NULL), list(colsum_expected_no_colname, colsum_expected_no_colname))
   # Also works with data frames
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
