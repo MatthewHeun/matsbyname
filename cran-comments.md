@@ -1,22 +1,18 @@
 ## Context
-`matsbyname` v0.4.15 adds two new features
-
-* a `tol` argument on `clean_by_name()` and 
-* notations to assist with aggregation and renaming
-
+`matsbyname` v0.4.16 is a bugfix release.
 See `NEWS.md` for details. 
 
-## Test environments (8 in total) and R CMD check results
-* local macOS X install 10.15.4 (Catalina), R4.0.0
+## Test environments (7 in total) and R CMD check results
+* local macOS X install 10.15.6 (Catalina), R4.0.3
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* TRAVIS-CI: Ubuntu 16.04.6, R4.0.0
+* TRAVIS-CI: Ubuntu 16.04.6, R4.0.2
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.0.0 (2020-04-24)
+    * `devtools::check_win_release()`, R version 4.0.3 (2020-10-10)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -42,16 +38,11 @@ See `NEWS.md` for details.
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 0
-* GitHub actions:
-    * macOS-latest, R version 3.6.3 (2020-02-29)
-        * ERRORs: 0
-        * WARNINGs: 0
-        * NOTEs: 0
 
 ## Downstream dependencies
 * Downstream dependencies were checked with `revdepcheck::revdep_check(num_workers = 4)`. 
     * Result: 
-        * ✓ matsindf 0.3.4 ── E: 0 | W: 0 | N: 0
+        * ✓ matsindf 0.3.6 ── E: 0 | W: 0 | N: 0
             * OK: 1
             * BROKEN: 0
         * failures.md
