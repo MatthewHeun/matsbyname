@@ -1,12 +1,12 @@
 ---
-title: "Writing Custom Functions for matsbyname"
+title: "Writing Custom Functions for `matsbyname`"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     smart: false
 vignette: >
-  %\VignetteIndexEntry{matsbyname custom functions}
+  %\VignetteIndexEntry{Writing Custom Functions for `matsbyname`}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
