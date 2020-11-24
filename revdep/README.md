@@ -2,90 +2,91 @@
 
 |field    |value                        |
 |:--------|:----------------------------|
-|version  |R version 4.0.0 (2020-04-24) |
-|os       |macOS Catalina 10.15.4       |
+|version  |R version 4.0.3 (2020-10-10) |
+|os       |macOS Catalina 10.15.6       |
 |system   |x86_64, darwin17.0           |
 |ui       |RStudio                      |
 |language |(EN)                         |
 |collate  |en_US.UTF-8                  |
 |ctype    |en_US.UTF-8                  |
 |tz       |America/Detroit              |
-|date     |2020-05-29                   |
+|date     |2020-11-23                   |
 
 # Dependencies
 
-|package      |old      |new      |Δ  |
-|:------------|:--------|:--------|:--|
-|matsbyname   |0.4.14   |0.4.15   |*  |
-|acepack      |1.4.1    |1.4.1    |   |
-|assertthat   |0.2.1    |0.2.1    |   |
-|backports    |1.1.7    |1.1.7    |   |
-|base64enc    |0.1-3    |0.1-3    |   |
-|BH           |1.72.0-3 |1.72.0-3 |   |
-|callr        |3.4.3    |3.4.3    |   |
-|checkmate    |2.0.0    |2.0.0    |   |
-|cli          |2.0.2    |2.0.2    |   |
-|colorspace   |1.4-1    |1.4-1    |   |
-|crayon       |1.3.4    |1.3.4    |   |
-|data.table   |1.12.8   |1.12.8   |   |
-|desc         |1.2.0    |1.2.0    |   |
-|digest       |0.6.25   |0.6.25   |   |
-|dplyr        |0.8.5    |0.8.5    |   |
-|ellipsis     |0.3.1    |0.3.1    |   |
-|evaluate     |0.14     |0.14     |   |
-|fansi        |0.4.1    |0.4.1    |   |
-|farver       |2.0.3    |2.0.3    |   |
-|Formula      |1.2-3    |1.2-3    |   |
-|ggplot2      |3.3.1    |3.3.1    |   |
-|glue         |1.4.1    |1.4.1    |   |
-|gridExtra    |2.3      |2.3      |   |
-|gtable       |0.3.0    |0.3.0    |   |
-|highr        |0.8      |0.8      |   |
-|Hmisc        |4.4-0    |4.4-0    |   |
-|htmlTable    |1.13.3   |1.13.3   |   |
-|htmltools    |0.4.0    |0.4.0    |   |
-|htmlwidgets  |1.5.1    |1.5.1    |   |
-|isoband      |0.2.1    |0.2.1    |   |
-|jpeg         |0.1-8.1  |0.1-8.1  |   |
-|jsonlite     |1.6.1    |1.6.1    |   |
-|knitr        |1.28     |1.28     |   |
-|labeling     |0.3      |0.3      |   |
-|latticeExtra |0.6-29   |0.6-29   |   |
-|lifecycle    |0.2.0    |0.2.0    |   |
-|magrittr     |1.5      |1.5      |   |
-|markdown     |1.1      |1.1      |   |
-|mime         |0.9      |0.9      |   |
-|munsell      |0.5.0    |0.5.0    |   |
-|pillar       |1.4.4    |1.4.4    |   |
-|pkgbuild     |1.0.8    |1.0.8    |   |
-|pkgconfig    |2.0.3    |2.0.3    |   |
-|pkgload      |1.0.2    |1.0.2    |   |
-|plogr        |0.2.0    |0.2.0    |   |
-|png          |0.1-7    |0.1-7    |   |
-|praise       |1.0.0    |1.0.0    |   |
-|prettyunits  |1.1.1    |1.1.1    |   |
-|processx     |3.4.2    |3.4.2    |   |
-|ps           |1.3.3    |1.3.3    |   |
-|purrr        |0.3.4    |0.3.4    |   |
-|R6           |2.4.1    |2.4.1    |   |
-|RColorBrewer |1.1-2    |1.1-2    |   |
-|Rcpp         |1.0.4.6  |1.0.4.6  |   |
-|rlang        |0.4.6    |0.4.6    |   |
-|rprojroot    |1.3-2    |1.3-2    |   |
-|rstudioapi   |0.11     |0.11     |   |
-|scales       |1.1.1    |1.1.1    |   |
-|stringi      |1.4.6    |1.4.6    |   |
-|stringr      |1.4.0    |1.4.0    |   |
-|testthat     |2.3.2    |2.3.2    |   |
-|tibble       |3.0.1    |3.0.1    |   |
-|tidyselect   |1.1.0    |1.1.0    |   |
-|utf8         |1.1.4    |1.1.4    |   |
-|vctrs        |0.3.0    |0.3.0    |   |
-|viridis      |0.5.1    |0.5.1    |   |
-|viridisLite  |0.3.0    |0.3.0    |   |
-|withr        |2.2.0    |2.2.0    |   |
-|xfun         |0.14     |0.14     |   |
-|yaml         |2.2.1    |2.2.1    |   |
+|package      |old     |new     |Δ  |
+|:------------|:-------|:-------|:--|
+|matsbyname   |0.4.15  |0.4.15  |NA |
+|assertthat   |0.2.1   |0.2.1   |NA |
+|backports    |1.2.0   |1.2.0   |NA |
+|base64enc    |0.1-3   |0.1-3   |NA |
+|brio         |1.1.0   |1.1.0   |NA |
+|callr        |3.5.1   |3.5.1   |NA |
+|checkmate    |2.0.0   |2.0.0   |NA |
+|cli          |2.2.0   |2.2.0   |NA |
+|colorspace   |2.0-0   |2.0-0   |NA |
+|crayon       |1.3.4   |1.3.4   |NA |
+|data.table   |1.13.2  |1.13.2  |NA |
+|desc         |1.2.0   |1.2.0   |NA |
+|diffobj      |0.3.2   |0.3.2   |NA |
+|digest       |0.6.27  |0.6.27  |NA |
+|dplyr        |1.0.2   |1.0.2   |NA |
+|ellipsis     |0.3.1   |0.3.1   |NA |
+|evaluate     |0.14    |0.14    |NA |
+|fansi        |0.4.1   |0.4.1   |NA |
+|farver       |2.0.3   |2.0.3   |NA |
+|Formula      |1.2-4   |1.2-4   |NA |
+|generics     |0.1.0   |0.1.0   |NA |
+|ggplot2      |3.3.2   |3.3.2   |NA |
+|glue         |1.4.2   |1.4.2   |NA |
+|gridExtra    |2.3     |2.3     |NA |
+|gtable       |0.3.0   |0.3.0   |NA |
+|highr        |0.8     |0.8     |NA |
+|Hmisc        |4.4-1   |4.4-1   |NA |
+|htmlTable    |2.1.0   |2.1.0   |NA |
+|htmltools    |0.5.0   |0.5.0   |NA |
+|htmlwidgets  |1.5.2   |1.5.2   |NA |
+|isoband      |0.2.2   |0.2.2   |NA |
+|jpeg         |0.1-8.1 |0.1-8.1 |NA |
+|jsonlite     |1.7.1   |1.7.1   |NA |
+|knitr        |1.30    |1.30    |NA |
+|labeling     |0.4.2   |0.4.2   |NA |
+|latticeExtra |0.6-29  |0.6-29  |NA |
+|lifecycle    |0.2.0   |0.2.0   |NA |
+|magrittr     |2.0.1   |2.0.1   |NA |
+|markdown     |1.1     |1.1     |NA |
+|mime         |0.9     |0.9     |NA |
+|munsell      |0.5.0   |0.5.0   |NA |
+|pillar       |1.4.7   |1.4.7   |NA |
+|pkgbuild     |1.1.0   |1.1.0   |NA |
+|pkgconfig    |2.0.3   |2.0.3   |NA |
+|pkgload      |1.1.0   |1.1.0   |NA |
+|png          |0.1-7   |0.1-7   |NA |
+|praise       |1.0.0   |1.0.0   |NA |
+|prettyunits  |1.1.1   |1.1.1   |NA |
+|processx     |3.4.4   |3.4.4   |NA |
+|ps           |1.4.0   |1.4.0   |NA |
+|purrr        |0.3.4   |0.3.4   |NA |
+|R6           |2.5.0   |2.5.0   |NA |
+|RColorBrewer |1.1-2   |1.1-2   |NA |
+|rematch2     |2.1.2   |2.1.2   |NA |
+|rlang        |0.4.8   |0.4.8   |NA |
+|rprojroot    |2.0.2   |2.0.2   |NA |
+|rstudioapi   |0.13    |0.13    |NA |
+|scales       |1.1.1   |1.1.1   |NA |
+|stringi      |1.5.3   |1.5.3   |NA |
+|stringr      |1.4.0   |1.4.0   |NA |
+|testthat     |3.0.0   |3.0.0   |NA |
+|tibble       |3.0.4   |3.0.4   |NA |
+|tidyselect   |1.1.0   |1.1.0   |NA |
+|utf8         |1.1.4   |1.1.4   |NA |
+|vctrs        |0.3.5   |0.3.5   |NA |
+|viridis      |0.5.1   |0.5.1   |NA |
+|viridisLite  |0.3.0   |0.3.0   |NA |
+|waldo        |0.2.3   |0.2.3   |NA |
+|withr        |2.3.0   |2.3.0   |NA |
+|xfun         |0.19    |0.19    |NA |
+|yaml         |2.2.1   |2.2.1   |NA |
 
 # Revdeps
 
