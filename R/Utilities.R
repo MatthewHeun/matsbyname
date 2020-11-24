@@ -506,6 +506,14 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
     if (1 %in% margin) {
       ps <- rownames(a) %>% 
         split_pref_suff(notation = notation)
+      # The rest of this code expects a list whose top level is 
+      # each row name. 
+      # However, when there is only one row, the list that is created 
+      # has its top level as "pref" and "suff", the prefix and suffix.
+      # Need to wrap it in a list.
+      if (nrow(a) == 1) {
+        ps <- list(ps)
+      }
       if (keep == "prefix") {
         # If prefixes are desired, simply transpose the list and grab the "pref" item.
         new_rnames <- ps %>% 

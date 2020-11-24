@@ -1347,6 +1347,20 @@ test_that("any_byname works as expected", {
 
 
 ###########################################################
+context("Rename")
+###########################################################
+
+test_that("rename_to_pref_suff_byname() works as expected", {
+  m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
+  # This aggregation should simply return m with a renamed column.
+  res <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = arrow_notation())
+  expected <- m %>% 
+    magrittr::set_colnames("Industry")
+  expect_equal(res, expected)
+})
+
+
+###########################################################
 context("Aggregation")
 ###########################################################
 
@@ -1568,6 +1582,21 @@ test_that("aggregate_to_pref_suff_byname() works as expected", {
                m %>% 
                  rename_to_pref_suff_byname(keep = "suffix", notation = arrow_notation()) %>% 
                  aggregate_byname())
+})
+
+
+test_that("aggregate_to_pref_suff_byname() works with a column vector", {
+  # Ran into a bug where aggregating a column vector fails.
+  # A column vector should aggregate to itself..
+  # But instead, I get a "subscript out of bounds" error.
+  # This test triggers that bug.
+  #     -- MKH, 23 Nov 2020.
+  m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
+  # This aggregation should simply return m with renamed column
+  res <- aggregate_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = arrow_notation())
+  expected <- m %>% 
+    magrittr::set_colnames("Industry")
+  expect_equal(res, expected)
 })
 
 
