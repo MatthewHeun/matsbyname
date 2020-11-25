@@ -16,7 +16,7 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2020-05-26 r78577)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2020-11-21 r79454)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -24,11 +24,10 @@ See `NEWS.md` for details.
     * `devtools::check_rhub()`
         * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
             * ERRORs: 2
-            * WARNINGs: 1 
+            * WARNINGs: 0
             * NOTEs: 0
-            * The errors and warning appear to be caused by mal-configuration of this test rig.
+            * The errors appear to be caused by mal-configuration of this test rig.
               This is the *only* rig where errors occur.
-                * `#> there is no package called 'data.table'`
                 * `#> there is no package called 'utf8'`
         * Ubuntu Linux 16.04 LTS, R-release, GCC
             * ERRORs: 0
@@ -37,7 +36,11 @@ See `NEWS.md` for details.
         * Fedora Linux, R-devel, clang, gfortran
             * ERRORs: 0
             * WARNINGs: 0
-            * NOTEs: 0
+            * NOTEs: 1
+            * The note says 
+                * `#> Examples with CPU (user + system) or elapsed time > 5s`
+                * The example takes 5.426 seconds.
+                * This is the *only* rig where this note is generated.
 
 ## Downstream dependencies
 * Downstream dependencies were checked with `revdepcheck::revdep_check(num_workers = 4)`. 

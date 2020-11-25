@@ -60,7 +60,7 @@
       <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
     </li>
     <li>
-      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
+      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
     </li>
   </ul>
 </li>
@@ -93,7 +93,7 @@
 </h1>
                         <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2020-11-23</h4>
+            <h4 class="date">2020-11-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/master/vignettes/matsbyname.Rmd"><code>vignettes/matsbyname.Rmd</code></a></small>
       <div class="hidden name"><code>matsbyname.Rmd</code></div>
@@ -434,7 +434,7 @@
 <h3 class="hasAnchor">
 <a href="#matsbyname-works-well-with-matsindf" class="anchor"></a><tt>matsbyname</tt> works well with <tt>matsindf</tt>
 </h3>
-<p>The <tt>matsindf</tt> package provides functions that collapse <a href="http://tidyr.tidyverse.org/articles/tidy-data.html">tidy</a> data frames of matrix elements into data frames of matrices. Data frames of matrices, such as those created by <tt>matsindf</tt>, are like magic spreadsheets in which single cells contain entire matrices.</p>
+<p>The <tt>matsindf</tt> package provides functions that collapse <a href="https://tidyr.tidyverse.org/articles/tidy-data.html">tidy</a> data frames of matrix elements into data frames of matrices. Data frames of matrices, such as those created by <tt>matsindf</tt>, are like magic spreadsheets in which single cells contain entire matrices.</p>
 <p>The following example demonstrates an approach to creating a data frame of matrices.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tidy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
@@ -498,9 +498,9 @@
 <code>matsbyname</code> works well with lists, and</li>
 <li>data frame columns are implemented as lists, and</li>
 <li>the <tt>matsindf</tt> package can create data frames of matrices, and</li>
-<li>the <a href="http://tidyr.tidyverse.org">tidyr</a> and <a href="http://dplyr.tidyverse.org">dplyr</a> packages work with data frames,</li>
+<li>the <a href="https://tidyr.tidyverse.org">tidyr</a> and <a href="https://dplyr.tidyverse.org">dplyr</a> packages work with data frames,</li>
 </ul>
-<p><code>matsbyname</code> functions can be used with <a href="http://tidyr.tidyverse.org">tidyr</a> and <a href="http://dplyr.tidyverse.org">dplyr</a> functions (such as <code>spread</code> and <code>mutate</code>) to perform matrix algebra within data frames of matrices. A single <code>matsbyname</code> instruction performs the same operation on all rows of a <code>matsindf</code> data frame. Loops begone!</p>
+<p><code>matsbyname</code> functions can be used with <a href="https://tidyr.tidyverse.org">tidyr</a> and <a href="https://dplyr.tidyverse.org">dplyr</a> functions (such as <code>spread</code> and <code>mutate</code>) to perform matrix algebra within data frames of matrices. A single <code>matsbyname</code> instruction performs the same operation on all rows of a <code>matsindf</code> data frame. Loops begone!</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">mats</span> <span class="op">%&gt;%</span>
   <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key <span class="op">=</span> <span class="va">matrix.name</span>, value <span class="op">=</span> <span class="va">matrix</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -575,7 +575,7 @@
 <div id="summary" class="section level2">
 <h2 class="hasAnchor">
 <a href="#summary" class="anchor"></a>Summary</h2>
-<p>The <tt>matsbyname</tt> package simplifies analyses in which row and column names ought to be respected. It provides optional row and column types, thereby ensuring that only valid matrix operations are performed. Finally, <tt>matsbyname</tt> functions work equally well with lists to allow use of <tt>*_byname</tt> functions with <a href="http://tidyr.tidyverse.org"><tt>tidyr</tt></a> and <a href="http://dplyr.tidyverse.org"><tt>dplyr</tt></a> approaches to manipulating data.</p>
+<p>The <tt>matsbyname</tt> package simplifies analyses in which row and column names ought to be respected. It provides optional row and column types, thereby ensuring that only valid matrix operations are performed. Finally, <tt>matsbyname</tt> functions work equally well with lists to allow use of <tt>*_byname</tt> functions with <a href="https://tidyr.tidyverse.org"><tt>tidyr</tt></a> and <a href="https://dplyr.tidyverse.org"><tt>dplyr</tt></a> approaches to manipulating data.</p>
 </div>
   </div>
 
