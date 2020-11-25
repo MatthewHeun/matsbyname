@@ -1,3 +1,5 @@
+# matsbyname 0.4.16 (2020-11-24)
+
 * Fixed a bug in `rename_to_pref_suff_byname()` 
   where a column vector would fail with "subscript out of bounds" error.
   The fix was to wrap the return list containing "pref" and "suff" in a list, 
