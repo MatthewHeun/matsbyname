@@ -1,4 +1,4 @@
-# matsbyname 0.4.16 (2020-11-24)
+# matsbyname 0.4.16 (2020-11-25)
 
 * Moved URLs to `https://` where appropriate.
 * Fixed a bug in `rename_to_pref_suff_byname()` 
