@@ -149,7 +149,7 @@ split_pref_suff <- function(x, notation = arrow_notation()) {
     }
   }
   # Split at the first instance of suff_start to get two pieces
-  suff <- stringi::stri_split_fixed(str = no_suff_end, fixed = TRUE, pattern = ss, n = 2)
+  suff <- stringi::stri_split_fixed(str = no_suff_end, pattern = ss, n = 2)
   suff <- lapply(suff, function(s) {
     if (length(s) == 2) {
       # If we got two pieces, choose the second piece.

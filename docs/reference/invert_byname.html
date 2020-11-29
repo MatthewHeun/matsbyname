@@ -73,7 +73,7 @@ Rows and columns of a are sorted prior to inverting." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.16</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@ Rows and columns of a are sorted prior to inverting." />
       <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
     </li>
     <li>
-      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
+      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
     </li>
   </ul>
 </li>
@@ -140,7 +140,7 @@ Rows and columns of a are sorted prior to inverting." />
 Rows and columns of <code>a</code> are sorted prior to inverting.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>invert_byname</span>(<span class='no'>a</span>)</pre>
+    <pre class="usage"><span class='fu'>invert_byname</span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,17 +156,19 @@ Rows and columns of <code>a</code> are sorted prior to inverting.</p>
     <p>the inversion of <code>a</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>100</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"i"</span>, <span class='fl'>1</span>:<span class='fl'>2</span>), <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"c"</span>, <span class='fl'>1</span>:<span class='fl'>2</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industry"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodity"</span>)
-<span class='fu'>invert_byname</span>(<span class='no'>m</span>)</div><div class='output co'>#&gt;     i1   i2
+    <pre class="examples"><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>100</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"i"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"c"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Industry"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Commodity"</span><span class='op'>)</span>
+<span class='fu'>invert_byname</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;     i1   i2
 #&gt; c1 0.1 0.00
 #&gt; c2 0.0 0.01
 #&gt; attr(,"rowtype")
 #&gt; [1] "Commodity"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industry"</div><div class='input'><span class='fu'><a href='matrixproduct_byname.html'>matrixproduct_byname</a></span>(<span class='no'>m</span>, <span class='fu'>invert_byname</span>(<span class='no'>m</span>))
-<span class='fu'><a href='matrixproduct_byname.html'>matrixproduct_byname</a></span>(<span class='fu'>invert_byname</span>(<span class='no'>m</span>), <span class='no'>m</span>)
-<span class='fu'>invert_byname</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>))</div><div class='output co'>#&gt; [[1]]
+#&gt; [1] "Industry"</div><div class='input'><span class='fu'><a href='matrixproduct_byname.html'>matrixproduct_byname</a></span><span class='op'>(</span><span class='va'>m</span>, <span class='fu'>invert_byname</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='matrixproduct_byname.html'>matrixproduct_byname</a></span><span class='op'>(</span><span class='fu'>invert_byname</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>, <span class='va'>m</span><span class='op'>)</span>
+<span class='fu'>invert_byname</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>,<span class='va'>m</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;     i1   i2
 #&gt; c1 0.1 0.00
 #&gt; c2 0.0 0.01
@@ -199,7 +201,7 @@ Rows and columns of <code>a</code> are sorted prior to inverting.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

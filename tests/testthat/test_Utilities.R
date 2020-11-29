@@ -20,6 +20,7 @@ test_that("errors are generated when organize_args is called with baloney", {
                                           match_type = "matmult"))
 })
 
+
 test_that("oddball match_type works as expected", {
   expect_equal(matsbyname:::organize_args(a = 1, b = 2, match_type = "none"), 
                list(a = 1, b = 2))

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.16</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@
       <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
     </li>
     <li>
-      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
+      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
     </li>
   </ul>
 </li>
@@ -85,7 +85,8 @@
 
       
 
-      </header><div class="row">
+      </header><script src="about-vector-arguments_files/header-attrs-2.5/header-attrs.js"></script><link href="about-vector-arguments_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="about-vector-arguments_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>About Vector Arguments</h1>
@@ -107,40 +108,43 @@
 <h2 class="hasAnchor">
 <a href="#an-example" class="anchor"></a>An example</h2>
 <p>To see how the <code>.FUNdots</code> argument works, let’s make an example function that takes advantage of <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code>. <code>mysum()</code> adds entries in matrix <code>a</code>, the result depending upon the value of <code>margin</code>.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">mysum</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">a</span>, <span class="no">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)) {
-  <span class="no">sum_func</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">a_mat</span>, <span class="no">margin</span>) {
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mysum</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">margin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">sum_func</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a_mat</span>, <span class="va">margin</span><span class="op">)</span> <span class="op">{</span>
     <span class="co"># When we get here, we will have a single matrix a</span>
-    <span class="kw">if</span> (<span class="fl">1</span> <span class="kw">%in%</span> <span class="no">margin</span> <span class="kw">&amp;</span> <span class="fl">2</span> <span class="kw">%in%</span> <span class="no">margin</span>) {
-      <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">a_mat</span>))
-    }
-    <span class="kw">if</span> (<span class="no">margin</span> <span class="kw">==</span> <span class="fl">1</span>) {
-      <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">a_mat</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw">nrow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">a_mat</span>)))
-    }
-    <span class="kw">if</span> (<span class="no">margin</span> <span class="kw">==</span> <span class="fl">2</span>) {
-      <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span>(<span class="no">a_mat</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw">ncol</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">a_mat</span>)))
-    }
-  }
-  <span class="fu"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span>(<span class="no">sum_func</span>, <span class="no">a</span>, <span class="kw">.FUNdots</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">margin</span> <span class="kw">=</span> <span class="no">margin</span>))
-}</pre></body></html></div>
+    <span class="kw">if</span> <span class="op">(</span><span class="fl">1</span> <span class="op">%in%</span> <span class="va">margin</span> <span class="op">&amp;</span> <span class="fl">2</span> <span class="op">%in%</span> <span class="va">margin</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">}</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="va">margin</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">}</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="va">margin</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>ncol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">}</span>
+  <span class="op">}</span>
+  <span class="fu"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span><span class="op">(</span><span class="va">sum_func</span>, <span class="va">a</span>, .FUNdots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>margin <span class="op">=</span> <span class="va">margin</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <p>Structuring <code>mysum()</code> as shown above provides several interesting capabilities. First, <code>mysum()</code> works with single matrices.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">m</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">1</span>:<span class="fl">4</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">byrow</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="no">m</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">m</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    1    2</span>
 <span class="co">#&gt; [2,]    3    4</span>
 <span class="co"># Works for single matrices</span>
-<span class="fu">mysum</span>(<span class="no">m</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fl">1</span>)
+<span class="fu">mysum</span><span class="op">(</span><span class="va">m</span>, margin <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
 <span class="co">#&gt; [2,]    7</span>
-<span class="fu">mysum</span>(<span class="no">m</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fl">2</span>)
+<span class="fu">mysum</span><span class="op">(</span><span class="va">m</span>, margin <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    4    6</span>
-<span class="fu">mysum</span>(<span class="no">m</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))
-<span class="co">#&gt; [1] 10</span></pre></body></html></div>
+<span class="fu">mysum</span><span class="op">(</span><span class="va">m</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 10</span></code></pre></div>
 <p>Second, <code>mysum()</code> works with lists.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># Works for lists of matrices</span>
-<span class="fu">mysum</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">one</span> <span class="kw">=</span> <span class="no">m</span>, <span class="kw">two</span> <span class="kw">=</span> <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fl">1</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Works for lists of matrices</span>
+<span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>one <span class="op">=</span> <span class="va">m</span>, two <span class="op">=</span> <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="co">#&gt; $one</span>
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
@@ -150,23 +154,24 @@
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
 <span class="co">#&gt; [2,]    7</span>
-<span class="fu">mysum</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">one</span> <span class="kw">=</span> <span class="no">m</span>, <span class="kw">two</span> <span class="kw">=</span> <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fl">2</span>)
+<span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>one <span class="op">=</span> <span class="va">m</span>, two <span class="op">=</span> <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; $one</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    4    6</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $two</span>
 <span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]    4    6</span></pre></body></html></div>
+<span class="co">#&gt; [1,]    4    6</span></code></pre></div>
 <p>Finally, <code>mysum()</code> works within data frames.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Works in data frames and tibbles</span>
-<span class="no">DF</span> <span class="kw">&lt;-</span> <span class="kw pkg">tibble</span><span class="kw ns">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span>(<span class="kw">mcol</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>))
-<span class="no">res</span> <span class="kw">&lt;-</span> <span class="no">DF</span> <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(
-    <span class="kw">rsums</span> <span class="kw">=</span> <span class="fu">mysum</span>(<span class="no">mcol</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fl">1</span>),
-    <span class="kw">csums</span> <span class="kw">=</span> <span class="fu">mysum</span>(<span class="no">mcol</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fl">2</span>)
-  )
-<span class="no">res</span>$<span class="no">rsums</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Works in data frames and tibbles</span>
+<span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>mcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="va">DF</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+    rsums <span class="op">=</span> <span class="fu">mysum</span><span class="op">(</span><span class="va">mcol</span>, margin <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, 
+    csums <span class="op">=</span> <span class="fu">mysum</span><span class="op">(</span><span class="va">mcol</span>, margin <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+  <span class="op">)</span>
+<span class="va">res</span><span class="op">$</span><span class="va">rsums</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
@@ -181,7 +186,7 @@
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
 <span class="co">#&gt; [2,]    7</span>
-<span class="no">res</span>$<span class="no">csums</span>
+<span class="va">res</span><span class="op">$</span><span class="va">csums</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    4    6</span>
@@ -192,22 +197,24 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[3]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]    4    6</span></pre></body></html></div>
+<span class="co">#&gt; [1,]    4    6</span></code></pre></div>
 </div>
 <div id="the-problem" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-problem" class="anchor"></a>The problem</h2>
 <p>In the above examples, <code>margin</code> was only <code>1</code> or <code>2</code>, not <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> for the list and data frame examples. Let’s see what happens when <code>margin = c(1, 2)</code> and <code>a</code> is a list.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span>(<span class="fu">mysum</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)),
-         <span class="kw">error</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">e</span>) {<span class="fu"><a href="https://rdrr.io/r/base/strwrap.html">strwrap</a></span>(<span class="no">e</span>, <span class="kw">width</span> <span class="kw">=</span> <span class="fl">60</span>)})
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span><span class="op">(</span><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
+         error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html">strwrap</a></span><span class="op">(</span><span class="va">e</span>, width <span class="op">=</span> <span class="fl">60</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
 <span class="co">#&gt; [1] "Error: In prepare_.FUNdots(), when 'a' is a list, but an"   </span>
 <span class="co">#&gt; [2] "entry in '.FUNdots' is not a list, every top-level argument"</span>
 <span class="co">#&gt; [3] "in .FUNdots must be NULL or have length = 1 or length ="    </span>
 <span class="co">#&gt; [4] "length(a) (= 3). Found length = 2 for argument 'margin',"   </span>
 <span class="co">#&gt; [5] "which is not a list. Consider converting argument 'margin'" </span>
-<span class="co">#&gt; [6] "into a list of length 1."</span></pre></body></html></div>
+<span class="co">#&gt; [6] "into a list of length 1."</span></code></pre></div>
 <p>To understand better what is happening, let’s try when the list argument to <code>mysum()</code> has length <code>2</code>.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu">mysum</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
@@ -215,7 +222,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]    4    6</span></pre></body></html></div>
+<span class="co">#&gt; [1,]    4    6</span></code></pre></div>
 <p><code>margin = c(1, 2)</code> is interpreted by <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> as "use <code>margin = 1</code> for the first <code>m</code> in the list, and use <code>margin = 2</code> for the second <code>m</code> in the list.</p>
 <p>Now we see why passing <code>margin = c(1, 2)</code> failed for a list of length <code>3</code> (<code><a href="https://rdrr.io/r/base/list.html">list(m, m, m)</a></code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. But the third <code>m</code> had no margin available for it.</p>
 <p>We also see why passing <code>margin = c(1, 2)</code> was successful for a list of length <code>2</code> (<code><a href="https://rdrr.io/r/base/list.html">list(m, m)</a></code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. In that case, we had exactly as many items in margin (2) as items in the list passed to <code>a</code> (2).</p>
@@ -234,7 +241,8 @@
 <h3 class="hasAnchor">
 <a href="#wrap-vector-arguments-in-a-list" class="anchor"></a>Wrap vector arguments in a list</h3>
 <p>If the caller is more specific, flexibility is gained. By wrapping <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code>, the caller indicates “Take this margin (<code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code>), replicate it as many times as we have items in our <code>a</code> list, using one <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> for each item in the list.”</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu">mysum</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)))
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; [1] 10</span>
 <span class="co">#&gt; </span>
@@ -242,9 +250,10 @@
 <span class="co">#&gt; [1] 10</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[3]]</span>
-<span class="co">#&gt; [1] 10</span></pre></body></html></div>
+<span class="co">#&gt; [1] 10</span></code></pre></div>
 <p>The caller can also supply different <code>margin</code>s for each item in the list of matrices.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu">mysum</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)))
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
@@ -255,37 +264,39 @@
 <span class="co">#&gt; [1,]    4    6</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[3]]</span>
-<span class="co">#&gt; [1] 10</span></pre></body></html></div>
+<span class="co">#&gt; [1] 10</span></code></pre></div>
 <p>But the caller must provide either <code>1</code> or <code><a href="https://rdrr.io/r/base/length.html">length(a)</a></code> items in the <code>margin</code> argument, else an error is emitted.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span>(<span class="fu">mysum</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)),
-         <span class="kw">error</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">e</span>) {<span class="fu"><a href="https://rdrr.io/r/base/strwrap.html">strwrap</a></span>(<span class="no">e</span>, <span class="kw">width</span> <span class="kw">=</span> <span class="fl">60</span>)})
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span><span class="op">(</span><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
+         error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html">strwrap</a></span><span class="op">(</span><span class="va">e</span>, width <span class="op">=</span> <span class="fl">60</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
 <span class="co">#&gt; [1] "Error: In prepare_.FUNdots(), when both 'a' and '.FUNdots'"</span>
 <span class="co">#&gt; [2] "are lists, each top-level argument in .FUNdots must have"  </span>
 <span class="co">#&gt; [3] "length = 1 or length = length(a) (= 3). Found length = 2"  </span>
 <span class="co">#&gt; [4] "for argument 'margin', which is a list. Consider wrapping" </span>
-<span class="co">#&gt; [5] "argument 'margin' in a list()."</span></pre></body></html></div>
+<span class="co">#&gt; [5] "argument 'margin' in a list()."</span></code></pre></div>
 </div>
 <div id="use-the-prep_vector_arg-function" class="section level3">
 <h3 class="hasAnchor">
 <a href="#use-the-prep_vector_arg-function" class="anchor"></a>Use the <code>prep_vector_arg()</code> function</h3>
 <p>To the extent possible, programmers should remove burdens on users of their functions. So, it would be helpful if there were a way to automatically wrap vector arguments in lists. To that end, <code>matsbyname</code> includes the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> function. <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> uses heuristics to wrap vector arguments in lists, if needed and when possible.</p>
 <p><code>mysum2()</code> demonstrates the use of <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code>.</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">mysum2</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">a</span>, <span class="no">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)) {
-  <span class="no">margin</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/prep_vector_arg.html">prep_vector_arg</a></span>(<span class="no">a</span>, <span class="no">margin</span>)
-  <span class="no">sum_func</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">a_mat</span>, <span class="no">margin</span>) {
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mysum2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">margin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">margin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_vector_arg.html">prep_vector_arg</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">margin</span><span class="op">)</span>
+  <span class="va">sum_func</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a_mat</span>, <span class="va">margin</span><span class="op">)</span> <span class="op">{</span>
     <span class="co"># When we get here, we will have a single matrix a</span>
-    <span class="kw">if</span> (<span class="fl">1</span> <span class="kw">%in%</span> <span class="no">margin</span> <span class="kw">&amp;</span> <span class="fl">2</span> <span class="kw">%in%</span> <span class="no">margin</span>) {
-      <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">a_mat</span>))
-    }
-    <span class="kw">if</span> (<span class="no">margin</span> <span class="kw">==</span> <span class="fl">1</span>) {
-      <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">a_mat</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw">nrow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">a_mat</span>)))
-    }
-    <span class="kw">if</span> (<span class="no">margin</span> <span class="kw">==</span> <span class="fl">2</span>) {
-      <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span>(<span class="no">a_mat</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw">ncol</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">a_mat</span>)))
-    }
-  }
-  <span class="fu"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span>(<span class="no">sum_func</span>, <span class="no">a</span>, <span class="kw">.FUNdots</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">margin</span> <span class="kw">=</span> <span class="no">margin</span>))
-}</pre></body></html></div>
+    <span class="kw">if</span> <span class="op">(</span><span class="fl">1</span> <span class="op">%in%</span> <span class="va">margin</span> <span class="op">&amp;</span> <span class="fl">2</span> <span class="op">%in%</span> <span class="va">margin</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">}</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="va">margin</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">}</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="va">margin</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>ncol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">a_mat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">}</span>
+  <span class="op">}</span>
+  <span class="fu"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span><span class="op">(</span><span class="va">sum_func</span>, <span class="va">a</span>, .FUNdots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>margin <span class="op">=</span> <span class="va">margin</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <p>If</p>
 <ul>
 <li>argument <code>a</code> is a list,</li>
@@ -293,7 +304,8 @@
 <li>the vector argument’s length is greater than 1 but not equal to the length of a,</li>
 </ul>
 <p>then <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> wraps the vector argument (in this case <code>margin</code>) in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code>, thereby relieving the caller of having to remember to make it into a <code>list</code>.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu">mysum2</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">mysum2</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; [1] 10</span>
 <span class="co">#&gt; </span>
@@ -301,9 +313,10 @@
 <span class="co">#&gt; [1] 10</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[3]]</span>
-<span class="co">#&gt; [1] 10</span></pre></body></html></div>
+<span class="co">#&gt; [1] 10</span></code></pre></div>
 <p>Note that if the length of the vector argument is equal to the length of the list in <code>a</code>, the caller’s intention is ambiguous, and the vector argument is passed without modification.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu">mysum2</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">mysum2</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
@@ -311,34 +324,37 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]    4    6</span></pre></body></html></div>
+<span class="co">#&gt; [1,]    4    6</span></code></pre></div>
 <p>If the caller wants <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> to be applied to each item in the <code>a</code> list, the caller must wrap <code><a href="https://rdrr.io/r/base/c.html">c(1, 2)</a></code> in a list.</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu">mysum2</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)))
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">mysum2</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; [1] 10</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
-<span class="co">#&gt; [1] 10</span></pre></body></html></div>
+<span class="co">#&gt; [1] 10</span></code></pre></div>
 </div>
 <div id="use-a-data-frame" class="section level3">
 <h3 class="hasAnchor">
 <a href="#use-a-data-frame" class="anchor"></a>Use a data frame</h3>
 <p>The reason <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> cannot <em>always</em> wrap vector arguments in a list is that data frame columns are extracted as vectors when they are atomic.</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">DF2</span> <span class="kw">&lt;-</span> <span class="kw pkg">tibble</span><span class="kw ns">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span>(<span class="kw">mcol</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))
-<span class="no">DF2</span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">DF2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>mcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="va">DF2</span>
 <span class="co">#&gt; # A tibble: 2 x 2</span>
 <span class="co">#&gt;   mcol              margin</span>
 <span class="co">#&gt;   &lt;list&gt;             &lt;dbl&gt;</span>
 <span class="co">#&gt; 1 &lt;int[,2] [2 × 2]&gt;      1</span>
 <span class="co">#&gt; 2 &lt;int[,2] [2 × 2]&gt;      2</span>
-<span class="no">DF2</span>$<span class="no">margin</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>()
-<span class="co">#&gt; [1] "numeric"</span></pre></body></html></div>
+<span class="va">DF2</span><span class="op">$</span><span class="va">margin</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; [1] "numeric"</span></code></pre></div>
 <p>It would be a mistake to wrap <code>DF2$margin</code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code> for the following call to <code>mysum2</code>, because the caller’s intent is clearly "apply <code>margin = 1</code> for the first row and <code>margin = 2</code> for the second row.</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">res2</span> <span class="kw">&lt;-</span> <span class="no">DF2</span> <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(
-    <span class="kw">sums</span> <span class="kw">=</span> <span class="fu">mysum2</span>(<span class="no">mcol</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="no">margin</span>)
-  )
-<span class="no">res2</span>$<span class="no">sums</span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res2</span> <span class="op">&lt;-</span> <span class="va">DF2</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+    sums <span class="op">=</span> <span class="fu">mysum2</span><span class="op">(</span><span class="va">mcol</span>, margin <span class="op">=</span> <span class="va">margin</span><span class="op">)</span>
+  <span class="op">)</span>
+<span class="va">res2</span><span class="op">$</span><span class="va">sums</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
@@ -346,13 +362,14 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]    4    6</span></pre></body></html></div>
+<span class="co">#&gt; [1,]    4    6</span></code></pre></div>
 <p>The good news is that within the context of a data frame, the caller’s intent is unambiguous.</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">DF3</span> <span class="kw">&lt;-</span> <span class="kw pkg">tibble</span><span class="kw ns">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span>(<span class="kw">mcol</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">m</span>, <span class="no">m</span>, <span class="no">m</span>), <span class="kw">margin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))) <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(
-    <span class="kw">sumcol</span> <span class="kw">=</span> <span class="fu">mysum2</span>(<span class="no">mcol</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="no">margin</span>)
-  )
-<span class="no">DF3</span>$<span class="no">sumcol</span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">DF3</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>mcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+    sumcol <span class="op">=</span> <span class="fu">mysum2</span><span class="op">(</span><span class="va">mcol</span>, margin <span class="op">=</span> <span class="va">margin</span><span class="op">)</span>
+  <span class="op">)</span>
+<span class="va">DF3</span><span class="op">$</span><span class="va">sumcol</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1]</span>
 <span class="co">#&gt; [1,]    3</span>
@@ -362,7 +379,7 @@
 <span class="co">#&gt; [1] 10</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[3]]</span>
-<span class="co">#&gt; [1] 10</span></pre></body></html></div>
+<span class="co">#&gt; [1] 10</span></code></pre></div>
 </div>
 </div>
 <div id="summary" class="section level2">
@@ -393,7 +410,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

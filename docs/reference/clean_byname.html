@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clean (delete) rows or columns of matrices that contain exclusively <code>clean_value</code> — clean_byname • matsbyname</title>
+<title>Clean (delete) rows or columns of matrices that contain exclusively clean_value — clean_byname • matsbyname</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Clean (delete) rows or columns of matrices that contain exclusively <code>clean_value</code> — clean_byname" />
+<meta property="og:title" content="Clean (delete) rows or columns of matrices that contain exclusively clean_value — clean_byname" />
 <meta property="og:description" content="Cleaning is performed when all entries in a row or column or both, depending on the value of margin
 are within +/- tol of clean_value.
 Internally, values are deemed within +/- of tol when
@@ -75,7 +75,7 @@ abs(x - clean_value) &amp;lt;= tol." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.16</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@ abs(x - clean_value) &amp;lt;= tol." />
       <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
     </li>
     <li>
-      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
+      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
     </li>
   </ul>
 </li>
@@ -144,7 +144,7 @@ Internally, values are deemed within +/- of tol when
 <code>abs(x - clean_value) &lt;= tol</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>clean_byname</span>(<span class='no'>a</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>clean_value</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
+    <pre class="usage"><span class='fu'>clean_byname</span><span class='op'>(</span><span class='va'>a</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, clean_value <span class='op'>=</span> <span class='fl'>0</span>, tol <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,15 +179,19 @@ contains exclusively <code>clean_value</code> (within <code>tol</code>), the row
 <code>tol = .Machine$double.eps</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>20</span>, <span class='fl'>1</span>, -<span class='fl'>20</span>, <span class='fl'>2</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r1"</span>, <span class='st'>"r2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>)))
-<span class='no'>m</span></div><div class='output co'>#&gt;     c1  c2
+    <pre class="examples"><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>20</span>, <span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>20</span>, <span class='fl'>2</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r1"</span>, <span class='st'>"r2"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>m</span>
+</div><div class='output co'>#&gt;     c1  c2
 #&gt; r1 -20 -20
-#&gt; r2   1   2</div><div class='input'><span class='no'>m</span> <span class='kw'>%&gt;%</span> <span class='fu'>clean_byname</span>(<span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>clean_value</span> <span class='kw'>=</span> -<span class='fl'>20</span>) <span class='co'># Eliminates -20, -20 row</span></div><div class='output co'>#&gt;    c1 c2
+#&gt; r2   1   2</div><div class='input'><span class='va'>m</span> <span class='op'>%&gt;%</span> <span class='fu'>clean_byname</span><span class='op'>(</span>margin <span class='op'>=</span> <span class='fl'>1</span>, clean_value <span class='op'>=</span> <span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span> <span class='co'># Eliminates -20, -20 row</span>
+</div><div class='output co'>#&gt;    c1 c2
 #&gt; r2  1  2</div><div class='input'><span class='co'># Nothing cleaned, because no columns contain all 0's (the default clean_value).</span>
-<span class='no'>m</span> <span class='kw'>%&gt;%</span> <span class='fu'>clean_byname</span>(<span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt;     c1  c2
+<span class='va'>m</span> <span class='op'>%&gt;%</span> <span class='fu'>clean_byname</span><span class='op'>(</span>margin <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt;     c1  c2
 #&gt; r1 -20 -20
 #&gt; r2   1   2</div><div class='input'><span class='co'># Also works with lists</span>
-<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>, <span class='no'>m</span>) <span class='kw'>%&gt;%</span> <span class='fu'>clean_byname</span>(<span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>clean_value</span> <span class='kw'>=</span> -<span class='fl'>20</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>, <span class='va'>m</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>clean_byname</span><span class='op'>(</span>margin <span class='op'>=</span> <span class='fl'>1</span>, clean_value <span class='op'>=</span> <span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    c1 c2
 #&gt; r2  1  2
 #&gt; 
@@ -195,10 +199,11 @@ contains exclusively <code>clean_value</code> (within <code>tol</code>), the row
 #&gt;    c1 c2
 #&gt; r2  1  2
 #&gt; </div><div class='input'><span class='co'># Also works with data frames</span>
-<span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>m</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()))
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>1</span>,<span class='st'>"m"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m</span>
-<span class='no'>DF</span><span class='kw'>[[</span><span class='fl'>2</span>,<span class='st'>"m"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m</span>
-<span class='no'>DF</span> <span class='kw'>%&gt;%</span> <span class='fu'>clean_byname</span>(<span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>clean_value</span> <span class='kw'>=</span> -<span class='fl'>20</span>)</div><div class='output co'>#&gt; $m
+<span class='va'>DF</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>m <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>1</span>,<span class='st'>"m"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>m</span>
+<span class='va'>DF</span><span class='op'>[[</span><span class='fl'>2</span>,<span class='st'>"m"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>m</span>
+<span class='va'>DF</span> <span class='op'>%&gt;%</span> <span class='fu'>clean_byname</span><span class='op'>(</span>margin <span class='op'>=</span> <span class='fl'>1</span>, clean_value <span class='op'>=</span> <span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $m
 #&gt; $m[[1]]
 #&gt;    c1 c2
 #&gt; r2  1  2
@@ -207,16 +212,19 @@ contains exclusively <code>clean_value</code> (within <code>tol</code>), the row
 #&gt;    c1 c2
 #&gt; r2  1  2
 #&gt; 
-#&gt; </div><div class='input'><span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>20</span>, -<span class='fl'>20</span>, <span class='fl'>0</span>, -<span class='fl'>20</span>, -<span class='fl'>20</span>, <span class='fl'>0</span>, -<span class='fl'>20</span>, -<span class='fl'>20</span>, -<span class='fl'>20</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-             <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r1"</span>, <span class='st'>"r2"</span>, <span class='st'>"r3"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"c1"</span>, <span class='st'>"c2"</span>, <span class='st'>"c3"</span>)) )
-<span class='no'>m2</span></div><div class='output co'>#&gt;     c1  c2  c3
+#&gt; </div><div class='input'><span class='va'>m2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>20</span>, <span class='op'>-</span><span class='fl'>20</span>, <span class='fl'>0</span>, <span class='op'>-</span><span class='fl'>20</span>, <span class='op'>-</span><span class='fl'>20</span>, <span class='fl'>0</span>, <span class='op'>-</span><span class='fl'>20</span>, <span class='op'>-</span><span class='fl'>20</span>, <span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>3</span>,
+             dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r1"</span>, <span class='st'>"r2"</span>, <span class='st'>"r3"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"c1"</span>, <span class='st'>"c2"</span>, <span class='st'>"c3"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>)</span>
+<span class='va'>m2</span>
+</div><div class='output co'>#&gt;     c1  c2  c3
 #&gt; r1 -20 -20 -20
 #&gt; r2 -20 -20 -20
-#&gt; r3   0   0 -20</div><div class='input'><span class='fu'>clean_byname</span>(<span class='no'>m2</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>clean_value</span> <span class='kw'>=</span> -<span class='fl'>20</span>)</div><div class='output co'>#&gt;    c1 c2
-#&gt; r3  0  0</div><div class='input'><span class='no'>DF2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>m2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()))
-<span class='no'>DF2</span><span class='kw'>[[</span><span class='fl'>1</span>, <span class='st'>"m2"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m2</span>
-<span class='no'>DF2</span><span class='kw'>[[</span><span class='fl'>2</span>, <span class='st'>"m2"</span>]] <span class='kw'>&lt;-</span> <span class='no'>m2</span>
-<span class='no'>DF2</span> <span class='kw'>%&gt;%</span> <span class='fu'>clean_byname</span>(<span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>clean_value</span> <span class='kw'>=</span> -<span class='fl'>20</span>)</div><div class='output co'>#&gt; $m2
+#&gt; r3   0   0 -20</div><div class='input'><span class='fu'>clean_byname</span><span class='op'>(</span><span class='va'>m2</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span>, clean_value <span class='op'>=</span> <span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    c1 c2
+#&gt; r3  0  0</div><div class='input'><span class='va'>DF2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>m2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>DF2</span><span class='op'>[[</span><span class='fl'>1</span>, <span class='st'>"m2"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>m2</span>
+<span class='va'>DF2</span><span class='op'>[[</span><span class='fl'>2</span>, <span class='st'>"m2"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>m2</span>
+<span class='va'>DF2</span> <span class='op'>%&gt;%</span> <span class='fu'>clean_byname</span><span class='op'>(</span>margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, clean_value <span class='op'>=</span> <span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $m2
 #&gt; $m2[[1]]
 #&gt;    c1 c2  c3
 #&gt; r3  0  0 -20
@@ -243,7 +251,7 @@ contains exclusively <code>clean_value</code> (within <code>tol</code>), the row
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

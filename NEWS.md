@@ -1,3 +1,24 @@
+# matsbyname 0.4.16 (2020-11-25)
+
+* Moved URLs to `https://` where appropriate.
+* Fixed a bug in `rename_to_pref_suff_byname()` 
+  where a column vector would fail with "subscript out of bounds" error.
+  The fix was to wrap the return list containing "pref" and "suff" in a list, 
+  as the rest of the function expected, 
+  when a single row was present.
+* Fixed a bug in `colsums_byname()` and `rowsums_byname()`
+  where setting the `rowname` or `colname` argument to `NULL`
+  did not result in an empty row name or column name.
+* Fixed a bug in `hatize_byname()` where a 1x1 vector
+  gave error:
+  `length of 'dimnames' [1] not equal to array extent`.
+  The solution is to check for 1x1 vectors and act accordingly.
+* Fixed a warning emitted from `stringi`.
+* New tests for big fixes.  
+  Now up to 906 tests, all passing.
+* Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.15 (2020-05-29)
 
 * Added additional tests for new features.

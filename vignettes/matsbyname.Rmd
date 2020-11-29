@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette:
     smart: false
 vignette: >
-  %\VignetteIndexEntry{matsbyname use cases and examples}
+  %\VignetteIndexEntry{Use Cases and Examples for `matsbyname`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -190,14 +190,14 @@ Furthermore, <tt>matsbyname</tt> works well with its sister package, <tt>matsind
 <tt>matsindf</tt> creates data frames
 whose entries are not numbers but entire matrices, thereby
 enabling the use of <tt>matsbyname</tt> functions in 
-[<tt>tidyverse</tt>](http://www.tidyverse.org)
+[<tt>tidyverse</tt>](https://www.tidyverse.org)
 functional programming.
 
 When used together, <tt>matsbyname</tt> and <tt>matsindf</tt> 
 allow analysts to wield simultaneously the power of both 
 [matrix mathematics](https://en.wikipedia.org/wiki/Matrix_(mathematics))
 and 
-[<tt>tidyverse</tt>](http://www.tidyverse.org) 
+[<tt>tidyverse</tt>](https://www.tidyverse.org) 
 functional programming.
 
 This vignette demonstrates the power of matrix mathematics
@@ -337,7 +337,7 @@ matrixproduct_byname(list(A, A), list(C, C))
 ### <tt>matsbyname</tt> works well with <tt>matsindf</tt>
 
 The <tt>matsindf</tt> package provides functions that collapse
-[tidy](http://tidyr.tidyverse.org/articles/tidy-data.html) data frames
+[tidy](https://tidyr.tidyverse.org/articles/tidy-data.html) data frames
 of matrix elements into data frames of matrices.
 Data frames of matrices,
 such as those created by <tt>matsindf</tt>,
@@ -380,12 +380,12 @@ Because
 * `matsbyname` works well with lists, and
 * data frame columns are implemented as lists, and
 * the <tt>matsindf</tt> package can create data frames of matrices, and
-* the [tidyr](http://tidyr.tidyverse.org) and
-[dplyr](http://dplyr.tidyverse.org) packages work with data frames,
+* the [tidyr](https://tidyr.tidyverse.org) and
+[dplyr](https://dplyr.tidyverse.org) packages work with data frames,
 
 `matsbyname` functions can be used with
-[tidyr](http://tidyr.tidyverse.org) and
-[dplyr](http://dplyr.tidyverse.org) functions
+[tidyr](https://tidyr.tidyverse.org) and
+[dplyr](https://dplyr.tidyverse.org) functions
 (such as
 `spread` and `mutate`)
 to perform matrix algebra within data frames
@@ -450,7 +450,7 @@ It provides optional row and column types, thereby
 ensuring that only valid matrix operations are performed.
 Finally, <tt>matsbyname</tt> functions work equally well with lists
 to allow use of <tt>*_byname</tt> functions with 
-[<tt>tidyr</tt>](http://tidyr.tidyverse.org)
+[<tt>tidyr</tt>](https://tidyr.tidyverse.org)
 and 
-[<tt>dplyr</tt>](http://dplyr.tidyverse.org)
+[<tt>dplyr</tt>](https://dplyr.tidyverse.org)
 approaches to manipulating data.

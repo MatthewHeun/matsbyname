@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (<code>I</code>) — Iminus_byname • matsbyname</title>
+<title>Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (I) — Iminus_byname • matsbyname</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (<code>I</code>) — Iminus_byname" />
+<meta property="og:title" content="Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (I) — Iminus_byname" />
 <meta property="og:description" content="The order of rows and columns of m may change before subtracting from I,
 because the rows and columns are sorted by name prior to subtracting from I.
 Furthermore, if m is not square, it will be made square
@@ -75,7 +75,7 @@ before subtracting from I by calling complete_and_sort." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.16</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@ before subtracting from I by calling complete_and_sort." />
       <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
     </li>
     <li>
-      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for matsbyname</a>
+      <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
     </li>
   </ul>
 </li>
@@ -144,7 +144,7 @@ Furthermore, if <code>m</code> is not square, it will be made square
 before subtracting from <code>I</code> by calling <code>complete_and_sort</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>Iminus_byname</span>(<span class='no'>a</span>)</pre>
+    <pre class="usage"><span class='fu'>Iminus_byname</span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -161,24 +161,27 @@ before subtracting from <code>I</code> by calling <code>complete_and_sort</code>
 (whose rows and columns have been completed and sorted)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>21</span>, -<span class='fl'>12</span>, -<span class='fl'>21</span>, -<span class='fl'>10</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"a"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"a"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodities"</span>)
+    <pre class="examples"><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>21</span>, <span class='op'>-</span><span class='fl'>12</span>, <span class='op'>-</span><span class='fl'>21</span>, <span class='op'>-</span><span class='fl'>10</span><span class='op'>)</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"b"</span>, <span class='st'>"a"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"b"</span>, <span class='st'>"a"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Industries"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Commodities"</span><span class='op'>)</span>
 <span class='co'># Rows and columns are unsorted</span>
-<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>1</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>) - <span class='no'>m</span></div><div class='output co'>#&gt;    b  a
+<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>1</span>, nrow <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>-</span> <span class='va'>m</span> 
+</div><div class='output co'>#&gt;    b  a
 #&gt; b 22 21
 #&gt; a 12 11
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Commodities"</div><div class='input'><span class='co'># Rows and columns are sorted prior to subtracting from the identity matrix</span>
-<span class='fu'>Iminus_byname</span>(<span class='no'>m</span>)</div><div class='output co'>#&gt;    a  b
+<span class='fu'>Iminus_byname</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt;    a  b
 #&gt; a 11 12
 #&gt; b 21 22
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
 #&gt; [1] "Commodities"</div><div class='input'><span class='co'># This also works with lists</span>
-<span class='fu'>Iminus_byname</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>m</span>,<span class='no'>m</span>))</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>Iminus_byname</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>m</span>,<span class='va'>m</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt;    a  b
 #&gt; a 11 12
 #&gt; b 21 22
@@ -197,9 +200,10 @@ before subtracting from <code>I</code> by calling <code>complete_and_sort</code>
 #&gt; [1] "Commodities"
 #&gt; </div><div class='input'><span class='co'># If the m is not square before subtracting from I,</span>
 <span class='co'># it will be made square by the function complete_and_sort.</span>
-<span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"c"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span>(<span class='st'>"Industries"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span>(<span class='st'>"Commodities"</span>)
-<span class='fu'>Iminus_byname</span>(<span class='no'>m2</span>)</div><div class='output co'>#&gt;    a  b c
+<span class='va'>m2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span><span class='op'>)</span>, ncol <span class='op'>=</span> <span class='fl'>2</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"c"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Industries"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Commodities"</span><span class='op'>)</span>
+<span class='fu'>Iminus_byname</span><span class='op'>(</span><span class='va'>m2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    a  b c
 #&gt; a  0 -4 0
 #&gt; b -2 -4 0
 #&gt; c -3 -6 1
@@ -222,7 +226,7 @@ before subtracting from <code>I</code> by calling <code>complete_and_sort</code>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

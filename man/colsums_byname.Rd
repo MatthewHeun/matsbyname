@@ -19,16 +19,20 @@ Calculates column sums for a matrix by premultiplying by an identity vector (con
 In contrast to \code{colSums} (which returns a \code{numeric} result),
 the return value from \code{colsums_byname} is a matrix.
 An optional \code{rowname} for the resulting row vector can be supplied.
-If \code{rowname} is \code{NULL} or \code{NA} (the default),
+If \code{rowname} is \code{NA} (the default),
 the row name is set to the row type as given by \code{rowtype(a)}.
+If \code{rowname} is set to \code{NULL}, the row name is returned empty.
 }
 \examples{
 library(dplyr)
 m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
+m
 colsums_byname(m)
 colsums_byname(m, rowname = "E.ktoe")
-m \%>\% colsums_byname \%>\% rowsums_byname
+m \%>\% 
+  colsums_byname() \%>\% 
+  rowsums_byname()
 # This also works with lists
 colsums_byname(list(m, m))
 colsums_byname(list(m, m), rowname = "E.ktoe")

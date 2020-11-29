@@ -114,18 +114,53 @@ transpose_byname <- function(a){
 #' @examples
 #' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
+#' hatize_byname(v)
 #' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
 #'   setrowtype(NA) %>% setcoltype("Commodities")
-#' hatize_byname(v)
 #' hatize_byname(r)
 #' # This also works with lists.
 #' hatize_byname(list(v, v))
+#' # A 1x1 column vector is a degenerate case. 
+#' # Row names and rowtype are transferred to the column.
+#' matrix(42, nrow = 1, ncol = 1, dimnames = list("r1")) %>% 
+#'   setrowtype("Product -> Industry") %>% 
+#'   hatize_byname()
+#' # A 1x1 row vector is a degenerate case. 
+#' # Column names and coltype are transferred to the row.
+#' matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, "c1")) %>% 
+#'   setcoltype("Industry -> Product") %>% 
+#'   hatize_byname()
+#' # A 1x1 matrix with both row and column names generates a failure.
+#' \dontrun{
+#' matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+#'   setrowtype("Product -> Industry") %>% 
+#'   setcoltype("Industry -> Product") %>% 
+#'   hatize_byname()
+#' }
 hatize_byname <- function(v){
   hatize_func <- function(v){
     # Check if v is the right size
     if (!(nrow(v) == 1 | ncol(v) == 1)) {
-      stop("matrix v must have at least one dimension of length 1 in hatize_byname")
+      stop("matrix v must have at least one dimension of length 1 in hatize_byname()")
     }
+    # Check if v is 1x1 (i.e., both row and column have dimension of length 1)
+    if (nrow(v) == 1 & ncol(v) == 1) {
+      out <- v
+      if (is.null(colnames(out)) & !is.null(rownames(out))) {
+        # We have a 1x1 column vector.
+        # Apply the row name to the column, set the coltype to row rowtype, and return.
+        colnames(out) <- rownames(out)
+        return(out %>% setcoltype(rowtype(out)))
+      } else if (!is.null(colnames(out)) & is.null(rownames(out))) {
+        # We have a 1x1 row vector.
+        # Apply the column name to the row, set the rowtype to the coltype, and return.
+        rownames(out) <- colnames(out)
+        return(out %>% setrowtype(coltype(out)))
+      } else {
+        stop("1x1 matrix v must have one dimension without a name in hatize_byname()")
+      }
+    }
+    # We have an nx1 or a 1xn vector
     v_sorted <- sort_rows_cols(v)
     out <- diag(as.numeric(v_sorted))
     if (ncol(v) == 1) {
@@ -546,22 +581,24 @@ fractionize_byname <- function(a, margin){
 #' Row sums, sorted by name
 #'
 #' Calculates row sums for a matrix by post-multiplying by an identity vector (containing all 1's).
-#' In contrast to \code{rowSums} (which returns a \code{numeric} result),
-#' the return value from \code{rowsums_byname} is a matrix.
-#' An optional \code{colname} for the resulting column vector can be supplied.
-#' If \code{colname} is \code{NULL} or \code{NA} (the default),
-#' the column name is set to the column type as given by \code{coltype(a)}.
+#' In contrast to `rowSums` (which returns a `numeric` result),
+#' the return value from `rowsums_byname` is a matrix.
+#' An optional `colname` for the resulting column vector can be supplied.
+#' If `colname` is `NULL` or `NA` (the default),
+#' the column name is set to the column type as given by `coltype(a)`.
+#' If `colname` is set to `NULL`, the column name is returned empty.
 #'
-#' @param a a matrix or list of matrices from which row sums are desired.
-#' @param colname name of the output column containing row sums
+#' @param a A matrix or list of matrices from which row sums are desired.
+#' @param colname The name of the output column containing row sums.
 #'
-#' @return a column vector of type \code{matrix} containing the row sums of \code{m}
+#' @return A column vector of type `matrix` containing the row sums of `m`
 #' @export
 #'
 #' @examples
 #' library(dplyr)
 #' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' m
 #' rowsums_byname(m)
 #' rowsums_byname(m, "E.ktoe")
 #' # This also works with lists
@@ -580,13 +617,15 @@ fractionize_byname <- function(a, margin){
 #' # Nonsensical
 #' \dontrun{rowsums_byname(NULL)}
 rowsums_byname <- function(a, colname = NA){
-  if (is.null(colname)) {
-    # Set to NA so that we can try setting to coltype in rowsum.func
-    colname <- NA_character_
-  }
+  # if (is.null(colname)) {
+  #   # Set to NA so that we can try setting to coltype in rowsum.func
+  #   colname <- NA_character_
+  # }
   rowsum_func <- function(a, colname){
-    if (is.na(colname)) {
-      colname <- coltype(a)
+    if (!is.null(colname)) {
+      if (is.na(colname)) {
+        colname <- coltype(a)
+      }
     }
     rowSums(a) %>%
       # Preserve matrix structure (i.e., result will be a column vector of type matrix)
@@ -608,25 +647,29 @@ rowsums_byname <- function(a, colname = NA){
 #' Column sums, sorted by name
 #'
 #' Calculates column sums for a matrix by premultiplying by an identity vector (containing all 1's).
-#' In contrast to \code{colSums} (which returns a \code{numeric} result),
-#' the return value from \code{colsums_byname} is a matrix.
-#' An optional \code{rowname} for the resulting row vector can be supplied.
-#' If \code{rowname} is \code{NULL} or \code{NA} (the default),
-#' the row name is set to the row type as given by \code{rowtype(a)}.
+#' In contrast to `colSums` (which returns a `numeric` result),
+#' the return value from `colsums_byname` is a matrix.
+#' An optional `rowname` for the resulting row vector can be supplied.
+#' If `rowname` is `NA` (the default),
+#' the row name is set to the row type as given by `rowtype(a)`.
+#' If `rowname` is set to `NULL`, the row name is returned empty.
 #'
 #' @param a a matrix or list of matrices from which column sums are desired.
 #' @param rowname name of the output row containing column sums.
 #'
-#' @return a row vector of type \code{matrix} containing the column sums of \code{a}.
+#' @return a row vector of type `matrix` containing the column sums of `a`.
 #' @export
 #'
 #' @examples
 #' library(dplyr)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' m
 #' colsums_byname(m)
 #' colsums_byname(m, rowname = "E.ktoe")
-#' m %>% colsums_byname %>% rowsums_byname
+#' m %>% 
+#'   colsums_byname() %>% 
+#'   rowsums_byname()
 #' # This also works with lists
 #' colsums_byname(list(m, m))
 #' colsums_byname(list(m, m), rowname = "E.ktoe")

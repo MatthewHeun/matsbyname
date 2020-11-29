@@ -254,6 +254,46 @@ test_that("hatize_byname works as expected", {
 })
 
 
+test_that("hatize_byname works with a simple vector", {
+  # I'm running into a bug where hatize doesn't work on a 1x1 vector that lacks a column name
+  # Verify that a 2x1 vector works correctly.
+  v1 <- matrix(c(1, 
+                 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"))) %>% 
+    setrowtype("Product -> Industry")
+  v1_hat <- hatize_byname(v1)
+  v1_hat_expected <- matrix(c(1, 0,
+                              0, 2), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("r1", "r2"))) %>% 
+    setrowtype("Product -> Industry") %>% 
+    setcoltype("Product -> Industry")
+  expect_equal(v1_hat, v1_hat_expected)
+  
+  # Now try with a 1x1 column vector
+  v2 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1")) %>% 
+    setrowtype("Product -> Industry")
+  v2_hat <- hatize_byname(v2)
+  v2_hat_expected <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "r1")) %>% 
+    setrowtype("Product -> Industry") %>% 
+    setcoltype("Product -> Industry")
+  expect_equal(v2_hat, v2_hat_expected)
+  
+  # Try with a 1x1 row vector
+  v3 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, "c1")) %>% 
+    setcoltype("Industry -> Product")
+  v3_hat <- hatize_byname(v3)
+  v3_hat_expected <- matrix(42, nrow = 1, ncol = 1, dimnames = list("c1", "c1")) %>% 
+    setrowtype("Industry -> Product") %>% 
+    setcoltype("Industry -> Product")
+  expect_equal(v3_hat, v3_hat_expected)
+  
+  # Try with 1x1 vector with both dimensions named.
+  # This should fail, because one dimension must lack a name.
+  v4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+    setrowtype("Product -> Industry") %>% 
+    setcoltype("Industry -> Product")
+  expect_error(hatize_byname(v4), "1x1 matrix v must have one dimension without a name in hatize_byname()")
+})
+
+
 ###########################################################
 context("Identize")
 ###########################################################
@@ -837,7 +877,9 @@ test_that("rowsums_byname works as expected", {
   expect_equal(rowsums_byname(list(m, m), "E.ktoe"), 
                list(rowsumsm_expected %>% setcolnames_byname("E.ktoe"), 
                     rowsumsm_expected %>% setcolnames_byname("E.ktoe")))
-  expect_equal(rowsums_byname(list(m, m), NULL), list(rowsumsm_expected, rowsumsm_expected))
+  rowsum_expected_no_colname <- rowsumsm_expected %>% 
+    magrittr::set_colnames(NULL)
+  expect_equal(rowsums_byname(list(m, m), NULL), list(rowsum_expected_no_colname, rowsum_expected_no_colname))
   # Also works with data frames
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
@@ -868,7 +910,9 @@ test_that("colsums_byname works as expected", {
   expect_equal(colsums_byname(list(m, m), "E.ktoe"), 
                list(colsumsm_expected %>% setrownames_byname("E.ktoe"), 
                     colsumsm_expected %>% setrownames_byname("E.ktoe")))
-  expect_equal(colsums_byname(list(m, m), NULL), list(colsumsm_expected, colsumsm_expected))
+  colsum_expected_no_colname <- colsumsm_expected %>% 
+    magrittr::set_rownames(NULL)
+  expect_equal(colsums_byname(list(m, m), NULL), list(colsum_expected_no_colname, colsum_expected_no_colname))
   # Also works with data frames
   DF <- data.frame(m = I(list()))
   DF[[1,"m"]] <- m
@@ -1303,6 +1347,20 @@ test_that("any_byname works as expected", {
 
 
 ###########################################################
+context("Rename")
+###########################################################
+
+test_that("rename_to_pref_suff_byname() works as expected", {
+  m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
+  # This aggregation should simply return m with a renamed column.
+  res <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = arrow_notation())
+  expected <- m %>% 
+    magrittr::set_colnames("Industry")
+  expect_equal(res, expected)
+})
+
+
+###########################################################
 context("Aggregation")
 ###########################################################
 
@@ -1524,6 +1582,21 @@ test_that("aggregate_to_pref_suff_byname() works as expected", {
                m %>% 
                  rename_to_pref_suff_byname(keep = "suffix", notation = arrow_notation()) %>% 
                  aggregate_byname())
+})
+
+
+test_that("aggregate_to_pref_suff_byname() works with a column vector", {
+  # Ran into a bug where aggregating a column vector fails.
+  # A column vector should aggregate to itself..
+  # But instead, I get a "subscript out of bounds" error.
+  # This test triggers that bug.
+  #     -- MKH, 23 Nov 2020.
+  m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
+  # This aggregation should simply return m with renamed column
+  res <- aggregate_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = arrow_notation())
+  expected <- m %>% 
+    magrittr::set_colnames("Industry")
+  expect_equal(res, expected)
 })
 
 
