@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.16</span>
       </span>
     </div>
 
@@ -132,6 +132,21 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0416-2020-11-25" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.16">
+<a href="#matsbyname-0416-2020-11-25" class="anchor"></a>matsbyname 0.4.16 (2020-11-25)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Moved URLs to <code>https://</code> where appropriate.</li>
+<li>Fixed a bug in <code><a href="../reference/rename_to_pref_suff_byname.html">rename_to_pref_suff_byname()</a></code> where a column vector would fail with “subscript out of bounds” error. The fix was to wrap the return list containing “pref” and “suff” in a list, as the rest of the function expected, when a single row was present.</li>
+<li>Fixed a bug in <code><a href="../reference/colsums_byname.html">colsums_byname()</a></code> and <code><a href="../reference/rowsums_byname.html">rowsums_byname()</a></code> where setting the <code>rowname</code> or <code>colname</code> argument to <code>NULL</code> did not result in an empty row name or column name.</li>
+<li>Fixed a bug in <code><a href="../reference/hatize_byname.html">hatize_byname()</a></code> where a 1x1 vector gave error: <code>length of 'dimnames' [1] not equal to array extent</code>. The solution is to check for 1x1 vectors and act accordingly.</li>
+<li>Fixed a warning emitted from <code>stringi</code>.</li>
+<li>New tests for big fixes.<br>
+Now up to 906 tests, all passing.</li>
+<li>Test coverage remains at 100 %.</li>
+</ul>
+</div>
     <div id="matsbyname-0415-2020-05-29" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.15">
 <a href="#matsbyname-0415-2020-05-29" class="anchor"></a>matsbyname 0.4.15 (2020-05-29)<small> 2020-05-29 </small>

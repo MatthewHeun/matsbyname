@@ -1,6 +1,11 @@
 ## Context
 `matsbyname` v0.4.16 is a bugfix release.
-See `NEWS.md` for details. 
+See `NEWS.md` for details.
+
+This is the second submission of `matsbyname` v0.4.16,
+which cleans up the `tidyverse` URL
+as requested by the CRAN team
+(http://www.tidyverse.org --> https://www.tidyverse.org). 
 
 ## Test environments (7 in total) and R CMD check results
 * local macOS X install 10.15.6 (Catalina), R4.0.3

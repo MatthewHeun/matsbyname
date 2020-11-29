@@ -190,14 +190,14 @@ Furthermore, <tt>matsbyname</tt> works well with its sister package, <tt>matsind
 <tt>matsindf</tt> creates data frames
 whose entries are not numbers but entire matrices, thereby
 enabling the use of <tt>matsbyname</tt> functions in 
-[<tt>tidyverse</tt>](http://www.tidyverse.org)
+[<tt>tidyverse</tt>](https://www.tidyverse.org)
 functional programming.
 
 When used together, <tt>matsbyname</tt> and <tt>matsindf</tt> 
 allow analysts to wield simultaneously the power of both 
 [matrix mathematics](https://en.wikipedia.org/wiki/Matrix_(mathematics))
 and 
-[<tt>tidyverse</tt>](http://www.tidyverse.org) 
+[<tt>tidyverse</tt>](https://www.tidyverse.org) 
 functional programming.
 
 This vignette demonstrates the power of matrix mathematics
