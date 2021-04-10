@@ -1,3 +1,9 @@
+* Transition to GitHub actions for continuous integration.
+* No new tests.
+    * Still at 906 tests, all passing.
+    * Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.16 (2020-11-25)
 
 * Moved URLs to `https://` where appropriate.
