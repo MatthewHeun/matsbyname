@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.17</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -111,7 +111,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/MatthewHeun/matsbyname/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -132,9 +132,23 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0417-2021-04-10" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.17">
+<a href="#matsbyname-0417-2021-04-10" class="anchor"></a>matsbyname 0.4.17 (2021-04-10)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Transition to GitHub actions for continuous integration.</li>
+<li>No new tests.
+<ul>
+<li>Still at 906 tests, all passing.</li>
+<li>Test coverage remains at 100 %.</li>
+</ul>
+</li>
+</ul>
+</div>
     <div id="matsbyname-0416-2020-11-25" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.16">
-<a href="#matsbyname-0416-2020-11-25" class="anchor"></a>matsbyname 0.4.16 (2020-11-25)<small> Unreleased </small>
+<a href="#matsbyname-0416-2020-11-25" class="anchor"></a>matsbyname 0.4.16 (2020-11-25)<small> 2020-11-26 </small>
 </h1>
 <ul>
 <li>Moved URLs to <code>https://</code> where appropriate.</li>
@@ -142,7 +156,7 @@
 <li>Fixed a bug in <code><a href="../reference/colsums_byname.html">colsums_byname()</a></code> and <code><a href="../reference/rowsums_byname.html">rowsums_byname()</a></code> where setting the <code>rowname</code> or <code>colname</code> argument to <code>NULL</code> did not result in an empty row name or column name.</li>
 <li>Fixed a bug in <code><a href="../reference/hatize_byname.html">hatize_byname()</a></code> where a 1x1 vector gave error: <code>length of 'dimnames' [1] not equal to array extent</code>. The solution is to check for 1x1 vectors and act accordingly.</li>
 <li>Fixed a warning emitted from <code>stringi</code>.</li>
-<li>New tests for big fixes.<br>
+<li>New tests for bug fixes.<br>
 Now up to 906 tests, all passing.</li>
 <li>Test coverage remains at 100 %.</li>
 </ul>
