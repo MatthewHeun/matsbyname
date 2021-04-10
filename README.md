@@ -14,9 +14,9 @@ status](https://www.r-pkg.org/badges/version/matsbyname)](https://cran.r-project
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Coverage
-status](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://codecov.io/github/MatthewHeun/matsbyname?branch=master)
 [![R-CMD-check](https://github.com/MatthewHeun/matsbyname/workflows/R-CMD-check/badge.svg)](https://github.com/MatthewHeun/matsbyname/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://codecov.io/gh/MatthewHeun/matsbyname?branch=master)
 <!-- badges: end -->
 
 The `R` package `matsbyname` enables matrix mathematics wherein
