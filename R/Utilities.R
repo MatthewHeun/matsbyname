@@ -1016,4 +1016,17 @@ logmean <- function(a, b, base = exp(1)){
 }
 
 
-
+#' Get the number of rows in a "byname" matrix.
+#'
+#' @param a A matrix or a column of 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+nrow_byname <- function(a) {
+  nrow_func <- function(a) {
+    nrow(a)
+  }
+  unaryapply_byname(nrow_func, a = a, rowcoltypes = "none")
+}

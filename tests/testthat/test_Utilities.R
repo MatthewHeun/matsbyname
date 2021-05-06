@@ -574,3 +574,14 @@ test_that("setcoltype and coltype works as expected", {
   expect_equal(DF3$newcol %>% coltype, list("Industries", "Industries"))
 })
 
+
+
+
+testthat("nrow_byname() works as expected.", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  
+  nrow_byname(U)
+  
+})
