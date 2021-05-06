@@ -1030,3 +1030,23 @@ nrow_byname <- function(a) {
   }
   unaryapply_byname(nrow_func, a = a, rowcoltypes = "none")
 }
+
+
+#' Title
+#'
+#' @param v 
+#' @param nrow 
+#' @param ncol 
+#' @param byrow 
+#' @param dimnames 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+create_matrix_byname <- function(v, nrow, ncol, byrow, dimnames) {
+  mat_func <- function(v, nrow, ncol) {
+    matrix(v, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames)
+  }
+  naryapply_byname(mat_func, v, nrow, ncol, byrow, dimnames)
+}
