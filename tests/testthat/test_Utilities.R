@@ -731,10 +731,9 @@ test_that("i_byname() function works"{
       number_of_cols = ncol_byname(matrix_byname)
     ) %>% 
     dplyr::mutate(
-      getting_row_names = matsbyname::getrownames_byname(matrix_byname),
-      unity_vec = i_byname(nb_rows = number_of_rows,
-                        row_names = getting_row_names,
-                        col_name = list("Product")
+      unity_vec = i_byname(
+        row_names = getting_row_names,
+        col_name = list("Product")
       )
     )
   
