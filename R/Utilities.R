@@ -1075,7 +1075,6 @@ ncol_byname <- function(a) {
 
 #' Title
 #'
-#' @param a 
 #' @param nb_rows 
 #' @param row_names 
 #' @param col_name 
@@ -1084,19 +1083,17 @@ ncol_byname <- function(a) {
 #' @export
 #'
 #' @examples
-i_byname <- function(a, nb_rows, row_names, col_name){
-  i_byname_func <- function(a_mat, nb_rows_vals, row_names_list, col_name_val){
+i_byname <- function(nb_rows, row_names, col_name){
+  i_byname_func <- function(nb_rows, row_names, col_name){
     matrix(
       data = 1,
-      nrow = nb_rows_vals,
+      nrow = nb_rows,
       ncol = 1,
-      dimnames = list(row_names_list, col_name_val)
+      dimnames = list(row_names, col_name)
     )
   }
-  naryapply_byname(a_mat = a, nb_rows_vals = nb_rows, row_names_list = row_names, col_name_val = col_name)
+  naryapply_byname(FUN = i_byname_func, nb_rows, row_names, col_name)
 }
-
-
 
 
 
