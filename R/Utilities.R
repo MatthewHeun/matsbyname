@@ -1025,6 +1025,17 @@ logmean <- function(a, b, base = exp(1)){
 #' @export
 #'
 #' @examples
+#' dfUs <- data.frame(
+#' year = numeric(),
+#' matrix_byname = I(list())
+#' )
+#' dfUs[[1, "matrix_byname"]] <- U
+#' dfUs[[2, "matrix_byname"]] <- U2
+#' dfUs[[3, "matrix_byname"]] <- U3
+#' dfUs[[1, "year"]] <- 2000
+#' dfUs[[2, "year"]] <- 2001
+#' dfUs[[3, "year"]] <- 2002
+#' number_rows <- matsbyname::nrow_byname(dfUs$matrix_byname)
 nrow_byname <- function(a) {
   nrow_func <- function(a) {
     nrow(a)
@@ -1042,6 +1053,18 @@ nrow_byname <- function(a) {
 #' @export
 #'
 #' @examples
+#'   dfUs <- data.frame(
+#' year = numeric(),
+#' matrix_byname = I(list())
+#' )
+#' dfUs[[1, "matrix_byname"]] <- U
+#' dfUs[[2, "matrix_byname"]] <- U2
+#' dfUs[[3, "matrix_byname"]] <- U3
+#' dfUs[[1, "year"]] <- 2000
+#' dfUs[[2, "year"]] <- 2001
+#' dfUs[[3, "year"]] <- 2002
+#' number_cols <- ncol_byname(dfUs$matrix_byname) %>% 
+#' print()
 ncol_byname <- function(a) {
   ncol_func <- function(a) {
     ncol(a)
@@ -1052,7 +1075,33 @@ ncol_byname <- function(a) {
 
 #' Title
 #'
-#' @param v 
+#' @param a 
+#' @param nb_rows 
+#' @param row_names 
+#' @param col_name 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+i_byname <- function(a, nb_rows, row_names, col_name){
+  i_byname_func <- function(a_mat, nb_rows_vals, row_names_list, col_name_val){
+    matrix(
+      data = 1,
+      nrow = nb_rows_vals,
+      ncol = 1,
+      dimnames = list(row_names_list, col_name_val)
+    )
+  }
+  naryapply_byname(a_mat = a, nb_rows_vals = nb_rows, row_names_list = row_names, col_name_val = col_name)
+}
+
+
+
+
+#' Title
+#'
+#' @param a
 #' @param nrow 
 #' @param ncol 
 #' @param byrow 
@@ -1062,9 +1111,11 @@ ncol_byname <- function(a) {
 #' @export
 #'
 #' @examples
-create_matrix_byname <- function(v, nrow, ncol, byrow, dimnames) {
-  mat_func <- function(v, nrow, ncol) {
-    matrix(v, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames)
-  }
-  naryapply_byname(mat_func, v, nrow, ncol, byrow, dimnames)
-}
+# create_matrix_byname <- function(a, nrow, ncol, byrow, dimnames) {
+#   mat_func <- function(a_mat, nrow_val, ncol_val, byrow_val = ) {
+#     matrix(v, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames)
+#   }
+#   naryapply_byname(mat_func, a_mat = a, nrow_val = nrow, ncol_val = ncol, byrow, dimnames)
+# }
+
+
