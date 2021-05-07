@@ -699,6 +699,7 @@ test_that("ncol_byname() works as expected.", {
 
 test_that("i_byname() function works"{
   
+  # Creating data frame of matrices, with a year column and a matrix column:
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
@@ -724,6 +725,7 @@ test_that("i_byname() function works"{
   dfUs[[2, "year"]] <- 2001
   dfUs[[3, "year"]] <- 2002
   
+  # Now creating the unity vector
   a <- dfUs %>% 
     dplyr::mutate(
       number_of_cols = ncol_byname(matrix_byname)
@@ -738,12 +740,22 @@ test_that("i_byname() function works"{
   
   # Checking number of coefficients in each vector
   expect_equal(length(a$unity_vec[[1]]), 2)
-  expect_equal(length(a$unity_vec[[2]]), 3)
-  expect_equal(length(a$unity_vec[[3]]), 4)
+  expect_equal(length(a$unity_vec[[2]]), 2)
+  expect_equal(length(a$unity_vec[[3]]), 3)
   
   # Checking single coefficient values
   expect_equal(a$unity_vec[[1]][["p1", "Product"]], 1)
   expect_equal(a$unity_vec[[2]][["p2", "Product"]], 1)
   expect_equal(a$unity_vec[[3]][["p3", "Product"]], 1)
+  
+  # Checking sums
+  a2 <- a %>% 
+    dplyr::mutate(
+      sum_unity = matsbyname::sumall_byname(unity_vec)
+    )
+  # Check
+  expect_equal(a2$sum_unity[[1]], 2)
+  expect_equal(a2$sum_unity[[1]], 2)
+  expect_equal(a2$sum_unity[[1]], 3)
 })
   
