@@ -1099,6 +1099,9 @@ i_byname <- function(a, nb_rows, row_names, col_name){
 
 
 
+
+
+
 #' Title
 #'
 #' @param a

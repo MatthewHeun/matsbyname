@@ -628,12 +628,33 @@ test_that("nrow_byname() works as expected.", {
   a <- dfUs %>%
     dplyr::mutate(
       number_of_rows = matsbyname::nrow_byname(matrix_byname)
+    ) %>% 
+    dplyr::mutate(
+      #getting_row_names = matsbyname::getrownames_byname(matrix_byname),
+      kp_vec = i_byname(nb_rows = number_of_rows,
+                        row_names = matsbyname::getrownames_byname(matrix_byname),
+                        col_name = matsbyname::getcolnames_byname(matrix_byname)
+                        )
     )
 
   testthat::expect_equal(a$number_of_rows[[1]], 2)
   testthat::expect_equal(a$number_of_rows[[2]], 3)
   testthat::expect_equal(a$number_of_rows[[3]], 4)
 })
+
+
+
+i_byname <- function(nb_rows, row_names, col_name){
+  i_byname_func <- function(a_mat, nb_rows_vals, row_names_list, col_name_val){
+    matrix(
+      data = 1,
+      nrow = nb_rows_vals,
+      ncol = 1,
+      dimnames = list(row_names_list, col_name_val)
+    )
+  }
+  naryapply_byname(FUN = i_byname_func, nb_rows_vals = nb_rows, row_names_list = row_names, col_name_val = col_name)
+}
 
 
 test_that("ncol_byname() works as expected.", {
