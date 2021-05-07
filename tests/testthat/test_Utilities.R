@@ -578,10 +578,120 @@ test_that("setcoltype and coltype works as expected", {
 
 
 testthat("nrow_byname() works as expected.", {
+  
+  # First, test with a single 2x2 matrix:
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  nrow_byname(U) %>% 
+    expect_equal(2)
   
-  nrow_byname(U)
+  # Second, test with a 3x2 matrix:
+  productnames <- c("p1", "p2", "p3")
+  industrynames <- c("i1", "i2")
+  U2 <- matrix(1:3, ncol = 2, nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  nrow_byname(U2) %>% 
+    expect_equal(3)
   
+  # Third, test with a 4x3 matrix:
+  productnames <- c("p1", "p2", "p3", "p4")
+  industrynames <- c("i1", "i2", "i3")
+  U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  nrow_byname(U3) %>% 
+    expect_equal(4)
+  
+  # Fourth, test with a data frame with both U, U2, and U3:
+  dfUs <- data.frame(
+    year = numeric(),
+    matrix_byname = I(list())
+  )
+  
+  dfUs[[1, "matrix_byname"]] <- U
+  dfUs[[2, "matrix_byname"]] <- U2
+  dfUs[[3, "matrix_byname"]] <- U3
+  
+  dfUs[[1, "year"]] <- 2000
+  dfUs[[2, "year"]] <- 2001
+  dfUs[[3, "year"]] <- 2002
+  
+  number_rows <- dfUs %>% 
+    matsbyname::nrow_byname(matrix_byname)
+  
+  number_rows$matrix_byname[[1]] %>% 
+    expect_equal(2)
+  number_rows$matrix_byname[[2]] %>% 
+    expect_equal(3)
+  number_rows$matrix_byname[[3]] %>% 
+    expect_equal(4)
+  
+  
+  # Now trying with mutate:
+  a <- dfUs %>% 
+    dplyr::mutate(
+      number_of_rows = matsbyname::nrow_byname(matrix_byname)
+    )
+    
+  expect_equal(a$number_of_rows[[1]], 2)
+  expect_equal(a$number_of_rows[[2]], 3)
+  expect_equal(a$number_of_rows[[3]], 4)
+})
+
+
+testthat("ncol_byname() works as expected.", {
+  
+  # First, test with a single 2x2 matrix:
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  ncol_byname(U) %>% 
+    expect_equal(2)
+  
+  # Second, test with a 3x2 matrix:
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2", "i3")
+  U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  ncol_byname(U2) %>% 
+    expect_equal(3)
+  
+  # Third, test with a 4x3 matrix:
+  productnames <- c("p1", "p2", "p3")
+  industrynames <- c("i1", "i2", "i3", "i4")
+  U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  ncol_byname(U3) %>% 
+    expect_equal(4)
+  
+  # Fourth, test with a data frame with both U, U2, and U3:
+  dfUs <- data.frame(
+    year = numeric(),
+    matrix_byname = I(list())
+  )
+  
+  dfUs[[1, "matrix_byname"]] <- U
+  dfUs[[2, "matrix_byname"]] <- U2
+  dfUs[[3, "matrix_byname"]] <- U3
+  
+  dfUs[[1, "year"]] <- 2000
+  dfUs[[2, "year"]] <- 2001
+  dfUs[[3, "year"]] <- 2002
+  
+  number_cols <- dfUs %>% 
+    ncol_byname(matrix_byname)
+  
+  number_cols$matrix_byname[[1]] %>% 
+    expect_equal(2)
+  number_cols$matrix_byname[[2]] %>% 
+    expect_equal(3)
+  number_cols$matrix_byname[[3]] %>% 
+    expect_equal(4)
+  
+  
+  # Now trying with mutate:
+  a <- dfUs %>% 
+    dplyr::mutate(
+      number_of_cols = matsbyname::ncol_byname(matrix_byname)
+    )
+  
+  expect_equal(a$number_of_cols[[1]], 2)
+  expect_equal(a$number_of_cols[[2]], 3)
+  expect_equal(a$number_of_cols[[3]], 4)
 })
