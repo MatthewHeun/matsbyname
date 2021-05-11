@@ -828,69 +828,71 @@ res2 <- dfUs_added_matrix %>%
   )
 })
 
-# 
-# test_that("i_byname() function works"{
-#   
-#   # Creating data frame of matrices, with a year column and a matrix column:
-#   productnames <- c("p1", "p2")
-#   industrynames <- c("i1", "i2")
-#   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
-#   
-#   productnames <- c("p1", "p2")
-#   industrynames <- c("i1", "i2", "i3")
-#   U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
-#   
-#   productnames <- c("p1", "p2", "p3")
-#   industrynames <- c("i1", "i2", "i3", "i4")
-#   U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
-#   
-#   i_byname(U3)
-#   
-#   
-#   
-#   dfUs <- data.frame(
-#     year = numeric(),
-#     matrix_byname = I(list())
-#   )
-#   
-#   dfUs[[1, "matrix_byname"]] <- U
-#   dfUs[[2, "matrix_byname"]] <- U2
-#   dfUs[[3, "matrix_byname"]] <- U3
-#   
-#   dfUs[[1, "year"]] <- 2000
-#   dfUs[[2, "year"]] <- 2001
-#   dfUs[[3, "year"]] <- 2002
-#   
-#   # Now creating the unity vector
-#   a <- dfUs %>% 
-#     dplyr::mutate(
-#       number_of_rows = nrow_byname(matrix_byname)
-#     ) %>% 
-#     dplyr::mutate(
-#       unity_vec = i_byname(
-#         row_names = matsbyname::getrownames_byname(matrix_byname),
-#         col_name = list("Product")
-#       )
-#     )
-#   
-#   # Checking number of coefficients in each vector
-#   expect_equal(length(a$unity_vec[[1]]), 2)
-#   expect_equal(length(a$unity_vec[[2]]), 2)
-#   expect_equal(length(a$unity_vec[[3]]), 3)
-#   
-#   # Checking single coefficient values
-#   expect_equal(a$unity_vec[[1]][["p1", "Product"]], 1)
-#   expect_equal(a$unity_vec[[2]][["p2", "Product"]], 1)
-#   expect_equal(a$unity_vec[[3]][["p3", "Product"]], 1)
-#   
-#   # Checking sums
-#   a2 <- a %>% 
-#     dplyr::mutate(
-#       sum_unity = matsbyname::sumall_byname(unity_vec)
-#     )
-#   # Check
-#   expect_equal(a2$sum_unity[[1]], 2)
-#   expect_equal(a2$sum_unity[[1]], 2)
-#   expect_equal(a2$sum_unity[[1]], 3)
-# })
-#   
+
+test_that("i_byname() function works"{
+
+  # First, test with a single value
+  
+  
+  # Second, test with a single matrix
+  
+  
+  
+  # Third, test with a list
+  
+  
+  
+  # Finally test with data frames:
+  
+  # Creating data frame of matrices, with a year column and a matrix column:
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2", "i3")
+  U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+
+  productnames <- c("p1", "p2", "p3")
+  industrynames <- c("i1", "i2", "i3", "i4")
+  U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+
+  dfUs <- data.frame(
+    year = numeric(),
+    matrix_byname = I(list())
+  )
+
+  dfUs[[1, "matrix_byname"]] <- U
+  dfUs[[2, "matrix_byname"]] <- U2
+  dfUs[[3, "matrix_byname"]] <- U3
+
+  dfUs[[1, "year"]] <- 2000
+  dfUs[[2, "year"]] <- 2001
+  dfUs[[3, "year"]] <- 2002
+
+  # Now creating the unity vector
+  res <- dfUs %>%
+    dplyr::mutate(
+      unity_vec = i_byname(matrix_byname)
+    )
+  
+  # Checking number of coefficients in each vector
+  expect_equal(length(a$unity_vec[[1]]), 2)
+  expect_equal(length(a$unity_vec[[2]]), 2)
+  expect_equal(length(a$unity_vec[[3]]), 3)
+
+  # Checking single coefficient values
+  expect_equal(a$unity_vec[[1]][["p1", "Product"]], 1)
+  expect_equal(a$unity_vec[[2]][["p2", "Product"]], 1)
+  expect_equal(a$unity_vec[[3]][["p3", "Product"]], 1)
+
+  # Checking sums
+  a2 <- a %>%
+    dplyr::mutate(
+      sum_unity = matsbyname::sumall_byname(unity_vec)
+    )
+  # Check
+  expect_equal(a2$sum_unity[[1]], 2)
+  expect_equal(a2$sum_unity[[1]], 2)
+  expect_equal(a2$sum_unity[[1]], 3)
+})

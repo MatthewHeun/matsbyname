@@ -1128,6 +1128,19 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 }
 
 
+
+i_byname <- function(a){
+  
+  create_matrix_byname(
+    data = I(list(1)),
+    nrow = matsbyname::nrow_byname(a),
+    ncol = I(list(1)),
+    dimnames = list(matsbyname::getrownames_byname(a))
+  )
+}
+
+
+
 #' Title
 #'
 #' @param a A matrix or list of matrices from which row or column names 
@@ -1137,18 +1150,18 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 #' @return
 #' @export
 #'
-#' @examples
-# i_byname <- function(a, col_name){
-#   i_byname_func <- function(nb_rows, row_names, col_name){
-#     matrix(
-#       data = 1,
-#       nrow = length(row_names),
-#       ncol = 1,
-#       dimnames = list(row_names, col_name)
-#     )
-#   }
-#   naryapply_byname(FUN = i_byname_func, nb_rows, row_names, col_name)
-# }
+#' #' @examples
+#' i_byname <- function(a, col_name){
+#'   i_byname_func <- function(nb_rows, row_names, col_name){
+#'     matrix(
+#'       data = 1,
+#'       nrow = length(row_names),
+#'       ncol = 1,
+#'       dimnames = list(row_names, col_name)
+#'     )
+#'   }
+#'   naryapply_byname(FUN = i_byname_func, nb_rows, row_names, col_name)
+#' }
 
 
 
