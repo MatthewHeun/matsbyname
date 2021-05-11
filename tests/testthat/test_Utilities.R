@@ -540,6 +540,7 @@ test_that("setrowtype and rowtype works as expected", {
   expect_equal(DF3$newcol %>% rowtype, list("Products", "Products"))
 })
 
+
 test_that("setcoltype and coltype works as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
@@ -640,7 +641,6 @@ test_that("nrow_byname() works as expected.", {
 })
 
 
-
 test_that("ncol_byname() works as expected.", {
   
   # First, test with a single 2x2 matrix:
@@ -663,6 +663,14 @@ test_that("ncol_byname() works as expected.", {
   U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
   ncol_byname(U3) %>% 
     expect_equal(4)
+  
+  
+  # Try with a list
+  nrcol_with_list <- ncol_byname(list(U, U2, U3))
+  expect_equal(ncol_with_list[[1]], 2)
+  expect_equal(ncol_with_list[[2]], 3)
+  expect_equal(ncol_with_list[[3]], 4)
+  
   
   # Fourth, test with a data frame with both U, U2, and U3:
   dfUs <- data.frame(
