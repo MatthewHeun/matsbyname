@@ -1025,6 +1025,15 @@ logmean <- function(a, b, base = exp(1)){
 #' @export
 #'
 #' @examples
+#' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
 #' dfUs <- data.frame(
 #'   year = numeric(),
 #'   matrix_byname = I(list())
@@ -1053,6 +1062,19 @@ nrow_byname <- function(a) {
 #' @export
 #'
 #' @examples
+#' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' dfUs <- data.frame(
+#'   year = numeric(),
+#'   matrix_byname = I(list())
+#' )
 #'   dfUs <- data.frame(
 #' year = numeric(),
 #' matrix_byname = I(list())
