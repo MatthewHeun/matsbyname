@@ -758,6 +758,58 @@ test_that("matrix_byname() works as expected", {
                                          byrow = TRUE,
                                          nrow = 2, ncol = 3,
                                          dimnames = list(c("r1", "r2"), c("c1", "c2", "c3"))))
+  
+  # Next, tests using a data frame with U matrices
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2", "i3")
+  U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  
+  productnames <- c("p1", "p2", "p3")
+  industrynames <- c("i1", "i2", "i3", "i4")
+  U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  
+  dfUs <- data.frame(
+    year = numeric(),
+    matrix_byname = I(list()),
+    dat = I(list())
+  )
+  
+  dfUs[[1, "matrix_byname"]] <- U
+  dfUs[[2, "matrix_byname"]] <- U2
+  dfUs[[3, "matrix_byname"]] <- U3
+  
+  dfUs[[1, "year"]] <- 2000
+  dfUs[[2, "year"]] <- 2001
+  dfUs[[3, "year"]] <- 2002
+  
+  dfUs_added_matrix <- dfUs %>% 
+    dplyr::mutate(
+      number_of_rows = matsbyname::nrow_byname(matrix_byname),
+      number_of_cols = matsbyname::ncol_byname(matrix_byname),
+      row_names = matsbyname::getrownames_byname(matrix_byname),
+      col_names = matsbyname::getcolnames_byname(matrix_byname)
+    )
+  
+  dfUs_added_matrix[[1, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[1]] * dfUs_added_matrix$number_of_rows[[1]])
+  dfUs_added_matrix[[2, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[2]] * dfUs_added_matrix$number_of_rows[[2]])
+  dfUs_added_matrix[[3, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[3]] * dfUs_added_matrix$number_of_rows[[3]])
+  
+  
+dfUs_added_matrix %>% 
+    dplyr::mutate(
+      new_matrix = matsbyname::create_matrix_byname(
+        data = dat,
+        nrow = number_of_rows,
+        ncol = number_of_cols,
+        dimnames = c(row_names, col_names)
+      )
+    ) %>% 
+    glimpse()
+  
 })
 
 

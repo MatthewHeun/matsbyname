@@ -4,14 +4,14 @@
 \alias{i_byname}
 \title{Title}
 \usage{
-i_byname(row_names, col_name)
+i_byname(a, col_name)
 }
 \arguments{
-\item{row_names}{}
+\item{a}{A matrix or list of matrices from which row or column names}
 
 \item{col_name}{}
 
-\item{nb_rows}{}
+\item{row_names}{}
 }
 \value{
 

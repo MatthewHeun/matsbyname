@@ -17,6 +17,19 @@ in each of the matrices contained in the column of a data frame.
 Get the number of columns in a "byname" matrix.
 }
 \examples{
+U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) \%>\% 
+  setrowtype("Products") \%>\% 
+  setcoltype("Industries")
+U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) \%>\% 
+  setrowtype("Products") \%>\% 
+  setcoltype("Industries")
+U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) \%>\% 
+  setrowtype("Products") \%>\% 
+  setcoltype("Industries")
+dfUs <- data.frame(
+  year = numeric(),
+  matrix_byname = I(list())
+)
   dfUs <- data.frame(
 year = numeric(),
 matrix_byname = I(list())
