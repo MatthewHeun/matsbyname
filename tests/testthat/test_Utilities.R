@@ -775,7 +775,10 @@ test_that("matrix_byname() works as expected", {
   dfUs <- data.frame(
     year = numeric(),
     matrix_byname = I(list()),
-    dat = I(list())
+    dat = I(list()),
+    number_of_rows = I(list()),
+    number_of_cols = I(list())#,
+    #dimension_names = I(list())
   )
   
   dfUs[[1, "matrix_byname"]] <- U
@@ -788,27 +791,32 @@ test_that("matrix_byname() works as expected", {
   
   dfUs_added_matrix <- dfUs %>% 
     dplyr::mutate(
-      number_of_rows = matsbyname::nrow_byname(matrix_byname),
-      number_of_cols = matsbyname::ncol_byname(matrix_byname),
+      number_of_rows = I(matsbyname::nrow_byname(matrix_byname)),
+      number_of_cols = I(matsbyname::ncol_byname(matrix_byname)),
       row_names = matsbyname::getrownames_byname(matrix_byname),
-      col_names = matsbyname::getcolnames_byname(matrix_byname)
+      col_names = matsbyname::getcolnames_byname(matrix_byname),
+      dimension_names = purrr::map2(.x = row_names, .y = col_names, .f = list)
     )
   
   dfUs_added_matrix[[1, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[1]] * dfUs_added_matrix$number_of_rows[[1]])
   dfUs_added_matrix[[2, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[2]] * dfUs_added_matrix$number_of_rows[[2]])
   dfUs_added_matrix[[3, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[3]] * dfUs_added_matrix$number_of_rows[[3]])
   
-  
-dfUs_added_matrix %>% 
+
+res2 <- dfUs_added_matrix %>% 
     dplyr::mutate(
       new_matrix = matsbyname::create_matrix_byname(
         data = dat,
         nrow = number_of_rows,
         ncol = number_of_cols,
-        dimnames = c(row_names, col_names)
+        dimnames = dimension_names
       )
     ) %>% 
     glimpse()
+
+  res2$new_matrix[[3]]
+  
+  # Okay here write tests...
   
 })
 
