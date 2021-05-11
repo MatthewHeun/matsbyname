@@ -575,8 +575,6 @@ test_that("setcoltype and coltype works as expected", {
 })
 
 
-
-
 test_that("nrow_byname() works as expected.", {
 
   # First, test with a single 2x2 matrix:
@@ -584,23 +582,29 @@ test_that("nrow_byname() works as expected.", {
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
   nrow_byname(U) %>%
-    testthat::expect_equal(2)
+    expect_equal(2)
 
   # Second, test with a 3x2 matrix:
   productnames <- c("p1", "p2", "p3")
   industrynames <- c("i1", "i2")
   U2 <- matrix(1:3, ncol = 2, nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
   nrow_byname(U2) %>%
-    testthat::expect_equal(3)
+    expect_equal(3)
 
   # Third, test with a 4x3 matrix:
   productnames <- c("p1", "p2", "p3", "p4")
   industrynames <- c("i1", "i2", "i3")
   U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
   nrow_byname(U3) %>%
-    testthat::expect_equal(4)
+    expect_equal(4)
 
-  # Fourth, test with a data frame with both U, U2, and U3:
+  # Try with a list
+  nrow_with_list <- nrow_byname(list(U, U2, U3))
+  expect_equal(nrow_with_list[[1]], 2)
+  expect_equal(nrow_with_list[[2]], 3)
+  expect_equal(nrow_with_list[[3]], 4)
+  
+  # Fourth, test with a data frame with U, U2, and U3 in a column:
   dfUs <- data.frame(
     year = numeric(),
     matrix_byname = I(list())
@@ -696,6 +700,58 @@ test_that("ncol_byname() works as expected.", {
 })
 
 
+test_that("matrix_byname() works as expected", {
+  # Test with single values.
+  single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
+                                     dimnames = list("r1", "c1"))
+  expect_equal(single_mat, matrix(1, dimnames = list("r1", "c1")))
+  single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+                                       dimnames = list(c("r1", "r2"), "c1"))
+  expect_equal(single_mat_2, matrix(c(1,2), nrow = 2, ncol = 1,
+                                    dimnames = list(c("r1", "r2"), "c1")))
+  
+  # Try with a list
+  list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+                                       dimnames = list(list("r1", "c1"), list("R1", "C1")))
+  expect_equal(list_of_mats[[1]], matrix(1, dimnames = list("r1", "c1")))
+  expect_equal(list_of_mats[[2]], matrix(2, dimnames = list("R1", "C1")))
+  
+  # Try in a data frame
+  df1 <- data.frame(
+    dat = I(list()),
+    nrows = I(list()),
+    ncols = I(list()),
+    dimnms = I(list())
+  )
+  df1[[1, "dat"]] <- 1
+  df1[[2, "dat"]] <- 2
+  df1[[3, "dat"]] <- c(1,2,3,4, 5, 6)
+  df1[[1, "nrows"]] <- 1
+  df1[[2, "nrows"]] <- 1
+  df1[[3, "nrows"]] <- 2
+  df1[[1, "ncols"]] <- 1
+  df1[[2, "ncols"]] <- 1
+  df1[[3, "ncols"]] <- 3
+  df1[[1, "dimnms"]] <- list("r1", "c1")
+  df1[[2, "dimnms"]] <- list("R1", "C1")
+  df1[[3, "dimnms"]] <- list(c("r1", "r2"), c("c1", "c2", "c3"))
+
+  res1 <- df1 %>%
+    dplyr::mutate(
+      mat_col = create_matrix_byname(data = dat,
+                                     nrow = nrows,
+                                     ncol = ncols,
+                                     byrow = TRUE,
+                                     dimnames = dimnms))
+  expect_equal(res1$mat_col[[1]], matrix(1, dimnames = list("r1", "c1")))
+  expect_equal(res1$mat_col[[2]], matrix(2, dimnames = list("R1", "C1")))
+  expect_equal(res1$mat_col[[3]], matrix(c(1, 2, 3,
+                                           4, 5, 6), 
+                                         byrow = TRUE,
+                                         nrow = 2, ncol = 3,
+                                         dimnames = list(c("r1", "r2"), c("c1", "c2", "c3"))))
+})
+
 
 test_that("i_byname() function works"{
   
@@ -711,6 +767,10 @@ test_that("i_byname() function works"{
   productnames <- c("p1", "p2", "p3")
   industrynames <- c("i1", "i2", "i3", "i4")
   U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  
+  i_byname(U3)
+  
+  
   
   dfUs <- data.frame(
     year = numeric(),
@@ -728,11 +788,11 @@ test_that("i_byname() function works"{
   # Now creating the unity vector
   a <- dfUs %>% 
     dplyr::mutate(
-      number_of_cols = ncol_byname(matrix_byname)
+      number_of_rows = nrow_byname(matrix_byname)
     ) %>% 
     dplyr::mutate(
       unity_vec = i_byname(
-        row_names = getting_row_names,
+        row_names = matsbyname::getrownames_byname(matrix_byname),
         col_name = list("Product")
       )
     )

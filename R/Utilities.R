@@ -1026,8 +1026,8 @@ logmean <- function(a, b, base = exp(1)){
 #'
 #' @examples
 #' dfUs <- data.frame(
-#' year = numeric(),
-#' matrix_byname = I(list())
+#'   year = numeric(),
+#'   matrix_byname = I(list())
 #' )
 #' dfUs[[1, "matrix_byname"]] <- U
 #' dfUs[[2, "matrix_byname"]] <- U2
@@ -1073,9 +1073,42 @@ ncol_byname <- function(a) {
 }
 
 
+
 #' Title
 #'
-#' @param nb_rows 
+#' @param data 
+#' @param nrow 
+#' @param ncol 
+#' @param byrow 
+#' @param dimnames 
+#' @param rowtype 
+#' @param coltype 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE, 
+                                 dimnames, rowtype = NULL, coltype = NULL) {
+  matrix_byname_func <- function(a, nrow_val, ncol_val, byrow_val, 
+                                 dimnames_val, rowtype_val, coltype_val) {
+    matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val,
+           dimnames = dimnames_val) %>% 
+      setrowtype(rowtype_val) %>% 
+      setcoltype(coltype_val)
+  }
+  unaryapply_byname(FUN = matrix_byname_func, a = data,
+                    .FUNdots = list(nrow_val = nrow, ncol_val = ncol, 
+                                    byrow_val = byrow,
+                                    dimnames_val = dimnames,
+                                    rowtype_val = rowtype,
+                                    coltype_val = coltype))
+}
+
+
+#' Title
+#'
+#' @param a A matrix or list of matrices from which row or column names 
 #' @param row_names 
 #' @param col_name 
 #'
@@ -1083,7 +1116,7 @@ ncol_byname <- function(a) {
 #' @export
 #'
 #' @examples
-i_byname <- function(row_names, col_name){
+i_byname <- function(a, col_name){
   i_byname_func <- function(nb_rows, row_names, col_name){
     matrix(
       data = 1,
