@@ -791,17 +791,13 @@ test_that("matrix_byname() works as expected", {
   
   dfUs_added_matrix <- dfUs %>% 
     dplyr::mutate(
+      dat = I(list(1)),# I(list(seq(1:10))),
       number_of_rows = I(matsbyname::nrow_byname(matrix_byname)),
       number_of_cols = I(matsbyname::ncol_byname(matrix_byname)),
       row_names = matsbyname::getrownames_byname(matrix_byname),
       col_names = matsbyname::getcolnames_byname(matrix_byname),
       dimension_names = purrr::map2(.x = row_names, .y = col_names, .f = list)
     )
-  
-  dfUs_added_matrix[[1, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[1]] * dfUs_added_matrix$number_of_rows[[1]])
-  dfUs_added_matrix[[2, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[2]] * dfUs_added_matrix$number_of_rows[[2]])
-  dfUs_added_matrix[[3, "dat"]] <- rep(1, dfUs_added_matrix$number_of_cols[[3]] * dfUs_added_matrix$number_of_rows[[3]])
-  
 
 res2 <- dfUs_added_matrix %>% 
     dplyr::mutate(
@@ -816,8 +812,20 @@ res2 <- dfUs_added_matrix %>%
 
   res2$new_matrix[[3]]
   
-  # Okay here write tests...
+  expect_equal(
+    res2$new_matrix[[1]],
+    matrix(1, ncol = 2, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2")))
+  )
   
+  expect_equal(
+    res2$new_matrix[[2]],
+    matrix(1, ncol = 3, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3")))
+  )
+  
+  expect_equal(
+    res2$new_matrix[[3]],
+    matrix(1, ncol = 4, nrow = 3, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2", "i3", "i4")))
+  )
 })
 
 
