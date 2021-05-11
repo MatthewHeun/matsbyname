@@ -1138,44 +1138,44 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 #' @export
 #'
 #' @examples
-i_byname <- function(a, col_name){
-  i_byname_func <- function(nb_rows, row_names, col_name){
-    matrix(
-      data = 1,
-      nrow = length(row_names),
-      ncol = 1,
-      dimnames = list(row_names, col_name)
-    )
-  }
-  naryapply_byname(FUN = i_byname_func, nb_rows, row_names, col_name)
-}
+# i_byname <- function(a, col_name){
+#   i_byname_func <- function(nb_rows, row_names, col_name){
+#     matrix(
+#       data = 1,
+#       nrow = length(row_names),
+#       ncol = 1,
+#       dimnames = list(row_names, col_name)
+#     )
+#   }
+#   naryapply_byname(FUN = i_byname_func, nb_rows, row_names, col_name)
+# }
 
 
 
-vector_byname <- function(row_names, col_name, list_values){
-  
-  vector_byname_func <- function(row_names, col_name, list_values){
-    
-    # First step, create a vector with zero values everywhere:
-    zero_vec <- matrix(
-      data = 0,
-      nrow = length(row_names),
-      ncol = 1,
-      dimnames = list(row_names, col_name)
-    )
-    
-    # Second step, look up each of the list_values elements. If an element name is in the row names of zero_matrix, 
-    # then change the zero by the value of the element in list_values.
-    
-    # So:
-    # for i in length(list_values)
-    # Check if list_values$name[i] is in get_rownames(zero_vec)
-    # if yes, replace zero_vec[i] by list_values$values[i]
-  }
-  
-  naryapply_byname(FUN = vector_byname_func, row_names, col_name, list_values)
-  
-}
+# vector_byname <- function(row_names, col_name, list_values){
+#   
+#   vector_byname_func <- function(row_names, col_name, list_values){
+#     
+#     # First step, create a vector with zero values everywhere:
+#     zero_vec <- matrix(
+#       data = 0,
+#       nrow = length(row_names),
+#       ncol = 1,
+#       dimnames = list(row_names, col_name)
+#     )
+#     
+#     # Second step, look up each of the list_values elements. If an element name is in the row names of zero_matrix, 
+#     # then change the zero by the value of the element in list_values.
+#     
+#     # So:
+#     # for i in length(list_values)
+#     # Check if list_values$name[i] is in get_rownames(zero_vec)
+#     # if yes, replace zero_vec[i] by list_values$values[i]
+#   }
+#   
+#   naryapply_byname(FUN = vector_byname_func, row_names, col_name, list_values)
+#   
+# }
 
 
 
