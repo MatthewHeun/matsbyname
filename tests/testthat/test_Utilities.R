@@ -889,6 +889,16 @@ test_that("i_byname() function works"{
       unity_vec = i_byname_apply_bis(data = matrix_byname, col_name = "Product")
     )
   
+  res4 <- res3 %>% 
+    dplyr::mutate(
+      double_vec = purrr::map(unity_vec, .f = prod, 2)
+    )
+  
+  res5 <- dfUs %>% 
+    dplyr::mutate(
+      creating_vecs = constant_vector_byname(data = matrix_byname, k = 3, col_name = "Product")
+    )
+  
   res2 <- dfUs_added_matrix %>% 
     dplyr::mutate(
       unity_vec = i_byname_apply(

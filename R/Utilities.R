@@ -1164,6 +1164,40 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
 
 
 
+#' Title
+#'
+#' @param data 
+#' @param k 
+#' @param col_name 
+#' @param rowtype 
+#' @param coltype 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = NULL){
+  
+  constant_vector_byname_func <- function(a, k_val, nrow_val, dimnames_val, rowtype_val, coltype_val){
+    
+    matrix(
+      data = k_val, nrow = nrow_val, ncol = 1, dimnames = dimnames_val
+    ) %>% 
+      setrowtype(rowtype_val) %>% 
+      setcoltype(coltype_val)
+  }
+  
+  nrow = matsbyname::nrow_byname(data)
+  k_list = rep(list(k), length(matsbyname::nrow_byname(data)))
+  dimnames = purrr::map2(
+    .x = matsbyname::getrownames_byname(data), 
+    .y = rep(col_name, length(matsbyname::getrownames_byname(data))), 
+    .f = list
+  )
+  
+  unaryapply_byname(FUN = constant_vector_byname_func, a = data,
+                    .FUNdots = list(k = k_list, nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
+}
 
 
 
@@ -1216,34 +1250,6 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
 #'   }
 #'   naryapply_byname(FUN = i_byname_func, nb_rows, row_names, col_name)
 #' }
-
-
-
-# vector_byname <- function(row_names, col_name, list_values){
-#   
-#   vector_byname_func <- function(row_names, col_name, list_values){
-#     
-#     # First step, create a vector with zero values everywhere:
-#     zero_vec <- matrix(
-#       data = 0,
-#       nrow = length(row_names),
-#       ncol = 1,
-#       dimnames = list(row_names, col_name)
-#     )
-#     
-#     # Second step, look up each of the list_values elements. If an element name is in the row names of zero_matrix, 
-#     # then change the zero by the value of the element in list_values.
-#     
-#     # So:
-#     # for i in length(list_values)
-#     # Check if list_values$name[i] is in get_rownames(zero_vec)
-#     # if yes, replace zero_vec[i] by list_values$values[i]
-#   }
-#   
-#   naryapply_byname(FUN = vector_byname_func, row_names, col_name, list_values)
-#   
-# }
-
 
 
 #' Title
