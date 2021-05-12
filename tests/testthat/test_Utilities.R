@@ -831,20 +831,39 @@ res2 <- dfUs_added_matrix %>%
 
 test_that("i_byname() function works"{
 
-  # First, test with a single value
+  # First, test with single values.
+  single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
+                                     dimnames = list("r1", "c1"))
   
+  expect_equal(
+    i_byname(single_mat, col_name = "output_column"), 
+    matrix(1, dimnames = list("r1", "output_column"))
+  )
   
+  single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+                                       dimnames = list(c("r1", "r2"), "c1"))
+  expect_equal(
+    i_byname(single_mat_2, col_name = "output_column"), 
+    matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "output_column"))
+  )
   
+  # Second, test with a list
+  list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+                                       dimnames = list(list("r1", "c1"), list("R1", "C1")))
   
-  # Second, test with a single matrix
+  res_list <- i_byname(data = list_of_mats,
+                       col_name = "output_column")
   
+  expect_equal(
+    list_of_mats[[1]],
+    matrix(1, dimnames = list("r1", "c1"))
+  )
+  expect_equal(
+    list_of_mats[[2]], 
+    matrix(2, dimnames = list("R1", "C1"))
+  )
   
-  
-  # Third, test with a list
-  
-  
-  
-  # Finally test with data frames:
+  # Third test with data frames:
   
   # Creating data frame of matrices, with a year column and a matrix column:
   productnames <- c("p1", "p2")
@@ -875,18 +894,18 @@ test_that("i_byname() function works"{
   # Now creating the unity vector
   res <- dfUs %>% 
     dplyr::mutate(
-      unity_vec = i_byname_apply_bis(data = matrix_byname, col_name = "Product")
+      unity_vec = i_byname(data = matrix_byname, col_name = "Product")
     )
   
   # Checking number of coefficients in each vector
-  expect_equal(length(res2$unity_vec[[1]]), 2)
-  expect_equal(length(res2$unity_vec[[2]]), 2)
-  expect_equal(length(res2$unity_vec[[3]]), 3)
+  expect_equal(length(res$unity_vec[[1]]), 2)
+  expect_equal(length(res$unity_vec[[2]]), 2)
+  expect_equal(length(res$unity_vec[[3]]), 3)
 
   # Checking single coefficient values
-  expect_equal(res2$unity_vec[[1]][["p1", "Product"]], 1)
-  expect_equal(res2$unity_vec[[2]][["p2", "Product"]], 1)
-  expect_equal(res2$unity_vec[[3]][["p3", "Product"]], 1)
+  expect_equal(res$unity_vec[[1]][["p1", "Product"]], 1)
+  expect_equal(res$unity_vec[[2]][["p2", "Product"]], 1)
+  expect_equal(res$unity_vec[[3]][["p3", "Product"]], 1)
 
   # Checking sums
   res2 <- res %>%

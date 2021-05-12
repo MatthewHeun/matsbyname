@@ -1142,6 +1142,7 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 #' @examples
 i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
   
+  # Defining the function to be called:
   i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
     
     matrix(
@@ -1151,13 +1152,22 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
       setcoltype(coltype_val)
   }
   
+  
+  if (is.numeric(data)){
+    
+    nrow = matsbyname::nrow_byname(data)
+    dimnames = list(matsbyname::getrownames_byname(data), col_name)
+    
+  } else {
   nrow = matsbyname::nrow_byname(data)
   dimnames = purrr::map2(
-    .x = matsbyname::getrownames_byname(data), 
+    .x = matsbyname::getrownames_byname(data),
     .y = rep(col_name, length(matsbyname::getrownames_byname(data))), 
     .f = list
     )
+  }
   
+  # Applying function to each matrix
   unaryapply_byname(FUN = i_byname_apply_func, a = data,
                     .FUNdots = list(nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
 }
