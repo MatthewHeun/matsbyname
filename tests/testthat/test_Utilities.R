@@ -884,6 +884,11 @@ test_that("i_byname() function works"{
       number_of_cols = I(list(1))
     )
   
+  res3 <- dfUs %>% 
+    dplyr::mutate(
+      unity_vec = i_byname_apply_bis(data = matrix_byname, col_name = "Product")
+    )
+  
   res2 <- dfUs_added_matrix %>% 
     dplyr::mutate(
       unity_vec = i_byname_apply(
