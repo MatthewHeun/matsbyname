@@ -807,8 +807,7 @@ res2 <- dfUs_added_matrix %>%
         ncol = number_of_cols,
         dimnames = dimension_names
       )
-    ) %>% 
-    glimpse()
+    )
 
   res2$new_matrix[[3]]
   
@@ -829,7 +828,7 @@ res2 <- dfUs_added_matrix %>%
 })
 
 
-test_that("i_byname() function works"{
+test_that("i_byname() function works", {
 
   # First, test with single values.
   single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
