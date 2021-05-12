@@ -1128,16 +1128,32 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 }
 
 
-
-i_byname <- function(a){
+i_byname_apply <- function(data, nrow, dimnames, rowtype = NULL, coltype = NULL){
   
-  create_matrix_byname(
-    data = I(list(1)),
-    nrow = matsbyname::nrow_byname(a),
-    ncol = I(list(1)),
-    dimnames = list(matsbyname::getrownames_byname(a))
-  )
+  i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
+    matrix(
+      data = 1, nrow = a, ncol = 1, dimnames = dimnames_val
+    ) %>% 
+    setrowtype(rowtype_val) %>% 
+    setcoltype(coltype_val)
+  }
+  
+  unaryapply_byname(FUN = i_byname_apply_func, a = nrow, 
+                    .FUNdots = list(dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
 }
+
+
+
+# 
+# i_byname <- function(a){
+#   
+#   create_matrix_byname(
+#     data = I(list(1)),
+#     nrow = matsbyname::nrow_byname(a),
+#     ncol = I(list(1)),
+#     dimnames = list(matsbyname::getrownames_byname(a))
+#   )
+# }
 
 
 
