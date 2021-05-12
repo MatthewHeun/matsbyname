@@ -1129,21 +1129,37 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 
 
 
-i_byname_apply_bis <- function(data, col_name){
+#' Title
+#'
+#' @param data 
+#' @param col_name 
+#' @param rowtype 
+#' @param coltype 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
   
-  i_byname_apply_func <- function(a, nrow_val, dimnames_val){
+  i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
+    
     matrix(
       data = 1, nrow = nrow_val, ncol = 1, dimnames = dimnames_val
-    ) #%>% 
-      # setrowtype(rowtype_val) %>% 
-      # setcoltype(coltype_val)
+    ) %>% 
+      setrowtype(rowtype_val) %>% 
+      setcoltype(coltype_val)
   }
   
   nrow = matsbyname::nrow_byname(data)
-  dimnames = purrr::map2(.x = matsbyname::getrownames_byname(data), .y = rep(col_name, length(matsbyname::getrownames_byname(data))), .f = list)
+  dimnames = purrr::map2(
+    .x = matsbyname::getrownames_byname(data), 
+    .y = rep(col_name, length(matsbyname::getrownames_byname(data))), 
+    .f = list
+    )
   
-  unaryapply_byname(FUN = i_byname_apply_func, a = data, 
-                    .FUNdots = list(nrow_val = nrow, dimnames_val = dimnames))#, rowtype_val = rowtype, coltype_val = coltype))
+  unaryapply_byname(FUN = i_byname_apply_func, a = data,
+                    .FUNdots = list(nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
 }
 
 
@@ -1152,24 +1168,19 @@ i_byname_apply_bis <- function(data, col_name){
 
 
 
-i_byname_apply <- function(nrow, dimnames, rowtype = NULL, coltype = NULL){
-  
-  i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
-    matrix(
-      data = 1, nrow = a, ncol = 1, dimnames = dimnames_val
-    ) %>% 
-    setrowtype(rowtype_val) %>% 
-    setcoltype(coltype_val)
-  }
-  
-  unaryapply_byname(FUN = i_byname_apply_func, a = nrow, 
-                    .FUNdots = list(dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
-}
-
-
-
-
-
+# i_byname_apply <- function(nrow, dimnames, rowtype = NULL, coltype = NULL){
+#   
+#   i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
+#     matrix(
+#       data = 1, nrow = a, ncol = 1, dimnames = dimnames_val
+#     ) %>% 
+#     setrowtype(rowtype_val) %>% 
+#     setcoltype(coltype_val)
+#   }
+#   
+#   unaryapply_byname(FUN = i_byname_apply_func, a = nrow, 
+#                     .FUNdots = list(dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
+# }
 
 # 
 # i_byname <- function(a){
