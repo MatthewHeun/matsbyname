@@ -834,6 +834,8 @@ test_that("i_byname() function works"{
   # First, test with a single value
   
   
+  
+  
   # Second, test with a single matrix
   
   
@@ -859,9 +861,7 @@ test_that("i_byname() function works"{
 
   dfUs <- data.frame(
     year = numeric(),
-    matrix_byname = I(list()),
-    dat = I(list()),
-    number_of_rows = I(list())
+    matrix_byname = I(list())
   )
 
   dfUs[[1, "matrix_byname"]] <- U
@@ -873,39 +873,9 @@ test_that("i_byname() function works"{
   dfUs[[3, "year"]] <- 2002
 
   # Now creating the unity vector
-  
-  dfUs_added_matrix <- dfUs %>% 
-    dplyr::mutate(
-      dat = I(list(1)),
-      number_of_rows = I(matsbyname::nrow_byname(matrix_byname)),
-      row_names = matsbyname::getrownames_byname(matrix_byname),
-      col_names = list("Product"),
-      dimension_names = purrr::map2(.x = row_names, .y = col_names, .f = list),
-      number_of_cols = I(list(1))
-    )
-  
-  res3 <- dfUs %>% 
+  res <- dfUs %>% 
     dplyr::mutate(
       unity_vec = i_byname_apply_bis(data = matrix_byname, col_name = "Product")
-    )
-  
-  res4 <- res3 %>% 
-    dplyr::mutate(
-      double_vec = purrr::map(unity_vec, .f = prod, 2)
-    )
-  
-  res5 <- dfUs %>% 
-    dplyr::mutate(
-      creating_vecs = constant_vector_byname(data = matrix_byname, k = 3, col_name = "Product")
-    )
-  
-  res2 <- dfUs_added_matrix %>% 
-    dplyr::mutate(
-      unity_vec = i_byname_apply(
-        nrow = number_of_rows,
-        dimnames = dimension_names,
-        
-      )
     )
   
   # Checking number of coefficients in each vector
@@ -919,12 +889,25 @@ test_that("i_byname() function works"{
   expect_equal(res2$unity_vec[[3]][["p3", "Product"]], 1)
 
   # Checking sums
-  res3 <- res2 %>%
+  res2 <- res %>%
     dplyr::mutate(
       sum_unity = matsbyname::sumall_byname(unity_vec)
     )
   # Check
-  expect_equal(res3$sum_unity[[1]], 2)
-  expect_equal(res3$sum_unity[[2]], 2)
-  expect_equal(res3$sum_unity[[3]], 3)
+  expect_equal(res2$sum_unity[[1]], 2)
+  expect_equal(res2$sum_unity[[2]], 2)
+  expect_equal(res2$sum_unity[[3]], 3)
 })
+
+
+
+
+
+
+# test_that("constant_vector_byname() function works"{
+#   
+#   res5 <- dfUs %>% 
+#     dplyr::mutate(
+#       creating_vecs = constant_vector_byname(data = matrix_byname, k = 3, col_name = "Product")
+#     )
+# })
