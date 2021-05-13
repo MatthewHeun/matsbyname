@@ -710,6 +710,8 @@ test_that("ncol_byname() works as expected.", {
 
 test_that("matrix_byname() works as expected", {
   # Test with single values.
+  # setrowtype("Products") %>% setcoltype("Industries")
+  
   single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
                                      dimnames = list("r1", "c1"))
   expect_equal(single_mat, matrix(1, dimnames = list("r1", "c1")))

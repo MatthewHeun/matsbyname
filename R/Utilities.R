@@ -1017,6 +1017,9 @@ logmean <- function(a, b, base = exp(1)){
 
 
 #' Get the number of rows in a "byname" matrix.
+#' 
+#' The functionn gets the number of rows in a "byname" matrix, or for each "byname" matrix contained
+#' in a column of a data frame.
 #'
 #' @param a A matrix or a column of a data frame populated with "byname" matrices.
 #'
@@ -1054,6 +1057,10 @@ nrow_byname <- function(a) {
 
 
 #' Get the number of columns in a "byname" matrix.
+#'
+#' The functionn gets the number of columns in a "byname" matrix, or for each "byname" matrix contained
+#' in a column of a data frame.
+#'
 #'
 #' @param a A matrix or a column of a data frame populated with "byname" matrices.
 #'
@@ -1095,7 +1102,7 @@ ncol_byname <- function(a) {
 }
 
 
-#' Title
+#' Creates a "byname" matrix
 #'
 #' @param data 
 #' @param nrow 
@@ -1129,10 +1136,12 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 
 
 
-#' Title
+#' Creates a "byname" i vector
+#' 
+#' 
 #'
-#' @param data 
-#' @param col_name 
+#' @param data A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.
+#' @param col_name A string containing the name of the i vector column.
 #' @param rowtype 
 #' @param coltype 
 #'
