@@ -14,7 +14,8 @@ The number of columns of the matrix, or a list containing the number of columns
 in each of the matrices contained in the column of a data frame.
 }
 \description{
-Get the number of columns in a "byname" matrix.
+The functionn gets the number of columns in a "byname" matrix, or for each "byname" matrix contained
+in a column of a data frame.
 }
 \examples{
 U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) \%>\% 

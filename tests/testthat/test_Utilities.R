@@ -709,22 +709,45 @@ test_that("ncol_byname() works as expected.", {
 
 
 test_that("matrix_byname() works as expected", {
-  # Test with single values.
-  # setrowtype("Products") %>% setcoltype("Industries")
   
+  # Test with single values.
   single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
-                                     dimnames = list("r1", "c1"))
-  expect_equal(single_mat, matrix(1, dimnames = list("r1", "c1")))
+                                     dimnames = list("r1", "c1"),
+                                     rowtype = "testing_rowtype",
+                                     coltype = "testing_coltype",
+                                     keep_rowcoltypes = "none")
+
+  expect_equal(single_mat, matrix(1, dimnames = list("r1", "c1")) %>%
+                 setrowtype("testing_rowtype") %>%
+                 setcoltype("testing_coltype"))
+  
+  
   single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
                                        dimnames = list(c("r1", "r2"), "c1"))
+  
   expect_equal(single_mat_2, matrix(c(1,2), nrow = 2, ncol = 1,
                                     dimnames = list(c("r1", "r2"), "c1")))
   
   # Try with a list
   list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
                                        dimnames = list(list("r1", "c1"), list("R1", "C1")))
+  
   expect_equal(list_of_mats[[1]], matrix(1, dimnames = list("r1", "c1")))
   expect_equal(list_of_mats[[2]], matrix(2, dimnames = list("R1", "C1")))
+
+  list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1),
+                                       dimnames = list(list("r1", "c1"), list("R1", "C1")),
+                                       rowtype = "testing_rowtypes",
+                                       coltype = "testing_coltypes",
+                                       keep_rowcoltypes = "none")
+
+  expect_equal(list_of_mats[[1]], matrix(1, dimnames = list("r1", "c1")) %>%
+                 setrowtype("testing_rowtypes") %>%
+                 setcoltype("testing_coltypes"))
+  expect_equal(list_of_mats[[2]], matrix(2, dimnames = list("R1", "C1")) %>%
+                 setrowtype("testing_rowtypes") %>%
+                 setcoltype("testing_coltypes"))
+  
   
   # Try in a data frame
   df1 <- data.frame(
@@ -798,7 +821,9 @@ test_that("matrix_byname() works as expected", {
       number_of_cols = I(matsbyname::ncol_byname(matrix_byname)),
       row_names = matsbyname::getrownames_byname(matrix_byname),
       col_names = matsbyname::getcolnames_byname(matrix_byname),
-      dimension_names = purrr::map2(.x = row_names, .y = col_names, .f = list)
+      dimension_names = purrr::map2(.x = row_names, .y = col_names, .f = list),
+      row_types_col = I(list("testing_rowtypes")),
+      col_types_col = I(list("testing_coltypes"))
     )
 
 res2 <- dfUs_added_matrix %>% 
@@ -811,8 +836,6 @@ res2 <- dfUs_added_matrix %>%
       )
     )
 
-  res2$new_matrix[[3]]
-  
   expect_equal(
     res2$new_matrix[[1]],
     matrix(1, ncol = 2, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2")))
@@ -826,6 +849,40 @@ res2 <- dfUs_added_matrix %>%
   expect_equal(
     res2$new_matrix[[3]],
     matrix(1, ncol = 4, nrow = 3, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2", "i3", "i4")))
+  )
+  
+  res3 <- dfUs_added_matrix %>% 
+    dplyr::mutate(
+      new_matrix = matsbyname::create_matrix_byname(
+        data = dat,
+        nrow = number_of_rows,
+        ncol = number_of_cols,
+        dimnames = dimension_names,
+        rowtype = row_types_col,
+        coltype = col_types_col,
+        keep_rowcoltypes = "none"
+      )
+    )
+  
+  expect_equal(
+    res3$new_matrix[[1]],
+    matrix(1, ncol = 2, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+             setrowtype("testing_rowtypes") %>% 
+             setcoltype("testing_coltypes")
+  )
+  
+  expect_equal(
+    res3$new_matrix[[2]],
+    matrix(1, ncol = 3, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
+             setrowtype("testing_rowtypes") %>% 
+             setcoltype("testing_coltypes")
+  )
+  
+  expect_equal(
+    res3$new_matrix[[3]],
+    matrix(1, ncol = 4, nrow = 3, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2", "i3", "i4"))) %>% 
+             setrowtype("testing_rowtypes") %>% 
+             setcoltype("testing_coltypes")
   )
 })
 

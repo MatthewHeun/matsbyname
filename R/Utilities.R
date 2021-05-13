@@ -1102,7 +1102,8 @@ ncol_byname <- function(a) {
 }
 
 
-#' Creates a "byname" matrix
+
+#' Title
 #'
 #' @param data 
 #' @param nrow 
@@ -1117,7 +1118,9 @@ ncol_byname <- function(a) {
 #'
 #' @examples
 create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE, 
-                                 dimnames, rowtype = NULL, coltype = NULL) {
+                                 dimnames, rowtype = NULL, coltype = NULL,
+                                 keep_rowcoltypes = c("all", "transpose", "row", "col", "none")
+) {
   matrix_byname_func <- function(a, nrow_val, ncol_val, byrow_val, 
                                  dimnames_val, rowtype_val, coltype_val) {
     matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val,
@@ -1125,12 +1128,16 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
       setrowtype(rowtype_val) %>% 
       setcoltype(coltype_val)
   }
+  
+  keep_rowcoltypes = match.arg(keep_rowcoltypes)
+  
   unaryapply_byname(FUN = matrix_byname_func, a = data,
                     .FUNdots = list(nrow_val = nrow, ncol_val = ncol, 
                                     byrow_val = byrow,
                                     dimnames_val = dimnames,
                                     rowtype_val = rowtype,
-                                    coltype_val = coltype))
+                                    coltype_val = coltype),
+                    rowcoltypes = keep_rowcoltypes)
 }
 
 
@@ -1182,24 +1189,6 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
   unaryapply_byname(FUN = i_byname_apply_func, a = data,
                     .FUNdots = list(nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
 }
-
-
-
-#' Creates a "byname" i vector
-#' 
-#' Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
-#'
-#' @param data A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.
-#' @param col_name A string containing the name of the i vector column.
-#' @param rowtype A string containing the rowtype of the output vector.
-#'                Default is NULL.
-#' @param coltype A string containing the coltype of the output vector.
-#'                Default is NULL.
-#'
-#' @return A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
-#' @export
-#'
-#' @examples
 
 
 #' Creates a "byname" vector filled with a constant value k

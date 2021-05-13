@@ -2,22 +2,24 @@
 % Please edit documentation in R/Utilities.R
 \name{i_byname}
 \alias{i_byname}
-\title{Title}
+\title{Creates a "byname" i vector}
 \usage{
 i_byname(data, col_name, rowtype = NULL, coltype = NULL)
 }
 \arguments{
-\item{data}{}
+\item{data}{A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.}
 
-\item{col_name}{}
+\item{col_name}{A string containing the name of the i vector column.}
 
-\item{rowtype}{}
+\item{rowtype}{A string containing the rowtype of the output vector.
+Default is NULL.}
 
-\item{coltype}{}
+\item{coltype}{A string containing the coltype of the output vector.
+Default is NULL.}
 }
 \value{
-
+A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
 }
 \description{
-Title
+Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
 }

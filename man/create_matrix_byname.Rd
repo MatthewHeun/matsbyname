@@ -11,7 +11,8 @@ create_matrix_byname(
   byrow = FALSE,
   dimnames,
   rowtype = NULL,
-  coltype = NULL
+  coltype = NULL,
+  keep_rowcoltypes = c("all", "transpose", "row", "col", "none")
 )
 }
 \arguments{
