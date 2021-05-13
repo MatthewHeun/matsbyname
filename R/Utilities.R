@@ -1138,14 +1138,16 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 
 #' Creates a "byname" i vector
 #' 
-#' 
+#' Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
 #'
 #' @param data A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.
 #' @param col_name A string containing the name of the i vector column.
-#' @param rowtype 
-#' @param coltype 
+#' @param rowtype A string containing the rowtype of the output vector.
+#'                Default is NULL.
+#' @param coltype A string containing the coltype of the output vector.
+#'                Default is NULL.
 #'
-#' @return
+#' @return A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
 #' @export
 #'
 #' @examples
@@ -1183,15 +1185,38 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
 
 
 
-#' Title
+#' Creates a "byname" i vector
+#' 
+#' Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
 #'
-#' @param data 
-#' @param k 
-#' @param col_name 
-#' @param rowtype 
-#' @param coltype 
+#' @param data A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.
+#' @param col_name A string containing the name of the i vector column.
+#' @param rowtype A string containing the rowtype of the output vector.
+#'                Default is NULL.
+#' @param coltype A string containing the coltype of the output vector.
+#'                Default is NULL.
 #'
-#' @return
+#' @return A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
+#' @export
+#'
+#' @examples
+
+
+#' Creates a "byname" vector filled with a constant value k
+#'
+#' Creates a "byname" constant vector (i.e. vector filled with a constant k value) 
+#' with the same number of rows and rownames than the matrix provided as input.
+#'
+#' @param data A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.
+#' @param k The constant that must be filled in for each coefficient of the created vector.
+#' @param col_name A string containing the name of the i vector column.
+#' @param rowtype A string containing the rowtype of the output vector.
+#'                Default is NULL.
+#' @param coltype A string containing the coltype of the output vector.
+#'                Default is NULL.
+#'
+#' @return A "byname" vector, filled with constant values with the same number of rows, and rownames, 
+#'         than the matrix that is provided as input.
 #' @export
 #'
 #' @examples
