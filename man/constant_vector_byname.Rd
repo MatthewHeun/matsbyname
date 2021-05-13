@@ -4,7 +4,14 @@
 \alias{constant_vector_byname}
 \title{Creates a "byname" vector filled with a constant value k}
 \usage{
-constant_vector_byname(data, k, col_name, rowtype = NULL, coltype = NULL)
+constant_vector_byname(
+  data,
+  k,
+  col_name,
+  rowtype = NULL,
+  coltype = NULL,
+  keep_rowcoltypes = c("all", "transpose", "row", "col", "none")
+)
 }
 \arguments{
 \item{data}{A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.}
@@ -18,6 +25,8 @@ Default is NULL.}
 
 \item{coltype}{A string containing the coltype of the output vector.
 Default is NULL.}
+
+\item{keep_rowcoltypes}{}
 }
 \value{
 A "byname" vector, filled with constant values with the same number of rows, and rownames,

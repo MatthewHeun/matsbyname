@@ -802,8 +802,7 @@ test_that("matrix_byname() works as expected", {
     matrix_byname = I(list()),
     dat = I(list()),
     number_of_rows = I(list()),
-    number_of_cols = I(list())#,
-    #dimension_names = I(list())
+    number_of_cols = I(list())
   )
   
   dfUs[[1, "matrix_byname"]] <- U
@@ -952,13 +951,23 @@ test_that("i_byname() function works", {
   # Now creating the unity vector
   res <- dfUs %>% 
     dplyr::mutate(
-      unity_vec = i_byname(data = matrix_byname, col_name = "Product")
+      unity_vec = i_byname(data = matrix_byname, col_name = "Product", rowtype = "Products", coltype = "testing_coltype", keep_rowcoltypes = "none")
     )
   
   # Checking number of coefficients in each vector
   expect_equal(length(res$unity_vec[[1]]), 2)
   expect_equal(length(res$unity_vec[[2]]), 2)
   expect_equal(length(res$unity_vec[[3]]), 3)
+  
+  # Checking rowtypes
+  expect_equal(res$unity_vec[[1]] %>% rowtype(), "Products")
+  expect_equal(res$unity_vec[[2]] %>% rowtype(), "Products")
+  expect_equal(res$unity_vec[[3]] %>% rowtype(), "Products")
+  
+  # Checking coltypes
+  expect_equal(res$unity_vec[[1]] %>% coltype(), "testing_coltype")
+  expect_equal(res$unity_vec[[2]] %>% coltype(), "testing_coltype")
+  expect_equal(res$unity_vec[[3]] %>% coltype(), "testing_coltype")
 
   # Checking single coefficient values
   expect_equal(res$unity_vec[[1]][["p1", "Product"]], 1)
@@ -1042,13 +1051,24 @@ test_that("constant_vector_byname() function works", {
   # Now creating the unity vector
   res <- dfUs %>% 
     dplyr::mutate(
-      constant_vec = constant_vector_byname(data = matrix_byname, k = 54, col_name = "Product")
+      constant_vec = constant_vector_byname(data = matrix_byname, k = 54, col_name = "Product", coltype = "testing_coltype", rowtype = "Products",
+                                            keep_rowcoltypes = "none")
     )
   
   # Checking number of coefficients in each vector
   expect_equal(length(res$constant_vec[[1]]), 2)
   expect_equal(length(res$constant_vec[[2]]), 2)
   expect_equal(length(res$constant_vec[[3]]), 3)
+  
+  # Checking rowtypes
+  expect_equal(res$constant_vec[[1]] %>% rowtype(), "Products")
+  expect_equal(res$constant_vec[[2]] %>% rowtype(), "Products")
+  expect_equal(res$constant_vec[[3]] %>% rowtype(), "Products")
+  
+  # Checking coltypes
+  expect_equal(res$constant_vec[[1]] %>% coltype(), "testing_coltype")
+  expect_equal(res$constant_vec[[2]] %>% coltype(), "testing_coltype")
+  expect_equal(res$constant_vec[[3]] %>% coltype(), "testing_coltype")
   
   # Checking single coefficient values
   expect_equal(res$constant_vec[[1]][["p1", "Product"]], 54)

@@ -1103,20 +1103,40 @@ ncol_byname <- function(a) {
 
 
 
-#' Title
+#' Creates a "byname" matrix
 #'
-#' @param data 
-#' @param nrow 
-#' @param ncol 
-#' @param byrow 
-#' @param dimnames 
-#' @param rowtype 
-#' @param coltype 
+#' The function creates a "byname" matrix, or list of matrices, depending on the input arguments.
 #'
-#' @return
+#' @param data The data to be used to create the matrix, in a list format, or as a data frame column
+#'             containing a list of the data to be used for each observation.
+#' @param nrow The number of rows to be used to create the matrix, in a list format, or as a data frame column
+#'             containing a list of the number of rows to be used for each observation.
+#' @param ncol The number of columns to be used to create the matrix, in a list format, or as a data frame column
+#'             containing a list of the number of columns to be used for each observation.
+#' @param byrow The argument stating whether the matrix should be filled by rows or by columns (FALSE by column, TRUE by row),
+#'              in a list format, or as a data frame column containing a list of the byrow argument for each observation.
+#'              Default is FALSE.
+#' @param dimnames The dimension names to be used for creating the matrices, in a list format, or as a data frame column
+#'                 containing a list of the dimension names to be used for each observation.
+#' @param rowtype The row types to be used for creating the matrices, in a list format, or as a data frame column
+#'                 containing a list of the row types to be used for each observation.
+#' @param coltype The column types to be used for creating the matrices, in a list format, or as a data frame column
+#'                containing a list of the column types to be used for each observation.
+#' @param keep_rowcoltypes A character string definng whether the row and column types of the input data should be kept.
+#'                         Options are "all", "none", "row", "col".
+#'                         To use the rowtype and coltype arguments, the value should be set to "none".
+#'                         Default is "all".
+#'
+#' @return A list of the created matrices.
 #' @export
 #'
 #' @examples
+#' # First example
+#' create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+#'                      dimnames = list(c("r1", "r2"), "c1"))
+#' # Second example
+#' list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+#'                                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
 create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE, 
                                  dimnames, rowtype = NULL, coltype = NULL,
                                  keep_rowcoltypes = c("all", "transpose", "row", "col", "none")
@@ -1153,12 +1173,18 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 #'                Default is NULL.
 #' @param coltype A string containing the coltype of the output vector.
 #'                Default is NULL.
+#' @param keep_rowcoltypes
 #'
 #' @return A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
 #' @export
 #'
 #' @examples
-i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
+#' 
+#' 
+i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL,
+                     keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
+  
+  keep_rowcoltypes = match.arg(keep_rowcoltypes)
   
   # Defining the function to be called:
   i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
@@ -1187,7 +1213,8 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
   
   # Applying function to each matrix
   unaryapply_byname(FUN = i_byname_apply_func, a = data,
-                    .FUNdots = list(nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
+                    .FUNdots = list(nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype),
+                    rowcoltypes = keep_rowcoltypes)
 }
 
 
@@ -1203,13 +1230,17 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL){
 #'                Default is NULL.
 #' @param coltype A string containing the coltype of the output vector.
 #'                Default is NULL.
+#' @param keep_rowcoltypes 
 #'
 #' @return A "byname" vector, filled with constant values with the same number of rows, and rownames, 
 #'         than the matrix that is provided as input.
 #' @export
 #'
 #' @examples
-constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = NULL){
+constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = NULL,
+                                   keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
+  
+  keep_rowcoltypes = match.arg(keep_rowcoltypes)
   
   constant_vector_byname_func <- function(a, k_val, nrow_val, dimnames_val, rowtype_val, coltype_val){
     
@@ -1239,7 +1270,8 @@ constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = 
   }
   
   unaryapply_byname(FUN = constant_vector_byname_func, a = data,
-                    .FUNdots = list(k = k_list, nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
+                    .FUNdots = list(k = k_list, nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype),
+                    rowcoltypes = keep_rowcoltypes)
 }
 
 

@@ -4,7 +4,13 @@
 \alias{i_byname}
 \title{Creates a "byname" i vector}
 \usage{
-i_byname(data, col_name, rowtype = NULL, coltype = NULL)
+i_byname(
+  data,
+  col_name,
+  rowtype = NULL,
+  coltype = NULL,
+  keep_rowcoltypes = c("all", "transpose", "row", "col", "none")
+)
 }
 \arguments{
 \item{data}{A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.}
@@ -16,10 +22,16 @@ Default is NULL.}
 
 \item{coltype}{A string containing the coltype of the output vector.
 Default is NULL.}
+
+\item{keep_rowcoltypes}{}
 }
 \value{
 A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
 }
 \description{
 Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
+}
+\examples{
+
+
 }

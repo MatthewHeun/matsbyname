@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utilities.R
 \name{create_matrix_byname}
 \alias{create_matrix_byname}
-\title{Title}
+\title{Creates a "byname" matrix}
 \usage{
 create_matrix_byname(
   data,
@@ -16,23 +16,44 @@ create_matrix_byname(
 )
 }
 \arguments{
-\item{data}{}
+\item{data}{The data to be used to create the matrix, in a list format, or as a data frame column
+containing a list of the data to be used for each observation.}
 
-\item{nrow}{}
+\item{nrow}{The number of rows to be used to create the matrix, in a list format, or as a data frame column
+containing a list of the number of rows to be used for each observation.}
 
-\item{ncol}{}
+\item{ncol}{The number of columns to be used to create the matrix, in a list format, or as a data frame column
+containing a list of the number of columns to be used for each observation.}
 
-\item{byrow}{}
+\item{byrow}{The argument stating whether the matrix should be filled by rows or by columns (FALSE by column, TRUE by row),
+in a list format, or as a data frame column containing a list of the byrow argument for each observation.
+Default is FALSE.}
 
-\item{dimnames}{}
+\item{dimnames}{The dimension names to be used for creating the matrices, in a list format, or as a data frame column
+containing a list of the dimension names to be used for each observation.}
 
-\item{rowtype}{}
+\item{rowtype}{The row types to be used for creating the matrices, in a list format, or as a data frame column
+containing a list of the row types to be used for each observation.}
 
-\item{coltype}{}
+\item{coltype}{The column types to be used for creating the matrices, in a list format, or as a data frame column
+containing a list of the column types to be used for each observation.}
+
+\item{keep_rowcoltypes}{A character string definng whether the row and column types of the input data should be kept.
+Options are "all", "none", "row", "col".
+To use the rowtype and coltype arguments, the value should be set to "none".
+Default is "all".}
 }
 \value{
-
+A list of the created matrices.
 }
 \description{
-Title
+The function creates a "byname" matrix, or list of matrices, depending on the input arguments.
+}
+\examples{
+# First example
+create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+                     dimnames = list(c("r1", "r2"), "c1"))
+# Second example
+list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+                                     dimnames = list(list("r1", "c1"), list("R1", "C1")))
 }
