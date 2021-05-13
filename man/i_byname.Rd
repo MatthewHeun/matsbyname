@@ -23,7 +23,9 @@ Default is NULL.}
 \item{coltype}{A string containing the coltype of the output vector.
 Default is NULL.}
 
-\item{keep_rowcoltypes}{}
+\item{keep_rowcoltypes}{A character string argument that defines whether column and rowtypes
+should be kept from the matrix provided in data argument or not. See details.
+Default is "all".}
 }
 \value{
 A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
@@ -31,7 +33,14 @@ A "byname" i vector, with the same number of rows, and rownames, than the matrix
 \description{
 Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
 }
-\examples{
-
-
+\details{
+Options for the keep_rowcoltypes argument are:
+\itemize{
+\item "all": transfer both row and column types of a directly to output.
+\item "transpose": rowtype of a becomes coltype of output; coltype of a becomes rowtype of output.
+"transpose" is helpful for FUNs that transpose a upon output.
+\item "row": rowtype of a becomes both rowtype and coltype of output.
+\item "col": coltype of a becomes both rowtype and coltype of output.
+\item "none": owtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
+}
 }

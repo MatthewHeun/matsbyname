@@ -26,7 +26,9 @@ Default is NULL.}
 \item{coltype}{A string containing the coltype of the output vector.
 Default is NULL.}
 
-\item{keep_rowcoltypes}{}
+\item{keep_rowcoltypes}{A character string argument that defines whether column and rowtypes
+should be kept from the matrix provided in data argument or not. See details.
+Default is "all".}
 }
 \value{
 A "byname" vector, filled with constant values with the same number of rows, and rownames,
@@ -35,4 +37,24 @@ than the matrix that is provided as input.
 \description{
 Creates a "byname" constant vector (i.e. vector filled with a constant k value)
 with the same number of rows and rownames than the matrix provided as input.
+}
+\details{
+Options for the keep_rowcoltypes argument are:
+\itemize{
+\item "all": transfer both row and column types of a directly to output.
+\item "transpose": rowtype of a becomes coltype of output; coltype of a becomes rowtype of output.
+"transpose" is helpful for FUNs that transpose a upon output.
+\item "row": rowtype of a becomes both rowtype and coltype of output.
+\item "col": coltype of a becomes both rowtype and coltype of output.
+\item "none": owtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
+}
+}
+\examples{
+single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+                                     dimnames = list(c("r1", "r2"), "c1"))
+constant_vector_byname(single_mat_2, k = 8, col_name = "output_column")
+list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+                                   dimnames = list(list("r1", "c1"), list("R1", "C1")))
+constant_vector_byname(data = list_of_mats, k = 12,
+                                  col_name = "output_column")
 }

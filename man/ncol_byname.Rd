@@ -18,13 +18,21 @@ The functionn gets the number of columns in a "byname" matrix, or for each "byna
 in a column of a data frame.
 }
 \examples{
+productnames <- c("p1", "p2")
+industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) \%>\% 
   setrowtype("Products") \%>\% 
   setcoltype("Industries")
-U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) \%>\% 
+productnames <- c("p1", "p2")
+industrynames <- c("i1", "i2", "i3")
+U2 <- matrix(1:3, ncol = length(industrynames), 
+             nrow = length(productnames), dimnames = list(productnames, industrynames)) \%>\% 
   setrowtype("Products") \%>\% 
   setcoltype("Industries")
-U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) \%>\% 
+productnames <- c("p1", "p2", "p3")
+industrynames <- c("i1", "i2", "i3", "i4")
+U3 <- matrix(1:4, ncol = length(industrynames), 
+             nrow = length(productnames), dimnames = list(productnames, industrynames)) \%>\% 
   setrowtype("Products") \%>\% 
   setcoltype("Industries")
 dfUs <- data.frame(

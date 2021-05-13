@@ -1028,13 +1028,21 @@ logmean <- function(a, b, base = exp(1)){
 #' @export
 #'
 #' @examples
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% 
 #'   setrowtype("Products") %>% 
 #'   setcoltype("Industries")
-#' U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2", "i3")
+#' U2 <- matrix(1:3, ncol = length(industrynames), 
+#'              nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
 #'   setrowtype("Products") %>% 
 #'   setcoltype("Industries")
-#' U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#' productnames <- c("p1", "p2", "p3")
+#' industrynames <- c("i1", "i2", "i3", "i4")
+#' U3 <- matrix(1:4, ncol = length(industrynames), 
+#'              nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
 #'   setrowtype("Products") %>% 
 #'   setcoltype("Industries")
 #' dfUs <- data.frame(
@@ -1069,13 +1077,21 @@ nrow_byname <- function(a) {
 #' @export
 #'
 #' @examples
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2")
 #' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% 
 #'   setrowtype("Products") %>% 
 #'   setcoltype("Industries")
-#' U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2", "i3")
+#' U2 <- matrix(1:3, ncol = length(industrynames), 
+#'              nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
 #'   setrowtype("Products") %>% 
 #'   setcoltype("Industries")
-#' U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#' productnames <- c("p1", "p2", "p3")
+#' industrynames <- c("i1", "i2", "i3", "i4")
+#' U3 <- matrix(1:4, ncol = length(industrynames), 
+#'              nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
 #'   setrowtype("Products") %>% 
 #'   setcoltype("Industries")
 #' dfUs <- data.frame(
@@ -1166,6 +1182,15 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 #' Creates a "byname" i vector
 #' 
 #' Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
+#' 
+#' Options for the keep_rowcoltypes argument are:
+#' 
+#' * "all": transfer both row and column types of a directly to output.
+#' * "transpose": rowtype of a becomes coltype of output; coltype of a becomes rowtype of output. 
+#'   "transpose" is helpful for FUNs that transpose a upon output.
+#' * "row": rowtype of a becomes both rowtype and coltype of output.
+#' * "col": coltype of a becomes both rowtype and coltype of output.
+#' * "none": owtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
 #'
 #' @param data A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.
 #' @param col_name A string containing the name of the i vector column.
@@ -1173,14 +1198,23 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 #'                Default is NULL.
 #' @param coltype A string containing the coltype of the output vector.
 #'                Default is NULL.
-#' @param keep_rowcoltypes
+#' @param keep_rowcoltypes A character string argument that defines whether column and rowtypes 
+#'                         should be kept from the matrix provided in data argument or not. See details.
+#'                         Default is "all".
 #'
 #' @return A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
 #' @export
 #'
 #' @examples
-#' 
-#' 
+#' # Single matrix
+#' single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+#'                                      dimnames = list(c("r1", "r2"), "c1"))
+#' i_byname(single_mat_2, col_name = "output_name)
+#' # List of matrices
+#' list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+#'                                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
+#' i_byname(data = list_of_mats,
+#'          col_name = "output_column")
 i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL,
                      keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
   
@@ -1222,6 +1256,15 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL,
 #'
 #' Creates a "byname" constant vector (i.e. vector filled with a constant k value) 
 #' with the same number of rows and rownames than the matrix provided as input.
+#' 
+#' Options for the keep_rowcoltypes argument are:
+#' 
+#' * "all": transfer both row and column types of a directly to output.
+#' * "transpose": rowtype of a becomes coltype of output; coltype of a becomes rowtype of output. 
+#'   "transpose" is helpful for FUNs that transpose a upon output.
+#' * "row": rowtype of a becomes both rowtype and coltype of output.
+#' * "col": coltype of a becomes both rowtype and coltype of output.
+#' * "none": owtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
 #'
 #' @param data A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.
 #' @param k The constant that must be filled in for each coefficient of the created vector.
@@ -1230,13 +1273,22 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL,
 #'                Default is NULL.
 #' @param coltype A string containing the coltype of the output vector.
 #'                Default is NULL.
-#' @param keep_rowcoltypes 
+#' @param keep_rowcoltypes A character string argument that defines whether column and rowtypes 
+#'                         should be kept from the matrix provided in data argument or not. See details.
+#'                         Default is "all".
 #'
 #' @return A "byname" vector, filled with constant values with the same number of rows, and rownames, 
 #'         than the matrix that is provided as input.
 #' @export
 #'
 #' @examples
+#' single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+#'                                      dimnames = list(c("r1", "r2"), "c1"))
+#' constant_vector_byname(single_mat_2, k = 8, col_name = "output_column")
+#' list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+#'                                    dimnames = list(list("r1", "c1"), list("R1", "C1")))
+#' constant_vector_byname(data = list_of_mats, k = 12,
+#'                                   col_name = "output_column")
 constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = NULL,
                                    keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
   
