@@ -1197,19 +1197,27 @@ constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = 
       setcoltype(coltype_val)
   }
   
-  nrow = matsbyname::nrow_byname(data)
-  k_list = rep(list(k), length(matsbyname::nrow_byname(data)))
-  dimnames = purrr::map2(
-    .x = matsbyname::getrownames_byname(data), 
-    .y = rep(col_name, length(matsbyname::getrownames_byname(data))), 
-    .f = list
-  )
+  if (is.numeric(data)){
+    
+    nrow = matsbyname::nrow_byname(data)
+    k_list = k
+    dimnames = list(matsbyname::getrownames_byname(data), col_name)
+    
+  } else {
+    
+    nrow = matsbyname::nrow_byname(data)
+    k_list = rep(list(k), length(matsbyname::nrow_byname(data)))
+    dimnames = purrr::map2(
+      .x = matsbyname::getrownames_byname(data), 
+      .y = rep(col_name, length(matsbyname::getrownames_byname(data))), 
+      .f = list
+    ) 
+    
+  }
   
   unaryapply_byname(FUN = constant_vector_byname_func, a = data,
                     .FUNdots = list(k = k_list, nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
 }
-
-
 
 
 # i_byname_apply <- function(nrow, dimnames, rowtype = NULL, coltype = NULL){
