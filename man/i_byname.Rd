@@ -45,3 +45,14 @@ Options for the keep_rowcoltypes argument are:
 \item "none": rowtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
 }
 }
+\examples{
+# Single matrix
+single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+                                     dimnames = list(c("r1", "r2"), "c1"))
+i_byname(single_mat_2, col_name = "output_name")
+# List of matrices
+list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+                                     dimnames = list(list("r1", "c1"), list("R1", "C1")))
+i_byname(data = list_of_mats,
+         col_name = "output_column")
+}

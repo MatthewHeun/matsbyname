@@ -748,7 +748,14 @@ test_that("create_matrix_byname() works as expected", {
                  setrowtype("testing_rowtypes") %>%
                  setcoltype("testing_coltypes"))
   
+  # Test with a list of different dimensions
+  list_of_mats_2 <- create_matrix_byname(data = list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
+                                         dimnames = list(list("r1", "c1"), list(c("R1", "R2"), c("C1", "C2"))))
   
+  expect_equal(list_of_mats_2[[1]], matrix(1, dimnames = list("r1", "c1")))
+  expect_equal(list_of_mats_2[[2]], matrix(data = c(2, 3, 4, 5), nrow = 2, ncol = 2, dimnames = list(c("R1", "R2"), c("C1", "C2")), byrow = FALSE))
+  
+
   # Try in a data frame
   df1 <- data.frame(
     dat = I(list()),
@@ -920,6 +927,23 @@ test_that("i_byname() function works", {
     matrix(1, dimnames = list("R1", "output_column"))
   )
   
+  # Test with a list of different dimensions
+  list_of_mats_2 <- create_matrix_byname(data = list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
+                                         dimnames = list(list("r1", "c1"), list(c("R1", "R2"), c("C1", "C2"))))
+  
+  res_list_2 <- i_byname(data = list_of_mats_2,
+                       col_name = "output_column")
+  
+  expect_equal(
+    res_list_2[[1]],
+    matrix(1, dimnames = list("r1", "output_column"))
+  )
+  expect_equal(
+    res_list_2[[2]], 
+    matrix(1, nrow = 2, ncol = 1, dimnames = list(c("R1", "R2"), "output_column"))
+  )
+  
+  
   # Third test with data frames:
   
   # Creating data frame of matrices, with a year column and a matrix column:
@@ -1018,6 +1042,34 @@ test_that("constant_vector_byname() function works", {
   expect_equal(
     res_list[[2]],
     matrix(12, dimnames = list("R1", "output_column"))
+  )
+  
+  
+  # Test with a list of different dimensions
+  list_of_mats_2 <- create_matrix_byname(data = list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
+                                         dimnames = list(list("r1", "c1"), list(c("R1", "R2"), c("C1", "C2"))))
+  
+  res_list_2 <- constant_vector_byname(data = list_of_mats_2, k = 5,
+                         col_name = "output_column")
+  
+  expect_equal(
+    res_list_2[[1]],
+    matrix(5, dimnames = list("r1", "output_column"))
+  )
+  expect_equal(
+    res_list_2[[2]], 
+    matrix(5, nrow = 2, ncol = 1, dimnames = list(c("R1", "R2"), "output_column"))
+  )
+  
+  res_list_3 <- constant_vector_byname(data = list_of_mats_2, k = c(3,5),
+                                       col_name = "output_column")
+  expect_equal(
+    res_list_3[[1]],
+    matrix(3, dimnames = list("r1", "output_column"))
+  )
+  expect_equal(
+    res_list_3[[2]], 
+    matrix(c(3,5), nrow = 2, ncol = 1, dimnames = list(c("R1", "R2"), "output_column"))
   )
   
   # Third test with data frames:
