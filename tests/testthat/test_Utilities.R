@@ -711,7 +711,7 @@ test_that("ncol_byname() works as expected.", {
 test_that("create_matrix_byname() works as expected", {
   
   # Test with single values.
-  single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
+  single_mat <- create_matrix_byname(1, nrow = 1, ncol = 1,
                                      dimnames = list("r1", "c1"),
                                      rowtype = "testing_rowtype",
                                      coltype = "testing_coltype",
@@ -721,21 +721,33 @@ test_that("create_matrix_byname() works as expected", {
                  setrowtype("testing_rowtype") %>%
                  setcoltype("testing_coltype"))
   
+  # Test with row and column types
+  single_mat_with_types <- create_matrix_byname(1 %>% setrowtype("rt") %>% setcoltype("ct"),
+                                                nrow = 1, ncol = 1,
+                                                dimnames = list("r1", "c1"))
+  expect_equal(rowtype(single_mat_with_types), "rt")
+  expect_equal(coltype(single_mat_with_types), "ct")
   
-  single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+  single_mat_with_types_transposed <- create_matrix_byname(1 %>% setrowtype("rt") %>% setcoltype("ct"),
+                                                           nrow = 1, ncol = 1,
+                                                           dimnames = list("r1", "c1"), keep_rowcoltypes = "transpose")
+  expect_equal(rowtype(single_mat_with_types_transposed), "ct")
+  expect_equal(coltype(single_mat_with_types_transposed), "rt")
+  
+  single_mat_2 <- create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
                                        dimnames = list(c("r1", "r2"), "c1"))
   
   expect_equal(single_mat_2, matrix(c(1,2), nrow = 2, ncol = 1,
                                     dimnames = list(c("r1", "r2"), "c1")))
   
   # Try with a list
-  list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+  list_of_mats <- create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
                                        dimnames = list(list("r1", "c1"), list("R1", "C1")))
   
   expect_equal(list_of_mats[[1]], matrix(1, dimnames = list("r1", "c1")))
   expect_equal(list_of_mats[[2]], matrix(2, dimnames = list("R1", "C1")))
 
-  list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1),
+  list_of_mats <- create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1),
                                        dimnames = list(list("r1", "c1"), list("R1", "C1")),
                                        rowtype = "testing_rowtypes",
                                        coltype = "testing_coltypes",
@@ -749,11 +761,11 @@ test_that("create_matrix_byname() works as expected", {
                  setcoltype("testing_coltypes"))
   
   # Test with a list of different dimensions
-  list_of_mats_2 <- create_matrix_byname(data = list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
+  list_of_mats_2 <- create_matrix_byname(list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
                                          dimnames = list(list("r1", "c1"), list(c("R1", "R2"), c("C1", "C2"))))
   
   expect_equal(list_of_mats_2[[1]], matrix(1, dimnames = list("r1", "c1")))
-  expect_equal(list_of_mats_2[[2]], matrix(data = c(2, 3, 4, 5), nrow = 2, ncol = 2, dimnames = list(c("R1", "R2"), c("C1", "C2")), byrow = FALSE))
+  expect_equal(list_of_mats_2[[2]], matrix(c(2, 3, 4, 5), nrow = 2, ncol = 2, dimnames = list(c("R1", "R2"), c("C1", "C2")), byrow = FALSE))
   
 
   # Try in a data frame
@@ -778,7 +790,7 @@ test_that("create_matrix_byname() works as expected", {
 
   res1 <- df1 %>%
     dplyr::mutate(
-      mat_col = create_matrix_byname(data = dat,
+      mat_col = create_matrix_byname(dat,
                                      nrow = nrows,
                                      ncol = ncols,
                                      byrow = TRUE,
@@ -835,7 +847,7 @@ test_that("create_matrix_byname() works as expected", {
 res2 <- dfUs_added_matrix %>% 
     dplyr::mutate(
       new_matrix = matsbyname::create_matrix_byname(
-        data = dat,
+        dat,
         nrow = number_of_rows,
         ncol = number_of_cols,
         dimnames = dimension_names
@@ -860,7 +872,7 @@ res2 <- dfUs_added_matrix %>%
   res3 <- dfUs_added_matrix %>% 
     dplyr::mutate(
       new_matrix = matsbyname::create_matrix_byname(
-        data = dat,
+        dat,
         nrow = number_of_rows,
         ncol = number_of_cols,
         dimnames = dimension_names,
@@ -896,7 +908,7 @@ res2 <- dfUs_added_matrix %>%
 test_that("i_byname() function works", {
 
   # First, test with single values.
-  single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
+  single_mat <- create_matrix_byname(1, nrow = 1, ncol = 1,
                                      dimnames = list("r1", "c1"))
   
   expect_equal(
@@ -904,7 +916,7 @@ test_that("i_byname() function works", {
     matrix(1, dimnames = list("r1", "output_column"))
   )
   
-  single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+  single_mat_2 <- create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
                                        dimnames = list(c("r1", "r2"), "c1"))
   expect_equal(
     i_byname(single_mat_2, col_name = "output_column"), 
@@ -912,7 +924,7 @@ test_that("i_byname() function works", {
   )
   
   # Second, test with a list
-  list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+  list_of_mats <- create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
                                        dimnames = list(list("r1", "c1"), list("R1", "C1")))
   
   res_list <- i_byname(data = list_of_mats,
@@ -928,10 +940,10 @@ test_that("i_byname() function works", {
   )
   
   # Test with a list of different dimensions
-  list_of_mats_2 <- create_matrix_byname(data = list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
+  list_of_mats_2 <- create_matrix_byname(list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
                                          dimnames = list(list("r1", "c1"), list(c("R1", "R2"), c("C1", "C2"))))
   
-  res_list_2 <- i_byname(data = list_of_mats_2,
+  res_list_2 <- i_byname(list_of_mats_2,
                        col_name = "output_column")
   
   expect_equal(
@@ -1013,7 +1025,7 @@ test_that("i_byname() function works", {
 test_that("constant_vector_byname() function works", {
 
   # First, test with single values.
-  single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
+  single_mat <- create_matrix_byname(1, nrow = 1, ncol = 1,
                                      dimnames = list("r1", "c1"))
   
   expect_equal(
@@ -1021,7 +1033,7 @@ test_that("constant_vector_byname() function works", {
     matrix(3, dimnames = list("r1", "output_column"))
   )
   
-  single_mat_2 <- create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+  single_mat_2 <- create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
                                        dimnames = list(c("r1", "r2"), "c1"))
   expect_equal(
     constant_vector_byname(single_mat_2, k = 8, col_name = "output_column"), 
@@ -1029,10 +1041,10 @@ test_that("constant_vector_byname() function works", {
   )
   
   # Second, test with a list
-  list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+  list_of_mats <- create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
                                        dimnames = list(list("r1", "c1"), list("R1", "C1")))
   
-  res_list <- constant_vector_byname(data = list_of_mats, k = 12,
+  res_list <- constant_vector_byname(list_of_mats, k = 12,
                        col_name = "output_column")
   
   expect_equal(
@@ -1046,7 +1058,7 @@ test_that("constant_vector_byname() function works", {
   
   
   # Test with a list of different dimensions
-  list_of_mats_2 <- create_matrix_byname(data = list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
+  list_of_mats_2 <- create_matrix_byname(list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
                                          dimnames = list(list("r1", "c1"), list(c("R1", "R2"), c("C1", "C2"))))
   
   res_list_2 <- constant_vector_byname(data = list_of_mats_2, k = 5,
@@ -1061,7 +1073,7 @@ test_that("constant_vector_byname() function works", {
     matrix(5, nrow = 2, ncol = 1, dimnames = list(c("R1", "R2"), "output_column"))
   )
   
-  res_list_3 <- constant_vector_byname(data = list_of_mats_2, k = c(3,5),
+  res_list_3 <- constant_vector_byname(list_of_mats_2, k = c(3,5),
                                        col_name = "output_column")
   expect_equal(
     res_list_3[[1]],
@@ -1137,3 +1149,38 @@ test_that("constant_vector_byname() function works", {
   expect_equal(res2$sum_constant[[2]], 108)
   expect_equal(res2$sum_constant[[3]], 162)
 })
+
+
+
+test_that("create_rowvec_byname() works as expected", {
+  single_vec <- create_rowvec_byname(1 %>% setrowtype("rt") %>% setcoltype("ct"),
+                                     dimnames = list("r1", "c1"))
+  
+  expect_equal(single_vec, matrix(1, dimnames = list("r1", "c1")) %>% setrowtype("rt") %>% setcoltype("ct"))
+  
+  # Try in a data frame
+  df1 <- data.frame(
+    dat = I(list()),
+    dimnms = I(list())
+  )
+  df1[[1, "dat"]] <- 1
+  df1[[2, "dat"]] <- c(2,3)
+  df1[[3, "dat"]] <- c(1,2,3,4,5,6)
+  df1[[1, "dimnms"]] <- list("r1", "c1")
+  df1[[2, "dimnms"]] <- list("R1", c("C1", "C2"))
+  df1[[3, "dimnms"]] <- list("r1", c("c1", "c2", "c3", "c4", "c5", "c6"))
+  
+  res1 <- df1 %>%
+    dplyr::mutate(
+      rowvec_col = create_rowvec_byname(dat, dimnames = dimnms)
+    )
+  expect_equal(res1$rowvec_col[[1]], matrix(1, dimnames = list("r1", "c1")))
+  expect_equal(res1$rowvec_col[[2]], matrix(c(2, 3), ncol = 2, dimnames = list("R1", c("C1", "C2"))))
+  expect_equal(res1$rowvec_col[[3]], matrix(c(1, 2, 3, 4, 5, 6), 
+                                            nrow = 1, ncol = 6,
+                                            dimnames = list("r1", c("c1", "c2", "c3", "c4", "c5", "c6"))))
+  
+  # More tests here from Emmanuel
+  
+})
+

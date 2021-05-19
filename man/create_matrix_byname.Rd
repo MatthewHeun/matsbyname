@@ -5,7 +5,7 @@
 \title{Creates a "byname" matrix}
 \usage{
 create_matrix_byname(
-  data,
+  .dat,
   nrow,
   ncol,
   byrow = FALSE,
@@ -16,9 +16,6 @@ create_matrix_byname(
 )
 }
 \arguments{
-\item{data}{The data to be used to create the matrix, in a list format, or as a data frame column
-containing a list of the data to be used for each observation.}
-
 \item{nrow}{The number of rows to be used to create the matrix, in a list format, or as a data frame column
 containing a list of the number of rows to be used for each observation.}
 
@@ -38,22 +35,23 @@ containing a list of the row types to be used for each observation.}
 \item{coltype}{The column types to be used for creating the matrices, in a list format, or as a data frame column
 containing a list of the column types to be used for each observation.}
 
-\item{keep_rowcoltypes}{A character string definng whether the row and column types of the input data should be kept.
+\item{keep_rowcoltypes}{A character string defining whether the row and column types (if available) of the input data (\code{.dat}) should be kept.
 Options are "all", "none", "row", "col".
 To use the rowtype and coltype arguments, the value should be set to "none".
 Default is "all".}
+
+\item{data}{The data to be used to create the matrix, in a list format, or as a data frame column
+containing a list of the data to be used for each observation.}
 }
 \value{
 A list of the created matrices.
 }
 \description{
-The function creates a "byname" matrix, or list of matrices, depending on the input arguments.
+The function creates a "byname" matrix, or list of matrices, from \code{.dat}, depending on the input arguments.
 }
 \examples{
-# First example
-create_matrix_byname(data = c(1, 2), nrow = 2, ncol = 1,
+create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
                      dimnames = list(c("r1", "r2"), "c1"))
-# Second example
-list_of_mats <- create_matrix_byname(data = list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+list_of_mats <- create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
                                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
 }
