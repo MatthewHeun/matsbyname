@@ -1181,7 +1181,7 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 
 #' Creates a "byname" i vector
 #' 
-#' Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
+#' Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames as the matrix provided as input.
 #' 
 #' Options for the keep_rowcoltypes argument are:
 #' 
@@ -1190,7 +1190,7 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 #'   "transpose" is helpful for FUNs that transpose a upon output.
 #' * "row": rowtype of a becomes both rowtype and coltype of output.
 #' * "col": coltype of a becomes both rowtype and coltype of output.
-#' * "none": owtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
+#' * "none": rowtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
 #'
 #' @param data A matrix, or a column of a data frame populated with matrices, from which the "byname" i vector will be created.
 #' @param col_name A string containing the name of the i vector column.
@@ -1202,7 +1202,8 @@ create_matrix_byname <- function(data, nrow, ncol, byrow = FALSE,
 #'                         should be kept from the matrix provided in data argument or not. See details.
 #'                         Default is "all".
 #'
-#' @return A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
+#' @return A "byname" i vector, with one column,
+#'         the same number of rows, and the same rownames as the matrix `data`.
 #' @export
 #'
 #' @examples

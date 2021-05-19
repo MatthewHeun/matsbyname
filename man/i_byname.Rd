@@ -28,10 +28,11 @@ should be kept from the matrix provided in data argument or not. See details.
 Default is "all".}
 }
 \value{
-A "byname" i vector, with the same number of rows, and rownames, than the matrix that is provided as input.
+A "byname" i vector, with one column,
+the same number of rows, and the same rownames as the matrix \code{data}.
 }
 \description{
-Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames than the matrix provided as input.
+Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames as the matrix provided as input.
 }
 \details{
 Options for the keep_rowcoltypes argument are:
@@ -41,6 +42,6 @@ Options for the keep_rowcoltypes argument are:
 "transpose" is helpful for FUNs that transpose a upon output.
 \item "row": rowtype of a becomes both rowtype and coltype of output.
 \item "col": coltype of a becomes both rowtype and coltype of output.
-\item "none": owtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
+\item "none": rowtype and coltype not set by unaryapply_byname. Rather, FUN will set rowtype and coltype.
 }
 }

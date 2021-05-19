@@ -708,7 +708,7 @@ test_that("ncol_byname() works as expected.", {
 })
 
 
-test_that("matrix_byname() works as expected", {
+test_that("create_matrix_byname() works as expected", {
   
   # Test with single values.
   single_mat <- create_matrix_byname(data = 1, nrow = 1, ncol = 1,
@@ -955,9 +955,9 @@ test_that("i_byname() function works", {
     )
   
   # Checking number of coefficients in each vector
-  expect_equal(length(res$unity_vec[[1]]), 2)
-  expect_equal(length(res$unity_vec[[2]]), 2)
-  expect_equal(length(res$unity_vec[[3]]), 3)
+  expect_equal(nrow(res$unity_vec[[1]]), 2)
+  expect_equal(nrow(res$unity_vec[[2]]), 2)
+  expect_equal(nrow(res$unity_vec[[3]]), 3)
   
   # Checking rowtypes
   expect_equal(res$unity_vec[[1]] %>% rowtype(), "Products")
