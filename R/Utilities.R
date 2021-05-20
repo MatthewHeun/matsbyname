@@ -1174,33 +1174,63 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE,
 }
 
 
-#' Title
+#' Create row vectors from data
+#' 
+#' This function takes data in the `.dat` and creates row vectors.
+#' 
+#' The column names in the resulting row vector are take from the names of `.dat`.
+#' 
+#' This function is a "byname" function that can accept a single number,
+#' a vector, a list, or a data frame in `.dat`.
+#' 
+#' Row types and column types are taken from the row type and column type attributes of `.dat`.
+#' 
+#' @param .dat Data to be converted to row vectors.
+#' @param rowname The name of the row of the rowvector.
+#' @param rowcoltypes Tells how to handle row and column types already present in `.dat`.
+#'                    Default is to keep both row type and column type.
 #'
-#' @param .dat
-#' @param margin Tells which dimension is long: `1` for a row vector, `2` for a column vector
-#' @param dimnames
-#' @param rowtype
-#' @param coltype
-#' @param keep_rowcoltypes
-#'
-#' @return
+#' @return A row vector, a list of row vectors, or a data frame column of row vectors, depending on the 
+#'         value of `.dat`.
+#'         
 #' @export
 #'
 #' @examples
-create_rowvec_byname <- function(.dat, dimnames, rowtype = NULL, coltype = NULL,
-                                 keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
+#' # Works with single numbers
+#' create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), 
+#'                      rowname = "r1")
+#' # Works with vectors
+#' create_rowvec_byname(c(1, 2), dimnames = list("r1", c("c1", "c2")))
+#' # Works with a list
+#' create_rowvec_byname(list(c(1,2), c(3,4,5)), 
+#'                      dimnames = list(list("r1", c("c1", "c2")), 
+#'                                      list("R1", c("C1", "C2", "C3"))))
+#' # Works in a data frame
+#' df1 <- data.frame(dat = I(list()), dimnms = I(list()))
+#' df1[[1, "dat"]] <- 1
+#' df1[[2, "dat"]] <- c(2,3)
+#' df1[[3, "dat"]] <- c(1,2,3,4,5,6)
+#' df1[[1, "dimnms"]] <- list("r1", "c1")
+#' df1[[2, "dimnms"]] <- list("R1", c("C1", "C2"))
+#' df1[[3, "dimnms"]] <- list("r1", c("c1", "c2", "c3", "c4", "c5", "c6"))
+#' df1
+#' df1 <- df1 %>%
+#'   dplyr::mutate(
+#'     rowvec_col = create_rowvec_byname(dat, dimnames = dimnms)
+#'   )
+#' df1$rowvec_col[[1]]
+#' df1$rowvec_col[[2]]
+#' df1$rowvec_col[[3]]
+create_rowvec_byname <- function(.dat, rowname, rowcoltypes = c("all", "transpose", "row", "col", "none")){
 
-
-  rowvec_func <- function(a, dimnames_val, rowtype_val, coltype_val) {
-    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val, rowtype = rowtype_val, coltype = coltype_val)
+  rowvec_func <- function(a, rowname_val) {
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = list(rowname_val, names(a)))
   }
   
-  keep_rowcoltypes = match.arg(keep_rowcoltypes)
+  rowcoltypes = match.arg(rowcoltypes)
   
   unaryapply_byname(FUN = rowvec_func, a = .dat,
-                    .FUNdots = list(dimnames_val = dimnames,
-                                    rowtype_val = rowtype,
-                                    coltype_val = coltype))
+                    .FUNdots = list(rowname_val = rowname), rowcoltypes = rowcoltypes)
 }
 
 

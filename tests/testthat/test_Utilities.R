@@ -1153,34 +1153,41 @@ test_that("constant_vector_byname() function works", {
 
 
 test_that("create_rowvec_byname() works as expected", {
-  single_vec <- create_rowvec_byname(1 %>% setrowtype("rt") %>% setcoltype("ct"),
-                                     dimnames = list("r1", "c1"))
+  # Try with a single number
+  single_vec <- create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"),
+                                     rowname = "r1")
   
   expect_equal(single_vec, matrix(1, dimnames = list("r1", "c1")) %>% setrowtype("rt") %>% setcoltype("ct"))
+  
+  # Try with a vector of numbers
+  vector_vec <- create_rowvec_byname(c(c1 = 1, c2 = 2), rowname = "r1")
+  expect_equal(vector_vec, matrix(c(1,2), ncol = 2, byrow = TRUE, dimnames = list("r1", c("c1", "c2"))))
+  
+  # Try with a list of vectors
+  vv_vec <- create_rowvec_byname(list(c(c1 = 1, c2 = 2), c(C1 = 3, C2 = 4, C3 = 5)),
+                                 rowname = list("r1", "R1"))
+  expect_equal(vv_vec[[1]], matrix(c(1,2), ncol = 2, dimnames = list("r1", c("c1", "c2"))))
   
   # Try in a data frame
   df1 <- data.frame(
     dat = I(list()),
-    dimnms = I(list())
+    rnms = I(list())
   )
-  df1[[1, "dat"]] <- 1
-  df1[[2, "dat"]] <- c(2,3)
-  df1[[3, "dat"]] <- c(1,2,3,4,5,6)
-  df1[[1, "dimnms"]] <- list("r1", "c1")
-  df1[[2, "dimnms"]] <- list("R1", c("C1", "C2"))
-  df1[[3, "dimnms"]] <- list("r1", c("c1", "c2", "c3", "c4", "c5", "c6"))
+  df1[[1, "dat"]] <- c(c1 = 1)
+  df1[[2, "dat"]] <- c(C1 = 2, C2 = 3)
+  df1[[3, "dat"]] <- c(c1 = 1, c2 = 2, c3 = 3, c4 = 4, c5 = 5, c6 = 6)
+  df1[[1, "rnms"]] <- "r1"
+  df1[[2, "rnms"]] <- "R1"
+  df1[[3, "rnms"]] <- "r1"
   
   res1 <- df1 %>%
     dplyr::mutate(
-      rowvec_col = create_rowvec_byname(dat, dimnames = dimnms)
+      rowvec_col = create_rowvec_byname(dat, rowname = rnms)
     )
   expect_equal(res1$rowvec_col[[1]], matrix(1, dimnames = list("r1", "c1")))
   expect_equal(res1$rowvec_col[[2]], matrix(c(2, 3), ncol = 2, dimnames = list("R1", c("C1", "C2"))))
   expect_equal(res1$rowvec_col[[3]], matrix(c(1, 2, 3, 4, 5, 6), 
                                             nrow = 1, ncol = 6,
                                             dimnames = list("r1", c("c1", "c2", "c3", "c4", "c5", "c6"))))
-  
-  # More tests here from Emmanuel
-  
 })
 
