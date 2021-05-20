@@ -1231,7 +1231,6 @@ create_rowvec_byname <- function(.dat, rowname, rowcoltypes = c("all", "transpos
 }
 
 
-
 #' Creates a "byname" i vector
 #' 
 #' Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames as the matrix provided as input.
