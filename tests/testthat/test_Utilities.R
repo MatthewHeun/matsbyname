@@ -1169,17 +1169,10 @@ test_that("create_rowvec_byname() works as expected", {
   expect_equal(vv_vec[[1]], matrix(c(1,2), ncol = 2, dimnames = list("r1", c("c1", "c2"))))
   
   # Try in a data frame
-  df1 <- data.frame(
-    dat = I(list()),
-    rnms = I(list())
-  )
-  df1[[1, "dat"]] <- c(c1 = 1)
-  df1[[2, "dat"]] <- c(C1 = 2, C2 = 3)
-  df1[[3, "dat"]] <- c(c1 = 1, c2 = 2, c3 = 3, c4 = 4, c5 = 5, c6 = 6)
-  df1[[1, "rnms"]] <- "r1"
-  df1[[2, "rnms"]] <- "R1"
-  df1[[3, "rnms"]] <- "r1"
+  dat <- list(c(c1 = 1), c(C1 = 2, C2 = 3), c(c1 = 1, c2 = 2, c3 = 3, c4 = 4, c5 = 5, c6 = 6))
+  rnms <- list("r1", "R1", "r1")
   
+  df1 <- tibble::tibble(dat, rnms)
   res1 <- df1 %>%
     dplyr::mutate(
       rowvec_col = create_rowvec_byname(dat, rowname = rnms)
