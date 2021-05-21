@@ -6,7 +6,10 @@
 \usage{
 create_rowvec_byname(
   .dat,
-  rowname,
+  dimnames = NA,
+  rowname = NA,
+  rowtype = NA,
+  coltype = NA,
   rowcoltypes = c("all", "transpose", "row", "col", "none")
 )
 }

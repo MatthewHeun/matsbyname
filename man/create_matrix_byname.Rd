@@ -10,9 +10,9 @@ create_matrix_byname(
   ncol,
   byrow = FALSE,
   dimnames,
-  rowtype = NULL,
-  coltype = NULL,
-  keep_rowcoltypes = c("all", "transpose", "row", "col", "none")
+  rowtype = NA,
+  coltype = NA,
+  rowcoltypes = c("all", "transpose", "row", "col", "none")
 )
 }
 \arguments{
@@ -29,29 +29,35 @@ Default is FALSE.}
 \item{dimnames}{The dimension names to be used for creating the matrices, in a list format, or as a data frame column
 containing a list of the dimension names to be used for each observation.}
 
-\item{rowtype}{The row types to be used for creating the matrices, in a list format, or as a data frame column
+\item{rowtype}{The row types to be used for creating the matrices, in a list format, or as a data frame column name
 containing a list of the row types to be used for each observation.}
 
-\item{coltype}{The column types to be used for creating the matrices, in a list format, or as a data frame column
+\item{coltype}{The column types to be used for creating the matrices, in a list format, or as a data frame column name
 containing a list of the column types to be used for each observation.}
+
+\item{data}{The data to be used to create the matrix, in a list format, or as a data frame column
+containing a list of the data to be used for each observation.}
 
 \item{keep_rowcoltypes}{A character string defining whether the row and column types (if available) of the input data (\code{.dat}) should be kept.
 Options are "all", "none", "row", "col".
 To use the rowtype and coltype arguments, the value should be set to "none".
 Default is "all".}
-
-\item{data}{The data to be used to create the matrix, in a list format, or as a data frame column
-containing a list of the data to be used for each observation.}
 }
 \value{
-A list of the created matrices.
+A matrix, list of matrices, or column in a data frame, depending on the input arguments.
 }
 \description{
 The function creates a "byname" matrix, or list of matrices, from \code{.dat}, depending on the input arguments.
 }
+\details{
+If \code{rowtype} or \code{coltype} are \code{NA} (the default),
+row and column types are taken from \code{.dat} and the \code{rowcoltypes} argument applies.
+If either \code{rowtype} or \code{coltype} are set different from default (i.e., different from \code{NA}),
+the values of the \code{rowtype} and \code{coltype} arguments override any row type or column type already present on \code{.dat}.
+}
 \examples{
 create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
                      dimnames = list(c("r1", "r2"), "c1"))
-list_of_mats <- create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
-                                     dimnames = list(list("r1", "c1"), list("R1", "C1")))
+create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+                     dimnames = list(list("r1", "c1"), list("R1", "C1")))
 }

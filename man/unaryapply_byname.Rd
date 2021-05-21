@@ -49,6 +49,9 @@ Options for the \code{rowcoltypes} argument are:
 \item "col": coltype of \code{a} becomes both rowtype and coltype of output.
 \item "none": rowtype and coltype not set by \code{unaryapply_byname}. Rather, \code{FUN} will set rowtype and coltype.
 }
+
+Note that \code{rowcoltypes} should not be a vector or list of strings.
+Rather, it should be a single string.
 }
 \examples{
 productnames <- c("p1", "p2")

@@ -710,16 +710,34 @@ test_that("ncol_byname() works as expected.", {
 
 test_that("create_matrix_byname() works as expected", {
   
-  # Test with single values.
-  single_mat <- create_matrix_byname(1, nrow = 1, ncol = 1,
-                                     dimnames = list("r1", "c1"),
-                                     rowtype = "testing_rowtype",
-                                     coltype = "testing_coltype",
-                                     keep_rowcoltypes = "none")
-
-  expect_equal(single_mat, matrix(1, dimnames = list("r1", "c1")) %>%
+  single_mat_with_types <- create_matrix_byname(1 %>% setrowtype("testing_rowtype") %>% setcoltype("testing_coltype"),
+                                                nrow = 1, ncol = 1,
+                                                dimnames = list("r1", "c1"))
+  # "all" retains row and column types
+  expect_equal(single_mat_with_types, matrix(1, dimnames = list("r1", "c1")) %>%
                  setrowtype("testing_rowtype") %>%
                  setcoltype("testing_coltype"))
+
+  # Test with single values.
+  single_mat <- create_matrix_byname(1 %>% setrowtype("testing_rowtype") %>% setcoltype("testing_coltype"),
+                                     nrow = 1, ncol = 1,
+                                     dimnames = list("r1", "c1"),
+                                     rowcoltypes = "none")
+  # "none" should strip row and column types from the output
+  expect_equal(single_mat, matrix(1, dimnames = list("r1", "c1")))
+  
+  
+  # Single mat with override of row and column types
+  single_mat_override <- create_matrix_byname(1 %>% setrowtype("testing_rowtype") %>% setcoltype("testing_coltype"),
+                                              nrow = 1, ncol = 1,
+                                              dimnames = list("r1", "c1"),
+                                              rowtype = "rt", 
+                                              coltype = "ct",
+                                              rowcoltypes = "all")
+  expect_equal(single_mat_override, matrix(1, dimnames = list("r1", "c1")) %>%
+                 setrowtype("rt") %>%
+                 setcoltype("ct"))
+  
   
   # Test with row and column types
   single_mat_with_types <- create_matrix_byname(1 %>% setrowtype("rt") %>% setcoltype("ct"),
@@ -730,7 +748,7 @@ test_that("create_matrix_byname() works as expected", {
   
   single_mat_with_types_transposed <- create_matrix_byname(1 %>% setrowtype("rt") %>% setcoltype("ct"),
                                                            nrow = 1, ncol = 1,
-                                                           dimnames = list("r1", "c1"), keep_rowcoltypes = "transpose")
+                                                           dimnames = list("r1", "c1"), rowcoltypes = "transpose")
   expect_equal(rowtype(single_mat_with_types_transposed), "ct")
   expect_equal(coltype(single_mat_with_types_transposed), "rt")
   
@@ -747,11 +765,9 @@ test_that("create_matrix_byname() works as expected", {
   expect_equal(list_of_mats[[1]], matrix(1, dimnames = list("r1", "c1")))
   expect_equal(list_of_mats[[2]], matrix(2, dimnames = list("R1", "C1")))
 
-  list_of_mats <- create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1),
-                                       dimnames = list(list("r1", "c1"), list("R1", "C1")),
-                                       rowtype = "testing_rowtypes",
-                                       coltype = "testing_coltypes",
-                                       keep_rowcoltypes = "none")
+  list_of_mats <- create_matrix_byname(list(1, 2) %>% setrowtype("testing_rowtypes") %>% setcoltype("testing_coltypes"),
+                                       nrow = list(1, 1), ncol = list(1,1),
+                                       dimnames = list(list("r1", "c1"), list("R1", "C1")))
 
   expect_equal(list_of_mats[[1]], matrix(1, dimnames = list("r1", "c1")) %>%
                  setrowtype("testing_rowtypes") %>%
@@ -834,7 +850,7 @@ test_that("create_matrix_byname() works as expected", {
   
   dfUs_added_matrix <- dfUs %>% 
     dplyr::mutate(
-      dat = I(list(1)),# I(list(seq(1:10))),
+      dat = I(list(1)),
       number_of_rows = I(matsbyname::nrow_byname(matrix_byname)),
       number_of_cols = I(matsbyname::ncol_byname(matrix_byname)),
       row_names = matsbyname::getrownames_byname(matrix_byname),
@@ -877,8 +893,8 @@ res2 <- dfUs_added_matrix %>%
         ncol = number_of_cols,
         dimnames = dimension_names,
         rowtype = row_types_col,
-        coltype = col_types_col,
-        keep_rowcoltypes = "none"
+        coltype = col_types_col, 
+        rowcoltypes = "none"
       )
     )
   
