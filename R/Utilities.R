@@ -1204,7 +1204,8 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE,
 #' # Works with a list
 #' create_rowvec_byname(list(c(c1 = 1, c2 = 2), c(C1 = 3, C2 = 4, C3 = 5)), 
 #'                      rowname = list("r1", "R1"))
-#' # Works in a data frame
+#' # Works in a tibble, too.
+#' # (Must be a tibble, not a data frame, so that names are preserved.)
 #' dat <- list(c(c1 = 1),
 #'             c(C1 = 2, C2 = 3), 
 #'             c(c1 = 1, c2 = 2, c3 = 3, c4 = 4, c5 = 5, c6 = 6))
@@ -1221,13 +1222,14 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE,
 create_rowvec_byname <- function(.dat, rowname, rowcoltypes = c("all", "transpose", "row", "col", "none")){
 
   rowvec_func <- function(a, rowname_val) {
-    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = list(rowname_val, names(a)))
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = list(rowname_val, names(a)),
+                         rowtype = rowtype(a), coltype = coltype(a))
   }
   
   rowcoltypes = match.arg(rowcoltypes)
   
   unaryapply_byname(FUN = rowvec_func, a = .dat,
-                    .FUNdots = list(rowname_val = rowname), rowcoltypes = rowcoltypes)
+                    .FUNdots = list(rowname_val = rowname), rowcoltypes = c("all", "transpose", "row", "col", "none"))
 }
 
 
