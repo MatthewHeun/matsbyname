@@ -1250,10 +1250,10 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, rowtype = NA
     # So we check here if dimnames has been set.
     # If not, we just take names from a, if available.
     if (is.na(dimnames_val)) {
-      dimnames_val <- list(rowname, names(a))
+      dimnames_val <- list(rowname_val, names(a))
     }
     # Create the row vector using the rowtype and coltype of a.
-    out <- create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val,
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val,
                                 rowtype = rowtype_val, coltype = coltype_val)
   }
 
