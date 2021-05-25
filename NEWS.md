@@ -1,3 +1,9 @@
+* New function `create_rowvec_byname()` that builds on 
+  `create_matrix_byname()`.
+* New function `create_matrix_byname()` that behaves
+  much like `matrix()` with "byname" characteristics.
+
+
 # matsbyname 0.4.17 (2021-04-10)
 
 * Transition to GitHub actions for continuous integration.

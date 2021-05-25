@@ -1200,3 +1200,37 @@ test_that("create_rowvec_byname() works as expected", {
                                             dimnames = list("r1", c("c1", "c2", "c3", "c4", "c5", "c6"))))
 })
 
+
+
+test_that("create_colvec_byname() works as expected", {
+  # Try with a single number
+  single_vec <- create_colvec_byname(c(r1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"),
+                                     colname = "c1")
+  
+  expect_equal(single_vec, matrix(1, dimnames = list("r1", "c1")) %>% setrowtype("rt") %>% setcoltype("ct"))
+  
+  # Try with a vector of numbers
+  vector_vec <- create_colvec_byname(c(r1 = 1, r2 = 2), colname = "c1")
+  expect_equal(vector_vec, matrix(c(1,2), nrow = 2, dimnames = list(c("r1", "r2"), "c1")))
+  
+  # Try with a list of vectors
+  vv_vec <- create_colvec_byname(list(c(r1 = 1, r2 = 2), c(R1 = 3, R2 = 4, R3 = 5)),
+                                 colname = list("c1", "C1"))
+  expect_equal(vv_vec[[1]], matrix(c(1,2), nrow = 2, dimnames = list(c("r1", "r2"), "c1")))
+  
+  # Try in a data frame
+  dat <- list(c(r1 = 1), c(R1 = 2, R2 = 3), c(r1 = 1, r2 = 2, r3 = 3, r4 = 4, r5 = 5, r6 = 6))
+  cnms <- list("c1", "C1", "c1")
+  
+  df1 <- tibble::tibble(dat, cnms)
+  res1 <- df1 %>%
+    dplyr::mutate(
+      colvec_col = create_colvec_byname(dat, colname = cnms)
+    )
+  expect_equal(res1$colvec_col[[1]], matrix(1, dimnames = list("r1", "c1")))
+  expect_equal(res1$colvec_col[[2]], matrix(c(2, 3), nrow = 2, dimnames = list(c("R1", "R2"), "C1")))
+  expect_equal(res1$colvec_col[[3]], matrix(c(1, 2, 3, 4, 5, 6), 
+                                            nrow = 6, ncol = 1,
+                                            dimnames = list(c("r1", "r2", "r3", "r4", "r5", "r6"), "c1")))
+})
+

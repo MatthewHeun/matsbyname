@@ -32,7 +32,7 @@ A "byname" i vector, with one column,
 the same number of rows, and the same rownames as the matrix \code{data}.
 }
 \description{
-Creates a "byname" i vector (i.e. vector filled with ones) with the same number of rows and rownames as the matrix provided as input.
+Creates a "byname" identity vector (i.e. vector filled with ones) with the same number of rows and rownames as the matrix provided as input.
 }
 \details{
 Options for the keep_rowcoltypes argument are:
