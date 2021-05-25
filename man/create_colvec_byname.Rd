@@ -4,14 +4,7 @@
 \alias{create_colvec_byname}
 \title{Create column vectors from data}
 \usage{
-create_colvec_byname(
-  .dat,
-  dimnames = NA,
-  colname = NA,
-  rowtype = NA,
-  coltype = NA,
-  rowcoltypes = c("all", "transpose", "row", "col", "none")
-)
+create_colvec_byname(.dat, dimnames = NA, colname = NA)
 }
 \arguments{
 \item{.dat}{Data to be converted to column vectors.}
@@ -20,17 +13,6 @@ create_colvec_byname(
 containing a list of the dimension names to be used for each observation.}
 
 \item{colname}{The name of the column of the colvector.}
-
-\item{rowtype}{The row types to be used for creating the matrices, in a list format, or as a data frame column name
-containing a list of the row types to be used for each observation.
-Default is \code{NA}, meaning rowtype is to be taken from the \code{.dat} argument itself.}
-
-\item{coltype}{The column types to be used for creating the matrices, in a list format, or as a data frame column name
-containing a list of the column types to be used for each observation.
-Default is \code{NA}, meaning coltype is to be taken from the \code{.dat} argument itself.}
-
-\item{rowcoltypes}{Tells how to handle row and column types already present in \code{.dat}.
-Default is to keep both row type and column type.}
 }
 \value{
 A column vector, a list of column vectors, or a data frame column of column vectors, depending on the
@@ -40,14 +22,14 @@ value of \code{.dat}.
 This function takes data in the \code{.dat} and creates column vectors.
 }
 \details{
-The row names in the resulting row vector are take from the names of \code{.dat}.
+The row and column names in the resulting column vector are taken from
+the names of \code{.dat} and \code{colname}.
+If set, \code{dimnames} overrides the names of \code{.dat} and \code{colname}.
 
 This function is a "byname" function that can accept a single number,
 a vector, a list, or a data frame in \code{.dat}.
 
-Row types and column types are taken from the row type and column type attributes of \code{.dat},
-unless any \code{rowtype} or \code{coltype} value is different from \code{NA}, in which case
-the values of \code{rowtype} and \code{coltype} are used.
+Row types and column types are taken from the row type and column type attributes of \code{.dat}.
 }
 \examples{
 # Works with single numbers

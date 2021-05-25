@@ -1127,10 +1127,7 @@ ncol_byname <- function(a) {
 #' 
 #' Row and column names are taken from the `dimnames` argument.
 #' 
-#' If `rowtype` or `coltype` are `NA` (the default), 
-#' row and column types are taken from `.dat` and the `rowcoltypes` argument applies.
-#' If either `rowtype` or `coltype` are set different from default (i.e., different from `NA`), 
-#' the values of the `rowtype` and `coltype` arguments override any row type or column type already present on `.dat`.
+#' Any row or column type information on `.dat` is preserved on output.
 #'
 #' @param .dat The data to be used to create the matrix, in a list format, or as a data frame column
 #'             containing a list of the data to be used for each observation.
@@ -1143,17 +1140,6 @@ ncol_byname <- function(a) {
 #'              Default is `FALSE.`
 #' @param dimnames The dimension names to be used for creating the matrices, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param rowtype The row types to be used for creating the matrices, in a list format, or as a data frame column name
-#'                containing a list of the row types to be used for each observation.
-#'                Default is `NA`, meaning rowtype is to be taken from the `.dat` argument itself.
-#' @param coltype The column types to be used for creating the matrices, in a list format, or as a data frame column name
-#'                containing a list of the column types to be used for each observation.
-#'                Default is `NA`, meaning coltype is to be taken from the `.dat` argument itself.
-#' @param rowcoltypes A character string defining whether the row and column types (if available) of the input data (`.dat`) should be kept.
-#'                    Options are "all", "none", "row", "col".
-#'                    This argument is treated as "none" (regardless of its value) when 
-#'                    any `rowtype` or `coltype` is `NA`.
-#'                    Default is "all".
 #'
 #' @return A matrix, list of matrices, or column in a data frame, depending on the input arguments.
 #' 
@@ -1164,42 +1150,19 @@ ncol_byname <- function(a) {
 #'                      dimnames = list(c("r1", "r2"), "c1"))
 #' create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
 #'                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
-create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, 
-                                 dimnames, rowtype = NA, coltype = NA,
-                                 rowcoltypes = c("all", "transpose", "row", "col", "none")) {
+create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames) {
   
   matrix_func <- function(a, nrow_val, ncol_val, byrow_val, 
                           dimnames_val, rowtype_val = NA, coltype_val = NA) {
-    out <- matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val,
-                  dimnames = dimnames_val)
-    # If explicit rowtype and coltype arguments have been set, 
-    # override the default rowtype and coltype.
-    if (!is.na(rowtype_val)) {
-      out <- out %>% setrowtype(rowtype_val)
-    }
-    if (!is.na(coltype_val)) {
-      out <- out %>% setcoltype(coltype_val)
-    }
-    return(out)
-  }
-  
-  rowcoltypes <- match.arg(rowcoltypes)
-  # If any of the rowtype or coltype values are set,
-  # we assume that the caller wants to set rowtype and coltype explicitly
-  # via the rowtype or coltype arguments.
-  # In that case, override the behavior of unaryapply_byname
-  # by setting rowcoltypes = "none".
-  if (any(!is.na(rowtype)) | any(!is.na(coltype))) {
-    rowcoltypes <- "none"
+    matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val)
   }
   
   unaryapply_byname(FUN = matrix_func, a = .dat,
                     .FUNdots = list(nrow_val = nrow, ncol_val = ncol, 
                                     byrow_val = byrow,
-                                    dimnames_val = dimnames,
-                                    rowtype_val = rowtype,
-                                    coltype_val = coltype),
-                    rowcoltypes = rowcoltypes)
+                                    dimnames_val = dimnames),
+                    # Transfer any row or column type information in .dat to the output.
+                    rowcoltypes = "all")
 }
 
 
@@ -1207,27 +1170,19 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE,
 #' 
 #' This function takes data in the `.dat` and creates row vectors.
 #' 
-#' The column names in the resulting row vector are take from the names of `.dat`.
+#' The row and column names in the resulting row vector are taken from 
+#' `rowname` and the names of `.dat`.
+#' If set, `dimnames` overrides `rowname` and the names of `.dat`.
+#' 
+#' Row types and column types are taken from the row type and column type attributes of `.dat`.
 #' 
 #' This function is a "byname" function that can accept a single number,
 #' a vector, a list, or a data frame in `.dat`.
 #' 
-#' Row types and column types are taken from the row type and column type attributes of `.dat`,
-#' unless any `rowtype` or `coltype` value is different from `NA`, in which case
-#' the values of `rowtype` and `coltype` are used.
-#' 
 #' @param .dat Data to be converted to row vectors.
-#' @param rowname The name of the row of the rowvector.
+#' @param rowname The name of the row of the row vector.
 #' @param dimnames The dimension names to be used for creating the row vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param rowtype The row types to be used for creating the matrices, in a list format, or as a data frame column name
-#'                containing a list of the row types to be used for each observation.
-#'                Default is `NA`, meaning rowtype is to be taken from the `.dat` argument itself.
-#' @param coltype The column types to be used for creating the matrices, in a list format, or as a data frame column name
-#'                containing a list of the column types to be used for each observation.
-#'                Default is `NA`, meaning coltype is to be taken from the `.dat` argument itself.
-#' @param rowcoltypes Tells how to handle row and column types already present in `.dat`.
-#'                    Default is to keep both row type and column type.
 #'
 #' @return A row vector, a list of row vectors, or a data frame column of row vectors, depending on the 
 #'         value of `.dat`.
@@ -1236,8 +1191,7 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE,
 #'
 #' @examples
 #' # Works with single numbers
-#' create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), 
-#'                      rowname = "r1")
+#' create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), rowname = "r1")
 #' # Works with vectors
 #' create_rowvec_byname(c(c1 = 1, c2 = 2), rowname = "r1")
 #' # Works with a list
@@ -1258,9 +1212,9 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE,
 #' df1$rowvec_col[[1]]
 #' df1$rowvec_col[[2]]
 #' df1$rowvec_col[[3]]
-create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, rowtype = NA, coltype = NA, rowcoltypes = c("all", "transpose", "row", "col", "none")){
+create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
 
-  rowvec_func <- function(a, dimnames_val, rowname_val, rowtype_val, coltype_val) {
+  rowvec_func <- function(a, dimnames_val, rowname_val) {
 
     # Figure out the column names.
     # The dimnames argument overrides any names present in a.
@@ -1270,24 +1224,12 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, rowtype = NA
       dimnames_val <- list(rowname_val, names(a))
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val,
-                                rowtype = rowtype_val, coltype = coltype_val)
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val)
   }
 
-  rowcoltypes <- match.arg(rowcoltypes)
-  # If any of the rowtype or coltype values are set,
-  # we assume that the caller wants to set rowtype and coltype explicitly
-  # via the rowtype or coltype arguments.
-  # In that case, override the behavior of unaryapply_byname
-  # by setting rowcoltypes = "none".
-  if (any(!is.na(rowtype)) | any(!is.na(coltype))) {
-    rowcoltypes <- "none"
-  }
-  
   unaryapply_byname(FUN = rowvec_func, 
                     a = .dat,
-                    .FUNdots = list(dimnames_val = dimnames, rowname_val = rowname, rowtype_val = rowtype, coltype_val = coltype), 
-                    rowcoltypes = rowcoltypes)
+                    .FUNdots = list(dimnames_val = dimnames, rowname_val = rowname), rowcoltypes = "all")
 }
 
 
@@ -1295,27 +1237,19 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, rowtype = NA
 #' 
 #' This function takes data in the `.dat` and creates column vectors.
 #' 
-#' The row names in the resulting row vector are take from the names of `.dat`.
+#' The row and column names in the resulting column vector are taken from 
+#' the names of `.dat` and `colname`.
+#' If set, `dimnames` overrides the names of `.dat` and `colname`.
 #' 
 #' This function is a "byname" function that can accept a single number,
 #' a vector, a list, or a data frame in `.dat`.
 #' 
-#' Row types and column types are taken from the row type and column type attributes of `.dat`,
-#' unless any `rowtype` or `coltype` value is different from `NA`, in which case
-#' the values of `rowtype` and `coltype` are used.
+#' Row types and column types are taken from the row type and column type attributes of `.dat`.
 #' 
 #' @param .dat Data to be converted to column vectors.
 #' @param colname The name of the column of the colvector.
 #' @param dimnames The dimension names to be used for creating the column vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param rowtype The row types to be used for creating the matrices, in a list format, or as a data frame column name
-#'                containing a list of the row types to be used for each observation.
-#'                Default is `NA`, meaning rowtype is to be taken from the `.dat` argument itself.
-#' @param coltype The column types to be used for creating the matrices, in a list format, or as a data frame column name
-#'                containing a list of the column types to be used for each observation.
-#'                Default is `NA`, meaning coltype is to be taken from the `.dat` argument itself.
-#' @param rowcoltypes Tells how to handle row and column types already present in `.dat`.
-#'                    Default is to keep both row type and column type.
 #'
 #' @return A column vector, a list of column vectors, or a data frame column of column vectors, depending on the 
 #'         value of `.dat`.
@@ -1346,9 +1280,9 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, rowtype = NA
 #' df1$rowvec_col[[1]]
 #' df1$rowvec_col[[2]]
 #' df1$rowvec_col[[3]]
-create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, rowtype = NA, coltype = NA, rowcoltypes = c("all", "transpose", "row", "col", "none")) {
+create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
   
-  colvec_func <- function(a, dimnames_val, colname_val, rowtype_val, coltype_val) {
+  colvec_func <- function(a, dimnames_val, colname_val) {
 
     # Figure out the row names.
     # The dimnames argument overrides any names present in a.
@@ -1358,24 +1292,13 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, rowtype = NA
       dimnames_val <- list(names(a), colname_val)
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val,
-                         rowtype = rowtype_val, coltype = coltype_val)
-  }
-
-  rowcoltypes <- match.arg(rowcoltypes)
-  # If any of the rowtype or coltype values are set,
-  # we assume that the caller wants to set rowtype and coltype explicitly
-  # via the rowtype or coltype arguments.
-  # In that case, override the behavior of unaryapply_byname
-  # by setting rowcoltypes = "none".
-  if (any(!is.na(rowtype)) | any(!is.na(coltype))) {
-    rowcoltypes <- "none"
+    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val)
   }
 
   unaryapply_byname(FUN = colvec_func,
                     a = .dat,
-                    .FUNdots = list(dimnames_val = dimnames, colname_val = colname, rowtype_val = rowtype, coltype_val = coltype),
-                    rowcoltypes = rowcoltypes)
+                    .FUNdots = list(dimnames_val = dimnames, colname_val = colname),
+                    rowcoltypes = "all")
 }
 
 
@@ -1404,17 +1327,16 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, rowtype = NA
 #'                               dimnames = list(c("r1", "r2", "r3", "r4"), "c1")))
 kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   
-  i_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
+  k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
     # When we get here, a_mat should be a single matrix
     if (column_val) {
       create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val))
     } else {
       create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)))
-      
     }
   }
 
-  unaryapply_byname(FUN = i_from_template_func, a = a, 
+  unaryapply_byname(FUN = k_from_template_func, a = a, 
                     .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "all")
 }
 

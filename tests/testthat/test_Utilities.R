@@ -718,39 +718,12 @@ test_that("create_matrix_byname() works as expected", {
                  setrowtype("testing_rowtype") %>%
                  setcoltype("testing_coltype"))
 
-  # Test with single values.
-  single_mat <- create_matrix_byname(1 %>% setrowtype("testing_rowtype") %>% setcoltype("testing_coltype"),
-                                     nrow = 1, ncol = 1,
-                                     dimnames = list("r1", "c1"),
-                                     rowcoltypes = "none")
-  # "none" should strip row and column types from the output
-  expect_equal(single_mat, matrix(1, dimnames = list("r1", "c1")))
-  
-  
-  # Single mat with override of row and column types
-  single_mat_override <- create_matrix_byname(1 %>% setrowtype("testing_rowtype") %>% setcoltype("testing_coltype"),
-                                              nrow = 1, ncol = 1,
-                                              dimnames = list("r1", "c1"),
-                                              rowtype = "rt", 
-                                              coltype = "ct",
-                                              rowcoltypes = "all")
-  expect_equal(single_mat_override, matrix(1, dimnames = list("r1", "c1")) %>%
-                 setrowtype("rt") %>%
-                 setcoltype("ct"))
-  
-  
   # Test with row and column types
   single_mat_with_types <- create_matrix_byname(1 %>% setrowtype("rt") %>% setcoltype("ct"),
                                                 nrow = 1, ncol = 1,
                                                 dimnames = list("r1", "c1"))
   expect_equal(rowtype(single_mat_with_types), "rt")
   expect_equal(coltype(single_mat_with_types), "ct")
-  
-  single_mat_with_types_transposed <- create_matrix_byname(1 %>% setrowtype("rt") %>% setcoltype("ct"),
-                                                           nrow = 1, ncol = 1,
-                                                           dimnames = list("r1", "c1"), rowcoltypes = "transpose")
-  expect_equal(rowtype(single_mat_with_types_transposed), "ct")
-  expect_equal(coltype(single_mat_with_types_transposed), "rt")
   
   single_mat_2 <- create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
                                        dimnames = list(c("r1", "r2"), "c1"))
@@ -783,7 +756,6 @@ test_that("create_matrix_byname() works as expected", {
   expect_equal(list_of_mats_2[[1]], matrix(1, dimnames = list("r1", "c1")))
   expect_equal(list_of_mats_2[[2]], matrix(c(2, 3, 4, 5), nrow = 2, ncol = 2, dimnames = list(c("R1", "R2"), c("C1", "C2")), byrow = FALSE))
   
-
   # Try in a data frame
   df1 <- data.frame(
     dat = I(list()),
@@ -859,8 +831,8 @@ test_that("create_matrix_byname() works as expected", {
       row_types_col = I(list("testing_rowtypes")),
       col_types_col = I(list("testing_coltypes"))
     )
-
-res2 <- dfUs_added_matrix %>% 
+  
+  res2 <- dfUs_added_matrix %>% 
     dplyr::mutate(
       new_matrix = matsbyname::create_matrix_byname(
         dat,
@@ -869,7 +841,7 @@ res2 <- dfUs_added_matrix %>%
         dimnames = dimension_names
       )
     )
-
+  
   expect_equal(
     res2$new_matrix[[1]],
     matrix(1, ncol = 2, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2")))
@@ -891,32 +863,23 @@ res2 <- dfUs_added_matrix %>%
         dat,
         nrow = number_of_rows,
         ncol = number_of_cols,
-        dimnames = dimension_names,
-        rowtype = row_types_col,
-        coltype = col_types_col, 
-        rowcoltypes = "none"
+        dimnames = dimension_names
       )
     )
   
   expect_equal(
     res3$new_matrix[[1]],
-    matrix(1, ncol = 2, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-             setrowtype("testing_rowtypes") %>% 
-             setcoltype("testing_coltypes")
+    matrix(1, ncol = 2, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2")))
   )
   
   expect_equal(
     res3$new_matrix[[2]],
-    matrix(1, ncol = 3, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
-             setrowtype("testing_rowtypes") %>% 
-             setcoltype("testing_coltypes")
+    matrix(1, ncol = 3, nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3")))
   )
   
   expect_equal(
     res3$new_matrix[[3]],
-    matrix(1, ncol = 4, nrow = 3, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2", "i3", "i4"))) %>% 
-             setrowtype("testing_rowtypes") %>% 
-             setcoltype("testing_coltypes")
+    matrix(1, ncol = 4, nrow = 3, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2", "i3", "i4")))
   )
 })
 
@@ -1178,8 +1141,8 @@ test_that("create_rowvec_byname() works as expected", {
   expect_equal(sv_dimnames, matrix(1, dimnames = list("r1", "c1")))
   
   # Try with a vector of numbers
-  vector_vec <- create_rowvec_byname(c(c1 = 1, c2 = 2), rowname = "r1", rowtype = "rt", coltype = "ct")
-  expect_equal(vector_vec, matrix(c(1,2), ncol = 2, byrow = TRUE, dimnames = list("r1", c("c1", "c2"))) %>% setrowtype("rt") %>% setcoltype("ct"))
+  vector_vec <- create_rowvec_byname(c(c1 = 1, c2 = 2), rowname = "r1")
+  expect_equal(vector_vec, matrix(c(1,2), ncol = 2, byrow = TRUE, dimnames = list("r1", c("c1", "c2"))))
   
   # Try with a list of vectors
   vv_vec <- create_rowvec_byname(list(c(c1 = 1, c2 = 2), c(C1 = 3, C2 = 4, C3 = 5)),
@@ -1203,21 +1166,17 @@ test_that("create_rowvec_byname() works as expected", {
   
   # Try in data frame with dimnames and named vector.  See which one wins.
   dimnms <- list(list("r01", "c01"), list("R01", c("C01", "C02")), list("r01", c("c01", "c02", "c03", "c04", "c05", "c06")))
-  df2 <- tibble::tibble(dat, rnms, dimnms) %>% 
-    dplyr::mutate(
-      rtype = "rt", 
-      ctype = "ct"
-    )
+  df2 <- tibble::tibble(dat, rnms, dimnms)
   res2 <- df2 %>% 
     dplyr::mutate(
-      rowvec_col = create_rowvec_byname(dat, dimnames = dimnms, rowname = rnms, rowtype = rtype, coltype = ctype)
+      rowvec_col = create_rowvec_byname(dat, dimnames = dimnms, rowname = rnms)
     )
   # Explicitly setting dimnames should win.
-  expect_equal(res2$rowvec_col[[1]], matrix(1, dimnames = list("r01", "c01")) %>% setrowtype("rt") %>% setcoltype("ct"))
-  expect_equal(res2$rowvec_col[[2]], matrix(c(2, 3), ncol = 2, dimnames = list("R01", c("C01", "C02"))) %>% setrowtype("rt") %>% setcoltype("ct"))
+  expect_equal(res2$rowvec_col[[1]], matrix(1, dimnames = list("r01", "c01")))
+  expect_equal(res2$rowvec_col[[2]], matrix(c(2, 3), ncol = 2, dimnames = list("R01", c("C01", "C02"))))
   expect_equal(res2$rowvec_col[[3]], matrix(c(1, 2, 3, 4, 5, 6), 
                                             nrow = 1, ncol = 6,
-                                            dimnames = list("r01", c("c01", "c02", "c03", "c04", "c05", "c06"))) %>% setrowtype("rt") %>% setcoltype("ct"))
+                                            dimnames = list("r01", c("c01", "c02", "c03", "c04", "c05", "c06"))))
 })
 
 
@@ -1225,7 +1184,6 @@ test_that("create_colvec_byname() works as expected", {
   # Try with a single number
   single_vec <- create_colvec_byname(c(r1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"),
                                      colname = "c1")
-  
   expect_equal(single_vec, matrix(1, dimnames = list("r1", "c1")) %>% setrowtype("rt") %>% setcoltype("ct"))
   
   # Try with a vector of numbers
@@ -1254,21 +1212,17 @@ test_that("create_colvec_byname() works as expected", {
   
   # Try in data frame with dimnames and named vector.  See which one wins.
   dimnms <- list(list("r01", "c01"), list(c("R01", "R02"), "C01"), list(c("r01", "r02", "r03", "r04", "r05", "r06"), "c01"))
-  df2 <- tibble::tibble(dat, cnms, dimnms) %>% 
-    dplyr::mutate(
-      rtype = "rt", 
-      ctype = "ct"
-    )
+  df2 <- tibble::tibble(dat, cnms, dimnms) 
   res2 <- df2 %>% 
     dplyr::mutate(
-      colvec_col = create_colvec_byname(dat, dimnames = dimnms, colname = cnms, rowtype = rtype, coltype = ctype)
+      colvec_col = create_colvec_byname(dat, dimnames = dimnms, colname = cnms)
     )
   # Explicitly setting dimnames should win.
-  expect_equal(res2$colvec_col[[1]], matrix(1, dimnames = list("r01", "c01")) %>% setrowtype("rt") %>% setcoltype("ct"))
-  expect_equal(res2$colvec_col[[2]], matrix(c(2, 3), nrow = 2, dimnames = list(c("R01", "R02"), "C01")) %>% setrowtype("rt") %>% setcoltype("ct"))
+  expect_equal(res2$colvec_col[[1]], matrix(1, dimnames = list("r01", "c01")))
+  expect_equal(res2$colvec_col[[2]], matrix(c(2, 3), nrow = 2, dimnames = list(c("R01", "R02"), "C01")))
   expect_equal(res2$colvec_col[[3]], matrix(c(1, 2, 3, 4, 5, 6), 
                                             nrow = 6, ncol = 1,
-                                            dimnames = list(c("r01", "r02", "r03", "r04", "r05", "r06"), "c01")) %>% setrowtype("rt") %>% setcoltype("ct"))
+                                            dimnames = list(c("r01", "r02", "r03", "r04", "r05", "r06"), "c01")))
 })
 
 
@@ -1307,8 +1261,4 @@ test_that("kvec_from_template_byname() works as expected", {
                  setrowtype("rt") %>% setcoltype("ct1"))
   expect_equal(res1$with_rt_ct[[2]], matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")) %>% 
                  setrowtype("rt") %>% setcoltype("ct2"))
-  
-  
-  
-  
 })

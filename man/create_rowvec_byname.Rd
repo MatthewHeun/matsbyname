@@ -4,14 +4,7 @@
 \alias{create_rowvec_byname}
 \title{Create row vectors from data}
 \usage{
-create_rowvec_byname(
-  .dat,
-  dimnames = NA,
-  rowname = NA,
-  rowtype = NA,
-  coltype = NA,
-  rowcoltypes = c("all", "transpose", "row", "col", "none")
-)
+create_rowvec_byname(.dat, dimnames = NA, rowname = NA)
 }
 \arguments{
 \item{.dat}{Data to be converted to row vectors.}
@@ -19,18 +12,7 @@ create_rowvec_byname(
 \item{dimnames}{The dimension names to be used for creating the row vector, in a list format, or as a data frame column
 containing a list of the dimension names to be used for each observation.}
 
-\item{rowname}{The name of the row of the rowvector.}
-
-\item{rowtype}{The row types to be used for creating the matrices, in a list format, or as a data frame column name
-containing a list of the row types to be used for each observation.
-Default is \code{NA}, meaning rowtype is to be taken from the \code{.dat} argument itself.}
-
-\item{coltype}{The column types to be used for creating the matrices, in a list format, or as a data frame column name
-containing a list of the column types to be used for each observation.
-Default is \code{NA}, meaning coltype is to be taken from the \code{.dat} argument itself.}
-
-\item{rowcoltypes}{Tells how to handle row and column types already present in \code{.dat}.
-Default is to keep both row type and column type.}
+\item{rowname}{The name of the row of the row vector.}
 }
 \value{
 A row vector, a list of row vectors, or a data frame column of row vectors, depending on the
@@ -40,19 +22,18 @@ value of \code{.dat}.
 This function takes data in the \code{.dat} and creates row vectors.
 }
 \details{
-The column names in the resulting row vector are take from the names of \code{.dat}.
+The row and column names in the resulting row vector are taken from
+\code{rowname} and the names of \code{.dat}.
+If set, \code{dimnames} overrides \code{rowname} and the names of \code{.dat}.
+
+Row types and column types are taken from the row type and column type attributes of \code{.dat}.
 
 This function is a "byname" function that can accept a single number,
 a vector, a list, or a data frame in \code{.dat}.
-
-Row types and column types are taken from the row type and column type attributes of \code{.dat},
-unless any \code{rowtype} or \code{coltype} value is different from \code{NA}, in which case
-the values of \code{rowtype} and \code{coltype} are used.
 }
 \examples{
 # Works with single numbers
-create_rowvec_byname(c(c1 = 1) \%>\% setrowtype("rt") \%>\% setcoltype("ct"), 
-                     rowname = "r1")
+create_rowvec_byname(c(c1 = 1) \%>\% setrowtype("rt") \%>\% setcoltype("ct"), rowname = "r1")
 # Works with vectors
 create_rowvec_byname(c(c1 = 1, c2 = 2), rowname = "r1")
 # Works with a list
