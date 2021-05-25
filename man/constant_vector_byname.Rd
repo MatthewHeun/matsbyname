@@ -35,7 +35,7 @@ A "byname" vector, filled with constant values with the same number of rows, and
 than the matrix that is provided as input.
 }
 \description{
-Creates a "byname" constant vector (i.e. vector filled with a constant k value)
+Creates a "byname" constant vector (i.e. vector filled with a constant \code{k} value)
 with the same number of rows and rownames than the matrix provided as input.
 }
 \details{

@@ -1271,3 +1271,44 @@ test_that("create_colvec_byname() works as expected", {
                                             dimnames = list(c("r01", "r02", "r03", "r04", "r05", "r06"), "c01")) %>% setrowtype("rt") %>% setcoltype("ct"))
 })
 
+
+test_that("kvec_from_template_byname() works as expected", {
+  m <- matrix(42, nrow = 4, ncol = 2,
+              dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2")))
+  expect_equal(kvec_from_template_byname(m, colname = "mycol"), matrix(1, nrow = 4, ncol = 1, 
+                                                                       dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  
+  expect_equal(kvec_from_template_byname(m, colname = "myrow", column = FALSE), matrix(1, nrow = 1, ncol = 2, 
+                                                                                       dimnames = list("myrow", c("c1", "c2"))))
+  
+  # Try in a data frame.
+  df1 <- tibble::tibble(m = list(m, m), cnme = "mycol", rnme = "myrow", clmn = TRUE, k = c(42, 43), 
+                        rtype = "rt", ctype = c("ct1", "ct2"))
+  
+  res1 <- df1 %>% 
+    dplyr::mutate(
+      irow = kvec_from_template_byname(m, colname = rnme, column = FALSE),
+      icol = kvec_from_template_byname(m, colname = cnme, column = clmn), 
+      kcol = kvec_from_template_byname(m, k = k, colname = cnme), 
+      with_rt_ct = kvec_from_template_byname(m %>% setrowtype(rtype) %>% setcoltype(ctype), colname = cnme)
+    )
+  
+  expect_equal(res1$irow[[1]], matrix(1, nrow = 1, ncol = 2, dimnames = list("myrow", c("c1", "c2"))))
+  expect_equal(res1$irow[[2]], matrix(1, nrow = 1, ncol = 2, dimnames = list("myrow", c("c1", "c2"))))
+  expect_equal(res1$icol[[1]], matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  expect_equal(res1$icol[[2]], matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  expect_equal(res1$icol[[2]], matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  # Try with non-1 value for k
+  expect_equal(res1$kcol[[1]], matrix(42, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  expect_equal(res1$kcol[[2]], matrix(43, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  
+  # Test that row and column types are transferred correctly
+  expect_equal(res1$with_rt_ct[[1]], matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")) %>% 
+                 setrowtype("rt") %>% setcoltype("ct1"))
+  expect_equal(res1$with_rt_ct[[2]], matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")) %>% 
+                 setrowtype("rt") %>% setcoltype("ct2"))
+  
+  
+  
+  
+})

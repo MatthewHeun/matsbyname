@@ -1379,16 +1379,43 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, rowtype = NA
 }
 
 
-irow_from_template_byname <- function(a, rowname, rowcoltypes = c("all", "transpose", "row", "col", "none")) {
+#' Create an identity vector from matrix `a`
+#' 
+#' This function creates a vector using `a` as a template
+#' and `k` as its value.
+#' Row names are taken from the row names of `a`. 
+#' The column name is given by `colname`.
+#' Row and column types are transferred from `a` to the output, directly.
+#' 
+#' If `column == FALSE`, `colname` is interpreted as the row name for the output row identity vector.
+#'
+#' @param a The template matrix for the column vector.
+#' @param k The value of the entries in the vector.
+#' @param colname The name of the output vector's 1-sized dimension 
+#'               (the only column if `column == TRUE`, the only row otherwise).
+#' @param column Tells whether a column vector (`TRUE`, the default) or a row vector (`FALSE`) should be created.
+#'
+#' @return A vector vector formed from `a`.
+#' 
+#' @export
+#'
+#' @examples
+#' i_from_template_byname(matrix(42, nrow = 4, ncol = 2,
+#'                               dimnames = list(c("r1", "r2", "r3", "r4"), "c1")))
+kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   
-  i_from_template_func <- function(a_mat, rowname_val) {
+  i_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
     # When we get here, a_mat should be a single matrix
-    
+    if (column_val) {
+      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val))
+    } else {
+      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)))
+      
+    }
   }
-  
-  rowcoltypes <- match.arg(rowcoltypes)
 
-  unaryapply_byname(FUN = i_from_template_func, .FUNdots = list(rowname_val = rowname), )
+  unaryapply_byname(FUN = i_from_template_func, a = a, 
+                    .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "all")
 }
 
 
@@ -1468,7 +1495,7 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL,
 
 #' Creates a "byname" vector filled with a constant value k
 #'
-#' Creates a "byname" constant vector (i.e. vector filled with a constant k value) 
+#' Creates a "byname" constant vector (i.e. vector filled with a constant `k` value) 
 #' with the same number of rows and rownames than the matrix provided as input.
 #' 
 #' Options for the keep_rowcoltypes argument are:
@@ -1539,75 +1566,5 @@ constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = 
                     .FUNdots = list(k = k_list, nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype),
                     rowcoltypes = keep_rowcoltypes)
 }
-
-
-# i_byname_apply <- function(nrow, dimnames, rowtype = NULL, coltype = NULL){
-#   
-#   i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
-#     matrix(
-#       data = 1, nrow = a, ncol = 1, dimnames = dimnames_val
-#     ) %>% 
-#     setrowtype(rowtype_val) %>% 
-#     setcoltype(coltype_val)
-#   }
-#   
-#   unaryapply_byname(FUN = i_byname_apply_func, a = nrow, 
-#                     .FUNdots = list(dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype))
-# }
-
-# 
-# i_byname <- function(a){
-#   
-#   create_matrix_byname(
-#     data = I(list(1)),
-#     nrow = matsbyname::nrow_byname(a),
-#     ncol = I(list(1)),
-#     dimnames = list(matsbyname::getrownames_byname(a))
-#   )
-# }
-
-
-
-#' Title
-#'
-#' @param a A matrix or list of matrices from which row or column names 
-#' @param row_names 
-#' @param col_name 
-#'
-#' @return
-#' @export
-#'
-#' #' @examples
-#' i_byname <- function(a, col_name){
-#'   i_byname_func <- function(nb_rows, row_names, col_name){
-#'     matrix(
-#'       data = 1,
-#'       nrow = length(row_names),
-#'       ncol = 1,
-#'       dimnames = list(row_names, col_name)
-#'     )
-#'   }
-#'   naryapply_byname(FUN = i_byname_func, nb_rows, row_names, col_name)
-#' }
-
-
-#' Title
-#'
-#' @param a
-#' @param nrow 
-#' @param ncol 
-#' @param byrow 
-#' @param dimnames 
-#'
-#' @return
-#' @export
-#'
-#' @examples
-# create_matrix_byname <- function(a, nrow, ncol, byrow, dimnames) {
-#   mat_func <- function(a_mat, nrow_val, ncol_val, byrow_val = ) {
-#     matrix(v, nrow = nrow, ncol = ncol, byrow = byrow, dimnames = dimnames)
-#   }
-#   naryapply_byname(mat_func, a_mat = a, nrow_val = nrow, ncol_val = ncol, byrow, dimnames)
-# }
 
 
