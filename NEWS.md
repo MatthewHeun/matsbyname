@@ -1,3 +1,5 @@
+* New function `create_colvec_byname()` that builds on 
+  `create_matrix_byname()`.
 * New function `create_rowvec_byname()` that builds on 
   `create_matrix_byname()`.
 * New function `create_matrix_byname()` that behaves
