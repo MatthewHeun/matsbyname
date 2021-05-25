@@ -1,3 +1,5 @@
+* New function `kvec_from_template_byname()` that creates a row or column
+  vector from a template matrix.
 * New function `create_colvec_byname()` that builds on 
   `create_matrix_byname()`.
 * New function `create_rowvec_byname()` that builds on 
