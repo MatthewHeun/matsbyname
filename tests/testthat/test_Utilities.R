@@ -1262,3 +1262,120 @@ test_that("kvec_from_template_byname() works as expected", {
   expect_equal(res1$with_rt_ct[[2]], matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")) %>% 
                  setrowtype("rt") %>% setcoltype("ct2"))
 })
+
+
+test_that("kvec_from_template_byname() function passes old i_byname tests", {
+  
+  # First, test with single values.
+  single_mat <- create_matrix_byname(1, nrow = 1, ncol = 1,
+                                     dimnames = list("r1", "c1"))
+  
+  expect_equal(
+    kvec_from_template_byname(single_mat, colname = "output_column"), 
+    matrix(1, dimnames = list("r1", "output_column"))
+  )
+  
+  single_mat_2 <- create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
+                                       dimnames = list(c("r1", "r2"), "c1"))
+  expect_equal(
+    kvec_from_template_byname(single_mat_2, colname = "output_column"), 
+    matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "output_column"))
+  )
+  
+  # Second, test with a list
+  list_of_mats <- create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+                                       dimnames = list(list("r1", "c1"), list("R1", "C1")))
+  
+  res_list <- kvec_from_template_byname(list_of_mats, colname = "output_column")
+  
+  expect_equal(
+    res_list[[1]],
+    matrix(1, dimnames = list("r1", "output_column"))
+  )
+  expect_equal(
+    res_list[[2]], 
+    matrix(1, dimnames = list("R1", "output_column"))
+  )
+  
+  # Test with a list of different dimensions
+  list_of_mats_2 <- create_matrix_byname(list(1, c(2, 3, 4, 5)), nrow = list(1, 2), ncol = list(1,2), 
+                                         dimnames = list(list("r1", "c1"), list(c("R1", "R2"), c("C1", "C2"))))
+  
+  res_list_2 <- kvec_from_template_byname(list_of_mats_2, colname = "output_column")
+  
+  expect_equal(
+    res_list_2[[1]],
+    matrix(1, dimnames = list("r1", "output_column"))
+  )
+  expect_equal(
+    res_list_2[[2]], 
+    matrix(1, nrow = 2, ncol = 1, dimnames = list(c("R1", "R2"), "output_column"))
+  )
+  
+  
+  # Third test with data frames:
+  
+  # Creating data frame of matrices, with a year column and a matrix column:
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2", "i3")
+  U2 <- matrix(1:3, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  
+  productnames <- c("p1", "p2", "p3")
+  industrynames <- c("i1", "i2", "i3", "i4")
+  U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  
+  dfUs <- data.frame(
+    year = numeric(),
+    matrix_byname = I(list())
+  )
+  
+  dfUs[[1, "matrix_byname"]] <- U
+  dfUs[[2, "matrix_byname"]] <- U2
+  dfUs[[3, "matrix_byname"]] <- U3
+  
+  dfUs[[1, "year"]] <- 2000
+  dfUs[[2, "year"]] <- 2001
+  dfUs[[3, "year"]] <- 2002
+  
+  # Now creating the unity vector
+  res <- dfUs %>% 
+    dplyr::mutate(
+      unity_vec = kvec_from_template_byname(matrix_byname, colname = "Product")
+    )
+  
+  # Checking number of coefficients in each vector
+  expect_equal(nrow(res$unity_vec[[1]]), 2)
+  expect_equal(nrow(res$unity_vec[[2]]), 2)
+  expect_equal(nrow(res$unity_vec[[3]]), 3)
+  
+  # Checking rowtypes
+  expect_equal(res$unity_vec[[1]] %>% rowtype(), "Products")
+  expect_equal(res$unity_vec[[2]] %>% rowtype(), "Products")
+  expect_equal(res$unity_vec[[3]] %>% rowtype(), "Products")
+  
+  # Checking coltypes
+  expect_equal(res$unity_vec[[1]] %>% coltype(), "Industries")
+  expect_equal(res$unity_vec[[2]] %>% coltype(), "Industries")
+  expect_equal(res$unity_vec[[3]] %>% coltype(), "Industries")
+  
+  # Checking single coefficient values
+  expect_equal(res$unity_vec[[1]][["p1", "Product"]], 1)
+  expect_equal(res$unity_vec[[2]][["p2", "Product"]], 1)
+  expect_equal(res$unity_vec[[3]][["p3", "Product"]], 1)
+  
+  # Checking sums
+  res2 <- res %>%
+    dplyr::mutate(
+      sum_unity = matsbyname::sumall_byname(unity_vec)
+    )
+  # Check
+  expect_equal(res2$sum_unity[[1]], 2)
+  expect_equal(res2$sum_unity[[2]], 2)
+  expect_equal(res2$sum_unity[[3]], 3)
+})
+
+
