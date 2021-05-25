@@ -1266,7 +1266,7 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, rowtype = NA
     # The dimnames argument overrides any names present in a.
     # So we check here if dimnames has been set.
     # If not, we just take names from a, if available.
-    if (is.na(dimnames_val)) {
+    if (any(is.na(dimnames_val))) {
       dimnames_val <- list(rowname_val, names(a))
     }
     # Create the row vector using the rowtype and coltype of a.
@@ -1274,6 +1274,16 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, rowtype = NA
                                 rowtype = rowtype_val, coltype = coltype_val)
   }
 
+  rowcoltypes <- match.arg(rowcoltypes)
+  # If any of the rowtype or coltype values are set,
+  # we assume that the caller wants to set rowtype and coltype explicitly
+  # via the rowtype or coltype arguments.
+  # In that case, override the behavior of unaryapply_byname
+  # by setting rowcoltypes = "none".
+  if (any(!is.na(rowtype)) | any(!is.na(coltype))) {
+    rowcoltypes <- "none"
+  }
+  
   unaryapply_byname(FUN = rowvec_func, 
                     a = .dat,
                     .FUNdots = list(dimnames_val = dimnames, rowname_val = rowname, rowtype_val = rowtype, coltype_val = coltype), 
@@ -1344,12 +1354,22 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, rowtype = NA
     # The dimnames argument overrides any names present in a.
     # So we check here if dimnames has been set.
     # If not, we just take names from a, if available.
-    if (is.na(dimnames_val)) {
+    if (any(is.na(dimnames_val))) {
       dimnames_val <- list(names(a), colname_val)
     }
     # Create the row vector using the rowtype and coltype of a.
     create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val,
                          rowtype = rowtype_val, coltype = coltype_val)
+  }
+  
+  rowcoltypes <- match.arg(rowcoltypes)
+  # If any of the rowtype or coltype values are set,
+  # we assume that the caller wants to set rowtype and coltype explicitly
+  # via the rowtype or coltype arguments.
+  # In that case, override the behavior of unaryapply_byname
+  # by setting rowcoltypes = "none".
+  if (any(!is.na(rowtype)) | any(!is.na(coltype))) {
+    rowcoltypes <- "none"
   }
   
   unaryapply_byname(FUN = colvec_func, 
