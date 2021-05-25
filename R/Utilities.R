@@ -1349,7 +1349,7 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, rowtype = NA
 create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, rowtype = NA, coltype = NA, rowcoltypes = c("all", "transpose", "row", "col", "none")) {
   
   colvec_func <- function(a, dimnames_val, colname_val, rowtype_val, coltype_val) {
-    
+
     # Figure out the row names.
     # The dimnames argument overrides any names present in a.
     # So we check here if dimnames has been set.
@@ -1361,7 +1361,7 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, rowtype = NA
     create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val,
                          rowtype = rowtype_val, coltype = coltype_val)
   }
-  
+
   rowcoltypes <- match.arg(rowcoltypes)
   # If any of the rowtype or coltype values are set,
   # we assume that the caller wants to set rowtype and coltype explicitly
@@ -1371,10 +1371,10 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, rowtype = NA
   if (any(!is.na(rowtype)) | any(!is.na(coltype))) {
     rowcoltypes <- "none"
   }
-  
-  unaryapply_byname(FUN = colvec_func, 
+
+  unaryapply_byname(FUN = colvec_func,
                     a = .dat,
-                    .FUNdots = list(dimnames_val = dimnames, colname_val = colname, rowtype_val = rowtype, coltype_val = coltype), 
+                    .FUNdots = list(dimnames_val = dimnames, colname_val = colname, rowtype_val = rowtype, coltype_val = coltype),
                     rowcoltypes = rowcoltypes)
 }
 
