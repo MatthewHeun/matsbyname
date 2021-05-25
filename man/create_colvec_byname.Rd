@@ -36,23 +36,23 @@ Row types and column types are taken from the row type and column type attribute
 create_colvec_byname(c(r1 = 1) \%>\% setrowtype("rt") \%>\% setcoltype("ct"), 
                      colname = "r1")
 # Works with vectors
-create_colvec_byname(c(c1 = 1, c2 = 2), rowname = "r1")
+create_colvec_byname(c(r1 = 1, r2 = 2), colname = "c1")
 # Works with a list
-create_colvec_byname(list(c(c1 = 1, c2 = 2), c(C1 = 3, C2 = 4, C3 = 5)), 
-                     rowname = list("r1", "R1"))
+create_colvec_byname(list(c(r1 = 1, r2 = 2), c(R1 = 3, R2 = 4, R3 = 5)), 
+                     colname = list("c1", "C1"))
 # Works in a tibble, too.
 # (Must be a tibble, not a data frame, so that names are preserved.)
-dat <- list(c(c1 = 1),
-            c(C1 = 2, C2 = 3), 
-            c(c1 = 1, c2 = 2, c3 = 3, c4 = 4, c5 = 5, c6 = 6))
-rnms <- list("r1", "R1", "r1")
-df1 <- tibble::tibble(dat, rnms)
+dat <- list(c(r1 = 1, r2 = 2),
+            c(R1 = 2, R2 = 3), 
+            c(r1 = 1, r2 = 2, r3 = 3, r4 = 4, r5 = 5, r6 = 6))
+cnms <- list("c1", "C1", "c1")
+df1 <- tibble::tibble(dat, cnms)
 df1
 df1 <- df1 \%>\%
   dplyr::mutate(
-    rowvec_col = create_colvec_byname(dat, rowname = rnms)
+    colvec_col = create_colvec_byname(dat, colname = cnms)
   )
-df1$rowvec_col[[1]]
-df1$rowvec_col[[2]]
-df1$rowvec_col[[3]]
+df1$colvec_col[[1]]
+df1$colvec_col[[2]]
+df1$colvec_col[[3]]
 }

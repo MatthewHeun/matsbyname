@@ -30,6 +30,7 @@ Row and column types are transferred from \code{a} to the output, directly.
 If \code{column == FALSE}, \code{colname} is interpreted as the row name for the output row identity vector.
 }
 \examples{
-i_from_template_byname(matrix(42, nrow = 4, ncol = 2,
-                              dimnames = list(c("r1", "r2", "r3", "r4"), "c1")))
+kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
+                                 dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
+                          colname = "c1")
 }

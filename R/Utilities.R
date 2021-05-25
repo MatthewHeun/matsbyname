@@ -1261,25 +1261,25 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
 #' create_colvec_byname(c(r1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), 
 #'                      colname = "r1")
 #' # Works with vectors
-#' create_colvec_byname(c(c1 = 1, c2 = 2), rowname = "r1")
+#' create_colvec_byname(c(r1 = 1, r2 = 2), colname = "c1")
 #' # Works with a list
-#' create_colvec_byname(list(c(c1 = 1, c2 = 2), c(C1 = 3, C2 = 4, C3 = 5)), 
-#'                      rowname = list("r1", "R1"))
+#' create_colvec_byname(list(c(r1 = 1, r2 = 2), c(R1 = 3, R2 = 4, R3 = 5)), 
+#'                      colname = list("c1", "C1"))
 #' # Works in a tibble, too.
 #' # (Must be a tibble, not a data frame, so that names are preserved.)
-#' dat <- list(c(c1 = 1),
-#'             c(C1 = 2, C2 = 3), 
-#'             c(c1 = 1, c2 = 2, c3 = 3, c4 = 4, c5 = 5, c6 = 6))
-#' rnms <- list("r1", "R1", "r1")
-#' df1 <- tibble::tibble(dat, rnms)
+#' dat <- list(c(r1 = 1, r2 = 2),
+#'             c(R1 = 2, R2 = 3), 
+#'             c(r1 = 1, r2 = 2, r3 = 3, r4 = 4, r5 = 5, r6 = 6))
+#' cnms <- list("c1", "C1", "c1")
+#' df1 <- tibble::tibble(dat, cnms)
 #' df1
 #' df1 <- df1 %>%
 #'   dplyr::mutate(
-#'     rowvec_col = create_colvec_byname(dat, rowname = rnms)
+#'     colvec_col = create_colvec_byname(dat, colname = cnms)
 #'   )
-#' df1$rowvec_col[[1]]
-#' df1$rowvec_col[[2]]
-#' df1$rowvec_col[[3]]
+#' df1$colvec_col[[1]]
+#' df1$colvec_col[[2]]
+#' df1$colvec_col[[3]]
 create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
   
   colvec_func <- function(a, dimnames_val, colname_val) {
@@ -1315,7 +1315,7 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
 #' @param a The template matrix for the column vector.
 #' @param k The value of the entries in the vector.
 #' @param colname The name of the output vector's 1-sized dimension 
-#'               (the only column if `column == TRUE`, the only row otherwise).
+#'                (the only column if `column == TRUE`, the only row otherwise).
 #' @param column Tells whether a column vector (`TRUE`, the default) or a row vector (`FALSE`) should be created.
 #'
 #' @return A vector vector formed from `a`.
@@ -1323,8 +1323,9 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
 #' @export
 #'
 #' @examples
-#' i_from_template_byname(matrix(42, nrow = 4, ncol = 2,
-#'                               dimnames = list(c("r1", "r2", "r3", "r4"), "c1")))
+#' kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
+#'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
+#'                           colname = "c1")
 kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   
   k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
@@ -1378,41 +1379,41 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'                                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
 #' i_byname(data = list_of_mats,
 #'          col_name = "output_column")
-i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL,
-                     keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
-
-  keep_rowcoltypes = match.arg(keep_rowcoltypes)
-
-  # Defining the function to be called:
-  i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
-
-    matrix(
-      data = 1, nrow = nrow_val, ncol = 1, dimnames = dimnames_val
-    ) %>%
-      setrowtype(rowtype_val) %>%
-      setcoltype(coltype_val)
-  }
-
-
-  if (is.numeric(data)){
-
-    nrow = matsbyname::nrow_byname(data)
-    dimnames = list(matsbyname::getrownames_byname(data), col_name)
-
-  } else {
-  nrow = matsbyname::nrow_byname(data)
-  dimnames = purrr::map2(
-    .x = matsbyname::getrownames_byname(data),
-    .y = rep(col_name, length(matsbyname::getrownames_byname(data))),
-    .f = list
-    )
-  }
-
-  # Applying function to each matrix
-  unaryapply_byname(FUN = i_byname_apply_func, a = data,
-                    .FUNdots = list(nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype),
-                    rowcoltypes = keep_rowcoltypes)
-}
+# i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL,
+#                      keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
+# 
+#   keep_rowcoltypes = match.arg(keep_rowcoltypes)
+# 
+#   # Defining the function to be called:
+#   i_byname_apply_func <- function(a, nrow_val, dimnames_val, rowtype_val, coltype_val){
+# 
+#     matrix(
+#       data = 1, nrow = nrow_val, ncol = 1, dimnames = dimnames_val
+#     ) %>%
+#       setrowtype(rowtype_val) %>%
+#       setcoltype(coltype_val)
+#   }
+# 
+# 
+#   if (is.numeric(data)){
+# 
+#     nrow = matsbyname::nrow_byname(data)
+#     dimnames = list(matsbyname::getrownames_byname(data), col_name)
+# 
+#   } else {
+#   nrow = matsbyname::nrow_byname(data)
+#   dimnames = purrr::map2(
+#     .x = matsbyname::getrownames_byname(data),
+#     .y = rep(col_name, length(matsbyname::getrownames_byname(data))),
+#     .f = list
+#     )
+#   }
+# 
+#   # Applying function to each matrix
+#   unaryapply_byname(FUN = i_byname_apply_func, a = data,
+#                     .FUNdots = list(nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype),
+#                     rowcoltypes = keep_rowcoltypes)
+# }
 
 
 #' Creates a "byname" vector filled with a constant value k
@@ -1452,41 +1453,41 @@ i_byname <- function(data, col_name, rowtype = NULL, coltype = NULL,
 #'                                    dimnames = list(list("r1", "c1"), list("R1", "C1")))
 #' constant_vector_byname(data = list_of_mats, k = 12,
 #'                                   col_name = "output_column")
-constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = NULL,
-                                   keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
-  
-  keep_rowcoltypes = match.arg(keep_rowcoltypes)
-  
-  constant_vector_byname_func <- function(a, k_val, nrow_val, dimnames_val, rowtype_val, coltype_val){
-    
-    matrix(
-      data = k_val, nrow = nrow_val, ncol = 1, dimnames = dimnames_val
-    ) %>% 
-      setrowtype(rowtype_val) %>% 
-      setcoltype(coltype_val)
-  }
-  
-  if (is.numeric(data)){
-    
-    nrow = matsbyname::nrow_byname(data)
-    k_list = k
-    dimnames = list(matsbyname::getrownames_byname(data), col_name)
-    
-  } else {
-    
-    nrow = matsbyname::nrow_byname(data)
-    k_list = rep(list(k), length(matsbyname::nrow_byname(data)))
-    dimnames = purrr::map2(
-      .x = matsbyname::getrownames_byname(data), 
-      .y = rep(col_name, length(matsbyname::getrownames_byname(data))), 
-      .f = list
-    ) 
-    
-  }
-  
-  unaryapply_byname(FUN = constant_vector_byname_func, a = data,
-                    .FUNdots = list(k = k_list, nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype),
-                    rowcoltypes = keep_rowcoltypes)
-}
+# constant_vector_byname <- function(data, k, col_name, rowtype = NULL, coltype = NULL,
+#                                    keep_rowcoltypes = c("all", "transpose", "row", "col", "none")){
+#   
+#   keep_rowcoltypes = match.arg(keep_rowcoltypes)
+#   
+#   constant_vector_byname_func <- function(a, k_val, nrow_val, dimnames_val, rowtype_val, coltype_val){
+#     
+#     matrix(
+#       data = k_val, nrow = nrow_val, ncol = 1, dimnames = dimnames_val
+#     ) %>% 
+#       setrowtype(rowtype_val) %>% 
+#       setcoltype(coltype_val)
+#   }
+#   
+#   if (is.numeric(data)){
+#     
+#     nrow = matsbyname::nrow_byname(data)
+#     k_list = k
+#     dimnames = list(matsbyname::getrownames_byname(data), col_name)
+#     
+#   } else {
+#     
+#     nrow = matsbyname::nrow_byname(data)
+#     k_list = rep(list(k), length(matsbyname::nrow_byname(data)))
+#     dimnames = purrr::map2(
+#       .x = matsbyname::getrownames_byname(data), 
+#       .y = rep(col_name, length(matsbyname::getrownames_byname(data))), 
+#       .f = list
+#     ) 
+#     
+#   }
+#   
+#   unaryapply_byname(FUN = constant_vector_byname_func, a = data,
+#                     .FUNdots = list(k = k_list, nrow_val = nrow, dimnames_val = dimnames, rowtype_val = rowtype, coltype_val = coltype),
+#                     rowcoltypes = keep_rowcoltypes)
+# }
 
 
