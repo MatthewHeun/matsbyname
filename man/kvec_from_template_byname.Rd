@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utilities.R
 \name{kvec_from_template_byname}
 \alias{kvec_from_template_byname}
-\title{Create an identity vector from matrix \code{a}}
+\title{Create a constant vector from matrix \code{a}}
 \usage{
 kvec_from_template_byname(a, k = 1, colname = NA, column = TRUE)
 }
