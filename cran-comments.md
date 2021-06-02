@@ -47,13 +47,11 @@ as requested by the CRAN team
                 * The example takes 5.426 seconds.
                 * This is the *only* rig where this note is generated.
 
-## Downstream dependencies
-* Downstream dependencies were checked with `revdepcheck::revdep_check(num_workers = 4)`. 
-    * Result: 
-        * ✓ matsindf 0.3.6 ── E: 0 | W: 0 | N: 0
-            * OK: 1
-            * BROKEN: 0
-        * failures.md
-            * Wow, no problems at all. :)
-        * problems.md
-            * Wow, no problems at all. :)
+
+## revdepcheck results
+
+We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
+
