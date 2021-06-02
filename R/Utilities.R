@@ -1016,4 +1016,329 @@ logmean <- function(a, b, base = exp(1)){
 }
 
 
+#' Get the number of rows in a "byname" matrix.
+#' 
+#' The functionn gets the number of rows in a "byname" matrix, or for each "byname" matrix contained
+#' in a column of a data frame.
+#'
+#' @param a A matrix or a column of a data frame populated with "byname" matrices.
+#'
+#' @return The number of rows of the matrix, or a list containing the number of rows 
+#'         in each of the matrices contained in the column of a data frame.
+#' @export
+#'
+#' @examples
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2", "i3")
+#' U2 <- matrix(1:3, ncol = length(industrynames), 
+#'              nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' productnames <- c("p1", "p2", "p3")
+#' industrynames <- c("i1", "i2", "i3", "i4")
+#' U3 <- matrix(1:4, ncol = length(industrynames), 
+#'              nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' dfUs <- data.frame(
+#'   year = numeric(),
+#'   matrix_byname = I(list())
+#' )
+#' dfUs[[1, "matrix_byname"]] <- U
+#' dfUs[[2, "matrix_byname"]] <- U2
+#' dfUs[[3, "matrix_byname"]] <- U3
+#' dfUs[[1, "year"]] <- 2000
+#' dfUs[[2, "year"]] <- 2001
+#' dfUs[[3, "year"]] <- 2002
+#' number_rows <- matsbyname::nrow_byname(dfUs$matrix_byname)
+nrow_byname <- function(a) {
+  nrow_func <- function(a) {
+    nrow(a)
+  }
+  unaryapply_byname(nrow_func, a = a, rowcoltypes = "none")
+}
+
+
+#' Get the number of columns in a "byname" matrix.
+#'
+#' The functionn gets the number of columns in a "byname" matrix, or for each "byname" matrix contained
+#' in a column of a data frame.
+#'
+#'
+#' @param a A matrix or a column of a data frame populated with "byname" matrices.
+#'
+#' @return The number of columns of the matrix, or a list containing the number of columns
+#'         in each of the matrices contained in the column of a data frame.
+#' @export
+#'
+#' @examples
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2")
+#' U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' productnames <- c("p1", "p2")
+#' industrynames <- c("i1", "i2", "i3")
+#' U2 <- matrix(1:3, ncol = length(industrynames), 
+#'              nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' productnames <- c("p1", "p2", "p3")
+#' industrynames <- c("i1", "i2", "i3", "i4")
+#' U3 <- matrix(1:4, ncol = length(industrynames), 
+#'              nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% 
+#'   setrowtype("Products") %>% 
+#'   setcoltype("Industries")
+#' dfUs <- data.frame(
+#'   year = numeric(),
+#'   matrix_byname = I(list())
+#' )
+#'   dfUs <- data.frame(
+#' year = numeric(),
+#' matrix_byname = I(list())
+#' )
+#' dfUs[[1, "matrix_byname"]] <- U
+#' dfUs[[2, "matrix_byname"]] <- U2
+#' dfUs[[3, "matrix_byname"]] <- U3
+#' dfUs[[1, "year"]] <- 2000
+#' dfUs[[2, "year"]] <- 2001
+#' dfUs[[3, "year"]] <- 2002
+#' number_cols <- ncol_byname(dfUs$matrix_byname) %>% 
+#' print()
+ncol_byname <- function(a) {
+  ncol_func <- function(a) {
+    ncol(a)
+  }
+  unaryapply_byname(ncol_func, a = a, rowcoltypes = "none")
+}
+
+
+
+#' Create a "byname" matrix from a vector
+#'
+#' This function creates a "byname" matrix, or list of matrices, from `.dat`, 
+#' depending on the input arguments.
+#' This function is similar to `matrix()`, but with "byname" characteristics.
+#' 
+#' Row and column names are taken from the `dimnames` argument.
+#' 
+#' Any row or column type information on `.dat` is preserved on output.
+#'
+#' @param .dat The data to be used to create the matrix, in a list format, or as a data frame column
+#'             containing a list of the data to be used for each observation.
+#' @param nrow The number of rows to be used to create the matrix, in a list format, or as a data frame column
+#'             containing a list of the number of rows to be used for each observation.
+#' @param ncol The number of columns to be used to create the matrix, in a list format, or as a data frame column
+#'             containing a list of the number of columns to be used for each observation.
+#' @param byrow The argument stating whether the matrix should be filled by rows or by columns (FALSE by column, TRUE by row),
+#'              in a list format, or as a data frame column containing a list of the byrow argument for each observation.
+#'              Default is `FALSE.`
+#' @param dimnames The dimension names to be used for creating the matrices, in a list format, or as a data frame column
+#'                 containing a list of the dimension names to be used for each observation.
+#'
+#' @return A matrix, list of matrices, or column in a data frame, depending on the input arguments.
+#' 
+#' @export
+#'
+#' @examples
+#' create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
+#'                      dimnames = list(c("r1", "r2"), "c1"))
+#' create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
+#'                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
+create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames) {
+  
+  matrix_func <- function(a, nrow_val, ncol_val, byrow_val, 
+                          dimnames_val, rowtype_val = NA, coltype_val = NA) {
+    matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val)
+  }
+  
+  unaryapply_byname(FUN = matrix_func, a = .dat,
+                    .FUNdots = list(nrow_val = nrow, ncol_val = ncol, 
+                                    byrow_val = byrow,
+                                    dimnames_val = dimnames),
+                    # Transfer any row or column type information in .dat to the output.
+                    rowcoltypes = "all")
+}
+
+
+#' Create row vectors from data
+#' 
+#' This function takes data in the `.dat` and creates row vectors.
+#' 
+#' The row and column names in the resulting row vector are taken from 
+#' `rowname` and the names of `.dat`.
+#' If set, `dimnames` overrides `rowname` and the names of `.dat`.
+#' 
+#' Row types and column types are taken from the row type and column type attributes of `.dat`.
+#' 
+#' This function is a "byname" function that can accept a single number,
+#' a vector, a list, or a data frame in `.dat`.
+#' 
+#' @param .dat Data to be converted to row vectors.
+#' @param rowname The name of the row of the row vector.
+#' @param dimnames The dimension names to be used for creating the row vector, in a list format, or as a data frame column
+#'                 containing a list of the dimension names to be used for each observation.
+#'
+#' @return A row vector, a list of row vectors, or a data frame column of row vectors, depending on the 
+#'         value of `.dat`.
+#'         
+#' @export
+#'
+#' @examples
+#' # Works with single numbers
+#' create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), rowname = "r1")
+#' # Works with vectors
+#' create_rowvec_byname(c(c1 = 1, c2 = 2), rowname = "r1")
+#' # Works with a list
+#' create_rowvec_byname(list(c(c1 = 1, c2 = 2), c(C1 = 3, C2 = 4, C3 = 5)), 
+#'                      rowname = list("r1", "R1"))
+#' # Works in a tibble, too.
+#' # (Must be a tibble, not a data frame, so that names are preserved.)
+#' dat <- list(c(c1 = 1),
+#'             c(C1 = 2, C2 = 3), 
+#'             c(c1 = 1, c2 = 2, c3 = 3, c4 = 4, c5 = 5, c6 = 6))
+#' rnms <- list("r1", "R1", "r1")
+#' df1 <- tibble::tibble(dat, rnms)
+#' df1
+#' df1 <- df1 %>%
+#'   dplyr::mutate(
+#'     rowvec_col = create_rowvec_byname(dat, rowname = rnms)
+#'   )
+#' df1$rowvec_col[[1]]
+#' df1$rowvec_col[[2]]
+#' df1$rowvec_col[[3]]
+create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
+
+  rowvec_func <- function(a, dimnames_val, rowname_val) {
+
+    # Figure out the column names.
+    # The dimnames argument overrides any names present in a.
+    # So we check here if dimnames has been set.
+    # If not, we just take names from a, if available.
+    if (any(is.na(dimnames_val))) {
+      dimnames_val <- list(rowname_val, names(a))
+    }
+    # Create the row vector using the rowtype and coltype of a.
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val)
+  }
+
+  unaryapply_byname(FUN = rowvec_func, 
+                    a = .dat,
+                    .FUNdots = list(dimnames_val = dimnames, rowname_val = rowname), rowcoltypes = "all")
+}
+
+
+#' Create column vectors from data
+#' 
+#' This function takes data in the `.dat` and creates column vectors.
+#' 
+#' The row and column names in the resulting column vector are taken from 
+#' the names of `.dat` and `colname`.
+#' If set, `dimnames` overrides the names of `.dat` and `colname`.
+#' 
+#' This function is a "byname" function that can accept a single number,
+#' a vector, a list, or a data frame in `.dat`.
+#' 
+#' Row types and column types are taken from the row type and column type attributes of `.dat`.
+#' 
+#' @param .dat Data to be converted to column vectors.
+#' @param colname The name of the column of the colvector.
+#' @param dimnames The dimension names to be used for creating the column vector, in a list format, or as a data frame column
+#'                 containing a list of the dimension names to be used for each observation.
+#'
+#' @return A column vector, a list of column vectors, or a data frame column of column vectors, depending on the 
+#'         value of `.dat`.
+#'         
+#' @export
+#'
+#' @examples
+#' # Works with single numbers
+#' create_colvec_byname(c(r1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), 
+#'                      colname = "r1")
+#' # Works with vectors
+#' create_colvec_byname(c(r1 = 1, r2 = 2), colname = "c1")
+#' # Works with a list
+#' create_colvec_byname(list(c(r1 = 1, r2 = 2), c(R1 = 3, R2 = 4, R3 = 5)), 
+#'                      colname = list("c1", "C1"))
+#' # Works in a tibble, too.
+#' # (Must be a tibble, not a data frame, so that names are preserved.)
+#' dat <- list(c(r1 = 1, r2 = 2),
+#'             c(R1 = 2, R2 = 3), 
+#'             c(r1 = 1, r2 = 2, r3 = 3, r4 = 4, r5 = 5, r6 = 6))
+#' cnms <- list("c1", "C1", "c1")
+#' df1 <- tibble::tibble(dat, cnms)
+#' df1
+#' df1 <- df1 %>%
+#'   dplyr::mutate(
+#'     colvec_col = create_colvec_byname(dat, colname = cnms)
+#'   )
+#' df1$colvec_col[[1]]
+#' df1$colvec_col[[2]]
+#' df1$colvec_col[[3]]
+create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
+  
+  colvec_func <- function(a, dimnames_val, colname_val) {
+
+    # Figure out the row names.
+    # The dimnames argument overrides any names present in a.
+    # So we check here if dimnames has been set.
+    # If not, we just take names from a, if available.
+    if (any(is.na(dimnames_val))) {
+      dimnames_val <- list(names(a), colname_val)
+    }
+    # Create the row vector using the rowtype and coltype of a.
+    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val)
+  }
+
+  unaryapply_byname(FUN = colvec_func,
+                    a = .dat,
+                    .FUNdots = list(dimnames_val = dimnames, colname_val = colname),
+                    rowcoltypes = "all")
+}
+
+
+#' Create a constant vector from matrix `a`
+#' 
+#' This function creates a vector using `a` as a template
+#' and `k` as its value.
+#' Row names are taken from the row names of `a`. 
+#' The column name is given by `colname`.
+#' Row and column types are transferred from `a` to the output, directly.
+#' 
+#' If `column == FALSE`, `colname` is interpreted as the row name for the output row identity vector.
+#'
+#' @param a The template matrix for the column vector.
+#' @param k The value of the entries in the vector.
+#' @param colname The name of the output vector's 1-sized dimension 
+#'                (the only column if `column == TRUE`, the only row otherwise).
+#' @param column Tells whether a column vector (`TRUE`, the default) or a row vector (`FALSE`) should be created.
+#'
+#' @return A vector vector formed from `a`.
+#' 
+#' @export
+#'
+#' @examples
+#' kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
+#'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
+#'                           colname = "c1")
+kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
+  
+  k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
+    # When we get here, a_mat should be a single matrix
+    if (column_val) {
+      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val))
+    } else {
+      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)))
+    }
+  }
+
+  unaryapply_byname(FUN = k_from_template_func, a = a, 
+                    .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "all")
+}
+
 
