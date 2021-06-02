@@ -1,51 +1,54 @@
 ## Context
-`matsbyname` v0.4.16 is a bugfix release.
+`matsbyname` v0.4.18 is a feature release containing a few new capabilities.
 See `NEWS.md` for details.
 
-This is the second submission of `matsbyname` v0.4.16,
-which cleans up the `tidyverse` URL
-as requested by the CRAN team
-(http://www.tidyverse.org --> https://www.tidyverse.org). 
-
-## Test environments (7 in total) and R CMD check results
-* local macOS X install 10.15.6 (Catalina), R4.0.3
+## Test environments (10 in total) and R CMD check results
+* local macOS X install 10.15.7 (Catalina), R4.1.0
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* TRAVIS-CI: Ubuntu 16.04.6, R4.0.2
+* GitHub Actions: windows-latest (release)
+    * ERRORs: 0
+    * WARNINGs: 0
+    * NOTEs: 0
+* GitHub Actions: macOS-latest (release)
+    * ERRORs: 0
+    * WARNINGs: 0
+    * NOTEs: 0
+* GitHub Actions: ubuntu-20.04 (release)
+    * ERRORs: 0
+    * WARNINGs: 0
+    * NOTEs: 0
+* GitHub Actions: ubuntu-20.04 (devel)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.0.3 (2020-10-10)
+    * `devtools::check_win_release()`, R version 4.1.0 (2021-05-18)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2020-11-21 r79454)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2021-06-01 r80444)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
         * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
-            * ERRORs: 2
+            * ERRORs: 1
             * WARNINGs: 0
             * NOTEs: 0
             * The errors appear to be caused by mal-configuration of this test rig.
               This is the *only* rig where errors occur.
-                * `#> there is no package called 'utf8'`
-        * Ubuntu Linux 16.04 LTS, R-release, GCC
+                * `#> Error: Bioconductor does not yet build and check packages for R version 4.2`
+        * Ubuntu Linux 20.04.1 LTS, R-release, GCC
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 0
         * Fedora Linux, R-devel, clang, gfortran
             * ERRORs: 0
             * WARNINGs: 0
-            * NOTEs: 1
-            * The note says 
-                * `#> Examples with CPU (user + system) or elapsed time > 5s`
-                * The example takes 5.426 seconds.
-                * This is the *only* rig where this note is generated.
+            * NOTEs: 0
 
 
 ## revdepcheck results
