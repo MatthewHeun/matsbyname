@@ -2,6 +2,10 @@
 `matsbyname` v0.4.18 is a feature release containing a few new capabilities.
 See `NEWS.md` for details.
 
+This is the second attempt at submission.
+The first attempt included a redirecting URL for the "stable" badge on the readme.md page.
+That issue has now been fixed.
+
 ## Test environments (10 in total) and R CMD check results
 * local macOS X install 10.15.7 (Catalina), R4.1.0
     * ERRORs: 0
