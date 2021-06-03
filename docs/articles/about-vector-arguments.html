@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.18</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@
 
       
 
-      </header><script src="about-vector-arguments_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="about-vector-arguments_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>About Vector Arguments</h1>
@@ -341,10 +341,10 @@
 <code class="sourceCode R"><span class="va">DF2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>mcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="va">DF2</span>
 <span class="co">#&gt; # A tibble: 2 x 2</span>
-<span class="co">#&gt;   mcol              margin</span>
-<span class="co">#&gt;   &lt;list&gt;             &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 &lt;int[,2] [2 × 2]&gt;      1</span>
-<span class="co">#&gt; 2 &lt;int[,2] [2 × 2]&gt;      2</span>
+<span class="co">#&gt;   mcol          margin</span>
+<span class="co">#&gt;   &lt;list&gt;         &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 &lt;int [2 × 2]&gt;      1</span>
+<span class="co">#&gt; 2 &lt;int [2 × 2]&gt;      2</span>
 <span class="va">DF2</span><span class="op">$</span><span class="va">margin</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; [1] "numeric"</span></code></pre></div>
 <p>It would be a mistake to wrap <code>DF2$margin</code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code> for the following call to <code>mysum2</code>, because the caller’s intent is clearly "apply <code>margin = 1</code> for the first row and <code>margin = 2</code> for the second row.</p>

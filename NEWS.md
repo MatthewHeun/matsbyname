@@ -1,3 +1,5 @@
+# matsbyname 0.4.18 (2021-06-02)
+
 * New function `kvec_from_template_byname()` that creates a row or column
   vector from a template matrix.
 * New function `create_colvec_byname()` builds on 
