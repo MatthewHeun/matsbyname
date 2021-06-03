@@ -28,6 +28,9 @@
 #'   * "row": rowtype of `a` becomes both rowtype and coltype of output.
 #'   * "col": coltype of `a` becomes both rowtype and coltype of output.
 #'   * "none": rowtype and coltype not set by `unaryapply_byname`. Rather, `FUN` will set rowtype and coltype.
+#' 
+#' Note that `rowcoltypes` should not be a vector or list of strings. 
+#' Rather, it should be a single string.
 #'
 #' @param FUN a unary function to be applied "by name" to `a`.
 #' @param a the argument to `FUN`.
