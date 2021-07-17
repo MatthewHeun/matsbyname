@@ -17,7 +17,7 @@
 #' * `bracket_notation()` builds a list of notation symbols that provides square brackets around the suffix ("prefix \[suffix\]").
 #' * `split_pref_suff()` splits prefixes from suffixes, returning each in a list with names `pref` and `suff`. 
 #'                       If no delimiters are found, `x` is returned in the `pref` item, unmodified.
-#' * `paste_pref_suff(()` paste0's prefixes and suffixes, the inverse of `split_pref_suff()`.
+#' * `paste_pref_suff(()` `paste0`'s prefixes and suffixes, the inverse of `split_pref_suff()`.
 #' * `flip_pref_suff()` switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 #'                      the suffix becomes the prefix.
 #'                      E.g., "a -> b" becomes "b -> a" or "a \[b\]" becomes "b \[a\]".
