@@ -42,6 +42,18 @@ test_that("split_pref_suff() works properly", {
   expect_equal(split_pref_suff(list("a -> b", "a -> b"), notation = arrow_notation()), 
                list(list(pref = "a", suff = "b"), list(pref = "a", suff = "b")))
   
+  # See if it works when we don't have a suffix
+  expect_equal(split_pref_suff(list("a", "b"), notation = arrow_notation()), 
+               list(list(pref = "a", suff = ""), list(pref = "b", suff = "")))
+  
+  # See if it works when we don't have a prefix or a suffix.
+  expect_equal(split_pref_suff(list(" -> ", " -> "), notation = arrow_notation()), 
+               list(list(pref = "", suff = ""), list(pref = "", suff = "")))
+  
+  # See if it works when we don't have a delimiter.
+  expect_equal(split_pref_suff(list("a -> b", "r2", "r3"), notation = arrow_notation()), 
+               list(list(pref = "a", suff = "b"), list(pref = "r2", suff = ""), list(pref = "r3", suff = "")))
+  
   # Try with unusual prefixes and suffixes
   nl <- notation_vec(pref_start = " {", pref_end = "} ", suff_start = "} ", suff_end = NA_character_)
   expect_equal(split_pref_suff(" {a} bcd", notation = nl), list(pref = "a", suff = "bcd"))
@@ -53,19 +65,19 @@ test_that("split_pref_suff() works properly", {
   
   # Try with degenerate cases
   nl3 <- notation_vec(sep = "{{}}")
-  expect_equal(split_pref_suff("abc {{} def", notation = nl3), list(pref = "abc {{} def", suff = NULL))
+  expect_equal(split_pref_suff("abc {{} def", notation = nl3), list(pref = "abc {{} def", suff = ""))
   expect_equal(split_pref_suff("abc {{}} def", notation = nl3), list(pref = "abc ", suff = " def"))
   
   # Try with weird parentheses
   nl4 <- notation_vec(pref_start = "(", pref_end = ")", suff_start = "(", suff_end = ")")
   expect_equal(split_pref_suff("(a)(b)", notation = nl4), list(pref = "a", suff = "b"))
   
-  expect_equal(split_pref_suff("a b", notation = nl4), list(pref = "a b", suff = NULL))
+  expect_equal(split_pref_suff("a b", notation = nl4), list(pref = "a b", suff = ""))
 })
 
 
 test_that("split_pref_suff() works in a data frame", {
-  df <- data.frame(orig = c("a -> b", "c -> d"))
+  df <- data.frame(donottouch = c(1, 2), orig = c("a -> b", "c -> d"))
   splitted <- df %>% 
     dplyr::mutate(
       split = split_pref_suff(orig, notation = arrow_notation())

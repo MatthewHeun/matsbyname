@@ -352,7 +352,7 @@ test_that("renaming rows to prefix or suffix works as expected", {
   expect_equal(actual, expected)
   
   expected <- m
-  rownames(expected) <- c("b", "r2", "r3")
+  rownames(expected) <- c("b", "", "")
   actual <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 1, notation = arrow_notation())
   expect_equal(actual, expected)
   
@@ -382,10 +382,10 @@ test_that("renaming columns to prefix or suffix works as expected", {
   expect_equal(actual, list(expected, expected))
   
   # Check that row and column types are preserved
-  m <- m %>% setrowtype("Rows") %>% setcoltype("Cols")
+  m <- m %>% setrowtype("Rows -> Cols") %>% setcoltype("Cols -> Rows")
   res <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
-  expect_equal(rowtype(res), "Rows")
-  expect_equal(coltype(res), "Cols")
+  expect_equal(rowtype(res), "Cols")
+  expect_equal(coltype(res), "Rows")
 })
 
 
@@ -402,7 +402,7 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
   expect_equal(actual, expected)
   
   expected <- m
-  rownames(expected) <- c("b", "r2", "r3")
+  rownames(expected) <- c("b", "", "")
   colnames(expected) <- c("b", "d")
   actual <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
   expect_equal(actual, expected)

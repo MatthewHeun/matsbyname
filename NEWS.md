@@ -1,5 +1,9 @@
+* Changed logic for situations where prefix or suffix is not found
+  in `split_pref_suff()`. 
+  Previously, `NULL` was returned for a missing prefix or suffix.
+  Now, an empty string (`""`) is returned.
 * New tests for whether `split_pref_suff()` works in a data frame.
-    - Now up to 1002 tests, all passing.
+    - Now up to 1005 tests, all passing.
     - Test coverage remains at 100 %.
 
 
