@@ -102,7 +102,7 @@ between prefix and suffix.
 \item \code{bracket_notation()} builds a list of notation symbols that provides square brackets around the suffix ("prefix [suffix]").
 \item \code{split_pref_suff()} splits prefixes from suffixes, returning each in a list with names \code{pref} and \code{suff}.
 If no delimiters are found, \code{x} is returned in the \code{pref} item, unmodified.
-\item \verb{paste_pref_suff(()} paste0's prefixes and suffixes, the inverse of \code{split_pref_suff()}.
+\item \verb{paste_pref_suff(()} \code{paste0}'s prefixes and suffixes, the inverse of \code{split_pref_suff()}.
 \item \code{flip_pref_suff()} switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 the suffix becomes the prefix.
 E.g., "a -> b" becomes "b -> a" or "a [b]" becomes "b [a]".
