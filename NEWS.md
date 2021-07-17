@@ -1,3 +1,8 @@
+* New tests for whether `split_pref_suff()` works in a data frame.
+    - Now up to 1002 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.18 (2021-06-02)
 
 * New function `kvec_from_template_byname()` that creates a row or column
