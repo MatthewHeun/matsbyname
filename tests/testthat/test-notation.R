@@ -145,20 +145,20 @@ test_that("keep_pref_suff() works as expected", {
   
   # Try with a list
   expect_equal(keep_pref_suff(list("a -> b", "c -> d"), keep = "pref", notation = arrow_notation()), 
-               list("a", "c"))
+               c("a", "c"))
   expect_equal(keep_pref_suff(list("a -> b", "c -> d"), keep = "suff", notation = arrow_notation()), 
-               list("b", "d"))
+               c("b", "d"))
   
   expect_equal(keep_pref_suff(list("a [b]", "abcde"), keep = "suff", notation = bracket_notation()), 
-               list("b", "abcde"))
+               c("b", "abcde"))
   
   # Try degenerate cases
   expect_equal(keep_pref_suff("abcde", keep = "pref", notation = arrow_notation()), "abcde")
   expect_equal(keep_pref_suff("abcde", keep = "suff", notation = arrow_notation()), "abcde")
   expect_equal(keep_pref_suff(list("abcde", "fghij"), keep = "pref", notation = arrow_notation()), 
-               list("abcde", "fghij"))
+               c("abcde", "fghij"))
   expect_equal(keep_pref_suff(list("abcde", "fghij"), keep = "suff", notation = arrow_notation()), 
-               list("abcde", "fghij"))
+               c("abcde", "fghij"))
   
   # Test in a data frame using mutate.
   df <- data.frame(v1 = c("a -> b", "c -> d"), v2 = c("e [f]", "g [h]"))
