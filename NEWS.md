@@ -1,5 +1,5 @@
 * New function `keep_pref_suff()` keeps prefixes or suffixes of individual strings
-  or lists of strings.
+  or lists of strings, based on the `notation` provided.
 * New tests for new functions.  
     - Now up to 1025 tests, all passing.
     - Test coverage remains at 100 %.
