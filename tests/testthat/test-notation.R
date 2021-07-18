@@ -137,6 +137,26 @@ test_that("flip_pref_suff() works as expected", {
 })
 
 
+test_that("keep_pref_suff() works as expected", {
+  expect_equal(keep_pref_suff("a -> b", keep = "pref", notation = arrow_notation()), "a")
+  expect_equal(keep_pref_suff("a -> b", keep = "suff", notation = arrow_notation()), "b")
+  
+  # Try with a list
+  expect_equal(keep_pref_suff(list("a -> b", "c -> d"), keep = "pref", notation = arrow_notation()), 
+               list("a", "c"))
+  expect_equal(keep_pref_suff(list("a -> b", "c -> d"), keep = "suff", notation = arrow_notation()), 
+               list("b", "d"))
+  
+  # Try degenerate cases
+  expect_equal(keep_pref_suff("abcde", keep = "pref", notation = arrow_notation()), "abcde")
+  expect_equal(keep_pref_suff("abcde", keep = "suff", notation = arrow_notation()), "abcde")
+  expect_equal(keep_pref_suff(list("abcde", "fghij"), keep = "pref", notation = arrow_notation()), 
+               list("abcde", "fghij"))
+  expect_equal(keep_pref_suff(list("abcde", "fghij"), keep = "suff", notation = arrow_notation()), 
+               list("abcde", "fghij"))
+})
+
+
 test_that("switch_notation() works as expected", {
   # Start with a degenerate case
   expect_equal(switch_notation("a", from = arrow_notation(), to = bracket_notation()), "a")
@@ -243,5 +263,7 @@ test_that("switch_notation_byname() works well when flip is a list", {
   colnames(e) <- c("c -> d", "e -> f")
   e <- e %>% setcoltype("Products -> Industries")
   expect_equal(switch_notation_byname(m, from = bracket_notation(), to = arrow_notation(), flip = list(TRUE)), e)
-  
 })
+
+
+
