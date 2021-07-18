@@ -1,3 +1,5 @@
+# matsbyname 0.4.19 (2021-07-17)
+
 * Breaking change: 
   New logic for situations where prefix or suffix is not found
   in `split_pref_suff()`. 

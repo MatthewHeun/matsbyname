@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.19</span>
       </span>
     </div>
 
@@ -132,9 +132,24 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matsbyname-0419-2021-07-17" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.19">
+<a href="#matsbyname-0419-2021-07-17" class="anchor"></a>matsbyname 0.4.19 (2021-07-17)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Breaking change: New logic for situations where prefix or suffix is not found in <code><a href="../reference/row-col-notation.html">split_pref_suff()</a></code>. Previously, <code>NULL</code> was returned for a missing prefix or suffix. Now, an empty string (<code>""</code>) is returned.</li>
+<li>New tests for whether <code><a href="../reference/row-col-notation.html">split_pref_suff()</a></code> works in a data frame.</li>
+<li>New tests for new logic.
+<ul>
+<li>Now up to 1009 tests, all passing.</li>
+<li>Test coverage remains at 100 %.</li>
+</ul>
+</li>
+</ul>
+</div>
     <div id="matsbyname-0418-2021-06-02" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.18">
-<a href="#matsbyname-0418-2021-06-02" class="anchor"></a>matsbyname 0.4.18 (2021-06-02)<small> Unreleased </small>
+<a href="#matsbyname-0418-2021-06-02" class="anchor"></a>matsbyname 0.4.18 (2021-06-02)<small> 2021-06-03 </small>
 </h1>
 <ul>
 <li>New function <code><a href="../reference/kvec_from_template_byname.html">kvec_from_template_byname()</a></code> that creates a row or column vector from a template matrix.</li>
