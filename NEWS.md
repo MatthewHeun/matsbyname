@@ -1,3 +1,16 @@
+# matsbyname 0.4.19 (2021-07-17)
+
+* Breaking change: 
+  New logic for situations where prefix or suffix is not found
+  in `split_pref_suff()`. 
+  Previously, `NULL` was returned for a missing prefix or suffix.
+  Now, an empty string (`""`) is returned.
+* New tests for whether `split_pref_suff()` works in a data frame.
+* New tests for new logic.
+    - Now up to 1009 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.18 (2021-06-02)
 
 * New function `kvec_from_template_byname()` that creates a row or column

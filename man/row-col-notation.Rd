@@ -92,23 +92,26 @@ with corresponding separators or start-end string sequences.
 There are several functions that call \code{notation_vec()} to generate specialized versions
 or otherwise manipulate row and column names on their own or as row or column names.
 \itemize{
-\item \code{notation_vec()} builds a vector of notation symbols in a standard format
+\item \code{notation_vec()} Builds a vector of notation symbols in a standard format
 that is used by \code{matsbyname} in several places.
 By default, it builds a list of notation symbols that provides an arrow
 separator (" -> ") between prefix and suffix.
-\item \code{arrow_notation()} builds a list of notation symbols that provides an arrow separator (" -> ")
+\item \code{arrow_notation()} Builds a list of notation symbols that provides an arrow separator (" -> ")
 between prefix and suffix.
-\item \code{paren_notation()} builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
+\item \code{paren_notation()} Builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
 \item \code{bracket_notation()} builds a list of notation symbols that provides square brackets around the suffix ("prefix [suffix]").
-\item \code{split_pref_suff()} splits prefixes from suffixes, returning each in a list with names \code{pref} and \code{suff}.
-If no delimiters are found, \code{x} is returned in the \code{pref} item, unmodified.
-\item \verb{paste_pref_suff(()} paste0's prefixes and suffixes, the inverse of \code{split_pref_suff()}.
-\item \code{flip_pref_suff()} switches the location of prefix and suffix, such that the prefix becomes the suffix, and
+\item \code{split_pref_suff()} Splits prefixes from suffixes, returning each in a list with names \code{pref} and \code{suff}.
+If no prefix or suffix delimiters are found, \code{x} is returned in the \code{pref} item, unmodified,
+and the \code{suff} item is returned as \code{""} (an empty string).
+If there is no prefix, and empty string is returned for the \code{pref} item.
+If there is no suffix, and empty string is returned for the \code{suff} item.
+\item \code{paste_pref_suff()} \code{paste0}'s prefixes and suffixes, the inverse of \code{split_pref_suff()}.
+\item \code{flip_pref_suff()} Switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 the suffix becomes the prefix.
 E.g., "a -> b" becomes "b -> a" or "a [b]" becomes "b [a]".
-\item \code{switch_notation()} switches from one type of notation to another based on the \code{from} and \code{to} arguments.
+\item \code{switch_notation()} Switches from one type of notation to another based on the \code{from} and \code{to} arguments.
 Optionally, prefix and suffix can be \code{flip}ped.
-\item \code{switch_notation_byname()} switches matrix row and/or column names from one type of notation to another
+\item \code{switch_notation_byname()} Switches matrix row and/or column names from one type of notation to another
 based on the \code{from} and \code{to} arguments.
 Optionally, prefix and suffix can be \code{flip}ped.
 }

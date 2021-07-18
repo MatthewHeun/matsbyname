@@ -531,7 +531,8 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
         # Be careful for rows in which a suffix was not found.
         # In that case, return the prefix.
         new_rnames <- lapply(ps, FUN = function(x) {
-          if (is.null(x[["suff"]])) {
+          # if (is.null(x[["suff"]])) {
+          if (x[["suff"]] == "") {
             return(x[["pref"]])
           }
           return(x[["suff"]])
@@ -542,7 +543,7 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
           new_rt <- rowtype(a) %>% 
             split_pref_suff(notation = notation) %>% 
             magrittr::extract2("suff")
-          if (is.null(new_rt)) {
+          if (new_rt == "") {
             # There was no suffix, so return the prefix.
             new_rt <- rowtype(a) %>% 
               split_pref_suff(notation = notation) %>% 

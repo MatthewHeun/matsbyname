@@ -45,23 +45,26 @@ with notation that includes a prefix and a suffix,
 with corresponding separators or start-end string sequences.
 There are several functions that call notation_vec() to generate specialized versions
 or otherwise manipulate row and column names on their own or as row or column names.
-notation_vec() builds a vector of notation symbols in a standard format
+notation_vec() Builds a vector of notation symbols in a standard format
 that is used by matsbyname in several places.
 By default, it builds a list of notation symbols that provides an arrow
 separator (&quot; -&amp;gt; &quot;) between prefix and suffix.
-arrow_notation() builds a list of notation symbols that provides an arrow separator (&quot; -&amp;gt; &quot;)
+arrow_notation() Builds a list of notation symbols that provides an arrow separator (&quot; -&amp;gt; &quot;)
 between prefix and suffix.
-paren_notation() builds a list of notation symbols that provides parentheses around the suffix (&quot;prefix (suffix)&quot;).
+paren_notation() Builds a list of notation symbols that provides parentheses around the suffix (&quot;prefix (suffix)&quot;).
 bracket_notation() builds a list of notation symbols that provides square brackets around the suffix (&quot;prefix [suffix]&quot;).
-split_pref_suff() splits prefixes from suffixes, returning each in a list with names pref and suff.
-If no delimiters are found, x is returned in the pref item, unmodified.
-paste_pref_suff(() paste0's prefixes and suffixes, the inverse of split_pref_suff().
-flip_pref_suff() switches the location of prefix and suffix, such that the prefix becomes the suffix, and
+split_pref_suff() Splits prefixes from suffixes, returning each in a list with names pref and suff.
+If no prefix or suffix delimiters are found, x is returned in the pref item, unmodified,
+and the suff item is returned as &quot;&quot; (an empty string).
+If there is no prefix, and empty string is returned for the pref item.
+If there is no suffix, and empty string is returned for the suff item.
+paste_pref_suff() paste0's prefixes and suffixes, the inverse of split_pref_suff().
+flip_pref_suff() Switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 the suffix becomes the prefix.
 E.g., &quot;a -&amp;gt; b&quot; becomes &quot;b -&amp;gt; a&quot; or &quot;a [b]&quot; becomes &quot;b [a]&quot;.
-switch_notation() switches from one type of notation to another based on the from and to arguments.
+switch_notation() Switches from one type of notation to another based on the from and to arguments.
 Optionally, prefix and suffix can be flipped.
-switch_notation_byname() switches matrix row and/or column names from one type of notation to another
+switch_notation_byname() Switches matrix row and/or column names from one type of notation to another
 based on the from and to arguments.
 Optionally, prefix and suffix can be flipped.
 
@@ -102,7 +105,7 @@ E.g., &quot;a -&amp;gt; b&quot; in arrow notation means that &quot;a&quot; is th
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.19</span>
       </span>
     </div>
 
@@ -170,23 +173,26 @@ with notation that includes a prefix and a suffix,
 with corresponding separators or start-end string sequences.
 There are several functions that call <code>notation_vec()</code> to generate specialized versions
 or otherwise manipulate row and column names on their own or as row or column names.</p><ul>
-<li><p><code>notation_vec()</code> builds a vector of notation symbols in a standard format
+<li><p><code>notation_vec()</code> Builds a vector of notation symbols in a standard format
 that is used by <code>matsbyname</code> in several places.
 By default, it builds a list of notation symbols that provides an arrow
 separator (" -&gt; ") between prefix and suffix.</p></li>
-<li><p><code>arrow_notation()</code> builds a list of notation symbols that provides an arrow separator (" -&gt; ")
+<li><p><code>arrow_notation()</code> Builds a list of notation symbols that provides an arrow separator (" -&gt; ")
 between prefix and suffix.</p></li>
-<li><p><code>paren_notation()</code> builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").</p></li>
+<li><p><code>paren_notation()</code> Builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").</p></li>
 <li><p><code>bracket_notation()</code> builds a list of notation symbols that provides square brackets around the suffix ("prefix [suffix]").</p></li>
-<li><p><code>split_pref_suff()</code> splits prefixes from suffixes, returning each in a list with names <code>pref</code> and <code>suff</code>.
-If no delimiters are found, <code>x</code> is returned in the <code>pref</code> item, unmodified.</p></li>
-<li><p><code>paste_pref_suff(()</code> paste0's prefixes and suffixes, the inverse of <code>split_pref_suff()</code>.</p></li>
-<li><p><code>flip_pref_suff()</code> switches the location of prefix and suffix, such that the prefix becomes the suffix, and
+<li><p><code>split_pref_suff()</code> Splits prefixes from suffixes, returning each in a list with names <code>pref</code> and <code>suff</code>.
+If no prefix or suffix delimiters are found, <code>x</code> is returned in the <code>pref</code> item, unmodified,
+and the <code>suff</code> item is returned as <code>""</code> (an empty string).
+If there is no prefix, and empty string is returned for the <code>pref</code> item.
+If there is no suffix, and empty string is returned for the <code>suff</code> item.</p></li>
+<li><p><code>paste_pref_suff()</code> <code>paste0</code>'s prefixes and suffixes, the inverse of <code>split_pref_suff()</code>.</p></li>
+<li><p><code>flip_pref_suff()</code> Switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 the suffix becomes the prefix.
 E.g., "a -&gt; b" becomes "b -&gt; a" or "a [b]" becomes "b [a]".</p></li>
-<li><p><code>switch_notation()</code> switches from one type of notation to another based on the <code>from</code> and <code>to</code> arguments.
+<li><p><code>switch_notation()</code> Switches from one type of notation to another based on the <code>from</code> and <code>to</code> arguments.
 Optionally, prefix and suffix can be <code>flip</code>ped.</p></li>
-<li><p><code>switch_notation_byname()</code> switches matrix row and/or column names from one type of notation to another
+<li><p><code>switch_notation_byname()</code> Switches matrix row and/or column names from one type of notation to another
 based on the <code>from</code> and <code>to</code> arguments.
 Optionally, prefix and suffix can be <code>flip</code>ped.</p></li>
 </ul>
