@@ -7,25 +7,28 @@
 #' There are several functions that call `notation_vec()` to generate specialized versions
 #' or otherwise manipulate row and column names on their own or as row or column names.
 #' 
-#' * `notation_vec()` builds a vector of notation symbols in a standard format 
+#' * `notation_vec()` Builds a vector of notation symbols in a standard format 
 #'                    that is used by `matsbyname` in several places.
 #'                    By default, it builds a list of notation symbols that provides an arrow 
 #'                    separator (" -> ") between prefix and suffix.
-#' * `arrow_notation()` builds a list of notation symbols that provides an arrow separator (" -> ")
+#' * `arrow_notation()` Builds a list of notation symbols that provides an arrow separator (" -> ")
 #'                      between prefix and suffix.
-#' * `paren_notation()` builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
+#' * `paren_notation()` Builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
 #' * `bracket_notation()` builds a list of notation symbols that provides square brackets around the suffix ("prefix \[suffix\]").
-#' * `split_pref_suff()` splits prefixes from suffixes, returning each in a list with names `pref` and `suff`. 
-#'                       If no delimiters are found, `x` is returned in the `pref` item, unmodified.
-#' * `paste_pref_suff(()` paste0's prefixes and suffixes, the inverse of `split_pref_suff()`.
-#' * `flip_pref_suff()` switches the location of prefix and suffix, such that the prefix becomes the suffix, and
+#' * `split_pref_suff()` Splits prefixes from suffixes, returning each in a list with names `pref` and `suff`. 
+#'                       If no prefix or suffix delimiters are found, `x` is returned in the `pref` item, unmodified, 
+#'                       and the `suff` item is returned as `""` (an empty string).
+#'                       If there is no prefix, and empty string is returned for the `pref` item.
+#'                       If there is no suffix, and empty string is returned for the `suff` item.
+#' * `paste_pref_suff()` `paste0`'s prefixes and suffixes, the inverse of `split_pref_suff()`.
+#' * `flip_pref_suff()` Switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 #'                      the suffix becomes the prefix.
 #'                      E.g., "a -> b" becomes "b -> a" or "a \[b\]" becomes "b \[a\]".
-#' * `switch_notation()` switches from one type of notation to another based on the `from` and `to` arguments.
-#'                               Optionally, prefix and suffix can be `flip`ped.
-#' * `switch_notation_byname()` switches matrix row and/or column names from one type of notation to another 
-#'                                      based on the `from` and `to` arguments.
-#'                                      Optionally, prefix and suffix can be `flip`ped.
+#' * `switch_notation()` Switches from one type of notation to another based on the `from` and `to` arguments.
+#'                       Optionally, prefix and suffix can be `flip`ped.
+#' * `switch_notation_byname()` Switches matrix row and/or column names from one type of notation to another 
+#'                              based on the `from` and `to` arguments.
+#'                              Optionally, prefix and suffix can be `flip`ped.
 #' 
 #' If `sep` only is specified (default is " -> "), 
 #' `pref_start`, `pref_end`, `suff_start`, and `suff_end` are 
@@ -153,8 +156,10 @@ split_pref_suff <- function(x, notation = arrow_notation()) {
   suff <- lapply(suff, function(s) {
     if (length(s) == 2) {
       # If we got two pieces, choose the second piece.
-      s = s[[2]]
+      return(s[[2]])
     }
+    # We got only 1 piece. Return an empty string ("") to indicate a missing suffix
+    return("")
   })
   if (length(x) == 1) {
     suff <- unlist(suff)
@@ -216,7 +221,7 @@ flip_pref_suff <- function(x, notation = arrow_notation()) {
 switch_notation <- function(x, from, to, flip = FALSE) {
   switch_func <- function(x) {
     ps <- split_pref_suff(x, notation = from)
-    if (is.null(ps$suff)) {
+    if (ps$suff == "") {
       # No split occurred, meaning the notation for prefix and suffix wasn't found.
       # In this case, return the string unmodified.
       return(x)

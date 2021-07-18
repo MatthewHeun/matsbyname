@@ -31,7 +31,7 @@ test_that("bracket notation is created properly", {
 })
 
 
-test_that("split_pref_suff works properly", {
+test_that("split_pref_suff() works properly", {
   expect_equal(split_pref_suff("a -> b", notation = arrow_notation()), list(pref = "a", suff = "b"))
   expect_equal(split_pref_suff("b [a]", notation = bracket_notation()), list(pref = "b", suff = "a"))
   
@@ -41,6 +41,18 @@ test_that("split_pref_suff works properly", {
   # See if it works with a list of strings
   expect_equal(split_pref_suff(list("a -> b", "a -> b"), notation = arrow_notation()), 
                list(list(pref = "a", suff = "b"), list(pref = "a", suff = "b")))
+  
+  # See if it works when we don't have a suffix
+  expect_equal(split_pref_suff(list("a", "b"), notation = arrow_notation()), 
+               list(list(pref = "a", suff = ""), list(pref = "b", suff = "")))
+  
+  # See if it works when we don't have a prefix or a suffix.
+  expect_equal(split_pref_suff(list(" -> ", " -> "), notation = arrow_notation()), 
+               list(list(pref = "", suff = ""), list(pref = "", suff = "")))
+  
+  # See if it works when we don't have a delimiter.
+  expect_equal(split_pref_suff(list("a -> b", "r2", "r3"), notation = arrow_notation()), 
+               list(list(pref = "a", suff = "b"), list(pref = "r2", suff = ""), list(pref = "r3", suff = "")))
   
   # Try with unusual prefixes and suffixes
   nl <- notation_vec(pref_start = " {", pref_end = "} ", suff_start = "} ", suff_end = NA_character_)
@@ -53,18 +65,28 @@ test_that("split_pref_suff works properly", {
   
   # Try with degenerate cases
   nl3 <- notation_vec(sep = "{{}}")
-  expect_equal(split_pref_suff("abc {{} def", notation = nl3), list(pref = "abc {{} def", suff = NULL))
+  expect_equal(split_pref_suff("abc {{} def", notation = nl3), list(pref = "abc {{} def", suff = ""))
   expect_equal(split_pref_suff("abc {{}} def", notation = nl3), list(pref = "abc ", suff = " def"))
   
   # Try with weird parentheses
   nl4 <- notation_vec(pref_start = "(", pref_end = ")", suff_start = "(", suff_end = ")")
   expect_equal(split_pref_suff("(a)(b)", notation = nl4), list(pref = "a", suff = "b"))
   
-  expect_equal(split_pref_suff("a b", notation = nl4), list(pref = "a b", suff = NULL))
+  expect_equal(split_pref_suff("a b", notation = nl4), list(pref = "a b", suff = ""))
 })
 
 
-test_that("join_pref_suff works properly", {
+test_that("split_pref_suff() works in a data frame", {
+  df <- data.frame(donottouch = c(1, 2), orig = c("a -> b", "c -> d"))
+  splitted <- df %>% 
+    dplyr::mutate(
+      split = split_pref_suff(orig, notation = arrow_notation())
+    )
+  expect_equal(splitted$split, list(list(pref = "a", suff = "b"), list(pref = "c", suff = "d")))
+})
+
+
+test_that("join_pref_suff() works properly", {
   ps <- list(pref = "a", suff = "b")
   expect_equal(paste_pref_suff(ps, notation = arrow_notation()), "a -> b")
   # Make sure that they are the inverse of each other
@@ -96,7 +118,7 @@ test_that("join_pref_suff works properly", {
 })
 
 
-test_that("flip_pref_suff works as expected", {
+test_that("flip_pref_suff() works as expected", {
   expect_equal(flip_pref_suff("a -> b", notation = arrow_notation()), "b -> a")
   expect_equal(flip_pref_suff("a [b]", notation = bracket_notation()), "b [a]")
   
@@ -115,7 +137,7 @@ test_that("flip_pref_suff works as expected", {
 })
 
 
-test_that("switch_notation works as expected", {
+test_that("switch_notation() works as expected", {
   # Start with a degenerate case
   expect_equal(switch_notation("a", from = arrow_notation(), to = bracket_notation()), "a")
   expect_equal(switch_notation("a", from = bracket_notation(), to = arrow_notation()), "a")
@@ -140,7 +162,17 @@ test_that("switch_notation works as expected", {
 })
 
 
-test_that("switch_notation_byname works as expected", {
+test_that("switch_notation() works in a data frame", {
+  df <- data.frame(orig = c("a -> b", "c -> d"))
+  switched <- df %>% 
+    dplyr::mutate(
+      new = switch_notation(orig, from = arrow_notation(), to = bracket_notation())
+    )
+  expect_equal(switched$new, list("a [b]", "c [d]"))
+})
+
+
+test_that("switch_notation_byname() works as expected", {
   # Switch row names
   m <- matrix(c(1, 2, 
                 3, 4), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("a [b]", "c [d]"), c("e", "f"))) %>% 
@@ -203,7 +235,7 @@ test_that("switch_notation_byname works as expected", {
 })
 
 
-test_that("switch_notation_byname works well when flip is a list", {
+test_that("switch_notation_byname() works well when flip is a list", {
   m <- matrix(c(1, 2, 
                 3, 4), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("a", "b"), c("d [c]", "f [e]"))) %>% 
     setrowtype("rows") %>% setcoltype("Industries [Products]")
