@@ -159,6 +159,26 @@ test_that("keep_pref_suff() works as expected", {
                list("abcde", "fghij"))
   expect_equal(keep_pref_suff(list("abcde", "fghij"), keep = "suff", notation = arrow_notation()), 
                list("abcde", "fghij"))
+  
+  # Test in a data frame using mutate.
+  df <- data.frame(v1 = c("a -> b", "c -> d"), v2 = c("e [f]", "g [h]"))
+  res <- df %>% 
+    dplyr::mutate(
+      # Keep the prefixes from the arrow notation column (v1)
+      pref = keep_pref_suff(v1, keep = "pref", notation = arrow_notation()), 
+      # Keep the suffixes from the bracket notation column (v2)
+      suff = keep_pref_suff(v2, keep = "suff", notation = bracket_notation()), 
+      # Keep the suffixes from the arrow notation column (v1), but specify bracket notation.
+      # This should basically fail, because there are no suffixes.
+      # Then, the entire string will be retained into the "fail" column.
+      fail = keep_pref_suff(v1, keep = "suff", notation = bracket_notation())
+    )
+  expect_equal(res$pref[[1]], "a")
+  expect_equal(res$pref[[2]], "c")
+  expect_equal(res$suff[[1]], "f")
+  expect_equal(res$suff[[2]], "h")
+  expect_equal(res$fail[[1]], "a -> b")
+  expect_equal(res$fail[[2]], "c -> d")
 })
 
 
