@@ -236,7 +236,8 @@ keep_pref_suff <- function(x, keep = c("pref", "suff"), notation) {
 
   pref_suff <- split_pref_suff(x, notation)
   if (length(x) > 1) {
-    out <- lapply(pref_suff, choose_pref_or_suff, keep)
+    out <- lapply(pref_suff, choose_pref_or_suff, keep) %>% 
+      unlist()
   } else {
     out <- choose_pref_or_suff(pref_suff, keep)
   }
