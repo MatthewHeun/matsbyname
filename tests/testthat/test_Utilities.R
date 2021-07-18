@@ -352,7 +352,7 @@ test_that("renaming rows to prefix or suffix works as expected", {
   expect_equal(actual, expected)
   
   expected <- m
-  rownames(expected) <- c("b", "", "")
+  rownames(expected) <- c("b", "r2", "r3")
   actual <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 1, notation = arrow_notation())
   expect_equal(actual, expected)
   
@@ -402,7 +402,7 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
   expect_equal(actual, expected)
   
   expected <- m
-  rownames(expected) <- c("b", "", "")
+  rownames(expected) <- c("b", "r2", "r3")
   colnames(expected) <- c("b", "d")
   actual <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
   expect_equal(actual, expected)
@@ -436,6 +436,22 @@ test_that("renaming rows and cols to pref and suff also changes rowtype and colt
   expect_equal(colnames(res2), c("h", "j"))
   expect_equal(rowtype(res2), "Product")
   expect_equal(coltype(res2), "Industry")
+})
+
+
+test_that("changing row and column type correctly ignores missing suffixes", {
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), nrow = 3, byrow = TRUE, 
+              dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j"))) %>% 
+    setrowtype("Rows") %>% setcoltype("Product -> Industry")
+  res <- rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+  expect_equal(rowtype(res), "Rows")
+  expect_equal(coltype(res), "Product")
+
+  res_2 <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+  expect_equal(rowtype(res_2), "Rows")
+  expect_equal(coltype(res_2), "Industry")
 })
 
 
