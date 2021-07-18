@@ -1,4 +1,5 @@
-* Changed logic for situations where prefix or suffix is not found
+* Breaking change: 
+  New logic for situations where prefix or suffix is not found
   in `split_pref_suff()`. 
   Previously, `NULL` was returned for a missing prefix or suffix.
   Now, an empty string (`""`) is returned.
