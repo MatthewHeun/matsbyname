@@ -1,10 +1,8 @@
 ## Context
-`matsbyname` v0.4.18 is a feature release containing a few new capabilities.
+`matsbyname` v0.4.19 is a minor release that changes logic for one function.
+This is a breaking change, so `revdepcheck` has been carefully evaluated
+to find that no breakages occur in other packages.
 See `NEWS.md` for details.
-
-This is the second attempt to submit v0.4.18.
-The first attempt included a redirecting URL for the "stable" badge on the `readme.md` page.
-That issue has been fixed for this resubmission.
 
 ## Test environments (10 in total) and R CMD check results
 * local macOS X install 10.15.7 (Catalina), R4.1.0
@@ -32,19 +30,16 @@ That issue has been fixed for this resubmission.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2021-06-01 r80444)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2021-07-16 r80636)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
         * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
-            * ERRORs: 1
+            * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 0
-            * The errors appear to be caused by mal-configuration of this test rig.
-              This is the *only* rig where errors occur.
-                * `#> Error: Bioconductor does not yet build and check packages for R version 4.2`
         * Ubuntu Linux 20.04.1 LTS, R-release, GCC
             * ERRORs: 0
             * WARNINGs: 0
