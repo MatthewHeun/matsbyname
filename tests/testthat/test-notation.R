@@ -141,11 +141,16 @@ test_that("keep_pref_suff() works as expected", {
   expect_equal(keep_pref_suff("a -> b", keep = "pref", notation = arrow_notation()), "a")
   expect_equal(keep_pref_suff("a -> b", keep = "suff", notation = arrow_notation()), "b")
   
+  expect_equal(keep_pref_suff("a [b]", keep = "suff", notation = bracket_notation()), "b")
+  
   # Try with a list
   expect_equal(keep_pref_suff(list("a -> b", "c -> d"), keep = "pref", notation = arrow_notation()), 
                list("a", "c"))
   expect_equal(keep_pref_suff(list("a -> b", "c -> d"), keep = "suff", notation = arrow_notation()), 
                list("b", "d"))
+  
+  expect_equal(keep_pref_suff(list("a [b]", "abcde"), keep = "suff", notation = bracket_notation()), 
+               list("b", "abcde"))
   
   # Try degenerate cases
   expect_equal(keep_pref_suff("abcde", keep = "pref", notation = arrow_notation()), "abcde")
