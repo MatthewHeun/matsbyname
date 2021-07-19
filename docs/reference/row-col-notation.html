@@ -62,6 +62,8 @@ paste_pref_suff() paste0's prefixes and suffixes, the inverse of split_pref_suff
 flip_pref_suff() Switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 the suffix becomes the prefix.
 E.g., &quot;a -&amp;gt; b&quot; becomes &quot;b -&amp;gt; a&quot; or &quot;a [b]&quot; becomes &quot;b [a]&quot;.
+keep_pref_suff() Selects only prefix or suffix, discarding notational elements
+and the rejected part.
 switch_notation() Switches from one type of notation to another based on the from and to arguments.
 Optionally, prefix and suffix can be flipped.
 switch_notation_byname() Switches matrix row and/or column names from one type of notation to another
@@ -105,7 +107,7 @@ E.g., &quot;a -&amp;gt; b&quot; in arrow notation means that &quot;a&quot; is th
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.19</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.20</span>
       </span>
     </div>
 
@@ -190,6 +192,8 @@ If there is no suffix, and empty string is returned for the <code>suff</code> it
 <li><p><code>flip_pref_suff()</code> Switches the location of prefix and suffix, such that the prefix becomes the suffix, and
 the suffix becomes the prefix.
 E.g., "a -&gt; b" becomes "b -&gt; a" or "a [b]" becomes "b [a]".</p></li>
+<li><p><code>keep_pref_suff()</code> Selects only prefix or suffix, discarding notational elements
+and the rejected part.</p></li>
 <li><p><code>switch_notation()</code> Switches from one type of notation to another based on the <code>from</code> and <code>to</code> arguments.
 Optionally, prefix and suffix can be <code>flip</code>ped.</p></li>
 <li><p><code>switch_notation_byname()</code> Switches matrix row and/or column names from one type of notation to another
@@ -229,6 +233,8 @@ E.g., "a -&gt; b" in arrow notation means that "a" is the prefix and "b" is the 
 
 <span class='fu'>flip_pref_suff</span><span class='op'>(</span><span class='va'>x</span>, notation <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
+<span class='fu'>keep_pref_suff</span><span class='op'>(</span><span class='va'>x</span>, keep <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"pref"</span>, <span class='st'>"suff"</span><span class='op'>)</span>, <span class='va'>notation</span><span class='op'>)</span>
+
 <span class='fu'>switch_notation</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>from</span>, <span class='va'>to</span>, flip <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='fu'>switch_notation_byname</span><span class='op'>(</span><span class='va'>a</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, <span class='va'>from</span>, <span class='va'>to</span>, flip <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -238,61 +244,65 @@ E.g., "a -&gt; b" in arrow notation means that "a" is the prefix and "b" is the 
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sep</th>
-      <td><p>a string separator between prefix and suffix. Default is " -&gt; ".</p></td>
+      <td><p>A string separator between prefix and suffix. Default is " -&gt; ".</p></td>
     </tr>
     <tr>
       <th>pref_start</th>
-      <td><p>a string indicating the start of a prefix. Default is <code>NULL</code>.</p></td>
+      <td><p>A string indicating the start of a prefix. Default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>pref_end</th>
-      <td><p>a string indicating the end of a prefix. Default is the value of <code>sep</code>.</p></td>
+      <td><p>A string indicating the end of a prefix. Default is the value of <code>sep</code>.</p></td>
     </tr>
     <tr>
       <th>suff_start</th>
-      <td><p>a string indicating the start of a suffix. Default is the value of <code>sep</code>.</p></td>
+      <td><p>A string indicating the start of a suffix. Default is the value of <code>sep</code>.</p></td>
     </tr>
     <tr>
       <th>suff_end</th>
-      <td><p>a string indicating the end of a suffix. Default is <code>NULL</code>.</p></td>
+      <td><p>A string indicating the end of a suffix. Default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>a string or list of strings to be operated upon.</p></td>
+      <td><p>A string or list of strings to be operated upon.</p></td>
     </tr>
     <tr>
       <th>notation</th>
-      <td><p>a notation vector generated by one of the <code>*_notation()</code> functions, such as
+      <td><p>A notation vector generated by one of the <code>*_notation()</code> functions, such as
 <code>notation_vec()</code>, <code>arrow_notation()</code>, or <code>bracket_notation()</code>.
 Default is <code>arrow_notation()</code>.</p></td>
     </tr>
     <tr>
       <th>ps</th>
-      <td><p>a list of prefixes and suffixes in which each item of the list is itself a list with two items named <code>pref</code> and <code>suff</code>.</p></td>
+      <td><p>A list of prefixes and suffixes in which each item of the list is itself a list with two items named <code>pref</code> and <code>suff</code>.</p></td>
     </tr>
     <tr>
       <th>pref</th>
-      <td><p>a string or list of strings that are prefixes. Default is <code>NULL</code>.</p></td>
+      <td><p>A string or list of strings that are prefixes. Default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>suff</th>
-      <td><p>a string of list of strings that are suffixes. Default is <code>NULL</code>.</p></td>
+      <td><p>A string of list of strings that are suffixes. Default is <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>keep</th>
+      <td><p>Tells which</p></td>
     </tr>
     <tr>
       <th>from</th>
-      <td><p>the <code>notation</code> to switch <em>away from</em>.</p></td>
+      <td><p>The <code>notation</code> to switch <em>away from</em>.</p></td>
     </tr>
     <tr>
       <th>to</th>
-      <td><p>the <code>notation</code> to switch <em>to</em>.</p></td>
+      <td><p>The <code>notation</code> to switch <em>to</em>.</p></td>
     </tr>
     <tr>
       <th>flip</th>
-      <td><p>a boolean that tells whether to also flip the notation. Default is <code>FALSE</code>.</p></td>
+      <td><p>A boolean that tells whether to also flip the notation. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>a</th>
-      <td><p>a matrix or list of matrices whose row and/or column notation is to be changed.</p></td>
+      <td><p>A matrix or list of matrices whose row and/or column notation is to be changed.</p></td>
     </tr>
     <tr>
       <th>margin</th>
@@ -302,13 +312,14 @@ Default is <code>arrow_notation()</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>for <code>notation_vec()</code>, <code>arrow_notation()</code>, and <code>bracket_notation()</code>,
+    <p>For <code>notation_vec()</code>, <code>arrow_notation()</code>, and <code>bracket_notation()</code>,
 a string vector with named items <code>pref_start</code>, <code>pref_end</code>, <code>suff_start</code>, and <code>suff_end</code>;
-for <code>split_pref_suff()</code>, a string list with named items <code>pref</code> and <code>suff</code>;
-for <code>paste_pref_suff()</code>, <code>slip_pref_suff()</code>, and <code>switch_notation()</code>,
+For <code>split_pref_suff()</code>, a string list with named items <code>pref</code> and <code>suff</code>.
+For <code>paste_pref_suff()</code>, <code>split_pref_suff()</code>, and <code>switch_notation()</code>,
 a string list in notation format specified by various <code>notation</code> arguments, including
-<code>from</code>, and <code>to</code>,
-for <code>switch_row_col_notation_byname()</code>, matrices with row and column names with switched notation,
+<code>from</code>, and <code>to</code>.
+For <code>keep_pref_suff</code>, one of the prefix or suffix or a list of prefixes or suffixes.
+For <code>switch_row_col_notation_byname()</code>, matrices with row and column names with switched notation,
 per arguments.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -325,7 +336,8 @@ per arguments.</p>
 #&gt; $suff
 #&gt; [1] "b"
 #&gt; </div><div class='input'><span class='fu'>flip_pref_suff</span><span class='op'>(</span><span class='st'>"a [b]"</span>, notation <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "b [a]"</div><div class='input'><span class='fu'>switch_notation</span><span class='op'>(</span><span class='st'>"a -&gt; b"</span>, from <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>, to <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "b [a]"</div><div class='input'><span class='fu'>keep_pref_suff</span><span class='op'>(</span><span class='st'>"a -&gt; b"</span>, keep <span class='op'>=</span> <span class='st'>"suff"</span>, notation <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "b"</div><div class='input'><span class='fu'>switch_notation</span><span class='op'>(</span><span class='st'>"a -&gt; b"</span>, from <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>, to <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "a [b]"</div><div class='input'><span class='fu'>switch_notation</span><span class='op'>(</span><span class='st'>"a -&gt; b"</span>, from <span class='op'>=</span> <span class='fu'>arrow_notation</span><span class='op'>(</span><span class='op'>)</span>, to <span class='op'>=</span> <span class='fu'>bracket_notation</span><span class='op'>(</span><span class='op'>)</span>, 
                 flip <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "b [a]"</div><div class='input'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, 
