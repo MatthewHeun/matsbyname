@@ -1,3 +1,12 @@
+# matsbyname 0.4.20 (2021-07-19)
+
+* New function `keep_pref_suff()` keeps prefixes or suffixes of individual strings
+  or lists of strings, based on the `notation` provided.
+* New tests for new functions.  
+    - Now up to 1025 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.19 (2021-07-17)
 
 * Breaking change: 
