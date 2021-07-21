@@ -190,7 +190,7 @@ test_that("differences of constants works as expected", {
   expect_equal(difference_byname(NULL, 1), -1)
   expect_equal(difference_byname(2, NULL), 2)
   expect_equal(difference_byname(list(NULL, 1), list(1, 1)), list(-1, 0))
-  # If summed against NA, return NA
+  # If differenced against NA, return NA
   expect_equal(difference_byname(2, NA), NA_integer_)
 })
 
