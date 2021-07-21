@@ -1,7 +1,8 @@
 ## Context
-`matsbyname` v0.4.19 is a minor release that changes logic for one function.
-This is a breaking change, so `revdepcheck` has been carefully evaluated
-to find that no breakages occur in other packages.
+`matsbyname` v0.4.20 is a minor release that adds a function: `keep_pref_suff()`.
+There are no breaking changes.
+I'm sorry this update is coming quickly;
+the new function is needed for some downstream packages.
 See `NEWS.md` for details.
 
 ## Test environments (10 in total) and R CMD check results
