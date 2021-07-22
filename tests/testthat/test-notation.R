@@ -137,6 +137,51 @@ test_that("flip_pref_suff() works as expected", {
 })
 
 
+test_that("keep_pref_suff() works as expected", {
+  expect_equal(keep_pref_suff("a -> b", keep = "pref", notation = arrow_notation()), "a")
+  expect_equal(keep_pref_suff("a -> b", keep = "suff", notation = arrow_notation()), "b")
+  
+  expect_equal(keep_pref_suff("a [b]", keep = "suff", notation = bracket_notation()), "b")
+  
+  # Try with a list
+  expect_equal(keep_pref_suff(list("a -> b", "c -> d"), keep = "pref", notation = arrow_notation()), 
+               c("a", "c"))
+  expect_equal(keep_pref_suff(list("a -> b", "c -> d"), keep = "suff", notation = arrow_notation()), 
+               c("b", "d"))
+  
+  expect_equal(keep_pref_suff(list("a [b]", "abcde"), keep = "suff", notation = bracket_notation()), 
+               c("b", "abcde"))
+  
+  # Try degenerate cases
+  expect_equal(keep_pref_suff("abcde", keep = "pref", notation = arrow_notation()), "abcde")
+  expect_equal(keep_pref_suff("abcde", keep = "suff", notation = arrow_notation()), "abcde")
+  expect_equal(keep_pref_suff(list("abcde", "fghij"), keep = "pref", notation = arrow_notation()), 
+               c("abcde", "fghij"))
+  expect_equal(keep_pref_suff(list("abcde", "fghij"), keep = "suff", notation = arrow_notation()), 
+               c("abcde", "fghij"))
+  
+  # Test in a data frame using mutate.
+  df <- data.frame(v1 = c("a -> b", "c -> d"), v2 = c("e [f]", "g [h]"))
+  res <- df %>% 
+    dplyr::mutate(
+      # Keep the prefixes from the arrow notation column (v1)
+      pref = keep_pref_suff(v1, keep = "pref", notation = arrow_notation()), 
+      # Keep the suffixes from the bracket notation column (v2)
+      suff = keep_pref_suff(v2, keep = "suff", notation = bracket_notation()), 
+      # Keep the suffixes from the arrow notation column (v1), but specify bracket notation.
+      # This should basically fail, because there are no suffixes.
+      # Then, the entire string will be retained into the "fail" column.
+      fail = keep_pref_suff(v1, keep = "suff", notation = bracket_notation())
+    )
+  expect_equal(res$pref[[1]], "a")
+  expect_equal(res$pref[[2]], "c")
+  expect_equal(res$suff[[1]], "f")
+  expect_equal(res$suff[[2]], "h")
+  expect_equal(res$fail[[1]], "a -> b")
+  expect_equal(res$fail[[2]], "c -> d")
+})
+
+
 test_that("switch_notation() works as expected", {
   # Start with a degenerate case
   expect_equal(switch_notation("a", from = arrow_notation(), to = bracket_notation()), "a")
@@ -243,5 +288,7 @@ test_that("switch_notation_byname() works well when flip is a list", {
   colnames(e) <- c("c -> d", "e -> f")
   e <- e %>% setcoltype("Products -> Industries")
   expect_equal(switch_notation_byname(m, from = bracket_notation(), to = arrow_notation(), flip = list(TRUE)), e)
-  
 })
+
+
+
