@@ -50,7 +50,6 @@ test_that("hatinv_byname works as expected", {
   # Test that hatinv works with a 1x1 vector
   g <- matrix(4, dimnames = list("I", "Products"))
   expect_error(hatinv_byname(g), "1x1 matrix v must have one dimension without a name")
-   
 })
 
 
