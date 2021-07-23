@@ -4,12 +4,18 @@
 \alias{hatinv_byname}
 \title{Hatize and invert a vector}
 \usage{
-hatinv_byname(v, inf_becomes = .Machine$double.xmax)
+hatinv_byname(
+  v,
+  keep = c("rownames", "colnames"),
+  inf_becomes = .Machine$double.xmax
+)
 }
 \arguments{
-\item{v}{the vector to be hatized and inverted}
+\item{v}{The vector to be hatized and inverted.}
 
-\item{inf_becomes}{a value to be substitute for any \code{Inf} produced by the inversion process.
+\item{keep}{See \code{matsbyname::hatize}.}
+
+\item{inf_becomes}{A value to be substitute for any \code{Inf} produced by the inversion process.
 Default is \code{.Machine$double.xmax}.
 If \code{FALSE} (the default), \code{Inf} is not handled differently.
 If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.}
@@ -35,7 +41,7 @@ when any of the elements of \code{v} are zero.
 This function will give \code{inf_becomes} on the diagonal of the result for each zero element of \code{v},
 arguably a better answer.
 The sign of \code{Inf} is preserved in the substitution.
-The default value of \code{inf_becomes} is \code{.Machine$double.xmax}.
+The default value of \code{Inf_becomes} is \code{.Machine$double.xmax}.
 Set \code{inf_becomes} to \code{NULL} to disable this behavior.
 
 The default behavior is helpful for cases when the result of \code{hatinv_byname} is later multiplied by \code{0}
@@ -60,4 +66,12 @@ v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) \%>\%
 hatinv_byname(v2)
 hatinv_byname(v2, inf_becomes = 42)
 hatinv_byname(v2, inf_becomes = NULL)
+# Deals with 1x1 matrices well, if the `keep` argument is set.
+m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\% 
+  setrowtype("Product -> Industry") \%>\% 
+  setcoltype("Industry -> Product")
+m \%>\% 
+  hatinv_byname(keep = "rownames")
+m \%>\% 
+  hatinv_byname(keep = "colnames")
 }

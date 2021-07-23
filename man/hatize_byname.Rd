@@ -4,10 +4,13 @@
 \alias{hatize_byname}
 \title{Creates a diagonal "hat" matrix from a vector}
 \usage{
-hatize_byname(v)
+hatize_byname(v, keep = c("rownames", "colnames"))
 }
 \arguments{
 \item{v}{The vector from which a "hat" matrix is to be created.}
+
+\item{keep}{One of "rownames" or "colnames". Default is \code{c("rownames", "colnames")},
+which triggers an error.}
 }
 \value{
 A square "hat" matrix with size equal to the length of \code{v}.
@@ -16,8 +19,27 @@ A square "hat" matrix with size equal to the length of \code{v}.
 A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
 \code{v} must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
-The names of both dimensions of the hatized matrix are the same and taken from \code{v}.
+The names of both dimensions of the hatized matrix are the same and taken from
+the dimension of \code{v} that is \emph{not} 1.
 Note that the vector names are sorted prior to forming the "hat" matrix.
+}
+\details{
+Hatizing a 1x1 vector is done automatically
+when only one of the row name or the column name is present.
+In that case, the only name is applied to both margins.
+
+Hatizing a 1x1 vector where both a row name and a column name are present
+is potentially undefined..
+When both row names and column names are present
+(but at no other time), the argument \code{keep}
+determines whether to keep "rownames" or "colnames".
+By default \code{keep} is \code{c("rownames", "colnames")},
+which triggers an error, but only when the argument \code{keep} is needed
+to choose a names winner.
+Callers need to specify one or the other.
+If vector \code{v} could ever have length 1,
+it is best to set a value for \code{keep} when writing code
+that calls \code{hatize_byname()}.
 }
 \examples{
 v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) \%>\%
@@ -45,4 +67,12 @@ matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\%
   setcoltype("Industry -> Product") \%>\% 
   hatize_byname()
 }
+# But you could specify which you want keep, row names or column names.
+m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\% 
+  setrowtype("Product -> Industry") \%>\% 
+  setcoltype("Industry -> Product")
+m \%>\% 
+  hatize_byname(keep = "rownames")
+m \%>\% 
+  hatize_byname(keep = "colnames")
 }

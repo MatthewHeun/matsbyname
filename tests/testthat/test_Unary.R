@@ -2,6 +2,27 @@
 context("Hatize and Inverse")
 ###########################################################
 
+test_that("hatize_byname() works as expected", {
+  g <- matrix(4, dimnames = list("I", "Products"))
+  expect_error(hatize_byname(g), "1x1 matrix v must have one dimension without a name")
+  expect_equal(hatize_byname(g, keep = "rownames"), 
+               matrix(4, dimnames = list("I", "I")))
+  expect_equal(hatize_byname(g, keep = "colnames"), 
+               matrix(4, dimnames = list("Products", "Products")))
+  
+  # Try to hatize a list.
+  v <- matrix(1:3, ncol = 1, dimnames = list(c(paste0("i", 1:3)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  v_list <- list(v, v)
+  expected_m <- matrix(c(1, 0, 0, 
+                         0, 2, 0,
+                         0, 0, 3), nrow = 3, byrow = TRUE, 
+                       dimnames = list(c("i1", "i2", "i3"), c("i1", "i2", "i3"))) %>% 
+    setrowtype("Industries") %>% setcoltype("Industries")
+  expect_equal(hatize_byname(v_list), list(expected_m, expected_m))
+})
+
+
 test_that("hatinv_byname works as expected", {
   # Test with a column vector
   v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%

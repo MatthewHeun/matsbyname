@@ -1,3 +1,13 @@
+* `hatize_byname()` and `hatinv_byname()` gain a new 
+  argument `keep` that tells whether to keep row names or column names
+  when a 1x1 matrix is supplied.
+  This feature assists with code that may occasionally encounter
+  1x1 vectors as input.
+* New tests for new feature.
+    - Now up to 1030 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.20 (2021-07-19) [![DOI](https://zenodo.org/badge/80359905.svg)](https://zenodo.org/badge/latestdoi/80359905)
 
 * New function `keep_pref_suff()` keeps prefixes or suffixes of individual strings
