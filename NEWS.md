@@ -1,3 +1,5 @@
+# matsbyname 0.4.21 (2021-07-23) 
+
 * `hatize_byname()` and `hatinv_byname()` gain a new 
   argument `keep` that tells whether to keep row names or column names
   when a 1x1 matrix is supplied.
