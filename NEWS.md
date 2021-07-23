@@ -5,6 +5,7 @@
   when a 1x1 matrix is supplied.
   This feature assists with code that may occasionally encounter
   1x1 vectors as input.
+* Note this version was not released to CRAN, due to frequent revisions.
 * New tests for new feature.
     - Now up to 1030 tests, all passing.
     - Test coverage remains at 100 %.
