@@ -1,4 +1,4 @@
-# matsbyname 0.4.21 (2021-07-23) 
+# matsbyname 0.4.21 (2021-07-23) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
 
 * `hatize_byname()` and `hatinv_byname()` gain a new 
   argument `keep` that tells whether to keep row names or column names
