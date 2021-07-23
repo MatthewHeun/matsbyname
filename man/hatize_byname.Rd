@@ -67,4 +67,12 @@ matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\%
   setcoltype("Industry -> Product") \%>\% 
   hatize_byname()
 }
+# But you could specify which you want keep, row names or column names.
+m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\% 
+  setrowtype("Product -> Industry") \%>\% 
+  setcoltype("Industry -> Product")
+m \%>\% 
+  hatize_byname(keep = "rownames")
+m \%>\% 
+  hatize_byname(keep = "colnames")
 }

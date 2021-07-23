@@ -158,6 +158,14 @@ transpose_byname <- function(a){
 #'   setcoltype("Industry -> Product") %>% 
 #'   hatize_byname()
 #' }
+#' # But you could specify which you want keep, row names or column names.
+#' m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+#'   setrowtype("Product -> Industry") %>% 
+#'   setcoltype("Industry -> Product")
+#' m %>% 
+#'   hatize_byname(keep = "rownames")
+#' m %>% 
+#'   hatize_byname(keep = "colnames")
 hatize_byname <- function(v, keep = c("rownames", "colnames")){
   hatize_func <- function(v_vec){
     # Check if v is the right size
@@ -256,6 +264,14 @@ hatize_byname <- function(v, keep = c("rownames", "colnames")){
 #' hatinv_byname(v2)
 #' hatinv_byname(v2, inf_becomes = 42)
 #' hatinv_byname(v2, inf_becomes = NULL)
+#' # Deals with 1x1 matrices well, if the `keep` argument is set.
+#' m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+#'   setrowtype("Product -> Industry") %>% 
+#'   setcoltype("Industry -> Product")
+#' m %>% 
+#'   hatinv_byname(keep = "rownames")
+#' m %>% 
+#'   hatinv_byname(keep = "colnames")
 hatinv_byname <- function(v, keep = c("rownames", "colnames"), inf_becomes = .Machine$double.xmax){
   hatinv_func <- function(v_vec){
     # Note: there is no need to check that v is, indeed, a vector here.

@@ -66,4 +66,12 @@ v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) \%>\%
 hatinv_byname(v2)
 hatinv_byname(v2, inf_becomes = 42)
 hatinv_byname(v2, inf_becomes = NULL)
+# Deals with 1x1 matrices well, if the `keep` argument is set.
+m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\% 
+  setrowtype("Product -> Industry") \%>\% 
+  setcoltype("Industry -> Product")
+m \%>\% 
+  hatinv_byname(keep = "rownames")
+m \%>\% 
+  hatinv_byname(keep = "colnames")
 }
