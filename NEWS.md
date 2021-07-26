@@ -23,7 +23,7 @@
     - Test coverage remains at 100 %.
 
 
-# matsbyname 0.4.20 (2021-07-19) [![DOI](https://zenodo.org/badge/80359905.svg)](https://zenodo.org/badge/latestdoi/80359905)
+# matsbyname 0.4.20 (2021-07-19) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118873.svg)](https://doi.org/10.5281/zenodo.5118873)
 
 * New function `keep_pref_suff()` keeps prefixes or suffixes of individual strings
   or lists of strings, based on the `notation` provided.
