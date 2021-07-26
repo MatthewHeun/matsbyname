@@ -9,8 +9,7 @@ hatize_byname(v, keep = c("rownames", "colnames"))
 \arguments{
 \item{v}{The vector from which a "hat" matrix is to be created.}
 
-\item{keep}{One of "rownames" or "colnames". Default is \code{c("rownames", "colnames")},
-which triggers an error.}
+\item{keep}{One of "rownames" or "colnames".}
 }
 \value{
 A square "hat" matrix with size equal to the length of \code{v}.
@@ -34,9 +33,7 @@ When both row names and column names are present
 (but at no other time), the argument \code{keep}
 determines whether to keep "rownames" or "colnames".
 By default \code{keep} is \code{c("rownames", "colnames")},
-which triggers an error, but only when the argument \code{keep} is needed
-to choose a names winner.
-Callers need to specify one or the other.
+which triggers an error. Callers need to specify one or the other.
 If vector \code{v} could ever have length 1,
 it is best to set a value for \code{keep} when writing code
 that calls \code{hatize_byname()}.

@@ -4,7 +4,7 @@ context("Hatize and Inverse")
 
 test_that("hatize_byname() works as expected", {
   g <- matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatize_byname(g), "1x1 matrix v must have one dimension without a name")
+  expect_error(hatize_byname(g), "not equal to 1")
   expect_equal(hatize_byname(g, keep = "rownames"), 
                matrix(4, dimnames = list("I", "I")))
   expect_equal(hatize_byname(g, keep = "colnames"), 
@@ -70,7 +70,7 @@ test_that("hatinv_byname works as expected", {
   
   # Test that hatinv works with a 1x1 vector
   g <- matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatinv_byname(g), "1x1 matrix v must have one dimension without a name")
+  expect_error(hatinv_byname(g), "not equal to 1")
 })
 
 
@@ -229,7 +229,7 @@ context("Hatize")
 test_that("hatize_byname works as expected", {
   # Check the absurd situation where a non-vector is sent to hatize()
   supposed_to_be_a_vector <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
-  expect_error(hatize_byname(supposed_to_be_a_vector), 
+  expect_error(hatize_byname(supposed_to_be_a_vector, keep = "rownames"), 
                "matrix v must have at least one dimension of length 1 in hatize_byname")
   v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
     setrowtype("Industries") %>% setcoltype(NA)
@@ -304,18 +304,39 @@ test_that("hatize_byname works with a simple vector", {
   # Try with a 1x1 row vector
   v3 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, "c1")) %>% 
     setcoltype("Industry -> Product")
-  v3_hat <- hatize_byname(v3)
+  v3_hat <- hatize_byname(v3, keep = "colnames")
   v3_hat_expected <- matrix(42, nrow = 1, ncol = 1, dimnames = list("c1", "c1")) %>% 
     setrowtype("Industry -> Product") %>% 
     setcoltype("Industry -> Product")
   expect_equal(v3_hat, v3_hat_expected)
   
   # Try with 1x1 vector with both dimensions named.
-  # This should fail, because one dimension must lack a name.
+  # This should fail, because rownames or colnames must be specified in the keep argument.
   v4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
     setrowtype("Product -> Industry") %>% 
     setcoltype("Industry -> Product")
-  expect_error(hatize_byname(v4), "1x1 matrix v must have one dimension without a name in hatize_byname()")
+  expect_error(hatize_byname(v4), "not equal to 1")
+  expect_equal(hatize_byname(v4, keep = "rownames"), matrix(42, dimnames = list("r1", "r1")) %>% 
+                 setrowtype("Product -> Industry") %>% 
+                 setcoltype("Product -> Industry"))
+  expect_equal(hatize_byname(v4, keep = "colnames"), matrix(42, dimnames = list("c1", "c1")) %>% 
+                 setrowtype("Industry -> Product") %>% 
+                 setcoltype("Industry -> Product"))
+})
+
+
+test_that("hatize_byname() issues a warning when keep is wrong", {
+  v <- matrix(c(1, 2), nrow = 2, dimnames = list(c("r1", "r2"), "c1"))
+  expect_equal(hatize_byname(v, keep = "rownames"), matrix(c(1, 0, 
+                                                             0, 2), nrow = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("r1", "r2"))))
+  expect_error(hatize_byname(v), 'not equal to 1')
+  expect_warning(hatize_byname(v, keep = "bogus"), 'was called on a column vector, but "rownames" was not the value of the "keep" argument. Probably best to set keep = "rownames".')
+  
+  r <- matrix(c(1, 2), ncol = 2, dimnames = list("r1", c("c1", "c2")))   
+  expect_equal(hatize_byname(r, keep = "colnames"), matrix(c(1, 0, 
+                                                             0, 2), nrow = 2, byrow = TRUE, dimnames = list(c("c1", "c2"), c("c1", "c2"))))
+  expect_error(hatize_byname(r), 'not equal to 1')
+  expect_warning(hatize_byname(r, keep = "bogus"), 'was called on a row vector, but "colnames" was not the value of the "keep" argument. Probably best to set keep = "colnames".')
 })
 
 
