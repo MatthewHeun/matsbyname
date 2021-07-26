@@ -173,19 +173,17 @@ hatize_byname <- function(v, keep = c("rownames", "colnames")){
     # Check if v is 1x1 (i.e., both row and column have dimension of length 1)
     if (nrow(v_vec) == 1 & ncol(v_vec) == 1) {
       out <- v_vec
-      if ((is.null(colnames(out)) & !is.null(rownames(out))) | all(keep == "rownames")) {
+      if (keep == "rownames") {
         # We have a 1x1 column vector.
         # Apply the row name to the column, set the coltype to row rowtype, and return.
         colnames(out) <- rownames(out)
         return(out %>% setcoltype(rowtype(out)))
-      } else if ((!is.null(colnames(out)) & is.null(rownames(out))) | all(keep == "colnames")) {
-        # We have a 1x1 row vector.
-        # Apply the column name to the row, set the rowtype to the coltype, and return.
-        rownames(out) <- colnames(out)
-        return(out %>% setrowtype(coltype(out)))
-      } else {
-        stop('1x1 matrix v must have one dimension without a name in hatize_byname() or set keep to one of "rownames" or "colnames".')
       }
+      # keep == "colnames"
+      # We have a 1x1 row vector.
+      # Apply the column name to the row, set the rowtype to the coltype, and return.
+      rownames(out) <- colnames(out)
+      return(out %>% setrowtype(coltype(out)))
     }
     # We have an nx1 or a 1xn vector
     v_sorted <- sort_rows_cols(v_vec)
