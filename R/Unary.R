@@ -164,7 +164,9 @@ transpose_byname <- function(a){
 #' m %>% 
 #'   hatize_byname(keep = "colnames")
 hatize_byname <- function(v, keep = c("rownames", "colnames")){
-  assertthat::assert_that(length(keep) == 1)
+  if (length(keep) != 1) {
+    stop('keep must have length 1 and be one of "rownames" or "colnames" in hatize_byname().')
+  }
   hatize_func <- function(v_vec){
     # Check if v is the right size
     if (!(nrow(v_vec) == 1 | ncol(v_vec) == 1)) {
