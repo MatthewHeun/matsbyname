@@ -1,3 +1,5 @@
+# matsbyname 0.4.22 (2021-07-26)
+
 * Now issuing a helpful warning when `hatize_byname()` is called with a `keep` argument that 
   is different from the structure of the vector.
   This will be a safe way to encourage callers to specify their expectations
