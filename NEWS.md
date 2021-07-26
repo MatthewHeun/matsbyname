@@ -1,3 +1,9 @@
+* Now issuing a warning when `hatize_byname()` is called with a `keep` argument that 
+  is different from the structure of the vector.
+  This will be a safe way to ensure that callers will specify their expectations
+  prior to calling the function.
+
+
 # matsbyname 0.4.21 (2021-07-23) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
 
 * `hatize_byname()` and `hatinv_byname()` gain a new 

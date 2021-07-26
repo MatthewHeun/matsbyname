@@ -193,12 +193,19 @@ hatize_byname <- function(v, keep = c("rownames", "colnames")){
     v_sorted <- sort_rows_cols(v_vec)
     out <- diag(as.numeric(v_sorted))
     if (ncol(v_vec) == 1) {
+      # Give a warning if the caller wants to keep the colnames
+      if ("colnames" %in% keep) {
+        warning('hatize_byname() was called on a column vector with "colnames" in the "keep" argument. Probably best to set keep = "rownames".')
+      }
       rownames(out) <- rownames(v_sorted)
       colnames(out) <- rownames(v_sorted)
       # This function does not rely on unaryapply_byname to set row and column types.
       # So, we must do so here.
       out <- out %>% setrowtype(rowtype(v_vec)) %>% setcoltype(rowtype(v_vec))
     } else if (nrow(v_vec) == 1) {
+      if ("rownames" %in% keep) {
+        warning('hatize_byname() was called on a row vector with "rownames" in the "keep" argument. Probably best to set keep = "colnames".')
+      }
       rownames(out) <- colnames(v_sorted)
       colnames(out) <- colnames(v_sorted)
       # This function does not rely on unaryapply_byname to set row and column types.
