@@ -1,4 +1,29 @@
-# matsbyname 0.4.20 (2021-07-19)
+# matsbyname 0.4.22 (2021-07-26)
+
+* Now issuing a helpful warning when `hatize_byname()` is called with a `keep` argument that 
+  is different from the structure of the vector.
+  This will be a safe way to encourage callers to specify their expectations
+  in the function call.
+* Note this version was not released to CRAN, due to frequent revisions.
+* New tests for new feature.
+    - Now up to 1040 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+# matsbyname 0.4.21 (2021-07-23) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
+
+* `hatize_byname()` and `hatinv_byname()` gain a new 
+  argument `keep` that tells whether to keep row names or column names
+  when a 1x1 matrix is supplied.
+  This feature assists with code that may occasionally encounter
+  1x1 vectors as input.
+* Note this version was not released to CRAN, due to frequent revisions.
+* New tests for new feature.
+    - Now up to 1030 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+# matsbyname 0.4.20 (2021-07-19) [![DOI](https://zenodo.org/badge/80359905.svg)](https://zenodo.org/badge/latestdoi/80359905)
 
 * New function `keep_pref_suff()` keeps prefixes or suffixes of individual strings
   or lists of strings, based on the `notation` provided.

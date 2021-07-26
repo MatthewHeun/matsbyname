@@ -102,34 +102,52 @@ transpose_byname <- function(a){
 #'
 #' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
-#' \code{v} must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
-#' The names of both dimensions of the hatized matrix are the same and taken from \code{v}.
+#' `v` must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
+#' The names of both dimensions of the hatized matrix are the same and taken from 
+#' the dimension of `v` that is _not_ 1.
 #' Note that the vector names are sorted prior to forming the "hat" matrix.
+#' 
+#' Hatizing a 1x1 vector is done automatically 
+#' when only one of the row name or the column name is present. 
+#' In that case, the only name is applied to both margins. 
+#' 
+#' Hatizing a 1x1 vector where both a row name and a column name are present
+#' is potentially undefined.. 
+#' When both row names and column names are present
+#' (but at no other time), the argument `keep` 
+#' determines whether to keep "rownames" or "colnames".
+#' By default `keep` is `c("rownames", "colnames")`,
+#' which triggers an error. Callers need to specify one or the other.
+#' If vector `v` could ever have length 1, 
+#' it is best to set a value for `keep` when writing code
+#' that calls `hatize_byname()`.
 #'
 #' @param v The vector from which a "hat" matrix is to be created.
+#' @param keep One of "rownames" or "colnames".
 #'
-#' @return A square "hat" matrix with size equal to the length of \code{v}.
+#' @return A square "hat" matrix with size equal to the length of `v`.
+#' 
 #' @export
 #'
 #' @examples
 #' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
-#' hatize_byname(v)
+#' hatize_byname(v, keep = "rownames")
 #' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
 #'   setrowtype(NA) %>% setcoltype("Commodities")
-#' hatize_byname(r)
+#' hatize_byname(r, keep = "colnames")
 #' # This also works with lists.
-#' hatize_byname(list(v, v))
+#' hatize_byname(list(v, v), keep = "rownames")
 #' # A 1x1 column vector is a degenerate case. 
 #' # Row names and rowtype are transferred to the column.
 #' matrix(42, nrow = 1, ncol = 1, dimnames = list("r1")) %>% 
 #'   setrowtype("Product -> Industry") %>% 
-#'   hatize_byname()
+#'   hatize_byname(keep = "rownames")
 #' # A 1x1 row vector is a degenerate case. 
 #' # Column names and coltype are transferred to the row.
 #' matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, "c1")) %>% 
 #'   setcoltype("Industry -> Product") %>% 
-#'   hatize_byname()
+#'   hatize_byname(keep = "colnames")
 #' # A 1x1 matrix with both row and column names generates a failure.
 #' \dontrun{
 #' matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
@@ -137,44 +155,69 @@ transpose_byname <- function(a){
 #'   setcoltype("Industry -> Product") %>% 
 #'   hatize_byname()
 #' }
-hatize_byname <- function(v){
-  hatize_func <- function(v){
+#' # But you could specify which you want keep, row names or column names.
+#' m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+#'   setrowtype("Product -> Industry") %>% 
+#'   setcoltype("Industry -> Product")
+#' m %>% 
+#'   hatize_byname(keep = "rownames")
+#' m %>% 
+#'   hatize_byname(keep = "colnames")
+hatize_byname <- function(v, keep = c("rownames", "colnames")){
+  if (length(keep) != 1) {
+    err_string <- 'keep must have length 1 and be one of "rownames" or "colnames" in hatize_byname().'
+    if (nrow(v) == 1 & ncol(v) == 1) {
+      err_string <- paste(err_string, 'You have a 1x1 matrix. Try setting keep to one of "rownames" or "colnames".')
+    } else if (nrow(v) == 1 & ncol(v) > 1) {
+      err_string <- paste(err_string, 'You have a row matrix. Try setting keep = "colnames".')
+    } else if (nrow(v) > 1 & ncol(v) == 1) {
+      err_string <- paste(err_string, 'You have a column matrix. Try setting keep = "rownames".')
+    }
+    stop(err_string)
+  }
+  keep <- match.arg(keep)
+  hatize_func <- function(v_vec){
     # Check if v is the right size
-    if (!(nrow(v) == 1 | ncol(v) == 1)) {
+    if (!(nrow(v_vec) == 1 | ncol(v_vec) == 1)) {
       stop("matrix v must have at least one dimension of length 1 in hatize_byname()")
     }
     # Check if v is 1x1 (i.e., both row and column have dimension of length 1)
-    if (nrow(v) == 1 & ncol(v) == 1) {
-      out <- v
-      if (is.null(colnames(out)) & !is.null(rownames(out))) {
+    if (nrow(v_vec) == 1 & ncol(v_vec) == 1) {
+      out <- v_vec
+      if (keep == "rownames") {
         # We have a 1x1 column vector.
         # Apply the row name to the column, set the coltype to row rowtype, and return.
         colnames(out) <- rownames(out)
         return(out %>% setcoltype(rowtype(out)))
-      } else if (!is.null(colnames(out)) & is.null(rownames(out))) {
-        # We have a 1x1 row vector.
-        # Apply the column name to the row, set the rowtype to the coltype, and return.
-        rownames(out) <- colnames(out)
-        return(out %>% setrowtype(coltype(out)))
-      } else {
-        stop("1x1 matrix v must have one dimension without a name in hatize_byname()")
       }
+      # keep == "colnames"
+      # We have a 1x1 row vector.
+      # Apply the column name to the row, set the rowtype to the coltype, and return.
+      rownames(out) <- colnames(out)
+      return(out %>% setrowtype(coltype(out)))
     }
     # We have an nx1 or a 1xn vector
-    v_sorted <- sort_rows_cols(v)
+    v_sorted <- sort_rows_cols(v_vec)
     out <- diag(as.numeric(v_sorted))
-    if (ncol(v) == 1) {
+    if (ncol(v_vec) == 1) {
+      # Give a warning if the caller wants to keep the colnames
+      if (keep != "rownames") {
+        warning('hatize_byname() was called on a column vector, but "rownames" was not the value of the "keep" argument. Probably best to set keep = "rownames".')
+      }
       rownames(out) <- rownames(v_sorted)
       colnames(out) <- rownames(v_sorted)
       # This function does not rely on unaryapply_byname to set row and column types.
       # So, we must do so here.
-      out <- out %>% setrowtype(rowtype(v)) %>% setcoltype(rowtype(v))
-    } else if (nrow(v) == 1) {
+      out <- out %>% setrowtype(rowtype(v_vec)) %>% setcoltype(rowtype(v_vec))
+    } else if (nrow(v_vec) == 1) {
+      if (keep != "colnames") {
+        warning('hatize_byname() was called on a row vector, but "colnames" was not the value of the "keep" argument. Probably best to set keep = "colnames".')
+      }
       rownames(out) <- colnames(v_sorted)
       colnames(out) <- colnames(v_sorted)
       # This function does not rely on unaryapply_byname to set row and column types.
       # So, we must do so here.
-      out <- out %>% setrowtype(coltype(v)) %>% setcoltype(coltype(v))
+      out <- out %>% setrowtype(coltype(v_vec)) %>% setcoltype(coltype(v_vec))
     }
     return(out)
   }
@@ -187,32 +230,33 @@ hatize_byname <- function(v){
 #' the vector elements are placed on the diagonal of a new matrix,
 #' the diagonal matrix is inverted, and
 #' the result is pre- or post-multiplied into the matrix.
-#' This function performs the hatizing and inverting of vector \code{v} in one step
+#' This function performs the hatizing and inverting of vector `v` in one step
 #' and takes advantage of computational efficiencies to achieve the desired result.
 #' The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
-#' a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of \code{v}.
-#' So this function first inverts each element of \code{v} then places the inverted elements on the diagonal of a diagonal matrix.
+#' a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of `v`.
+#' So this function first inverts each element of `v` then places the inverted elements on the diagonal of a diagonal matrix.
 #' 
-#' Note that this function gives the same result as \code{invert_byname(hatize_byname(v))},
-#' except that \code{invert_byname(hatize_byname(v))} fails due to a singular matrix error
-#' when any of the elements of \code{v} are zero.
-#' This function will give \code{inf_becomes} on the diagonal of the result for each zero element of \code{v},
+#' Note that this function gives the same result as `invert_byname(hatize_byname(v))`,
+#' except that `invert_byname(hatize_byname(v))` fails due to a singular matrix error
+#' when any of the elements of `v` are zero.
+#' This function will give `inf_becomes` on the diagonal of the result for each zero element of `v`,
 #' arguably a better answer.
-#' The sign of \code{Inf} is preserved in the substitution.
-#' The default value of \code{inf_becomes} is \code{.Machine$double.xmax}.
-#' Set \code{inf_becomes} to \code{NULL} to disable this behavior.
+#' The sign of `Inf` is preserved in the substitution.
+#' The default value of `Inf_becomes` is `.Machine$double.xmax`.
+#' Set `inf_becomes` to `NULL` to disable this behavior.
 #' 
-#' The default behavior is helpful for cases when the result of \code{hatinv_byname} is later multiplied by \code{0}
-#' to obtain \code{0}.
-#' Multiplying \code{Inf} by \code{0} gives \code{NaN} which would effectively end the stream of calculations.
+#' The default behavior is helpful for cases when the result of `hatinv_byname` is later multiplied by `0`
+#' to obtain `0`.
+#' Multiplying `Inf` by `0` gives `NaN` which would effectively end the stream of calculations.
 #' 
-#' @param v the vector to be hatized and inverted
-#' @param inf_becomes a value to be substitute for any \code{Inf} produced by the inversion process. 
-#'        Default is \code{.Machine$double.xmax}.
-#'        If \code{FALSE} (the default), \code{Inf} is not handled differently.
-#'        If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.
+#' @param v The vector to be hatized and inverted.
+#' @param keep See `matsbyname::hatize`.
+#' @param inf_becomes A value to be substitute for any `Inf` produced by the inversion process. 
+#'        Default is `.Machine$double.xmax`.
+#'        If `FALSE` (the default), `Inf` is not handled differently.
+#'        If `TRUE`, `Inf` values in the resulting matrix are converted to zeroes.
 #'
-#' @return a square diagonal matrix with inverted elements of \code{v} on the diagonal
+#' @return a square diagonal matrix with inverted elements of `v` on the diagonal
 #' 
 #' @export
 #'
@@ -221,32 +265,41 @@ hatize_byname <- function(v){
 #'   setrowtype("Industries") %>% setcoltype(NA)
 #' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
 #'   setrowtype(NA) %>% setcoltype("Commodities")
-#' hatinv_byname(v)
-#' hatinv_byname(r)
+#' hatinv_byname(v, keep = "rownames")
+#' hatinv_byname(r, keep = "colnames")
 #' # This function also works with lists.
-#' hatinv_byname(list(v, v))
+#' hatinv_byname(list(v, v), keep = "rownames")
 #' # Watch out for 0 values
 #' v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
 #' # Produces singular matrix error
 #' \dontrun{v2 %>% hatize_byname() %>% invert_byname}
 #' # Handles 0 values well
-#' hatinv_byname(v2)
-#' hatinv_byname(v2, inf_becomes = 42)
-#' hatinv_byname(v2, inf_becomes = NULL)
-hatinv_byname <- function(v, inf_becomes = .Machine$double.xmax){
-  hatinv_func <- function(v){
+#' hatinv_byname(v2, keep = "rownames")
+#' hatinv_byname(v2, inf_becomes = 42, keep = "rownames")
+#' hatinv_byname(v2, inf_becomes = NA, keep = "rownames")
+#' # Deals with 1x1 matrices well, if the `keep` argument is set.
+#' m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
+#'   setrowtype("Product -> Industry") %>% 
+#'   setcoltype("Industry -> Product")
+#' m %>% 
+#'   hatinv_byname(keep = "rownames")
+#' m %>% 
+#'   hatinv_byname(keep = "colnames")
+hatinv_byname <- function(v, keep = c("rownames", "colnames"), inf_becomes = .Machine$double.xmax){
+  hatinv_func <- function(v_vec){
     # Note: there is no need to check that v is, indeed, a vector here.
     # hatize_byname() does that check for us.
-    v_inv <- 1/v
+    v_inv <- 1/v_vec
     if (!is.null(inf_becomes)) {
       v_inv[v_inv == Inf] <- inf_becomes
       v_inv[v_inv == -Inf] <- -inf_becomes
     }
-    hatize_byname(v_inv)
+    hatize_byname(v_inv, keep = keep)
   }
   unaryapply_byname(hatinv_func, a = v, rowcoltypes = "none")
 }
+
 
 #' Named identity matrix or vector
 #'

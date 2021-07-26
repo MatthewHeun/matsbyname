@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.20</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.22</span>
       </span>
     </div>
 
@@ -132,9 +132,40 @@
       <small>Source: <a href='https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="matsbyname-0420-2021-07-19" class="section level1">
+    <div id="matsbyname-0422-2021-07-26" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.22">
+<a href="#matsbyname-0422-2021-07-26" class="anchor"></a>matsbyname 0.4.22 (2021-07-26)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Now issuing a helpful warning when <code><a href="../reference/hatize_byname.html">hatize_byname()</a></code> is called with a <code>keep</code> argument that is different from the structure of the vector. This will be a safe way to encourage callers to specify their expectations in the function call.</li>
+<li>Note this version was not released to CRAN, due to frequent revisions.</li>
+<li>New tests for new feature.
+<ul>
+<li>Now up to 1040 tests, all passing.</li>
+<li>Test coverage remains at 100 %.</li>
+</ul>
+</li>
+</ul>
+</div>
+    <div id="matsbyname-0421-2021-07-23-doi" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.21">
+<a href="#matsbyname-0421-2021-07-23-doi" class="anchor"></a><small> Unreleased </small>matsbyname 0.4.21 (2021-07-23) <a href="https://doi.org/10.5281/zenodo.5129356"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg" alt="DOI"></a>
+</h1>
+<ul>
+<li>
+<code><a href="../reference/hatize_byname.html">hatize_byname()</a></code> and <code><a href="../reference/hatinv_byname.html">hatinv_byname()</a></code> gain a new argument <code>keep</code> that tells whether to keep row names or column names when a 1x1 matrix is supplied. This feature assists with code that may occasionally encounter 1x1 vectors as input.</li>
+<li>Note this version was not released to CRAN, due to frequent revisions.</li>
+<li>New tests for new feature.
+<ul>
+<li>Now up to 1030 tests, all passing.</li>
+<li>Test coverage remains at 100 %.</li>
+</ul>
+</li>
+</ul>
+</div>
+    <div id="matsbyname-0420-2021-07-19-doi" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.20">
-<a href="#matsbyname-0420-2021-07-19" class="anchor"></a>matsbyname 0.4.20 (2021-07-19)<small> Unreleased </small>
+<a href="#matsbyname-0420-2021-07-19-doi" class="anchor"></a><small> 2021-07-21 </small>matsbyname 0.4.20 (2021-07-19) <a href="https://zenodo.org/badge/latestdoi/80359905"><img src="https://zenodo.org/badge/80359905.svg" alt="DOI"></a>
 </h1>
 <ul>
 <li>New function <code><a href="../reference/row-col-notation.html">keep_pref_suff()</a></code> keeps prefixes or suffixes of individual strings or lists of strings, based on the <code>notation</code> provided.</li>
