@@ -53,19 +53,19 @@ v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) \%>\
   setrowtype("Industries") \%>\% setcoltype(NA)
 r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) \%>\%
   setrowtype(NA) \%>\% setcoltype("Commodities")
-hatinv_byname(v)
-hatinv_byname(r)
+hatinv_byname(v, keep = "rownames")
+hatinv_byname(r, keep = "colnames")
 # This function also works with lists.
-hatinv_byname(list(v, v))
+hatinv_byname(list(v, v), keep = "rownames")
 # Watch out for 0 values
 v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype(NA)
 # Produces singular matrix error
 \dontrun{v2 \%>\% hatize_byname() \%>\% invert_byname}
 # Handles 0 values well
-hatinv_byname(v2)
-hatinv_byname(v2, inf_becomes = 42)
-hatinv_byname(v2, inf_becomes = NULL)
+hatinv_byname(v2, keep = "rownames")
+hatinv_byname(v2, inf_becomes = 42, keep = "rownames")
+hatinv_byname(v2, inf_becomes = NA, keep = "rownames")
 # Deals with 1x1 matrices well, if the `keep` argument is set.
 m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\% 
   setrowtype("Product -> Industry") \%>\% 

@@ -1,7 +1,7 @@
-* Now issuing a warning when `hatize_byname()` is called with a `keep` argument that 
+* Now issuing a helpful warning when `hatize_byname()` is called with a `keep` argument that 
   is different from the structure of the vector.
-  This will be a safe way to ensure that callers will specify their expectations
-  prior to calling the function.
+  This will be a safe way to encourage callers to specify their expectations
+  in the function call.
 
 
 # matsbyname 0.4.21 (2021-07-23) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)

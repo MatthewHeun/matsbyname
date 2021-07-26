@@ -333,13 +333,13 @@ test_that("hatize_byname() issues a warning when keep is wrong", {
   expect_equal(hatize_byname(v, keep = "rownames"), matrix(c(1, 0, 
                                                              0, 2), nrow = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("r1", "r2"))))
   expect_error(hatize_byname(v), 'keep must have length 1 and be one of "rownames" or "colnames"')
-  expect_error(hatize_byname(v, keep = "bogus"), "'arg' should be one of “rownames”, “colnames”")
+  expect_error(hatize_byname(v, keep = "bogus"), "'arg' should be one of ")
   
   r <- matrix(c(1, 2), ncol = 2, dimnames = list("r1", c("c1", "c2")))   
   expect_equal(hatize_byname(r, keep = "colnames"), matrix(c(1, 0, 
                                                              0, 2), nrow = 2, byrow = TRUE, dimnames = list(c("c1", "c2"), c("c1", "c2"))))
   expect_error(hatize_byname(r), 'keep must have length 1 and be one of "rownames" or "colnames"')
-  expect_error(hatize_byname(r, keep = "bogus"), "'arg' should be one of “rownames”, “colnames”")
+  expect_error(hatize_byname(r, keep = "bogus"), "'arg' should be one of ")
 })
 
 
