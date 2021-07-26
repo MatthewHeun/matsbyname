@@ -165,8 +165,17 @@ transpose_byname <- function(a){
 #'   hatize_byname(keep = "colnames")
 hatize_byname <- function(v, keep = c("rownames", "colnames")){
   if (length(keep) != 1) {
-    stop('keep must have length 1 and be one of "rownames" or "colnames" in hatize_byname().')
+    err_string <- 'keep must have length 1 and be one of "rownames" or "colnames" in hatize_byname().'
+    if (nrow(v) == 1 & ncol(v) == 1) {
+      err_string <- paste(err_string, 'You have a 1x1 matrix. Try setting keep to one of "rownames" or "colnames".')
+    } else if (nrow(v) == 1 & ncol(v) > 1) {
+      err_string <- paste(err_string, 'You have a row matrix. Try setting keep = "colnames".')
+    } else if (nrow(v) > 1 & ncol(v) == 1) {
+      err_string <- paste(err_string, 'You have a column matrix. Try setting keep = "rownames".')
+    }
+    stop(err_string)
   }
+  keep <- match.arg(keep)
   hatize_func <- function(v_vec){
     # Check if v is the right size
     if (!(nrow(v_vec) == 1 | ncol(v_vec) == 1)) {

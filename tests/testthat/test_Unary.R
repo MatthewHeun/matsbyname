@@ -10,9 +10,12 @@ test_that("hatize_byname() works as expected", {
   expect_equal(hatize_byname(g, keep = "colnames"), 
                matrix(4, dimnames = list("Products", "Products")))
   
-  # Try to hatize a list.
   v <- matrix(1:3, ncol = 1, dimnames = list(c(paste0("i", 1:3)), c("p1"))) %>%
     setrowtype("Industries") %>% setcoltype(NA)
+  # Try to hatize with the wrong keep argument
+  expect_warning(hatize_byname(v, keep = "colnames"), 'Probably best to set keep = "rownames".')
+  expect_warning(hatize_byname(matrix(v, nrow = 1), keep = "rownames"), 'Probably best to set keep = "colnames".')
+  # Try to hatize a list.
   v_list <- list(v, v)
   expected_m <- matrix(c(1, 0, 0, 
                          0, 2, 0,
@@ -330,13 +333,13 @@ test_that("hatize_byname() issues a warning when keep is wrong", {
   expect_equal(hatize_byname(v, keep = "rownames"), matrix(c(1, 0, 
                                                              0, 2), nrow = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("r1", "r2"))))
   expect_error(hatize_byname(v), 'keep must have length 1 and be one of "rownames" or "colnames"')
-  expect_warning(hatize_byname(v, keep = "bogus"), 'was called on a column vector, but "rownames" was not the value of the "keep" argument. Probably best to set keep = "rownames".')
+  expect_error(hatize_byname(v, keep = "bogus"), "'arg' should be one of “rownames”, “colnames”")
   
   r <- matrix(c(1, 2), ncol = 2, dimnames = list("r1", c("c1", "c2")))   
   expect_equal(hatize_byname(r, keep = "colnames"), matrix(c(1, 0, 
                                                              0, 2), nrow = 2, byrow = TRUE, dimnames = list(c("c1", "c2"), c("c1", "c2"))))
   expect_error(hatize_byname(r), 'keep must have length 1 and be one of "rownames" or "colnames"')
-  expect_warning(hatize_byname(r, keep = "bogus"), 'was called on a row vector, but "colnames" was not the value of the "keep" argument. Probably best to set keep = "colnames".')
+  expect_error(hatize_byname(r, keep = "bogus"), "'arg' should be one of “rownames”, “colnames”")
 })
 
 
