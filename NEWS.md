@@ -1,4 +1,4 @@
-# matsbyname 0.4.22 (2021-07-26)
+# matsbyname 0.4.22 (2021-07-26) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138201.svg)](https://doi.org/10.5281/zenodo.5138201)
 
 * Now issuing a helpful warning when `hatize_byname()` is called with a `keep` argument that 
   is different from the structure of the vector.
