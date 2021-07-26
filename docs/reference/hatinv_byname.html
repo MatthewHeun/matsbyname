@@ -80,7 +80,7 @@ So this function first inverts each element of v then places the inverted elemen
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.21</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.22</span>
       </span>
     </div>
 
@@ -202,7 +202,7 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
   <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='st'>"Industries"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='cn'>NA</span><span class='op'>)</span>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, nrow <span class='op'>=</span> <span class='fl'>1</span>, dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"r1"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"c"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='setrowtype.html'>setrowtype</a></span><span class='op'>(</span><span class='cn'>NA</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='setcoltype.html'>setcoltype</a></span><span class='op'>(</span><span class='st'>"Commodities"</span><span class='op'>)</span>
-<span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
+<span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v</span>, keep <span class='op'>=</span> <span class='st'>"rownames"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;     i1 i10  i2        i3   i4  i5        i6        i7    i8        i9
 #&gt; i1   1 0.0 0.0 0.0000000 0.00 0.0 0.0000000 0.0000000 0.000 0.0000000
 #&gt; i10  0 0.1 0.0 0.0000000 0.00 0.0 0.0000000 0.0000000 0.000 0.0000000
@@ -217,7 +217,7 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>r</span>, keep <span class='op'>=</span> <span class='st'>"colnames"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    c1  c2        c3   c4  c5
 #&gt; c1  1 0.0 0.0000000 0.00 0.0
 #&gt; c2  0 0.5 0.0000000 0.00 0.0
@@ -228,7 +228,7 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 #&gt; [1] "Commodities"
 #&gt; attr(,"coltype")
 #&gt; [1] "Commodities"</div><div class='input'><span class='co'># This function also works with lists.</span>
-<span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>v</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>v</span><span class='op'>)</span>, keep <span class='op'>=</span> <span class='st'>"rownames"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [[1]]
 #&gt;     i1 i10  i2        i3   i4  i5        i6        i7    i8        i9
 #&gt; i1   1 0.0 0.0 0.0000000 0.00 0.0 0.0000000 0.0000000 0.000 0.0000000
@@ -268,24 +268,24 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 <span class='co'># Produces singular matrix error</span>
 <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='va'>v2</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='hatize_byname.html'>hatize_byname</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='va'>invert_byname</span>
 <span class='co'># Handles 0 values well</span>
-<span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v2</span><span class='op'>)</span>
+<span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v2</span>, keep <span class='op'>=</span> <span class='st'>"rownames"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;               i0 i1
 #&gt; i0 1.797693e+308  0
 #&gt; i1  0.000000e+00  1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v2</span>, inf_becomes <span class='op'>=</span> <span class='fl'>42</span><span class='op'>)</span>
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v2</span>, inf_becomes <span class='op'>=</span> <span class='fl'>42</span>, keep <span class='op'>=</span> <span class='st'>"rownames"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    i0 i1
 #&gt; i0 42  0
 #&gt; i1  0  1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
-#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v2</span>, inf_becomes <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;     i0 i1
-#&gt; i0 Inf  0
-#&gt; i1   0  1
+#&gt; [1] "Industries"</div><div class='input'><span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v2</span>, inf_becomes <span class='op'>=</span> <span class='cn'>NA</span>, keep <span class='op'>=</span> <span class='st'>"rownames"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    i0 i1
+#&gt; i0 NA  0
+#&gt; i1  0  1
 #&gt; attr(,"rowtype")
 #&gt; [1] "Industries"
 #&gt; attr(,"coltype")
