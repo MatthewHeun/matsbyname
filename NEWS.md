@@ -2,6 +2,10 @@
   is different from the structure of the vector.
   This will be a safe way to encourage callers to specify their expectations
   in the function call.
+* Note this version was not released to CRAN, due to frequent revisions.
+* New tests for new feature.
+    - Now up to 1040 tests, all passing.
+    - Test coverage remains at 100 %.
 
 
 # matsbyname 0.4.21 (2021-07-23) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
