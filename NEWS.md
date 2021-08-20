@@ -1,3 +1,12 @@
+# matsbyname 0.4.22 (2021-08-20)
+
+* No changes relative to 0.4.22.
+* This release is for CRAN.
+* No new tests.
+    - Still at 1040 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.22 (2021-07-26) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138201.svg)](https://doi.org/10.5281/zenodo.5138201)
 
 * Now issuing a helpful warning when `hatize_byname()` is called with a `keep` argument that 
@@ -5,7 +14,7 @@
   This will be a safe way to encourage callers to specify their expectations
   in the function call.
 * Note this version was not released to CRAN, due to frequent revisions.
-* New tests for new feature.
+* New tests for new features.
     - Now up to 1040 tests, all passing.
     - Test coverage remains at 100 %.
 
