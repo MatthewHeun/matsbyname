@@ -1,4 +1,4 @@
-# matsbyname 0.4.22 (2021-08-20)
+# matsbyname 0.4.23 (2021-08-20)
 
 * No changes relative to 0.4.22.
 * This release is for CRAN.
