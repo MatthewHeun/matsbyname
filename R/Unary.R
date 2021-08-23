@@ -98,32 +98,35 @@ transpose_byname <- function(a){
   unaryapply_byname(t, a = a, rowcoltypes = "transpose")
 }
 
+
 #' Creates a diagonal "hat" matrix from a vector
 #'
-#' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
+#' A "hat" matrix (or a diagonal matrix) is one in which the only non-zero elements are along on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
-#' `v` must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
-#' The names of both dimensions of the hatized matrix are the same and taken from 
+#' `v` must be a matrix object with at least one of its two dimensions of length 1 (i.e., a vector).
+#' The names on both dimensions of the hatized matrix are the same and taken from 
 #' the dimension of `v` that is _not_ 1.
-#' Note that the vector names are sorted prior to forming the "hat" matrix.
+#' Note that the row names and column names are sorted prior to forming the "hat" matrix.
 #' 
-#' Hatizing a 1x1 vector is done automatically 
-#' when only one of the row name or the column name is present. 
-#' In that case, the only name is applied to both margins. 
-#' 
-#' Hatizing a 1x1 vector where both a row name and a column name are present
-#' is potentially undefined.. 
-#' When both row names and column names are present
-#' (but at no other time), the argument `keep` 
+#' Hatizing a 1x1 vector is potentially undefined.
+#' The argument `keep` 
 #' determines whether to keep "rownames" or "colnames".
-#' By default `keep` is `c("rownames", "colnames")`,
-#' which triggers an error. Callers need to specify one or the other.
-#' If vector `v` could ever have length 1, 
+#' By default `keep` is `NULL`,
+#' meanding that the function should attempt to figure out which dimension's names
+#' should be used for the hatized matrix on output. 
+#' If vector `v` could ever be 1x1, 
 #' it is best to set a value for `keep` when writing code
 #' that calls `hatize_byname()`.
+#' 
+#' If the caller specifies `keep = "colnames"` when `v` is a column vector,
+#' an error is thrown.
+#' If the caller specifies `keep = "rownames"` when `v` is a row vector,
+#' an error is thrown.
 #'
 #' @param v The vector from which a "hat" matrix is to be created.
-#' @param keep One of "rownames" or "colnames".
+#' @param keep One of "rownames" or "colnames" or `NULL`.
+#'             If `NULL`, the default, names are kept from 
+#'             the dimension that is not size 1.
 #'
 #' @return A square "hat" matrix with size equal to the length of `v`.
 #' 
@@ -174,11 +177,6 @@ hatize_byname <- function(v, keep = NULL){
       # Test for the indeterminant case
       if (nrow(v_vec) == 1 & ncol(v_vec) == 1) {
         stop('In hatize_byname(), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
-      }
-      # Inspect the vector (v) to see which dimension we should keep.
-      # Check if v is the right size
-      if (!(nrow(v_vec) == 1 | ncol(v_vec) == 1)) {
-        stop("In hatize_byname(), matrix v must have at least one dimension of length 1.")
       }
     }
     # Figure out which names we should keep.

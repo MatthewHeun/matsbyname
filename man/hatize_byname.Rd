@@ -9,34 +9,36 @@ hatize_byname(v, keep = NULL)
 \arguments{
 \item{v}{The vector from which a "hat" matrix is to be created.}
 
-\item{keep}{One of "rownames" or "colnames".}
+\item{keep}{One of "rownames" or "colnames" or \code{NULL}.
+If \code{NULL}, the default, names are kept from
+the dimension that is not size 1.}
 }
 \value{
 A square "hat" matrix with size equal to the length of \code{v}.
 }
 \description{
-A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
+A "hat" matrix (or a diagonal matrix) is one in which the only non-zero elements are along on the diagonal.
 To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
-\code{v} must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
-The names of both dimensions of the hatized matrix are the same and taken from
+\code{v} must be a matrix object with at least one of its two dimensions of length 1 (i.e., a vector).
+The names on both dimensions of the hatized matrix are the same and taken from
 the dimension of \code{v} that is \emph{not} 1.
-Note that the vector names are sorted prior to forming the "hat" matrix.
+Note that the row names and column names are sorted prior to forming the "hat" matrix.
 }
 \details{
-Hatizing a 1x1 vector is done automatically
-when only one of the row name or the column name is present.
-In that case, the only name is applied to both margins.
-
-Hatizing a 1x1 vector where both a row name and a column name are present
-is potentially undefined..
-When both row names and column names are present
-(but at no other time), the argument \code{keep}
+Hatizing a 1x1 vector is potentially undefined.
+The argument \code{keep}
 determines whether to keep "rownames" or "colnames".
-By default \code{keep} is \code{c("rownames", "colnames")},
-which triggers an error. Callers need to specify one or the other.
-If vector \code{v} could ever have length 1,
+By default \code{keep} is \code{NULL},
+meanding that the function should attempt to figure out which dimension's names
+should be used for the hatized matrix on output.
+If vector \code{v} could ever be 1x1,
 it is best to set a value for \code{keep} when writing code
 that calls \code{hatize_byname()}.
+
+If the caller specifies \code{keep = "colnames"} when \code{v} is a column vector,
+an error is thrown.
+If the caller specifies \code{keep = "rownames"} when \code{v} is a row vector,
+an error is thrown.
 }
 \examples{
 v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) \%>\%

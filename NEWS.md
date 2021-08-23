@@ -1,9 +1,11 @@
 # matsbyname 0.4.23 (2021-08-20)
 
-* No changes relative to 0.4.22.
+* `hatize_byname()` now allows a missing `keep` argument, 
+  eliminating a regression in reverse dependency
+  with the `matsindf` package.
 * This release is for CRAN.
-* No new tests.
-    - Still at 1040 tests, all passing.
+* One test could be deleted, because the `hatize_byname()` function is now simpler.
+    - Now at 1039 tests, all passing.
     - Test coverage remains at 100 %.
 
 
