@@ -1,4 +1,4 @@
-# matsbyname 0.4.23 (2021-08-20)
+# matsbyname 0.4.23 (2021-08-24)
 
 * `hatize_byname()` now allows a missing `keep` argument, 
   eliminating a regression in reverse dependency

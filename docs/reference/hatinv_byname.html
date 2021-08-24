@@ -154,11 +154,7 @@ a vector is a diagonal matrix whose non-zero elements are the numerical inverses
 So this function first inverts each element of <code>v</code> then places the inverted elements on the diagonal of a diagonal matrix.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hatinv_byname</span><span class='op'>(</span>
-  <span class='va'>v</span>,
-  keep <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"rownames"</span>, <span class='st'>"colnames"</span><span class='op'>)</span>,
-  inf_becomes <span class='op'>=</span> <span class='va'>.Machine</span><span class='op'>$</span><span class='va'>double.xmax</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>hatinv_byname</span><span class='op'>(</span><span class='va'>v</span>, keep <span class='op'>=</span> <span class='cn'>NULL</span>, inf_becomes <span class='op'>=</span> <span class='va'>.Machine</span><span class='op'>$</span><span class='va'>double.xmax</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

@@ -1,10 +1,15 @@
 ## Context
+
 `matsbyname` v0.4.23 is a minor release that
 introduces a helpful warning when `hatize_byname()` is called 
 with a `keep` argument that is different 
 from the structure of the vector.
 There are no breaking changes.
 See `NEWS.md` for details.
+
+This is a re-submission to address a regression in the reverse dependency check.
+Function `hatize_byname()` has been rewritten to ensure backward compatibility 
+with the `matsindf` package.
 
 ## Test environments (10 in total) and R CMD check results
 * local macOS X install 10.15.7 (Catalina), R4.1.1
@@ -23,7 +28,7 @@ See `NEWS.md` for details.
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* GitHub Actions: ubuntu-20.04 (devel
+* GitHub Actions: ubuntu-20.04 (devel)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
