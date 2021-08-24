@@ -19,15 +19,15 @@ See note below.
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* GitHub Actions: windows-latest (release
+* GitHub Actions: windows-latest (release)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* GitHub Actions: macOS-latest (release
+* GitHub Actions: macOS-latest (release)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* GitHub Actions: ubuntu-20.04 (release
+* GitHub Actions: ubuntu-20.04 (release)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
