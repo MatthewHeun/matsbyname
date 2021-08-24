@@ -67,14 +67,11 @@ We checked 1 reverse dependencies, comparing R CMD check results across CRAN and
  * We saw 0 new problems
  * We failed to check 0 packages
  
- Note: I improved reverse dependency checking compared to the previous submission. 
- I deleted the matsindf package from my machine, thereby
- removing local fixes and forcing `revdepcheck` to download the CRAN version.
- `revdepcheck` worked.
- I also reverted to the `master` branch of `matsindf` on my local machine
- (to mimic the version on CRAN),
- thereby mimicking how CRAN would do reverse dependency checking on `matsbyname`.
- This approach also worked, yielding zero reverse dependency problems
- for this submission.
-
- 
+Note: I improved reverse dependency checking compared to the previous submission. 
+I deleted the matsindf package from my machine, thereby
+removing local fixes and forcing `revdepcheck` to download the CRAN version.
+In that case,`revdepcheck` reported no problems.
+I also reverted to the `master` branch of `matsindf` on my local machine
+(to mimic the version on CRAN),
+thereby mimicking how CRAN would do reverse dependency checking on `matsbyname`.
+Again, `revdepcheck` reported no problems.
