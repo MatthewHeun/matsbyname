@@ -10,8 +10,11 @@ See `NEWS.md` for details.
 This is a re-submission to address a regression in the reverse dependency check.
 Function `hatize_byname()` has been rewritten to ensure backward compatibility 
 with the `matsindf` package.
+See note below.
+
 
 ## Test environments (10 in total) and R CMD check results
+
 * local macOS X install 10.15.7 (Catalina), R4.1.1
     * ERRORs: 0
     * WARNINGs: 0
@@ -37,7 +40,7 @@ with the `matsindf` package.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2021-08-13 r80752)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2021-08-23 r80813)          ****************
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -63,4 +66,15 @@ We checked 1 reverse dependencies, comparing R CMD check results across CRAN and
 
  * We saw 0 new problems
  * We failed to check 0 packages
+ 
+ Note: I improved reverse dependency checking compared to the previous submission. 
+ I deleted the matsindf package from my machine, thereby
+ removing local fixes and forcing `revdepcheck` to download the CRAN version.
+ `revdepcheck` worked.
+ I also reverted to the `master` branch of `matsindf` on my local machine
+ (to mimic the version on CRAN),
+ thereby mimicking how CRAN would do reverse dependency checking on `matsbyname`.
+ This approach also worked, yielding zero reverse dependency problems
+ for this submission.
+
  
