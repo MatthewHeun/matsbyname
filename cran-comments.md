@@ -40,7 +40,7 @@ See note below.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2021-08-23 r80813)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2021-08-30 r80832)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
