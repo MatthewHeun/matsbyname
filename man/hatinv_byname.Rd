@@ -4,11 +4,7 @@
 \alias{hatinv_byname}
 \title{Hatize and invert a vector}
 \usage{
-hatinv_byname(
-  v,
-  keep = c("rownames", "colnames"),
-  inf_becomes = .Machine$double.xmax
-)
+hatinv_byname(v, keep = NULL, inf_becomes = .Machine$double.xmax)
 }
 \arguments{
 \item{v}{The vector to be hatized and inverted.}

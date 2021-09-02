@@ -1,3 +1,14 @@
+# matsbyname 0.4.23 (2021-09-01)
+
+* `hatize_byname()` now allows a missing `keep` argument, 
+  eliminating a regression in reverse dependency
+  with the `matsindf` package.
+* This release is for CRAN.
+* One test could be deleted, because the `hatize_byname()` function is now simpler.
+    - Now at 1039 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.22 (2021-07-26) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138201.svg)](https://doi.org/10.5281/zenodo.5138201)
 
 * Now issuing a helpful warning when `hatize_byname()` is called with a `keep` argument that 
@@ -5,7 +16,7 @@
   This will be a safe way to encourage callers to specify their expectations
   in the function call.
 * Note this version was not released to CRAN, due to frequent revisions.
-* New tests for new feature.
+* New tests for new features.
     - Now up to 1040 tests, all passing.
     - Test coverage remains at 100 %.
 

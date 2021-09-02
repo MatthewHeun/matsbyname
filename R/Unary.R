@@ -98,32 +98,35 @@ transpose_byname <- function(a){
   unaryapply_byname(t, a = a, rowcoltypes = "transpose")
 }
 
+
 #' Creates a diagonal "hat" matrix from a vector
 #'
-#' A "hat" matrix is one in which the only non-zero elements are stored on the diagonal.
+#' A "hat" matrix (or a diagonal matrix) is one in which the only non-zero elements are along on the diagonal.
 #' To "hatize" a vector is to place its elements on the diagonal of an otherwise-zero square matrix.
-#' `v` must be a matrix object with one of its two dimensions of length 1 (i.e., a vector).
-#' The names of both dimensions of the hatized matrix are the same and taken from 
+#' `v` must be a matrix object with at least one of its two dimensions of length 1 (i.e., a vector).
+#' The names on both dimensions of the hatized matrix are the same and taken from 
 #' the dimension of `v` that is _not_ 1.
-#' Note that the vector names are sorted prior to forming the "hat" matrix.
+#' Note that the row names and column names are sorted prior to forming the "hat" matrix.
 #' 
-#' Hatizing a 1x1 vector is done automatically 
-#' when only one of the row name or the column name is present. 
-#' In that case, the only name is applied to both margins. 
-#' 
-#' Hatizing a 1x1 vector where both a row name and a column name are present
-#' is potentially undefined.. 
-#' When both row names and column names are present
-#' (but at no other time), the argument `keep` 
+#' Hatizing a 1x1 vector is potentially undefined.
+#' The argument `keep` 
 #' determines whether to keep "rownames" or "colnames".
-#' By default `keep` is `c("rownames", "colnames")`,
-#' which triggers an error. Callers need to specify one or the other.
-#' If vector `v` could ever have length 1, 
+#' By default `keep` is `NULL`,
+#' meanding that the function should attempt to figure out which dimension's names
+#' should be used for the hatized matrix on output. 
+#' If vector `v` could ever be 1x1, 
 #' it is best to set a value for `keep` when writing code
 #' that calls `hatize_byname()`.
+#' 
+#' If the caller specifies `keep = "colnames"` when `v` is a column vector,
+#' an error is thrown.
+#' If the caller specifies `keep = "rownames"` when `v` is a row vector,
+#' an error is thrown.
 #'
 #' @param v The vector from which a "hat" matrix is to be created.
-#' @param keep One of "rownames" or "colnames".
+#' @param keep One of "rownames" or "colnames" or `NULL`.
+#'             If `NULL`, the default, names are kept from 
+#'             the dimension that is not size 1.
 #'
 #' @return A square "hat" matrix with size equal to the length of `v`.
 #' 
@@ -163,66 +166,75 @@ transpose_byname <- function(a){
 #'   hatize_byname(keep = "rownames")
 #' m %>% 
 #'   hatize_byname(keep = "colnames")
-hatize_byname <- function(v, keep = c("rownames", "colnames")){
-  if (length(keep) != 1) {
-    err_string <- 'keep must have length 1 and be one of "rownames" or "colnames" in hatize_byname().'
-    if (nrow(v) == 1 & ncol(v) == 1) {
-      err_string <- paste(err_string, 'You have a 1x1 matrix. Try setting keep to one of "rownames" or "colnames".')
-    } else if (nrow(v) == 1 & ncol(v) > 1) {
-      err_string <- paste(err_string, 'You have a row matrix. Try setting keep = "colnames".')
-    } else if (nrow(v) > 1 & ncol(v) == 1) {
-      err_string <- paste(err_string, 'You have a column matrix. Try setting keep = "rownames".')
-    }
-    stop(err_string)
-  }
-  keep <- match.arg(keep)
+hatize_byname <- function(v, keep = NULL){
+
   hatize_func <- function(v_vec){
-    # Check if v is the right size
+    # Check the v_vec has at least 1 dimension of size 1.
     if (!(nrow(v_vec) == 1 | ncol(v_vec) == 1)) {
-      stop("matrix v must have at least one dimension of length 1 in hatize_byname()")
+      stop ('In hatize_byname(), matrix v must have at least 1 dimension of length 1.')
     }
-    # Check if v is 1x1 (i.e., both row and column have dimension of length 1)
-    if (nrow(v_vec) == 1 & ncol(v_vec) == 1) {
-      out <- v_vec
-      if (keep == "rownames") {
-        # We have a 1x1 column vector.
-        # Apply the row name to the column, set the coltype to row rowtype, and return.
-        colnames(out) <- rownames(out)
-        return(out %>% setcoltype(rowtype(out)))
+    if (is.null(keep)) {
+      # Test for the indeterminant case
+      if (nrow(v_vec) == 1 & ncol(v_vec) == 1) {
+        stop('In hatize_byname(), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
       }
-      # keep == "colnames"
-      # We have a 1x1 row vector.
-      # Apply the column name to the row, set the rowtype to the coltype, and return.
-      rownames(out) <- colnames(out)
-      return(out %>% setrowtype(coltype(out)))
     }
-    # We have an nx1 or a 1xn vector
-    v_sorted <- sort_rows_cols(v_vec)
-    out <- diag(as.numeric(v_sorted))
-    if (ncol(v_vec) == 1) {
-      # Give a warning if the caller wants to keep the colnames
-      if (keep != "rownames") {
-        warning('hatize_byname() was called on a column vector, but "rownames" was not the value of the "keep" argument. Probably best to set keep = "rownames".')
+    # Figure out which names we should keep.
+    should_keep <- NULL
+    if (nrow(v_vec) > 1 & ncol(v_vec) == 1) {
+      # We should keep column names
+      should_keep <- "rownames"
+    }
+    if (nrow(v_vec) == 1 & ncol(v_vec) > 1) {
+      # We should keep row names.
+      should_keep <- "colnames"
+    }
+    # Compare dimnames the caller wants to keep against should_keep.
+    if (!is.null(keep) & !is.null(should_keep)) {
+      if (should_keep == "rownames" & keep == "colnames") {
+        stop('In hatize_byname(), argument "keep" set to "colnames", but you supplied a column vector. Consider setting keep = "rownames".')
       }
+      if (should_keep == "colnames" & keep == "rownames") {
+        stop('In hatize_byname(), argument "keep" set to "rownames", but you supplied a row vector. Consider setting keep = "colnames".')        
+      }
+    }
+    # Issue a warning if the caller didn't specify keep.
+    # Uncomment this code after matsbyname has been accepted.
+    # if (missing(keep)) {
+    #   warning(paste0("In hatize_byname(), keep is missing. Consider setting to '", should_keep, "'."))
+    # }
+    
+    if (is.null(keep)) {
+      # Set keep to should_keep to cover the case when keep is NULL.
+      keep <- should_keep
+    }
+    
+    # At this point, we should have a vector and we should know which names to keep.
+    if (ncol(v_vec) == 1 & nrow(v_vec) == 1) {
+      # Don't send this to diag(), because
+      # diag() creates a matrix of size v_vec (when v_vec is an integer).
+      v_sorted <- v_vec
+      out <- v_sorted
+    } else {
+      v_sorted <- sort_rows_cols(v_vec)
+      out <- diag(as.numeric(v_sorted))
+    }
+    if (keep == "rownames") {
+      # Apply the row names to the columns, set the coltype to row rowtype, and return.
       rownames(out) <- rownames(v_sorted)
       colnames(out) <- rownames(v_sorted)
-      # This function does not rely on unaryapply_byname to set row and column types.
-      # So, we must do so here.
-      out <- out %>% setrowtype(rowtype(v_vec)) %>% setcoltype(rowtype(v_vec))
-    } else if (nrow(v_vec) == 1) {
-      if (keep != "colnames") {
-        warning('hatize_byname() was called on a row vector, but "colnames" was not the value of the "keep" argument. Probably best to set keep = "colnames".')
-      }
+      return(out %>% setrowtype(rowtype(v_vec)) %>% setcoltype(rowtype(v_vec)))
+    } else if (keep == "colnames") {
       rownames(out) <- colnames(v_sorted)
       colnames(out) <- colnames(v_sorted)
-      # This function does not rely on unaryapply_byname to set row and column types.
-      # So, we must do so here.
-      out <- out %>% setrowtype(coltype(v_vec)) %>% setcoltype(coltype(v_vec))
+      return(out %>% setrowtype(coltype(v_vec)) %>% setcoltype(coltype(v_vec)))
+    } else {
+      stop('In hatize_byname(), argument "keep" must be one of "colnames" or "rownames".')
     }
-    return(out)
   }
   unaryapply_byname(hatize_func, a = v, rowcoltypes = "none")
 }
+
 
 #' Hatize and invert a vector
 #' 
@@ -286,7 +298,7 @@ hatize_byname <- function(v, keep = c("rownames", "colnames")){
 #'   hatinv_byname(keep = "rownames")
 #' m %>% 
 #'   hatinv_byname(keep = "colnames")
-hatinv_byname <- function(v, keep = c("rownames", "colnames"), inf_becomes = .Machine$double.xmax){
+hatinv_byname <- function(v, keep = NULL, inf_becomes = .Machine$double.xmax){
   hatinv_func <- function(v_vec){
     # Note: there is no need to check that v is, indeed, a vector here.
     # hatize_byname() does that check for us.
