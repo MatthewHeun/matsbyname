@@ -12,6 +12,7 @@
 #' If `a` is `NULL`, `NULL` is returned.
 #' If `mat` is `NULL`, `a` is returned unmodified.
 #' If `mat` has `NULL` dimnames, `a` is returned unmodified.
+#' If `mat` has `NULL` for dimnames on `margin`, an error is returned.
 #'
 #' @param a A matrix to be trimmed.
 #' @param mat The matrix 
@@ -78,7 +79,39 @@ trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
       return(a)
     }
     
-        
+    # Preserve row and column type.
+    rt <- rowtype(a)
+    ct <- coltype(a)
+    
+    # At this point, we should have 
+    #   * a single matrix a,
+    #   * names with which to trim the dimnames of a (dimnamesmat),
+    #   * an indication of which margin(s) over which to trim the names (in the margin argument).
+    
+    for (mar in margin) {
+      # Check that row or column names are available for the margin to be trimmed
+      # If not, this is almost certainly an unintended error by the caller.
+      if (is.null(dimnamesmat[[mar]])) {
+        stop(paste("NULL dimnames for margin =", mar, "on 'mat'"))
+      }
+    }
+    
+    out <- a
+    if (2 %in% margin) {
+      out <- trim_func(a = transpose_byname(out), 
+                       mat = transpose_byname(mat),
+                       margin = 1) %>% 
+        transpose_byname()
+    }
+    
+    if (1 %in% margin) {
+      # Here's where we do the business!
+      
+      # Get the row names of mat
+      rows_to_keep <- dimnames(out)[[1]] %in% dimnamesmat[[1]]
+      out <- out[rows_to_keep, , drop = FALSE]
+    }
+    return(out)
   }
   
   binaryapply_byname(trim_func, a = a, b = mat, .FUNdots = list(margin = margin), 

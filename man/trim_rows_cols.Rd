@@ -31,4 +31,5 @@ The return value will have rows or columns of \code{a} removed if they do not ap
 If \code{a} is \code{NULL}, \code{NULL} is returned.
 If \code{mat} is \code{NULL}, \code{a} is returned unmodified.
 If \code{mat} has \code{NULL} dimnames, \code{a} is returned unmodified.
+If \code{mat} has \code{NULL} for dimnames on \code{margin}, an error is returned.
 }
