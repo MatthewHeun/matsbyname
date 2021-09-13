@@ -1,3 +1,10 @@
+* New function `trim_rows_cols()` eliminates rows and/or columns 
+  in one matrix based on another matrix.
+* Many new tests for new features.
+    - Now at **** tests, all passing.
+    - Test coverage remains at 100 %
+
+
 # matsbyname 0.4.23 (2021-09-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5392263.svg)](https://doi.org/10.5281/zenodo.5392263)
 
 * `hatize_byname()` now allows a missing `keep` argument, 
