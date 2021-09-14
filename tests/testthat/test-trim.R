@@ -56,4 +56,10 @@ test_that("trim_rows_cols() works as expected with single matrices", {
                             dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))) %>% 
                  setrowtype("rowtype") %>% setcoltype("coltype"))
   
+  # Test trimming both rows and cols
+  res3 <- trim_rows_cols(a, mat)
+  expect_equal(res3, matrix(c(1, 2), nrow = 1, ncol = 2, byrow = TRUE, 
+                            dimnames = list(c("r1"), c("c1", "c2"))) %>% 
+                 setrowtype("rowtype") %>% setcoltype("coltype"))
+  
 })
