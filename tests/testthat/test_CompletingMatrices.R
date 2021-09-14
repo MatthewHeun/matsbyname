@@ -226,7 +226,7 @@ test_that("complete_rows_cols works as expected", {
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   m2 <- matrix(c(7:12), ncol = 3)
   expect_warning(complete_rows_cols(a = m1, mat = m2), 
-                 "NULL names in complete_rows_cols, despite matrix being specified. Completing a relative to itself.") %>% 
+                 "NULL names in complete_rows_cols, despite 'mat' being specified. Completing a relative to itself.") %>% 
     # Now test that the result is correct.
     expect_equal(matrix(c(1, 4, 0, 0, 0,
                           2, 5, 0, 0, 0, 
