@@ -110,4 +110,9 @@ test_that("trim_rows_cols() works when a list is given", {
   # Try with an unbalanced list
   expect_warning(trim_rows_cols(a_list, list(mat, mat, mat), margin = list(c(1,2), c(1,2))), 
                  "longer argument not a multiple of length of shorter")
+  
+  # Try with a being a list and mat being NULL.
+  # Should get 2 a matrices.
+  expect_equal(trim_rows_cols(a_list, NULL, margin = list(c(1,2), c(1,2))), 
+               a_list)
 })

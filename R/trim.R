@@ -47,13 +47,6 @@ trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
       # Duplicate it to be a list with same length as a.
       mat <- make_list(mat, length(a))
     }
-  } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
-    # a is NULL, and assume we have a list of matrices in the mat argument.
-    # Under these conditions, we return matrices with same row and column names as each mat, but
-    # filled with the "fill" value.
-    # For that to work, we need to ensure that each of the other arguments are lists.
-    a = make_list(NULL, length(mat))
-    margin <- make_list(margin, length(mat), lenx = 1)
   }
   
   # Double-check that we have what we need for the margin argument.
