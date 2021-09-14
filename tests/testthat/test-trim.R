@@ -35,9 +35,6 @@ test_that("errors are triggered with erroneous input", {
                "Both a and mat are NULL in complete_rows_cols")
   expect_error(trim_rows_cols(a = data.frame(a = 1), mat = matrix(1)), 
                "a cannot be a data frame in complete_rows_cols")
-  
-  # a <- matrix(1, dimnames = list("r1", "c1"))
-  # trim_rows_cols(list(a, a))
 })
 
 
@@ -46,7 +43,6 @@ test_that("trim_rows_cols() works with a single number", {
   mat <- matrix(42, dimnames = list("r1", "c1"))
   expect_error(trim_rows_cols(a, mat), "a must be a matrix in trim_rows_cols")
 })
-
 
 
 test_that("trim_rows_cols() works as expected with single matrices", {
