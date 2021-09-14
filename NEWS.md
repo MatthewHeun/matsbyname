@@ -1,7 +1,7 @@
 * New function `trim_rows_cols()` eliminates rows and/or columns 
   in one matrix based on another matrix.
 * Many new tests for new features.
-    - Now at **** tests, all passing.
+    - Now at 1055 tests, all passing.
     - Test coverage remains at 100 %
 
 
