@@ -26,7 +26,6 @@
 #' @examples
 trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
   
-  
   if (is.null(a) & is.null(mat)) {
     stop("Both a and mat are NULL in complete_rows_cols.")
   }
@@ -63,12 +62,16 @@ trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
   trim_func <- function(a = NULL, mat = NULL, margin) {
     # When we get here, we should not have lists for any of the arguments.
     # We should have single matrices for a and/or matrix. 
-     
+    
     if (is.null(a)) {
       return(NULL)
     }
     if (is.null(mat)) {
       return(a)
+    }
+    
+    if (!is.matrix(a)) {
+      stop("a must be a matrix in trim_rows_cols.")
     }
     
     dimnamesmat <- dimnames(mat)
