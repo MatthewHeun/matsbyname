@@ -1,11 +1,11 @@
 ---
-title: "News for `matsbyname`"
+title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
 
 * New function `trim_rows_cols()` eliminates rows and/or columns
-  in one matrix based on another matrix.
+  in one matrix based on another.
 * Many new tests for new features.
     - Now at 1055 tests, all passing.
     - Test coverage remains at 100 %
