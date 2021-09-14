@@ -1,4 +1,10 @@
-* New function `trim_rows_cols()` eliminates rows and/or columns 
+---
+title: "News for `matsbyname`"
+output: html_document
+---
+
+
+* New function `trim_rows_cols()` eliminates rows and/or columns
   in one matrix based on another matrix.
 * Many new tests for new features.
     - Now at 1055 tests, all passing.
