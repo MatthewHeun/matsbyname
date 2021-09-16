@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+* Fixed a bug where a 0x0 matrix was not being completed 
+  by another matrix.
 * New function `trim_rows_cols()` eliminates rows and/or columns
   in one matrix based on another.
 * Many new tests for new features.

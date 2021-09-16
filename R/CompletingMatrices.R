@@ -165,8 +165,9 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     
     rt <- rowtype(a)
     ct <- coltype(a)
-    if (is.null(a) & length(dimnamesmat) == 2) {
-      # a is NULL, dimnamesmat is a nxn list.  We can work with this.
+    if ((is.null(a) | (is.matrix(a) & all(dim(a) == 0))) & length(dimnamesmat) == 2) {
+      # a is NULL or a 0x0 matrix, but dimnamesmat is a nxn list.
+      # We can work with this.
       # If we have fillcol, make a matrix consisting of repeated fillcols 
       # and with row and column names of dimnamesmat.
       if (!is.null(fillcol) & is.null(fillrow)) {
