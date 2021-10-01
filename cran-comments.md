@@ -1,17 +1,9 @@
 ## Context
 
-`matsbyname` v0.4.23 is a minor release that
-introduces a helpful warning when `hatize_byname()` is called 
-with a `keep` argument that is different 
-from the structure of the vector.
+`matsbyname` v0.4.24 is a bugfix release with one new feature, 
+the capability to trim matrices.
 There are no breaking changes.
 See `NEWS.md` for details.
-
-This is a re-submission to address a regression in the reverse dependency check.
-Function `hatize_byname()` has been rewritten to ensure backward compatibility 
-with the `matsindf` package.
-See note below.
-
 
 ## Test environments (10 in total) and R CMD check results
 
@@ -36,17 +28,17 @@ See note below.
     * WARNINGs: 0
     * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.1.1 (2021-08-10)
+    ********* `devtools::check_win_release()`, R version 4.1.1 (2021-08-10)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2021-08-30 r80832)
+    ******** `devtools::check_win_devel()`, R Under development (unstable) (2021-09-30 r80997)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
-        * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
+        ********** Windows Server 2008 R2 SP1, R-devel, 32/64 bit
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 0
@@ -66,12 +58,5 @@ We checked 1 reverse dependencies, comparing R CMD check results across CRAN and
 
  * We saw 0 new problems
  * We failed to check 0 packages
+
  
-Note: I improved reverse dependency checking compared to the previous submission. 
-I deleted the matsindf package from my machine, thereby
-removing local fixes and forcing `revdepcheck` to download the CRAN version.
-In that case,`revdepcheck` reported no problems.
-I also reverted to the `master` branch of `matsindf` on my local machine
-(to mimic the version on CRAN),
-thereby mimicking how CRAN would do reverse dependency checking on `matsbyname`.
-Again, `revdepcheck` reported no problems.
