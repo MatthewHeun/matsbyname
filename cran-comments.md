@@ -1,6 +1,6 @@
 ## Context
 
-`matsbyname` v0.4.24 is a bugfix release with one new feature, 
+`matsbyname` v0.4.24 fixes a coule bugs and adds one new feature, 
 the capability to trim matrices.
 There are no breaking changes.
 See `NEWS.md` for details.
@@ -28,17 +28,17 @@ See `NEWS.md` for details.
     * WARNINGs: 0
     * NOTEs: 0
 * Windows (on win-builder):
-    ********* `devtools::check_win_release()`, R version 4.1.1 (2021-08-10)
+    * `devtools::check_win_release()`, R version 4.1.1 (2021-08-10)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    ******** `devtools::check_win_devel()`, R Under development (unstable) (2021-09-30 r80997)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2021-09-30 r80997)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
-        ********** Windows Server 2008 R2 SP1, R-devel, 32/64 bit
+        * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 0
