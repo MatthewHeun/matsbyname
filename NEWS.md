@@ -4,13 +4,14 @@ output: html_document
 ---
 
 
+* Added a test to trigger errors when dimnames are `NULL`.
 * Fixed a bug where a 0x0 matrix was not being completed 
   by another matrix.
 * New function `trim_rows_cols()` eliminates rows and/or columns
   in one matrix based on another.
 * Many new tests for new features.
-    - Now at 1055 tests, all passing.
-    - Test coverage remains at 100 %
+    - Now at 1057 tests, all passing.
+    - Test coverage remains at 100 %.
 
 
 # matsbyname 0.4.23 (2021-09-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5392263.svg)](https://doi.org/10.5281/zenodo.5392263)
