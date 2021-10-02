@@ -4,7 +4,7 @@ output: html_document
 ---
 
 
-# matsbyname 0.4.24 (2021-10-01) 
+# matsbyname 0.4.24 (2021-10-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5545893.svg)](https://doi.org/10.5281/zenodo.5545893)
 
 * Added a test to trigger errors when dimnames are `NULL`.
 * Fixed a bug where a 0x0 matrix was not being completed 
