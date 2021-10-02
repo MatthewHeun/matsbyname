@@ -1,4 +1,22 @@
-# matsbyname 0.4.23 (2021-09-01)
+---
+title: "Release notes for `matsbyname`"
+output: html_document
+---
+
+
+# matsbyname 0.4.24 (2021-10-01) 
+
+* Added a test to trigger errors when dimnames are `NULL`.
+* Fixed a bug where a 0x0 matrix was not being completed 
+  by another matrix.
+* New function `trim_rows_cols()` eliminates rows and/or columns
+  in one matrix based on another.
+* Many new tests for new features.
+    - Now at 1057 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+# matsbyname 0.4.23 (2021-09-01)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5392263.svg)](https://doi.org/10.5281/zenodo.5392263)
 
 * `hatize_byname()` now allows a missing `keep` argument, 
   eliminating a regression in reverse dependency
@@ -9,7 +27,7 @@
     - Test coverage remains at 100 %.
 
 
-# matsbyname 0.4.22 (2021-07-26) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138201.svg)](https://doi.org/10.5281/zenodo.5138201)
+# matsbyname 0.4.22 (2021-07-26)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138201.svg)](https://doi.org/10.5281/zenodo.5138201)
 
 * Now issuing a helpful warning when `hatize_byname()` is called with a `keep` argument that 
   is different from the structure of the vector.
@@ -21,7 +39,7 @@
     - Test coverage remains at 100 %.
 
 
-# matsbyname 0.4.21 (2021-07-23) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
+# matsbyname 0.4.21 (2021-07-23)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
 
 * `hatize_byname()` and `hatinv_byname()` gain a new 
   argument `keep` that tells whether to keep row names or column names
@@ -34,7 +52,7 @@
     - Test coverage remains at 100 %.
 
 
-# matsbyname 0.4.20 (2021-07-19) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118873.svg)](https://doi.org/10.5281/zenodo.5118873)
+# matsbyname 0.4.20 (2021-07-19)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118873.svg)](https://doi.org/10.5281/zenodo.5118873)
 
 * New function `keep_pref_suff()` keeps prefixes or suffixes of individual strings
   or lists of strings, based on the `notation` provided.

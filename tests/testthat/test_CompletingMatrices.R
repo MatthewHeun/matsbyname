@@ -226,7 +226,7 @@ test_that("complete_rows_cols works as expected", {
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   m2 <- matrix(c(7:12), ncol = 3)
   expect_warning(complete_rows_cols(a = m1, mat = m2), 
-                 "NULL names in complete_rows_cols, despite matrix being specified. Completing a relative to itself.") %>% 
+                 "NULL names in complete_rows_cols, despite 'mat' being specified. Completing a relative to itself.") %>% 
     # Now test that the result is correct.
     expect_equal(matrix(c(1, 4, 0, 0, 0,
                           2, 5, 0, 0, 0, 
@@ -532,7 +532,7 @@ test_that("complete_rows_cols works when orders are different for column fill.",
 context("Completing and sorting matrices")
 ###########################################################
 
-test_that("complete_and_sort works as expected", {
+test_that("complete_and_sort() works as expected", {
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
   m2 <- matrix(c(7:12), ncol = 3, dimnames = list(c("r3", "r4"), c("c2", "c3", "c4")))
   m1_completed <- matrix(c(0,0,0,0,0,
@@ -738,11 +738,29 @@ test_that("complete_and_sort preserves row and column types", {
 })
 
 
+test_that("complete_rows_cols() works with a 0x0 matrix", {
+  m <- matrix(c(1), dimnames = list("r1", "c1"))
+  # Make a 0x0 matrix
+  a <- m[0, 0]
+  
+  mat <- matrix(c(1, 2,
+                  3, 4), nrow = 2, ncol = 2, byrow = TRUE, 
+                  dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  
+  expect_equal(complete_rows_cols(a, mat), 
+               matrix(c(0, 0, 
+                        0, 0), nrow = 2, ncol = 2, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2"), c("c1", "c2"))))
+  
+  
+})
+
+
 ###########################################################
 context("Utilities")
 ###########################################################
 
-test_that("make_list works as expected", {
+test_that("make_list() works as expected", {
   m <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
 
   expect_equal(make_list(m, n = 1), list(m))

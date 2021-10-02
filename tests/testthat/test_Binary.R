@@ -42,6 +42,7 @@ test_that("sums of constants works as expected", {
   expect_equal(sum_byname(3, 2, NA), NA_integer_)
 })
 
+
 test_that("sums of matrices works as expected", {
   # If only one argument, return it.
   expect_equal(sum_byname(U), U)
@@ -72,6 +73,15 @@ test_that("sums of matrices works as expected", {
   # However, it seems that the testthat package has trouble dealing with "(" in error messages.
   # So, we'll just test for the first word.
   expect_error(sum_byname(U, V), "rowtype")
+})
+
+
+test_that("sum gives error when they are vectors without row names", {
+  a <- matrix(c(1, 2, 3), nrow = 1, dimnames = list(NULL, c("c1", "c2", "c3"))) %>% 
+    setcoltype("coltype")
+  b <- 2 * a
+  
+  expect_error(sum_byname(a, b), "NULL dimnames for margin = 1 on a")
 })
 
 

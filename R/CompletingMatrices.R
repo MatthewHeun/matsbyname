@@ -87,7 +87,6 @@ library("magrittr")
 complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0, 
                                fillrow = NULL, fillcol = NULL, 
                                margin = c(1,2)){
-  margin <- prep_vector_arg(a, margin)
   
   if (is.null(a) & is.null(mat)) {
     stop("Both a and mat are NULL in complete_rows_cols.")
@@ -99,7 +98,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     # Assume we have a list of matrices for a, not a single matrix.
     # Double-check that we have what we need in the mat argument.
     if (is.null(mat)) {
-      # matrix is a single NULL value.  But we need a list of
+      # mat is a single NULL value.  But we need a list of
       # NULL values for the Map function.
       # Make a list of same length as the list of a.
       # Each value is NA.
@@ -109,16 +108,18 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
       # Duplicate it to be a list with same length as a.
       mat <- make_list(mat, length(a))
     }
-    # Double-check that we have what we need for the margin argument.
   } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
-    # a is NULL, and assume we have a list of matrices in the matrix argument.
-    # Under these conditions, we return matrices with same row and column names as each matrix, but
+    # a is NULL, and assume we have a list of matrices in the mat argument.
+    # Under these conditions, we return matrices with same row and column names as each mat, but
     # filled with the "fill" value.
     # For that to work, we need to ensure that each of the other arguments are lists.
     a = make_list(NULL, length(mat))
     margin <- make_list(margin, length(mat), lenx = 1)
   }
 
+  # Double-check that we have what we need for the margin argument.
+  margin <- prep_vector_arg(a, margin)
+  
   complete_func <- function(a = NULL, mat = NULL, fill, fillrow = NULL, fillcol = NULL, margin){
     # When we get here, we should not have lists for any of the arguments.
     # We should have single matrices for a and/or matrix. 
@@ -154,7 +155,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
           # to complete a relative to matrix.
           # But matrix doens't have any dimnames.
           # Warn that we're going to complete a relative to itself.
-          warning("NULL names in complete_rows_cols, despite matrix being specified. Completing a relative to itself.")
+          warning("NULL names in complete_rows_cols, despite 'mat' being specified. Completing a relative to itself.")
         }
         return(complete_rows_cols(a, mat = t(a)))
       }
@@ -164,8 +165,9 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     
     rt <- rowtype(a)
     ct <- coltype(a)
-    if (is.null(a) & length(dimnamesmat) == 2) {
-      # a is NULL, dimnamesmat is a nxn list.  We can work with this.
+    if ((is.null(a) | (is.matrix(a) & all(dim(a) == 0))) & length(dimnamesmat) == 2) {
+      # a is NULL or a 0x0 matrix, but dimnamesmat is a nxn list.
+      # We can work with this.
       # If we have fillcol, make a matrix consisting of repeated fillcols 
       # and with row and column names of dimnamesmat.
       if (!is.null(fillcol) & is.null(fillrow)) {
