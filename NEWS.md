@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* New notation functions `prepostion_notation()`, `from_notation()`, and `of_notation()`.
+
+
 # matsbyname 0.4.24 (2021-10-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5545893.svg)](https://doi.org/10.5281/zenodo.5545893)
 
 * Added a test to trigger errors when dimnames are `NULL`.

@@ -31,6 +31,40 @@ test_that("bracket notation is created properly", {
 })
 
 
+test_that("preposition_notation() works as expected", {
+  pn <- preposition_notation("foobar")
+  expect_equal(pn[["pref_start"]], "")
+  expect_equal(pn[["pref_end"]], " [foobar ")
+  expect_equal(pn[["suff_start"]], " [foobar ")
+  expect_equal(pn[["suff_end"]], "]")
+  
+  pn_parens <- preposition_notation("foobar", suff_start = "(", suff_end = "****")
+  expect_equal(pn_parens[["pref_start"]], "")
+  expect_equal(pn_parens[["pref_end"]], "(foobar ")
+  expect_equal(pn_parens[["suff_start"]], "(foobar ")
+  expect_equal(pn_parens[["suff_end"]], "****")
+})
+
+
+test_that("from_notation() works as expected", {
+  fn <- from_notation()
+  expect_equal(fn[["pref_start"]], "")
+  expect_equal(fn[["pref_end"]], " [from ")
+  expect_equal(fn[["suff_start"]], " [from ")
+  expect_equal(fn[["suff_end"]], "]")
+})
+
+
+test_that("of_notation() works as expected", {
+  on <- of_notation()
+  expect_equal(on[["pref_start"]], "")
+  expect_equal(on[["pref_end"]], " [of ")
+  expect_equal(on[["suff_start"]], " [of ")
+  expect_equal(on[["suff_end"]], "]")
+})
+
+
+
 test_that("split_pref_suff() works properly", {
   expect_equal(split_pref_suff("a -> b", notation = arrow_notation()), list(pref = "a", suff = "b"))
   expect_equal(split_pref_suff("b [a]", notation = bracket_notation()), list(pref = "b", suff = "a"))
@@ -182,6 +216,15 @@ test_that("keep_pref_suff() works as expected", {
 })
 
 
+test_that("keep_pref_suff() works when there is no prefix or suffix", {
+  expect_equal(keep_pref_suff("a", keep = "pref", notation = arrow_notation()), "a")
+  expect_equal(keep_pref_suff("a", keep = "suff", notation = arrow_notation()), "a")
+  expect_equal(keep_pref_suff("a", keep = "pref", notation = from_notation()), "a")
+  expect_equal(keep_pref_suff("a", keep = "suff", notation = arrow_notation()), "a")
+  
+})
+
+
 test_that("switch_notation() works as expected", {
   # Start with a degenerate case
   expect_equal(switch_notation("a", from = arrow_notation(), to = bracket_notation()), "a")
@@ -289,6 +332,7 @@ test_that("switch_notation_byname() works well when flip is a list", {
   e <- e %>% setcoltype("Products -> Industries")
   expect_equal(switch_notation_byname(m, from = bracket_notation(), to = arrow_notation(), flip = list(TRUE)), e)
 })
+
 
 
 

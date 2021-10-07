@@ -14,7 +14,10 @@
 #' * `arrow_notation()` Builds a list of notation symbols that provides an arrow separator (" -> ")
 #'                      between prefix and suffix.
 #' * `paren_notation()` Builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
-#' * `bracket_notation()` builds a list of notation symbols that provides square brackets around the suffix ("prefix \[suffix\]").
+#' * `bracket_notation()` Builds a list of notation symbols that provides square brackets around the suffix ("prefix \[suffix\]").
+#' * `preposition_notation()` Builds a list of notation symbols that provides (by default) square brackets around the suffix with a preposition ("prefix \[preposition suffix\]").
+#' * `from_notation()` Builds a list of notation symbols that provides (by default) square brackets around a "from" suffix ("prefix \[from suffix\]").
+#' * `of_notation()` Builds a list of notation symbols that provides (by default) square brackets around an "of" suffix ("prefix \[of suffix\]").
 #' * `split_pref_suff()` Splits prefixes from suffixes, returning each in a list with names `pref` and `suff`. 
 #'                       If no prefix or suffix delimiters are found, `x` is returned in the `pref` item, unmodified, 
 #'                       and the `suff` item is returned as `""` (an empty string).
@@ -136,6 +139,31 @@ bracket_notation <- function(suff_start = " [", suff_end = "]") {
                pref_end = suff_start,
                suff_start = suff_start, 
                suff_end = suff_end)
+}
+
+
+#' @export
+#' @rdname row-col-notation
+preposition_notation <- function(preposition, suff_start = " [", suff_end = "]") {
+  notation_vec(sep = "",
+               pref_start = "", 
+               pref_end = paste0(suff_start, preposition, " "),
+               suff_start = paste0(suff_start, preposition, " "),
+               suff_end = suff_end)
+}
+
+
+#' @export
+#' @rdname row-col-notation
+from_notation <- function(preposition = "from", suff_start = " [", suff_end = "]") {
+  preposition_notation(preposition = preposition)
+}
+
+
+#' @export
+#' @rdname row-col-notation
+of_notation <- function(preposition = "of", suff_start = " [", suff_end = "]") {
+  preposition_notation(preposition = preposition)
 }
 
 
