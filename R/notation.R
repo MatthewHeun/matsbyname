@@ -59,7 +59,8 @@
 #' @param to The `notation` to switch _to_.
 #' @param flip A boolean that tells whether to also flip the notation. Default is `FALSE`.
 #' @param a A matrix or list of matrices whose row and/or column notation is to be changed.
-#' @param margin `1` for rows, `2` for columns, or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
+#' @param margin `1` For rows, `2` for columns, or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
+#' @param preposition A string used to indicate position for energy flows, typically "from" or "to" in different notations.
 #'
 #' @return For `notation_vec()`, `arrow_notation()`, and `bracket_notation()`, 
 #'           a string vector with named items `pref_start`, `pref_end`, `suff_start`, and `suff_end`;
