@@ -4,12 +4,12 @@ citEntry(entry = "Manual",
   title        = "matsbyname: An Implementation of Matrix Mathematics",
   author       = personList(as.person("Matthew Kuperus Heun")),
   year         = "2021",
-  note         = "R package version 0.4.24",
+  note         = "R package version 0.4.25",
   url          = "https://CRAN.R-project.org/package=matsbyname",
 
   textVersion  =
   paste("Matthew Kuperus Heun (2021).",
         "matsbyname: An Implementation of Matrix Mathematics.",
-        "R package version 0.4.24.",
+        "R package version 0.4.25.",
         "https://CRAN.R-project.org/package=matsbyname")
 )

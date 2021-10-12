@@ -1,7 +1,6 @@
 ## Context
 
-`matsbyname` v0.4.24 fixes a coule bugs and adds one new feature, 
-the capability to trim matrices.
+`matsbyname` v0.4.25 adds three new functions related to row and column name notations. 
 There are no breaking changes.
 See `NEWS.md` for details.
 
@@ -32,7 +31,7 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2021-09-30 r80997)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2021-10-07 r81018)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0

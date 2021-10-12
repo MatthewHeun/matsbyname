@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/MatthewHeun/matsbyname/workflows/R-CMD-check/badge.svg)](https://github.com/MatthewHeun/matsbyname/actions)
-[![Codecov test coverage](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://codecov.io/gh/MatthewHeun/matsbyname?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MatthewHeun/matsbyname?branch=master)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118872.svg)](https://doi.org/10.5281/zenodo.5118872)
 <!-- badges: end -->
 
