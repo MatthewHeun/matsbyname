@@ -1262,9 +1262,10 @@ any_byname <- function(a){
 #' rows (or columns or both) of same name are aggregated together. 
 #' 
 #' If `aggregation_map` is not `NULL`, it must be a named list.
-#' The name of each `aggregation_map` item is the name of a row or column in `a` that will contain the specified aggregation.
+#' The name of each `aggregation_map` item is the name of a row or column in output
+#' that will contain the specified aggregation.
 #' The value of each item in `aggregation_map` must be a vector of names of rows or columns in `a`.
-#' The names in the value are aggregated and inserted into `a` with the name of the value.
+#' The names in the value are aggregated and inserted into the output with the name of the value.
 #' For example `aggregation_map = list(new_row = c("r1", "r2"))` 
 #' will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row 
 #' whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
@@ -1275,12 +1276,12 @@ any_byname <- function(a){
 #' Note that aggregation on one margin only will sort only the aggregated margin, because
 #' the other margin is not guaranteed to have unique names.
 #'
-#' @param a a matrix or list of matrices whose rows or columns are to be aggregated
-#' @param aggregation_map a named list of rows or columns to be aggregated (or `NULL`). See `details`.
-#' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both
+#' @param a A matrix or list of matrices whose rows or columns are to be aggregated.
+#' @param aggregation_map A named list of rows or columns to be aggregated (or `NULL`). See `details`.
+#' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both.
 #' @param pattern_type See `make_pattern()`.
 #'
-#' @return a version of `a` with aggregated rows and/or columns
+#' @return A version of `a` with aggregated rows and/or columns
 #' 
 #' @export
 #'
