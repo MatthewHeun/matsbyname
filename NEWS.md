@@ -4,7 +4,7 @@ output: html_document
 ---
 
 
-# matsbyname 0.4.25 (2021-10-12) 
+# matsbyname 0.4.25 (2021-10-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565352.svg)](https://doi.org/10.5281/zenodo.5565352)
 
 * New notation functions `prepostion_notation()`, `from_notation()`, and `of_notation()`.
 * Many new tests for new features.
