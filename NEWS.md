@@ -4,7 +4,12 @@ output: html_document
 ---
 
 
+# matsbyname 0.4.25 (2021-10-12) 
+
 * New notation functions `prepostion_notation()`, `from_notation()`, and `of_notation()`.
+* Many new tests for new features.
+    - Now at 1077 tests, all passing.
+    - Test coverage remains at 100 %.
 
 
 # matsbyname 0.4.24 (2021-10-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5545893.svg)](https://doi.org/10.5281/zenodo.5545893)
