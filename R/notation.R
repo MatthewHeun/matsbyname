@@ -14,7 +14,10 @@
 #' * `arrow_notation()` Builds a list of notation symbols that provides an arrow separator (" -> ")
 #'                      between prefix and suffix.
 #' * `paren_notation()` Builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
-#' * `bracket_notation()` builds a list of notation symbols that provides square brackets around the suffix ("prefix \[suffix\]").
+#' * `bracket_notation()` Builds a list of notation symbols that provides square brackets around the suffix ("prefix \[suffix\]").
+#' * `preposition_notation()` Builds a list of notation symbols that provides (by default) square brackets around the suffix with a preposition ("prefix \[preposition suffix\]").
+#' * `from_notation()` Builds a list of notation symbols that provides (by default) square brackets around a "from" suffix ("prefix \[from suffix\]").
+#' * `of_notation()` Builds a list of notation symbols that provides (by default) square brackets around an "of" suffix ("prefix \[of suffix\]").
 #' * `split_pref_suff()` Splits prefixes from suffixes, returning each in a list with names `pref` and `suff`. 
 #'                       If no prefix or suffix delimiters are found, `x` is returned in the `pref` item, unmodified, 
 #'                       and the `suff` item is returned as `""` (an empty string).
@@ -56,7 +59,8 @@
 #' @param to The `notation` to switch _to_.
 #' @param flip A boolean that tells whether to also flip the notation. Default is `FALSE`.
 #' @param a A matrix or list of matrices whose row and/or column notation is to be changed.
-#' @param margin `1` for rows, `2` for columns, or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
+#' @param margin `1` For rows, `2` for columns, or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
+#' @param preposition A string used to indicate position for energy flows, typically "from" or "to" in different notations.
 #'
 #' @return For `notation_vec()`, `arrow_notation()`, and `bracket_notation()`, 
 #'           a string vector with named items `pref_start`, `pref_end`, `suff_start`, and `suff_end`;
@@ -136,6 +140,31 @@ bracket_notation <- function(suff_start = " [", suff_end = "]") {
                pref_end = suff_start,
                suff_start = suff_start, 
                suff_end = suff_end)
+}
+
+
+#' @export
+#' @rdname row-col-notation
+preposition_notation <- function(preposition, suff_start = " [", suff_end = "]") {
+  notation_vec(sep = "",
+               pref_start = "", 
+               pref_end = paste0(suff_start, preposition, " "),
+               suff_start = paste0(suff_start, preposition, " "),
+               suff_end = suff_end)
+}
+
+
+#' @export
+#' @rdname row-col-notation
+from_notation <- function(preposition = "from", suff_start = " [", suff_end = "]") {
+  preposition_notation(preposition = preposition)
+}
+
+
+#' @export
+#' @rdname row-col-notation
+of_notation <- function(preposition = "of", suff_start = " [", suff_end = "]") {
+  preposition_notation(preposition = preposition)
 }
 
 

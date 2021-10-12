@@ -73,7 +73,7 @@ are aggregated according to aggregation_map." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.24</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.25</span>
       </span>
     </div>
 
@@ -152,15 +152,15 @@ are aggregated according to <code>aggregation_map</code>.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>a</th>
-      <td><p>a matrix or list of matrices whose rows or columns are to be aggregated</p></td>
+      <td><p>A matrix or list of matrices whose rows or columns are to be aggregated.</p></td>
     </tr>
     <tr>
       <th>aggregation_map</th>
-      <td><p>a named list of rows or columns to be aggregated (or <code>NULL</code>). See <code>details</code>.</p></td>
+      <td><p>A named list of rows or columns to be aggregated (or <code>NULL</code>). See <code>details</code>.</p></td>
     </tr>
     <tr>
       <th>margin</th>
-      <td><p><code>1</code>, <code>2</code>, or <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> for row aggregation, column aggregation, or both</p></td>
+      <td><p><code>1</code>, <code>2</code>, or <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> for row aggregation, column aggregation, or both.</p></td>
     </tr>
     <tr>
       <th>pattern_type</th>
@@ -170,15 +170,16 @@ are aggregated according to <code>aggregation_map</code>.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a version of <code>a</code> with aggregated rows and/or columns</p>
+    <p>A version of <code>a</code> with aggregated rows and/or columns</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>When <code>aggregation_map</code> is <code>NULL</code> (the default),
 rows (or columns or both) of same name are aggregated together.</p>
 <p>If <code>aggregation_map</code> is not <code>NULL</code>, it must be a named list.
-The name of each <code>aggregation_map</code> item is the name of a row or column in <code>a</code> that will contain the specified aggregation.
+The name of each <code>aggregation_map</code> item is the name of a row or column in output
+that will contain the specified aggregation.
 The value of each item in <code>aggregation_map</code> must be a vector of names of rows or columns in <code>a</code>.
-The names in the value are aggregated and inserted into <code>a</code> with the name of the value.
+The names in the value are aggregated and inserted into the output with the name of the value.
 For example <code>aggregation_map = list(new_row = c("r1", "r2"))</code>
 will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row
 whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.</p>

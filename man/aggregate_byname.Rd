@@ -12,16 +12,16 @@ aggregate_byname(
 )
 }
 \arguments{
-\item{a}{a matrix or list of matrices whose rows or columns are to be aggregated}
+\item{a}{A matrix or list of matrices whose rows or columns are to be aggregated.}
 
-\item{aggregation_map}{a named list of rows or columns to be aggregated (or \code{NULL}). See \code{details}.}
+\item{aggregation_map}{A named list of rows or columns to be aggregated (or \code{NULL}). See \code{details}.}
 
-\item{margin}{\code{1}, \code{2}, or \code{c(1, 2)} for row aggregation, column aggregation, or both}
+\item{margin}{\code{1}, \code{2}, or \code{c(1, 2)} for row aggregation, column aggregation, or both.}
 
 \item{pattern_type}{See \code{make_pattern()}.}
 }
 \value{
-a version of \code{a} with aggregated rows and/or columns
+A version of \code{a} with aggregated rows and/or columns
 }
 \description{
 Rows (\verb{margin  1}), columns (\code{margin = 2}), or both (\code{margin = c(1, 2)}, the default)
@@ -32,9 +32,10 @@ When \code{aggregation_map} is \code{NULL} (the default),
 rows (or columns or both) of same name are aggregated together.
 
 If \code{aggregation_map} is not \code{NULL}, it must be a named list.
-The name of each \code{aggregation_map} item is the name of a row or column in \code{a} that will contain the specified aggregation.
+The name of each \code{aggregation_map} item is the name of a row or column in output
+that will contain the specified aggregation.
 The value of each item in \code{aggregation_map} must be a vector of names of rows or columns in \code{a}.
-The names in the value are aggregated and inserted into \code{a} with the name of the value.
+The names in the value are aggregated and inserted into the output with the name of the value.
 For example \code{aggregation_map = list(new_row = c("r1", "r2"))}
 will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row
 whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.

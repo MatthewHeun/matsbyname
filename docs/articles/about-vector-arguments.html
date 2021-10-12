@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.24</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.25</span>
       </span>
     </div>
 
@@ -222,7 +222,7 @@
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    4    6</span></code></pre></div>
-<p><code>margin = c(1, 2)</code> is interpreted by <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> as "use <code>margin = 1</code> for the first <code>m</code> in the list, and use <code>margin = 2</code> for the second <code>m</code> in the list.</p>
+<p><code>margin = c(1, 2)</code> is interpreted by <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> as “use <code>margin = 1</code> for the first <code>m</code> in the list, and use <code>margin = 2</code> for the second <code>m</code> in the list.</p>
 <p>Now we see why passing <code>margin = c(1, 2)</code> failed for a list of length <code>3</code> (<code><a href="https://rdrr.io/r/base/list.html">list(m, m, m)</a></code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. But the third <code>m</code> had no margin available for it.</p>
 <p>We also see why passing <code>margin = c(1, 2)</code> was successful for a list of length <code>2</code> (<code><a href="https://rdrr.io/r/base/list.html">list(m, m)</a></code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. In that case, we had exactly as many items in margin (2) as items in the list passed to <code>a</code> (2).</p>
 <p>Now that we understand the problem, how do we fix it? In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in <code><a href="https://rdrr.io/r/base/list.html">list(m, m, m)</a></code>? Or, better yet, how could we apply <code>margin = 1</code> to the first <code>m</code>, <code>margin = 2</code> to the second <code>m</code>, and <code>margin = c(1, 2)</code> to the third <code>m</code>?</p>
@@ -347,7 +347,7 @@
 <span class="co">#&gt; 2 &lt;int [2 × 2]&gt;      2</span>
 <span class="va">DF2</span><span class="op">$</span><span class="va">margin</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; [1] "numeric"</span></code></pre></div>
-<p>It would be a mistake to wrap <code>DF2$margin</code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code> for the following call to <code>mysum2</code>, because the caller’s intent is clearly "apply <code>margin = 1</code> for the first row and <code>margin = 2</code> for the second row.</p>
+<p>It would be a mistake to wrap <code>DF2$margin</code> in a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code> for the following call to <code>mysum2</code>, because the caller’s intent is clearly “apply <code>margin = 1</code> for the first row and <code>margin = 2</code> for the second row.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res2</span> <span class="op">&lt;-</span> <span class="va">DF2</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
