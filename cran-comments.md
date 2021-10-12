@@ -6,23 +6,23 @@ See `NEWS.md` for details.
 
 ## Test environments (10 in total) and R CMD check results
 
-* local macOS X install 10.15.7 (Catalina), R4.1.1
+* local macOS X install 10.15.7 (Catalina), R4.1.1   ***************
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* GitHub Actions: windows-latest (release)
+* GitHub Actions: windows-latest (release)         **************
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* GitHub Actions: macOS-latest (release)
+* GitHub Actions: macOS-latest (release)      ******************
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* GitHub Actions: ubuntu-20.04 (release)
+* GitHub Actions: ubuntu-20.04 (release)       *******************
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
-* GitHub Actions: ubuntu-20.04 (devel)
+* GitHub Actions: ubuntu-20.04 (devel)          ******************
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
@@ -51,7 +51,7 @@ See `NEWS.md` for details.
             * NOTEs: 0
 
 
-## revdepcheck results
+## revdepcheck results       *********************
 
 We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
