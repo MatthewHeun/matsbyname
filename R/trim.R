@@ -13,11 +13,22 @@
 #' If `mat` is `NULL`, `a` is returned unmodified.
 #' If `mat` has `NULL` dimnames, `a` is returned unmodified.
 #' If `mat` has `NULL` for dimnames on `margin`, an error is returned.
+#' 
+#' A common use case for this function is to trim `a`, because it has too many 
+#' entries on `margin`s compared to `mat`.
+#' This trimming will result in a smaller result for any mathematical operations 
+#' involving `a` and `mat`.
+#' Typically, `a` should cover all the entries in `mat` on `margin`.
+#' Thus, by default, this function warns if `a` is missing entries on `margin`
+#' that are present in `mat`.
+#' To turn off this checking behavior, set `warn_if_a_incomplete = FALSE`.
 #'
 #' @param a A matrix to be trimmed.
 #' @param mat The matrix 
 #' @param margin The dimension of `a` to be trimmed. `1` means rows; `2` means columns.
 #'               Default is `c(1,2)`.
+#' @param warn_if_a_incomplete When `TRUE` (the default), a warning is emitted
+#'                             if `a` is missing entries on `margin` that are present in `mat`.
 #'
 #' @return Matrix `a` with rows or columns trimmed to match `mat`.
 #' 
@@ -36,7 +47,7 @@
 #' trim_rows_cols(a, mat, margin = 1)
 #' trim_rows_cols(a, mat, margin = 2)
 #' trim_rows_cols(a, mat)
-trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
+trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2), warn_if_a_incomplete = TRUE) {
   
   if (is.null(a) & is.null(mat)) {
     stop("Both a and mat are NULL in complete_rows_cols.")
@@ -66,7 +77,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
   
   trim_func <- function(a = NULL, mat = NULL, margin) {
     # When we get here, we should not have lists for any of the arguments.
-    # We should have single matrices for a and/or matrix. 
+    # We should have single matrices for a and/or mat. 
     
     if (is.null(a)) {
       return(NULL)
@@ -76,7 +87,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
     }
     
     if (!is.matrix(a)) {
-      stop("a must be a matrix in trim_rows_cols.")
+      stop("a must be a matrix in trim_rows_cols().")
     }
     
     dimnamesmat <- dimnames(mat)
@@ -87,7 +98,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
       return(a)
     }
     
-    # Preserve row and column type.
+    # Preserve row and column type to re-apply later.
     rt <- rowtype(a)
     ct <- coltype(a)
     
@@ -113,11 +124,23 @@ trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2)) {
     }
     
     if (1 %in% margin) {
+      
       # Here's where we do the business!
       
       # Get the row names of mat
       rows_to_keep <- dimnames(out)[[1]] %in% dimnamesmat[[1]]
       out <- out[rows_to_keep, , drop = FALSE]
+      
+      # Check if a is missing rows of R. 
+      # This condition is likely to be an error, 
+      # so emit a warning.
+      if (warn_if_a_incomplete) {
+        missing_in_a <- setdiff(dimnamesmat[[1]], dimnames(out)[[1]])
+        if (length(missing_in_a) > 0) {
+          warning(paste("In trim_rows_cols, 'a' is missing the following rows or columns relative to 'mat':",
+                        paste(missing_in_a, collapse = ",")))
+        }
+      }
     }
     return(out)
   }

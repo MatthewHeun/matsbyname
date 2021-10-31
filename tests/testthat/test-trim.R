@@ -58,13 +58,13 @@ test_that("trim_rows_cols() works as expected with single matrices", {
     setrowtype("rowtype") %>% setcoltype("coltype")
   
   # Test trimming rows
-  res1 <- trim_rows_cols(a, mat, margin = 1)
+  res1 <- trim_rows_cols(a, mat, margin = 1, warn_if_a_incomplete = FALSE)
   expect_equal(res1, matrix(c(1, 2, 3), nrow = 1, ncol = 3, byrow = TRUE, 
                             dimnames = list(c("r1"), c("c1", "c2", "c3"))) %>% 
                  setrowtype("rowtype") %>% setcoltype("coltype"))
   
   # Test trimming cols
-  res2 <- trim_rows_cols(a, mat, margin = 2)
+  res2 <- trim_rows_cols(a, mat, margin = 2, warn_if_a_incomplete = FALSE)
   expect_equal(res2, matrix(c(1, 2, 
                               4, 5, 
                               7, 8), nrow = 3, ncol = 2, byrow = TRUE, 
@@ -72,7 +72,7 @@ test_that("trim_rows_cols() works as expected with single matrices", {
                  setrowtype("rowtype") %>% setcoltype("coltype"))
   
   # Test trimming both rows and cols
-  res3 <- trim_rows_cols(a, mat)
+  res3 <- trim_rows_cols(a, mat, warn_if_a_incomplete = FALSE)
   expect_equal(res3, matrix(c(1, 2), nrow = 1, ncol = 2, byrow = TRUE, 
                             dimnames = list(c("r1"), c("c1", "c2"))) %>% 
                  setrowtype("rowtype") %>% setcoltype("coltype"))
@@ -97,10 +97,10 @@ test_that("trim_rows_cols() works when a list is given", {
                 dimnames = list(c("r1"), c("c1", "c2"))) %>% 
     setrowtype("rowtype") %>% setcoltype("coltype")
   
-  expect_equal(trim_rows_cols(a_list, mat, margin = list(c(1,2), c(1,2))), 
+  expect_equal(trim_rows_cols(a_list, mat, margin = list(c(1,2), c(1,2)), warn_if_a_incomplete = FALSE), 
                list(res, res))
   
-  expect_equal(trim_rows_cols(a_list, list(mat, mat), margin = list(c(1,2), c(1,2))), 
+  expect_equal(trim_rows_cols(a_list, list(mat, mat), margin = list(c(1,2), c(1,2)), warn_if_a_incomplete = FALSE), 
                list(res, res))
   
   # Try with an unbalanced list
@@ -111,4 +111,42 @@ test_that("trim_rows_cols() works when a list is given", {
   # Should get 2 a matrices.
   expect_equal(trim_rows_cols(a_list, NULL, margin = list(c(1,2), c(1,2))), 
                a_list)
+})
+
+
+test_that("trim_rows_cols() warns when a does not contain all items in mat", {
+  R <- matrix(c(1, 2, 3, 
+                4, 5, 6, 
+                7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  
+  phi <- matrix(c(1, 1.05, 0.931), nrow = 1, ncol = 3, 
+                dimnames = list("r1", c("c1", "c2", "c3"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  
+  # Test trimming columns. Everything is present, so nothing should be trimmed, and
+  # there should be no warning.
+  res1 <- trim_rows_cols(phi, R, margin = 2)
+  expect_equal(res1, phi)  
+  
+  # Now try with a smaller R. 
+  # This time, columns of phi should be trimmed.
+  R2 <- R[, c(1,2), drop = FALSE] %>% setrowtype("rowtype") %>% setcoltype("coltype")
+  res2 <- trim_rows_cols(phi, R2, margin = 2)
+  expected2 <- matrix(c(1, 1.05), nrow = 1, dimnames = list("r1", c("c1", "c2"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  expect_equal(res2, expected2)
+  
+  # Now try with a smaller phi.  This is the case where we want a warning.
+  # We want to be sure that phi has columns that match all columns in R,
+  # else the calculation will not be correct.
+  phi3 <- phi[ , c(2,3), drop = FALSE] %>% setrowtype("rowtype") %>% setcoltype("coltype")
+  expect_warning(res3 <- trim_rows_cols(phi3, R, margin = 2), "In trim_rows_cols, 'a' is missing the following rows or columns relative to 'mat': c1")
+  
+  # Try it with the warning turned off
+  res4 <- trim_rows_cols(phi3, R, margin = 2, warn_if_a_incomplete = FALSE)
+  expected4 <- matrix(c(1.05, 0.931), nrow = 1, dimnames = list("r1", c("c2", "c3"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  expect_equal(res4, expected4)
 })
