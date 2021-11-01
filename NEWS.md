@@ -4,6 +4,14 @@ output: html_document
 ---
 
 
+* `trim_rows_cols()` gains a `warn_if_a_incomplete` argument. 
+   When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
+   that are present in `mat`.
+* Many new tests for new features.
+    - Now at 1081 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
 # matsbyname 0.4.25 (2021-10-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565352.svg)](https://doi.org/10.5281/zenodo.5565352)
 
 * New notation functions `prepostion_notation()`, `from_notation()`, and `of_notation()`.

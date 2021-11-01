@@ -45,6 +45,7 @@
 #' @param sep A string separator between prefix and suffix. Default is " -> ".
 #' @param pref_start A string indicating the start of a prefix. Default is `NULL`.
 #' @param pref_end A string indicating the end of a prefix. Default is the value of `sep`.
+#' @param preposition A string that specifies a preposition for a notation.
 #' @param suff_start A string indicating the start of a suffix. Default is the value of `sep`.
 #' @param suff_end A string indicating the end of a suffix. Default is `NULL`.
 #' @param x A string or list of strings to be operated upon.
