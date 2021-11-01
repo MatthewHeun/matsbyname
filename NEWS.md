@@ -3,7 +3,9 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
-
+* `trim_rows_cols()` gains a `warn_if_a_incomplete` argument. 
+   When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
+   that are present in `mat`.
 * New notation functions `prepostion_notation()`, `from_notation()`, and `of_notation()`.
 
 
