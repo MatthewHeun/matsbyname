@@ -205,37 +205,40 @@ prep_vector_arg <- function(a, vector_arg) {
 
 #' Create regex patterns for row and column selection by name
 #'
-#' This function is intended for use with the \code{select_rows_byname}
-#' and \code{select_cols_byname} functions.
-#' \code{make_pattern} correctly escapes special characters in \code{row_col_names},
-#' such as \code{(} and \code{)}, as needed.
-#' Thus, it is highly recommended that \code{make_pattern} be used when
+#' This function is intended for use with the `select_rows_byname`
+#' and `select_cols_byname` functions.
+#' `make_pattern` correctly escapes special characters in `row_col_names`,
+#' such as `(` and `)`, as needed.
+#' Thus, it is highly recommended that `make_pattern` be used when
 #' constructing patterns for row and column selections with
-#' \code{select_rows_byname}
-#' and \code{select_cols_byname}.
+#' `select_rows_byname` and `select_cols_byname`.
 #'
 #' \code{pattern_type} controls the type of pattern created:
 #' \itemize{
-#'   \item{\code{exact} produces a pattern that selects row or column names by exact match.}
-#'   \item{\code{leading} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+#'   \item{`exact` produces a pattern that selects row or column names by exact match.}
+#'   \item{`leading` produces a pattern that selects row or column names if the item in `row_col_names` matches
 #'         the beginnings of row or column names.}
-#'   \item{\code{trailing} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+#'   \item{`trailing` produces a pattern that selects row or column names if the item in `row_col_names` matches
 #'         the ends of row or column names.}
-#'   \item{\code{anywhere} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
+#'   \item{`anywhere` produces a pattern that selects row or column names if the item in `row_col_names` matches
 #'         any substring of row or column names.}
+#'   \item{`literal` returns `row_col_names` unmodified, and it is up to the caller to formulate a correct regex.}
 #' }
 #'
-#' @param row_col_names a vector of row and column names
-#' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".
+#' @param row_col_names A vector of row and column names.
+#' @param pattern_type One of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".
 #'
-#' @return an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
+#' @return An extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
 #' 
 #' @export
 #'
 #' @examples
 #' make_pattern(row_col_names = c("a", "b"), pattern_type = "exact")
-make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere")){
+make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere", "literal")){
   pattern_type <- match.arg(pattern_type)
+  if (pattern_type == "literal") {
+    return(row_col_names)
+  }
   out <- Hmisc::escapeRegex(row_col_names)
   # Add leading caret if needed
   if (pattern_type %in% c("exact", "leading")) {
@@ -247,6 +250,7 @@ make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "tr
   }
   paste0(out, collapse = "|")
 }
+
 
 #' Named list of rows or columns of matrices
 #' 

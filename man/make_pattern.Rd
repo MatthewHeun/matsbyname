@@ -6,26 +6,25 @@
 \usage{
 make_pattern(
   row_col_names,
-  pattern_type = c("exact", "leading", "trailing", "anywhere")
+  pattern_type = c("exact", "leading", "trailing", "anywhere", "literal")
 )
 }
 \arguments{
-\item{row_col_names}{a vector of row and column names}
+\item{row_col_names}{A vector of row and column names.}
 
-\item{pattern_type}{one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".}
+\item{pattern_type}{One of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".}
 }
 \value{
-an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
+An extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
 }
 \description{
 This function is intended for use with the \code{select_rows_byname}
 and \code{select_cols_byname} functions.
 \code{make_pattern} correctly escapes special characters in \code{row_col_names},
-such as \code{(} and \code{)}, as needed.
+such as \code{(} and \verb{)}, as needed.
 Thus, it is highly recommended that \code{make_pattern} be used when
 constructing patterns for row and column selections with
-\code{select_rows_byname}
-and \code{select_cols_byname}.
+\code{select_rows_byname} and \code{select_cols_byname}.
 }
 \details{
 \code{pattern_type} controls the type of pattern created:
@@ -37,6 +36,7 @@ the beginnings of row or column names.}
 the ends of row or column names.}
 \item{\code{anywhere} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
 any substring of row or column names.}
+\item{\code{literal} returns \code{row_col_names} unmodified, and it is up to the caller to formulate a correct regex.}
 }
 }
 \examples{

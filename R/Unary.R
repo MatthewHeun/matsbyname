@@ -1255,7 +1255,7 @@ any_byname <- function(a){
 
 #' Aggregate rows and columns in a matrix
 #' 
-#' Rows (`margin  1`), columns (`margin = 2`), or both (`margin = c(1, 2)`, the default)
+#' Rows (`margin = 1`), columns (`margin = 2`), or both (`margin = c(1, 2)`, the default)
 #' are aggregated according to `aggregation_map`.
 #' 
 #' When `aggregation_map` is `NULL` (the default), 
@@ -1270,7 +1270,7 @@ any_byname <- function(a){
 #' will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row 
 #' whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
 #' 
-#' The items in `aggregation_map` are interpreted as regular expressions, and 
+#' The values in the `aggregation_map` are interpreted as regular expressions, and 
 #' they are escaped using `Hmisc::escapeRegex()` prior to use.
 #' 
 #' Note that aggregation on one margin only will sort only the aggregated margin, because

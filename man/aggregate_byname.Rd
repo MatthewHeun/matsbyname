@@ -24,7 +24,7 @@ aggregate_byname(
 A version of \code{a} with aggregated rows and/or columns
 }
 \description{
-Rows (\verb{margin  1}), columns (\code{margin = 2}), or both (\code{margin = c(1, 2)}, the default)
+Rows (\code{margin = 1}), columns (\code{margin = 2}), or both (\code{margin = c(1, 2)}, the default)
 are aggregated according to \code{aggregation_map}.
 }
 \details{
@@ -40,7 +40,7 @@ For example \code{aggregation_map = list(new_row = c("r1", "r2"))}
 will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row
 whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
 
-The items in \code{aggregation_map} are interpreted as regular expressions, and
+The values in the \code{aggregation_map} are interpreted as regular expressions, and
 they are escaped using \code{Hmisc::escapeRegex()} prior to use.
 
 Note that aggregation on one margin only will sort only the aggregated margin, because

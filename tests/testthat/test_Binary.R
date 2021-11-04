@@ -989,12 +989,14 @@ test_that("make_pattern works as expected", {
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "leading"), "^a|^b")
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "trailing"), "a$|b$")
   expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "anywhere"), "a|b")
+  expect_equal(make_pattern(row_col_names = c("^a$", "^b", "c$"), pattern_type = "literal"), c("^a$", "^b", "c$"))
   expect_equal(make_pattern(row_col_names = "Non-specified (industry)", pattern_type = "exact"), "^Non-specified \\(industry\\)$")
   # Check with a list and parentheses
   expect_equal(make_pattern(row_col_names = c("a(1)", "a(2)"), pattern_type = "exact"), 
                "^a\\(1\\)$|^a\\(2\\)$")
 })
   
+
 test_that("list_of_rows_or_cols works as expected", {
   m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
     setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
