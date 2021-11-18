@@ -48,8 +48,8 @@ m
 # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 # Doing renaming like this (without also aggregating) is potentially dangerous, because  
 # some rows and some columns could end up with same names.
-aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+aggregate_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation())
 # Aggregation by suffix reduces the number of rows and columns, 
 # because there are same suffixes in both rows and columns
-aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+aggregate_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation())
 }
