@@ -509,7 +509,7 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
     
     if (1 %in% margin) {
       ps <- rownames(a) %>% 
-        split_pref_suff(notation = notation)
+        RCLabels::split_pref_suff(notation = notation)
       # The rest of this code expects a list whose top level is 
       # each row name. 
       # However, when there is only one row, the list that is created 
@@ -527,7 +527,7 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
         new_rt <- rowtype(a)
         if (!is.null(new_rt)) {
           new_rt <- rowtype(a) %>% 
-            split_pref_suff(notation = notation) %>% 
+            RCLabels::split_pref_suff(notation = notation) %>% 
             magrittr::extract2("pref")
         }
       } else {
@@ -545,12 +545,12 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
         new_rt <- rowtype(a)
         if (!is.null(new_rt)) {
           new_rt <- rowtype(a) %>% 
-            split_pref_suff(notation = notation) %>% 
+            RCLabels::split_pref_suff(notation = notation) %>% 
             magrittr::extract2("suff")
           if (new_rt == "") {
             # There was no suffix, so return the prefix.
             new_rt <- rowtype(a) %>% 
-              split_pref_suff(notation = notation) %>% 
+              RCLabels::split_pref_suff(notation = notation) %>% 
               magrittr::extract2("pref")
           }
         }

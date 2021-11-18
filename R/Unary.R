@@ -448,7 +448,7 @@ vectorize_byname <- function(a, notation) {
     new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>% 
       lapply(FUN = function(ps) {
         ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
-          paste_pref_suff(notation = notation)
+          RCLabels::paste_pref_suff(notation = notation)
       })
     
     # Put names on the rows of the vector
@@ -458,7 +458,7 @@ vectorize_byname <- function(a, notation) {
     
     # Change the rowtype and coltype if both are not NULL
     if (!is.null(rt <- rowtype(a_mat)) & !is.null(ct <- coltype(a_mat))) {
-      new_rowtype <- paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
+      new_rowtype <- RCLabels::paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
       vec <- vec %>% 
         setrowtype(new_rowtype) %>% 
         setcoltype(NULL)
@@ -512,7 +512,7 @@ matricize_byname <- function(a, notation) {
     # Gather row names of the vector.
     rownames_a <- dimnames(a_mat)[[1]]
     # Split row names by notation
-    matrix_row_col_names <- split_pref_suff(rownames_a, notation = notation)
+    matrix_row_col_names <- RCLabels::split_pref_suff(rownames_a, notation = notation)
     if (nrow(a_mat) > 1) {
       # We have more than 1 row of names.
       # Thus, we need to transpose the list.
@@ -567,7 +567,7 @@ matricize_byname <- function(a, notation) {
     }
     # Add row and column types after splitting the rowtype of a_mat
     rt <- rowtype(a_mat)
-    rctypes <- split_pref_suff(rt, notation = notation)
+    rctypes <- RCLabels::split_pref_suff(rt, notation = notation)
     m %>% setrowtype(rctypes[["pref"]]) %>% setcoltype(rctypes[["suff"]])
   } 
   unaryapply_byname(matricize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
