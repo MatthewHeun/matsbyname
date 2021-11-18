@@ -43,6 +43,6 @@ m <- matrix(c(1, 2,
               5, 6), nrow = 3, byrow = TRUE, 
             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
 m
-rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation())
-rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation())
+rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
+rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
 }

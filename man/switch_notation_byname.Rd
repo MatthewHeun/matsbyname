@@ -2,7 +2,7 @@
 % Please edit documentation in R/notation.R
 \name{switch_notation_byname}
 \alias{switch_notation_byname}
-\title{Row and column notation}
+\title{Change row and column name notation}
 \usage{
 switch_notation_byname(a, margin = c(1, 2), from, to, flip = FALSE)
 }
@@ -21,47 +21,9 @@ switch_notation_byname(a, margin = c(1, 2), from, to, flip = FALSE)
 Matrices with row and column names with switched notation, per arguments.
 }
 \description{
-It is often convenient to represent row and column names
-with notation that includes a prefix and a suffix,
-with corresponding separators or start-end string sequences.
-There are several functions that call \code{notation_vec()} to generate specialized versions
-or otherwise manipulate row and column names on their own or as row or column names.
-\itemize{
-\item \code{notation_vec()} Builds a vector of notation symbols in a standard format
-that is used by \code{matsbyname} in several places.
-By default, it builds a list of notation symbols that provides an arrow
-separator (" -> ") between prefix and suffix.
-\item \code{arrow_notation()} Builds a list of notation symbols that provides an arrow separator (" -> ")
-between prefix and suffix.
-\item \code{paren_notation()} Builds a list of notation symbols that provides parentheses around the suffix ("prefix (suffix)").
-\item \code{bracket_notation()} Builds a list of notation symbols that provides square brackets around the suffix ("prefix [suffix]").
-\item \code{preposition_notation()} Builds a list of notation symbols that provides (by default) square brackets around the suffix with a preposition ("prefix [preposition suffix]").
-\item \code{from_notation()} Builds a list of notation symbols that provides (by default) square brackets around a "from" suffix ("prefix [from suffix]").
-\item \code{of_notation()} Builds a list of notation symbols that provides (by default) square brackets around an "of" suffix ("prefix [of suffix]").
-\item \code{split_pref_suff()} Splits prefixes from suffixes, returning each in a list with names \code{pref} and \code{suff}.
-If no prefix or suffix delimiters are found, \code{x} is returned in the \code{pref} item, unmodified,
-and the \code{suff} item is returned as \code{""} (an empty string).
-If there is no prefix, and empty string is returned for the \code{pref} item.
-If there is no suffix, and empty string is returned for the \code{suff} item.
-\item \code{paste_pref_suff()} \code{paste0}'s prefixes and suffixes, the inverse of \code{split_pref_suff()}.
-\item \code{flip_pref_suff()} Switches the location of prefix and suffix, such that the prefix becomes the suffix, and
-the suffix becomes the prefix.
-E.g., "a -> b" becomes "b -> a" or "a [b]" becomes "b [a]".
-\item \code{keep_pref_suff()} Selects only prefix or suffix, discarding notational elements
-and the rejected part.
-\item \code{switch_notation()} Switches from one type of notation to another based on the \code{from} and \code{to} arguments.
-Optionally, prefix and suffix can be \code{flip}ped.
-\item \code{switch_notation_byname()} Switches matrix row and/or column names from one type of notation to another
+This function wwitches matrix row and/or column names from one type of notation to another
 based on the \code{from} and \code{to} arguments.
 Optionally, prefix and suffix can be \code{flip}ped.
-}
-
-If \code{sep} only is specified (default is " -> "),
-\code{pref_start}, \code{pref_end}, \code{suff_start}, and \code{suff_end} are
-set appropriately.
-
-None of the strings in a notation vector are considered part of the prefix or suffix.
-E.g., "a -> b" in arrow notation means that "a" is the prefix and "b" is the suffix.
 }
 \examples{
 m <- matrix(c(1, 2, 
@@ -69,11 +31,11 @@ m <- matrix(c(1, 2,
             dimnames = list(c("b [a]", "d [c]"), c("f [e]", "h [g]"))) \%>\% 
   setrowtype("Products [Industries]") \%>\% setcoltype("Industries [Products]")
 m
-switch_notation_byname(m, from = RCLabels::bracket_notation(), to = RCLabels::arrow_notation(), 
+switch_notation_byname(m, from = RCLabels::bracket_notation, to = RCLabels::arrow_notation, 
                        flip = TRUE)
 # Also works for lists.
 # Note that margin must be specified as a list here.
 switch_notation_byname(list(m, m), margin = list(c(1, 2)), 
-                       from = RCLabels::bracket_notation(), 
-                       to = RCLabels::arrow_notation(), flip = TRUE)
+                       from = RCLabels::bracket_notation, 
+                       to = RCLabels::arrow_notation, flip = TRUE)
 }

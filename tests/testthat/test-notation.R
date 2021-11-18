@@ -10,7 +10,7 @@ test_that("switch_notation_byname() works as expected", {
   e <- m
   rownames(e) <- c("a -> b", "c -> d")
   e <- e %>% setrowtype("Industries -> Products")
-  expect_equal(switch_notation_byname(m, margin = 1, from = RCLabels::bracket_notation(), to = RCLabels::arrow_notation()), e)
+  expect_equal(switch_notation_byname(m, margin = 1, from = RCLabels::bracket_notation, to = RCLabels::arrow_notation), e)
   
   # Switch column names
   m2 <- matrix(c(1, 2, 
@@ -19,7 +19,7 @@ test_that("switch_notation_byname() works as expected", {
   e2 <- m2
   colnames(e2) <- c("d -> c", "f -> e")
   e2 <- e2 %>% setcoltype("Industries -> Products")
-  expect_equal(switch_notation_byname(m2, margin = 2, from = RCLabels::bracket_notation(), to = RCLabels::arrow_notation()), e2)
+  expect_equal(switch_notation_byname(m2, margin = 2, from = RCLabels::bracket_notation, to = RCLabels::arrow_notation), e2)
 
   # Also flip the prefix and suffix. Verify that changes are made in the coltype, too.
   m3 <- matrix(c(1, 2, 
@@ -28,7 +28,7 @@ test_that("switch_notation_byname() works as expected", {
   e3 <- m3
   colnames(e3) <- c("c -> d", "e -> f")
   e3 <- e3 %>% setcoltype("Products -> Industries")
-  expect_equal(switch_notation_byname(m3, from = RCLabels::bracket_notation(), to = RCLabels::arrow_notation(), flip = TRUE), e3)
+  expect_equal(switch_notation_byname(m3, from = RCLabels::bracket_notation, to = RCLabels::arrow_notation, flip = TRUE), e3)
   
   # Switch both row and column names
   m4 <- matrix(c(1, 2, 
@@ -39,15 +39,15 @@ test_that("switch_notation_byname() works as expected", {
   colnames(e4) <- c("e -> f", "g -> h")
   e4 <- e4 %>% setrowtype("Industries -> Products") %>% setcoltype("Products -> Industries")
   expect_equal(switch_notation_byname(m4, 
-                                      from = RCLabels::bracket_notation(), 
-                                      to = RCLabels::arrow_notation(), 
+                                      from = RCLabels::bracket_notation, 
+                                      to = RCLabels::arrow_notation, 
                                       flip = TRUE), 
                e4)
   
   # Try with a list
   expect_equal(switch_notation_byname(list(m4, m4), margin = list(c(1, 2)), 
-                                              from = list(RCLabels::bracket_notation()), 
-                                              to = list(RCLabels::arrow_notation()), 
+                                              from = list(RCLabels::bracket_notation), 
+                                              to = list(RCLabels::arrow_notation), 
                                               flip = TRUE), 
                list(e4, e4))
   
@@ -57,7 +57,7 @@ test_that("switch_notation_byname() works as expected", {
   
   expected <- m5
   rownames(expected) <- c("b [a]", "d [c]")
-  actual <- switch_notation_byname(m5, from = RCLabels::arrow_notation(), to = RCLabels::bracket_notation(), flip = TRUE)
+  actual <- switch_notation_byname(m5, from = RCLabels::arrow_notation, to = RCLabels::bracket_notation, flip = TRUE)
   expect_equal(rownames(actual), rownames(expected))
   expect_null(rowtype(actual))
   expect_null(coltype(actual))
@@ -72,7 +72,7 @@ test_that("switch_notation_byname() works well when flip is a list", {
   e <- m
   colnames(e) <- c("c -> d", "e -> f")
   e <- e %>% setcoltype("Products -> Industries")
-  expect_equal(switch_notation_byname(m, from = RCLabels::bracket_notation(), to = RCLabels::arrow_notation(), flip = list(TRUE)), e)
+  expect_equal(switch_notation_byname(m, from = RCLabels::bracket_notation, to = RCLabels::arrow_notation, flip = list(TRUE)), e)
 })
 
 

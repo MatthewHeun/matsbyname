@@ -420,11 +420,11 @@ identize_byname <- function(a, margin = c(1,2)) {
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' m
-#' vectorize_byname(m, notation = RCLabels::arrow_notation())
+#' vectorize_byname(m, notation = RCLabels::arrow_notation)
 #' # If a single number is provided, the number will be returned as a 1x1 column vector 
 #' # with some additional attributes.
-#' vectorize_byname(42, notation = RCLabels::arrow_notation())
-#' attributes(vectorize_byname(42, notation = RCLabels::arrow_notation()))
+#' vectorize_byname(42, notation = RCLabels::arrow_notation)
+#' attributes(vectorize_byname(42, notation = RCLabels::arrow_notation))
 vectorize_byname <- function(a, notation) {
   if (is.null(a)) {
     return(NULL)
@@ -492,7 +492,7 @@ vectorize_byname <- function(a, notation) {
 #'                                                   "p2 -> i2"))) %>% 
 #'   setrowtype("Products -> Industries")
 #' # Default separator is " -> ".
-#' matricize_byname(v, notation = RCLabels::arrow_notation())
+#' matricize_byname(v, notation = RCLabels::arrow_notation)
 matricize_byname <- function(a, notation) {
   matricize_func <- function(a_mat, notation) {
     # At this point, we should have a single matrix a_mat.
@@ -1428,10 +1428,10 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 #' # Doing renaming like this (without also aggregating) is potentially dangerous, because  
 #' # some rows and some columns could end up with same names.
-#' aggregate_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation())
+#' aggregate_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
 #' # Aggregation by suffix reduces the number of rows and columns, 
 #' # because there are same suffixes in both rows and columns
-#' aggregate_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation())
+#' aggregate_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
 aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
                                           keep, margin = c(1, 2), notation,
                                           pattern_type = "exact") {
