@@ -1364,7 +1364,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
     if (1 %in% margin) {
       for (i in 1:length(aggregation_map)) {
         # Isolate rows to be aggregated
-        select_pattern <- RCLabels::make_or_pattern(row_col_names = aggregation_map[[i]], pattern_type = pattern_type)
+        select_pattern <- RCLabels::make_or_pattern(strings = aggregation_map[[i]], pattern_type = pattern_type)
         rows_to_aggregate <- select_rows_byname(out, retain_pattern = select_pattern)
         if (!is.null(rows_to_aggregate)) {
           # Sum the isolated rows (if any)
