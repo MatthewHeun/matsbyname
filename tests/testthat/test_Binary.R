@@ -985,14 +985,14 @@ test_that("samestructure_byname works as expected", {
 })
 
 test_that("make_pattern works as expected", {
-  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "exact"), "^a$|^b$")
-  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "leading"), "^a|^b")
-  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "trailing"), "a$|b$")
-  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "anywhere"), "a|b")
-  expect_equal(make_pattern(row_col_names = c("^a$", "^b", "c$"), pattern_type = "literal"), c("^a$", "^b", "c$"))
-  expect_equal(make_pattern(row_col_names = "Non-specified (industry)", pattern_type = "exact"), "^Non-specified \\(industry\\)$")
+  expect_equal(RCLabels::make_or_pattern(row_col_names = c("a", "b"), pattern_type = "exact"), "^a$|^b$")
+  expect_equal(RCLabels::make_or_pattern(row_col_names = c("a", "b"), pattern_type = "leading"), "^a|^b")
+  expect_equal(RCLabels::make_or_pattern(row_col_names = c("a", "b"), pattern_type = "trailing"), "a$|b$")
+  expect_equal(RCLabels::make_or_pattern(row_col_names = c("a", "b"), pattern_type = "anywhere"), "a|b")
+  expect_equal(RCLabels::make_or_pattern(row_col_names = c("^a$", "^b", "c$"), pattern_type = "literal"), c("^a$", "^b", "c$"))
+  expect_equal(RCLabels::make_or_pattern(row_col_names = "Non-specified (industry)", pattern_type = "exact"), "^Non-specified \\(industry\\)$")
   # Check with a list and parentheses
-  expect_equal(make_pattern(row_col_names = c("a(1)", "a(2)"), pattern_type = "exact"), 
+  expect_equal(RCLabels::make_or_pattern(row_col_names = c("a(1)", "a(2)"), pattern_type = "exact"), 
                "^a\\(1\\)$|^a\\(2\\)$")
 })
   

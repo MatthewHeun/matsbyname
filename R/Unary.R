@@ -1279,7 +1279,7 @@ any_byname <- function(a){
 #' @param a A matrix or list of matrices whose rows or columns are to be aggregated.
 #' @param aggregation_map A named list of rows or columns to be aggregated (or `NULL`). See `details`.
 #' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both.
-#' @param pattern_type See `make_pattern()`.
+#' @param pattern_type See `RCLabels::make_or_pattern()`.
 #'
 #' @return A version of `a` with aggregated rows and/or columns
 #' 
@@ -1364,7 +1364,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
     if (1 %in% margin) {
       for (i in 1:length(aggregation_map)) {
         # Isolate rows to be aggregated
-        select_pattern <- make_pattern(row_col_names = aggregation_map[[i]], pattern_type = pattern_type)
+        select_pattern <- RCLabels::make_or_pattern(row_col_names = aggregation_map[[i]], pattern_type = pattern_type)
         rows_to_aggregate <- select_rows_byname(out, retain_pattern = select_pattern)
         if (!is.null(rows_to_aggregate)) {
           # Sum the isolated rows (if any)

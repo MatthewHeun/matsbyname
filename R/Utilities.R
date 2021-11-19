@@ -1,9 +1,6 @@
-# This file contains several utility functions for the byname package.
-
-
 #' Organize binary arguments
 #'
-#' Organizes arguments of binary (2 arguments) \code{_byname} functions.
+#' Organizes arguments of binary (2 arguments) `_byname` functions.
 #' Actions performed are:
 #' \itemize{
 #'  \item{if only one argument is a list, make the other argument also a list of equal length.}
@@ -203,55 +200,6 @@ prep_vector_arg <- function(a, vector_arg) {
 }
 
 
-#' Create regex patterns for row and column selection by name
-#'
-#' This function is intended for use with the `select_rows_byname`
-#' and `select_cols_byname` functions.
-#' `make_pattern` correctly escapes special characters in `row_col_names`,
-#' such as `(` and `)`, as needed.
-#' Thus, it is highly recommended that `make_pattern` be used when
-#' constructing patterns for row and column selections with
-#' `select_rows_byname` and `select_cols_byname`.
-#'
-#' \code{pattern_type} controls the type of pattern created:
-#' \itemize{
-#'   \item{`exact` produces a pattern that selects row or column names by exact match.}
-#'   \item{`leading` produces a pattern that selects row or column names if the item in `row_col_names` matches
-#'         the beginnings of row or column names.}
-#'   \item{`trailing` produces a pattern that selects row or column names if the item in `row_col_names` matches
-#'         the ends of row or column names.}
-#'   \item{`anywhere` produces a pattern that selects row or column names if the item in `row_col_names` matches
-#'         any substring of row or column names.}
-#'   \item{`literal` returns `row_col_names` unmodified, and it is up to the caller to formulate a correct regex.}
-#' }
-#'
-#' @param row_col_names A vector of row and column names.
-#' @param pattern_type One of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".
-#'
-#' @return An extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
-#' 
-#' @export
-#'
-#' @examples
-#' make_pattern(row_col_names = c("a", "b"), pattern_type = "exact")
-make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere", "literal")){
-  pattern_type <- match.arg(pattern_type)
-  if (pattern_type == "literal") {
-    return(row_col_names)
-  }
-  out <- Hmisc::escapeRegex(row_col_names)
-  # Add leading caret if needed
-  if (pattern_type %in% c("exact", "leading")) {
-    out <- paste0("^", out)
-  }
-  # Add trailing dollar sign if needed
-  if (pattern_type %in% c("exact", "trailing")) {
-    out <- paste0(out, "$")
-  }
-  paste0(out, collapse = "|")
-}
-
-
 #' Named list of rows or columns of matrices
 #' 
 #' This function takes matrix \code{m} and converts it to a list of 
@@ -302,6 +250,7 @@ list_of_rows_or_cols <- function(a, margin){
                     rowcoltypes = "none")
 }
 
+
 #' Gets row names
 #'
 #' Gets row names in a way that is amenable to use in chaining operations in a functional programming way
@@ -326,6 +275,7 @@ getrownames_byname <- function(a){
   unaryapply_byname(rownames, a = a, rowcoltypes = "none")
 }
 
+
 #' Gets column names
 #'
 #' Gets column names in a way that is amenable to use in chaining operations in a functional programming way
@@ -349,6 +299,7 @@ getrownames_byname <- function(a){
 getcolnames_byname <- function(a){
   unaryapply_byname(colnames, a = a, rowcoltypes = "none")
 }
+
 
 #' Sets row names
 #'
@@ -413,6 +364,7 @@ setrownames_byname <- function(a, rownames){
   unaryapply_byname(rowname_func, a = a, .FUNdots = list(rownames = rownames), 
                     rowcoltypes = "all")
 }
+
 
 #' Sets column names
 #'
@@ -741,8 +693,8 @@ coltype <- function(a){
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
-#' select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
+#' select_rows_byname(m, retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"), pattern_type = "exact"))
+#' select_rows_byname(m, remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
@@ -852,8 +804,8 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_cols_byname(m, retain_pattern = make_pattern(c("p1", "p4"), pattern_type = "exact"))
-#' select_cols_byname(m, remove_pattern = make_pattern(c("p1", "p3"), pattern_type = "exact"))
+#' select_cols_byname(m, retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), pattern_type = "exact"))
+#' select_cols_byname(m, remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){

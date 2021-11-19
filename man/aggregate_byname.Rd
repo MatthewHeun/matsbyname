@@ -18,7 +18,7 @@ aggregate_byname(
 
 \item{margin}{\code{1}, \code{2}, or \code{c(1, 2)} for row aggregation, column aggregation, or both.}
 
-\item{pattern_type}{See \code{make_pattern()}.}
+\item{pattern_type}{See \code{RCLabels::make_or_pattern()}.}
 }
 \value{
 A version of \code{a} with aggregated rows and/or columns

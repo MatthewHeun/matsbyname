@@ -25,7 +25,7 @@ coltypes of \code{a} must match rowtypes of \code{b}.}
 a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments
 }
 \description{
-Organizes arguments of binary (2 arguments) \code{_byname} functions.
+Organizes arguments of binary (2 arguments) \verb{_byname} functions.
 Actions performed are:
 \itemize{
 \item{if only one argument is a list, make the other argument also a list of equal length.}

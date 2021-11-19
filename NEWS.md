@@ -5,7 +5,7 @@ output: html_document
 
 
 * Notation code moved to new package, `RCLabels`.
-* `make_pattern()` gains new `pattern_type`, "literal", which 
+* `RCLabels::make_or_pattern()` gains new `pattern_type`, "literal", which 
   returns the `row_col_names` argument unmodified.
 * `trim_rows_cols()` gains a `warn_if_a_incomplete` argument. 
    When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`

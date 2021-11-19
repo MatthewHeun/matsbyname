@@ -762,7 +762,7 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   # Try same test using the make_pattern utility function.
-  expect_equal(select_rows_byname(m, retain_pattern = make_pattern(row_col_names = "i1", pattern_type = "exact")), 
+  expect_equal(select_rows_byname(m, retain_pattern = RCLabels::make_or_pattern(row_col_names = "i1", pattern_type = "exact")), 
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   # Select rows 1 and 4 (i1, i4)
@@ -788,7 +788,7 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
   crazymat <- matrix(1, nrow = 2, ncol = 2, 
                      dimnames = list(c("i (1)", "i (2)"), c("p (1)", "p (2)"))) %>% 
     setrowtype("Industries") %>% setcoltype("Prodcuts")
-  expect_equal(select_rows_byname(crazymat, retain_pattern = make_pattern(row_col_names = "i (1)", pattern_type = "exact")), 
+  expect_equal(select_rows_byname(crazymat, retain_pattern = RCLabels::make_or_pattern(row_col_names = "i (1)", pattern_type = "exact")), 
                matrix(1, nrow = 1, ncol = 2, dimnames = list("i (1)", c("p (1)", "p (2)"))) %>% 
                  setrowtype(rowtype(crazymat)) %>% setcoltype(coltype(crazymat)))
 })
@@ -822,7 +822,7 @@ test_that("matrix row selection by name in lists works as expected", {
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
   DF <- DF %>% dplyr::mutate(trimmed = select_rows_byname(.$m, 
-                                                   retain_pattern = make_pattern(row_col_names = c("i1", "i2"), 
+                                                   retain_pattern = RCLabels::make_or_pattern(row_col_names = c("i1", "i2"), 
                                                                                  pattern_type = "exact")))
   DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
   DF_expected[[1,"m"]] <- m
@@ -845,7 +845,7 @@ test_that("matrix column selection by name with exact matches (^name$) works as 
                matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   # Try same test using the make_pattern utility function.
-  expect_equal(select_cols_byname(m, retain_pattern = make_pattern(row_col_names = "p1", pattern_type = "exact")), 
+  expect_equal(select_cols_byname(m, retain_pattern = RCLabels::make_or_pattern(row_col_names = "p1", pattern_type = "exact")), 
                matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   # Select columns 1 and 4 (p1, p4)
@@ -896,7 +896,7 @@ test_that("matrix column selection by name in lists works as expected", {
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
   DF <- DF %>% dplyr::mutate(trimmed = select_cols_byname(.$m, 
-                                                   retain_pattern = make_pattern(row_col_names = c("p1", "p2"), 
+                                                   retain_pattern = RCLabels::make_or_pattern(row_col_names = c("p1", "p2"), 
                                                                                  pattern_type = "exact")))
   DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
   DF_expected[[1,"m"]] <- m
