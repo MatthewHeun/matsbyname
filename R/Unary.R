@@ -513,11 +513,6 @@ matricize_byname <- function(a, notation) {
     rownames_a <- dimnames(a_mat)[[1]]
     # Split row names by notation
     matrix_row_col_names <- RCLabels::split_pref_suff(rownames_a, notation = notation)
-    if (nrow(a_mat) > 1) {
-      # We have more than 1 row of names.
-      # Thus, we need to transpose the list.
-      matrix_row_col_names <- purrr::transpose(matrix_row_col_names)
-    }
     # Get the matrix row and column names separately.
     .rownames <- matrix_row_col_names %>% 
       magrittr::extract2(1) %>% 

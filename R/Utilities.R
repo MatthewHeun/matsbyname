@@ -462,18 +462,9 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
     if (1 %in% margin) {
       ps <- rownames(a) %>% 
         RCLabels::split_pref_suff(notation = notation)
-      # The rest of this code expects a list whose top level is 
-      # each row name. 
-      # However, when there is only one row, the list that is created 
-      # has its top level as "pref" and "suff", the prefix and suffix.
-      # Need to wrap it in a list.
-      if (nrow(a) == 1) {
-        ps <- list(ps)
-      }
       if (keep == "prefix") {
-        # If prefixes are desired, simply transpose the list and grab the "pref" item.
+        # If prefixes are desired, simply grab the "pref" item.
         new_rnames <- ps %>% 
-          purrr::transpose() %>% 
           magrittr::extract2("pref")
         # Also deal with rowtype, but only if there was a rowtype for a.
         new_rt <- rowtype(a)
@@ -486,13 +477,13 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
         # We want the suffix.
         # Be careful for rows in which a suffix was not found.
         # In that case, return the prefix.
-        new_rnames <- lapply(ps, FUN = function(x) {
-          # if (is.null(x[["suff"]])) {
-          if (x[["suff"]] == "") {
-            return(x[["pref"]])
-          }
-          return(x[["suff"]])
-        })
+        new_rnames <- mapply(ps[["pref"]], ps[["suff"]], 
+                             USE.NAMES = FALSE, FUN = function(p, s) {
+            if (s == "") {
+              return(p)
+            }
+            return(s)
+          })
         # Also deal with rowtype, but only if there was a rowtype for a.
         new_rt <- rowtype(a)
         if (!is.null(new_rt)) {

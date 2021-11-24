@@ -1,9 +1,5 @@
 # This file contains tests for functions in Utilities.R.
 
-###########################################################
-context("Organizing arguments")
-###########################################################
-
 test_that("errors are generated when organize_args is called with baloney", {
   expect_error(matsbyname:::organize_args(b = 42), 
                "Missing argument a with no fill in organize_args.")
@@ -30,10 +26,6 @@ test_that("oddball match_type works as expected", {
                list(a = matrix(1), b = matrix(2)))
 })
 
-
-###########################################################
-context("Selecting rows and columns")
-###########################################################
 
 test_that("an error is generated when no retain or remove patterns are default", {
   # Check with non-NULL values for a.
@@ -76,6 +68,7 @@ test_that("selecting rows and columns works even when there is a NULL situation"
   expect_null(m %>% select_cols_byname(retain_pattern = "c3"))
 })
 
+
 test_that("setting row and column names works even when there is a NULL situation", {
   m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -91,10 +84,6 @@ test_that("setting row and column names works even when there is a NULL situatio
   expect_null(setcolnames_byname(NULL, c("a", "b")))
 })
   
-
-###########################################################
-context("Cleaning")
-###########################################################
 
 test_that("bad margins in clean_byname work as expected", {
   m <- matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
@@ -155,10 +144,6 @@ test_that("cleaning works with tolerance", {
 })
 
 
-###########################################################
-context("Is zero")
-###########################################################
-
 test_that("iszero_byname works as expected", {
   m <- matrix(0, nrow = 3, ncol = 2)
   expect_true(iszero_byname(m))
@@ -166,11 +151,6 @@ test_that("iszero_byname works as expected", {
   expect_false(iszero_byname(n))
 })
 
-
-
-###########################################################
-context("Row and column naming")
-###########################################################
 
 test_that("getting row names works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
@@ -530,10 +510,6 @@ test_that("renaming with full prefix identifiers works as expected.", {
   expect_equal(res$actual, res$expected)
 })
 
-
-###########################################################
-context("Row and column types")
-###########################################################
 
 test_that("setrowtype and rowtype works as expected", {
   productnames <- c("p1", "p2")

@@ -514,10 +514,6 @@ test_that("vectorize works with 4 matrices", {
 })
 
 
-###########################################################
-context("Matricize")
-###########################################################
-
 test_that("matricize_byname works as expected", {
   v1 <- array(dim = c(2, 2, 2))
   expect_error(matricize_byname(v1, notation = RCLabels::arrow_notation), "== 2 in matricize_byname")
@@ -578,10 +574,6 @@ test_that("matricize_byname works as expected", {
   expect_equal(actual6, expected6)
 })
 
-
-###########################################################
-context("Vectorize and Matricize")
-###########################################################
 
 test_that("vectorize and matricize are inverses of each other", {
   m1 <- matrix(c(1, 2, 
@@ -1409,10 +1401,6 @@ test_that("rename_to_pref_suff_byname() works as expected", {
 })
 
 
-###########################################################
-context("Aggregation")
-###########################################################
-
 test_that("aggregate works as expected", {
   m <- matrix(1:9, nrow = 3, byrow = TRUE,
               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
@@ -1636,7 +1624,7 @@ test_that("aggregate_to_pref_suff_byname() works as expected", {
 
 test_that("aggregate_to_pref_suff_byname() works with a column vector", {
   # Ran into a bug where aggregating a column vector fails.
-  # A column vector should aggregate to itself..
+  # A column vector should aggregate to itself.
   # But instead, I get a "subscript out of bounds" error.
   # This test triggers that bug.
   #     -- MKH, 23 Nov 2020.
