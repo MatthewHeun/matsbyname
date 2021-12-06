@@ -641,6 +641,7 @@ coltype <- function(a){
                     rowcoltypes = "none")
 }
 
+
 #' Select (or de-select) rows of a matrix (or list of matrices) by name
 #'
 #' Arguments indicate which rows are to be retained and which are to be removed.
@@ -665,7 +666,7 @@ coltype <- function(a){
 #' }
 #'
 #' Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-#' \code{\link{make_pattern}} escapes regex strings using `Hmisc::escapeRegex()`.
+#' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escapeRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
 #' 
@@ -684,8 +685,12 @@ coltype <- function(a){
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_rows_byname(m, retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"), pattern_type = "exact"))
-#' select_rows_byname(m, remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), pattern_type = "exact"))
+#' select_rows_byname(m, 
+#'                    retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"),
+#'                    pattern_type = "exact"))
+#' select_rows_byname(m, 
+#'                    remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), 
+#'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
@@ -773,7 +778,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #'
 #' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 #' 
-#' \code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
+#' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escaprRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
 #' 
@@ -795,8 +800,12 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_cols_byname(m, retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), pattern_type = "exact"))
-#' select_cols_byname(m, remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), pattern_type = "exact"))
+#' select_cols_byname(m, 
+#'                    retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), 
+#'                    pattern_type = "exact"))
+#' select_cols_byname(m, 
+#'                    remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), 
+#'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
@@ -812,6 +821,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   out %>% 
     transpose_byname()
 }
+
 
 #' Clean (delete) rows or columns of matrices that contain exclusively `clean_value`
 #' 

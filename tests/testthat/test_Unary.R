@@ -753,7 +753,7 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
   expect_equal(select_rows_byname(m, retain_pattern = "^i1$"), 
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Try same test using the make_pattern utility function.
+  # Try same test using the make_or_pattern utility function.
   expect_equal(select_rows_byname(m, retain_pattern = RCLabels::make_or_pattern(strings = "i1", pattern_type = "exact")), 
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
@@ -836,7 +836,7 @@ test_that("matrix column selection by name with exact matches (^name$) works as 
   expect_equal(select_cols_byname(m, retain_pattern = "^p1$"), 
                matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Try same test using the make_pattern utility function.
+  # Try same test using the make_or_pattern utility function.
   expect_equal(select_cols_byname(m, retain_pattern = RCLabels::make_or_pattern(strings = "p1", pattern_type = "exact")), 
                matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
