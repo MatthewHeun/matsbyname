@@ -420,11 +420,11 @@ identize_byname <- function(a, margin = c(1,2)) {
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' m
-#' vectorize_byname(m, notation = arrow_notation())
+#' vectorize_byname(m, notation = RCLabels::arrow_notation)
 #' # If a single number is provided, the number will be returned as a 1x1 column vector 
 #' # with some additional attributes.
-#' vectorize_byname(42, notation = arrow_notation())
-#' attributes(vectorize_byname(42, notation = arrow_notation()))
+#' vectorize_byname(42, notation = RCLabels::arrow_notation)
+#' attributes(vectorize_byname(42, notation = RCLabels::arrow_notation))
 vectorize_byname <- function(a, notation) {
   if (is.null(a)) {
     return(NULL)
@@ -448,7 +448,7 @@ vectorize_byname <- function(a, notation) {
     new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>% 
       lapply(FUN = function(ps) {
         ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
-          paste_pref_suff(notation = notation)
+          RCLabels::paste_pref_suff(notation = notation)
       })
     
     # Put names on the rows of the vector
@@ -458,7 +458,7 @@ vectorize_byname <- function(a, notation) {
     
     # Change the rowtype and coltype if both are not NULL
     if (!is.null(rt <- rowtype(a_mat)) & !is.null(ct <- coltype(a_mat))) {
-      new_rowtype <- paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
+      new_rowtype <- RCLabels::paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
       vec <- vec %>% 
         setrowtype(new_rowtype) %>% 
         setcoltype(NULL)
@@ -492,7 +492,7 @@ vectorize_byname <- function(a, notation) {
 #'                                                   "p2 -> i2"))) %>% 
 #'   setrowtype("Products -> Industries")
 #' # Default separator is " -> ".
-#' matricize_byname(v, notation = arrow_notation())
+#' matricize_byname(v, notation = RCLabels::arrow_notation)
 matricize_byname <- function(a, notation) {
   matricize_func <- function(a_mat, notation) {
     # At this point, we should have a single matrix a_mat.
@@ -512,12 +512,7 @@ matricize_byname <- function(a, notation) {
     # Gather row names of the vector.
     rownames_a <- dimnames(a_mat)[[1]]
     # Split row names by notation
-    matrix_row_col_names <- split_pref_suff(rownames_a, notation = notation)
-    if (nrow(a_mat) > 1) {
-      # We have more than 1 row of names.
-      # Thus, we need to transpose the list.
-      matrix_row_col_names <- purrr::transpose(matrix_row_col_names)
-    }
+    matrix_row_col_names <- RCLabels::split_pref_suff(rownames_a, notation = notation)
     # Get the matrix row and column names separately.
     .rownames <- matrix_row_col_names %>% 
       magrittr::extract2(1) %>% 
@@ -567,7 +562,7 @@ matricize_byname <- function(a, notation) {
     }
     # Add row and column types after splitting the rowtype of a_mat
     rt <- rowtype(a_mat)
-    rctypes <- split_pref_suff(rt, notation = notation)
+    rctypes <- RCLabels::split_pref_suff(rt, notation = notation)
     m %>% setrowtype(rctypes[["pref"]]) %>% setcoltype(rctypes[["suff"]])
   } 
   unaryapply_byname(matricize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
@@ -1279,7 +1274,7 @@ any_byname <- function(a){
 #' @param a A matrix or list of matrices whose rows or columns are to be aggregated.
 #' @param aggregation_map A named list of rows or columns to be aggregated (or `NULL`). See `details`.
 #' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both.
-#' @param pattern_type See `make_pattern()`.
+#' @param pattern_type See `RCLabels::make_or_pattern()`.
 #'
 #' @return A version of `a` with aggregated rows and/or columns
 #' 
@@ -1364,7 +1359,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
     if (1 %in% margin) {
       for (i in 1:length(aggregation_map)) {
         # Isolate rows to be aggregated
-        select_pattern <- make_pattern(row_col_names = aggregation_map[[i]], pattern_type = pattern_type)
+        select_pattern <- RCLabels::make_or_pattern(strings = aggregation_map[[i]], pattern_type = pattern_type)
         rows_to_aggregate <- select_rows_byname(out, retain_pattern = select_pattern)
         if (!is.null(rows_to_aggregate)) {
           # Sum the isolated rows (if any)
@@ -1428,10 +1423,10 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 #' # Doing renaming like this (without also aggregating) is potentially dangerous, because  
 #' # some rows and some columns could end up with same names.
-#' aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+#' aggregate_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
 #' # Aggregation by suffix reduces the number of rows and columns, 
 #' # because there are same suffixes in both rows and columns
-#' aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+#' aggregate_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
 aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
                                           keep, margin = c(1, 2), notation,
                                           pattern_type = "exact") {

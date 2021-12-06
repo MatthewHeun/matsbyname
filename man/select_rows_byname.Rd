@@ -42,7 +42,7 @@ Some typical patterns are:
 }
 
 Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-\code{\link{make_pattern}} escapes regex strings using \code{Hmisc::escapeRegex()}.
+\code{RCLabels::make_or_pattern()} escapes regex strings using \code{Hmisc::escapeRegex()}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 
@@ -51,8 +51,12 @@ Note that if all rows are removed from \code{a}, \code{NULL} is returned.
 \examples{
 m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
-select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
-select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
+select_rows_byname(m, 
+                   retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"),
+                   pattern_type = "exact"))
+select_rows_byname(m, 
+                   remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), 
+                   pattern_type = "exact"))
 # Also works for lists and data frames
 select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 }

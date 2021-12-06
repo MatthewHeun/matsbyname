@@ -1,9 +1,6 @@
-# This file contains several utility functions for the byname package.
-
-
 #' Organize binary arguments
 #'
-#' Organizes arguments of binary (2 arguments) \code{_byname} functions.
+#' Organizes arguments of binary (2 arguments) `_byname` functions.
 #' Actions performed are:
 #' \itemize{
 #'  \item{if only one argument is a list, make the other argument also a list of equal length.}
@@ -203,55 +200,6 @@ prep_vector_arg <- function(a, vector_arg) {
 }
 
 
-#' Create regex patterns for row and column selection by name
-#'
-#' This function is intended for use with the `select_rows_byname`
-#' and `select_cols_byname` functions.
-#' `make_pattern` correctly escapes special characters in `row_col_names`,
-#' such as `(` and `)`, as needed.
-#' Thus, it is highly recommended that `make_pattern` be used when
-#' constructing patterns for row and column selections with
-#' `select_rows_byname` and `select_cols_byname`.
-#'
-#' \code{pattern_type} controls the type of pattern created:
-#' \itemize{
-#'   \item{`exact` produces a pattern that selects row or column names by exact match.}
-#'   \item{`leading` produces a pattern that selects row or column names if the item in `row_col_names` matches
-#'         the beginnings of row or column names.}
-#'   \item{`trailing` produces a pattern that selects row or column names if the item in `row_col_names` matches
-#'         the ends of row or column names.}
-#'   \item{`anywhere` produces a pattern that selects row or column names if the item in `row_col_names` matches
-#'         any substring of row or column names.}
-#'   \item{`literal` returns `row_col_names` unmodified, and it is up to the caller to formulate a correct regex.}
-#' }
-#'
-#' @param row_col_names A vector of row and column names.
-#' @param pattern_type One of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".
-#'
-#' @return An extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
-#' 
-#' @export
-#'
-#' @examples
-#' make_pattern(row_col_names = c("a", "b"), pattern_type = "exact")
-make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere", "literal")){
-  pattern_type <- match.arg(pattern_type)
-  if (pattern_type == "literal") {
-    return(row_col_names)
-  }
-  out <- Hmisc::escapeRegex(row_col_names)
-  # Add leading caret if needed
-  if (pattern_type %in% c("exact", "leading")) {
-    out <- paste0("^", out)
-  }
-  # Add trailing dollar sign if needed
-  if (pattern_type %in% c("exact", "trailing")) {
-    out <- paste0(out, "$")
-  }
-  paste0(out, collapse = "|")
-}
-
-
 #' Named list of rows or columns of matrices
 #' 
 #' This function takes matrix \code{m} and converts it to a list of 
@@ -302,6 +250,7 @@ list_of_rows_or_cols <- function(a, margin){
                     rowcoltypes = "none")
 }
 
+
 #' Gets row names
 #'
 #' Gets row names in a way that is amenable to use in chaining operations in a functional programming way
@@ -326,13 +275,14 @@ getrownames_byname <- function(a){
   unaryapply_byname(rownames, a = a, rowcoltypes = "none")
 }
 
+
 #' Gets column names
 #'
 #' Gets column names in a way that is amenable to use in chaining operations in a functional programming way
 #'
 #' @param a The matrix or data frame from which column names are to be retrieved
 #'
-#' @return column names of \code{m}
+#' @return Column names of `m`.
 #' 
 #' @export
 #'
@@ -349,6 +299,7 @@ getrownames_byname <- function(a){
 getcolnames_byname <- function(a){
   unaryapply_byname(colnames, a = a, rowcoltypes = "none")
 }
+
 
 #' Sets row names
 #'
@@ -413,6 +364,7 @@ setrownames_byname <- function(a, rownames){
   unaryapply_byname(rowname_func, a = a, .FUNdots = list(rownames = rownames), 
                     rowcoltypes = "all")
 }
+
 
 #' Sets column names
 #'
@@ -487,8 +439,8 @@ setcolnames_byname <- function(a, colnames){
 #'               5, 6), nrow = 3, byrow = TRUE, 
 #'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
 #' m
-#' rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
-#' rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+#' rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
+#' rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
 rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
   
   margin <- prep_vector_arg(a, margin)
@@ -509,48 +461,39 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
     
     if (1 %in% margin) {
       ps <- rownames(a) %>% 
-        split_pref_suff(notation = notation)
-      # The rest of this code expects a list whose top level is 
-      # each row name. 
-      # However, when there is only one row, the list that is created 
-      # has its top level as "pref" and "suff", the prefix and suffix.
-      # Need to wrap it in a list.
-      if (nrow(a) == 1) {
-        ps <- list(ps)
-      }
+        RCLabels::split_pref_suff(notation = notation)
       if (keep == "prefix") {
-        # If prefixes are desired, simply transpose the list and grab the "pref" item.
+        # If prefixes are desired, simply grab the "pref" item.
         new_rnames <- ps %>% 
-          purrr::transpose() %>% 
           magrittr::extract2("pref")
         # Also deal with rowtype, but only if there was a rowtype for a.
         new_rt <- rowtype(a)
         if (!is.null(new_rt)) {
           new_rt <- rowtype(a) %>% 
-            split_pref_suff(notation = notation) %>% 
+            RCLabels::split_pref_suff(notation = notation) %>% 
             magrittr::extract2("pref")
         }
       } else {
         # We want the suffix.
         # Be careful for rows in which a suffix was not found.
         # In that case, return the prefix.
-        new_rnames <- lapply(ps, FUN = function(x) {
-          # if (is.null(x[["suff"]])) {
-          if (x[["suff"]] == "") {
-            return(x[["pref"]])
-          }
-          return(x[["suff"]])
-        })
+        new_rnames <- mapply(ps[["pref"]], ps[["suff"]], 
+                             USE.NAMES = FALSE, FUN = function(p, s) {
+            if (s == "") {
+              return(p)
+            }
+            return(s)
+          })
         # Also deal with rowtype, but only if there was a rowtype for a.
         new_rt <- rowtype(a)
         if (!is.null(new_rt)) {
           new_rt <- rowtype(a) %>% 
-            split_pref_suff(notation = notation) %>% 
+            RCLabels::split_pref_suff(notation = notation) %>% 
             magrittr::extract2("suff")
           if (new_rt == "") {
             # There was no suffix, so return the prefix.
             new_rt <- rowtype(a) %>% 
-              split_pref_suff(notation = notation) %>% 
+              RCLabels::split_pref_suff(notation = notation) %>% 
               magrittr::extract2("pref")
           }
         }
@@ -651,6 +594,7 @@ setcoltype <- function(a, coltype){
                     rowcoltypes = "none")
 }
 
+
 #' Row type
 #'
 #' Extracts row type of \code{a}.
@@ -698,6 +642,7 @@ coltype <- function(a){
                     rowcoltypes = "none")
 }
 
+
 #' Select (or de-select) rows of a matrix (or list of matrices) by name
 #'
 #' Arguments indicate which rows are to be retained and which are to be removed.
@@ -722,7 +667,7 @@ coltype <- function(a){
 #' }
 #'
 #' Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-#' \code{\link{make_pattern}} escapes regex strings using `Hmisc::escapeRegex()`.
+#' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escapeRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
 #' 
@@ -741,8 +686,12 @@ coltype <- function(a){
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
-#' select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
+#' select_rows_byname(m, 
+#'                    retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"),
+#'                    pattern_type = "exact"))
+#' select_rows_byname(m, 
+#'                    remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), 
+#'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
@@ -807,6 +756,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
                     rowcoltypes = "none")
 }
 
+
 #' Select columns of a matrix (or list of matrices) by name
 #'
 #' Arguments indicate which columns are to be retained and which are to be removed.
@@ -830,7 +780,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #'
 #' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 #' 
-#' \code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
+#' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escaprRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
 #' 
@@ -852,8 +802,12 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_cols_byname(m, retain_pattern = make_pattern(c("p1", "p4"), pattern_type = "exact"))
-#' select_cols_byname(m, remove_pattern = make_pattern(c("p1", "p3"), pattern_type = "exact"))
+#' select_cols_byname(m, 
+#'                    retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), 
+#'                    pattern_type = "exact"))
+#' select_cols_byname(m, 
+#'                    remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), 
+#'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
@@ -869,6 +823,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   out %>% 
     transpose_byname()
 }
+
 
 #' Clean (delete) rows or columns of matrices that contain exclusively `clean_value`
 #' 
@@ -940,8 +895,8 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
   }
   unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value, tol = tol), 
                     rowcoltypes = "all")
-  
 }
+
 
 #' Test whether this is the zero matrix
 #' 
@@ -978,6 +933,7 @@ iszero_byname <- function(a, tol = 1e-6){
   unaryapply_byname(zero_func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")
 }
+
 
 #' Logarithmic mean of two numbers
 #' 
@@ -1121,7 +1077,6 @@ ncol_byname <- function(a) {
   }
   unaryapply_byname(ncol_func, a = a, rowcoltypes = "none")
 }
-
 
 
 #' Create a "byname" matrix from a vector

@@ -29,5 +29,5 @@ v <- matrix(c(1,
                                                   "p2 -> i2"))) \%>\% 
   setrowtype("Products -> Industries")
 # Default separator is " -> ".
-matricize_byname(v, notation = arrow_notation())
+matricize_byname(v, notation = RCLabels::arrow_notation)
 }
