@@ -282,7 +282,7 @@ getrownames_byname <- function(a){
 #'
 #' @param a The matrix or data frame from which column names are to be retrieved
 #'
-#' @return column names of \code{m}
+#' @return Column names of `m`.
 #' 
 #' @export
 #'
@@ -594,6 +594,7 @@ setcoltype <- function(a, coltype){
                     rowcoltypes = "none")
 }
 
+
 #' Row type
 #'
 #' Extracts row type of \code{a}.
@@ -755,6 +756,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
                     rowcoltypes = "none")
 }
 
+
 #' Select columns of a matrix (or list of matrices) by name
 #'
 #' Arguments indicate which columns are to be retained and which are to be removed.
@@ -893,8 +895,8 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
   }
   unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value, tol = tol), 
                     rowcoltypes = "all")
-  
 }
+
 
 #' Test whether this is the zero matrix
 #' 
@@ -931,6 +933,7 @@ iszero_byname <- function(a, tol = 1e-6){
   unaryapply_byname(zero_func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")
 }
+
 
 #' Logarithmic mean of two numbers
 #' 
@@ -1074,7 +1077,6 @@ ncol_byname <- function(a) {
   }
   unaryapply_byname(ncol_func, a = a, rowcoltypes = "none")
 }
-
 
 
 #' Create a "byname" matrix from a vector
