@@ -1128,10 +1128,42 @@ test_that("vec_from_store_byname() works as expected with single matrices", {
   a <- matrix(42, nrow = 2, ncol = 3, 
               dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
   v <- matrix(1:10, nrow = 10, ncol = 1, 
-              dimnames = list(paste0("r", 1:10) %>% rev(), "c1"))
+              dimnames = list(paste0("r", 1:10) %>% rev(), "c1")) %>%
+    setrowtype("rt") %>% setcoltype("ct")
   expect_equal(vec_from_store_byname(a = a, v = v), 
                matrix(c(10, 9), nrow = 2, ncol = 1, 
-                      dimnames = list(c("r1", "r2"), NA)))
+                      dimnames = list(c("r1", "r2"), "c1")) %>%
+                 setrowtype("rt") %>% setcoltype("ct"))
+  
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "Hydro", 
+                                "Crude oil",
+                                "Coal", 
+                                "Hard coal (if no detail)", 
+                                "Brown coal"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  expect_equal(vec_from_store_byname(a, v, a_piece = "noun"), 
+               matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  
+  
 })
 
 

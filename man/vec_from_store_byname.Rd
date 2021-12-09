@@ -2,14 +2,14 @@
 % Please edit documentation in R/Utilities.R
 \name{vec_from_store_byname}
 \alias{vec_from_store_byname}
-\title{Create a vector with labels from matrix \code{a} and values from vector \code{v_store}}
+\title{Create a vector with labels from matrix \code{a} and values from vector \code{v}}
 \usage{
 vec_from_store_byname(
   a,
   v,
   a_piece = "all",
   v_piece = "all",
-  colname = NA,
+  colname = NULL,
   column = TRUE,
   notation = RCLabels::bracket_notation,
   prepositions = RCLabels::prepositions
@@ -25,9 +25,17 @@ vec_from_store_byname(
 \item{v_piece}{The piece of labels on \code{v} that is to be matched.}
 
 \item{colname}{The name of the output vector's 1-sized dimension
-(the only column if \code{column} is \code{TRUE}, the only row otherwise).}
+(the only column if \code{column} is \code{TRUE}, the only row otherwise).
+Default is \code{NULL}, meaning that the name of the 1-sized dimension in \code{v}
+should be used.}
 
 \item{column}{Tells whether a column vector (if \code{TRUE}, the default) or a row vector (if \code{FALSE}) should be created.}
+
+\item{notation}{The notation for the row and column labels.
+Default is \code{RCLabels::bracket_notation}.}
+
+\item{prepositions}{The strings that will count for prepositions.
+Default is \code{RCLables::preposisions}.}
 }
 \value{
 A vector with names from \code{a} and values from \code{v}.
@@ -43,7 +51,7 @@ This function helps by performing the matching byname.
 The output of this function is a vector
 (a column vector if \code{column} is \code{TRUE}, the default;
 a row vector if \code{column} is \code{FALSE}).
-The label of the single dimension is taken from \code{colname}
+The label of the size-1 dimension is taken from \code{colname}
 (so named, because the default is to return a column vector).
 The labels of the long dimension are taken from matrix \code{a}
 (the row names of \code{a} if \code{column} is \code{TRUE};
@@ -53,11 +61,13 @@ when \code{a_piece} matches \code{v_piece} using the \code{RCLabels} package.
 The \code{v_piece}s of \code{v} must be unique.
 The default values for \code{a_piece} and \code{v_piece} are "all",
 meaning that the entire label should be matched.
-Other options for \code{a_piece} and \code{v_piece} are "pref" and "suff"
+Other options for \code{a_piece} and \code{v_piece} are "pref" and "suff",
 which will match the prefix or suffix of the labels.
-Or, a preposition can be given such that
-the object of the preposition will be matched.
+Alternatively, prepositions can be given such that
+objects of prepositions will be matched.
 Examples include "from" or "in".
+Row and column types from \code{v} are applied to the output.
+See the examples.
 
 In short, vector \code{v} is considered a store of values
 from which the output vector is created

@@ -1309,7 +1309,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 
 
 
-#' Create a vector with labels from matrix `a` and values from vector `v_store`
+#' Create a vector with labels from matrix `a` and values from vector `v`
 #' 
 #' When a matrix is multiplied by a vector byname, 
 #' naming can be tricky. 
@@ -1320,7 +1320,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' The output of this function is a vector
 #' (a column vector if `column` is `TRUE`, the default; 
 #' a row vector if `column` is `FALSE`).
-#' The label of the single dimension is taken from `colname`
+#' The label of the size-1 dimension is taken from `colname`
 #' (so named, because the default is to return a column vector).
 #' The labels of the long dimension are taken from matrix `a`
 #' (the row names of `a` if `column` is `TRUE`; 
@@ -1330,11 +1330,13 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' The `v_piece`s of `v` must be unique.
 #' The default values for `a_piece` and `v_piece` are "all", 
 #' meaning that the entire label should be matched.
-#' Other options for `a_piece` and `v_piece` are "pref" and "suff"
+#' Other options for `a_piece` and `v_piece` are "pref" and "suff",
 #' which will match the prefix or suffix of the labels.
-#' Or, a preposition can be given such that 
-#' the object of the preposition will be matched.
+#' Alternatively, prepositions can be given such that 
+#' objects of prepositions will be matched.
 #' Examples include "from" or "in".
+#' Row and column types from `v` are applied to the output.
+#' See the examples.
 #' 
 #' In short, vector `v` is considered a store of values 
 #' from which the output vector is created
@@ -1346,14 +1348,20 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' @param v_piece The piece of labels on `v` that is to be matched.
 #' @param colname The name of the output vector's 1-sized dimension 
 #'                (the only column if `column` is `TRUE`, the only row otherwise).
+#'                Default is `NULL`, meaning that the name of the 1-sized dimension in `v` 
+#'                should be used.
 #' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
+#' @param notation The notation for the row and column labels.
+#'                 Default is `RCLabels::bracket_notation`.
+#' @param prepositions The strings that will count for prepositions.
+#'                     Default is `RCLables::preposisions`.
 #'
 #' @return A vector with names from `a` and values from `v`.
 #' 
 #' @export
 #'
 #' @examples
-vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NA, column = TRUE, 
+vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
                                   notation = RCLabels::bracket_notation, 
                                   prepositions = RCLabels::prepositions) {
   
@@ -1396,6 +1404,10 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
                             msg = "v_pieces must be unique in vec_from_store_byname()")
     # Find the size of the outgoing column vector
     out_size <- dim(a_mat)[[1]]
+    if (is.null(colname_val)) {
+      # Pick up the column name from v_vec.
+      colname_val <- dimnames(v_vec)[[2]]
+    }
     # Build the outgoing vector with NA's everywhere
     out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
                   dimnames = list(a_rownames, colname_val)) %>%
@@ -1412,7 +1424,7 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
     return(out)
   }
   
-  binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE,
+  binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE, set_rowcoltypes = FALSE,
                      .FUNdots = list(a_piece_val = a_piece, v_piece_val = v_piece, 
                                      colname_val = colname, column_val = column, 
                                      notation_val = notation, 
