@@ -1267,13 +1267,16 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
 #' This function creates a vector using `a` as a template
 #' and `k` as its value.
 #' Row names are taken from the row names of `a`. 
-#' The column name is given by `colname`.
+#' The column name of the output is given by `colname`.
 #' Row and column types are transferred from `a` to the output, directly.
 #' 
-#' If `column == FALSE`, `colname` is interpreted as the row name for the output row identity vector.
+#' If `column` is `TRUE`, the output is a column vector with 
+#' row names taken from row names of `a` and a column named by `colname`.
+#' If `column` is `FALSE`, the output is a row vevtor with 
+#' column names taken from column names of `a` and a row named by `colname`.
 #'
 #' @param a The template matrix for the column vector.
-#' @param k The value of the entries in the vector.
+#' @param k The value of the entries in the output column vector.
 #' @param colname The name of the output vector's 1-sized dimension 
 #'                (the only column if `column == TRUE`, the only row otherwise).
 #' @param column Tells whether a column vector (`TRUE`, the default) or a row vector (`FALSE`) should be created.
@@ -1285,7 +1288,10 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
 #' @examples
 #' kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
 #'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
-#'                           colname = "c1")
+#'                           colname = "new column")
+#' kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
+#'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
+#'                           colname = "new row", column = FALSE)
 kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   
   k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
@@ -1300,5 +1306,61 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   unaryapply_byname(FUN = k_from_template_func, a = a, 
                     .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "all")
 }
+
+
+
+#' Create a vector with labels from matrix `a` and values from vector `v_store`
+#' 
+#' When a matrix is multiplied by a vector byname, 
+#' naming can be tricky. 
+#' There are times when pieces of the vector labels should be matched to 
+#' pieces of the matrix labels. 
+#' This function helps by performing the matching byname.
+#' 
+#' The output of this function is a vector
+#' (a column vector if `column` is `TRUE`, the default; 
+#' a row vector if `column` is `FALSE`).
+#' The label of the single dimension is taken from `colname`
+#' (so named, because the default is to return a column vector).
+#' The labels of the long dimension are taken from matrix `a`
+#' (the row names of `a` if `column` is `TRUE`; 
+#' the column names of `a` if `column` is `FALSE`).
+#' The values of the output vector are obtained from v
+#' when `a_piece` matches `v_piece` using the `RCLabels` package.
+#' The `v_piece`s of `v` must be unique.
+#' 
+#' In short, vector `v` is considered a store of values 
+#' from which the output vector is created.
+#'
+#' @param a A matrix from which row or column labels are taken.
+#' @param v A vector from which values are taken, when `a_piece` matches `v_piece`.
+#' @param a_piece The piece of labels on `a` that is to be matched.
+#' @param v_piece The piece of labels on `v` that is to be matched.
+#' @param colname The name of the output vector's 1-sized dimension 
+#'                (the only column if `column == TRUE`, the only row otherwise).
+#' @param column Tells whether a column vector (`TRUE`, the default) or a row vector (`FALSE`) should be created.
+#'
+#' @return A vector with names from `a` and values from `v`.
+#' 
+#' @export
+#'
+#' @examples
+vec_from_store_byname <- function(a, a_piece, v, v_piece, colname = NA, column = TRUE) {
+  
+  
+  
+  
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
