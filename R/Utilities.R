@@ -1357,6 +1357,35 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
   
   
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val) {
+    # Get size of v vectors
+    v_size <- dim(v_vec)
+    # Make sure v is a matrix.
+    assertthat::assert_that(length(v_size) == 2, 
+                            msg = "v must be a matrix with 2 dimensions in vec_from_store_byname()")
+    # Make sure one of the dimensions is size 1
+    assertthat::assert_that(v_size[[1]] == 1 | v_size[[2]] == 1,
+                            msg = "v must be a vector with one dimension of size 1 in vec_from_store_byname()")
+    # Get the names that matter to us from the vector store
+    if (v_size[[1]] == 1) {
+      # Turn it into a column vector, so we can assume a column vector 
+      # for the rest of this function.
+      return(v_vec(a_mat, transpose_byname(v_vec), a_piece_val, v_piece_val, colname_val, column_val))
+    }
+    # If we want a row vector, transpose a_mat so that we want a column vector.
+    # By doing this, we can assume we want a column vector in the rest of this function.
+    if (!column_val) {
+      out <- vec_func(transpose_byname(a_mat), v_vec, a_piece_val, v_piece_val, colname_val, column_val)
+      return(transpose_byname(out))
+    }
+    # At this point, we have a_mat and v_vec such that we want
+    # names from the rows of a_mat and the values from the rows of v_vec.
+
+    # Get row names
+    v_labels <- dimnames(v_vec)[[1]]
+    
+    
+    
+    
     # When we get here, we should have a single a matrix, a single vector, and
     # other details with which to do the work.
     # Get names from a_mat
@@ -1367,22 +1396,26 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
       # Need column names
       a_labels <- dimnames(a_mat)[[2]]
     }
-    # Get names from v_vec
-    v_size <- dim(v_vec)
-    # Make sure v is a matrix.
-    assertthat::assert_that(length(v_size) == 2, 
-                            msg = "v must be a matrix with 2 dimensions in vec_from_store_byname()")
-    # Make sure one of the dimensions is size 1
-    assertthat::assert_that(v_size[[1]] == 1 | v_size[[2]] == 1,
-                            msg = "v must be a vector with one dimension of size 1 in vec_from_store_byname()")
-    # Get the names that matter to us from the vector store
-    if (v_size[[1]] == 1) {
-      # Get column names
-      v_labels <- dimnames(v_vec)[[2]]
+    if (column_val) {
+      # Making a column vector
+      out_size <- dim(a_mat)[[1]]
+      # Build the outgoing vector with NA's everywhere
+      out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
+                    dimnames = list(a_labels, colname_val))
+      # Fill the vector
+      for (i in 1:out_size) {
+        # Get the value we want
+        val <- v_vec[[, 1]]
+        out[i, 1] <- val
+      }
     } else {
-      # Get row names
-      v_labels <- dimnames(v_vec)[[1]]
+      # Making a row vector
+      out_size <- dim(a_mat)[[2]]
+      # Build the outgoing vector with NA's everywhere
+      out <- matrix(NA_real_, nrow = 1, ncol = out_size, 
+                    dimnames = list(colname_val, a_labels))
     }
+
   }
   
   binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE,
