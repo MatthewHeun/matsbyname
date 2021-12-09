@@ -1353,10 +1353,14 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' @export
 #'
 #' @examples
-vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NA, column = TRUE) {
+vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NA, column = TRUE, 
+                                  notation = RCLabels::bracket_notation, 
+                                  prepositions = RCLabels::prepositions) {
   
   
-  vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val) {
+  vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 
+                       notation_val = notation, 
+                       prepositions_val = prepositions) {
     # Get size of v vectors
     v_size <- dim(v_vec)
     # Make sure v is a matrix.
@@ -1374,53 +1378,45 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
     # If we want a row vector, transpose a_mat so that we want a column vector.
     # By doing this, we can assume we want a column vector in the rest of this function.
     if (!column_val) {
-      out <- vec_func(transpose_byname(a_mat), v_vec, a_piece_val, v_piece_val, colname_val, column_val)
-      return(transpose_byname(out))
+      a_mat %>%
+        transpose_byname() %>%
+        vec_func(v_vec, a_piece_val, v_piece_val, colname_val, column_val) %>%
+        transpose_byname()
     }
     # At this point, we have a_mat and v_vec such that we want
     # names from the rows of a_mat and the values from the rows of v_vec.
 
-    # Get row names
-    v_labels <- dimnames(v_vec)[[1]]
-    
-    
-    
-    
-    # When we get here, we should have a single a matrix, a single vector, and
-    # other details with which to do the work.
-    # Get names from a_mat
-    if (column_val) {
-      # Need row names
-      a_labels <- dimnames(a_mat)[[1]]
-    } else {
-      # Need column names
-      a_labels <- dimnames(a_mat)[[2]]
+    # Get row names from the matrix and the vector
+    a_rownames <- dimnames(a_mat)[[1]]
+    v_rownames <- dimnames(v_vec)[[1]]
+    a_pieces <- RCLabels::get_piece(a_rownames, piece = a_piece, notation = notation_val, prepositions = prepositions_val)
+    v_pieces <- RCLabels::get_piece(v_rownames, piece = v_piece, notation = notation_val, prepositions = prepositions_val)
+    # Ensure that v_pieces are unique
+    assertthat::assert_that(length(v_pieces) == length(unique(v_pieces)), 
+                            msg = "v_pieces must be unique in vec_from_store_byname()")
+    # Find the size of the outgoing column vector
+    out_size <- dim(a_mat)[[1]]
+    # Build the outgoing vector with NA's everywhere
+    out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
+                  dimnames = list(a_rownames, colname_val)) %>%
+      # Be sure to retain the row and column type of v_vec.
+      setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    # Fill the vector
+    for (i in 1:out_size) {
+      # Get the value we want
+      a_rowname <- a_rownames[i]
+      rownum_in_v <- which(v_pieces == a_pieces[[i]], arr.ind = TRUE)
+      val <- v_vec[[rownum_in_v, 1]]
+      out[i, 1] <- val
     }
-    if (column_val) {
-      # Making a column vector
-      out_size <- dim(a_mat)[[1]]
-      # Build the outgoing vector with NA's everywhere
-      out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
-                    dimnames = list(a_labels, colname_val))
-      # Fill the vector
-      for (i in 1:out_size) {
-        # Get the value we want
-        val <- v_vec[[, 1]]
-        out[i, 1] <- val
-      }
-    } else {
-      # Making a row vector
-      out_size <- dim(a_mat)[[2]]
-      # Build the outgoing vector with NA's everywhere
-      out <- matrix(NA_real_, nrow = 1, ncol = out_size, 
-                    dimnames = list(colname_val, a_labels))
-    }
-
+    return(out)
   }
   
   binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE,
                      .FUNdots = list(a_piece_val = a_piece, v_piece_val = v_piece, 
-                                     colname_val = colname, column_val = column))
+                                     colname_val = colname, column_val = column, 
+                                     notation_val = notation, 
+                                     prepositions_val = prepositions))
 }
 
 

@@ -10,7 +10,9 @@ vec_from_store_byname(
   a_piece = "all",
   v_piece = "all",
   colname = NA,
-  column = TRUE
+  column = TRUE,
+  notation = RCLabels::bracket_notation,
+  prepositions = RCLabels::prepositions
 )
 }
 \arguments{
