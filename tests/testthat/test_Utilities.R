@@ -1124,3 +1124,12 @@ test_that("kvec_from_template_byname() function passes old i_byname tests", {
 })
 
 
+test_that("vec_from_store_byname() works as expected with single matrices", {
+  a <- matrix(42, nrow = 2, ncol = 3, 
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  v <- matrix(1:10, nrow = 10, ncol = 1, 
+              dimnames = list(paste0("r", 1:10) %>% rev(), "c1"))
+  expect_equal(vec_from_store_byname(a = a, v = v))
+})
+
+

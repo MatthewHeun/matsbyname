@@ -1278,8 +1278,8 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
 #' @param a The template matrix for the column vector.
 #' @param k The value of the entries in the output column vector.
 #' @param colname The name of the output vector's 1-sized dimension 
-#'                (the only column if `column == TRUE`, the only row otherwise).
-#' @param column Tells whether a column vector (`TRUE`, the default) or a row vector (`FALSE`) should be created.
+#'                (the only column if `column` is `TRUE`, the only row otherwise).
+#' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
 #'
 #' @return A vector vector formed from `a`.
 #' 
@@ -1328,28 +1328,66 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' The values of the output vector are obtained from v
 #' when `a_piece` matches `v_piece` using the `RCLabels` package.
 #' The `v_piece`s of `v` must be unique.
+#' The default values for `a_piece` and `v_piece` are "all", 
+#' meaning that the entire label should be matched.
+#' Other options for `a_piece` and `v_piece` are "pref" and "suff"
+#' which will match the prefix or suffix of the labels.
+#' Or, a preposition can be given such that 
+#' the object of the preposition will be matched.
+#' Examples include "from" or "in".
 #' 
 #' In short, vector `v` is considered a store of values 
-#' from which the output vector is created.
+#' from which the output vector is created
+#' using special matching rules between `a` and `v`.
 #'
 #' @param a A matrix from which row or column labels are taken.
 #' @param v A vector from which values are taken, when `a_piece` matches `v_piece`.
 #' @param a_piece The piece of labels on `a` that is to be matched.
 #' @param v_piece The piece of labels on `v` that is to be matched.
 #' @param colname The name of the output vector's 1-sized dimension 
-#'                (the only column if `column == TRUE`, the only row otherwise).
-#' @param column Tells whether a column vector (`TRUE`, the default) or a row vector (`FALSE`) should be created.
+#'                (the only column if `column` is `TRUE`, the only row otherwise).
+#' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
 #'
 #' @return A vector with names from `a` and values from `v`.
 #' 
 #' @export
 #'
 #' @examples
-vec_from_store_byname <- function(a, a_piece, v, v_piece, colname = NA, column = TRUE) {
+vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NA, column = TRUE) {
   
   
+  vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val) {
+    # When we get here, we should have a single a matrix, a single vector, and
+    # other details with which to do the work.
+    # Get names from a_mat
+    if (column_val) {
+      # Need row names
+      a_labels <- dimnames(a_mat)[[1]]
+    } else {
+      # Need column names
+      a_labels <- dimnames(a_mat)[[2]]
+    }
+    # Get names from v_vec
+    v_size <- dim(v_vec)
+    # Make sure v is a matrix.
+    assertthat::assert_that(length(v_size) == 2, 
+                            msg = "v must be a matrix with 2 dimensions in vec_from_store_byname()")
+    # Make sure one of the dimensions is size 1
+    assertthat::assert_that(v_size[[1]] == 1 | v_size[[2]] == 1,
+                            msg = "v must be a vector with one dimension of size 1 in vec_from_store_byname()")
+    # Get the names that matter to us from the vector store
+    if (v_size[[1]] == 1) {
+      # Get column names
+      v_labels <- dimnames(v_vec)[[2]]
+    } else {
+      # Get row names
+      v_labels <- dimnames(v_vec)[[1]]
+    }
+  }
   
-  
+  binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE,
+                     .FUNdots = list(a_piece_val = a_piece, v_piece_val = v_piece, 
+                                     colname_val = colname, column_val = column))
 }
 
 

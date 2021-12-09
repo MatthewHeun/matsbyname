@@ -12,9 +12,9 @@ kvec_from_template_byname(a, k = 1, colname = NA, column = TRUE)
 \item{k}{The value of the entries in the output column vector.}
 
 \item{colname}{The name of the output vector's 1-sized dimension
-(the only column if \code{column == TRUE}, the only row otherwise).}
+(the only column if \code{column} is \code{TRUE}, the only row otherwise).}
 
-\item{column}{Tells whether a column vector (\code{TRUE}, the default) or a row vector (\code{FALSE}) should be created.}
+\item{column}{Tells whether a column vector (if \code{TRUE}, the default) or a row vector (if \code{FALSE}) should be created.}
 }
 \value{
 A vector vector formed from \code{a}.

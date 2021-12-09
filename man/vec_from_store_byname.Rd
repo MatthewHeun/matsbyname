@@ -2,24 +2,62 @@
 % Please edit documentation in R/Utilities.R
 \name{vec_from_store_byname}
 \alias{vec_from_store_byname}
-\title{Create a vector}
+\title{Create a vector with labels from matrix \code{a} and values from vector \code{v_store}}
 \usage{
-vec_from_store_byname(m, store_vec, piece, colname = NA, column = TRUE)
+vec_from_store_byname(
+  a,
+  v,
+  a_piece = "all",
+  v_piece = "all",
+  colname = NA,
+  column = TRUE
+)
 }
 \arguments{
-\item{m}{}
+\item{a}{A matrix from which row or column labels are taken.}
 
-\item{store_vec}{}
+\item{v}{A vector from which values are taken, when \code{a_piece} matches \code{v_piece}.}
 
-\item{piece}{}
+\item{a_piece}{The piece of labels on \code{a} that is to be matched.}
 
-\item{colname}{}
+\item{v_piece}{The piece of labels on \code{v} that is to be matched.}
 
-\item{column}{}
+\item{colname}{The name of the output vector's 1-sized dimension
+(the only column if \code{column} is \code{TRUE}, the only row otherwise).}
+
+\item{column}{Tells whether a column vector (if \code{TRUE}, the default) or a row vector (if \code{FALSE}) should be created.}
 }
 \value{
-
+A vector with names from \code{a} and values from \code{v}.
 }
 \description{
-Create a vector
+When a matrix is multiplied by a vector byname,
+naming can be tricky.
+There are times when pieces of the vector labels should be matched to
+pieces of the matrix labels.
+This function helps by performing the matching byname.
+}
+\details{
+The output of this function is a vector
+(a column vector if \code{column} is \code{TRUE}, the default;
+a row vector if \code{column} is \code{FALSE}).
+The label of the single dimension is taken from \code{colname}
+(so named, because the default is to return a column vector).
+The labels of the long dimension are taken from matrix \code{a}
+(the row names of \code{a} if \code{column} is \code{TRUE};
+the column names of \code{a} if \code{column} is \code{FALSE}).
+The values of the output vector are obtained from v
+when \code{a_piece} matches \code{v_piece} using the \code{RCLabels} package.
+The \code{v_piece}s of \code{v} must be unique.
+The default values for \code{a_piece} and \code{v_piece} are "all",
+meaning that the entire label should be matched.
+Other options for \code{a_piece} and \code{v_piece} are "pref" and "suff"
+which will match the prefix or suffix of the labels.
+Or, a preposition can be given such that
+the object of the preposition will be matched.
+Examples include "from" or "in".
+
+In short, vector \code{v} is considered a store of values
+from which the output vector is created
+using special matching rules between \code{a} and \code{v}.
 }
