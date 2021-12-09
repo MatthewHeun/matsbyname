@@ -1134,7 +1134,10 @@ test_that("vec_from_store_byname() works as expected with single matrices", {
                matrix(c(10, 9), nrow = 2, ncol = 1, 
                       dimnames = list(c("r1", "r2"), "c1")) %>%
                  setrowtype("rt") %>% setcoltype("ct"))
-  
+})
+
+
+test_that("vec_from_store_byname() works as expected with single matrices and nouns", {
   a <- matrix(42, nrow = 3, ncol = 5, 
               dimnames = list(c("Electricity [from b in c]", 
                                 "Coal [from e in f]", 
@@ -1162,8 +1165,4 @@ test_that("vec_from_store_byname() works as expected with single matrices", {
                                         "Crude oil [from Production in USA"), 
                                       "phi")) %>%
                  setrowtype("Product") %>% setcoltype("phi"))
-  
-  
 })
-
-
