@@ -1141,7 +1141,7 @@ test_that("vec_from_store_byname() works as expected with single matrices and no
   a <- matrix(42, nrow = 3, ncol = 5, 
               dimnames = list(c("Electricity [from b in c]", 
                                 "Coal [from e in f]", 
-                                "Crude oil [from Production in USA"), 
+                                "Crude oil [from Production in USA]"), 
                               c("Main activity producer electricity plants", 
                                 "Wind turbines", 
                                 "Oil refineries", 
@@ -1166,3 +1166,111 @@ test_that("vec_from_store_byname() works as expected with single matrices and no
                                       "phi")) %>%
                  setrowtype("Product") %>% setcoltype("phi"))
 })
+
+
+test_that("vec_from_store_byname() works as expected with single matrices and pref suff", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "Hydro", 
+                                "Crude oil",
+                                "Coal", 
+                                "Hard coal (if no detail)", 
+                                "Brown coal"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  # Try with prefixes
+  expect_equal(vec_from_store_byname(a, v, a_piece = "pref"), 
+               matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  # Try with suffixes
+  v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "from e in f", 
+                                "Hydro", 
+                                "Crude oil",
+                                "from b in c", 
+                                "Hard coal (if no detail)", 
+                                "from Production in USA"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  expect_equal(vec_from_store_byname(a, v2, a_piece = "suff"), 
+               matrix(c(5, 2, 7), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+})
+
+
+test_that("vec_from_store_byname() works as expected with single matrices and prepositions", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "USA", 
+                                "c",
+                                "Coal", 
+                                "Hard coal (if no detail)", 
+                                "f"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expect_equal(vec_from_store_byname(a, v, a_piece = "in"), 
+               matrix(c(4, 7, 3), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  
+
+  v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+               dimnames = list(c("Electricity", 
+                                 "Peat", 
+                                 "Production", 
+                                 "e",
+                                 "Coal", 
+                                 "Hard coal (if no detail)", 
+                                 "b"), 
+                               "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  expect_equal(vec_from_store_byname(a, v2, a_piece = "from"), 
+               matrix(c(4, 7, 3), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  
+})
+
+
+
+
+
