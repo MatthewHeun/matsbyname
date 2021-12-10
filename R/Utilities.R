@@ -1488,13 +1488,11 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
       # Get the value we want
       this_piece <- a_pieces[[i]]
       rownum_in_v <- which(v_pieces == this_piece, arr.ind = TRUE)
-      if (this_piece == "" | length(rownum_in_v) == 0) {
-        # There is nothing to match against (this_piece == "")
-        # or 
-        # there is nothing in v_vec that matches this_piece (length(rownum_in_v) == 0).
-        # The result should be a missing value.
-        out[i, 1] <- NA_real_
-      } else {
+      
+      # We need both this_piece to be something (not "") and
+      # rownum_in_v to be different from 0 (i.e. present somewhere)
+      # to assign something different from NA_real_, the default value.
+      if (this_piece != "" & length(rownum_in_v) != 0) {
         val <- v_vec[[rownum_in_v, 1]]
         out[i, 1] <- val
       }
