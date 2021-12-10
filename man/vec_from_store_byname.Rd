@@ -11,14 +11,18 @@ vec_from_store_byname(
   v_piece = "all",
   colname = NULL,
   column = TRUE,
-  notation = RCLabels::bracket_notation,
-  prepositions = RCLabels::prepositions
+  notation = if (is.list(a)) {     list(RCLabels::bracket_notation) } else {    
+    RCLabels::bracket_notation },
+  prepositions = if (is.list(a)) {     list(RCLabels::prepositions) } else {    
+    RCLabels::prepositions }
 )
 }
 \arguments{
-\item{a}{A matrix from which row or column labels are taken.}
+\item{a}{A matrix from which row or column labels are taken.
+Can also be a list or the name of a column in a data frame.}
 
-\item{v}{A vector from which values are taken, when \code{a_piece} matches \code{v_piece}.}
+\item{v}{A vector from which values are taken, when \code{a_piece} matches \code{v_piece}.
+Can also be a list or the name of a column in a data frame.}
 
 \item{a_piece}{The piece of labels on \code{a} that is to be matched.}
 
@@ -46,12 +50,15 @@ naming can be tricky.
 There are times when pieces of the vector labels should be matched to
 pieces of the matrix labels.
 This function helps by performing the matching byname.
+For this function, vector \code{v} is considered a store of values
+from which the output vector is created
+using special matching rules between \code{a} and \code{v}.
 }
 \details{
 The output of this function is a vector
 (a column vector if \code{column} is \code{TRUE}, the default;
 a row vector if \code{column} is \code{FALSE}).
-The label of the size-1 dimension is taken from \code{colname}
+The label of the size = 1 dimension is taken from \code{colname}
 (so named, because the default is to return a column vector).
 The labels of the long dimension are taken from matrix \code{a}
 (the row names of \code{a} if \code{column} is \code{TRUE};
@@ -71,9 +78,9 @@ If the piece given in \code{a_piece} is not present in row and column labels of 
 \code{NA_real_} is returned.
 If the piece give in \code{v_piece} is not present in row and column lables of \code{v},
 \code{NA_real_} is returned.
-See the examples.
 
-In short, vector \code{v} is considered a store of values
-from which the output vector is created
-using special matching rules between \code{a} and \code{v}.
+Note that \code{notation} and \code{prepositions} should be lists if \code{a} is a list
+but a single value otherwise.
+The default values of \code{notation} and \code{prepositions} take care of this requirement,
+switching on the type of \code{a} (list or not).
 }

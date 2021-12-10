@@ -1316,11 +1316,14 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' There are times when pieces of the vector labels should be matched to 
 #' pieces of the matrix labels. 
 #' This function helps by performing the matching byname.
+#' For this function, vector `v` is considered a store of values 
+#' from which the output vector is created
+#' using special matching rules between `a` and `v`.
 #' 
 #' The output of this function is a vector
 #' (a column vector if `column` is `TRUE`, the default; 
 #' a row vector if `column` is `FALSE`).
-#' The label of the size-1 dimension is taken from `colname`
+#' The label of the size = 1 dimension is taken from `colname`
 #' (so named, because the default is to return a column vector).
 #' The labels of the long dimension are taken from matrix `a`
 #' (the row names of `a` if `column` is `TRUE`; 
@@ -1340,14 +1343,16 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' `NA_real_` is returned.
 #' If the piece give in `v_piece` is not present in row and column lables of `v`, 
 #' `NA_real_` is returned.
-#' See the examples.
 #' 
-#' In short, vector `v` is considered a store of values 
-#' from which the output vector is created
-#' using special matching rules between `a` and `v`.
+#' Note that `notation` and `prepositions` should be lists if `a` is a list
+#' but a single value otherwise. 
+#' The default values of `notation` and `prepositions` take care of this requirement,
+#' switching on the type of `a` (list or not).
 #'
 #' @param a A matrix from which row or column labels are taken.
+#'          Can also be a list or the name of a column in a data frame.
 #' @param v A vector from which values are taken, when `a_piece` matches `v_piece`.
+#'          Can also be a list or the name of a column in a data frame.
 #' @param a_piece The piece of labels on `a` that is to be matched.
 #' @param v_piece The piece of labels on `v` that is to be matched.
 #' @param colname The name of the output vector's 1-sized dimension 
@@ -1366,8 +1371,8 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'
 #' @examples
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
-                                  notation = RCLabels::bracket_notation, 
-                                  prepositions = RCLabels::prepositions) {
+                                  notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions)} else {RCLabels::prepositions}) {
   
   
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 
