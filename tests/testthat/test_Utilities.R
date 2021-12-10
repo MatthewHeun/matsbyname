@@ -1162,7 +1162,7 @@ test_that("vec_from_store_byname() works as expected with single matrices and no
                matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
                       dimnames = list(c("Electricity [from b in c]", 
                                         "Coal [from e in f]", 
-                                        "Crude oil [from Production in USA"), 
+                                        "Crude oil [from Production in USA]"), 
                                       "phi")) %>%
                  setrowtype("Product") %>% setcoltype("phi"))
 })
@@ -1261,7 +1261,15 @@ test_that("vec_from_store_byname() works as expected with single matrices and pr
                                "phi")) %>%
     setrowtype("Product") %>% setcoltype("phi")
   expect_equal(vec_from_store_byname(a, v2, a_piece = "from"), 
-               matrix(c(4, 7, 3), nrow = 3, ncol = 1, 
+               matrix(c(7, 4, 3), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  # Try when the preposition (in this case "to") is not present in a.
+  expect_equal(vec_from_store_byname(a, v, a_piece = "to"), 
+               matrix(c(NA_real_, NA_real_, NA_real_), nrow = 3, ncol = 1, 
                       dimnames = list(c("Electricity [from b in c]", 
                                         "Coal [from e in f]", 
                                         "Crude oil [from Production in USA]"), 

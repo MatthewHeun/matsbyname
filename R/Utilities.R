@@ -1336,6 +1336,8 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' objects of prepositions will be matched.
 #' Examples include "from" or "in".
 #' Row and column types from `v` are applied to the output.
+#' If the preposition is not present in row and column labels of `a`, 
+#' `NA_real_` is returned.
 #' See the examples.
 #' 
 #' In short, vector `v` is considered a store of values 
@@ -1416,10 +1418,16 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
     # Fill the vector
     for (i in 1:out_size) {
       # Get the value we want
-      a_rowname <- a_rownames[i]
-      rownum_in_v <- which(v_pieces == a_pieces[[i]], arr.ind = TRUE)
-      val <- v_vec[[rownum_in_v, 1]]
-      out[i, 1] <- val
+      this_piece <- a_pieces[[i]]
+      if (this_piece == "") {
+        # There is nothing to match against.
+        # The result should be a missing value.
+        out[i, 1] <- NA_real_
+      } else {
+        rownum_in_v <- which(v_pieces == this_piece, arr.ind = TRUE)
+        val <- v_vec[[rownum_in_v, 1]]
+        out[i, 1] <- val
+      }
     }
     return(out)
   }
