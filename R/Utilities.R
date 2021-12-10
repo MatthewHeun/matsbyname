@@ -1309,7 +1309,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 
 
 
-#' Create a vector with labels from matrix `a` and values from vector `v`
+#' Create a vector with labels from a matrix and values from a vector store
 #' 
 #' When a matrix is multiplied by a vector byname, 
 #' naming can be tricky. 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utilities.R
 \name{vec_from_store_byname}
 \alias{vec_from_store_byname}
-\title{Create a vector with labels from matrix \code{a} and values from vector \code{v}}
+\title{Create a vector with labels from a matrix and values from a vector store}
 \usage{
 vec_from_store_byname(
   a,
