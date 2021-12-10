@@ -1349,6 +1349,25 @@ test_that("vec_from_store_byname() works when a row vector is desired.", {
                                       c("Wind turbines", 
                                         "Oil wells"))) %>%
                  setrowtype("eta") %>% setcoltype("Industry"))
+  
+  # See if it works with a row vector for v.
+  v_row <- matrix(1:7, nrow = 1, ncol = 7, 
+                  dimnames = list("eta", 
+                                  c("Electricity", 
+                                    "Peat", 
+                                    "Wind turbines", 
+                                    "c",
+                                    "Oil wells", 
+                                    "Hard coal (if no detail)", 
+                                    "f"))) %>%
+    setrowtype("eta") %>% setcoltype("Industry")
+  expect_equal(vec_from_store_byname(a, v_row, a_piece = "pref", column = FALSE), 
+               matrix(c(3, 5), nrow = 1, ncol = 2, 
+                      dimnames = list("eta", 
+                                      c("Wind turbines", 
+                                        "Oil wells"))) %>%
+                 setrowtype("eta") %>% setcoltype("Industry"))
+  
 })
 
 
