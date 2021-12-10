@@ -4,6 +4,14 @@ output: html_document
 ---
 
 
+* New function `vec_from_store_byname()` 
+  creates vectors from a matrix 
+  (from which row of column names are taken)
+  and a vector 
+  (which acts as a store of values)
+  based on matching of pieces of the labels.
+  This new function is made possible by the 
+  new `RCLabels` package.
 * Notation code moved to new package, `RCLabels`.
 * `RCLabels::make_or_pattern()` gains new `pattern_type`, "literal", which 
   returns the `row_col_names` argument unmodified.
