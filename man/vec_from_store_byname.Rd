@@ -24,9 +24,9 @@ Can also be a list or the name of a column in a data frame.}
 \item{v}{A vector from which values are taken, when \code{a_piece} matches \code{v_piece}.
 Can also be a list or the name of a column in a data frame.}
 
-\item{a_piece}{The piece of labels on \code{a} that is to be matched.}
+\item{a_piece}{The piece of labels on \code{a} that is to be matched. Default is "all".}
 
-\item{v_piece}{The piece of labels on \code{v} that is to be matched.}
+\item{v_piece}{The piece of labels on \code{v} that is to be matched. Default is "all".}
 
 \item{colname}{The name of the output vector's 1-sized dimension
 (the only column if \code{column} is \code{TRUE}, the only row otherwise).
@@ -36,10 +36,10 @@ should be used.}
 \item{column}{Tells whether a column vector (if \code{TRUE}, the default) or a row vector (if \code{FALSE}) should be created.}
 
 \item{notation}{The notation for the row and column labels.
-Default is \code{RCLabels::bracket_notation}.}
+Default is \code{RCLabels::bracket_notation}, wrapped as a list if \code{a} is a list.}
 
 \item{prepositions}{The strings that will count for prepositions.
-Default is \code{RCLables::prepositions}.}
+Default is \code{RCLables::prepositions}, wrapped as a list if \code{a} is a list..}
 }
 \value{
 A vector with names from \code{a} and values from \code{v}.
@@ -74,13 +74,74 @@ Alternatively, prepositions can be given such that
 objects of prepositions will be matched.
 Examples include "from" or "in".
 Row and column types from \code{v} are applied to the output.
-If the piece given in \code{a_piece} is not present in row and column labels of \code{a},
+If the piece given in \code{a_piece} is not present in row or column names of \code{a},
 \code{NA_real_} is returned.
-If the piece give in \code{v_piece} is not present in row and column lables of \code{v},
+If the piece given in \code{v_piece} is not present in row or column names of \code{v},
 \code{NA_real_} is returned.
 
 Note that \code{notation} and \code{prepositions} should be lists if \code{a} is a list
 but a single value otherwise.
 The default values of \code{notation} and \code{prepositions} take care of this requirement,
 switching on the type of \code{a} (list or not).
+}
+\examples{
+a <- matrix(42, nrow = 3, ncol = 5, 
+            dimnames = list(c("Electricity [from b in c]", 
+                              "Coal [from e in f]", 
+                              "Crude oil [from Production in USA]"), 
+                            c("Main activity producer electricity plants", 
+                              "Wind turbines", 
+                              "Oil refineries", 
+                              "Coal mines", 
+                              "Automobiles"))) \%>\%
+  setrowtype("Product") \%>\% setcoltype("Industry")
+a
+v <- matrix(1:7, nrow = 7, ncol = 1, 
+            dimnames = list(c("Electricity", 
+                              "Peat", 
+                              "Hydro", 
+                              "Crude oil",
+                              "Coal", 
+                              "Hard coal (if no detail)", 
+                              "Brown coal"), 
+                            "phi")) \%>\%
+  setrowtype("Product") \%>\% setcoltype("phi")
+v
+vec_from_store_byname(a, v, a_piece = "pref")
+vec_from_store_byname(a, v, a_piece = "noun")
+
+v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+             dimnames = list(c("Electricity", 
+                               "Peat", 
+                               "USA", 
+                               "c",
+                               "Coal", 
+                               "Hard coal (if no detail)", 
+                               "f"), 
+                             "phi")) \%>\%
+  setrowtype("Product") \%>\% setcoltype("phi")
+vec_from_store_byname(a, v2, a_piece = "in")
+
+# Works with lists
+v3 <- matrix(1:7, nrow = 7, ncol = 1, 
+             dimnames = list(c("Electricity [from USA]", 
+                               "Peat [from nowhere]", 
+                               "Production [from GHA]", 
+                               "e [from ZAF]",
+                               "Coal [from AUS]", 
+                               "Hard coal (if no detail) [from GBR]", 
+                               "b [from Nebraska]"), 
+                             "phi")) \%>\%
+  setrowtype("Product") \%>\% setcoltype("phi")
+a_list <- list(a, a)
+v_list <- list(v3, v3)
+vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from")
+
+# Also works in a data frame
+df <- tibble::tibble(a = list(a, a, a), 
+                     v = list(v3, v3, v3))
+df \%>\%
+  dplyr::mutate(
+    actual = vec_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from")
+  )
 }

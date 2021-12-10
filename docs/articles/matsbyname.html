@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matsbyname</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.25</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.25</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/matsbyname.html">Get started</a>
 </li>
@@ -70,7 +66,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/MatthewHeun/matsbyname/">
+  <a href="https://github.com/MatthewHeun/matsbyname/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -85,25 +81,25 @@
 
       
 
-      </header><script src="matsbyname_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Use Cases and Examples for <code>matsbyname</code>
 </h1>
-                        <h4 class="author">Matthew Kuperus Heun</h4>
+                        <h4 data-toc-skip class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2021-10-12</h4>
+            <h4 data-toc-skip class="date">2021-12-10</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/master/vignettes/matsbyname.Rmd"><code>vignettes/matsbyname.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/vignettes/matsbyname.Rmd" class="external-link"><code>vignettes/matsbyname.Rmd</code></a></small>
       <div class="hidden name"><code>matsbyname.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>Matrices are important mathematical objects, and they often describe networks of flows among nodes. Example networks are given in the following table.</p>
 <table class="table">
 <thead><tr class="header">
@@ -130,19 +126,19 @@
 </tbody>
 </table>
 <p>The power of matrices lies in their ability to organize network-wide calculations, thereby simplifying the work of analysts who study entire systems. However, three problems arise when performing matrix operations in <tt>R</tt> and other languages.</p>
-<div id="problem-1" class="section level3">
-<h3 class="hasAnchor">
-<a href="#problem-1" class="anchor"></a>Problem 1</h3>
+<div class="section level3">
+<h3 id="problem-1">Problem 1<a class="anchor" aria-label="anchor" href="#problem-1"></a>
+</h3>
 <p>Although built-in matrix functions ensure size conformity of matrix operands, they do not respect the names of rows and columns (known as <tt>dimnames</tt> in <tt>R</tt>). In the following example, <strong>U</strong> represents a <em>use</em> matrix that contains the quantity of each product used by each industry, and <strong>Y</strong> represents a <em>final demand</em> matrix that contains the quantity of each product consumed by final demand industries. If the rows and columns are not in the same order, the sum of the matrices is nonsensical.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">productnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span><span class="op">)</span>
-<span class="va">industrynames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span><span class="op">)</span>
-<span class="va">U</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">productnames</span>, <span class="va">industrynames</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">productnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span><span class="op">)</span>
+<span class="va">industrynames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span><span class="op">)</span>
+<span class="va">U</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">productnames</span>, <span class="va">industrynames</span><span class="op">)</span><span class="op">)</span>
 <span class="va">U</span>
 <span class="co">#&gt;    i1 i2</span>
 <span class="co">#&gt; p1  1  3</span>
 <span class="co">#&gt; p2  2  4</span>
-<span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">Y</span>
 <span class="co">#&gt;    i2 i1</span>
 <span class="co">#&gt; p2  1  3</span>
@@ -155,7 +151,7 @@
 <p>As a result, analysts performing matrix operations must maintain strict order of rows and columns across all calculations.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Make a new version of Y (Y2), this time with dimnames in same order as U</span>
-<span class="va">Y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">productnames</span>, <span class="va">industrynames</span><span class="op">)</span><span class="op">)</span>
+<span class="va">Y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">productnames</span>, <span class="va">industrynames</span><span class="op">)</span><span class="op">)</span>
 <span class="va">Y2</span>
 <span class="co">#&gt;    i1 i2</span>
 <span class="co">#&gt; p1  4  2</span>
@@ -166,12 +162,12 @@
 <span class="co">#&gt; p1  5  5</span>
 <span class="co">#&gt; p2  5  5</span></code></pre></div>
 </div>
-<div id="problem-2" class="section level3">
-<h3 class="hasAnchor">
-<a href="#problem-2" class="anchor"></a>Problem 2</h3>
+<div class="section level3">
+<h3 id="problem-2">Problem 2<a class="anchor" aria-label="anchor" href="#problem-2"></a>
+</h3>
 <p>In many cases, operand matrices may have different numbers or different names of rows or columns. This situation can occur when, for example, products or industries changes across time periods. When performing matrix operations, rows or columns of zeros must be added to ensure name conformity.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">Y3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i3"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">Y3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i3"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">Y3</span>
 <span class="co">#&gt;    i1 i3</span>
 <span class="co">#&gt; p1  5  7</span>
@@ -185,16 +181,16 @@
 <span class="co">#&gt; p1  6 10</span>
 <span class="co">#&gt; p2  8 12</span>
 <span class="co"># Rather, need to insert missing rows in both U and Y before summing.</span>
-<span class="va">U_2000</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">0</span>,
+<span class="va">U_2000</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">0</span>,
                    <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">0</span>,
                    <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,
                  ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span>, 
-                 dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i3"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">Y_2000</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">0</span>, <span class="fl">7</span>,
+                 dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i3"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">Y_2000</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">0</span>, <span class="fl">7</span>,
                    <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, 
                    <span class="fl">6</span>, <span class="fl">0</span>, <span class="fl">8</span><span class="op">)</span>,
                  ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span>,
-                 dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i3"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+                 dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i3"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">U_2000</span>
 <span class="co">#&gt;    i1 i2 i3</span>
 <span class="co">#&gt; p1  1  3  0</span>
@@ -214,24 +210,24 @@
 <p>Respecting names (and adding rows and columns of zeroes) can lead to an inability to invert matrices downstream, as shown in the following example.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># The original U matrix is invertible.</span>
-<span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">U</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">U</span><span class="op">)</span>
 <span class="co">#&gt;    p1   p2</span>
 <span class="co">#&gt; i1 -2  1.5</span>
 <span class="co">#&gt; i2  1 -0.5</span>
 <span class="co"># The version of U that contains zero rows and columns (U_2000)</span>
 <span class="co"># is singular and cannot be inverted.</span>
-<span class="kw"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">U_2000</span><span class="op">)</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">U_2000</span><span class="op">)</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
 <span class="co">#&gt; &lt;simpleError in solve.default(U_2000): Lapack routine dgesv: system is exactly singular: U[3,3] = 0&gt;</span></code></pre></div>
 </div>
-<div id="problem-3" class="section level3">
-<h3 class="hasAnchor">
-<a href="#problem-3" class="anchor"></a>Problem 3</h3>
+<div class="section level3">
+<h3 id="problem-3">Problem 3<a class="anchor" aria-label="anchor" href="#problem-3"></a>
+</h3>
 <p>Matrix functions provided by <tt>R</tt> and other languages do not ensure type conformity for matrix operands to matrix algebra functions. In the example of matrix multiplication, columns of the multiplicand must contain the same type of information as the as the rows of the multiplier. If the columns of <strong>A</strong> are countries, then the rows of <strong>B</strong> must also be countries (and in the same order) if <strong>A</strong> <tt>%*%</tt> <strong>B</strong> is to make sense.</p>
 </div>
 </div>
-<div id="matsbyname" class="section level2">
-<h2 class="hasAnchor">
-<a href="#matsbyname" class="anchor"></a><tt>matsbyname</tt>
+<div class="section level2">
+<h2 id="matsbyname">
+<tt>matsbyname</tt><a class="anchor" aria-label="anchor" href="#matsbyname"></a>
 </h2>
 <p>The <tt>matsbyname</tt> package automatically addresses all three problems above. It performs smart matrix operations that</p>
 <ul>
@@ -257,7 +253,7 @@
 <span class="co">#&gt; p2  2  4  0</span>
 <span class="co">#&gt; p3  6  0  8</span>
 <span class="co"># Eliminate zero-filled rows and columns. Same result as solve(U).</span>
-<span class="va">U_2000</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/clean_byname.html">clean_byname</a></span><span class="op">(</span>margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, clean_value <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">U_2000</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/clean_byname.html">clean_byname</a></span><span class="op">(</span>margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, clean_value <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt;    p1   p2</span>
 <span class="co">#&gt; i1 -2  1.5</span>
 <span class="co">#&gt; i2  1 -0.5</span></code></pre></div>
@@ -276,35 +272,36 @@
 <code><a href="../reference/transpose_byname.html">transpose_byname()</a></code>.</li>
 </ul>
 <p>The full list of functions can be found with <tt>?matsbyname</tt> and clicking the <tt>Index</tt> link.</p>
-<p>Furthermore, <tt>matsbyname</tt> works well with its sister package, <tt>matsindf</tt>. <tt>matsindf</tt> creates data frames whose entries are not numbers but entire matrices, thereby enabling the use of <tt>matsbyname</tt> functions in <a href="https://www.tidyverse.org"><tt>tidyverse</tt></a> functional programming.</p>
-<p>When used together, <tt>matsbyname</tt> and <tt>matsindf</tt> allow analysts to wield simultaneously the power of both <a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)">matrix mathematics</a> and <a href="https://www.tidyverse.org"><tt>tidyverse</tt></a> functional programming.</p>
+<p>Furthermore, <tt>matsbyname</tt> works well with its sister package, <tt>matsindf</tt>. <tt>matsindf</tt> creates data frames whose entries are not numbers but entire matrices, thereby enabling the use of <tt>matsbyname</tt> functions in <a href="https://www.tidyverse.org" class="external-link"><tt>tidyverse</tt></a> functional programming.</p>
+<p>When used together, <tt>matsbyname</tt> and <tt>matsindf</tt> allow analysts to wield simultaneously the power of both <a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)" class="external-link">matrix mathematics</a> and <a href="https://www.tidyverse.org" class="external-link"><tt>tidyverse</tt></a> functional programming.</p>
 <p>This vignette demonstrates the power of matrix mathematics performed <tt>by name</tt>.</p>
 </div>
-<div id="matsbyname-features" class="section level2">
-<h2 class="hasAnchor">
-<a href="#matsbyname-features" class="anchor"></a><tt>matsbyname</tt> features</h2>
+<div class="section level2">
+<h2 id="matsbyname-features">
+<tt>matsbyname</tt> features<a class="anchor" aria-label="anchor" href="#matsbyname-features"></a>
+</h2>
 <p>The <tt>matsbyname</tt> package has several features that both simplify analyses and ensure their correctness.</p>
-<div id="setting-row-and-column-names" class="section level3">
-<h3 class="hasAnchor">
-<a href="#setting-row-and-column-names" class="anchor"></a>Setting row and column names</h3>
+<div class="section level3">
+<h3 id="setting-row-and-column-names">Setting row and column names<a class="anchor" aria-label="anchor" href="#setting-row-and-column-names"></a>
+</h3>
 <p>In the preceding examples, row and column names were provided by the <tt>dimnames</tt> argument to the <tt>matrix</tt> function. However, <tt>matsbyname</tt> provides the <tt>setcolnames_byname</tt> and <tt>setrownames_byname</tt> functions to perform the same tasks using the pipe operator (<tt>%&gt;%</tt>).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">U_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">U_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span>
 <span class="va">U_2</span>
 <span class="co">#&gt;    i1 i2</span>
 <span class="co">#&gt; p1  1  3</span>
 <span class="co">#&gt; p2  2  4</span></code></pre></div>
 </div>
-<div id="setting-row-and-column-types" class="section level3">
-<h3 class="hasAnchor">
-<a href="#setting-row-and-column-types" class="anchor"></a>Setting row and column types</h3>
+<div class="section level3">
+<h3 id="setting-row-and-column-types">Setting row and column types<a class="anchor" aria-label="anchor" href="#setting-row-and-column-types"></a>
+</h3>
 <p>Row and column types can be understood by analogy: row and column types are to matrices in matrix algebra as units are to scalars in scalar algebra. Just as careful tracking of units is necessary in scalar calculations, careful tracking of row and column types is necessary in matrix operations. Because <tt>matsbyname</tt> keeps track of row and column types automatically, much of the burden of dealing with row and column types is removed from the analyst.</p>
 <p>Row and column types are character strings stored as attributes of the matrix object, and <tt>matsbyname</tt> functions ensure correctness of matrix operations by checking row and column types, throwing errors if needed. Row and column types can be set by the functions <tt>setrowtype</tt> and <tt>setcoltype</tt> and retrieved by the functions <tt>rowtype</tt> and <tt>coltype</tt>. Consider matrices <strong>A</strong>, <strong>B</strong>, and <strong>C</strong>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span>
 <span class="va">A</span>
 <span class="co">#&gt;    i1 i2</span>
 <span class="co">#&gt; p1  1  3</span>
@@ -313,9 +310,9 @@
 <span class="co">#&gt; [1] "Products"</span>
 <span class="co">#&gt; attr(,"coltype")</span>
 <span class="co">#&gt; [1] "Industries"</span>
-<span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">8</span><span class="op">:</span><span class="fl">5</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span>
+<span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">8</span><span class="op">:</span><span class="fl">5</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span>
 <span class="va">B</span>
 <span class="co">#&gt;    i1 i2</span>
 <span class="co">#&gt; p1  8  6</span>
@@ -324,9 +321,9 @@
 <span class="co">#&gt; [1] "Products"</span>
 <span class="co">#&gt; attr(,"coltype")</span>
 <span class="co">#&gt; [1] "Industries"</span>
-<span class="va">C</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span>
+<span class="va">C</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/setrownames_byname.html">setrownames_byname</a></span><span class="op">(</span><span class="va">industrynames</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcolnames_byname.html">setcolnames_byname</a></span><span class="op">(</span><span class="va">productnames</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span>
 <span class="va">C</span>
 <span class="co">#&gt;    p1 p2</span>
 <span class="co">#&gt; i1  1  3</span>
@@ -347,7 +344,7 @@
 <span class="co">#&gt; [1] "Industries"</span></code></pre></div>
 <p>However, <strong>C</strong> cannot be added to <strong>A</strong> (or <strong>B</strong>), because row and column types disagree.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">C</span><span class="op">)</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">C</span><span class="op">)</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
 <span class="co">#&gt; &lt;simpleError in organize_args(a, b, fill = 0, match_type = match_type): rowtype(a) (Products) != rowtype(b) (Industries).&gt;</span></code></pre></div>
 <p>In this case, a sum is possible if <strong>C</strong> is transposed prior to adding to <strong>A</strong>, because row and column types of <strong>A</strong> and <strong>C</strong><sup>T</sup> agree.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -382,16 +379,17 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">C</span><span class="op">)</span></code></pre></div>
 <p>However, <strong>A</strong> and <strong>B</strong> cannot be matrix-multiplied, because the column type of <strong>A</strong> (<tt>Industries</tt>) and the row type of <strong>B</strong> (<tt>Products</tt>) are different.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span><span class="op">(</span><span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">B</span><span class="op">)</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">B</span><span class="op">)</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
 <span class="co">#&gt; &lt;simpleError in organize_args(a, b, fill = 0, match_type = match_type): coltype(a) != rowtype(b): Industries != Products.&gt;</span></code></pre></div>
 <p>Analysts are encouraged to set row and column types on matrices, thereby taking advantage of <code>matsbyname</code>’s type-tracking feature to improve their matrix-based analyses.</p>
 </div>
-<div id="byname-functions-work-well-with-lists" class="section level3">
-<h3 class="hasAnchor">
-<a href="#byname-functions-work-well-with-lists" class="anchor"></a><code>*_byname</code> functions work well with lists</h3>
+<div class="section level3">
+<h3 id="byname-functions-work-well-with-lists">
+<code>*_byname</code> functions work well with lists<a class="anchor" aria-label="anchor" href="#byname-functions-work-well-with-lists"></a>
+</h3>
 <p>Another feature of the <code>matsbyname</code> package is that it works when arguments to functions are lists of matrices, returning lists as appropriate.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">A</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">B</span>, <span class="va">B</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">A</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">B</span>, <span class="va">B</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;    i1 i2</span>
 <span class="co">#&gt; p1  9  9</span>
@@ -409,7 +407,7 @@
 <span class="co">#&gt; [1] "Products"</span>
 <span class="co">#&gt; attr(,"coltype")</span>
 <span class="co">#&gt; [1] "Industries"</span>
-<span class="fu"><a href="../reference/hadamardproduct_byname.html">hadamardproduct_byname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">A</span><span class="op">)</span>, <span class="va">B</span><span class="op">)</span>
+<span class="fu"><a href="../reference/hadamardproduct_byname.html">hadamardproduct_byname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">A</span><span class="op">)</span>, <span class="va">B</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;    i1 i2</span>
 <span class="co">#&gt; p1  8 18</span>
@@ -427,22 +425,22 @@
 <span class="co">#&gt; [1] "Products"</span>
 <span class="co">#&gt; attr(,"coltype")</span>
 <span class="co">#&gt; [1] "Industries"</span>
-<span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">A</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">C</span>, <span class="va">C</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/matrixproduct_byname.html">matrixproduct_byname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">A</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">C</span>, <span class="va">C</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="matsbyname-works-well-with-matsindf" class="section level3">
-<h3 class="hasAnchor">
-<a href="#matsbyname-works-well-with-matsindf" class="anchor"></a><tt>matsbyname</tt> works well with <tt>matsindf</tt>
+<div class="section level3">
+<h3 id="matsbyname-works-well-with-matsindf">
+<tt>matsbyname</tt> works well with <tt>matsindf</tt><a class="anchor" aria-label="anchor" href="#matsbyname-works-well-with-matsindf"></a>
 </h3>
-<p>The <tt>matsindf</tt> package provides functions that collapse <a href="https://tidyr.tidyverse.org/articles/tidy-data.html">tidy</a> data frames of matrix elements into data frames of matrices. Data frames of matrices, such as those created by <tt>matsindf</tt>, are like magic spreadsheets in which single cells contain entire matrices.</p>
+<p>The <tt>matsindf</tt> package provides functions that collapse <a href="https://tidyr.tidyverse.org/articles/tidy-data.html" class="external-link">tidy</a> data frames of matrix elements into data frames of matrices. Data frames of matrices, such as those created by <tt>matsindf</tt>, are like magic spreadsheets in which single cells contain entire matrices.</p>
 <p>The following example demonstrates an approach to creating a data frame of matrices.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tidy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"B"</span><span class="op">)</span>,
-  row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p2"</span>, <span class="st">"p1"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p2"</span><span class="op">)</span>,
-  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i1"</span>, <span class="st">"i2"</span><span class="op">)</span>,
-  vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">5</span><span class="op">)</span>
-<span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">tidy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
+  matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"B"</span><span class="op">)</span>,
+  row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p2"</span>, <span class="st">"p1"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p2"</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i1"</span>, <span class="st">"i2"</span>, <span class="st">"i1"</span>, <span class="st">"i2"</span><span class="op">)</span>,
+  vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
     rowtype <span class="op">=</span> <span class="st">"Industries"</span>,
     coltype  <span class="op">=</span> <span class="st">"Products"</span>
   <span class="op">)</span>
@@ -456,12 +454,12 @@
 <span class="co">#&gt; 6      B  p1  i2    6 Industries Products</span>
 <span class="co">#&gt; 7      B  p2  i1    7 Industries Products</span>
 <span class="co">#&gt; 8      B  p2  i2    5 Industries Products</span>
-<span class="va">mats</span> <span class="op">&lt;-</span> <span class="va">tidy</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">matrix</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">matsindf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/matsindf/man/collapse_to_matrices.html">collapse_to_matrices</a></span><span class="op">(</span>matnames <span class="op">=</span> <span class="st">"matrix"</span>, matvals <span class="op">=</span> <span class="st">"vals"</span>,
+<span class="va">mats</span> <span class="op">&lt;-</span> <span class="va">tidy</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">matrix</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">matsindf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/matsindf/man/collapse_to_matrices.html" class="external-link">collapse_to_matrices</a></span><span class="op">(</span>matnames <span class="op">=</span> <span class="st">"matrix"</span>, matvals <span class="op">=</span> <span class="st">"vals"</span>,
                                  rownames <span class="op">=</span> <span class="st">"row"</span>, colnames <span class="op">=</span> <span class="st">"col"</span>,
-                                 rowtypes <span class="op">=</span> <span class="st">"rowtype"</span>, coltypes <span class="op">=</span> <span class="st">"coltype"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>
+                                 rowtypes <span class="op">=</span> <span class="st">"rowtype"</span>, coltypes <span class="op">=</span> <span class="st">"coltype"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>
     matrix.name <span class="op">=</span> <span class="va">matrix</span>,
     matrix <span class="op">=</span> <span class="va">vals</span>
   <span class="op">)</span>
@@ -487,9 +485,8 @@
 <span class="co">#&gt; [1] "Products"</span></code></pre></div>
 </div>
 </div>
-<div id="using-matsbyname-with-matsindf" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-matsbyname-with-matsindf" class="anchor"></a>Using <code>matsbyname</code> with <code>matsindf</code>
+<div class="section level2">
+<h2 id="using-matsbyname-with-matsindf">Using <code>matsbyname</code> with <code>matsindf</code><a class="anchor" aria-label="anchor" href="#using-matsbyname-with-matsindf"></a>
 </h2>
 <p>Because</p>
 <ul>
@@ -497,16 +494,16 @@
 <code>matsbyname</code> works well with lists, and</li>
 <li>data frame columns are implemented as lists, and</li>
 <li>the <tt>matsindf</tt> package can create data frames of matrices, and</li>
-<li>the <a href="https://tidyr.tidyverse.org">tidyr</a> and <a href="https://dplyr.tidyverse.org">dplyr</a> packages work with data frames,</li>
+<li>the <a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a> and <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> packages work with data frames,</li>
 </ul>
-<p><code>matsbyname</code> functions can be used with <a href="https://tidyr.tidyverse.org">tidyr</a> and <a href="https://dplyr.tidyverse.org">dplyr</a> functions (such as <code>spread</code> and <code>mutate</code>) to perform matrix algebra within data frames of matrices. A single <code>matsbyname</code> instruction performs the same operation on all rows of a <code>matsindf</code> data frame. Loops begone!</p>
+<p><code>matsbyname</code> functions can be used with <a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a> and <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions (such as <code>spread</code> and <code>mutate</code>) to perform matrix algebra within data frames of matrices. A single <code>matsbyname</code> instruction performs the same operation on all rows of a <code>matsindf</code> data frame. Loops begone!</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">mats</span> <span class="op">%&gt;%</span>
-  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key <span class="op">=</span> <span class="va">matrix.name</span>, value <span class="op">=</span> <span class="va">matrix</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">mats</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html" class="external-link">spread</a></span><span class="op">(</span>key <span class="op">=</span> <span class="va">matrix.name</span>, value <span class="op">=</span> <span class="va">matrix</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="co"># Duplicate the row to demonstrate byname operating simultaneously</span>
   <span class="co"># on all rows of the data frame.</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
     <span class="co"># Create a column of constants.</span>
     c <span class="op">=</span> <span class="fu"><a href="../reference/make_list.html">make_list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, n <span class="op">=</span> <span class="fl">2</span>, lenx <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
     <span class="co"># Sum all rows of the data frame with a single instruction.</span>
@@ -551,9 +548,8 @@
 <span class="co">#&gt; attr(,"coltype")</span>
 <span class="co">#&gt; [1] "Products"</span></code></pre></div>
 </div>
-<div id="suggested-workflow-using-matsbyname-and-matsindf" class="section level2">
-<h2 class="hasAnchor">
-<a href="#suggested-workflow-using-matsbyname-and-matsindf" class="anchor"></a>Suggested workflow using <tt>matsbyname</tt> and <tt>matsindf</tt>
+<div class="section level2">
+<h2 id="suggested-workflow-using-matsbyname-and-matsindf">Suggested workflow using <tt>matsbyname</tt> and <tt>matsindf</tt><a class="anchor" aria-label="anchor" href="#suggested-workflow-using-matsbyname-and-matsindf"></a>
 </h2>
 <p>A suggested analysis workflow is as follows:</p>
 <ul>
@@ -571,10 +567,10 @@
 </ul>
 <p>For more information and a detailed example of this workflow, see the vignette for the <code>matsindf</code> package.</p>
 </div>
-<div id="summary" class="section level2">
-<h2 class="hasAnchor">
-<a href="#summary" class="anchor"></a>Summary</h2>
-<p>The <tt>matsbyname</tt> package simplifies analyses in which row and column names ought to be respected. It provides optional row and column types, thereby ensuring that only valid matrix operations are performed. Finally, <tt>matsbyname</tt> functions work equally well with lists to allow use of <tt>*_byname</tt> functions with <a href="https://tidyr.tidyverse.org"><tt>tidyr</tt></a> and <a href="https://dplyr.tidyverse.org"><tt>dplyr</tt></a> approaches to manipulating data.</p>
+<div class="section level2">
+<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+</h2>
+<p>The <tt>matsbyname</tt> package simplifies analyses in which row and column names ought to be respected. It provides optional row and column types, thereby ensuring that only valid matrix operations are performed. Finally, <tt>matsbyname</tt> functions work equally well with lists to allow use of <tt>*_byname</tt> functions with <a href="https://tidyr.tidyverse.org" class="external-link"><tt>tidyr</tt></a> and <a href="https://dplyr.tidyverse.org" class="external-link"><tt>dplyr</tt></a> approaches to manipulating data.</p>
 </div>
   </div>
 
@@ -589,11 +585,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Matthew Heun.</p>
+  <p></p>
+<p>Developed by Matthew Heun.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -601,6 +599,8 @@
 
   
 
+
+  
 
   </body>
 </html>

@@ -1339,9 +1339,9 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' objects of prepositions will be matched.
 #' Examples include "from" or "in".
 #' Row and column types from `v` are applied to the output.
-#' If the piece given in `a_piece` is not present in row and column labels of `a`, 
+#' If the piece given in `a_piece` is not present in row or column names of `a`, 
 #' `NA_real_` is returned.
-#' If the piece give in `v_piece` is not present in row and column lables of `v`, 
+#' If the piece given in `v_piece` is not present in row or column names of `v`, 
 #' `NA_real_` is returned.
 #' 
 #' Note that `notation` and `prepositions` should be lists if `a` is a list
@@ -1353,23 +1353,82 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'          Can also be a list or the name of a column in a data frame.
 #' @param v A vector from which values are taken, when `a_piece` matches `v_piece`.
 #'          Can also be a list or the name of a column in a data frame.
-#' @param a_piece The piece of labels on `a` that is to be matched.
-#' @param v_piece The piece of labels on `v` that is to be matched.
+#' @param a_piece The piece of labels on `a` that is to be matched. Default is "all".
+#' @param v_piece The piece of labels on `v` that is to be matched. Default is "all".
 #' @param colname The name of the output vector's 1-sized dimension 
 #'                (the only column if `column` is `TRUE`, the only row otherwise).
 #'                Default is `NULL`, meaning that the name of the 1-sized dimension in `v` 
 #'                should be used.
 #' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
 #' @param notation The notation for the row and column labels.
-#'                 Default is `RCLabels::bracket_notation`.
+#'                 Default is `RCLabels::bracket_notation`, wrapped as a list if `a` is a list.
 #' @param prepositions The strings that will count for prepositions.
-#'                     Default is `RCLables::prepositions`.
+#'                     Default is `RCLables::prepositions`, wrapped as a list if `a` is a list..
 #'
 #' @return A vector with names from `a` and values from `v`.
 #' 
 #' @export
 #'
 #' @examples
+#' a <- matrix(42, nrow = 3, ncol = 5, 
+#'             dimnames = list(c("Electricity [from b in c]", 
+#'                               "Coal [from e in f]", 
+#'                               "Crude oil [from Production in USA]"), 
+#'                             c("Main activity producer electricity plants", 
+#'                               "Wind turbines", 
+#'                               "Oil refineries", 
+#'                               "Coal mines", 
+#'                               "Automobiles"))) %>%
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' a
+#' v <- matrix(1:7, nrow = 7, ncol = 1, 
+#'             dimnames = list(c("Electricity", 
+#'                               "Peat", 
+#'                               "Hydro", 
+#'                               "Crude oil",
+#'                               "Coal", 
+#'                               "Hard coal (if no detail)", 
+#'                               "Brown coal"), 
+#'                             "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' v
+#' vec_from_store_byname(a, v, a_piece = "pref")
+#' vec_from_store_byname(a, v, a_piece = "noun")
+#' 
+#' v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+#'              dimnames = list(c("Electricity", 
+#'                                "Peat", 
+#'                                "USA", 
+#'                                "c",
+#'                                "Coal", 
+#'                                "Hard coal (if no detail)", 
+#'                                "f"), 
+#'                              "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' vec_from_store_byname(a, v2, a_piece = "in")
+#' 
+#' # Works with lists
+#' v3 <- matrix(1:7, nrow = 7, ncol = 1, 
+#'              dimnames = list(c("Electricity [from USA]", 
+#'                                "Peat [from nowhere]", 
+#'                                "Production [from GHA]", 
+#'                                "e [from ZAF]",
+#'                                "Coal [from AUS]", 
+#'                                "Hard coal (if no detail) [from GBR]", 
+#'                                "b [from Nebraska]"), 
+#'                              "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' a_list <- list(a, a)
+#' v_list <- list(v3, v3)
+#' vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from")
+#' 
+#' # Also works in a data frame
+#' df <- tibble::tibble(a = list(a, a, a), 
+#'                      v = list(v3, v3, v3))
+#' df %>%
+#'   dplyr::mutate(
+#'     actual = vec_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from")
+#'   )
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
                                   prepositions = if (is.list(a)) {list(RCLabels::prepositions)} else {RCLabels::prepositions}) {
