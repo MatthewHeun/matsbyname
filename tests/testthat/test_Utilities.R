@@ -1276,6 +1276,79 @@ test_that("vec_from_store_byname() works as expected with single matrices and pr
                                       "phi")) %>%
                  setrowtype("Product") %>% setcoltype("phi"))
   
+  # Try when we use different pieces of a and v.
+  a3 <- matrix(42, nrow = 3, ncol = 5, 
+               dimnames = list(c("Electricity [from b in GBR]", 
+                                 "Coal [from e in f]", 
+                                 "Crude oil [from Production in USA]"), 
+                               c("Main activity producer electricity plants", 
+                                 "Wind turbines", 
+                                 "Oil refineries", 
+                                 "Coal mines", 
+                                 "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v3 <- matrix(1:7, nrow = 7, ncol = 1, 
+               dimnames = list(c("Electricity [from USA]", 
+                                 "Peat", 
+                                 "Production", 
+                                 "e",
+                                 "Coal", 
+                                 "Hard coal (if no detail) [from GBR]", 
+                                 "b"), 
+                               "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expect_error(vec_from_store_byname(a3, v3, a_piece = "in", v_piece = "from"), 
+               "v_pieces must be unique in vec_from_store_byname")
+              
+               
+  v4 <- matrix(1:7, nrow = 7, ncol = 1, 
+               dimnames = list(c("Electricity [from USA]", 
+                                 "Peat [from nowhere]", 
+                                 "Production [from GHA]", 
+                                 "e [from ZAF]",
+                                 "Coal [from AUS]", 
+                                 "Hard coal (if no detail) [from GBR]", 
+                                 "b [from Nebraska]"), 
+                               "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+               
+  expect_equal(vec_from_store_byname(a3, v4, a_piece = "in", v_piece = "from"), 
+                matrix(c(6, NA_real_, 1), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in GBR]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+})
+
+
+test_that("vec_from_store_byname() works when a row vector is desired.", {
+  a <- matrix(42, nrow = 3, ncol = 2, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Wind turbines", 
+                                "Oil wells"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "Wind turbines", 
+                                "c",
+                                "Oil wells", 
+                                "Hard coal (if no detail)", 
+                                "f"), 
+                              "eta")) %>%
+    setrowtype("Industry") %>% setcoltype("eta")
+  
+  expect_equal(vec_from_store_byname(a, v, a_piece = "pref", column = FALSE), 
+               matrix(c(3, 5), nrow = 1, ncol = 2, 
+                      dimnames = list("eta", 
+                                      c("Wind turbines", 
+                                        "Oil wells"))) %>%
+                 setrowtype("eta") %>% setcoltype("Industry"))
 })
 
 

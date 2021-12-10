@@ -35,7 +35,7 @@ should be used.}
 Default is \code{RCLabels::bracket_notation}.}
 
 \item{prepositions}{The strings that will count for prepositions.
-Default is \code{RCLables::preposisions}.}
+Default is \code{RCLables::prepositions}.}
 }
 \value{
 A vector with names from \code{a} and values from \code{v}.
@@ -67,7 +67,9 @@ Alternatively, prepositions can be given such that
 objects of prepositions will be matched.
 Examples include "from" or "in".
 Row and column types from \code{v} are applied to the output.
-If the preposition is not present in row and column labels of \code{a},
+If the piece given in \code{a_piece} is not present in row and column labels of \code{a},
+\code{NA_real_} is returned.
+If the piece give in \code{v_piece} is not present in row and column lables of \code{v},
 \code{NA_real_} is returned.
 See the examples.
 

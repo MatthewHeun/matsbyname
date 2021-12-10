@@ -1336,7 +1336,9 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' objects of prepositions will be matched.
 #' Examples include "from" or "in".
 #' Row and column types from `v` are applied to the output.
-#' If the preposition is not present in row and column labels of `a`, 
+#' If the piece given in `a_piece` is not present in row and column labels of `a`, 
+#' `NA_real_` is returned.
+#' If the piece give in `v_piece` is not present in row and column lables of `v`, 
 #' `NA_real_` is returned.
 #' See the examples.
 #' 
@@ -1356,7 +1358,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' @param notation The notation for the row and column labels.
 #'                 Default is `RCLabels::bracket_notation`.
 #' @param prepositions The strings that will count for prepositions.
-#'                     Default is `RCLables::preposisions`.
+#'                     Default is `RCLables::prepositions`.
 #'
 #' @return A vector with names from `a` and values from `v`.
 #' 
@@ -1383,15 +1385,17 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
     if (v_size[[1]] == 1) {
       # Turn it into a column vector, so we can assume a column vector 
       # for the rest of this function.
-      return(v_vec(a_mat, transpose_byname(v_vec), a_piece_val, v_piece_val, colname_val, column_val))
+      return(vec_func(a_mat, transpose_byname(v_vec), a_piece_val, v_piece_val, colname_val, column_val))
     }
     # If we want a row vector, transpose a_mat so that we want a column vector.
     # By doing this, we can assume we want a column vector in the rest of this function.
     if (!column_val) {
-      a_mat %>%
-        transpose_byname() %>%
-        vec_func(v_vec, a_piece_val, v_piece_val, colname_val, column_val) %>%
-        transpose_byname()
+      return(
+        a_mat %>%
+          transpose_byname() %>%
+          vec_func(v_vec, a_piece_val, v_piece_val, colname_val, column_val = TRUE) %>%
+          transpose_byname()        
+      )
     }
     # At this point, we have a_mat and v_vec such that we want
     # names from the rows of a_mat and the values from the rows of v_vec.
@@ -1419,12 +1423,14 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
     for (i in 1:out_size) {
       # Get the value we want
       this_piece <- a_pieces[[i]]
-      if (this_piece == "") {
-        # There is nothing to match against.
+      rownum_in_v <- which(v_pieces == this_piece, arr.ind = TRUE)
+      if (this_piece == "" | length(rownum_in_v) == 0) {
+        # There is nothing to match against (this_piece == "")
+        # or 
+        # there is nothing in v_vec that matches this_piece (length(rownum_in_v) == 0).
         # The result should be a missing value.
         out[i, 1] <- NA_real_
       } else {
-        rownum_in_v <- which(v_pieces == this_piece, arr.ind = TRUE)
         val <- v_vec[[rownum_in_v, 1]]
         out[i, 1] <- val
       }
