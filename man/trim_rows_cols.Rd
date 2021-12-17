@@ -8,7 +8,13 @@ trim_rows_cols(
   a = NULL,
   mat = NULL,
   margin = c(1, 2),
-  warn_if_a_incomplete = TRUE
+  warn_if_a_incomplete = TRUE,
+  a_piece = "all",
+  mat_piece = "all",
+  notation = if (is.list(a)) {     list(RCLabels::bracket_notation) } else {    
+    RCLabels::bracket_notation },
+  prepositions = if (is.list(a)) {     list(RCLabels::prepositions) } else {    
+    RCLabels::prepositions }
 )
 }
 \arguments{
@@ -49,6 +55,17 @@ Typically, \code{a} should cover all the entries in \code{mat} on \code{margin}.
 Thus, by default, this function warns if \code{a} is missing entries on \code{margin}
 that are present in \code{mat}.
 To turn off this checking behavior, set \code{warn_if_a_incomplete = FALSE}.
+
+\code{a_piece} and \code{mat_piece}
+control which part of row and column names are
+compared before trimming.
+The default values for \code{a_piece} and \code{mat_piece} are "all",
+meaning that the entire label should be matched.
+Other options for \code{a_piece} and \code{mat_piece} are "pref" and "suff",
+which will match the prefix or suffix of the labels.
+Alternatively, prepositions can be given such that
+objects of prepositions will be matched.
+Examples include "from" or "in".
 }
 \examples{
 a <- matrix(c(1, 2, 3, 
@@ -63,4 +80,7 @@ mat <- matrix(c(1, 2, 3,
 trim_rows_cols(a, mat, margin = 1)
 trim_rows_cols(a, mat, margin = 2)
 trim_rows_cols(a, mat)
+}
+\seealso{
+\code{RCLabels::get_piece()}, which is used internally.
 }

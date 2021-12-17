@@ -150,3 +150,24 @@ test_that("trim_rows_cols() warns when a does not contain all items in mat", {
     setrowtype("rowtype") %>% setcoltype("coltype")
   expect_equal(res4, expected4)
 })
+
+
+test_that("trim_rows_cols() respects pieces", {
+  R <- matrix(c(1, 2, 3,  
+                4, 5, 6, 
+                7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1 [from Resources]", "c2 [from USA]", "c3 [from GHA]"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  
+  phi <- matrix(c(1, 1.05, 0.931, 42), nrow = 1, ncol = 4, 
+                dimnames = list("r1", c("x [of c1]", "y [of c2]", "z [of c3]", "bogus"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  
+  res1 <- trim_rows_cols(a = phi, mat = R, margin = 2, a_piece = "of", mat_piece = "pref")
+  expected1 <- matrix(c(1, 1.05, 0.931), nrow = 1, 
+                      dimnames = list("r1", c("x [of c1]", "y [of c2]", "z [of c3]"))) %>%
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  expect_equal(res1, expected1)
+  
+})
