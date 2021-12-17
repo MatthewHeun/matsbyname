@@ -138,7 +138,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL, margin = c(1,2), warn_if_a_inco
         missing_in_a <- setdiff(dimnamesmat[[1]], dimnames(out)[[1]])
         if (length(missing_in_a) > 0) {
           warning(paste("In trim_rows_cols, 'a' is missing the following rows or columns relative to 'mat':",
-                        paste(missing_in_a, collapse = ",")))
+                        paste(missing_in_a, collapse = ", ")))
         }
       }
     }
