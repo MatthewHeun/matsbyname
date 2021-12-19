@@ -171,4 +171,9 @@ test_that("trim_rows_cols() respects pieces", {
     setrowtype("rowtype") %>% setcoltype("coltype")
   expect_equal(res1, expected1)
   
+  # Try with the noun instead of the prefix
+  res2 <- trim_rows_cols(a = phi, mat = R, margin = 2, a_piece = "of", mat_piece = "noun")
+  # Should obtain the same result.
+  expect_equal(res2, expected1)
+
 })
