@@ -114,7 +114,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
     if (is.null(dimnames_mat_mat)) {
       # dimnamesmat is null, even after trying to gather row and column names from mat.  
       # We can't do anything, so issue a warning and return a_mat
-      warning("NULL names in trim_rows_cols, despite 'mat' being specified. Returning 'a_mat' unmodified.")
+      warning("NULL names in trim_rows_cols, despite 'mat_mat' being specified. Returning 'a_mat' unmodified.")
       return(a_mat)
     }
     
@@ -138,7 +138,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
     out <- a_mat
     if (2 %in% margin) {
       out <- trim_func(a_mat = transpose_byname(out), 
-                       mat = transpose_byname(mat),
+                       mat_mat = transpose_byname(mat_mat),
                        margin = 1) %>% 
         transpose_byname()
     }

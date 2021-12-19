@@ -16,7 +16,7 @@ test_that("trim_rows_cols() works in degenerate cases", {
   # When mat has NULL dimnames, a is returned unmodified
   mat2 <- mat
   dimnames(mat2) <- NULL
-  expect_warning(res <- trim_rows_cols(a, mat2), "NULL names in trim_rows_cols, despite 'mat' being specified. Returning 'a' unmodified.")
+  expect_warning(res <- trim_rows_cols(a, mat2), "NULL names in trim_rows_cols, despite 'mat_mat' being specified. Returning 'a_mat' unmodified.")
   expect_equal(res, a)
   
   # `mat` has `NULL` for dimnames on `margin`, an error is returned.
@@ -41,7 +41,7 @@ test_that("errors are triggered with erroneous input", {
 test_that("trim_rows_cols() works with a single number", {
   a <- 1
   mat <- matrix(42, dimnames = list("r1", "c1"))
-  expect_error(trim_rows_cols(a, mat), "a must be a matrix in trim_rows_cols")
+  expect_error(trim_rows_cols(a, mat), regexp = "a_mat must be a matrix in matsbyname::trim_rows_cols")
 })
 
 
@@ -92,6 +92,7 @@ test_that("trim_rows_cols() works when a list is given", {
     setrowtype("rowtype") %>% setcoltype("coltype")
   
   a_list <- list(a, a)
+  mat_list <- list(mat, mat)
   
   res <- matrix(c(1, 2), nrow = 1, ncol = 2, byrow = TRUE, 
                 dimnames = list(c("r1"), c("c1", "c2"))) %>% 
