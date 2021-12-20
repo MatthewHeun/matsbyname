@@ -1,6 +1,3 @@
-library("dplyr")
-library("magrittr")
-
 #' Complete rows and columns in one matrix relative to another
 #' 
 #' "Completing" rows and columns means that \code{a} contains a union of rows and columns
