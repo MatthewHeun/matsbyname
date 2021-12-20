@@ -40,6 +40,12 @@
 #'               Default is `c(1,2)`.
 #' @param warn_if_a_incomplete When `TRUE` (the default), a warning is emitted
 #'                             if `a` is missing entries on `margin` that are present in `mat`.
+#' @param a_piece The portion of `a` labels to be used for comparison. Default is "all".
+#' @param mat_piece The portion of `mat` labels to be used for comparison. Default is "all".
+#' @param notation The notation for row and column labels. 
+#'                 Default is `RCLabels::bracket_notation`.
+#' @param prepositions The strings to be treated as prepositions in row and column labels.
+#'                     Default is `RCLabels::prepositions`.
 #'
 #' @return Matrix `a` with rows or columns trimmed to match `mat`.
 #' 

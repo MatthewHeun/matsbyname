@@ -27,6 +27,16 @@ Default is \code{c(1,2)}.}
 
 \item{warn_if_a_incomplete}{When \code{TRUE} (the default), a warning is emitted
 if \code{a} is missing entries on \code{margin} that are present in \code{mat}.}
+
+\item{a_piece}{The portion of \code{a} labels to be used for comparison. Default is "all".}
+
+\item{mat_piece}{The portion of \code{mat} labels to be used for comparison. Default is "all".}
+
+\item{notation}{The notation for row and column labels.
+Default is \code{RCLabels::bracket_notation}.}
+
+\item{prepositions}{The strings to be treated as prepositions in row and column labels.
+Default is \code{RCLabels::prepositions}.}
 }
 \value{
 Matrix \code{a} with rows or columns trimmed to match \code{mat}.
