@@ -11,10 +11,8 @@ trim_rows_cols(
   warn_if_a_incomplete = TRUE,
   a_piece = "all",
   mat_piece = "all",
-  notation = if (is.list(a)) {     list(RCLabels::bracket_notation) } else {    
-    RCLabels::bracket_notation },
-  prepositions = if (is.list(a)) {     list(RCLabels::prepositions) } else {    
-    RCLabels::prepositions }
+  notation = RCLabels::bracket_notation,
+  prepositions = RCLabels::prepositions
 )
 }
 \arguments{

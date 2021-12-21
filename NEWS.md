@@ -19,7 +19,7 @@ output: html_document
    When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
    that are present in `mat`.
 * Many new tests for new features.
-    - Now at 1081 tests, all passing.
+    - Now at 1010 tests, all passing.
     - Test coverage remains at 100 %.
 
 

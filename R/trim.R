@@ -69,8 +69,8 @@
 trim_rows_cols <- function(a = NULL, mat = NULL, 
                            margin = c(1,2), warn_if_a_incomplete = TRUE, 
                            a_piece = "all", mat_piece = "all", 
-                           notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
-                           prepositions = if (is.list(a)) {list(RCLabels::prepositions)} else {RCLabels::prepositions}) {
+                           notation = RCLabels::bracket_notation, 
+                           prepositions = RCLabels::prepositions) {
   
   if (is.null(a) & is.null(mat)) {
     stop("Both a and mat are NULL in complete_rows_cols.")
@@ -97,6 +97,10 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
   
   # Double-check that we have what we need for the margin argument.
   margin <- prep_vector_arg(a, margin)
+  
+  # Ensure that we have what we need for notation and prepositions
+  notation <- prep_vector_arg(a, notation)
+  prepositions <- prep_vector_arg(a, prepositions)
   
   trim_func <- function(a_mat = NULL, mat_mat = NULL, margin) {
     # When we get here, we should not have lists for any of the arguments.
