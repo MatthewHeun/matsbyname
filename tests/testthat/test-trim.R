@@ -16,7 +16,7 @@ test_that("trim_rows_cols() works in degenerate cases", {
   # When mat has NULL dimnames, a is returned unmodified
   mat2 <- mat
   dimnames(mat2) <- NULL
-  expect_warning(res <- trim_rows_cols(a, mat2), "NULL names in trim_rows_cols, despite 'mat' being specified. Returning 'a' unmodified.")
+  expect_warning(res <- trim_rows_cols(a, mat2), "NULL names in trim_rows_cols, despite 'mat_mat' being specified. Returning 'a_mat' unmodified.")
   expect_equal(res, a)
   
   # `mat` has `NULL` for dimnames on `margin`, an error is returned.
@@ -41,7 +41,7 @@ test_that("errors are triggered with erroneous input", {
 test_that("trim_rows_cols() works with a single number", {
   a <- 1
   mat <- matrix(42, dimnames = list("r1", "c1"))
-  expect_error(trim_rows_cols(a, mat), "a must be a matrix in trim_rows_cols")
+  expect_error(trim_rows_cols(a, mat), regexp = "a_mat must be a matrix in matsbyname::trim_rows_cols")
 })
 
 
@@ -92,6 +92,7 @@ test_that("trim_rows_cols() works when a list is given", {
     setrowtype("rowtype") %>% setcoltype("coltype")
   
   a_list <- list(a, a)
+  mat_list <- list(mat, mat)
   
   res <- matrix(c(1, 2), nrow = 1, ncol = 2, byrow = TRUE, 
                 dimnames = list(c("r1"), c("c1", "c2"))) %>% 
@@ -149,4 +150,30 @@ test_that("trim_rows_cols() warns when a does not contain all items in mat", {
   expected4 <- matrix(c(1.05, 0.931), nrow = 1, dimnames = list("r1", c("c2", "c3"))) %>% 
     setrowtype("rowtype") %>% setcoltype("coltype")
   expect_equal(res4, expected4)
+})
+
+
+test_that("trim_rows_cols() respects pieces", {
+  R <- matrix(c(1, 2, 3,  
+                4, 5, 6, 
+                7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1 [from Resources]", "c2 [from USA]", "c3 [from GHA]"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  
+  phi <- matrix(c(1, 1.05, 0.931, 42), nrow = 1, ncol = 4, 
+                dimnames = list("r1", c("x [of c1]", "y [of c2]", "z [of c3]", "bogus"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  
+  res1 <- trim_rows_cols(a = phi, mat = R, margin = 2, a_piece = "of", mat_piece = "pref")
+  expected1 <- matrix(c(1, 1.05, 0.931), nrow = 1, 
+                      dimnames = list("r1", c("x [of c1]", "y [of c2]", "z [of c3]"))) %>%
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  expect_equal(res1, expected1)
+  
+  # Try with the noun instead of the prefix
+  res2 <- trim_rows_cols(a = phi, mat = R, margin = 2, a_piece = "of", mat_piece = "noun")
+  # Should obtain the same result.
+  expect_equal(res2, expected1)
+
 })

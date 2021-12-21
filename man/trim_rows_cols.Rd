@@ -8,7 +8,13 @@ trim_rows_cols(
   a = NULL,
   mat = NULL,
   margin = c(1, 2),
-  warn_if_a_incomplete = TRUE
+  warn_if_a_incomplete = TRUE,
+  a_piece = "all",
+  mat_piece = "all",
+  notation = if (is.list(a)) {     list(RCLabels::bracket_notation) } else {    
+    RCLabels::bracket_notation },
+  prepositions = if (is.list(a)) {     list(RCLabels::prepositions) } else {    
+    RCLabels::prepositions }
 )
 }
 \arguments{
@@ -21,6 +27,16 @@ Default is \code{c(1,2)}.}
 
 \item{warn_if_a_incomplete}{When \code{TRUE} (the default), a warning is emitted
 if \code{a} is missing entries on \code{margin} that are present in \code{mat}.}
+
+\item{a_piece}{The portion of \code{a} labels to be used for comparison. Default is "all".}
+
+\item{mat_piece}{The portion of \code{mat} labels to be used for comparison. Default is "all".}
+
+\item{notation}{The notation for row and column labels.
+Default is \code{RCLabels::bracket_notation}.}
+
+\item{prepositions}{The strings to be treated as prepositions in row and column labels.
+Default is \code{RCLabels::prepositions}.}
 }
 \value{
 Matrix \code{a} with rows or columns trimmed to match \code{mat}.
@@ -49,6 +65,17 @@ Typically, \code{a} should cover all the entries in \code{mat} on \code{margin}.
 Thus, by default, this function warns if \code{a} is missing entries on \code{margin}
 that are present in \code{mat}.
 To turn off this checking behavior, set \code{warn_if_a_incomplete = FALSE}.
+
+\code{a_piece} and \code{mat_piece}
+control which part of row and column names are
+compared before trimming.
+The default values for \code{a_piece} and \code{mat_piece} are "all",
+meaning that the entire label should be matched.
+Other options for \code{a_piece} and \code{mat_piece} are "pref" and "suff",
+which will match the prefix or suffix of the labels.
+Alternatively, prepositions can be given such that
+objects of prepositions will be matched.
+Examples include "from" or "in".
 }
 \examples{
 a <- matrix(c(1, 2, 3, 
@@ -63,4 +90,7 @@ mat <- matrix(c(1, 2, 3,
 trim_rows_cols(a, mat, margin = 1)
 trim_rows_cols(a, mat, margin = 2)
 trim_rows_cols(a, mat)
+}
+\seealso{
+\code{RCLabels::get_piece()}, which is used internally.
 }
