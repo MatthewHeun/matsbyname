@@ -1434,3 +1434,29 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
     rename_to_pref_suff_byname(keep = keep, margin = margin, notation = notation) %>% 
     aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
 }
+
+
+#' Aggregate a matrix by pieces of row and/or column names
+#' 
+#' Aggregate a matrix (or list of matrices or a column in a `matsindf` data frame)
+#' by pieces of the row and column names.
+#'
+#' @param a 
+#' @param aggregation_map 
+#' @param piece 
+#' @param margin 
+#'
+#' @return A version of `a` with rows and/or columns aggregated according to `aggregation_map`.
+#' 
+#' @export
+#'
+#' @examples
+aggregate_pieces_byname <- function(a, 
+                                    aggregation_map = NULL, 
+                                    piece,
+                                    margin = c(1, 2)) {
+  print("nothing")
+}
+
+
+

@@ -1464,6 +1464,69 @@ test_that("vec_from_store_byname() works in a data frame", {
 })
 
 
+test_that("rename_to_piece_byname() works as expected", {
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), nrow = 3, byrow = TRUE, 
+              dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+  rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+  
+})
 
 
+test_that("margin_from_types_byname() works as expected", {
+  # Try with a single matrix
+  m <- matrix(1) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(margin_from_types_byname(m, "Product"), 1)
+  expect_equal(margin_from_types_byname(m, "Industry"), 2)
+  expect_equal(margin_from_types_byname(m, c("Product", "Industry")), c(1, 2))
+  expect_equal(margin_from_types_byname(m, c("Industry", "Product")), c(1, 2))
+  
+  # Try with a type that isn't in the row or column types.
+  expect_equal(margin_from_types_byname(m, "bogus"), NA_integer_)
+  
+  # Try with one type that IS in the row or column types and one type that is not.
+  expect_equal(margin_from_types_byname(m, c("bogus", "Product")), 1)
+  
+  # Try with a non-character types argument
+  expect_equal(margin_from_types_byname(m, c(1, 2)), c(1, 2))
+  
+  # Try with a list of matrices
+  expect_equal(margin_from_types_byname(list(m, m), types = "Product"), 
+               list(1, 1))
+  expect_equal(margin_from_types_byname(list(m, m), types = "Industry"), 
+               list(2, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Product", "Product")), 
+               list(1, 1))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Industry", "Industry")), 
+               list(2, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Product", "Industry")), 
+               list(1, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = list("Product", "Industry")), 
+               list(1, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = list(c("Product", "Industry"))), 
+               list(c(1, 2), c(1, 2)))
+  expect_equal(margin_from_types_byname(list(m, m), types = list(c("Product", "Industry"), 
+                                                                 c("Product", "Industry"))), 
+               list(c(1, 2), c(1, 2)))
+    
+  # Try in a data frame.
+  m2 <- matrix(2) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  df <- tibble::tibble(m = list(m, m2), 
+                       types1 = list("Product", "Industry"), 
+                       types2 = list(c("Product", "Industry"), "Industry"), 
+                       types3 = "bogus")
+  res <- df %>%
+    dplyr::mutate(
+      margin1 = margin_from_types_byname(m, types1), 
+      margin2 = margin_from_types_byname(m, types2), 
+      margin3 = margin_from_types_byname(m, types3)
+    )
+  
+  expect_equal(res$margin1, list(1, 1))
+  expect_equal(res$margin2, list(c(1, 2), 1))
+  expect_equal(res$margin3, list(NA_integer_, NA_integer_))
+})
 

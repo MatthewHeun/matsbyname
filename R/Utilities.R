@@ -512,6 +512,175 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 }
 
 
+#' Rename matrix rows and columns by piece of row or column names
+#' 
+#' It can be convenient to rename rows or columns of matrices 
+#' based on retaining only a piece of the row and/or column names.
+#' This function provides that capability.
+#' 
+#' Internally, this function finds pieces of row and column names 
+#' via the `RCLabels` package. 
+#' `piece` can be anything that `RCLabels::get_piece()` understands.
+#' Note that `margin` can be either an integer vector or
+#' a character vector. 
+#' If `margin` is a character vector, 
+#' it is interpreted as a row or column type, and
+#' `margin_from_types_byname()` is called internally to 
+#' resolve the integer margins of interest.
+#'
+#' @param a A matrix or list of matrices whose rows or columns will be renamed.
+#' @param piece A character indicating which piece of the row or column names to retain, 
+#'              one of "noun", "pps", "pref" or "suff", or a preposition,
+#'              indicating which part of the row or column name is to be retained.
+#' @param margin As a character, the row type or column type to be renamed.
+#'               As an integer, the margin to be renamed.
+#'               Default is `c(1, 2)`, meaning that both 
+#'               rows (`margin = 1`) and columns (`margin = 2`)
+#'               will be renamed.
+#' @param notation The notation used for row and column labels. 
+#'                 Default is `RCLabels::bracket_notation`.
+#'                 See `RCLabels`.
+#'                 
+#' @param prepositions Prepositions that can be used in the row and column label.
+#'                     Default is `RCLabels::prepositions`.
+#'
+#' @return A version of `a` with renamed rows and columns.
+#' 
+#' @export
+#'
+#' @examples
+rename_to_piece_byname <- function(a,
+                                   piece,
+                                   margin = c(1, 2),
+                                   notation = RCLabels::bracket_notation,
+                                   prepositions = RCLabels::prepositions) {
+  piece <- prep_vector_arg(a, piece)
+  margin <- prep_vector_arg(a, margin)
+  notation <- prep_vector_arg(a, notation)
+  prepositions <- prep_vector_arg(a, prepositions)
+  
+  rename_func <- function(a_mat, this_piece, this_margin, this_notation, these_prepositions) {
+    # At this point, a should be a single matrix, 
+    # this_* should be individual items ready for use in this function.
+    
+    # Figure out the margin.
+    this_margin <- margin_from_types_byname(a_mat, this_margin)
+
+    if (2 %in% this_margin) {
+      # Want to rename columns.
+      # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
+      a_mat <- transpose_byname(a_mat) %>% 
+        rename_func(this_piece = this_piece, 
+                    this_margin = 1,
+                    this_notation = this_notation, 
+                    these_prepositions = these_prepositions) %>% 
+        transpose_byname()
+    }
+    
+    if (1 %in% this_margin) {
+      new_rnames <- rownames(a_mat) %>% 
+        RCLabels::get_piece(piece = this_piece, 
+                            notation = this_notation,
+                            prepositions = these_prepositions)
+      new_rt <- rowtype(a_mat)
+      if (!is.null(new_rt)) {
+        new_rnames <- RCLabels::get_piece(piece = this_piece, 
+                                          notation = this_notation, 
+                                          prepositions = these_prepositions)
+      }
+      
+      # Set new rownames
+      rownames(a_mat) <- new_rnames
+      # Set new rowtype
+      a_mat <- setrowtype(a_mat, new_rt)
+    }
+    
+    return(a_mat)
+  }
+  unaryapply_byname(rename_func, a = a,
+                    .FUNdots = list(this_piece = piece,
+                                    this_margin = margin,
+                                    this_notation = notation, 
+                                    these_prepositions = prepositions), 
+                    rowcoltypes = "none")
+}
+
+
+#' Translate row and column types to integer margins
+#' 
+#' Converts row and column types to integer margins,
+#' based on `a` and `types`.
+#' If `types` is not a character vector, `types` is returned unmodified.
+#' If `types` is a character vector, an integer vector is returned
+#' corresponding to the margins on which `types` are found.
+#' If `types` are not found in the row or column types of `a`, 
+#' `NA_integer_` is returned.
+#'
+#' @param a A matrix or list of matrices.
+#' @param types A character vector or list of character vectors 
+#'              representing row or column types whose 
+#'              corresponding integer margins in `a` are to be determined.
+#'
+#' @return A vector of integers or list of vectors of integers 
+#'         corresponding to the margins on which `types` exist.
+#' 
+#' @export
+#'
+#' @examples
+#' # Works for single matrices
+#' m <- matrix(1) %>%
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' margin_from_types_byname(m, "Product")
+#' margin_from_types_byname(m, "Industry")
+#' margin_from_types_byname(m, c("Product", "Industry"))
+#' margin_from_types_byname(m, c("Industry", "Product"))
+#' # Works for lists of matrices
+#' margin_from_types_byname(list(m, m), types = "Product")
+#' margin_from_types_byname(list(m, m), types = "Industry")
+#' margin_from_types_byname(list(m, m), types = c("Product", "Product"))
+#' margin_from_types_byname(list(m, m), types = c("Industry", "Industry"))
+#' margin_from_types_byname(list(m, m), types = c("Product", "Industry"))
+#' margin_from_types_byname(list(m, m), types = list("Product", "Industry"))
+#' margin_from_types_byname(list(m, m), types = list(c("Product", "Industry")))
+#' margin_from_types_byname(list(m, m), types = list(c("Product", "Industry"), 
+#'                                                   c("Product", "Industry")))
+#' # Works in a data frame
+#' m2 <- matrix(2) %>%
+#'   setrowtype("Industry") %>% setcoltype("Product")
+#' df <- tibble::tibble(m = list(m, m2), types = list("Product", c("Product", "Industry")))
+#' res <- df %>%
+#'   dplyr::mutate(
+#'     margin = margin_from_types_byname(m, types)
+#'  )
+#' res$margin
+margin_from_types_byname <- function(a, types) {
+  
+  types <- prep_vector_arg(a, types)
+  
+  mft_fun <- function(a_mat, these_types) {
+    # At this point, a_mat and these_types should be single 
+    # items, ready for use.
+    if (!is.character(these_types)) {
+      return(these_types)
+    }
+    margin <- c()
+    if (rowtype(a_mat) %in% these_types) {
+      margin <- margin %>% 
+        append(1)
+    }
+    if (coltype(a_mat) %in% these_types) {
+      margin <- margin %>%
+        append(2)
+    }
+    if (length(margin) == 0) {
+      return(NA_integer_)
+    }
+    return(margin)
+  }
+  unaryapply_byname(mft_fun, a = a, .FUNdots = list(these_types = types), rowcoltypes = "none")
+}
+
+
 #' Sets row type for a matrix or a list of matrices
 #'
 #' This function is a wrapper for \code{attr} so that 
