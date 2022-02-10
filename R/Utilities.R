@@ -589,8 +589,8 @@ rename_to_piece_byname <- function(a,
                                           prepositions = these_prepositions)
       }
       
-      # Set new rownames
-      rownames(a_mat) <- new_rnames
+      # Set new rownames, without the names on the list (parts of the previous name)
+      rownames(a_mat) <- unname(new_rnames)
       # Set new rowtype
       a_mat <- setrowtype(a_mat, new_rt)
     }

@@ -1441,7 +1441,7 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' Aggregate a matrix (or list of matrices or a column in a `matsindf` data frame)
 #' by pieces of the row and column names.
 #'
-#' @param a 
+#' @param a The matrix or 
 #' @param aggregation_map 
 #' @param piece 
 #' @param margin 

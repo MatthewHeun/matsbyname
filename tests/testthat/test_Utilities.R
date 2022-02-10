@@ -1469,8 +1469,10 @@ test_that("rename_to_piece_byname() works as expected", {
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 
               dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
-  rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
-  
+  res <- rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+  expected <- m
+  dimnames(expected) <- list(c("a", "r2", "r3"), c("a", "c"))
+  expect_equal(res, expected)
 })
 
 
