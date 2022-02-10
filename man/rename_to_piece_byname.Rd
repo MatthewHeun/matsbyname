@@ -50,4 +50,22 @@ If \code{margin} is a character vector,
 it is interpreted as a row or column type, and
 \code{margin_from_types_byname()} is called internally to
 resolve the integer margins of interest.
+
+Note that if row and/or column type are present,
+the row and/or column type are also renamed according to \code{piece}.
+}
+\examples{
+m <- matrix(c(1, 2, 
+              3, 4, 
+              5, 6), nrow = 3, byrow = TRUE, 
+            dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+m
+rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+m2 <- m \%>\%
+  setrowtype("rows") \%>\% setcoltype("cols")
+m2
+rename_to_piece_byname(m2, piece = "pref", margin = "rows",
+                       notation = RCLabels::arrow_notation)
+rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+                       notation = RCLabels::arrow_notation)
 }

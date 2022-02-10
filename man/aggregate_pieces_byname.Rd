@@ -7,9 +7,9 @@
 aggregate_pieces_byname(a, aggregation_map = NULL, piece, margin = c(1, 2))
 }
 \arguments{
-\item{a}{The matrix or}
+\item{a}{A matrix or list of matrices}
 
-\item{aggregation_map}{}
+\item{aggregation_map}{See \code{aggregate_byname()}.}
 
 \item{piece}{}
 

@@ -552,6 +552,19 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' @export
 #'
 #' @examples
+#' m <- matrix(c(1, 2, 
+#'               3, 4, 
+#'               5, 6), nrow = 3, byrow = TRUE, 
+#'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+#' m
+#' rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+#' m2 <- m %>%
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' m2
+#' rename_to_piece_byname(m2, piece = "pref", margin = "rows",
+#'                        notation = RCLabels::arrow_notation)
+#' rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+#'                        notation = RCLabels::arrow_notation)
 rename_to_piece_byname <- function(a,
                                    piece,
                                    margin = c(1, 2),
