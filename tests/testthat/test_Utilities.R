@@ -1469,10 +1469,38 @@ test_that("rename_to_piece_byname() works as expected", {
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 
               dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
-  res <- rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
-  expected <- m
-  dimnames(expected) <- list(c("a", "r2", "r3"), c("a", "c"))
-  expect_equal(res, expected)
+  res1 <- rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+  expected1 <- m
+  dimnames(expected1) <- list(c("a", "r2", "r3"), c("a", "c"))
+  expect_equal(res1, expected1)
+  
+  res2 <- rename_to_piece_byname(m, piece = "suff", notation = RCLabels::arrow_notation)
+  expected2 <- m
+  dimnames(expected2) <- list(c("b", "", ""), c("b", "d"))
+  expect_equal(res2, expected2)
+  
+  # Check that it works for different margins.
+  res3 <- rename_to_piece_byname(m, piece = "pref", margin = 1,
+                                 notation = RCLabels::arrow_notation)
+  expected3 <- m
+  dimnames(expected3) <- list(c("a", "r2", "r3"), c("a -> b", "c -> d"))
+  expect_equal(res3, expected3)
+
+  res4 <- rename_to_piece_byname(m, piece = "suff", margin = 2,
+                                 notation = RCLabels::arrow_notation)
+  expected4 <- m
+  dimnames(expected4) <- list(c("a -> b", "r2", "r3"), c("b", "d"))
+  expect_equal(res4, expected4)
+  
+  
+    
+  # Check that it works in a list.
+  res5 <- rename_to_piece_byname(list(m, m), piece = list("pref", "suff"), 
+                                 margin = list(1, 2),
+                                 notation = RCLabels::arrow_notation)
+  expected5 <- list(expected1, expected4)
+  expect_equal(res5, expected5)
+  
 })
 
 
