@@ -1394,7 +1394,7 @@ context("Rename")
 test_that("rename_to_pref_suff_byname() works as expected", {
   m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
   # This aggregation should simply return m with a renamed column.
-  res <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = RCLabels::arrow_notation)
+  res <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expected <- m %>% 
     magrittr::set_colnames("Industry")
   expect_equal(res, expected)
