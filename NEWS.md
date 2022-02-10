@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* New function `rename_to_piect_byname()` will assist
+  with renaming and aggregating
+  according to pieces of row and column names.
 * New function `vec_from_store_byname()` 
   creates vectors from a matrix 
   (from which row of column names are taken)

@@ -527,6 +527,9 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' it is interpreted as a row or column type, and
 #' `margin_from_types_byname()` is called internally to 
 #' resolve the integer margins of interest.
+#' 
+#' Note that if row and/or column type are present,
+#' the row and/or column type are also renamed according to `piece`.
 #'
 #' @param a A matrix or list of matrices whose rows or columns will be renamed.
 #' @param piece A character indicating which piece of the row or column names to retain, 
@@ -584,15 +587,16 @@ rename_to_piece_byname <- function(a,
                             prepositions = these_prepositions)
       new_rt <- rowtype(a_mat)
       if (!is.null(new_rt)) {
-        new_rnames <- RCLabels::get_piece(piece = this_piece, 
-                                          notation = this_notation, 
-                                          prepositions = these_prepositions)
+        new_rt <- new_rt %>%
+          RCLabels::get_piece(piece = this_piece, 
+                              notation = this_notation, 
+                              prepositions = these_prepositions)
       }
       
       # Set new rownames, without the names on the list (parts of the previous name)
       rownames(a_mat) <- unname(new_rnames)
       # Set new rowtype
-      a_mat <- setrowtype(a_mat, new_rt)
+      a_mat <- setrowtype(a_mat, unname(new_rt))
     }
     
     return(a_mat)
