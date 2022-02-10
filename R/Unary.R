@@ -1468,6 +1468,48 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' @export
 #'
 #' @examples
+#' a <- matrix(c(1, 2, 3, 
+#'               4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+#'             dimnames = list(c("a [from b]", "c [from d]"), 
+#'                             c("e [from f]", "g [from h]", "i [from j]")))
+#' a %>%
+#'   aggregate_pieces_byname(piece = "suff", 
+#'                           notation = RCLabels::from_notation,
+#'                           aggregation_map = list(rows = c("b", "d"), 
+#'                                                  cols = c("h", "j")))
+#' m <- matrix(c(1, 0, 0, 
+#'               0, 1, 1, 
+#'               0, 1, 1), nrow = 3, ncol = 3, byrow = TRUE, 
+#'             dimnames = list(c("Gasoline [from Oil refineries]", 
+#'                               "Electricity [from Main activity producer electricity plants]", 
+#'                               "Electricity [from Hydro]"),
+#'                             c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' mT <- transpose_byname(m)
+#' # Aggregate the "Electricity" rows.
+#' aggregate_pieces_byname(m, piece = "noun", margin = "Product",
+#'                         notation = RCLabels::bracket_notation)
+#' # Also works in a list.
+#' aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+#'                         margin = "Product",
+#'                         notation = RCLabels::bracket_notation)
+#' # Use an aggregation map
+#' aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+#'                         margin = "Product",
+#'                         aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+#'                         notation = RCLabels::bracket_notation)
+#' # Also works in a data frame.
+#' df <- tibble::tibble(m = list(m, mT), 
+#'                      pce = "noun",
+#'                      mgn = "Product",
+#'                      agg_map = list(list(final = c("Electricity", "Gasoline"))), 
+#'                      notn = list(RCLabels::bracket_notation)) %>%
+#'   dplyr::mutate(
+#'     agg = aggregate_pieces_byname(a = m, piece = pce, margin = mgn, 
+#'                                   aggregation_map = agg_map,
+#'                                   notation = notn)
+#'   )
+#' df$agg
 aggregate_pieces_byname <- function(a, 
                                     piece,
                                     margin = c(1, 2), 

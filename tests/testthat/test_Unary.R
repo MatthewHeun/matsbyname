@@ -1726,7 +1726,7 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
       notation = RCLabels::bracket_notation)
     )
-expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
+  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 
 
 # Try in a data frame using columns for arguments.
