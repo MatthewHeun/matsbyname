@@ -1667,3 +1667,23 @@ test_that("aggregate_pieces_byname() works as expected", {
                       dimnames = list("rows", c("cols", "f")))
   expect_equal(res1, expected1)
 })
+
+
+test_that("aggregate_pieces_byname() works with aggregation by type", {
+  m <- matrix(c(1, 0, 0, 
+                0, 1, 1, 
+                0, 1, 1), nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("Gasoline [from Oil refineries]", 
+                                "Electricity [from Main activity producer electricity plants]", 
+                                "Electricity [from Hydro]"),
+                              c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  actual <- aggregate_pieces_byname(m, piece = "noun", margin = "Product",
+                                    notation = RCLabels::bracket_notation)
+  expected <- matrix(c(0, 2, 2, 
+                       1, 0, 0), nrow = 2, ncol = 3, byrow = TRUE, 
+                     dimnames = list(c("Electricity", "Gasoline"),
+                                     c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(actual, expected)
+})

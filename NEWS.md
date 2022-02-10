@@ -4,6 +4,17 @@ output: html_document
 ---
 
 
+* Functions `rename_to_pref_suff_byname()` and 
+  `aggregate_to_pref_suff_byname()`
+  now route to new functions
+  `rename_to_piece_byname()` and
+  `aggregate_pieces_byname()`, 
+  thereby avoiding code duplication.
+  This change may break some code. 
+  These functions now return an empty string ("")
+  when a suffix is requested and one is not found.
+  Previously, these functions returned the entire
+  string when a suffix was not found.
 * New function `aggregate_pieces_byname()`
   brings the flexibility of the `RCLabels` 
   to `matsbyname`.
@@ -28,7 +39,7 @@ output: html_document
    When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
    that are present in `mat`.
 * Many new tests for new features.
-    - Now at 1010 tests, all passing.
+    - Now at 1036 tests, all passing.
     - Test coverage remains at 100 %.
 
 

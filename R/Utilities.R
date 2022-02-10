@@ -442,78 +442,8 @@ setcolnames_byname <- function(a, colnames){
 #' rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
 #' rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
 rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
-  
-  # margin <- prep_vector_arg(a, margin)
-  # notation <- prep_vector_arg(a, notation)
-  # 
-  # rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), notation) {
-  #   # At this point, a should be a single matrix.
-  #   keep <- match.arg(keep)
-  #   assertthat::assert_that(all(margin %in% c(1, 2)))
-  #   
-  #   if (2 %in% margin) {
-  #     # Want to rename columns.
-  #     # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
-  #     a <- transpose_byname(a) %>% 
-  #       rename_func(keep = keep, margin = 1, notation) %>% 
-  #       transpose_byname()
-  #   }
-  #   
-  #   if (1 %in% margin) {
-  #     ps <- rownames(a) %>% 
-  #       RCLabels::split_pref_suff(notation = notation)
-  #     if (keep == "prefix") {
-  #       # If prefixes are desired, simply grab the "pref" item.
-  #       new_rnames <- ps %>% 
-  #         magrittr::extract2("pref")
-  #       # Also deal with rowtype, but only if there was a rowtype for a.
-  #       new_rt <- rowtype(a)
-  #       if (!is.null(new_rt)) {
-  #         new_rt <- rowtype(a) %>% 
-  #           RCLabels::split_pref_suff(notation = notation) %>% 
-  #           magrittr::extract2("pref")
-  #       }
-  #     } else {
-  #       # We want the suffix.
-  #       # Be careful for rows in which a suffix was not found.
-  #       # In that case, return the prefix.
-  #       new_rnames <- mapply(ps[["pref"]], ps[["suff"]], 
-  #                            USE.NAMES = FALSE, FUN = function(p, s) {
-  #           if (s == "") {
-  #             return(p)
-  #           }
-  #           return(s)
-  #         })
-  #       # Also deal with rowtype, but only if there was a rowtype for a.
-  #       new_rt <- rowtype(a)
-  #       if (!is.null(new_rt)) {
-  #         new_rt <- rowtype(a) %>% 
-  #           RCLabels::split_pref_suff(notation = notation) %>% 
-  #           magrittr::extract2("suff")
-  #         if (new_rt == "") {
-  #           # There was no suffix, so return the prefix.
-  #           new_rt <- rowtype(a) %>% 
-  #             RCLabels::split_pref_suff(notation = notation) %>% 
-  #             magrittr::extract2("pref")
-  #         }
-  #       }
-  #     }
-  #     # Set new rownames
-  #     rownames(a) <- new_rnames
-  #     # Set new rowtype
-  #     a <- setrowtype(a, new_rt)
-  #   }
-  # 
-  #   return(a)
-  # }
-  # unaryapply_byname(rename_func, a = a,
-  #                   .FUNdots = list(keep = keep, margin = margin, notation = notation), 
-  #                   rowcoltypes = "none")
-  
   rename_to_piece_byname(a, piece = keep, margin = margin, 
                          notation = notation, prepositions = RCLabels::prepositions)
-  
-  
 }
 
 

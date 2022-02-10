@@ -1315,16 +1315,19 @@ any_byname <- function(a){
 aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), pattern_type = "exact") {
   margin <- prep_vector_arg(a, margin)
   
-  agg_func <- function(a_mat, aggregation_map, margin, pattern_type) {
+  agg_func <- function(a_mat, aggregation_map, this_margin, pattern_type) {
     # If we get here, a should be a single matrix.
-    assertthat::assert_that(all(margin %in% c(1, 2)))
+    # Figure out the margin.
+    this_margin <- margin_from_types_byname(a_mat, this_margin)
+    
+    assertthat::assert_that(all(this_margin %in% c(1, 2)))
     # Create our own aggregation_map if it is NULL
     if (is.null(aggregation_map)) {
       rcnames <- list()
-      if (1 %in% margin) {
+      if (1 %in% this_margin) {
         rcnames[["rnames"]] <- rownames(a_mat)
       }
-      if (2 %in% margin) {
+      if (2 %in% this_margin) {
         rcnames[["cnames"]] <- colnames(a_mat)
       }
       aggregation_map <- lapply(rcnames, FUN = function(x) {
@@ -1349,14 +1352,14 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
       }
     }
     out <- a_mat
-    if (2 %in% margin) {
+    if (2 %in% this_margin) {
       # Want to aggregate columns.
       # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
       out <- t(a_mat) %>% 
-        agg_func(aggregation_map = aggregation_map, margin = 1, pattern_type = pattern_type) %>% 
+        agg_func(aggregation_map = aggregation_map, this_margin = 1, pattern_type = pattern_type) %>% 
         t()
     }
-    if (1 %in% margin) {
+    if (1 %in% this_margin) {
       for (i in 1:length(aggregation_map)) {
         # Isolate rows to be aggregated
         select_pattern <- RCLabels::make_or_pattern(strings = aggregation_map[[i]], pattern_type = pattern_type)
@@ -1389,7 +1392,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
   }
 
   unaryapply_byname(agg_func, a, 
-                    .FUNdots = list(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type))
+                    .FUNdots = list(aggregation_map = aggregation_map, this_margin = margin, pattern_type = pattern_type))
 }
 
 
