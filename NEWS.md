@@ -5,7 +5,8 @@ output: html_document
 
 
 * Remove (comment for now) 
-  notation functions that are now in `RCLabels`.
+  notation functions in `notation.R` 
+  that are now in `RCLabels`.
 * New function `rename_to_piece_byname()` will assist
   with renaming and aggregating
   according to pieces of row and column names.
