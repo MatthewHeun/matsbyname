@@ -1678,12 +1678,21 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
                                 "Electricity [from Hydro]"),
                               c("Automobiles", "LED lamps", "CFL lamps"))) %>%
     setrowtype("Product") %>% setcoltype("Industry")
-  actual <- aggregate_pieces_byname(m, piece = "noun", margin = "Product",
-                                    notation = RCLabels::bracket_notation)
-  expected <- matrix(c(0, 2, 2, 
-                       1, 0, 0), nrow = 2, ncol = 3, byrow = TRUE, 
-                     dimnames = list(c("Electricity", "Gasoline"),
-                                     c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+  actual1 <- aggregate_pieces_byname(m, piece = "noun", margin = "Product",
+                                     notation = RCLabels::bracket_notation)
+  expected1 <- matrix(c(0, 2, 2, 
+                        1, 0, 0), nrow = 2, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("Electricity", "Gasoline"),
+                                      c("Automobiles", "LED lamps", "CFL lamps"))) %>%
     setrowtype("Product") %>% setcoltype("Industry")
-  expect_equal(actual, expected)
+  expect_equal(actual1, expected1)
+
+  # Try transposed
+  mT <- transpose_byname(m)
+  actual2 <- aggregate_pieces_byname(mT, piece = "noun", margin = "Product", 
+                                     notation = RCLabels::bracket_notation)
+  expected2 <- transpose_byname(expected1)
+  expect_equal(actual2, expected2)
+  
+  
 })
