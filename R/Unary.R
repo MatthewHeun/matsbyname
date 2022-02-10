@@ -1433,9 +1433,6 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
                                           keep, margin = c(1, 2), notation,
                                           pattern_type = "exact") {
-  # a %>%
-  #   rename_to_pref_suff_byname(keep = keep, margin = margin, notation = notation) %>%
-  #   aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
   a %>%
     aggregate_pieces_byname(piece = keep, margin = margin, notation = notation,
                             aggregation_map = aggregation_map,
