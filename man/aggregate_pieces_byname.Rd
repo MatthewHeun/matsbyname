@@ -45,11 +45,11 @@ for common use cases:
 not according to the full, original row and/or column names.
 }
 \examples{
-m <- matrix(c(1, 2, 3, 
+a <- matrix(c(1, 2, 3, 
               4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
             dimnames = list(c("a [from b]", "c [from d]"), 
                             c("e [from f]", "g [from h]", "i [from j]")))
-m \%>\%
+a \%>\%
   aggregate_pieces_byname(piece = "suff", 
                           notation = RCLabels::from_notation,
                           aggregation_map = list(rows = c("b", "d"), 
