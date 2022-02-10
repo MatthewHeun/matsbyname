@@ -532,7 +532,7 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' the row and/or column type are also renamed according to `piece`.
 #'
 #' @param a A matrix or list of matrices whose rows or columns will be renamed.
-#' @param piece A character indicating which piece of the row or column names to retain, 
+#' @param piece A character string indicating which piece of the row or column names to retain, 
 #'              one of "noun", "pps", "pref" or "suff", or a preposition,
 #'              indicating which part of the row or column name is to be retained.
 #' @param margin As a character, the row type or column type to be renamed.

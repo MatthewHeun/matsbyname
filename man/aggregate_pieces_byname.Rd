@@ -4,16 +4,30 @@
 \alias{aggregate_pieces_byname}
 \title{Aggregate a matrix by pieces of row and/or column names}
 \usage{
-aggregate_pieces_byname(a, aggregation_map = NULL, piece, margin = c(1, 2))
+aggregate_pieces_byname(
+  a,
+  piece,
+  margin = c(1, 2),
+  notation,
+  prepositions = RCLabels::prepositions,
+  aggregation_map = NULL,
+  pattern_type = "exact"
+)
 }
 \arguments{
 \item{a}{A matrix or list of matrices}
 
+\item{piece}{See \code{rename_to_piece_byname()}.}
+
+\item{margin}{See \code{rename_to_piece_byname()}.}
+
+\item{notation}{See \code{rename_to_piece_byname()}.}
+
+\item{prepositions}{See \code{rename_to_piece_byname()}.}
+
 \item{aggregation_map}{See \code{aggregate_byname()}.}
 
-\item{piece}{}
-
-\item{margin}{}
+\item{pattern_type}{See \code{RCLabels::make_or_pattern()}.}
 }
 \value{
 A version of \code{a} with rows and/or columns aggregated according to \code{aggregation_map}.
@@ -21,4 +35,12 @@ A version of \code{a} with rows and/or columns aggregated according to \code{agg
 \description{
 Aggregate a matrix (or list of matrices or a column in a \code{matsindf} data frame)
 by pieces of the row and column names.
+}
+\details{
+This is a convenience function that bundles two others
+for common use cases:
+\code{rename_to_piece_byname()} followed by \code{aggregate_byname()}.
+
+\code{aggregation_map} should aggregate according to pieces,
+not according to the full, original row and/or column names.
 }

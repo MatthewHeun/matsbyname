@@ -1412,7 +1412,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both.
 #' @param pattern_type See `aggregate_byname()`.
 #'
-#' @return an aggregated version of `a`
+#' @return An aggregated version of `a`.
 #' 
 #' @export
 #'
@@ -1430,9 +1430,13 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
                                           keep, margin = c(1, 2), notation,
                                           pattern_type = "exact") {
-  a %>% 
-    rename_to_pref_suff_byname(keep = keep, margin = margin, notation = notation) %>% 
-    aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
+  # a %>%
+  #   rename_to_pref_suff_byname(keep = keep, margin = margin, notation = notation) %>%
+  #   aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
+  a %>%
+    aggregate_pieces_byname(piece = keep, margin = margin, notation = notation,
+                            aggregation_map = aggregation_map,
+                            pattern_type = pattern_type)
 }
 
 
@@ -1440,11 +1444,21 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' 
 #' Aggregate a matrix (or list of matrices or a column in a `matsindf` data frame)
 #' by pieces of the row and column names.
+#' 
+#' This is a convenience function that bundles two others
+#' for common use cases: 
+#' `rename_to_piece_byname()` followed by `aggregate_byname()`.
+#' 
+#' `aggregation_map` should aggregate according to pieces, 
+#' not according to the full, original row and/or column names.
 #'
 #' @param a A matrix or list of matrices
+#' @param piece See `rename_to_piece_byname()`.
+#' @param margin See `rename_to_piece_byname()`.
+#' @param notation See `rename_to_piece_byname()`.
+#' @param prepositions See `rename_to_piece_byname()`.
 #' @param aggregation_map See `aggregate_byname()`.
-#' @param piece 
-#' @param margin 
+#' @param pattern_type See `RCLabels::make_or_pattern()`.
 #'
 #' @return A version of `a` with rows and/or columns aggregated according to `aggregation_map`.
 #' 
@@ -1452,10 +1466,17 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #'
 #' @examples
 aggregate_pieces_byname <- function(a, 
-                                    aggregation_map = NULL, 
                                     piece,
-                                    margin = c(1, 2)) {
-  print("nothing")
+                                    margin = c(1, 2), 
+                                    notation, 
+                                    prepositions = RCLabels::prepositions, 
+                                    aggregation_map = NULL, 
+                                    pattern_type = "exact") {
+  a %>%
+    rename_to_piece_byname(piece = piece, margin = margin, 
+                           notation = notation, prepositions = prepositions) %>%
+    aggregate_byname(aggregation_map = aggregation_map, margin = margin, 
+                     pattern_type = pattern_type)
 }
 
 

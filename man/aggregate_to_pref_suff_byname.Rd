@@ -27,7 +27,7 @@ aggregate_to_pref_suff_byname(
 \item{pattern_type}{See \code{aggregate_byname()}.}
 }
 \value{
-an aggregated version of \code{a}
+An aggregated version of \code{a}.
 }
 \description{
 Row and column names are often constructed in the form

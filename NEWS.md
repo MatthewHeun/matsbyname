@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* New function `aggregate_pieces_byname()`
+  brings the flexibility of the `RCLabels` 
+  to `matsbyname`.
 * Remove (comment for now) 
   notation functions in `notation.R` 
   that are now in `RCLabels`.

@@ -15,7 +15,7 @@ rename_to_piece_byname(
 \arguments{
 \item{a}{A matrix or list of matrices whose rows or columns will be renamed.}
 
-\item{piece}{A character indicating which piece of the row or column names to retain,
+\item{piece}{A character string indicating which piece of the row or column names to retain,
 one of "noun", "pps", "pref" or "suff", or a preposition,
 indicating which part of the row or column name is to be retained.}
 
