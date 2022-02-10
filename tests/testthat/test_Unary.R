@@ -1694,5 +1694,12 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
   expected2 <- transpose_byname(expected1)
   expect_equal(actual2, expected2)
   
+  # Try in a list
+  actual3 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     notation = RCLabels::bracket_notation)
+  expected3 <- list(expected1, expected2)
+  expect_equal(actual3, expected3)
+
   
 })
