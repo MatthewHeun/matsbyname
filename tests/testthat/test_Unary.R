@@ -1646,3 +1646,8 @@ test_that("aggregate_to_pref_suff_byname() handles types correctly", {
   expect_equal(rowtype(res), "letter")
   expect_equal(coltype(res), "letter")
 })
+
+
+test_that("aggregate_pices_byname() works as expected", {
+  
+})
