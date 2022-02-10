@@ -1701,5 +1701,44 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
   expected3 <- list(expected1, expected2)
   expect_equal(actual3, expected3)
 
+  # Try with an aggregation map
+  actual4 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     aggregation_map = list(list(final = c("Electricity", "Gasoline")),
+                                                            list(final = c("Electricity", "Gasoline"))),
+                                     notation = RCLabels::bracket_notation)
+  expected4 <- matrix(c(1, 2, 2), nrow = 1, ncol = 3, 
+                      dimnames = list("final", c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(actual4, list(expected4, transpose_byname(expected4)))
   
+  # Try with a single aggregation map that is spread to both items in the list.
+  actual5 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+                                     notation = RCLabels::bracket_notation)
+  expect_equal(actual5, list(expected4, transpose_byname(expected4)))
+  
+  # Try in a data frame.
+  df <- tibble::tibble(m = list(m, mT)) %>%
+    dplyr::mutate(
+      agg = aggregate_pieces_byname(a = m, piece = "noun", margin = "Product", 
+                                    aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+      notation = RCLabels::bracket_notation)
+    )
+expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
+
+
+# Try in a data frame using columns for arguments.
+  df <- tibble::tibble(m = list(m, mT), 
+                       pce = "noun",
+                       mgn = "Product",
+                       agg_map = list(list(final = c("Electricity", "Gasoline"))), 
+                       notn = list(RCLabels::bracket_notation)) %>%
+    dplyr::mutate(
+      agg = aggregate_pieces_byname(a = m, piece = pce, margin = mgn, 
+                                    aggregation_map = agg_map,
+                                    notation = notn)
+    )
+  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 })
