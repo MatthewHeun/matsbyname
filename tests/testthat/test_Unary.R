@@ -1394,7 +1394,7 @@ context("Rename")
 test_that("rename_to_pref_suff_byname() works as expected", {
   m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
   # This aggregation should simply return m with a renamed column.
-  res <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = RCLabels::arrow_notation)
+  res <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expected <- m %>% 
     magrittr::set_colnames("Industry")
   expect_equal(res, expected)
@@ -1611,14 +1611,17 @@ test_that("aggregate works when removing multiple rows", {
 test_that("aggregate_to_pref_suff_byname() works as expected", {
   m <- matrix((1:9), byrow = TRUE, nrow = 3, 
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
-  # Aggregate by prefixes should do no more than rename, because all prefixes are different
-  expect_equal(aggregate_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation), 
-               rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation))
+  res1 <- aggregate_to_pref_suff_byname(m, keep = "pref", 
+                                        notation = RCLabels::arrow_notation)
+  expected1 <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+  expect_equal(res1, expected1)
   # Aggregate by suffixes should do a lot, because several prefixes are same.
-  expect_equal(aggregate_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation), 
-               m %>% 
-                 rename_to_pref_suff_byname(keep = "suffix", notation = RCLabels::arrow_notation) %>% 
-                 aggregate_byname())
+  res2 <- aggregate_to_pref_suff_byname(m, keep = "suff", 
+                                        notation = RCLabels::arrow_notation)
+  expected2 <- m %>% 
+    rename_to_pref_suff_byname(keep = "suff", notation = RCLabels::arrow_notation) %>% 
+    aggregate_byname()
+  expect_equal(res2, expected2)
 })
 
 
@@ -1630,7 +1633,7 @@ test_that("aggregate_to_pref_suff_byname() works with a column vector", {
   #     -- MKH, 23 Nov 2020.
   m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
   # This aggregation should simply return m with renamed column
-  res <- aggregate_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = RCLabels::arrow_notation)
+  res <- aggregate_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expected <- m %>% 
     magrittr::set_colnames("Industry")
   expect_equal(res, expected)
@@ -1642,7 +1645,100 @@ test_that("aggregate_to_pref_suff_byname() handles types correctly", {
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y"))) %>% 
     setrowtype("row -> letter") %>% setcoltype("col -> letter")
   
-  res <- aggregate_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
+  res <- aggregate_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res), "letter")
   expect_equal(coltype(res), "letter")
+})
+
+
+test_that("aggregate_pieces_byname() works as expected", {
+  m <- matrix(c(1, 2, 3, 
+                4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("a [from b]", "c [from d]"), 
+                              c("e [from f]", "g [from h]", "i [from j]")))
+  
+  res1 <- m %>%
+    aggregate_pieces_byname(piece = "suff", 
+                            notation = RCLabels::from_notation,
+                            aggregation_map = list(rows = c("b", "d"), 
+                                                   cols = c("h", "j")))
+  
+  expected1 <- matrix(c(16, 5), nrow = 1, ncol = 2, byrow = TRUE, 
+                      dimnames = list("rows", c("cols", "f")))
+  expect_equal(res1, expected1)
+})
+
+
+test_that("aggregate_pieces_byname() works with aggregation by type", {
+  m <- matrix(c(1, 0, 0, 
+                0, 1, 1, 
+                0, 1, 1), nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("Gasoline [from Oil refineries]", 
+                                "Electricity [from Main activity producer electricity plants]", 
+                                "Electricity [from Hydro]"),
+                              c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  actual1 <- aggregate_pieces_byname(m, piece = "noun", margin = "Product",
+                                     notation = RCLabels::bracket_notation)
+  expected1 <- matrix(c(0, 2, 2, 
+                        1, 0, 0), nrow = 2, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("Electricity", "Gasoline"),
+                                      c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(actual1, expected1)
+
+  # Try transposed
+  mT <- transpose_byname(m)
+  actual2 <- aggregate_pieces_byname(mT, piece = "noun", margin = "Product", 
+                                     notation = RCLabels::bracket_notation)
+  expected2 <- transpose_byname(expected1)
+  expect_equal(actual2, expected2)
+  
+  # Try in a list
+  actual3 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     notation = RCLabels::bracket_notation)
+  expected3 <- list(expected1, expected2)
+  expect_equal(actual3, expected3)
+
+  # Try with an aggregation map
+  actual4 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     aggregation_map = list(list(final = c("Electricity", "Gasoline")),
+                                                            list(final = c("Electricity", "Gasoline"))),
+                                     notation = RCLabels::bracket_notation)
+  expected4 <- matrix(c(1, 2, 2), nrow = 1, ncol = 3, 
+                      dimnames = list("final", c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(actual4, list(expected4, transpose_byname(expected4)))
+  
+  # Try with a single aggregation map that is spread to both items in the list.
+  actual5 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+                                     notation = RCLabels::bracket_notation)
+  expect_equal(actual5, list(expected4, transpose_byname(expected4)))
+  
+  # Try in a data frame.
+  df <- tibble::tibble(m = list(m, mT)) %>%
+    dplyr::mutate(
+      agg = aggregate_pieces_byname(a = m, piece = "noun", margin = "Product", 
+                                    aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+      notation = RCLabels::bracket_notation)
+    )
+  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
+
+
+# Try in a data frame using columns for arguments.
+  df <- tibble::tibble(m = list(m, mT), 
+                       pce = "noun",
+                       mgn = "Product",
+                       agg_map = list(list(final = c("Electricity", "Gasoline"))), 
+                       notn = list(RCLabels::bracket_notation)) %>%
+    dplyr::mutate(
+      agg = aggregate_pieces_byname(a = m, piece = pce, margin = mgn, 
+                                    aggregation_map = agg_map,
+                                    notation = notn)
+    )
+  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 })

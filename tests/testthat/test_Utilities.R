@@ -328,16 +328,16 @@ test_that("renaming rows to prefix or suffix works as expected", {
               dimnames = list(c("a -> b", "r2", "r3"), c("c1", "c2")))
   expected <- m
   rownames(expected) <- c("a", "r2", "r3")
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 1, notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", margin = 1, notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   expected <- m
-  rownames(expected) <- c("b", "r2", "r3")
-  actual <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 1, notation = RCLabels::arrow_notation)
+  rownames(expected) <- c("b", "", "")
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", margin = 1, notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suffix", margin = 1, notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suff", margin = 1, notation = RCLabels::arrow_notation)
   expect_equal(actual, list(expected, expected))
 })
 
@@ -349,21 +349,21 @@ test_that("renaming columns to prefix or suffix works as expected", {
               dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
   expected <- m
   colnames(expected) <- c("a", "c")
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 2, notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", margin = 2, notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   expected <- m
   colnames(expected) <- c("b", "d")
-  actual <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suffix", margin = 2, notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expect_equal(actual, list(expected, expected))
   
   # Check that row and column types are preserved
   m <- m %>% setrowtype("Rows -> Cols") %>% setcoltype("Cols -> Rows")
-  res <- rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
+  res <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res), "Cols")
   expect_equal(coltype(res), "Rows")
 })
@@ -378,22 +378,22 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
   rownames(expected) <- c("a", "r2", "r3")
   colnames(expected) <- c("a", "c")
   # Default is margin = c(1, 2)
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   expected <- m
-  rownames(expected) <- c("b", "r2", "r3")
+  rownames(expected) <- c("b", "", "")
   colnames(expected) <- c("b", "d")
-  actual <- rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), margin = list(c(1, 2)), keep = "suffix", notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(list(m, m), margin = list(c(1, 2)), keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(actual, list(expected, expected))
 
   # Check that row and column types are preserved
   m <- m %>% setrowtype("Rows") %>% setcoltype("Cols")
-  res <- rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
+  res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res), "Rows")
   expect_equal(coltype(res), "Cols")
 })
@@ -405,13 +405,13 @@ test_that("renaming rows and cols to pref and suff also changes rowtype and colt
                 5, 6), nrow = 3, byrow = TRUE, 
               dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j"))) %>% 
     setrowtype("Industry -> Product") %>% setcoltype("Product -> Industry")
-  res <- rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
+  res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   expect_equal(rownames(res), c("a", "c", "e"))
   expect_equal(colnames(res), c("g", "i"))
   expect_equal(rowtype(res), "Industry")
   expect_equal(coltype(res), "Product")
 
-  res2 <- rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
+  res2 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(rownames(res2), c("b", "d", "f"))
   expect_equal(colnames(res2), c("h", "j"))
   expect_equal(rowtype(res2), "Product")
@@ -425,12 +425,12 @@ test_that("changing row and column type correctly ignores missing suffixes", {
                 5, 6), nrow = 3, byrow = TRUE, 
               dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j"))) %>% 
     setrowtype("Rows") %>% setcoltype("Product -> Industry")
-  res <- rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
+  res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res), "Rows")
   expect_equal(coltype(res), "Product")
 
-  res_2 <- rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::arrow_notation)
-  expect_equal(rowtype(res_2), "Rows")
+  res_2 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
+  expect_equal(rowtype(res_2), "")
   expect_equal(coltype(res_2), "Industry")
 })
 
@@ -444,7 +444,7 @@ test_that("setting identical row/col names is OK", {
   rownames(expected) <- c("a", "a", "r3")
   colnames(expected) <- c("a", "a")
   # The next call will create duplicate row names and column names in m. 
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::arrow_notation)
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   # Interestingly the command View(actual) or View(expected)
   # shows row names that aren't true. 
   # The 2nd row of actual and expected is shown as "a.1", 
@@ -463,41 +463,41 @@ test_that("renaming with full prefix identifiers works as expected.", {
   expected <- m
   dimnames(expected) <- list(c("a", "c", "e"), c("g", "i"))
   # The next call will create duplicate row names and column names in m. 
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", notation = RCLabels::bracket_notation)
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::bracket_notation)
   expect_equal(actual, expected)
   
   expected2 <- m
   dimnames(expected2) <- list(c("a", "c", "e"), c("g [h]", "i [j]"))
-  actual2 <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 1, notation = RCLabels::bracket_notation)
+  actual2 <- rename_to_pref_suff_byname(m, keep = "pref", margin = 1, notation = RCLabels::bracket_notation)
   expect_equal(actual2, expected2)
   
   expected3 <- m
   dimnames(expected3) <- list(c("a [b]", "c [d]", "e [f]"), c("g", "i"))
-  actual3 <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 2, notation = RCLabels::bracket_notation)
+  actual3 <- rename_to_pref_suff_byname(m, keep = "pref", margin = 2, notation = RCLabels::bracket_notation)
   expect_equal(actual3, expected3)
   
   expected4 <- m
   dimnames(expected4) <- list(c("b", "d", "f"), c("h", "j"))
-  actual4 <- rename_to_pref_suff_byname(m, keep = "suffix", notation = RCLabels::bracket_notation)
+  actual4 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::bracket_notation)
   expect_equal(actual4, expected4)
 
   expected5 <- m
   dimnames(expected5) <- list(c("b", "d", "f"), c("g [h]", "i [j]"))
-  actual5 <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 1, notation = RCLabels::bracket_notation)
+  actual5 <- rename_to_pref_suff_byname(m, keep = "suff", margin = 1, notation = RCLabels::bracket_notation)
   expect_equal(expected5, actual5)
 
   expected6 <- m
   dimnames(expected6) <- list(c("a [b]", "c [d]", "e [f]"), c("h", "j"))
-  actual6 <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = RCLabels::bracket_notation)
+  actual6 <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::bracket_notation)
   expect_equal(expected6, actual6)
   
   # Try with a list
-  actual_list <- rename_to_pref_suff_byname(list(m, m), keep = "prefix", margin = 1, notation = RCLabels::bracket_notation)
+  actual_list <- rename_to_pref_suff_byname(list(m, m), keep = "pref", margin = 1, notation = RCLabels::bracket_notation)
   expect_equal(actual_list[[1]], expected2)
   expect_equal(actual_list[[2]], expected2)
   
   # Try in a data frame
-  DF <- tibble::tibble(m = list(m, m, m, m, m, m), keep = c("prefix", "prefix", "prefix", "suffix", "suffix", "suffix"), 
+  DF <- tibble::tibble(m = list(m, m, m, m, m, m), keep = c("pref", "pref", "pref", "suff", "suff", "suff"), 
                        margin = list(c(1, 2), 1, 2, c(1, 2), 1, 2),
                        notation = list(RCLabels::bracket_notation),
                        expected = list(expected, expected2, expected3, expected4, expected5, expected6))
@@ -1464,6 +1464,113 @@ test_that("vec_from_store_byname() works in a data frame", {
 })
 
 
+test_that("rename_to_piece_byname() works as expected", {
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), nrow = 3, byrow = TRUE, 
+              dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+  res1 <- rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+  expected1 <- m
+  dimnames(expected1) <- list(c("a", "r2", "r3"), c("a", "c"))
+  expect_equal(res1, expected1)
+  
+  res2 <- rename_to_piece_byname(m, piece = "suff", notation = RCLabels::arrow_notation)
+  expected2 <- m
+  dimnames(expected2) <- list(c("b", "", ""), c("b", "d"))
+  expect_equal(res2, expected2)
+  
+  # Check that it works for different margins.
+  res3 <- rename_to_piece_byname(m, piece = "pref", margin = 1,
+                                 notation = RCLabels::arrow_notation)
+  expected3 <- m
+  dimnames(expected3) <- list(c("a", "r2", "r3"), c("a -> b", "c -> d"))
+  expect_equal(res3, expected3)
+
+  res4 <- rename_to_piece_byname(m, piece = "suff", margin = 2,
+                                 notation = RCLabels::arrow_notation)
+  expected4 <- m
+  dimnames(expected4) <- list(c("a -> b", "r2", "r3"), c("b", "d"))
+  expect_equal(res4, expected4)
+    
+  # Check that it works in a list.
+  res5 <- rename_to_piece_byname(list(m, m), piece = list("pref", "suff"), 
+                                 margin = list(1, 2),
+                                 notation = RCLabels::arrow_notation)
+  expected5 <- list(expected3, expected4)
+  expect_equal(res5, expected5)
+  
+  # Check that margins can be determined from types.
+  m2 <- m %>%
+    setrowtype("rows") %>% setcoltype("cols")
+  res6 <- rename_to_piece_byname(m2, piece = "pref", margin = "rows",
+                                 notation = RCLabels::arrow_notation)
+  expected6 <- m2
+  dimnames(expected6) <- list(c("a", "r2", "r3"), c("a -> b", "c -> d"))
+  expect_equal(res6, expected6)
+  
+  res7 <- rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+                                 notation = RCLabels::arrow_notation)
+  expected7 <- m2
+  dimnames(expected7) <- list(c("b", "", ""), c("a -> b", "c -> d"))
+  expected7 <- expected7 %>%
+    setrowtype("")
+  expect_equal(res7, expected7)
+})
 
 
+test_that("margin_from_types_byname() works as expected", {
+  # Try with a single matrix
+  m <- matrix(1) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(margin_from_types_byname(m, "Product"), 1)
+  expect_equal(margin_from_types_byname(m, "Industry"), 2)
+  expect_equal(margin_from_types_byname(m, c("Product", "Industry")), c(1, 2))
+  expect_equal(margin_from_types_byname(m, c("Industry", "Product")), c(1, 2))
+  
+  # Try with a type that isn't in the row or column types.
+  expect_equal(margin_from_types_byname(m, "bogus"), NA_integer_)
+  
+  # Try with one type that IS in the row or column types and one type that is not.
+  expect_equal(margin_from_types_byname(m, c("bogus", "Product")), 1)
+  
+  # Try with a non-character types argument
+  expect_equal(margin_from_types_byname(m, c(1, 2)), c(1, 2))
+  
+  # Try with a list of matrices
+  expect_equal(margin_from_types_byname(list(m, m), types = "Product"), 
+               list(1, 1))
+  expect_equal(margin_from_types_byname(list(m, m), types = "Industry"), 
+               list(2, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Product", "Product")), 
+               list(1, 1))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Industry", "Industry")), 
+               list(2, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Product", "Industry")), 
+               list(1, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = list("Product", "Industry")), 
+               list(1, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = list(c("Product", "Industry"))), 
+               list(c(1, 2), c(1, 2)))
+  expect_equal(margin_from_types_byname(list(m, m), types = list(c("Product", "Industry"), 
+                                                                 c("Product", "Industry"))), 
+               list(c(1, 2), c(1, 2)))
+    
+  # Try in a data frame.
+  m2 <- matrix(2) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  df <- tibble::tibble(m = list(m, m2), 
+                       types1 = list("Product", "Industry"), 
+                       types2 = list(c("Product", "Industry"), "Industry"), 
+                       types3 = "bogus")
+  res <- df %>%
+    dplyr::mutate(
+      margin1 = margin_from_types_byname(m, types1), 
+      margin2 = margin_from_types_byname(m, types2), 
+      margin3 = margin_from_types_byname(m, types3)
+    )
+  
+  expect_equal(res$margin1, list(1, 1))
+  expect_equal(res$margin2, list(c(1, 2), 1))
+  expect_equal(res$margin3, list(NA_integer_, NA_integer_))
+})
 

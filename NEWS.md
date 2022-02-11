@@ -4,6 +4,26 @@ output: html_document
 ---
 
 
+* Functions `rename_to_pref_suff_byname()` and 
+  `aggregate_to_pref_suff_byname()`
+  now route to new functions
+  `rename_to_piece_byname()` and
+  `aggregate_pieces_byname()`, 
+  thereby avoiding code duplication.
+  This change may break some code. 
+  These functions now return an empty string ("")
+  when a suffix is requested and one is not found.
+  Previously, these functions returned the entire
+  string when a suffix was not found.
+* New function `aggregate_pieces_byname()`
+  brings the flexibility of the `RCLabels` 
+  to `matsbyname`.
+* Remove (comment for now) 
+  notation functions in `notation.R` 
+  that are now in `RCLabels`.
+* New function `rename_to_piece_byname()` will assist
+  with renaming and aggregating
+  according to pieces of row and column names.
 * New function `vec_from_store_byname()` 
   creates vectors from a matrix 
   (from which row of column names are taken)
@@ -19,7 +39,7 @@ output: html_document
    When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
    that are present in `mat`.
 * Many new tests for new features.
-    - Now at 1010 tests, all passing.
+    - Now at 1043 tests, all passing.
     - Test coverage remains at 100 %.
 
 
