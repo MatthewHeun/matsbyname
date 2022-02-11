@@ -72,11 +72,17 @@ The following function call will fail,
 because it aggregates over both rows and columns,
 leaving two "duck" rows.
 
-```{r}
-# aggregate_byname(m, aggregation_map = list(`Fossil fuels` = c("Coal", "Oil")))
+```{r, eval=FALSE}
+aggregate_byname(m, aggregation_map = list(`Fossil fuels` = c("Coal", "Oil")))
 ```
 
 
+The aggregated rows and columns are sorted by name.
+
+```{r}
+aggregate_byname(m, aggregation_map = list(`zFossil fuels` = c("Coal", "Oil")), 
+                 margin = 2)
+```
 
 ## Pieces
 
