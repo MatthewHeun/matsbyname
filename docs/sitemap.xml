@@ -37,6 +37,9 @@
     <loc>/reference/aggregate_byname.html</loc>
   </url>
   <url>
+    <loc>/reference/aggregate_pieces_byname.html</loc>
+  </url>
+  <url>
     <loc>/reference/aggregate_to_pref_suff_byname.html</loc>
   </url>
   <url>
@@ -190,6 +193,9 @@
     <loc>/reference/make_pattern.html</loc>
   </url>
   <url>
+    <loc>/reference/margin_from_types_byname.html</loc>
+  </url>
+  <url>
     <loc>/reference/mat_byname.html</loc>
   </url>
   <url>
@@ -197,6 +203,9 @@
   </url>
   <url>
     <loc>/reference/matrixproduct_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/matsbyname-package.html</loc>
   </url>
   <url>
     <loc>/reference/mean_byname.html</loc>
@@ -236,6 +245,9 @@
   </url>
   <url>
     <loc>/reference/quotient_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rename_to_piece_byname.html</loc>
   </url>
   <url>
     <loc>/reference/rename_to_pref_suff_byname.html</loc>
