@@ -1,0 +1,63 @@
+---
+title: "Aggregation in `matsbyname`"
+author: "Matthew Kuperus Heun"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    smart: false
+vignette: >
+  %\VignetteIndexEntry{Aggregation in `matsbyname`}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(dplyr)
+library(tidyr)
+library(matsbyname)
+library(matsindf)
+```
+
+
+## Introduction
+
+The `matsbyname` package provides 
+functions to assist renaming and aggregating rows and columns.
+This vignette shows how to use those functions.
+
+
+## `aggregate_byname()`
+
+
+
+## Pieces
+
+First, understand pieces.
+
+
+## `rename_to_piece_byname()`
+
+
+
+
+
+
+
+## `aggregate_pieces_byname()`
+
+
+
+
+## Summary
+
+The `matsbyname` package simplifies aggregation of matrix rows and columns
+based on row and column names. 
+In particular the functions
+`aggregate_byname()`, 
+`rename_to_piece_byname()`, and 
+`aggregate_pieces_byname()`
+provide flexibility in how renaming and aggregation can be accomplished.
