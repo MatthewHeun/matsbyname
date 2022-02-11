@@ -25,12 +25,56 @@ library(matsindf)
 
 ## Introduction
 
-The `matsbyname` package provides 
-functions to assist renaming and aggregating rows and columns.
+The `matsbyname` package provides several
+functions to assist renaming and aggregating rows and columns of matrices.
 This vignette shows how to use those functions.
 
 
 ## `aggregate_byname()`
+
+By default (`aggregation_map = NULL, margin = c(1,2), pattern_type = "exact"`),
+`aggregate_byname()` sums all rows and columns with the same names, 
+with the effect that all row and column names are unique.
+
+```{r}
+m <- matrix(c(1, 2, 3, 
+              4, 5, 6, 
+              7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE,
+            dimnames = list(c("duck", "duck", "goose"), c("Coal", "Oil", "Solar")))
+m
+aggregate_byname(m)
+```
+
+An `aggregation_map` can be provided,
+giving instructions for rows or columns to aggregate and 
+the names of the aggregates.
+`aggregation_map` should be a list of named strings.
+The entries in the list give names of rows and columns to be aggregated.
+The names of the list entries provide the names of the resulting aggregates.
+
+```{r}
+aggregate_byname(m, aggregation_map = list(birds = c("duck", "goose"), 
+                                           `Fossil fuels` = c("Coal", "Oil")))
+```
+
+The margin over which the aggregation is to be performed 
+is given in the `margin` argument
+(1 for rows, 2 for columns). 
+
+```{r}
+aggregate_byname(m, aggregation_map = list(`Fossil fuels` = c("Coal", "Oil")), 
+                 margin = 2)
+```
+
+Note that it is an error to aggregate over a margin and leave 
+identically named rows or columns. 
+The following function call will fail, 
+because it aggregates over both rows and columns,
+leaving two "duck" rows.
+
+```{r}
+# aggregate_byname(m, aggregation_map = list(`Fossil fuels` = c("Coal", "Oil")))
+```
 
 
 

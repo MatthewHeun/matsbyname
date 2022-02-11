@@ -1286,7 +1286,7 @@ any_byname <- function(a){
 #' m <- matrix(1:9, byrow = TRUE, nrow = 3, 
 #'             dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
 #'   setrowtype("rows") %>% setcoltype("cols")
-#' # Aggregate all rows by establishing an aggregation map (am)
+#' # Aggregate all rows by establishing an aggregation map (`am`)
 #' am <- list(new_row = c("r1", "r2"))
 #' aggregate_byname(m, aggregation_map = am, margin = 1)
 #' # aggregate_byname() also works with lists and in data frames
