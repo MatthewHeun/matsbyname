@@ -1398,6 +1398,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 
 #' Aggregate a matrix to prefixes or suffixes of row and/or column names
 #' 
+#' `r lifecycle::badge("superseded")`
 #' Row and column names are often constructed in the form 
 #' `prefix_start` `prefix` `prefix_end` `suffix_start` `suffix` `suffix_end`
 #' and described by a notation vector.
@@ -1420,9 +1421,16 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' @export
 #'
 #' @examples
+#' # This function is superseded. 
+#' # Instead, use `aggregate_pieces_byname()`.
+#' # For example:
 #' m <- matrix((1:9), byrow = TRUE, nrow = 3, 
 #'             dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
 #' m
+#' aggregate_pieces_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+#' aggregate_pieces_byname(m, piece = "suff", notation = RCLabels::arrow_notation)
+#' 
+#' # Original examples:
 #' # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 #' # Doing renaming like this (without also aggregating) is potentially dangerous, because  
 #' # some rows and some columns could end up with same names.
