@@ -97,7 +97,7 @@ We'll use the following matrix to demonstrate aggregating by pieces.
 The rows and columns use different notations for names
 ("bracket" notation for rows and "arrow" notation for columns). 
 The renaming and aggregation capabilities of `matsbyname`
-can aggregate the matrix, despite the different notations.
+still work, despite the different notations.
 
 ```{r}
 m_pieces <- matrix(c(1, 2, 3,
@@ -107,42 +107,61 @@ m_pieces <- matrix(c(1, 2, 3,
 ```
 
 
-
 ## `rename_to_piece_byname()`
 
+Rows and columns can be renamed to their prefixes, suffixes, or objects of prepositions,
+as demonstrated below.
+
 ```{r}
-rename_to_piece_byname(m_pieces, piece = "pref", margin = 1, notation = RCLabels::bracket_notation)
-rename_to_piece_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation)
-rename_to_piece_byname(m_pieces, piece = "pref", margin = 2, notation = RCLabels::arrow_notation)
-rename_to_piece_byname(m_pieces, piece = "suff", margin = 2, notation = RCLabels::arrow_notation)
+rename_to_piece_byname(m_pieces, piece = "pref", margin = 1, 
+                       notation = RCLabels::bracket_notation)
+rename_to_piece_byname(m_pieces, piece = "from", margin = 1, 
+                       notation = RCLabels::bracket_notation)
+rename_to_piece_byname(m_pieces, piece = "pref", margin = 2,
+                       notation = RCLabels::arrow_notation)
+rename_to_piece_byname(m_pieces, piece = "suff", margin = 2,
+                       notation = RCLabels::arrow_notation)
 ```
 
 Such renamings can be used for later aggregations
 in which identically named rows and columns are aggregated
 with `aggregate_byname()`.
 
-`aggregate_pieces_byname()` bundles those tasks in a single function call.
-
 
 ## `aggregate_pieces_byname()`
 
-The following code demonstrates aggregating by pieces.
-The row and column names use different notations
-("from" notation for rows and "arrow" notation for columns). 
-Despite the different notations, 
-aggregation is still possible.
+`aggregate_pieces_byname()` bundles 
+renaming and aggregating tasks in a single function call.
+First, rows and/or columns are renamed to the requested `piece`
+with the `rename_to_piece_byname()` function.
+Then, aggregation is performed via 
+`aggregate_byname()`, according to an `aggregation_map`, if provided.
+With the default value for `aggregation_map` (`NULL`), 
+identically named pieces are aggregated together.
 
 ```{r}
-m_pieces <- matrix(c(1, 2, 3,
-                     4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
-                   dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
-                                   c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
-
 # Aggregate Electricity in rows
-aggregate_pieces_byname(m_pieces, piece = "pref", margin = 1, notation = RCLabels::bracket_notation)
+aggregate_pieces_byname(m_pieces, piece = "pref", margin = 1, 
+                        notation = RCLabels::bracket_notation)
+# Aggregate useful energy types in columns
+aggregate_pieces_byname(m_pieces, piece = "suff", margin = 2,
+                        notation = RCLabels::arrow_notation)
+```
+
+
+When an `aggregation_map` is supplied,
+it applies to the requested `piece`,
+not to the original row and/or column names, as shown below.
+
+```{r}
 # Aggregate instead by original energy type
-aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation, 
+aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, 
+                        notation = RCLabels::bracket_notation, 
                         aggregation_map = list(`All sources` = c("Coal", "Solar")))
+
+aggregate_pieces_byname(m_pieces, piece = "suff", margin = 2, 
+                        notation = RCLabels::arrow_notation, 
+                        aggregation_map = list(`Transport` = "MD", Light = "Light"))
 ```
 
 
