@@ -73,15 +73,15 @@ because it aggregates over both rows and columns,
 leaving two "duck" rows.
 
 ```{r, eval=FALSE}
+# Not run
 aggregate_byname(m, aggregation_map = list(`Fossil fuels` = c("Coal", "Oil")))
 ```
 
 
-The aggregated rows and columns are sorted by name.
+Aggregated rows and columns are sorted by name.
 
 ```{r}
-aggregate_byname(m, aggregation_map = list(`zFossil fuels` = c("Coal", "Oil")), 
-                 margin = 2)
+aggregate_byname(m, aggregation_map = list(`zFossil fuels` = c("Coal", "Oil")), margin = 2)
 ```
 
 ## Pieces
