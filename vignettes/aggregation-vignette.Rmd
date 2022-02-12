@@ -90,8 +90,41 @@ aggregate_byname(m, aggregation_map = list(`zFossil fuels` = c("Coal", "Oil")), 
 Commonly, row and column names are complex, 
 carrying information 
 in prefixes, suffixes, and prepositional phrases.
-`matsbyname` can aggregate by parts of a name, too.
+`matsbyname` can aggregate by pieces of a name, too.
 To do so, `matsbyname` uses the `RCLabels` package internally.
+
+We'll use the following matrix to demonstrate aggregating by pieces.
+The rows and columns use different notations for names
+("bracket" notation for rows and "arrow" notation for columns). 
+The renaming and aggregation capabilities of `matsbyname`
+can aggregate the matrix, despite the different notations.
+
+```{r}
+m_pieces <- matrix(c(1, 2, 3,
+                     4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                   dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
+                                   c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+```
+
+
+
+## `rename_to_piece_byname()`
+
+```{r}
+rename_to_piece_byname(m_pieces, piece = "pref", margin = 1, notation = RCLabels::bracket_notation)
+rename_to_piece_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation)
+rename_to_piece_byname(m_pieces, piece = "pref", margin = 2, notation = RCLabels::arrow_notation)
+rename_to_piece_byname(m_pieces, piece = "suff", margin = 2, notation = RCLabels::arrow_notation)
+```
+
+Such renamings can be used for later aggregations
+in which identically named rows and columns are aggregated
+with `aggregate_byname()`.
+
+`aggregate_pieces_byname()` bundles those tasks in a single function call.
+
+
+## `aggregate_pieces_byname()`
 
 The following code demonstrates aggregating by pieces.
 The row and column names use different notations
@@ -111,20 +144,6 @@ aggregate_pieces_byname(m_pieces, piece = "pref", margin = 1, notation = RCLabel
 aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation, 
                         aggregation_map = list(`All sources` = c("Coal", "Solar")))
 ```
-
-
-
-## `rename_to_piece_byname()`
-
-
-
-
-
-
-
-## `aggregate_pieces_byname()`
-
-
 
 
 ## Summary
