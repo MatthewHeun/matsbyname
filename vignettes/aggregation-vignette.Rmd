@@ -84,9 +84,34 @@ Aggregated rows and columns are sorted by name.
 aggregate_byname(m, aggregation_map = list(`zFossil fuels` = c("Coal", "Oil")), margin = 2)
 ```
 
+
 ## Pieces
 
-First, understand pieces.
+Commonly, row and column names are complex, 
+carrying information 
+in prefixes, suffixes, and prepositional phrases.
+`matsbyname` can aggregate by parts of a name, too.
+To do so, `matsbyname` uses the `RCLabels` package internally.
+
+The following code demonstrates aggregating by pieces.
+The row and column names use different notations
+("from" notation for rows and "arrow" notation for columns). 
+Despite the different notations, 
+aggregation is still possible.
+
+```{r}
+m_pieces <- matrix(c(1, 2, 3,
+                     4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                   dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
+                                   c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+
+# Aggregate Electricity in rows
+aggregate_pieces_byname(m_pieces, piece = "pref", margin = 1, notation = RCLabels::bracket_notation)
+# Aggregate instead by original energy type
+aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation, 
+                        aggregation_map = list(`All sources` = c("Coal", "Solar")))
+```
+
 
 
 ## `rename_to_piece_byname()`
