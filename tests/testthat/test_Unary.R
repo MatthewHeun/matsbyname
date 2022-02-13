@@ -1742,3 +1742,26 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
     )
   expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 })
+
+
+test_that("aggregate_by_pieces() works with funny names", {
+  m_pieces <- matrix(c(1, 2, 3,
+                       4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                     dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
+                                     c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  
+  actual1 <- rename_to_piece_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation)
+  expected1 <- matrix(c(1, 2, 3,
+                        4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("Coal", "Solar"), 
+                                      c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  expect_equal(actual1, expected1)
+  
+  
+  actual2 <- aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation, 
+                                     aggregation_map = list(`All sources` = c("Coal", "Solar")))
+  expected2 <- matrix(c(5, 7, 9), nrow = 1, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("All sources"), 
+                                      c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  expect_equal(actual2, expected2)  
+})
