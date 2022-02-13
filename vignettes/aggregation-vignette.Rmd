@@ -180,6 +180,35 @@ aggregate_pieces_byname(m_pieces, piece = "suff", margin = 2,
 ```
 
 
+## Aggregations of lists and data frames of matrices
+
+The functions for renaming and aggregating can be used on lists and data frames of matrices.
+
+```{r}
+res <- rename_to_piece_byname(list(m_pieces, m_pieces), 
+                              piece = list("pref", "suff"), 
+                              margin = list(1, 2),
+                              notation = list(RCLabels::bracket_notation, 
+                                              RCLabels::arrow_notation))
+res
+df <- tibble::tibble(mats = list(m_pieces, m_pieces), 
+                     pce = list("suff", "pref"), 
+                     mgn = list(1, 2), 
+                     am = list(list(Sources = c("Coal", "Solar")), 
+                               list(Transport = c("Motors", "Cars"))), 
+                     notn = list(RCLabels::from_notation, RCLabels::arrow_notation))
+df
+res2 <- df %>%
+  dplyr::mutate(
+    aggregated = aggregate_pieces_byname(mats, piece = pce, margin = mgn, 
+                                         aggregation_map = am, notation = notn)
+  )
+res2
+res2$aggregated[[1]]
+res2$aggregated[[2]]
+```
+
+
 ## Summary
 
 The `matsbyname` package simplifies aggregation of matrix rows and columns
