@@ -34,7 +34,7 @@ This vignette shows how to use those functions.
 
 By default (`aggregation_map = NULL, margin = c(1,2), pattern_type = "exact"`),
 `aggregate_byname()` sums all rows and columns with the same names, 
-with the effect that all row and column names become unique.
+with the effect that remaining row and column names are unique.
 
 ```{r}
 m <- matrix(c(1, 2, 3, 4, 
@@ -48,30 +48,24 @@ aggregate_byname(m)
 
 An `aggregation_map` can be provided,
 giving instructions for rows or columns to aggregate and 
-the names of the aggregates.
+the names of the results.
 `aggregation_map` should be a list of named strings.
 The entries in the list give names of rows and columns to be aggregated.
 The names of the list entries provide the names of the resulting aggregates.
 
 ```{r}
+m
 aggregate_byname(m, aggregation_map = list(birds = c("duck", "goose"), 
                                            guitarists = c("John", "Paul", "George")))
 ```
 
 The margin over which the aggregation is to be performed 
-is given in the `margin` argument
+is given by the `margin` argument
 (`1` for rows, `2` for columns). 
 
 ```{r}
+m
 aggregate_byname(m, aggregation_map = list(Beatles = c("John", "Paul", "George", "Ringo")), 
-                 margin = 2)
-```
-
-Note that rows and columns of aggregated matrices 
-are always sorted alphabetically.
-
-```{r}
-aggregate_byname(m, aggregation_map = list(guitarists = c("John", "Paul", "George")), 
                  margin = 2)
 ```
 
@@ -79,12 +73,22 @@ aggregate_byname(m, aggregation_map = list(guitarists = c("John", "Paul", "Georg
 Use `pattern_type = "literal"` for this feature.
 
 ```{r}
+m
 aggregate_byname(m, aggregation_map = list(guitarists = "^[JPG]"), 
                  margin = 2, pattern_type = "literal")
 ```
 
 
-Note that it is an error to aggregate over a margin and leave 
+Note that rows and columns of aggregated matrices 
+are always sorted alphabetically.
+
+```{r}
+m
+aggregate_byname(m, aggregation_map = list(birds = c("duck", "goose"), 
+                                           zguitarists = c("John", "Paul", "George")))
+```
+
+It is an error to aggregate over a margin and leave 
 identically named rows or columns. 
 The following function call will fail, 
 because it aggregates over both rows and columns
@@ -103,8 +107,8 @@ aggregate_byname(m, aggregation_map = list(Beatles = c("John", "Paul", "George",
 Commonly, row and column names are complex, 
 carrying information 
 in prefixes, suffixes, and prepositional phrases.
-`matsbyname` can aggregate by pieces of a name, too.
-To do so, `matsbyname` uses the `RCLabels` package internally.
+`matsbyname` can aggregate by pieces of a name, 
+using the `RCLabels` package internally.
 
 We'll use the following matrix to demonstrate aggregating by pieces.
 The rows and columns use different notations for names
@@ -117,6 +121,7 @@ m_pieces <- matrix(c(1, 2, 3,
                      4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
                    dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
                                    c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+m_pieces
 ```
 
 
@@ -126,6 +131,7 @@ Rows and columns can be renamed to their prefixes, suffixes, or objects of prepo
 as demonstrated below.
 
 ```{r}
+m_pieces
 rename_to_piece_byname(m_pieces, piece = "pref", margin = 1, 
                        notation = RCLabels::bracket_notation)
 rename_to_piece_byname(m_pieces, piece = "suff", margin = 1, 
@@ -149,12 +155,14 @@ with `aggregate_byname()`.
 renaming and aggregating tasks in a single function call.
 First, rows and/or columns are renamed to the requested `piece`
 with the `rename_to_piece_byname()` function.
-Then, aggregation is performed via 
-`aggregate_byname()`, according to an `aggregation_map`, if provided.
+Then, aggregation is performed via `aggregate_byname()`,
+according to an `aggregation_map` and the `pattern_type`,
+if provided.
 With the default `aggregation_map = NULL`, 
 identically named pieces are aggregated together.
 
 ```{r}
+m_pieces
 # Aggregate Electricity in rows
 aggregate_pieces_byname(m_pieces, piece = "pref", margin = 1, 
                         notation = RCLabels::bracket_notation)
@@ -169,6 +177,7 @@ it applies to the requested `piece`,
 not to the original row and/or column names, as shown below.
 
 ```{r}
+m_pieces
 # Aggregate by original energy type
 aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, 
                         notation = RCLabels::bracket_notation, 
@@ -185,6 +194,7 @@ aggregate_pieces_byname(m_pieces, piece = "suff", margin = 2,
 The functions for renaming and aggregating can be used on lists and data frames of matrices.
 
 ```{r}
+m_pieces
 res <- rename_to_piece_byname(list(m_pieces, m_pieces), 
                               piece = list("pref", "suff"), 
                               margin = list(1, 2),
