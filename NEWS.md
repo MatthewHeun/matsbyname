@@ -4,6 +4,7 @@ output: html_document
 ---
 
 
+* New vignette `aggregation-vignette` demonstrates the new aggregation functions.
 * Functions `rename_to_pref_suff_byname()` and 
   `aggregate_to_pref_suff_byname()`
   now route to new functions
@@ -20,7 +21,7 @@ output: html_document
   to `matsbyname`.
 * Remove (comment for now) 
   notation functions in `notation.R` 
-  that are now in `RCLabels`.
+  that have been moved to `RCLabels`.
 * New function `rename_to_piece_byname()` will assist
   with renaming and aggregating
   according to pieces of row and column names.
@@ -39,13 +40,16 @@ output: html_document
    When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
    that are present in `mat`.
 * Many new tests for new features.
-    - Now at 1043 tests, all passing.
+  But some functions have been moved to `RCLabels`, 
+  so the total number of tests
+  has gone down.
+    - Now at 1045 tests, all passing.
     - Test coverage remains at 100 %.
 
 
 # matsbyname 0.4.25 (2021-10-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565352.svg)](https://doi.org/10.5281/zenodo.5565352)
 
-* New notation functions `prepostion_notation()`, `from_notation()`, and `of_notation()`.
+* New notation functions `preposition_notation()`, `from_notation()`, and `of_notation()`.
 * Many new tests for new features.
     - Now at 1077 tests, all passing.
     - Test coverage remains at 100 %.
