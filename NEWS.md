@@ -4,7 +4,8 @@ output: html_document
 ---
 
 
-* New vignette `aggregation-vignette` demonstrates the new aggregation functions.
+* New vignette `aggregation-vignette` demonstrates 
+  the new aggregation functions.
 * Functions `rename_to_pref_suff_byname()` and 
   `aggregate_to_pref_suff_byname()`
   now route to new functions
