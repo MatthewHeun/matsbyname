@@ -17,7 +17,6 @@ test_that("df_to_aggregation_map() works as expected", {
                                many_colname = "many_col")
   expect_equal(res, list(`Rolling Stones` = c("Mick", "Keith", "Ronnie", "Bill", "Charlie"),
                          `The Beatles` = c("John", "Paul", "George", "Ringo")))
-  
 })
 
 

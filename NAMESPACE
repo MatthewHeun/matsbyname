@@ -2,6 +2,7 @@
 
 export("%>%")
 export(":=")
+export(.data)
 export(Iminus_byname)
 export(abs_byname)
 export(aggregate_byname)
@@ -87,3 +88,4 @@ importFrom(dplyr,mutate)
 importFrom(lifecycle,deprecated)
 importFrom(magrittr,"%>%")
 importFrom(rlang,":=")
+importFrom(rlang,.data)

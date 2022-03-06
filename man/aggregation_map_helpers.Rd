@@ -11,6 +11,8 @@ df_to_aggregation_map(.df, few_colname, many_colname)
 aggregation_map_to_df(aggregation_map, few_colname, many_colname)
 }
 \arguments{
+\item{.df}{A data frame from which an aggregation map is to be extracted.}
+
 \item{few_colname}{The string name of a column in a data frame that corresponds
 to the "few" aggregated categories.}
 
@@ -37,4 +39,24 @@ An aggregation map for the examples above is
 Aggregation maps can be generated from many shapes of data.
 These functions assist with translating from different data shapes to
 aggregation maps.
+}
+\examples{
+bands <- tibble::tribble(~band, ~members, 
+                         "The Beatles", "John", 
+                         "The Beatles", "Paul", 
+                         "The Beatles", "George", 
+                         "The Beatles", "Ringo", 
+                         # Rejects duplicates and NA
+                         "The Beatles", "Ringo",
+                         "The Beatles", NA, 
+                         "Rolling Stones", "Mick", 
+                         "Rolling Stones", "Keith",
+                         "Rolling Stones", "Ronnie",
+                         "Rolling Stones", "Bill",
+                         "Rolling Stones", "Charlie")
+agg_map <- df_to_aggregation_map(bands, 
+                                 few_colname = "band",
+                                 many_colname = "members")
+agg_map
+aggregation_map_to_df(agg_map, few_colname = "bands", many_colname = "members")
 }
