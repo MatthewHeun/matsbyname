@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* New functions `df_to_aggregation_map()` and
+  `aggregation_map_to_df()`
+  assist with manipulating aggregation maps.
 * New vignette `aggregation-vignette` demonstrates 
   the new aggregation functions.
 * Functions `rename_to_pref_suff_byname()` and 
