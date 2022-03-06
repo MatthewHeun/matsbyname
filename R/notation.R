@@ -1,6 +1,6 @@
 #' Change row and column name notation
 #' 
-#' This function wwitches matrix row and/or column names from one type of notation to another 
+#' This function switches matrix row and/or column names from one type of notation to another 
 #' based on the `from` and `to` arguments.
 #' Optionally, prefix and suffix can be `flip`ped.
 #'

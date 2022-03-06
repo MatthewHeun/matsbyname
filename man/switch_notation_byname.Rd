@@ -21,7 +21,7 @@ switch_notation_byname(a, margin = c(1, 2), from, to, flip = FALSE)
 Matrices with row and column names with switched notation, per arguments.
 }
 \description{
-This function wwitches matrix row and/or column names from one type of notation to another
+This function switches matrix row and/or column names from one type of notation to another
 based on the \code{from} and \code{to} arguments.
 Optionally, prefix and suffix can be \code{flip}ped.
 }

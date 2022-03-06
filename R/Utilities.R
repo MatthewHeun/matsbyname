@@ -682,6 +682,7 @@ setrowtype <- function(a, rowtype){
                     rowcoltypes = "none")
 }
 
+
 #' Sets column type for a matrix or a list of matrices
 #'
 #' This function is a wrapper for \code{attr} so that 
@@ -747,6 +748,7 @@ rowtype <- function(a){
   unaryapply_byname(attr, a = a, .FUNdots = list(which = "rowtype"), 
                     rowcoltypes = "none")
 }
+
 
 #' Column type
 #'
@@ -1635,7 +1637,6 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
                                      notation_val = notation, 
                                      prepositions_val = prepositions))
 }
-
 
 
 
