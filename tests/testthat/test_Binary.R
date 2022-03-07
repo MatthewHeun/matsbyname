@@ -188,6 +188,40 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
 })
 
 
+test_that("sum_byname() works as expected via grouping and summarise", {
+  df_simple <- tibble::tribble(~key, ~val, 
+                               "A", 1, 
+                               "A", 2, 
+                               "B", 10)
+  res_simple <- df_simple %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(val = sum(val))
+  expected_simple <- tibble::tribble(~key, ~val, 
+                                     "A", 3, 
+                                     "B", 10)
+  expect_equal(res_simple, expected_simple)
+  
+  # This works differently, and unexpectedly.
+  res_simple2 <- df_simple %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(val = sum_byname(val), .groups = "keep")
+  expect_equal(res_simple2, expected_simple)
+  
+  
+  m <- matrix(c(11, 12, 13,
+                21, 22, 23), nrow = 2, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
+  res <- df %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(m = sum_byname(m), .groups = "keep")
+  expected <- tibble::tibble(key = c("A", "B"), 
+                             m = list(2 * m, m))
+  expect_equal(res, expected)
+})
+
+
+
 ###########################################################
 context("Differences")
 ###########################################################

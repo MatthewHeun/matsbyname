@@ -66,6 +66,7 @@ sum_byname <- function(...){
   naryapply_byname(`+`, ...)
 }
 
+
 #' Name-wise subtraction of matrices
 #'
 #' @param minuend matrix or constant
@@ -107,6 +108,7 @@ difference_byname <- function(minuend, subtrahend){
   binaryapply_byname(`-`, minuend, subtrahend)
 }
 
+
 #' Powers of matrix elements
 #' 
 #' Gives the result of raising all elements of a matrix or list of matrices to a power. 
@@ -136,6 +138,7 @@ difference_byname <- function(minuend, subtrahend){
 pow_byname <- function(a, pow){
   binaryapply_byname(`^`, a, pow)
 }
+
 
 #' Name-wise matrix multiplication
 #'
@@ -210,6 +213,7 @@ matrixproduct_byname <- function(...){
     sort_rows_cols(margin = list(c(1, 2)))
 }
 
+
 #' Name-wise matrix Hadamard multiplication
 #'
 #' Performs a union and sorting of names of rows and columns for both multiplicand and multiplier
@@ -258,6 +262,7 @@ hadamardproduct_byname <- function(...){
   naryapply_byname(`*`, ...)
 }
 
+
 #' Name-wise matrix element division
 #'
 #' Element-wise division of two matrices.
@@ -302,6 +307,7 @@ hadamardproduct_byname <- function(...){
 quotient_byname <- function(dividend, divisor){
   binaryapply_byname(`/`, dividend, divisor)
 }
+
 
 #' Name- and element-wise arithmetic mean of matrices
 #'
@@ -348,6 +354,7 @@ mean_byname <- function(...){
     quotient_byname(length(list(...)))
 }
 
+
 #' Name- and element-wise geometric mean of two matrices.
 #'
 #' Gives the geometric mean of corresponding entries of \code{a} and \code{b}.
@@ -393,6 +400,7 @@ geometricmean_byname <- function(...){
   hadamardproduct_byname(...) %>% 
     pow_byname(1/length(list(...)))
 }
+
 
 #' Name- and element-wise logarithmic mean of matrices
 #'
@@ -467,6 +475,7 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
   binaryapply_byname(logmean_func, a = a, b = b, .FUNdots = list(base = base))
 }
 
+
 #' Compare two matrices "by name" for equality
 #'
 #' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
@@ -507,6 +516,7 @@ equal_byname <- function(...){
   naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE)
 }
 
+
 #' Compare two matrices "by name" for exact equality
 #'
 #' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
@@ -545,6 +555,7 @@ identical_byname <- function(...){
   }
   naryapplylogical_byname(ident_func, ..., set_rowcoltypes = FALSE)
 }
+
 
 #' Test whether matrices or lists of matrices have same structure
 #' 
@@ -606,6 +617,7 @@ samestructure_byname <- function(...){
                           match_type = "none", set_rowcoltypes = FALSE, 
                           .organize = FALSE)
 }
+
 
 #' And "by name"
 #' 
