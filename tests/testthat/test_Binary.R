@@ -238,10 +238,10 @@ test_that("sum_byname() works as expected via grouping and summarise", {
   res2 <- df2 %>% 
     dplyr::group_by(key) %>% 
     dplyr::summarise(m = sum_byname(m, .summarise = TRUE), m2 = sum_byname(m2, .summarise = TRUE))
-  expected2 <- tibble::tibble(key = c("A", "B"), 
-                              m = list(2 * m, m),
-                              m2 = list(7*m, 5*m))
-  expect_equal(res2, expected2)
+  expect_equal(res2$m[[1]], 2 * m)
+  expect_equal(res2$m[[2]], m)
+  expect_equal(res2$m2[[1]], 7 * m)
+  expect_equal(res2$m2[[2]], 5 * m)
 })
 
 

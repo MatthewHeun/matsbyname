@@ -23,8 +23,8 @@ Treats missing or \code{NULL} operands as \code{0}.
 }
 \details{
 A single list of operands is ambiguous:
-should it be returned, because each element is only
-the first addend of a series of sums without an augend,
+should it be returned unchanged, because each element is only
+the augend for of a series of sums that is missing  addends,
 in which case the length of the returned object is the same as the
 length of the input?
 Or should the list of objects be summed together,
@@ -37,6 +37,7 @@ If \code{.summarise = TRUE}, the
 data returned is guaranteed to be a list.
 If the call to \code{sum_byname(.summarise = TRUE)} is made in the context of a data frame,
 the column returned is guaranteed to be a list column.
+See the aggregation vignette for additional details and examples.
 }
 \examples{
 library(dplyr)
