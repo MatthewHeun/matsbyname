@@ -84,17 +84,6 @@ sum_byname <- function(..., .summarise = FALSE){
     return(list(...)[[1]])
   }
   naryapply_byname(`+`, ..., .summarise = .summarise)
-
-  # dots <- list(...)
-  # if (.summarise) {
-  #   # Transpose the incoming arguments
-  #   dots <- purrr::transpose(dots) %>% 
-  #     unlist(recursive = FALSE)
-  # }
-  # if (length(dots) == 1) {
-  #   return(dots[[1]])
-  # }
-  # naryapply_byname(`+`, dots)
 }
 
 
