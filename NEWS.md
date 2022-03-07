@@ -46,8 +46,8 @@ output: html_document
 * `RCLabels::make_or_pattern()` gains new `pattern_type`, "literal", which 
   returns the `row_col_names` argument unmodified.
 * `trim_rows_cols()` gains a `warn_if_a_incomplete` argument. 
-   When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
-   that are present in `mat`.
+  When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
+  that are present in `mat`.
 * Many new tests for new features.
   But some functions have been moved to `RCLabels`, 
   so the total number of tests
