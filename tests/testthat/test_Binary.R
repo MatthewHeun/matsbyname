@@ -204,14 +204,22 @@ test_that("sum_byname() works as expected via grouping and summarise", {
   # This works differently, and unexpectedly.
   res_simple2 <- df_simple %>% 
     dplyr::group_by(key) %>% 
+    # We don't use the .summarise = TRUE condition, so
+    # the resuult is just the original data frame (with groups)
     dplyr::summarise(val = sum_byname(val), .groups = "keep")
+  # Here
   expect_equal(res_simple2, df_simple %>% dplyr::group_by(key))
   
   res_simple3 <- df_simple %>% 
     dplyr::group_by(key) %>% 
+    # Here, we use the .summarise = TRUE argument.
     dplyr::summarise(val = sum_byname(val, .summarise = TRUE))
-  expect_equal(res_simple3, expected_simple)
-  
+  # So sum_byname() should produce the column sum along the data frame.
+  # The result is a list column, because a list column
+  # will also accommodate a list of matrices.
+  expected_simple3 <- expected_simple
+  expected_simple3$val <- list(3, 10)
+  expect_equal(res_simple3, expected_simple3)
   
   m <- matrix(c(11, 12, 13,
                 21, 22, 23), nrow = 2, ncol = 3, byrow = TRUE, 
@@ -219,12 +227,11 @@ test_that("sum_byname() works as expected via grouping and summarise", {
   df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
   res <- df %>% 
     dplyr::group_by(key) %>% 
-    dplyr::summarise(m = sum_byname(m, .summarise = TRUE), .groups = "keep")
+    dplyr::summarise(m = sum_byname(m, .summarise = TRUE))
   expected <- tibble::tibble(key = c("A", "B"), 
                              m = list(2 * m, m))
   expect_equal(res, expected)
 })
-
 
 
 ###########################################################

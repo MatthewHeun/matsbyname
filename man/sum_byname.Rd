@@ -33,6 +33,10 @@ The \code{summarise} argument distinguishes between these two cases.
 The default value for \code{summarise} is \code{FALSE}, giving the first behavior.
 Set \code{summarise} to \code{TRUE} to cause this function to act like \code{dplyr::summarise()}
 for its list of arguments.
+If \code{.summarise = TRUE}, the
+data returned is guaranteed to be a list.
+If the call to \code{sum_byname(.summarise = TRUE)} is made in the context of a data frame,
+the column returned is guaranteed to be a list column.
 }
 \examples{
 library(dplyr)

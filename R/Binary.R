@@ -7,8 +7,8 @@
 #' Treats missing or `NULL` operands as `0`.
 #'
 #' A single list of operands is ambiguous:
-#' should it be returned, because each element is only 
-#' the first addend of a series of sums without an augend, 
+#' should it be returned unchanged, because each element is only 
+#' the augend for of a series of sums that is missing  addends, 
 #' in which case the length of the returned object is the same as the 
 #' length of the input?
 #' Or should the list of objects be summed together,
@@ -17,6 +17,10 @@
 #' The default value for `summarise` is `FALSE`, giving the first behavior.
 #' Set `summarise` to `TRUE` to cause this function to act like `dplyr::summarise()`
 #' for its list of arguments.
+#' If `.summarise = TRUE`, the 
+#' data returned is guaranteed to be a list.
+#' If the call to `sum_byname(.summarise = TRUE)` is made in the context of a data frame,
+#' the column returned is guaranteed to be a list column.
 #' 
 #' @param ... Operands: constants, matrices, or lists of matrices.
 #' @param .summarise When `TRUE`, a single list of operands is summed together.
