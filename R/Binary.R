@@ -21,6 +21,7 @@
 #' data returned is guaranteed to be a list.
 #' If the call to `sum_byname(.summarise = TRUE)` is made in the context of a data frame,
 #' the column returned is guaranteed to be a list column.
+#' See the aggregation vignette for additional details and examples.
 #' 
 #' @param ... Operands: constants, matrices, or lists of matrices.
 #' @param .summarise When `TRUE`, a single list of operands is summed together.
