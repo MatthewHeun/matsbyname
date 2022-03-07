@@ -1767,26 +1767,3 @@ test_that("aggregate_by_pieces() works with funny names", {
 })
 
 
-test_that("aggregation of a data frame via grouping and summarise works as expected", {
-  df_simple <- tibble::tribble(~key, ~val, 
-                               "A", 1, 
-                               "A", 2, 
-                               "B", 10)
-  res_simple <- df_simple %>% 
-    dplyr::group_by(key) %>% 
-    dplyr::summarise(val = sum(val))
-  expect_equal(res_simple, tibble::tribble(~key, ~val, 
-                                           "A", 3, 
-                                           "B", 10))
-  
-  m <- matrix(c(11, 12, 13,
-                21, 22, 23), nrow = 2, ncol = 3, byrow = TRUE, 
-              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
-  df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
-  res <- df %>% 
-    dplyr::group_by(key) %>% 
-    dplyr::summarise(m = sum_byname(m), .groups = "keep")
-  expected <- tibble::tibble(key = c("A", "B"), 
-                             m = list(2 * m, m))
-  expect_equal(res, expected)
-})
