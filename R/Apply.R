@@ -269,6 +269,7 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
   return(out)
 }
 
+
 #' Apply a binary function "by name"
 #' 
 #' If either `a` or `b` is missing or `NULL`, 
@@ -353,6 +354,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   return(out)
 }
 
+
 #' Apply a function "by name" to any number of operands
 #' 
 #' Applies `FUN` to all operands in `...`.
@@ -417,9 +419,14 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = list(2))
 naryapply_byname <- function(FUN, ..., 
                              .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
-                             set_rowcoltypes = TRUE, .organize = TRUE){
+                             set_rowcoltypes = TRUE, .organize = TRUE, .summarise = FALSE){
   match_type <- match.arg(match_type)
   dots <- list(...)
+  if (.summarise) {
+    # Transpose dots
+    dots <- purrr::transpose(dots) %>% 
+      unlist(recursive = FALSE)
+  }
   if (length(dots) == 1) {
     # Perform a unaryapply
     return(unaryapply_byname(FUN, a = dots[[1]], 
@@ -434,6 +441,7 @@ naryapply_byname <- function(FUN, ...,
   }
   return(a)
 }
+
 
 #' Apply a function logically to numbers, matrices, or lists of numbers or matrices
 #' 
@@ -509,6 +517,7 @@ naryapplylogical_byname <- function(FUN, ...,
   }
   return(res)
 }
+
 
 #' Apply a function cumulatively to a list of matrices or numbers
 #' 

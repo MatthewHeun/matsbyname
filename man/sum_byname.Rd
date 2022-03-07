@@ -4,18 +4,35 @@
 \alias{sum_byname}
 \title{Name-wise addition of matrices}
 \usage{
-sum_byname(...)
+sum_byname(..., .summarise = FALSE)
 }
 \arguments{
-\item{...}{operands: constants, matrices, or lists of matrices}
+\item{...}{Operands: constants, matrices, or lists of matrices.}
+
+\item{.summarise}{When \code{TRUE}, a single list of operands is summed together.
+When \code{FALSE} (the default), all items in a single list of operands
+are summed together, returning only one result.}
 }
 \value{
-A matrix representing the name-wise sum of \code{addend} and \code{augend}
+A matrix representing the name-wise sum of arguments.
 }
 \description{
 Performs a union and sorting of addend and augend row and column names prior to summation.
 Zeroes are inserted for missing matrix elements.
 Treats missing or \code{NULL} operands as \code{0}.
+}
+\details{
+A single list of operands is ambiguous:
+should it be returned, because each element is only
+the first addend of a series of sums without an augend,
+in which case the length of the returned object is the same as the
+length of the input?
+Or should the list of objects be summed together,
+returning only a single item, as in the \code{dplyr::summarise()} function?
+The \code{summarise} argument distinguishes between these two cases.
+The default value for \code{summarise} is \code{FALSE}, giving the first behavior.
+Set \code{summarise} to \code{TRUE} to cause this function to act like \code{dplyr::summarise()}
+for its list of arguments.
 }
 \examples{
 library(dplyr)

@@ -205,7 +205,12 @@ test_that("sum_byname() works as expected via grouping and summarise", {
   res_simple2 <- df_simple %>% 
     dplyr::group_by(key) %>% 
     dplyr::summarise(val = sum_byname(val), .groups = "keep")
-  expect_equal(res_simple2, expected_simple)
+  expect_equal(res_simple2, df_simple %>% dplyr::group_by(key))
+  
+  res_simple3 <- df_simple %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(val = sum_byname(val, .summarise = TRUE))
+  expect_equal(res_simple3, expected_simple)
   
   
   m <- matrix(c(11, 12, 13,
@@ -214,7 +219,7 @@ test_that("sum_byname() works as expected via grouping and summarise", {
   df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
   res <- df %>% 
     dplyr::group_by(key) %>% 
-    dplyr::summarise(m = sum_byname(m), .groups = "keep")
+    dplyr::summarise(m = sum_byname(m, .summarise = TRUE), .groups = "keep")
   expected <- tibble::tibble(key = c("A", "B"), 
                              m = list(2 * m, m))
   expect_equal(res, expected)

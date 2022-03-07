@@ -10,7 +10,8 @@ naryapply_byname(
   .FUNdots = NULL,
   match_type = c("all", "matmult", "none"),
   set_rowcoltypes = TRUE,
-  .organize = TRUE
+  .organize = TRUE,
+  .summarise = FALSE
 )
 }
 \arguments{

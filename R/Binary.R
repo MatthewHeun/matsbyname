@@ -5,10 +5,25 @@
 #' Performs a union and sorting of addend and augend row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
 #' Treats missing or `NULL` operands as `0`.
-#' 
-#' @param ... operands: constants, matrices, or lists of matrices
 #'
-#' @return A matrix representing the name-wise sum of `addend` and `augend`
+#' A single list of operands is ambiguous:
+#' should it be returned, because each element is only 
+#' the first addend of a series of sums without an augend, 
+#' in which case the length of the returned object is the same as the 
+#' length of the input?
+#' Or should the list of objects be summed together,
+#' returning only a single item, as in the `dplyr::summarise()` function?
+#' The `summarise` argument distinguishes between these two cases.
+#' The default value for `summarise` is `FALSE`, giving the first behavior.
+#' Set `summarise` to `TRUE` to cause this function to act like `dplyr::summarise()`
+#' for its list of arguments.
+#' 
+#' @param ... Operands: constants, matrices, or lists of matrices.
+#' @param .summarise When `TRUE`, a single list of operands is summed together.
+#'                   When `FALSE` (the default), all items in a single list of operands
+#'                   are summed together, returning only one result.
+#'
+#' @return A matrix representing the name-wise sum of arguments.
 #' 
 #' @export
 #'
@@ -59,11 +74,22 @@
 #' DF3
 #' DF3$sums[[1]]
 #' DF3$sums[[2]]
-sum_byname <- function(...){
-  if (length(list(...)) == 1) {
+sum_byname <- function(..., .summarise = FALSE){
+  if (length(list(...)) == 1 & !.summarise) {
     return(list(...)[[1]])
   }
-  naryapply_byname(`+`, ...)
+  naryapply_byname(`+`, ..., .summarise = .summarise)
+
+  # dots <- list(...)
+  # if (.summarise) {
+  #   # Transpose the incoming arguments
+  #   dots <- purrr::transpose(dots) %>% 
+  #     unlist(recursive = FALSE)
+  # }
+  # if (length(dots) == 1) {
+  #   return(dots[[1]])
+  # }
+  # naryapply_byname(`+`, dots)
 }
 
 
