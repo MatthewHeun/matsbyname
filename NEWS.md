@@ -12,9 +12,11 @@ output: html_document
   `mean_byname()`, `geometricmean_byname()`, 
   `equal_byname()`, `identical_byname()`, 
   `samestructure_byname()`, and
-  `and_byname() all gain argument `.summarise`
+  `and_byname()` all gain argument `.summarise`
   to signal intention to operate *down* a column
   or along a list.
+  The default value is `.summarise = FALSE`,
+  to maintain previous behavior.
 * New functions `df_to_aggregation_map()` and
   `aggregation_map_to_df()`
   assist with manipulating aggregation maps.
@@ -58,7 +60,7 @@ output: html_document
   But some functions have been moved to `RCLabels`, 
   so the total number of tests
   has gone down.
-    - Now at 1051 tests, all passing.
+    - Now at 1072 tests, all passing.
     - Test coverage remains at 100 %.
 
 
