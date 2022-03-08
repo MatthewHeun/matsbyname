@@ -4,10 +4,13 @@
 \alias{equal_byname}
 \title{Compare two matrices "by name" for equality}
 \usage{
-equal_byname(...)
+equal_byname(..., .summarise = FALSE)
 }
 \arguments{
-\item{...}{operands to be compared}
+\item{...}{Operands to be compared.}
+
+\item{.summarise}{Tells whether the operation should be accomplished
+across lists (\code{FALSE}) or down lists (\code{TRUE}).}
 }
 \value{
 \code{TRUE} iff all information is equal, including

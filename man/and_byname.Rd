@@ -4,13 +4,16 @@
 \alias{and_byname}
 \title{And "by name"}
 \usage{
-and_byname(...)
+and_byname(..., .summarise = FALSE)
 }
 \arguments{
-\item{...}{operands to the logical \code{and} function}
+\item{...}{Operands to the logical \code{and} function.}
+
+\item{.summarise}{Tells whether the operation should be accomplished
+across lists (\code{FALSE}) or down lists (\code{TRUE}).}
 }
 \value{
-logical \code{and} applied to the operands
+Logical \code{and} applied to the operands.
 }
 \description{
 Operands should be logical, although numerical operands are accepted.
@@ -28,4 +31,5 @@ m2 <- matrix(c(TRUE, FALSE, TRUE, TRUE), nrow = 2, ncol = 2,
 and_byname(m1, m1)
 and_byname(m1, m2)
 and_byname(list(m1, m1), list(m1, m1), list(m2, m2))
+and_byname(list(m1, m1), list(m1, m1), list(m2, m2), .summarise = TRUE)
 }

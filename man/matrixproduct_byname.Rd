@@ -4,12 +4,24 @@
 \alias{matrixproduct_byname}
 \title{Name-wise matrix multiplication}
 \usage{
-matrixproduct_byname(...)
+matrixproduct_byname(..., .summarise = FALSE)
 }
 \arguments{
-\item{...}{operands; constants, matrices, or lists of matrices
+\item{...}{Operands; constants, matrices, or lists of matrices.}
 
-Multiplies operands from left to right.
+\item{.summarise}{When \code{TRUE}, a matrix multiplication proceeds down lists of arguments.
+When \code{FALSE} (the default), items are multiplied across lists.}
+}
+\value{
+A matrix representing the name-wise product of operands.
+}
+\description{
+Multiplies operands from left to right
+(when \code{.summarise = FALSE}).
+If \code{.summarise = TRUE},
+operands are multiplied from first to last.
+}
+\details{
 Performs a union and sorting of multiplicand rows and multiplier columns by name
 prior to multiplication.
 Zeroes are inserted for missing matrix elements.
@@ -23,13 +35,7 @@ If column type of the multiplicand is not same as
 row type of the multiplier on any step of the multiplication,
 the function will fail.
 The result is matrix product
-with row names from the first multiplicand and column names from the last multiplier.}
-}
-\value{
-A matrix representing the name-wise product of operands
-}
-\description{
-Name-wise matrix multiplication
+with row names from the first multiplicand and column names from the last multiplier.
 }
 \examples{
 library(dplyr)
@@ -52,4 +58,6 @@ DF[[1,"G"]] <- G
 DF[[2,"G"]] <- G
 matrixproduct_byname(DF$V, DF$G)
 DF \%>\% mutate(matprods = matrixproduct_byname(V, G))
+# Also works with lists, multiplying down the lists if `.summarise = TRUE`.
+matrixproduct_byname(list(V, G, Z), .summarise = TRUE)
 }

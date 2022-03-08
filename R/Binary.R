@@ -5,10 +5,30 @@
 #' Performs a union and sorting of addend and augend row and column names prior to summation.
 #' Zeroes are inserted for missing matrix elements.
 #' Treats missing or `NULL` operands as `0`.
-#' 
-#' @param ... operands: constants, matrices, or lists of matrices
 #'
-#' @return A matrix representing the name-wise sum of `addend` and `augend`
+#' For this function, a list of lists of operands is ambiguous.
+#' Should the operands be summed across lists 
+#' (first items summed across all lists, second items summed across all list, etc.)
+#' or should each list be summed along each list?  
+#' In the first case, the return object will have length equal to the length of the lists in the `...` argument.
+#' In the second case, the return object will have length equal to the number of lists in the `...` argument.
+#' The first case is like summing across rows of a data frame.
+#' The second case is like summing down columns of a data frame.
+#' The `summarise` argument distinguishes between these two cases.
+#' The default value for `summarise` is `FALSE`, giving the first behavior.
+#' Set `summarise` to `TRUE` to cause this function to act like `dplyr::summarise()`
+#' for its list of arguments.
+#' If `.summarise = TRUE`, the 
+#' data value is guaranteed to be a list.
+#' If the call to `sum_byname(.summarise = TRUE)` is made in the context of a data frame,
+#' the column returned is guaranteed to be a list column.
+#' See the aggregation vignette for additional details and examples.
+#' 
+#' @param ... Operands: constants, matrices, or lists of matrices.
+#' @param .summarise When `TRUE`, a operands are summed down lists.
+#'                   When `FALSE` (the default), items are summed across lists.
+#'
+#' @return A matrix representing the name-wise sum of arguments.
 #' 
 #' @export
 #'
@@ -59,12 +79,13 @@
 #' DF3
 #' DF3$sums[[1]]
 #' DF3$sums[[2]]
-sum_byname <- function(...){
-  if (length(list(...)) == 1) {
+sum_byname <- function(..., .summarise = FALSE){
+  if (length(list(...)) == 1 & !.summarise) {
     return(list(...)[[1]])
   }
-  naryapply_byname(`+`, ...)
+  naryapply_byname(`+`, ..., .summarise = .summarise)
 }
+
 
 #' Name-wise subtraction of matrices
 #'
@@ -107,6 +128,7 @@ difference_byname <- function(minuend, subtrahend){
   binaryapply_byname(`-`, minuend, subtrahend)
 }
 
+
 #' Powers of matrix elements
 #' 
 #' Gives the result of raising all elements of a matrix or list of matrices to a power. 
@@ -137,11 +159,14 @@ pow_byname <- function(a, pow){
   binaryapply_byname(`^`, a, pow)
 }
 
+
 #' Name-wise matrix multiplication
 #'
-#' @param ...  operands; constants, matrices, or lists of matrices
-#'
-#' Multiplies operands from left to right.
+#' Multiplies operands from left to right
+#' (when `.summarise = FALSE`).
+#' If `.summarise = TRUE`, 
+#' operands are multiplied from first to last.
+#' 
 #' Performs a union and sorting of multiplicand rows and multiplier columns by name 
 #' prior to multiplication.
 #' Zeroes are inserted for missing matrix elements.
@@ -157,7 +182,11 @@ pow_byname <- function(a, pow){
 #' The result is matrix product
 #' with row names from the first multiplicand and column names from the last multiplier.
 #'
-#' @return A matrix representing the name-wise product of operands 
+#' @param ...  Operands; constants, matrices, or lists of matrices.
+#' @param .summarise When `TRUE`, a matrix multiplication proceeds down lists of arguments.
+#'                   When `FALSE` (the default), items are multiplied across lists.
+#'
+#' @return A matrix representing the name-wise product of operands.
 #' 
 #' @export
 #'
@@ -182,21 +211,14 @@ pow_byname <- function(a, pow){
 #' DF[[2,"G"]] <- G
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
-# matrixproduct_byname <- function(multiplicand, multiplier){
-#   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
-#   # are completed and sorted, but rows and cols of the output are not guaranteed 
-#   # to be sorted.
-#   binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
-#     # Because _byname assures that all rows and columns are sorted, 
-#     # we sort them here before returning. 
-#     sort_rows_cols()
-# }
-matrixproduct_byname <- function(...){
+#' # Also works with lists, multiplying down the lists if `.summarise = TRUE`.
+#' matrixproduct_byname(list(V, G, Z), .summarise = TRUE)
+matrixproduct_byname <- function(..., .summarise = FALSE){
   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
   # are completed and sorted, but rows and cols of the output of the 
   # %*% operation are not guaranteed to be sorted.
   # Thus, we sort_rows_cols() prior to returning.
-  out <- naryapply_byname(`%*%`, ..., match_type = "matmult") %>% 
+  naryapply_byname(`%*%`, ..., match_type = "matmult", .summarise = .summarise) %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     # We have to specify the margin explicity,
@@ -210,6 +232,7 @@ matrixproduct_byname <- function(...){
     sort_rows_cols(margin = list(c(1, 2)))
 }
 
+
 #' Name-wise matrix Hadamard multiplication
 #'
 #' Performs a union and sorting of names of rows and columns for both multiplicand and multiplier
@@ -220,9 +243,11 @@ matrixproduct_byname <- function(...){
 #' 
 #' The Hadamard product is also known as the \code{entrywise} product.
 #'
-#' @param ... operands; constants, matrices, or lists of matrices 
+#' @param ... Operands; constants, matrices, or lists of matrices.
+#' @param .summarise When `TRUE`, operands are multiplied down lists.
+#'                   When `FALSE` (the default), items multiplied across lists. 
 #'
-#' @return name-wise element product of operands
+#' @return Name-wise element product of operands.
 #' 
 #' @export
 #'
@@ -249,14 +274,17 @@ matrixproduct_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' hadamardproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(entrywiseprods = hadamardproduct_byname(U, G))
-hadamardproduct_byname <- function(...){
+#' # Also works down lists with `.summarise = TRUE`.
+#' hadamardproduct_byname(list(U, G), .summarise = TRUE)
+hadamardproduct_byname <- function(..., .summarise = FALSE){
   # Note that prod(1) returns 1, not 0.
   # So hadamardproduct_byname returns the non-missing argument if only 1 argument is provided.
-  if (length(list(...)) == 1) {
+  if (length(list(...)) == 1 & !.summarise) {
     return(list(...)[[1]])
   }
-  naryapply_byname(`*`, ...)
+  naryapply_byname(`*`, ..., .summarise = .summarise)
 }
+
 
 #' Name-wise matrix element division
 #'
@@ -303,6 +331,7 @@ quotient_byname <- function(dividend, divisor){
   binaryapply_byname(`/`, dividend, divisor)
 }
 
+
 #' Name- and element-wise arithmetic mean of matrices
 #'
 #' Gives the arithmetic mean of operands in \code{...}.
@@ -311,7 +340,9 @@ quotient_byname <- function(dividend, divisor){
 #' prior to performing arithmetic mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param ... operands: constants, matrices, or lists of matrices
+#' @param ... Operands: constants, matrices, or lists of matrices.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
 #' @return name-wise arithmetic mean of operands.
 #' 
@@ -343,10 +374,24 @@ quotient_byname <- function(dividend, divisor){
 #' DF[[2,"G"]] <- G
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
-mean_byname <- function(...){
-  sum_byname(...) %>% 
-    quotient_byname(length(list(...)))
+mean_byname <- function(..., .summarise = FALSE){
+  if (.summarise) {
+    # Ensure that all lists are same length.
+    ns <- lapply(X = list(...), FUN = function(l) {
+      length(l)
+    }) %>% 
+      unlist(recursive = FALSE)
+  } else {
+    n <- length(list(...))
+  }
+  sums <- sum_byname(..., .summarise = .summarise)
+  if (.summarise) {
+    return(quotient_byname(sums, ns))
+  } else {
+    return(quotient_byname(sums, n))
+  }
 }
+
 
 #' Name- and element-wise geometric mean of two matrices.
 #'
@@ -357,6 +402,8 @@ mean_byname <- function(...){
 #' Zeroes are inserted for missing matrix elements.
 #' 
 #' @param ... operands; constants, matrices, or lists of matrices
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
 #' @return name-wise geometric mean of operands
 #' 
@@ -389,10 +436,24 @@ mean_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
-geometricmean_byname <- function(...){
-  hadamardproduct_byname(...) %>% 
-    pow_byname(1/length(list(...)))
+geometricmean_byname <- function(..., .summarise = FALSE){
+  if (.summarise) {
+    # Ensure that all lists are same length.
+    ns <- lapply(X = list(...), FUN = function(l) {
+      length(l)
+    }) %>% 
+      unlist(recursive = FALSE)
+  } else {
+    n <- length(list(...))
+  }
+  prods <- hadamardproduct_byname(..., .summarise = .summarise)
+  if (.summarise) {
+    return(pow_byname(prods, 1/ns))
+  } else {
+    return(pow_byname(prods, 1/n))
+  }
 }
+
 
 #' Name- and element-wise logarithmic mean of matrices
 #'
@@ -467,6 +528,7 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
   binaryapply_byname(logmean_func, a = a, b = b, .FUNdots = list(base = base))
 }
 
+
 #' Compare two matrices "by name" for equality
 #'
 #' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
@@ -477,9 +539,11 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' If EXACT comparison is needed, use \code{\link{identical_byname}}, 
 #' which compares using \code{identical(a, b)}.
 #'
-#' @param ... operands to be compared
+#' @param ... Operands to be compared.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
-#' @return \code{TRUE} iff all information is equal, including
+#' @return `TRUE` iff all information is equal, including
 #' row and column types \emph{and}
 #' row and column names \emph{and}
 #' entries in the matrices.
@@ -500,12 +564,13 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
-equal_byname <- function(...){
+equal_byname <- function(..., .summarise = FALSE){
   equal_func <- function(a, b){
     return(isTRUE(base::all.equal(a, b)))
   }
-  naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE, .summarise = .summarise)
 }
+
 
 #' Compare two matrices "by name" for exact equality
 #'
@@ -517,9 +582,11 @@ equal_byname <- function(...){
 #' If fuzzy comparison is needed, use \code{\link{equal_byname}}, 
 #' which compares using \code{isTRUE(all.equal(a, b))}.
 #'
-#' @param ... operands to be compared
+#' @param ... Operands to be compared.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
-#' @return \code{TRUE} iff all information is identical, including
+#' @return `TRUE` iff all information is identical, including
 #' row and column types \emph{and}
 #' row and column names \emph{and}
 #' entries in the matrices.
@@ -539,12 +606,13 @@ equal_byname <- function(...){
 #' identical_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' identical_byname(a, b)
-identical_byname <- function(...){
+identical_byname <- function(..., .summarise = FALSE){
   ident_func <- function(a, b){
     return(identical(a, b))
   }
-  naryapplylogical_byname(ident_func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(ident_func, ..., set_rowcoltypes = FALSE, .summarise = .summarise)
 }
+
 
 #' Test whether matrices or lists of matrices have same structure
 #' 
@@ -554,7 +622,9 @@ identical_byname <- function(...){
 #' if row and column names are identical.
 #' Values can be different.
 #'
-#' @param ... operands to be compared
+#' @param ... Operands to be compared.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
 #' @return \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
 #' 
@@ -571,7 +641,7 @@ identical_byname <- function(...){
 #' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
 #' samestructure_byname(list(U, U), list(U, U))
-samestructure_byname <- function(...){
+samestructure_byname <- function(..., .summarise = FALSE){
   samestruct_func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
@@ -604,18 +674,21 @@ samestructure_byname <- function(...){
   }
   naryapplylogical_byname(samestruct_func, ..., 
                           match_type = "none", set_rowcoltypes = FALSE, 
-                          .organize = FALSE)
+                          .organize = FALSE, .summarise = .summarise)
 }
+
 
 #' And "by name"
 #' 
 #' Operands should be logical, although numerical operands are accepted.
-#' Numerical operands are interpreted as \code{FALSE} when \code{0} and
-#' \code{TRUE} for any other number.
+#' Numerical operands are interpreted as `FALSE` when `0` and
+#' `TRUE` for any other number.
 #'
-#' @param ... operands to the logical \code{and} function
+#' @param ... Operands to the logical `and` function.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
-#' @return logical \code{and} applied to the operands
+#' @return Logical `and` applied to the operands.
 #' 
 #' @export
 #'
@@ -630,9 +703,10 @@ samestructure_byname <- function(...){
 #' and_byname(m1, m1)
 #' and_byname(m1, m2)
 #' and_byname(list(m1, m1), list(m1, m1), list(m2, m2))
-and_byname <- function(...){
-  if (length(list(...)) == 1) {
+#' and_byname(list(m1, m1), list(m1, m1), list(m2, m2), .summarise = TRUE)
+and_byname <- function(..., .summarise = FALSE){
+  if (length(list(...)) == 1 & !.summarise) {
     return(list(...)[[1]])
   }
-  naryapplylogical_byname(`&`, ...)
+  naryapplylogical_byname(`&`, ..., .summarise = .summarise)
 }

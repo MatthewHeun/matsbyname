@@ -4,6 +4,19 @@ output: html_document
 ---
 
 
+* `aggregation-vignette` now includes details on
+  using `sum_byname(.summarise = TRUE)` 
+  with `dplyr::summarise()`.
+* `sum_byname()`, `matrixproduct_byname()`, 
+  `hadamardproduct_byname()`, 
+  `mean_byname()`, `geometricmean_byname()`, 
+  `equal_byname()`, `identical_byname()`, 
+  `samestructure_byname()`, and
+  `and_byname()` all gain argument `.summarise`
+  to signal intention to operate *down* a column
+  or along a list.
+  The default value is `.summarise = FALSE`,
+  to maintain previous behavior.
 * New functions `df_to_aggregation_map()` and
   `aggregation_map_to_df()`
   assist with manipulating aggregation maps.
@@ -41,13 +54,13 @@ output: html_document
 * `RCLabels::make_or_pattern()` gains new `pattern_type`, "literal", which 
   returns the `row_col_names` argument unmodified.
 * `trim_rows_cols()` gains a `warn_if_a_incomplete` argument. 
-   When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
-   that are present in `mat`.
+  When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
+  that are present in `mat`.
 * Many new tests for new features.
   But some functions have been moved to `RCLabels`, 
   so the total number of tests
   has gone down.
-    - Now at 1045 tests, all passing.
+    - Now at 1072 tests, all passing.
     - Test coverage remains at 100 %.
 
 

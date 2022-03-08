@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(dplyr)
+library(tibble)
 library(tidyr)
 library(matsbyname)
 library(matsindf)
@@ -216,6 +217,82 @@ res2 <- df %>%
 res2
 res2$aggregated[[1]]
 res2$aggregated[[2]]
+```
+
+
+## Aggregation via `dplyr::summarise()`
+
+Another type of aggregation is aided by 
+the metadata columns of a `matsindf`-style data frame. 
+With single numbers, an aggregation might look like this:
+
+```{r}
+df_simple <- tibble::tribble(~key, ~val, 
+                             "A", 1, 
+                             "A", 2, 
+                             "B", 10)
+df_simple
+df_simple %>% 
+  dplyr::group_by(key) %>% 
+  dplyr::summarise(val = sum(val))
+```
+
+The same aggregation gives unexpected results 
+with the default arguments to the `sum_byname()` function
+(specifically, `.summarise = FALSE`),
+because a single list of operands is ambiguous.
+Should the column be returned unchanged, because each element is interpreted as 
+the augend for a series of sums that is missing addends, 
+in which case the length of the returned object is the same as the 
+length of the input?
+Or should the list of objects be summed down the column,
+returning only a single item (for each group),
+as in the `dplyr::summarise()` function?
+In the example below, the grouping has no effect
+on the `summarise()` function, because `sum_byname(.summarise = FALSE)`
+assumes that each row of `val` is an augend without an addend.
+(You have to make a choice!)
+
+```{r}
+# 2 rows are expected. 3 are observed.
+df_simple %>% 
+  dplyr::group_by(key) %>% 
+  dplyr::summarise(val = sum_byname(val), .groups = "drop")
+```
+
+To signal intention to summarise down the `val` column, 
+set `.summarise = TRUE` in the call to `sum_byname()`.
+Note that `sum_byname(.summarise = TRUE)` *always* returns a list column, 
+because if the summarised column were to contain matrices,
+it *must* be a list column.
+
+```{r}
+res <- df_simple %>% 
+  dplyr::group_by(key) %>% 
+  dplyr::summarise(val = sum_byname(val, .summarise = TRUE))
+# res$val is a list column.
+res
+res$val
+```
+
+The `.summarise = TRUE` argument works when there are matrices in a `matsindf` data frame.
+
+```{r}
+m <- matrix(c(11, 12, 13,
+              21, 22, 23), nrow = 2, ncol = 3, byrow = TRUE, 
+            dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
+unexpected <- df %>% 
+  dplyr::group_by(key) %>% 
+  dplyr::summarise(m = sum_byname(m), .groups = "drop")
+# 2 rows are expected. 3 are observed.
+unexpected
+res <- df %>% 
+  dplyr::group_by(key) %>% 
+  dplyr::summarise(m = sum_byname(m, .summarise = TRUE))
+res
+res$m[[1]]
+res$m[[2]]
 ```
 
 

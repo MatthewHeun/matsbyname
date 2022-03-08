@@ -269,6 +269,7 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
   return(out)
 }
 
+
 #' Apply a binary function "by name"
 #' 
 #' If either `a` or `b` is missing or `NULL`, 
@@ -353,6 +354,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   return(out)
 }
 
+
 #' Apply a function "by name" to any number of operands
 #' 
 #' Applies `FUN` to all operands in `...`.
@@ -385,26 +387,29 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' @param FUN a binary function to be applied "by name" to all operands in `...`.
 #' @param ... the operands for `FUN`.
 #' @param .FUNdots a list of additional named arguments passed to `FUN`.
-#' @param match_type one of "all", "matmult", or "none".
-#'        When `...` are matrices,
-#'        "all" (the default) indicates that
-#'        rowtypes of all `...` matrices must match and
-#'        coltypes of all `...` matrices must match.
-#'        If "matmult",
-#'        the coltype of the first operand must match the rowtype of the second operand
-#'        for every sequential invocation of `FUN`.
-#'        If "none",
-#'        neither coltypes nor rowtypes are checked by `naryapply_byname()`. 
-#' @param set_rowcoltypes tells whether to apply row and column types from 
-#'        operands in `...` to the output of each sequential invocation of `FUN`. 
-#'        Set `TRUE` (the default) to apply row and column types.
-#'        Set `FALSE`, to *not* apply row and column types to the output.
-#' @param .organize a boolean that tells whether or not to automatically 
-#'        complete operands in `...` relative to each other and
-#'        sort the rows and columns of the completed matrices.
-#'        This organizing is done on each sequential invocation of `FUN`.
-#'        Normally, this should be `TRUE` (the default).
-#'        However, if `FUN` takes over this responsibility, set to `FALSE`.
+#' @param match_type One of "all", "matmult", or "none".
+#'                   When `...` are matrices,
+#'                   "all" (the default) indicates that
+#'                   rowtypes of all `...` matrices must match and
+#'                   coltypes of all `...` matrices must match.
+#'                   If "matmult",
+#'                   the coltype of the first operand must match the rowtype of the second operand
+#'                   for every sequential invocation of `FUN`.
+#'                   If "none",
+#'                   neither coltypes nor rowtypes are checked by `naryapply_byname()`. 
+#' @param set_rowcoltypes Tells whether to apply row and column types from 
+#'                        operands in `...` to the output of each sequential invocation of `FUN`. 
+#'                        Set `TRUE` (the default) to apply row and column types.
+#'                        Set `FALSE`, to *not* apply row and column types to the output.
+#' @param .organize A boolean that tells whether or not to automatically 
+#'                  complete operands in `...` relative to each other and
+#'                  sort the rows and columns of the completed matrices.
+#'                  This organizing is done on each sequential invocation of `FUN`.
+#'                  Normally, this should be `TRUE` (the default).
+#'                  However, if `FUN` takes over this responsibility, set to `FALSE`.
+#' @param .summarise A boolean that tells whether this call is considered 
+#'                   a summarise operation (like `dplyr::summarise()`).
+#'                   Default is `FALSE`.
 #'        
 #' @return the result of applying `FUN` to all operands in `...`
 #' 
@@ -417,11 +422,15 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = list(2))
 naryapply_byname <- function(FUN, ..., 
                              .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
-                             set_rowcoltypes = TRUE, .organize = TRUE){
+                             set_rowcoltypes = TRUE, .organize = TRUE, .summarise = FALSE){
   match_type <- match.arg(match_type)
   dots <- list(...)
+  if (.summarise) {
+    # Transpose dots
+    dots <- purrr::transpose(dots)
+  }
   if (length(dots) == 1) {
-    # Perform a unaryapply
+    # Perform unaryapply
     return(unaryapply_byname(FUN, a = dots[[1]], 
                              .FUNdots = .FUNdots, rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
   }
@@ -435,6 +444,7 @@ naryapply_byname <- function(FUN, ...,
   return(a)
 }
 
+
 #' Apply a function logically to numbers, matrices, or lists of numbers or matrices
 #' 
 #' Operands should be logical, although numerical operands are accepted.
@@ -447,26 +457,29 @@ naryapply_byname <- function(FUN, ...,
 #' @param FUN a binary function (that returns logical values) to be applied over operands 
 #' @param ... operands; constants, matrices, or lists of matrices
 #' @param .FUNdots a list of additional named arguments passed to `FUN`.
-#' @param match_type one of "all", "matmult", or "none".
-#'        When `...` are matrices,
-#'        "all" (the default) indicates that
-#'        rowtypes of all `...` matrices must match and
-#'        coltypes of all `...` matrices must match.
-#'        If "matmult",
-#'        the coltype of the first operand must match the rowtype of the second operand
-#'        for every sequential invocation of `FUN`.
-#'        If "none",
-#'        neither coltypes nor rowtypes are checked by `naryapply_byname()`. 
-#' @param set_rowcoltypes tells whether to apply row and column types from 
-#'        operands in `...` to the output of each sequential invocation of `FUN`. 
-#'        Set `TRUE` (the default) to apply row and column types.
-#'        Set `FALSE`, to *not* apply row and column types to the output.
-#' @param .organize a boolean that tells whether or not to automatically 
-#'        complete operands in `...` relative to each other and
-#'        sort the rows and columns of the completed matrices.
-#'        This organizing is done on each sequential invocation of `FUN`.
-#'        Normally, this should be `TRUE` (the default).
-#'        However, if `FUN` takes over this responsibility, set to `FALSE`.
+#' @param match_type One of "all", "matmult", or "none".
+#'                   When `...` are matrices,
+#'                   "all" (the default) indicates that
+#'                   rowtypes of all `...` matrices must match and
+#'                   coltypes of all `...` matrices must match.
+#'                   If "matmult",
+#'                   the coltype of the first operand must match the rowtype of the second operand
+#'                   for every sequential invocation of `FUN`.
+#'                   If "none",
+#'                   neither coltypes nor rowtypes are checked by `naryapply_byname()`. 
+#' @param set_rowcoltypes Tells whether to apply row and column types from 
+#'                        operands in `...` to the output of each sequential invocation of `FUN`. 
+#'                        Set `TRUE` (the default) to apply row and column types.
+#'                        Set `FALSE`, to *not* apply row and column types to the output.
+#' @param .organize A boolean that tells whether or not to automatically 
+#'                  complete operands in `...` relative to each other and
+#'                  sort the rows and columns of the completed matrices.
+#'                  This organizing is done on each sequential invocation of `FUN`.
+#'                  Normally, this should be `TRUE` (the default).
+#'                  However, if `FUN` takes over this responsibility, set to `FALSE`.
+#' @param .summarise A boolean that tells whether this call is considered 
+#'                   a summarise operation (like `dplyr::summarise()`).
+#'                   Default is `FALSE`.
 #'        
 #' @return the result of `FUN` applied logically to `...`
 #'
@@ -475,9 +488,13 @@ naryapply_byname <- function(FUN, ...,
 #' matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, FALSE)
 naryapplylogical_byname <- function(FUN, ..., 
                                     .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
-                                    set_rowcoltypes = TRUE, .organize = TRUE){
+                                    set_rowcoltypes = TRUE, .organize = TRUE, .summarise = FALSE){
   match_type <- match.arg(match_type)
   dots <- list(...)
+  if (.summarise) {
+    # Transpose dots
+    dots <- purrr::transpose(dots)
+  }
   if (length(dots) == 1) {
     return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
                              rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
@@ -509,6 +526,7 @@ naryapplylogical_byname <- function(FUN, ...,
   }
   return(res)
 }
+
 
 #' Apply a function cumulatively to a list of matrices or numbers
 #' 

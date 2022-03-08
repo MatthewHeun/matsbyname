@@ -4,10 +4,13 @@
 \alias{identical_byname}
 \title{Compare two matrices "by name" for exact equality}
 \usage{
-identical_byname(...)
+identical_byname(..., .summarise = FALSE)
 }
 \arguments{
-\item{...}{operands to be compared}
+\item{...}{Operands to be compared.}
+
+\item{.summarise}{Tells whether the operation should be accomplished
+across lists (\code{FALSE}) or down lists (\code{TRUE}).}
 }
 \value{
 \code{TRUE} iff all information is identical, including

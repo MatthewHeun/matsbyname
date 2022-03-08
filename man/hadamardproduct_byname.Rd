@@ -4,13 +4,16 @@
 \alias{hadamardproduct_byname}
 \title{Name-wise matrix Hadamard multiplication}
 \usage{
-hadamardproduct_byname(...)
+hadamardproduct_byname(..., .summarise = FALSE)
 }
 \arguments{
-\item{...}{operands; constants, matrices, or lists of matrices}
+\item{...}{Operands; constants, matrices, or lists of matrices.}
+
+\item{.summarise}{When \code{TRUE}, operands are multiplied down lists.
+When \code{FALSE} (the default), items multiplied across lists.}
 }
 \value{
-name-wise element product of operands
+Name-wise element product of operands.
 }
 \description{
 Performs a union and sorting of names of rows and columns for both multiplicand and multiplier
@@ -45,4 +48,6 @@ DF[[1,"G"]] <- G
 DF[[2,"G"]] <- G
 hadamardproduct_byname(DF$U, DF$G)
 DF \%>\% mutate(entrywiseprods = hadamardproduct_byname(U, G))
+# Also works down lists with `.summarise = TRUE`.
+hadamardproduct_byname(list(U, G), .summarise = TRUE)
 }
