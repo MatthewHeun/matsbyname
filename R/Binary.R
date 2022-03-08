@@ -379,7 +379,8 @@ mean_byname <- function(..., .summarise = FALSE){
     # Ensure that all lists are same length.
     ns <- lapply(X = list(...), FUN = function(l) {
       length(l)
-    })
+    }) %>% 
+      unlist(recursive = FALSE)
   } else {
     n <- length(list(...))
   }
@@ -438,7 +439,8 @@ geometricmean_byname <- function(..., .summarise = FALSE){
     # Ensure that all lists are same length.
     ns <- lapply(X = list(...), FUN = function(l) {
       length(l)
-    })
+    }) %>% 
+      unlist(recursive = FALSE)
   } else {
     n <- length(list(...))
   }

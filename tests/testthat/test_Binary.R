@@ -748,7 +748,8 @@ test_that("mean_byname works as expected", {
   expect_equal(DF %>% dplyr::mutate(means = mean_byname(U, G)), DF_expected)
 })
 
-test_that("geometricmean_byname works as expected", {
+
+test_that("geometricmean_byname() works as expected", {
   expect_equal(geometricmean_byname(0, 0), 0)
   expect_equal(geometricmean_byname(10, 20), sqrt(10*20))
   expect_equal(geometricmean_byname(10, 20, 30), (10*20*30)^(1/3))
@@ -785,6 +786,7 @@ test_that("geometricmean_byname works as expected", {
                  setrowtype("Commodities") %>% setcoltype("Industries"))
   # This also works with lists
   expect_equal(geometricmean_byname(list(10, 1000), list(1000, 10)), list(100, 100))
+  expect_equal(geometricmean_byname(list(1, 1000), list(10, 10), .summarise = TRUE), list(31.6227766, 10))
   expect_equal(geometricmean_byname(list(U,U), list(G,G)), list(UGgeomean, UGgeomean))
   DF <- data.frame(U = I(list()), G = I(list()))
   DF[[1,"U"]] <- U
