@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* New vignette "Using summarise in matsbyname"
+  clarifies issues around ambiguous functions 
+  that use a `...` argument.
 * `aggregation-vignette` now includes details on
   using `sum_byname(.summarise = TRUE)` 
   with `dplyr::summarise()`.
