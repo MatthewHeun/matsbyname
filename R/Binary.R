@@ -6,27 +6,27 @@
 #' Zeroes are inserted for missing matrix elements.
 #' Treats missing or `NULL` operands as `0`.
 #'
-#' A single list of operands is ambiguous:
-#' should it be returned unchanged, because each element is only 
-#' the augend for of a series of sums that is missing  addends, 
-#' in which case the length of the returned object is the same as the 
-#' length of the input?
-#' Or should the list of objects be summed together,
-#' returning only a single item, as in the `dplyr::summarise()` function?
+#' For this function, a list of lists of operands is ambiguous.
+#' Should the operands be summed across lists 
+#' (first items summed across all lists, second items summed across all list, etc.)
+#' or should each list be summed along each list?  
+#' In the first case, the return object will have length equal to the length of the lists in the `...` argument.
+#' In the second case, the return object will have length equal to the number of lists in the `...` argument.
+#' The first case is like summing across rows of a data frame.
+#' The second case is like summing down columns of a data frame.
 #' The `summarise` argument distinguishes between these two cases.
 #' The default value for `summarise` is `FALSE`, giving the first behavior.
 #' Set `summarise` to `TRUE` to cause this function to act like `dplyr::summarise()`
 #' for its list of arguments.
 #' If `.summarise = TRUE`, the 
-#' data returned is guaranteed to be a list.
+#' data value is guaranteed to be a list.
 #' If the call to `sum_byname(.summarise = TRUE)` is made in the context of a data frame,
 #' the column returned is guaranteed to be a list column.
 #' See the aggregation vignette for additional details and examples.
 #' 
 #' @param ... Operands: constants, matrices, or lists of matrices.
-#' @param .summarise When `TRUE`, a single list of operands is summed together.
-#'                   When `FALSE` (the default), all items in a single list of operands
-#'                   are summed together, returning only one result.
+#' @param .summarise When `TRUE`, a operands are summed down lists.
+#'                   When `FALSE` (the default), items are summed across lists.
 #'
 #' @return A matrix representing the name-wise sum of arguments.
 #' 
@@ -162,9 +162,11 @@ pow_byname <- function(a, pow){
 
 #' Name-wise matrix multiplication
 #'
-#' @param ...  operands; constants, matrices, or lists of matrices
-#'
-#' Multiplies operands from left to right.
+#' Multiplies operands from left to right
+#' (when `.summarise = FALSE`).
+#' If `.summarise = TRUE`, 
+#' operands are multiplied from first to last.
+#' 
 #' Performs a union and sorting of multiplicand rows and multiplier columns by name 
 #' prior to multiplication.
 #' Zeroes are inserted for missing matrix elements.
@@ -180,7 +182,11 @@ pow_byname <- function(a, pow){
 #' The result is matrix product
 #' with row names from the first multiplicand and column names from the last multiplier.
 #'
-#' @return A matrix representing the name-wise product of operands 
+#' @param ...  Operands; constants, matrices, or lists of matrices.
+#' @param .summarise When `TRUE`, a matrix multiplication proceeds down lists of arguments.
+#'                   When `FALSE` (the default), items are multiplied across lists.
+#'
+#' @return A matrix representing the name-wise product of operands.
 #' 
 #' @export
 #'
@@ -205,21 +211,14 @@ pow_byname <- function(a, pow){
 #' DF[[2,"G"]] <- G
 #' matrixproduct_byname(DF$V, DF$G)
 #' DF %>% mutate(matprods = matrixproduct_byname(V, G))
-# matrixproduct_byname <- function(multiplicand, multiplier){
-#   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
-#   # are completed and sorted, but rows and cols of the output are not guaranteed 
-#   # to be sorted.
-#   binaryapply_byname(`%*%`, multiplicand, multiplier, match_type = "matmult") %>% 
-#     # Because _byname assures that all rows and columns are sorted, 
-#     # we sort them here before returning. 
-#     sort_rows_cols()
-# }
-matrixproduct_byname <- function(...){
+#' # Also works with lists, multiplying down the lists if `.summarise = TRUE`.
+#' matrixproduct_byname(list(V, G, Z), .summarise = TRUE)
+matrixproduct_byname <- function(..., .summarise = FALSE){
   # match_type = "matmult" ensures that cols of multiplicand and rows of multiplier
   # are completed and sorted, but rows and cols of the output of the 
   # %*% operation are not guaranteed to be sorted.
   # Thus, we sort_rows_cols() prior to returning.
-  out <- naryapply_byname(`%*%`, ..., match_type = "matmult") %>% 
+  naryapply_byname(`%*%`, ..., match_type = "matmult", .summarise = .summarise) %>% 
     # Because _byname assures that all rows and columns are sorted, 
     # we sort them here before returning. 
     # We have to specify the margin explicity,
@@ -244,9 +243,11 @@ matrixproduct_byname <- function(...){
 #' 
 #' The Hadamard product is also known as the \code{entrywise} product.
 #'
-#' @param ... operands; constants, matrices, or lists of matrices 
+#' @param ... Operands; constants, matrices, or lists of matrices.
+#' @param .summarise When `TRUE`, operands are multiplied down lists.
+#'                   When `FALSE` (the default), items multiplied across lists. 
 #'
-#' @return name-wise element product of operands
+#' @return Name-wise element product of operands.
 #' 
 #' @export
 #'
@@ -273,13 +274,15 @@ matrixproduct_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' hadamardproduct_byname(DF$U, DF$G)
 #' DF %>% mutate(entrywiseprods = hadamardproduct_byname(U, G))
-hadamardproduct_byname <- function(...){
+#' # Also works down lists with `.summarise = TRUE`.
+#' hadamardproduct_byname(list(U, G), .summarise = TRUE)
+hadamardproduct_byname <- function(..., .summarise = FALSE){
   # Note that prod(1) returns 1, not 0.
   # So hadamardproduct_byname returns the non-missing argument if only 1 argument is provided.
-  if (length(list(...)) == 1) {
+  if (length(list(...)) == 1 & !.summarise) {
     return(list(...)[[1]])
   }
-  naryapply_byname(`*`, ...)
+  naryapply_byname(`*`, ..., .summarise = .summarise)
 }
 
 
@@ -337,7 +340,9 @@ quotient_byname <- function(dividend, divisor){
 #' prior to performing arithmetic mean.
 #' Zeroes are inserted for missing matrix elements.
 #' 
-#' @param ... operands: constants, matrices, or lists of matrices
+#' @param ... Operands: constants, matrices, or lists of matrices.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
 #' @return name-wise arithmetic mean of operands.
 #' 
@@ -369,9 +374,21 @@ quotient_byname <- function(dividend, divisor){
 #' DF[[2,"G"]] <- G
 #' mean_byname(DF$U, DF$G)
 #' DF %>% mutate(means = mean_byname(U, G))
-mean_byname <- function(...){
-  sum_byname(...) %>% 
-    quotient_byname(length(list(...)))
+mean_byname <- function(..., .summarise = FALSE){
+  if (.summarise) {
+    # Ensure that all lists are same length.
+    ns <- lapply(X = list(...), FUN = function(l) {
+      length(l)
+    })
+  } else {
+    n <- length(list(...))
+  }
+  sums <- sum_byname(..., .summarise = .summarise)
+  if (.summarise) {
+    return(quotient_byname(sums, ns))
+  } else {
+    return(quotient_byname(sums, n))
+  }
 }
 
 
@@ -416,9 +433,21 @@ mean_byname <- function(...){
 #' DF[[2,"G"]] <- G
 #' geometricmean_byname(DF$U, DF$G)
 #' DF %>% mutate(geomeans = geometricmean_byname(U, G))
-geometricmean_byname <- function(...){
-  hadamardproduct_byname(...) %>% 
-    pow_byname(1/length(list(...)))
+geometricmean_byname <- function(..., .summarise = FALSE){
+  if (.summarise) {
+    # Ensure that all lists are same length.
+    ns <- lapply(X = list(...), FUN = function(l) {
+      length(l)
+    })
+  } else {
+    n <- length(list(...))
+  }
+  prods <- hadamardproduct_byname(..., .summarise = .summarise)
+  if (.summarise) {
+    return(pow_byname(prods, 1/ns))
+  } else {
+    return(pow_byname(prods, 1/n))
+  }
 }
 
 

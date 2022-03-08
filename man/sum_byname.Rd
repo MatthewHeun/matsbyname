@@ -9,9 +9,8 @@ sum_byname(..., .summarise = FALSE)
 \arguments{
 \item{...}{Operands: constants, matrices, or lists of matrices.}
 
-\item{.summarise}{When \code{TRUE}, a single list of operands is summed together.
-When \code{FALSE} (the default), all items in a single list of operands
-are summed together, returning only one result.}
+\item{.summarise}{When \code{TRUE}, a operands are summed down lists.
+When \code{FALSE} (the default), items are summed across lists.}
 }
 \value{
 A matrix representing the name-wise sum of arguments.
@@ -22,19 +21,20 @@ Zeroes are inserted for missing matrix elements.
 Treats missing or \code{NULL} operands as \code{0}.
 }
 \details{
-A single list of operands is ambiguous:
-should it be returned unchanged, because each element is only
-the augend for of a series of sums that is missing  addends,
-in which case the length of the returned object is the same as the
-length of the input?
-Or should the list of objects be summed together,
-returning only a single item, as in the \code{dplyr::summarise()} function?
+For this function, a list of lists of operands is ambiguous.
+Should the operands be summed across lists
+(first items summed across all lists, second items summed across all list, etc.)
+or should each list be summed along each list?
+In the first case, the return object will have length equal to the length of the lists in the \code{...} argument.
+In the second case, the return object will have length equal to the number of lists in the \code{...} argument.
+The first case is like summing across rows of a data frame.
+The second case is like summing down columns of a data frame.
 The \code{summarise} argument distinguishes between these two cases.
 The default value for \code{summarise} is \code{FALSE}, giving the first behavior.
 Set \code{summarise} to \code{TRUE} to cause this function to act like \code{dplyr::summarise()}
 for its list of arguments.
 If \code{.summarise = TRUE}, the
-data returned is guaranteed to be a list.
+data value is guaranteed to be a list.
 If the call to \code{sum_byname(.summarise = TRUE)} is made in the context of a data frame,
 the column returned is guaranteed to be a list column.
 See the aggregation vignette for additional details and examples.

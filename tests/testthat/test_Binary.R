@@ -261,6 +261,7 @@ test_that("differences of constants works as expected", {
   expect_equal(difference_byname(2, NA), NA_integer_)
 })
 
+
 test_that("differences of matrices works as expected", {
   # If only one argument, return it.
   expect_equal(difference_byname(U), U)
@@ -324,6 +325,9 @@ test_that("matrixproduct_byname works as expected", {
   # Furthermore, rows and columns of Y are sorted to be in alphabetical order.
   expect_equal(matrixproduct_byname(V, Y), VY)
   expect_equal(matrixproduct_byname(V, Y, Z), VYZ)
+  
+  # Check that it works down a list if .summarise = TRUE.
+  expect_equal(matrixproduct_byname(list(V, Y, Z), .summarise = TRUE), list(VYZ))
   
   M <- matrix(c(11, 12,
                 21, 22),
@@ -439,6 +443,8 @@ test_that("hadamardproduct_byname works as expected", {
   expect_equal(hadamardproduct_byname(U, Y), UY_expected)
   expect_equal(hadamardproduct_byname(U, 0), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
                  setrowtype("Products") %>% setcoltype("Industries"))
+  # Make sure it works down a list with .summarise = TRUE.
+  expect_equal(hadamardproduct_byname(list(U, Y), .summarise = TRUE), list(UY_expected))
   # See if a product of 4 vectors works as expected
   UUYY_expected <- matrix(c(16, 36, 36, 16), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
@@ -719,6 +725,7 @@ test_that("mean_byname works as expected", {
   
   # This also works with lists
   expect_equal(mean_byname(list(100, 100), list(50, 50)), list(75, 75))
+  expect_equal(mean_byname(list(100, 100), list(50, 50), list(75, 75), .summarise = TRUE), list(100, 50, 75))
   expect_equal(mean_byname(list(U,U), list(G,G)), list(UGavg, UGavg))
   expect_equal(mean_byname(list(A,A), list(B,B), list(C,C)), list(ABCavg_expected, ABCavg_expected))
   DF <- data.frame(U = I(list()), G = I(list()))
