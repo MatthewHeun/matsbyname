@@ -240,7 +240,7 @@ df_simple %>%
 The same aggregation gives unexpected results 
 with the default arguments to the `sum_byname()` function
 (specifically, `.summarise = FALSE`),
-because a single list of operands is ambiguous.
+because `sum_byname()` is ambiguous for a data frame.
 Should the column be returned unchanged, because each element is interpreted as 
 the augend for a series of sums that is missing addends, 
 in which case the length of the returned object is the same as the 
@@ -248,10 +248,11 @@ length of the input?
 Or should the list of objects be summed down the column,
 returning only a single item (for each group),
 as in the `dplyr::summarise()` function?
+(See the vignette titled "Using summarise in matsbyname"
+for additional detail about this ambiguity.) 
 In the example below, the grouping has no effect
 on the `summarise()` function, because `sum_byname(.summarise = FALSE)`
 assumes that each row of `val` is an augend without an addend.
-(You have to make a choice!)
 
 ```{r}
 # 2 rows are expected. 3 are observed.
@@ -275,7 +276,8 @@ res
 res$val
 ```
 
-The `.summarise = TRUE` argument works when there are matrices in a `matsindf` data frame.
+The `.summarise = TRUE` argument works when there are matrices 
+in a `matsindf` data frame, too.
 
 ```{r}
 m <- matrix(c(11, 12, 13,
