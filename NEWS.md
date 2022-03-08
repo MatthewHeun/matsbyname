@@ -7,8 +7,14 @@ output: html_document
 * `aggregation-vignette` now includes details on
   using `sum_byname(.summarise = TRUE)` 
   with `dplyr::summarise()`.
-* `sum_byname()` gains argument `.summarise`
-  to signal intention to sum *down* a column.
+* `sum_byname()`, `matrixproduct_byname()`, 
+  `hadamardproduct_byname()`, 
+  `mean_byname()`, `geometricmean_byname()`, 
+  `equal_byname()`, `identical_byname()`, 
+  `samestructure_byname()`, and
+  `and_byname() all gain argument `.summarise`
+  to signal intention to operate *down* a column
+  or along a list.
 * New functions `df_to_aggregation_map()` and
   `aggregation_map_to_df()`
   assist with manipulating aggregation maps.

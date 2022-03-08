@@ -8,6 +8,9 @@ geometricmean_byname(..., .summarise = FALSE)
 }
 \arguments{
 \item{...}{operands; constants, matrices, or lists of matrices}
+
+\item{.summarise}{Tells whether the operation should be accomplished
+across lists (\code{FALSE}) or down lists (\code{TRUE}).}
 }
 \value{
 name-wise geometric mean of operands

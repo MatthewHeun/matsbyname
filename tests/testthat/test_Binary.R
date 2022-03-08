@@ -817,7 +817,8 @@ test_that("geometricmean_byname() works as expected", {
   )
 })
 
-test_that("logmean works as expected", {
+
+test_that("logmean() works as expected", {
   # The logmean function is an internal helper function that should also be tested.
   expect_equal(logmean(0, 0), 0)
   expect_equal(logmean(0, 1), 0)
@@ -840,7 +841,8 @@ test_that("logmean works as expected", {
   expect_true(is.nan(val2))
 })
 
-test_that("logarithmicmean_byname works as expected", {
+
+test_that("logarithmicmean_byname() works as expected", {
   # Should work with single numbers.
   expect_equal(logarithmicmean_byname(0, 0), 0)
   expect_equal(logarithmicmean_byname(0, 1), 0)
@@ -909,7 +911,7 @@ test_that("logarithmicmean_byname works as expected", {
 context("Equal and identical")
 ###########################################################
 
-test_that("equal_byname works as expected", {
+test_that("equal_byname() works as expected", {
   
   # Try with single numbers
   expect_true(equal_byname(2, 2))
@@ -948,7 +950,13 @@ test_that("equal_byname works as expected", {
   expect_true(equal_byname(a, b))
   
   # Try with lists.
+  expect_equal(equal_byname(list(2, 3), list(2, 3), list(42, 42)), list(FALSE, FALSE))
+  expect_equal(equal_byname(list(2, 3), list(2, 3), list(2, 3)), list(TRUE, TRUE))
+  expect_equal(equal_byname(list(2, 2), list(3, 3), list(42, 42), .summarise = TRUE), list(TRUE, TRUE, TRUE))
+  expect_equal(equal_byname(list(2, 2), list(3, 4), list(42, 42), .summarise = TRUE), list(TRUE, FALSE, TRUE))
+  
   expect_equal(equal_byname(list(a, a), list(b, b)), list(TRUE, TRUE))
+  expect_equal(equal_byname(list(a, a), list(b, b), .summarise = TRUE), list(TRUE, TRUE))
   
   # Try with two unsorted matrices. They should be equal (byname), 
   # because they will be sorted prior to comparison.
@@ -993,7 +1001,8 @@ test_that("equal_byname works as expected", {
   expect_false(identical_byname(e, f + 1e-100))
 })
 
-test_that("identical_byname works as expected", {
+
+test_that("identical_byname() works as expected", {
   expect_true(identical_byname(100, 100))
   # With a little bit of numerical fuzz, identical_byname fails
   expect_false(identical_byname(100, 100 + 1e-10))
@@ -1015,6 +1024,12 @@ test_that("identical_byname works as expected", {
   expect_false(identical_byname(a, b)) 
   dimnames(b) <- dimnames(a)
   expect_true(identical_byname(a, b))
+  
+  # Try with lists
+  expect_equal(identical_byname(list(1, 2, 3), list(1, 2, 3)), list(TRUE, TRUE, TRUE))
+  expect_equal(identical_byname(list(1, 2, 4), list(1, 2, 3)), list(TRUE, TRUE, FALSE))
+  expect_equal(identical_byname(list(1, 1, 1), list(2, 2, 2), .summarise = TRUE), list(TRUE, TRUE))
+  expect_equal(identical_byname(list(1, 1, 1), list(2, 2, 3), .summarise = TRUE), list(TRUE, FALSE))
 })
 
   
@@ -1023,7 +1038,7 @@ test_that("identical_byname works as expected", {
 context("Utilities")
 ###########################################################
 
-test_that("samestructure_byname works as expected", {
+test_that("samestructure_byname() works as expected", {
   expect_true(samestructure_byname(2, 2))
   expect_false(samestructure_byname(2, 2 %>% setrowtype("row")))
   expect_false(samestructure_byname(2 %>% setrowtype("row"), 2))
@@ -1045,12 +1060,16 @@ test_that("samestructure_byname works as expected", {
   expect_true(all(samestructure_byname(list(U, U), list(U, U)) %>% as.logical()))
   expect_true(all(samestructure_byname(list(U, U), list(V, V)) %>% as.logical()))
   expect_true(all(samestructure_byname(list(V, V), list(U, U)) %>% as.logical()))
+  expect_true(all(samestructure_byname(list(U, V), list(U, V), .summarise = TRUE) %>% as.logical()))
+  expect_equal(samestructure_byname(list(U, V), list(U %>% setrowtype(NULL), V), .summarise = TRUE), list(TRUE, FALSE))
+  
   # Check when one or both of rowtype or coltype is NULL
   expect_false(samestructure_byname(U, U %>% setrowtype(NULL)))
   expect_false(samestructure_byname(U, U %>% setcoltype(NULL)))
 })
 
-test_that("make_pattern works as expected", {
+
+test_that("make_pattern() works as expected", {
   expect_equal(RCLabels::make_or_pattern(strings = c("a", "b"), pattern_type = "exact"), "^a$|^b$")
   expect_equal(RCLabels::make_or_pattern(strings = c("a", "b"), pattern_type = "leading"), "^a|^b")
   expect_equal(RCLabels::make_or_pattern(strings = c("a", "b"), pattern_type = "trailing"), "a$|b$")
@@ -1063,7 +1082,7 @@ test_that("make_pattern works as expected", {
 })
   
 
-test_that("list_of_rows_or_cols works as expected", {
+test_that("list_of_rows_or_cols() works as expected", {
   m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
     setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
   expected_margin_1 <- list(p1 = matrix(seq(1, 5, by = 2), nrow = 3, ncol = 1, dimnames = list(c("i1", "i2", "i3"), "p1")) %>% 
@@ -1091,7 +1110,8 @@ test_that("list_of_rows_or_cols works as expected", {
   expect_equal(DF$extracted_cols, list(expected_margin_2, expected_margin_2))
 })
 
-test_that("organize_args works as expected", {
+
+test_that("organize_args() works as expected", {
   # If only one argument is a list, make the other argument also a list of equal length.
   expect_equal(matsbyname:::organize_args(a = list(1,2), b = 3), list(a = list(1,2), b = list(3,3)))
   expect_equal(matsbyname:::organize_args(a = 3, b = list(1,2)), list(a = list(3,3), b = list(1,2)))
@@ -1224,5 +1244,10 @@ test_that("and_byname works as expected", {
   # Test with lists of matrices
   expect_equal(and_byname(list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
   expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
+  
+  # Test with .summarise
+  expect_equal(and_byname(list(m1, m1), list(m2, m2), .summarise = TRUE), list(m1 & m1, m2 & m2))
+  expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2), .summarise = TRUE), list(m1 & m1, m1 & m1, m2 & m2))
+  
 })
 

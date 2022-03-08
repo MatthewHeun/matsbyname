@@ -402,6 +402,8 @@ mean_byname <- function(..., .summarise = FALSE){
 #' Zeroes are inserted for missing matrix elements.
 #' 
 #' @param ... operands; constants, matrices, or lists of matrices
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
 #' @return name-wise geometric mean of operands
 #' 
@@ -537,9 +539,11 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' If EXACT comparison is needed, use \code{\link{identical_byname}}, 
 #' which compares using \code{identical(a, b)}.
 #'
-#' @param ... operands to be compared
+#' @param ... Operands to be compared.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
-#' @return \code{TRUE} iff all information is equal, including
+#' @return `TRUE` iff all information is equal, including
 #' row and column types \emph{and}
 #' row and column names \emph{and}
 #' entries in the matrices.
@@ -560,11 +564,11 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
-equal_byname <- function(...){
+equal_byname <- function(..., .summarise = FALSE){
   equal_func <- function(a, b){
     return(isTRUE(base::all.equal(a, b)))
   }
-  naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE, .summarise = .summarise)
 }
 
 
@@ -578,9 +582,11 @@ equal_byname <- function(...){
 #' If fuzzy comparison is needed, use \code{\link{equal_byname}}, 
 #' which compares using \code{isTRUE(all.equal(a, b))}.
 #'
-#' @param ... operands to be compared
+#' @param ... Operands to be compared.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
-#' @return \code{TRUE} iff all information is identical, including
+#' @return `TRUE` iff all information is identical, including
 #' row and column types \emph{and}
 #' row and column names \emph{and}
 #' entries in the matrices.
@@ -600,11 +606,11 @@ equal_byname <- function(...){
 #' identical_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' identical_byname(a, b)
-identical_byname <- function(...){
+identical_byname <- function(..., .summarise = FALSE){
   ident_func <- function(a, b){
     return(identical(a, b))
   }
-  naryapplylogical_byname(ident_func, ..., set_rowcoltypes = FALSE)
+  naryapplylogical_byname(ident_func, ..., set_rowcoltypes = FALSE, .summarise = .summarise)
 }
 
 
@@ -616,7 +622,9 @@ identical_byname <- function(...){
 #' if row and column names are identical.
 #' Values can be different.
 #'
-#' @param ... operands to be compared
+#' @param ... Operands to be compared.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
 #' @return \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
 #' 
@@ -633,7 +641,7 @@ identical_byname <- function(...){
 #' samestructure_byname(U %>% setcoltype("col"), U)
 #' # Also works with lists
 #' samestructure_byname(list(U, U), list(U, U))
-samestructure_byname <- function(...){
+samestructure_byname <- function(..., .summarise = FALSE){
   samestruct_func <- function(a, b){
     if (!isTRUE(all.equal(rownames(a), rownames(b)))) {
       return(FALSE)
@@ -666,19 +674,21 @@ samestructure_byname <- function(...){
   }
   naryapplylogical_byname(samestruct_func, ..., 
                           match_type = "none", set_rowcoltypes = FALSE, 
-                          .organize = FALSE)
+                          .organize = FALSE, .summarise = .summarise)
 }
 
 
 #' And "by name"
 #' 
 #' Operands should be logical, although numerical operands are accepted.
-#' Numerical operands are interpreted as \code{FALSE} when \code{0} and
-#' \code{TRUE} for any other number.
+#' Numerical operands are interpreted as `FALSE` when `0` and
+#' `TRUE` for any other number.
 #'
-#' @param ... operands to the logical \code{and} function
+#' @param ... Operands to the logical `and` function.
+#' @param .summarise Tells whether the operation should be accomplished
+#'                   across lists (`FALSE`) or down lists (`TRUE`).
 #'
-#' @return logical \code{and} applied to the operands
+#' @return Logical `and` applied to the operands.
 #' 
 #' @export
 #'
@@ -693,9 +703,10 @@ samestructure_byname <- function(...){
 #' and_byname(m1, m1)
 #' and_byname(m1, m2)
 #' and_byname(list(m1, m1), list(m1, m1), list(m2, m2))
-and_byname <- function(...){
-  if (length(list(...)) == 1) {
+#' and_byname(list(m1, m1), list(m1, m1), list(m2, m2), .summarise = TRUE)
+and_byname <- function(..., .summarise = FALSE){
+  if (length(list(...)) == 1 & !.summarise) {
     return(list(...)[[1]])
   }
-  naryapplylogical_byname(`&`, ...)
+  naryapplylogical_byname(`&`, ..., .summarise = .summarise)
 }

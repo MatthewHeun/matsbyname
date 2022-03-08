@@ -46,7 +46,7 @@ However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
 
 \item{.summarise}{A boolean that tells whether this call is considered
 a summarise operation (like \code{dplyr::summarise()}).
-Defaults is \code{FALSE}.}
+Default is \code{FALSE}.}
 }
 \value{
 the result of applying \code{FUN} to all operands in \code{...}

@@ -4,10 +4,13 @@
 \alias{samestructure_byname}
 \title{Test whether matrices or lists of matrices have same structure}
 \usage{
-samestructure_byname(...)
+samestructure_byname(..., .summarise = FALSE)
 }
 \arguments{
-\item{...}{operands to be compared}
+\item{...}{Operands to be compared.}
+
+\item{.summarise}{Tells whether the operation should be accomplished
+across lists (\code{FALSE}) or down lists (\code{TRUE}).}
 }
 \value{
 \code{TRUE} if all operands have the same structure, \code{FALSE} otherwise.
