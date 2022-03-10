@@ -10,6 +10,9 @@
     <loc>/articles/about-vector-arguments.html</loc>
   </url>
   <url>
+    <loc>/articles/aggregation-vignette.html</loc>
+  </url>
+  <url>
     <loc>/articles/applybyname-vignette.html</loc>
   </url>
   <url>
@@ -17,6 +20,9 @@
   </url>
   <url>
     <loc>/articles/matsbyname.html</loc>
+  </url>
+  <url>
+    <loc>/articles/using-summarise-in-matsbyname.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -41,6 +47,9 @@
   </url>
   <url>
     <loc>/reference/aggregate_to_pref_suff_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/aggregation_map_helpers.html</loc>
   </url>
   <url>
     <loc>/reference/all_byname.html</loc>
@@ -104,6 +113,9 @@
   </url>
   <url>
     <loc>/reference/cumsum_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/data.html</loc>
   </url>
   <url>
     <loc>/reference/difference_byname.html</loc>

@@ -61,6 +61,9 @@
     <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
     </li>
+    <li>
+      <a href="../articles/using-summarise-in-matsbyname.html">Using summarise in matsbyname</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -91,7 +94,7 @@
 </h1>
                         <h4 data-toc-skip class="author">Matthew Kuperus Heun</h4>
             
-            <h4 data-toc-skip class="date">2022-03-06</h4>
+            <h4 data-toc-skip class="date">2022-03-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/vignettes/aggregation-vignette.Rmd" class="external-link"><code>vignettes/aggregation-vignette.Rmd</code></a></small>
       <div class="hidden name"><code>aggregation-vignette.Rmd</code></div>
@@ -327,10 +330,99 @@
 <span class="co">#&gt; Electricity [from Solar]         6         9</span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="aggregation-via-dplyrsummarise">Aggregation via <code>dplyr::summarise()</code><a class="anchor" aria-label="anchor" href="#aggregation-via-dplyrsummarise"></a>
+</h2>
+<p>Another type of aggregation is aided by the metadata columns of a <code>matsindf</code>-style data frame. With single numbers, an aggregation might look like this:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">df_simple</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">key</span>, <span class="op">~</span><span class="va">val</span>, 
+                             <span class="st">"A"</span>, <span class="fl">1</span>, 
+                             <span class="st">"A"</span>, <span class="fl">2</span>, 
+                             <span class="st">"B"</span>, <span class="fl">10</span><span class="op">)</span>
+<span class="va">df_simple</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 2</span></span>
+<span class="co">#&gt;   key     val</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         1</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> A         2</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> B        10</span>
+<span class="va">df_simple</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">val</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span>
+<span class="co">#&gt;   key     val</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         3</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> B        10</span></code></pre></div>
+<p>The same aggregation gives unexpected results with the default arguments to the <code><a href="../reference/sum_byname.html">sum_byname()</a></code> function (specifically, <code>.summarise = FALSE</code>), because <code><a href="../reference/sum_byname.html">sum_byname()</a></code> is ambiguous for a data frame. Should the column be returned unchanged, because each element is interpreted as the augend for a series of sums that is missing addends, in which case the length of the returned object is the same as the length of the input? Or should the list of objects be summed down the column, returning only a single item (for each group), as in the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise()</a></code> function? (See the vignette titled “Using summarise in matsbyname” for additional detail about this ambiguity.) In the example below, the grouping has no effect on the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> function, because <code>sum_byname(.summarise = FALSE)</code> assumes that each row of <code>val</code> is an augend without an addend.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># 2 rows are expected. 3 are observed.</span>
+<span class="va">df_simple</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>val <span class="op">=</span> <span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">val</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 2</span></span>
+<span class="co">#&gt;   key     val</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         1</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> A         2</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> B        10</span></code></pre></div>
+<p>To signal intention to summarise down the <code>val</code> column, set <code>.summarise = TRUE</code> in the call to <code><a href="../reference/sum_byname.html">sum_byname()</a></code>. Note that <code>sum_byname(.summarise = TRUE)</code> <em>always</em> returns a list column, because if the summarised column were to contain matrices, it <em>must</em> be a list column.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">df_simple</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>val <span class="op">=</span> <span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">val</span>, .summarise <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="co"># res$val is a list column.</span>
+<span class="va">res</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span>
+<span class="co">#&gt;   key   val      </span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A     <span style="color: #949494;">&lt;dbl [1]&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> B     <span style="color: #949494;">&lt;dbl [1]&gt;</span></span>
+<span class="va">res</span><span class="op">$</span><span class="va">val</span>
+<span class="co">#&gt; [[1]]</span>
+<span class="co">#&gt; [1] 3</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; [[2]]</span>
+<span class="co">#&gt; [1] 10</span></code></pre></div>
+<p>The <code>.summarise = TRUE</code> argument works when there are matrices in a <code>matsindf</code> data frame, too.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11</span>, <span class="fl">12</span>, <span class="fl">13</span>,
+              <span class="fl">21</span>, <span class="fl">22</span>, <span class="fl">23</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span>, 
+            dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r1"</span>, <span class="st">"r2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c1"</span>, <span class="st">"c2"</span>, <span class="st">"c3"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span>
+<span class="va">unexpected</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>m <span class="op">=</span> <span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span>
+<span class="co"># 2 rows are expected. 3 are observed.</span>
+<span class="va">unexpected</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 2</span></span>
+<span class="co">#&gt;   key   m            </span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>       </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A     <span style="color: #949494;">&lt;dbl [2 × 3]&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> A     <span style="color: #949494;">&lt;dbl [2 × 3]&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> B     <span style="color: #949494;">&lt;dbl [2 × 3]&gt;</span></span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>m <span class="op">=</span> <span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">m</span>, .summarise <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="va">res</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span>
+<span class="co">#&gt;   key   m            </span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>       </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A     <span style="color: #949494;">&lt;dbl [2 × 3]&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> B     <span style="color: #949494;">&lt;dbl [2 × 3]&gt;</span></span>
+<span class="va">res</span><span class="op">$</span><span class="va">m</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
+<span class="co">#&gt;    c1 c2 c3</span>
+<span class="co">#&gt; r1 22 24 26</span>
+<span class="co">#&gt; r2 42 44 46</span>
+<span class="va">res</span><span class="op">$</span><span class="va">m</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>
+<span class="co">#&gt;    c1 c2 c3</span>
+<span class="co">#&gt; r1 11 12 13</span>
+<span class="co">#&gt; r2 21 22 23</span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="working-with-aggregation-maps">Working with aggregation maps<a class="anchor" aria-label="anchor" href="#working-with-aggregation-maps"></a>
 </h2>
 <p>An aggregation map is defined to be a named list. But the source of that named list is often a data frame in which many-to-one relationships are defined. <code><a href="../reference/aggregation_map_helpers.html">df_to_aggregation_map()</a></code> assists converting from a two-column data frame to an aggregation map.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">member</span>, <span class="op">~</span><span class="va">role</span>, <span class="op">~</span><span class="va">band</span>, 
                       <span class="st">"John"</span>, <span class="st">"guitarists"</span>, <span class="st">"The Beatles"</span>, 
                       <span class="st">"Paul"</span>, <span class="st">"guitarists"</span>, <span class="st">"The Beatles"</span>, 
@@ -371,7 +463,7 @@
 <span class="co">#&gt; $singers</span>
 <span class="co">#&gt; [1] "Mick"</span></code></pre></div>
 <p>In a similar manner, an aggregation map can be converted to a data frame to assist with join operations with data frames.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/aggregation_map_helpers.html">aggregation_map_to_df</a></span><span class="op">(</span><span class="va">bands_membs_agg_map</span>, 
                       few_colname <span class="op">=</span> <span class="st">"bands"</span>,
                       many_colname <span class="op">=</span> <span class="st">"members"</span><span class="op">)</span>

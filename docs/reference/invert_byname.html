@@ -39,7 +39,13 @@ Rows and columns of a are sorted prior to inverting."><!-- mathjax --><script sr
       <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
     </li>
     <li>
+      <a href="../articles/aggregation-vignette.html">Aggregation in `matsbyname`</a>
+    </li>
+    <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
+    </li>
+    <li>
+      <a href="../articles/using-summarise-in-matsbyname.html">Using summarise in matsbyname</a>
     </li>
   </ul></li>
 <li>
@@ -97,7 +103,21 @@ Rows and columns of <code>a</code> are sorted prior to inverting.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industry"</span>
 <span class="r-in"><span class="fu"><a href="matrixproduct_byname.html">matrixproduct_byname</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu">invert_byname</span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    i1 i2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> i1  1  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> i2  0  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industry"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industry"</span>
 <span class="r-in"><span class="fu"><a href="matrixproduct_byname.html">matrixproduct_byname</a></span><span class="op">(</span><span class="fu">invert_byname</span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, <span class="va">m</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    c1 c2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c1  1  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c2  0  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Commodity"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Commodity"</span>
 <span class="r-in"><span class="fu">invert_byname</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>,<span class="va">m</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     i1   i2</span>
@@ -131,7 +151,7 @@ Rows and columns of <code>a</code> are sorted prior to inverting.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer></div>

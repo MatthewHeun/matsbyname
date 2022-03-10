@@ -42,7 +42,13 @@ the dimensions of the multiplicand and multiplier are be conformable for each se
       <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
     </li>
     <li>
+      <a href="../articles/aggregation-vignette.html">Aggregation in `matsbyname`</a>
+    </li>
+    <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
+    </li>
+    <li>
+      <a href="../articles/using-summarise-in-matsbyname.html">Using summarise in matsbyname</a>
     </li>
   </ul></li>
 <li>
@@ -77,17 +83,20 @@ the dimensions of the multiplicand and multiplier are be conformable for each se
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">hadamardproduct_byname</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">hadamardproduct_byname</span><span class="op">(</span><span class="va">...</span>, .summarise <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>...</dt>
-<dd><p>operands; constants, matrices, or lists of matrices</p></dd>
+<dd><p>Operands; constants, matrices, or lists of matrices.</p></dd>
+<dt>.summarise</dt>
+<dd><p>When <code>TRUE</code>, operands are multiplied down lists.
+When <code>FALSE</code> (the default), items multiplied across lists.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>name-wise element product of operands</p>
+    <p>Name-wise element product of operands.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -193,6 +202,17 @@ the dimensions of the multiplicand and multiplier are be conformable for each se
 <span class="r-out co"><span class="r-pr">#&gt;</span>            U          G entrywiseprods</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1, 2, 3, 4 1, 2, 3, 4     4, 6, 6, 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 1, 2, 3, 4 1, 2, 3, 4     4, 6, 6, 4</span>
+<span class="r-in"><span class="co"># Also works down lists with `.summarise = TRUE`.</span></span>
+<span class="r-in"><span class="fu">hadamardproduct_byname</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">U</span>, <span class="va">G</span><span class="op">)</span>, .summarise <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    i1 i2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c1  4  6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c2  6  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Commodities"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </div>
@@ -207,7 +227,7 @@ the dimensions of the multiplicand and multiplier are be conformable for each se
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer></div>

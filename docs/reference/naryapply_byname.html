@@ -40,7 +40,13 @@ See details for more information."><!-- mathjax --><script src="https://cdnjs.cl
       <a href="../articles/about-vector-arguments.html">About Vector Arguments</a>
     </li>
     <li>
+      <a href="../articles/aggregation-vignette.html">Aggregation in `matsbyname`</a>
+    </li>
+    <li>
       <a href="../articles/applybyname-vignette.html">Writing Custom Functions for `matsbyname`</a>
+    </li>
+    <li>
+      <a href="../articles/using-summarise-in-matsbyname.html">Using summarise in matsbyname</a>
     </li>
   </ul></li>
 <li>
@@ -79,7 +85,8 @@ See details for more information.</p>
   .FUNdots <span class="op">=</span> <span class="cn">NULL</span>,
   match_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"matmult"</span>, <span class="st">"none"</span><span class="op">)</span>,
   set_rowcoltypes <span class="op">=</span> <span class="cn">TRUE</span>,
-  .organize <span class="op">=</span> <span class="cn">TRUE</span>
+  .organize <span class="op">=</span> <span class="cn">TRUE</span>,
+  .summarise <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -92,7 +99,7 @@ See details for more information.</p>
 <dt>.FUNdots</dt>
 <dd><p>a list of additional named arguments passed to <code>FUN</code>.</p></dd>
 <dt>match_type</dt>
-<dd><p>one of "all", "matmult", or "none".
+<dd><p>One of "all", "matmult", or "none".
 When <code>...</code> are matrices,
 "all" (the default) indicates that
 rowtypes of all <code>...</code> matrices must match and
@@ -103,17 +110,21 @@ for every sequential invocation of <code>FUN</code>.
 If "none",
 neither coltypes nor rowtypes are checked by <code>naryapply_byname()</code>.</p></dd>
 <dt>set_rowcoltypes</dt>
-<dd><p>tells whether to apply row and column types from
+<dd><p>Tells whether to apply row and column types from
 operands in <code>...</code> to the output of each sequential invocation of <code>FUN</code>.
 Set <code>TRUE</code> (the default) to apply row and column types.
 Set <code>FALSE</code>, to <em>not</em> apply row and column types to the output.</p></dd>
 <dt>.organize</dt>
-<dd><p>a boolean that tells whether or not to automatically
+<dd><p>A boolean that tells whether or not to automatically
 complete operands in <code>...</code> relative to each other and
 sort the rows and columns of the completed matrices.
 This organizing is done on each sequential invocation of <code>FUN</code>.
 Normally, this should be <code>TRUE</code> (the default).
 However, if <code>FUN</code> takes over this responsibility, set to <code>FALSE</code>.</p></dd>
+<dt>.summarise</dt>
+<dd><p>A boolean that tells whether this call is considered
+a summarise operation (like <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise()</a></code>).
+Default is <code>FALSE</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -175,7 +186,7 @@ For example <code><a href="sum_byname.html">sum_byname()</a></code> applied to a
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer></div>
