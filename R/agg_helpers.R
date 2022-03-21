@@ -23,8 +23,8 @@
 #'                     to the "many" specific items that will be aggregated.
 #' @param aggregation_map An aggregation map to be converted to a data frame.
 #'
-#' @return For `df_to_aggregation_map()`, an aggregation map.
-#'         For `aggregation_map_to_df()`, a `data.frame`, probably at `tibble`.
+#' @return For `agg_table_to_agg_map()`, an aggregation map.
+#'         For `agg_map_to_agg_table()`, a `data.frame`, probably at `tibble`.
 #'
 #' @examples
 #' bands <- tibble::tribble(~band, ~members, 
@@ -40,18 +40,18 @@
 #'                          "Rolling Stones", "Ronnie",
 #'                          "Rolling Stones", "Bill",
 #'                          "Rolling Stones", "Charlie")
-#' agg_map <- df_to_aggregation_map(bands, 
+#' agg_map <- agg_table_to_agg_map(bands, 
 #'                                  few_colname = "band",
 #'                                  many_colname = "members")
 #' agg_map
-#' aggregation_map_to_df(agg_map, few_colname = "bands", many_colname = "members")
+#' agg_map_to_agg_table(agg_map, few_colname = "bands", many_colname = "members")
 #' @name aggregation_map_helpers
 NULL
 
 
 #' @export
 #' @rdname aggregation_map_helpers
-df_to_aggregation_map <- function(.df, few_colname, many_colname) {
+agg_table_to_agg_map <- function(.df, few_colname, many_colname) {
   out <- .df %>%
     # Select only the columns of interest
     dplyr::select(.data[[few_colname]], .data[[many_colname]]) %>%
@@ -72,7 +72,7 @@ df_to_aggregation_map <- function(.df, few_colname, many_colname) {
 
 #' @export
 #' @rdname aggregation_map_helpers
-aggregation_map_to_df <- function(aggregation_map, few_colname, many_colname) {
+agg_map_to_agg_table <- function(aggregation_map, few_colname, many_colname) {
   aggregation_map %>%
     unname() %>%
     tibble::tibble() %>%
