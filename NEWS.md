@@ -20,8 +20,8 @@ output: html_document
   or along a list.
   The default value is `.summarise = FALSE`,
   to maintain previous behavior.
-* New functions `df_to_aggregation_map()` and
-  `aggregation_map_to_df()`
+* New functions `agg_table_to_agg_map()` and
+  `agg_map_to_agg_table()`
   assist with manipulating aggregation maps.
 * New vignette `aggregation-vignette` demonstrates 
   the new aggregation functions.

@@ -421,7 +421,7 @@
 <div class="section level2">
 <h2 id="working-with-aggregation-maps">Working with aggregation maps<a class="anchor" aria-label="anchor" href="#working-with-aggregation-maps"></a>
 </h2>
-<p>An aggregation map is defined to be a named list. But the source of that named list is often a data frame in which many-to-one relationships are defined. <code><a href="../reference/aggregation_map_helpers.html">df_to_aggregation_map()</a></code> assists converting from a two-column data frame to an aggregation map.</p>
+<p>An aggregation map is defined to be a named list. But the source of that named list is often a data frame in which many-to-one relationships are defined. <code><a href="../reference/aggregation_map_helpers.html">agg_table_to_agg_map()</a></code> assists converting from a two-column data frame to an aggregation map.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">member</span>, <span class="op">~</span><span class="va">role</span>, <span class="op">~</span><span class="va">band</span>, 
                       <span class="st">"John"</span>, <span class="st">"guitarists"</span>, <span class="st">"The Beatles"</span>, 
@@ -446,14 +446,14 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;">7</span> Ronnie  guitarists Rolling Stones</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">8</span> Bill    guitarists Rolling Stones</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">9</span> Charlie drummers   Rolling Stones</span>
-<span class="va">bands_membs_agg_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggregation_map_helpers.html">df_to_aggregation_map</a></span><span class="op">(</span><span class="va">df</span>, few_colname <span class="op">=</span> <span class="st">"band"</span>, many_colname <span class="op">=</span> <span class="st">"member"</span><span class="op">)</span>
+<span class="va">bands_membs_agg_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggregation_map_helpers.html">agg_table_to_agg_map</a></span><span class="op">(</span><span class="va">df</span>, few_colname <span class="op">=</span> <span class="st">"band"</span>, many_colname <span class="op">=</span> <span class="st">"member"</span><span class="op">)</span>
 <span class="va">bands_membs_agg_map</span>
 <span class="co">#&gt; $`Rolling Stones`</span>
 <span class="co">#&gt; [1] "Mick"    "Keith"   "Ronnie"  "Bill"    "Charlie"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`The Beatles`</span>
 <span class="co">#&gt; [1] "John"   "Paul"   "George" "Ringo"</span>
-<span class="fu"><a href="../reference/aggregation_map_helpers.html">df_to_aggregation_map</a></span><span class="op">(</span><span class="va">df</span>, few_colname <span class="op">=</span> <span class="st">"role"</span>, many_colname <span class="op">=</span> <span class="st">"member"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/aggregation_map_helpers.html">agg_table_to_agg_map</a></span><span class="op">(</span><span class="va">df</span>, few_colname <span class="op">=</span> <span class="st">"role"</span>, many_colname <span class="op">=</span> <span class="st">"member"</span><span class="op">)</span>
 <span class="co">#&gt; $drummers</span>
 <span class="co">#&gt; [1] "Ringo"   "Charlie"</span>
 <span class="co">#&gt; </span>
@@ -464,7 +464,7 @@
 <span class="co">#&gt; [1] "Mick"</span></code></pre></div>
 <p>In a similar manner, an aggregation map can be converted to a data frame to assist with join operations with data frames.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/aggregation_map_helpers.html">aggregation_map_to_df</a></span><span class="op">(</span><span class="va">bands_membs_agg_map</span>, 
+<code class="sourceCode R"><span class="fu"><a href="../reference/aggregation_map_helpers.html">agg_map_to_agg_table</a></span><span class="op">(</span><span class="va">bands_membs_agg_map</span>, 
                       few_colname <span class="op">=</span> <span class="st">"bands"</span>,
                       many_colname <span class="op">=</span> <span class="st">"members"</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 2</span></span>
@@ -483,7 +483,7 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p>The <code>matsbyname</code> package simplifies aggregation of matrix rows and columns based on row and column names or pieces of row and column names. In particular the functions <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>, <code><a href="../reference/rename_to_piece_byname.html">rename_to_piece_byname()</a></code>, and <code><a href="../reference/aggregate_pieces_byname.html">aggregate_pieces_byname()</a></code> provide flexibility in how renaming and aggregation can be accomplished. When working with aggregation maps, the functions <code><a href="../reference/aggregation_map_helpers.html">df_to_aggregation_map()</a></code> and <code><a href="../reference/aggregation_map_helpers.html">aggregation_map_to_df()</a></code> assist conversion from one data shape to another.</p>
+<p>The <code>matsbyname</code> package simplifies aggregation of matrix rows and columns based on row and column names or pieces of row and column names. In particular the functions <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>, <code><a href="../reference/rename_to_piece_byname.html">rename_to_piece_byname()</a></code>, and <code><a href="../reference/aggregate_pieces_byname.html">aggregate_pieces_byname()</a></code> provide flexibility in how renaming and aggregation can be accomplished. When working with aggregation maps, the functions <code><a href="../reference/aggregation_map_helpers.html">agg_table_to_agg_map()</a></code> and <code><a href="../reference/aggregation_map_helpers.html">agg_map_to_agg_table()</a></code> assist conversion from one data shape to another.</p>
 </div>
   </div>
 

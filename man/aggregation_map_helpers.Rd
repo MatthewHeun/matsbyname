@@ -2,13 +2,13 @@
 % Please edit documentation in R/agg_helpers.R
 \name{aggregation_map_helpers}
 \alias{aggregation_map_helpers}
-\alias{df_to_aggregation_map}
-\alias{aggregation_map_to_df}
+\alias{agg_table_to_agg_map}
+\alias{agg_map_to_agg_table}
 \title{Aggregation map conversions}
 \usage{
-df_to_aggregation_map(.df, few_colname, many_colname)
+agg_table_to_agg_map(.df, few_colname, many_colname)
 
-aggregation_map_to_df(aggregation_map, few_colname, many_colname)
+agg_map_to_agg_table(aggregation_map, few_colname, many_colname)
 }
 \arguments{
 \item{.df}{A data frame from which an aggregation map is to be extracted.}
@@ -22,8 +22,8 @@ to the "many" specific items that will be aggregated.}
 \item{aggregation_map}{An aggregation map to be converted to a data frame.}
 }
 \value{
-For \code{df_to_aggregation_map()}, an aggregation map.
-For \code{aggregation_map_to_df()}, a \code{data.frame}, probably at \code{tibble}.
+For \code{agg_table_to_agg_map()}, an aggregation map.
+For \code{agg_map_to_agg_table()}, a \code{data.frame}, probably at \code{tibble}.
 }
 \description{
 Aggregation is a many-to-few operation
@@ -54,9 +54,9 @@ bands <- tibble::tribble(~band, ~members,
                          "Rolling Stones", "Ronnie",
                          "Rolling Stones", "Bill",
                          "Rolling Stones", "Charlie")
-agg_map <- df_to_aggregation_map(bands, 
+agg_map <- agg_table_to_agg_map(bands, 
                                  few_colname = "band",
                                  many_colname = "members")
 agg_map
-aggregation_map_to_df(agg_map, few_colname = "bands", many_colname = "members")
+agg_map_to_agg_table(agg_map, few_colname = "bands", many_colname = "members")
 }

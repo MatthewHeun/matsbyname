@@ -303,7 +303,7 @@ res$m[[2]]
 An aggregation map is defined to be a named list.
 But the source of that named list is often a data frame
 in which many-to-one relationships are defined.
-`df_to_aggregation_map()` assists converting from a two-column data frame 
+`agg_table_to_agg_map()` assists converting from a two-column data frame 
 to an aggregation map.
 
 ```{r}
@@ -318,16 +318,16 @@ df <- tibble::tribble(~member, ~role, ~band,
                       "Bill", "guitarists", "Rolling Stones", 
                       "Charlie", "drummers", "Rolling Stones")
 df
-bands_membs_agg_map <- df_to_aggregation_map(df, few_colname = "band", many_colname = "member")
+bands_membs_agg_map <- agg_table_to_agg_map(df, few_colname = "band", many_colname = "member")
 bands_membs_agg_map
-df_to_aggregation_map(df, few_colname = "role", many_colname = "member")
+agg_table_to_agg_map(df, few_colname = "role", many_colname = "member")
 ```
 
 In a similar manner, an aggregation map can be converted to a data frame
 to assist with join operations with data frames.
 
 ```{r}
-aggregation_map_to_df(bands_membs_agg_map, 
+agg_map_to_agg_table(bands_membs_agg_map, 
                       few_colname = "bands",
                       many_colname = "members")
 ```
@@ -345,5 +345,5 @@ In particular the functions
 provide flexibility in how renaming and aggregation can be accomplished.
 When working with aggregation maps, 
 the functions
-`df_to_aggregation_map()` and `aggregation_map_to_df()` 
+`agg_table_to_agg_map()` and `agg_map_to_agg_table()` 
 assist conversion from one data shape to another.
