@@ -18,7 +18,7 @@ output: html_document
   `and_byname()` all gain argument `.summarise`
   to signal intention to operate *down* a column
   or along a list.
-  The default value is `.summarise = FALSE`,
+  The default value is `.summarise = FALSE`
   to maintain previous behavior.
 * New functions `agg_table_to_agg_map()` and
   `agg_map_to_agg_table()`
