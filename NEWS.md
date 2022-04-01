@@ -4,6 +4,10 @@ output: html_document
 ---
 
 
+# matsbyname 0.5.0 (2022-04-01)
+
+* New format for documentation pages,
+  including a search function!
 * New vignette "Using summarise in matsbyname"
   clarifies issues around ambiguities in functions 
   that use a `...` argument.
