@@ -4,7 +4,7 @@ output: html_document
 ---
 
 
-# matsbyname 0.5.0 (2022-04-01)
+# matsbyname 0.5.0 (2022-04-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6407149.svg)](https://doi.org/10.5281/zenodo.6407149)
 
 * New format for documentation pages,
   including a search function!
