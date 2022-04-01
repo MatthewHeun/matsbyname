@@ -5,7 +5,7 @@ output: html_document
 
 
 * New vignette "Using summarise in matsbyname"
-  clarifies issues around ambiguous functions 
+  clarifies issues around ambiguities in functions 
   that use a `...` argument.
 * `aggregation-vignette` now includes details on
   using `sum_byname(.summarise = TRUE)` 
@@ -17,9 +17,11 @@ output: html_document
   `samestructure_byname()`, and
   `and_byname()` all gain argument `.summarise`
   to signal intention to operate *down* a column
-  or along a list.
-  The default value is `.summarise = FALSE`
-  to maintain previous behavior.
+  (`.summarise = TRUE`) or 
+  along a list
+  (`.summarise = FALSE`).
+  The default value is `.summarise = FALSE`,
+  thereby maintaining previous behavior.
 * New functions `agg_table_to_agg_map()` and
   `agg_map_to_agg_table()`
   assist with manipulating aggregation maps.
