@@ -64,7 +64,7 @@ output: html_document
 * Many new tests for new features.
   But some functions have been moved to `RCLabels`, 
   so the total number of tests
-  has gone down.
+  has gone down slightly.
     - Now at 1072 tests, all passing.
     - Test coverage remains at 100 %.
 
