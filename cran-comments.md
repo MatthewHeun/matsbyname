@@ -1,12 +1,13 @@
 ## Context
 
-`matsbyname` v0.4.25 adds three new functions related to row and column name notations. 
-There are no breaking changes.
+`matsbyname` v0.5.0 adds several new functions for aggregations, 
+new vignettes, and adapts to functions that have been moved to 
+`RCLabels`.
 See `NEWS.md` for details.
 
 ## Test environments (10 in total) and R CMD check results
 
-* local macOS X install 10.15.7 (Catalina), R4.1.1
+* local macOS X 12.3 (Monterey), R4.1.3
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0

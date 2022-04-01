@@ -16,13 +16,11 @@ Roxygen: list(markdown = TRUE)
 Imports:
     assertthat,
     dplyr,
-    Hmisc,
     lifecycle,
     magrittr,
     purrr,
     RCLabels,
     rlang,
-    stringi,
     tibble
 Suggests:
     covr,
