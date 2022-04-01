@@ -1,5 +1,5 @@
 pandoc: 2.14.0.3
-pkgdown: 2.0.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   about-vector-arguments: about-vector-arguments.html
@@ -7,5 +7,5 @@ articles:
   applybyname-vignette: applybyname-vignette.html
   matsbyname: matsbyname.html
   using-summarise-in-matsbyname: using-summarise-in-matsbyname.html
-last_built: 2022-03-10T19:12Z
+last_built: 2022-04-01T12:40Z
 
