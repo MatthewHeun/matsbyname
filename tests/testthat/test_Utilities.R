@@ -1,9 +1,5 @@
 # This file contains tests for functions in Utilities.R.
 
-###########################################################
-context("Organizing arguments")
-###########################################################
-
 test_that("errors are generated when organize_args is called with baloney", {
   expect_error(matsbyname:::organize_args(b = 42), 
                "Missing argument a with no fill in organize_args.")
@@ -30,10 +26,6 @@ test_that("oddball match_type works as expected", {
                list(a = matrix(1), b = matrix(2)))
 })
 
-
-###########################################################
-context("Selecting rows and columns")
-###########################################################
 
 test_that("an error is generated when no retain or remove patterns are default", {
   # Check with non-NULL values for a.
@@ -76,6 +68,7 @@ test_that("selecting rows and columns works even when there is a NULL situation"
   expect_null(m %>% select_cols_byname(retain_pattern = "c3"))
 })
 
+
 test_that("setting row and column names works even when there is a NULL situation", {
   m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -91,10 +84,6 @@ test_that("setting row and column names works even when there is a NULL situatio
   expect_null(setcolnames_byname(NULL, c("a", "b")))
 })
   
-
-###########################################################
-context("Cleaning")
-###########################################################
 
 test_that("bad margins in clean_byname work as expected", {
   m <- matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
@@ -155,10 +144,6 @@ test_that("cleaning works with tolerance", {
 })
 
 
-###########################################################
-context("Is zero")
-###########################################################
-
 test_that("iszero_byname works as expected", {
   m <- matrix(0, nrow = 3, ncol = 2)
   expect_true(iszero_byname(m))
@@ -166,11 +151,6 @@ test_that("iszero_byname works as expected", {
   expect_false(iszero_byname(n))
 })
 
-
-
-###########################################################
-context("Row and column naming")
-###########################################################
 
 test_that("getting row names works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
@@ -348,16 +328,16 @@ test_that("renaming rows to prefix or suffix works as expected", {
               dimnames = list(c("a -> b", "r2", "r3"), c("c1", "c2")))
   expected <- m
   rownames(expected) <- c("a", "r2", "r3")
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 1, notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", margin = 1, notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   expected <- m
-  rownames(expected) <- c("b", "r2", "r3")
-  actual <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 1, notation = arrow_notation())
+  rownames(expected) <- c("b", "", "")
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", margin = 1, notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suffix", margin = 1, notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suff", margin = 1, notation = RCLabels::arrow_notation)
   expect_equal(actual, list(expected, expected))
 })
 
@@ -369,21 +349,21 @@ test_that("renaming columns to prefix or suffix works as expected", {
               dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
   expected <- m
   colnames(expected) <- c("a", "c")
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 2, notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", margin = 2, notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   expected <- m
   colnames(expected) <- c("b", "d")
-  actual <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suffix", margin = 2, notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expect_equal(actual, list(expected, expected))
   
   # Check that row and column types are preserved
   m <- m %>% setrowtype("Rows -> Cols") %>% setcoltype("Cols -> Rows")
-  res <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+  res <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res), "Cols")
   expect_equal(coltype(res), "Rows")
 })
@@ -398,22 +378,22 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
   rownames(expected) <- c("a", "r2", "r3")
   colnames(expected) <- c("a", "c")
   # Default is margin = c(1, 2)
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   expected <- m
-  rownames(expected) <- c("b", "r2", "r3")
+  rownames(expected) <- c("b", "", "")
   colnames(expected) <- c("b", "d")
-  actual <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(actual, expected)
   
   # Check that renaming works for a list
-  actual <- rename_to_pref_suff_byname(list(m, m), margin = list(c(1, 2)), keep = "suffix", notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(list(m, m), margin = list(c(1, 2)), keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(actual, list(expected, expected))
 
   # Check that row and column types are preserved
   m <- m %>% setrowtype("Rows") %>% setcoltype("Cols")
-  res <- rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+  res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res), "Rows")
   expect_equal(coltype(res), "Cols")
 })
@@ -425,13 +405,13 @@ test_that("renaming rows and cols to pref and suff also changes rowtype and colt
                 5, 6), nrow = 3, byrow = TRUE, 
               dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j"))) %>% 
     setrowtype("Industry -> Product") %>% setcoltype("Product -> Industry")
-  res <- rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+  res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   expect_equal(rownames(res), c("a", "c", "e"))
   expect_equal(colnames(res), c("g", "i"))
   expect_equal(rowtype(res), "Industry")
   expect_equal(coltype(res), "Product")
 
-  res2 <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+  res2 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(rownames(res2), c("b", "d", "f"))
   expect_equal(colnames(res2), c("h", "j"))
   expect_equal(rowtype(res2), "Product")
@@ -445,12 +425,12 @@ test_that("changing row and column type correctly ignores missing suffixes", {
                 5, 6), nrow = 3, byrow = TRUE, 
               dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j"))) %>% 
     setrowtype("Rows") %>% setcoltype("Product -> Industry")
-  res <- rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+  res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res), "Rows")
   expect_equal(coltype(res), "Product")
 
-  res_2 <- rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
-  expect_equal(rowtype(res_2), "Rows")
+  res_2 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
+  expect_equal(rowtype(res_2), "")
   expect_equal(coltype(res_2), "Industry")
 })
 
@@ -464,7 +444,7 @@ test_that("setting identical row/col names is OK", {
   rownames(expected) <- c("a", "a", "r3")
   colnames(expected) <- c("a", "a")
   # The next call will create duplicate row names and column names in m. 
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
   # Interestingly the command View(actual) or View(expected)
   # shows row names that aren't true. 
   # The 2nd row of actual and expected is shown as "a.1", 
@@ -483,43 +463,43 @@ test_that("renaming with full prefix identifiers works as expected.", {
   expected <- m
   dimnames(expected) <- list(c("a", "c", "e"), c("g", "i"))
   # The next call will create duplicate row names and column names in m. 
-  actual <- rename_to_pref_suff_byname(m, keep = "prefix", notation = bracket_notation())
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::bracket_notation)
   expect_equal(actual, expected)
   
   expected2 <- m
   dimnames(expected2) <- list(c("a", "c", "e"), c("g [h]", "i [j]"))
-  actual2 <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 1, notation = bracket_notation())
+  actual2 <- rename_to_pref_suff_byname(m, keep = "pref", margin = 1, notation = RCLabels::bracket_notation)
   expect_equal(actual2, expected2)
   
   expected3 <- m
   dimnames(expected3) <- list(c("a [b]", "c [d]", "e [f]"), c("g", "i"))
-  actual3 <- rename_to_pref_suff_byname(m, keep = "prefix", margin = 2, notation = bracket_notation())
+  actual3 <- rename_to_pref_suff_byname(m, keep = "pref", margin = 2, notation = RCLabels::bracket_notation)
   expect_equal(actual3, expected3)
   
   expected4 <- m
   dimnames(expected4) <- list(c("b", "d", "f"), c("h", "j"))
-  actual4 <- rename_to_pref_suff_byname(m, keep = "suffix", notation = bracket_notation())
+  actual4 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::bracket_notation)
   expect_equal(actual4, expected4)
 
   expected5 <- m
   dimnames(expected5) <- list(c("b", "d", "f"), c("g [h]", "i [j]"))
-  actual5 <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 1, notation = bracket_notation())
+  actual5 <- rename_to_pref_suff_byname(m, keep = "suff", margin = 1, notation = RCLabels::bracket_notation)
   expect_equal(expected5, actual5)
 
   expected6 <- m
   dimnames(expected6) <- list(c("a [b]", "c [d]", "e [f]"), c("h", "j"))
-  actual6 <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = bracket_notation())
+  actual6 <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::bracket_notation)
   expect_equal(expected6, actual6)
   
   # Try with a list
-  actual_list <- rename_to_pref_suff_byname(list(m, m), keep = "prefix", margin = 1, notation = bracket_notation())
+  actual_list <- rename_to_pref_suff_byname(list(m, m), keep = "pref", margin = 1, notation = RCLabels::bracket_notation)
   expect_equal(actual_list[[1]], expected2)
   expect_equal(actual_list[[2]], expected2)
   
   # Try in a data frame
-  DF <- tibble::tibble(m = list(m, m, m, m, m, m), keep = c("prefix", "prefix", "prefix", "suffix", "suffix", "suffix"), 
+  DF <- tibble::tibble(m = list(m, m, m, m, m, m), keep = c("pref", "pref", "pref", "suff", "suff", "suff"), 
                        margin = list(c(1, 2), 1, 2, c(1, 2), 1, 2),
-                       notation = list(bracket_notation()),
+                       notation = list(RCLabels::bracket_notation),
                        expected = list(expected, expected2, expected3, expected4, expected5, expected6))
   
   res <- DF %>% 
@@ -530,10 +510,6 @@ test_that("renaming with full prefix identifiers works as expected.", {
   expect_equal(res$actual, res$expected)
 })
 
-
-###########################################################
-context("Row and column types")
-###########################################################
 
 test_that("setrowtype and rowtype works as expected", {
   productnames <- c("p1", "p2")
@@ -1147,4 +1123,454 @@ test_that("kvec_from_template_byname() function passes old i_byname tests", {
   expect_equal(res2$sum_unity[[3]], 3)
 })
 
+
+test_that("vec_from_store_byname() works as expected with single matrices", {
+  a <- matrix(42, nrow = 2, ncol = 3, 
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  v <- matrix(1:10, nrow = 10, ncol = 1, 
+              dimnames = list(paste0("r", 1:10) %>% rev(), "c1")) %>%
+    setrowtype("rt") %>% setcoltype("ct")
+  expect_equal(vec_from_store_byname(a = a, v = v), 
+               matrix(c(10, 9), nrow = 2, ncol = 1, 
+                      dimnames = list(c("r1", "r2"), "c1")) %>%
+                 setrowtype("rt") %>% setcoltype("ct"))
+})
+
+
+test_that("vec_from_store_byname() works as expected with single matrices and nouns", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "Hydro", 
+                                "Crude oil",
+                                "Coal", 
+                                "Hard coal (if no detail)", 
+                                "Brown coal"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  expect_equal(vec_from_store_byname(a, v, a_piece = "noun"), 
+               matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+})
+
+
+test_that("vec_from_store_byname() works as expected with single matrices and pref suff", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "Hydro", 
+                                "Crude oil",
+                                "Coal", 
+                                "Hard coal (if no detail)", 
+                                "Brown coal"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  # Try with prefixes
+  expect_equal(vec_from_store_byname(a, v, a_piece = "pref"), 
+               matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  # Try with suffixes
+  v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "from e in f", 
+                                "Hydro", 
+                                "Crude oil",
+                                "from b in c", 
+                                "Hard coal (if no detail)", 
+                                "from Production in USA"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  expect_equal(vec_from_store_byname(a, v2, a_piece = "suff"), 
+               matrix(c(5, 2, 7), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+})
+
+
+test_that("vec_from_store_byname() works as expected with single matrices and prepositions", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "USA", 
+                                "c",
+                                "Coal", 
+                                "Hard coal (if no detail)", 
+                                "f"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expect_equal(vec_from_store_byname(a, v, a_piece = "in"), 
+               matrix(c(4, 7, 3), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  
+
+  v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+               dimnames = list(c("Electricity", 
+                                 "Peat", 
+                                 "Production", 
+                                 "e",
+                                 "Coal", 
+                                 "Hard coal (if no detail)", 
+                                 "b"), 
+                               "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  expect_equal(vec_from_store_byname(a, v2, a_piece = "from"), 
+               matrix(c(7, 4, 3), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  # Try when the preposition (in this case "to") is not present in a.
+  expect_equal(vec_from_store_byname(a, v, a_piece = "to"), 
+               matrix(c(NA_real_, NA_real_, NA_real_), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+  
+  # Try when we use different pieces of a and v.
+  a3 <- matrix(42, nrow = 3, ncol = 5, 
+               dimnames = list(c("Electricity [from b in GBR]", 
+                                 "Coal [from e in f]", 
+                                 "Crude oil [from Production in USA]"), 
+                               c("Main activity producer electricity plants", 
+                                 "Wind turbines", 
+                                 "Oil refineries", 
+                                 "Coal mines", 
+                                 "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v3 <- matrix(1:7, nrow = 7, ncol = 1, 
+               dimnames = list(c("Electricity [from USA]", 
+                                 "Peat", 
+                                 "Production", 
+                                 "e",
+                                 "Coal", 
+                                 "Hard coal (if no detail) [from GBR]", 
+                                 "b"), 
+                               "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expect_error(vec_from_store_byname(a3, v3, a_piece = "in", v_piece = "from"), 
+               "v_pieces must be unique in vec_from_store_byname")
+              
+               
+  v4 <- matrix(1:7, nrow = 7, ncol = 1, 
+               dimnames = list(c("Electricity [from USA]", 
+                                 "Peat [from nowhere]", 
+                                 "Production [from GHA]", 
+                                 "e [from ZAF]",
+                                 "Coal [from AUS]", 
+                                 "Hard coal (if no detail) [from GBR]", 
+                                 "b [from Nebraska]"), 
+                               "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+               
+  expect_equal(vec_from_store_byname(a3, v4, a_piece = "in", v_piece = "from"), 
+                matrix(c(6, NA_real_, 1), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in GBR]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+})
+
+
+test_that("vec_from_store_byname() works when a row vector is desired.", {
+  a <- matrix(42, nrow = 3, ncol = 2, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Wind turbines", 
+                                "Oil wells"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "Wind turbines", 
+                                "c",
+                                "Oil wells", 
+                                "Hard coal (if no detail)", 
+                                "f"), 
+                              "eta")) %>%
+    setrowtype("Industry") %>% setcoltype("eta")
+  
+  expect_equal(vec_from_store_byname(a, v, a_piece = "pref", column = FALSE), 
+               matrix(c(3, 5), nrow = 1, ncol = 2, 
+                      dimnames = list("eta", 
+                                      c("Wind turbines", 
+                                        "Oil wells"))) %>%
+                 setrowtype("eta") %>% setcoltype("Industry"))
+  
+  # See if it works with a row vector for v.
+  v_row <- matrix(1:7, nrow = 1, ncol = 7, 
+                  dimnames = list("eta", 
+                                  c("Electricity", 
+                                    "Peat", 
+                                    "Wind turbines", 
+                                    "c",
+                                    "Oil wells", 
+                                    "Hard coal (if no detail)", 
+                                    "f"))) %>%
+    setrowtype("eta") %>% setcoltype("Industry")
+  expect_equal(vec_from_store_byname(a, v_row, a_piece = "pref", column = FALSE), 
+               matrix(c(3, 5), nrow = 1, ncol = 2, 
+                      dimnames = list("eta", 
+                                      c("Wind turbines", 
+                                        "Oil wells"))) %>%
+                 setrowtype("eta") %>% setcoltype("Industry"))
+  
+})
+
+
+test_that("vec_from_store_byname() works with lists", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in GBR]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  
+  
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity [from USA]", 
+                                "Peat [from nowhere]", 
+                                "Production [from GHA]", 
+                                "e [from ZAF]",
+                                "Coal [from AUS]", 
+                                "Hard coal (if no detail) [from GBR]", 
+                                "b [from Nebraska]"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expected <- matrix(c(6, NA_real_, 1), nrow = 3, ncol = 1, 
+                     dimnames = list(c("Electricity [from b in GBR]", 
+                                       "Coal [from e in f]", 
+                                       "Crude oil [from Production in USA]"), 
+                                     "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  
+  a_list <- list(a, a, a)
+  v_list <- list(v, v, v)
+  expected_list <- list(expected, expected, expected)
+  
+  # Try with notation and prepositions already wrapped in lists.
+  res <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from", 
+                        notation = list(RCLabels::bracket_notation), 
+                        prepositions = list(RCLabels::prepositions))  
+  expect_equal(res, expected_list)
+  
+  # Try with notation and prepositions not already wrapped in lists.
+
+  res2 <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from")
+  expect_equal(res2, expected_list)
+
+})
+
+
+test_that("vec_from_store_byname() works in a data frame", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in GBR]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  
+  
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity [from USA]", 
+                                "Peat [from nowhere]", 
+                                "Production [from GHA]", 
+                                "e [from ZAF]",
+                                "Coal [from AUS]", 
+                                "Hard coal (if no detail) [from GBR]", 
+                                "b [from Nebraska]"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expected <- matrix(c(6, NA_real_, 1), nrow = 3, ncol = 1, 
+                     dimnames = list(c("Electricity [from b in GBR]", 
+                                       "Coal [from e in f]", 
+                                       "Crude oil [from Production in USA]"), 
+                                     "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  df <- tibble::tibble(a = list(a, a, a), 
+                       v = list(v, v, v), 
+                       expected = list(expected, expected, expected))
+  
+  with_res <- df %>%
+    dplyr::mutate(
+      actual = vec_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from")
+    )
+  expect_equal(with_res$actual, with_res$expected)
+})
+
+
+test_that("rename_to_piece_byname() works as expected", {
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), nrow = 3, byrow = TRUE, 
+              dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+  res1 <- rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+  expected1 <- m
+  dimnames(expected1) <- list(c("a", "r2", "r3"), c("a", "c"))
+  expect_equal(res1, expected1)
+  
+  res2 <- rename_to_piece_byname(m, piece = "suff", notation = RCLabels::arrow_notation)
+  expected2 <- m
+  dimnames(expected2) <- list(c("b", "", ""), c("b", "d"))
+  expect_equal(res2, expected2)
+  
+  # Check that it works for different margins.
+  res3 <- rename_to_piece_byname(m, piece = "pref", margin = 1,
+                                 notation = RCLabels::arrow_notation)
+  expected3 <- m
+  dimnames(expected3) <- list(c("a", "r2", "r3"), c("a -> b", "c -> d"))
+  expect_equal(res3, expected3)
+
+  res4 <- rename_to_piece_byname(m, piece = "suff", margin = 2,
+                                 notation = RCLabels::arrow_notation)
+  expected4 <- m
+  dimnames(expected4) <- list(c("a -> b", "r2", "r3"), c("b", "d"))
+  expect_equal(res4, expected4)
+    
+  # Check that it works in a list.
+  res5 <- rename_to_piece_byname(list(m, m), piece = list("pref", "suff"), 
+                                 margin = list(1, 2),
+                                 notation = RCLabels::arrow_notation)
+  expected5 <- list(expected3, expected4)
+  expect_equal(res5, expected5)
+  
+  # Check that margins can be determined from types.
+  m2 <- m %>%
+    setrowtype("rows") %>% setcoltype("cols")
+  res6 <- rename_to_piece_byname(m2, piece = "pref", margin = "rows",
+                                 notation = RCLabels::arrow_notation)
+  expected6 <- m2
+  dimnames(expected6) <- list(c("a", "r2", "r3"), c("a -> b", "c -> d"))
+  expect_equal(res6, expected6)
+  
+  res7 <- rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+                                 notation = RCLabels::arrow_notation)
+  expected7 <- m2
+  dimnames(expected7) <- list(c("b", "", ""), c("a -> b", "c -> d"))
+  expected7 <- expected7 %>%
+    setrowtype("")
+  expect_equal(res7, expected7)
+})
+
+
+test_that("margin_from_types_byname() works as expected", {
+  # Try with a single matrix
+  m <- matrix(1) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(margin_from_types_byname(m, "Product"), 1)
+  expect_equal(margin_from_types_byname(m, "Industry"), 2)
+  expect_equal(margin_from_types_byname(m, c("Product", "Industry")), c(1, 2))
+  expect_equal(margin_from_types_byname(m, c("Industry", "Product")), c(1, 2))
+  
+  # Try with a type that isn't in the row or column types.
+  expect_equal(margin_from_types_byname(m, "bogus"), NA_integer_)
+  
+  # Try with one type that IS in the row or column types and one type that is not.
+  expect_equal(margin_from_types_byname(m, c("bogus", "Product")), 1)
+  
+  # Try with a non-character types argument
+  expect_equal(margin_from_types_byname(m, c(1, 2)), c(1, 2))
+  
+  # Try with a list of matrices
+  expect_equal(margin_from_types_byname(list(m, m), types = "Product"), 
+               list(1, 1))
+  expect_equal(margin_from_types_byname(list(m, m), types = "Industry"), 
+               list(2, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Product", "Product")), 
+               list(1, 1))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Industry", "Industry")), 
+               list(2, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = c("Product", "Industry")), 
+               list(1, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = list("Product", "Industry")), 
+               list(1, 2))
+  expect_equal(margin_from_types_byname(list(m, m), types = list(c("Product", "Industry"))), 
+               list(c(1, 2), c(1, 2)))
+  expect_equal(margin_from_types_byname(list(m, m), types = list(c("Product", "Industry"), 
+                                                                 c("Product", "Industry"))), 
+               list(c(1, 2), c(1, 2)))
+    
+  # Try in a data frame.
+  m2 <- matrix(2) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  df <- tibble::tibble(m = list(m, m2), 
+                       types1 = list("Product", "Industry"), 
+                       types2 = list(c("Product", "Industry"), "Industry"), 
+                       types3 = "bogus")
+  res <- df %>%
+    dplyr::mutate(
+      margin1 = margin_from_types_byname(m, types1), 
+      margin2 = margin_from_types_byname(m, types2), 
+      margin3 = margin_from_types_byname(m, types3)
+    )
+  
+  expect_equal(res$margin1, list(1, 1))
+  expect_equal(res$margin2, list(c(1, 2), 1))
+  expect_equal(res$margin3, list(NA_integer_, NA_integer_))
+})
 

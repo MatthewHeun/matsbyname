@@ -9,12 +9,12 @@ kvec_from_template_byname(a, k = 1, colname = NA, column = TRUE)
 \arguments{
 \item{a}{The template matrix for the column vector.}
 
-\item{k}{The value of the entries in the vector.}
+\item{k}{The value of the entries in the output column vector.}
 
 \item{colname}{The name of the output vector's 1-sized dimension
-(the only column if \code{column == TRUE}, the only row otherwise).}
+(the only column if \code{column} is \code{TRUE}, the only row otherwise).}
 
-\item{column}{Tells whether a column vector (\code{TRUE}, the default) or a row vector (\code{FALSE}) should be created.}
+\item{column}{Tells whether a column vector (if \code{TRUE}, the default) or a row vector (if \code{FALSE}) should be created.}
 }
 \value{
 A vector vector formed from \code{a}.
@@ -23,14 +23,20 @@ A vector vector formed from \code{a}.
 This function creates a vector using \code{a} as a template
 and \code{k} as its value.
 Row names are taken from the row names of \code{a}.
-The column name is given by \code{colname}.
+The column name of the output is given by \code{colname}.
 Row and column types are transferred from \code{a} to the output, directly.
 }
 \details{
-If \code{column == FALSE}, \code{colname} is interpreted as the row name for the output row identity vector.
+If \code{column} is \code{TRUE}, the output is a column vector with
+row names taken from row names of \code{a} and a column named by \code{colname}.
+If \code{column} is \code{FALSE}, the output is a row vevtor with
+column names taken from column names of \code{a} and a row named by \code{colname}.
 }
 \examples{
 kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
-                          colname = "c1")
+                          colname = "new column")
+kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
+                                 dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
+                          colname = "new row", column = FALSE)
 }

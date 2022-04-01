@@ -1,9 +1,6 @@
-# This file contains several utility functions for the byname package.
-
-
 #' Organize binary arguments
 #'
-#' Organizes arguments of binary (2 arguments) \code{_byname} functions.
+#' Organizes arguments of binary (2 arguments) `_byname` functions.
 #' Actions performed are:
 #' \itemize{
 #'  \item{if only one argument is a list, make the other argument also a list of equal length.}
@@ -203,51 +200,6 @@ prep_vector_arg <- function(a, vector_arg) {
 }
 
 
-#' Create regex patterns for row and column selection by name
-#'
-#' This function is intended for use with the \code{select_rows_byname}
-#' and \code{select_cols_byname} functions.
-#' \code{make_pattern} correctly escapes special characters in \code{row_col_names},
-#' such as \code{(} and \code{)}, as needed.
-#' Thus, it is highly recommended that \code{make_pattern} be used when
-#' constructing patterns for row and column selections with
-#' \code{select_rows_byname}
-#' and \code{select_cols_byname}.
-#'
-#' \code{pattern_type} controls the type of pattern created:
-#' \itemize{
-#'   \item{\code{exact} produces a pattern that selects row or column names by exact match.}
-#'   \item{\code{leading} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-#'         the beginnings of row or column names.}
-#'   \item{\code{trailing} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-#'         the ends of row or column names.}
-#'   \item{\code{anywhere} produces a pattern that selects row or column names if the item in \code{row_col_names} matches
-#'         any substring of row or column names.}
-#' }
-#'
-#' @param row_col_names a vector of row and column names
-#' @param pattern_type one of \code{exact}, \code{leading}, \code{trailing}, or \code{anywhere}. Default is "exact".
-#'
-#' @return an extended regex pattern suitable for use with \code{select_rows_byname} or \code{select_cols_byname}.
-#' 
-#' @export
-#'
-#' @examples
-#' make_pattern(row_col_names = c("a", "b"), pattern_type = "exact")
-make_pattern <- function(row_col_names, pattern_type = c("exact", "leading", "trailing", "anywhere")){
-  pattern_type <- match.arg(pattern_type)
-  out <- Hmisc::escapeRegex(row_col_names)
-  # Add leading caret if needed
-  if (pattern_type %in% c("exact", "leading")) {
-    out <- paste0("^", out)
-  }
-  # Add trailing dollar sign if needed
-  if (pattern_type %in% c("exact", "trailing")) {
-    out <- paste0(out, "$")
-  }
-  paste0(out, collapse = "|")
-}
-
 #' Named list of rows or columns of matrices
 #' 
 #' This function takes matrix \code{m} and converts it to a list of 
@@ -298,6 +250,7 @@ list_of_rows_or_cols <- function(a, margin){
                     rowcoltypes = "none")
 }
 
+
 #' Gets row names
 #'
 #' Gets row names in a way that is amenable to use in chaining operations in a functional programming way
@@ -322,13 +275,14 @@ getrownames_byname <- function(a){
   unaryapply_byname(rownames, a = a, rowcoltypes = "none")
 }
 
+
 #' Gets column names
 #'
 #' Gets column names in a way that is amenable to use in chaining operations in a functional programming way
 #'
 #' @param a The matrix or data frame from which column names are to be retrieved
 #'
-#' @return column names of \code{m}
+#' @return Column names of `m`.
 #' 
 #' @export
 #'
@@ -345,6 +299,7 @@ getrownames_byname <- function(a){
 getcolnames_byname <- function(a){
   unaryapply_byname(colnames, a = a, rowcoltypes = "none")
 }
+
 
 #' Sets row names
 #'
@@ -410,6 +365,7 @@ setrownames_byname <- function(a, rownames){
                     rowcoltypes = "all")
 }
 
+
 #' Sets column names
 #'
 #' Sets column names in a way that is amenable to use in piping operations in a functional programming way.
@@ -451,6 +407,7 @@ setcolnames_byname <- function(a, colnames){
 
 #' Rename matrix rows and columns by prefix and suffix
 #' 
+#' `r lifecycle::badge("superseded")`
 #' It can be convenient to rename rows or columns of matrices 
 #' based on retaining prefixes or suffixes.
 #' This function provides that capability.
@@ -478,90 +435,209 @@ setcolnames_byname <- function(a, colnames){
 #' @export
 #'
 #' @examples
+#' # This function is superseded. 
+#' # Instead, use `rename_to_pieces_byname()`.
+#' # For example:
 #' m <- matrix(c(1, 2, 
 #'               3, 4, 
 #'               5, 6), nrow = 3, byrow = TRUE, 
 #'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
 #' m
-#' rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
-#' rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+#' rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+#' # Note, labels are lost, because some labels are missing a suffix.
+#' rename_to_piece_byname(m, piece = "suff", notation = RCLabels::arrow_notation)
+#' # Original documentation:
+#' rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+#' rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
 rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
-  
+  rename_to_piece_byname(a, piece = keep, margin = margin, 
+                         notation = notation, prepositions = RCLabels::prepositions)
+}
+
+
+#' Rename matrix rows and columns by piece of row or column names
+#' 
+#' It can be convenient to rename rows or columns of matrices 
+#' based on retaining only a piece of the row and/or column names.
+#' This function provides that capability.
+#' 
+#' Internally, this function finds pieces of row and column names 
+#' via the `RCLabels` package. 
+#' `piece` can be anything that `RCLabels::get_piece()` understands.
+#' Note that `margin` can be either an integer vector or
+#' a character vector. 
+#' If `margin` is a character vector, 
+#' it is interpreted as a row or column type, and
+#' `margin_from_types_byname()` is called internally to 
+#' resolve the integer margins of interest.
+#' 
+#' Note that if row and/or column type are present,
+#' the row and/or column type are also renamed according to `piece`.
+#'
+#' @param a A matrix or list of matrices whose rows or columns will be renamed.
+#' @param piece A character string indicating which piece of the row or column names to retain, 
+#'              one of "noun", "pps", "pref" or "suff", or a preposition,
+#'              indicating which part of the row or column name is to be retained.
+#' @param margin As a character, the row type or column type to be renamed.
+#'               As an integer, the margin to be renamed.
+#'               Default is `c(1, 2)`, meaning that both 
+#'               rows (`margin = 1`) and columns (`margin = 2`)
+#'               will be renamed.
+#' @param notation The notation used for row and column labels. 
+#'                 Default is `RCLabels::bracket_notation`.
+#'                 See `RCLabels`.
+#'                 
+#' @param prepositions Prepositions that can be used in the row and column label.
+#'                     Default is `RCLabels::prepositions`.
+#'
+#' @return A version of `a` with renamed rows and columns.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1, 2, 
+#'               3, 4, 
+#'               5, 6), nrow = 3, byrow = TRUE, 
+#'             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+#' m
+#' rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+#' m2 <- m %>%
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' m2
+#' rename_to_piece_byname(m2, piece = "pref", margin = "rows",
+#'                        notation = RCLabels::arrow_notation)
+#' rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+#'                        notation = RCLabels::arrow_notation)
+rename_to_piece_byname <- function(a,
+                                   piece,
+                                   margin = c(1, 2),
+                                   notation = RCLabels::bracket_notation,
+                                   prepositions = RCLabels::prepositions) {
+  piece <- prep_vector_arg(a, piece)
   margin <- prep_vector_arg(a, margin)
   notation <- prep_vector_arg(a, notation)
-
-  rename_func <- function(a, keep = c("prefix", "suffix"), margin = c(1, 2), notation) {
-    # At this point, a should be a single matrix.
-    keep <- match.arg(keep)
-    assertthat::assert_that(all(margin %in% c(1, 2)))
+  prepositions <- prep_vector_arg(a, prepositions)
+  
+  rename_func <- function(a_mat, this_piece, this_margin, this_notation, these_prepositions) {
+    # At this point, a should be a single matrix, 
+    # this_* should be individual items ready for use in this function.
     
-    if (2 %in% margin) {
+    # Figure out the margin.
+    this_margin <- margin_from_types_byname(a_mat, this_margin)
+
+    if (2 %in% this_margin) {
       # Want to rename columns.
       # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
-      a <- transpose_byname(a) %>% 
-        rename_func(keep = keep, margin = 1, notation) %>% 
+      a_mat <- transpose_byname(a_mat) %>% 
+        rename_func(this_piece = this_piece, 
+                    this_margin = 1,
+                    this_notation = this_notation, 
+                    these_prepositions = these_prepositions) %>% 
         transpose_byname()
     }
     
-    if (1 %in% margin) {
-      ps <- rownames(a) %>% 
-        split_pref_suff(notation = notation)
-      # The rest of this code expects a list whose top level is 
-      # each row name. 
-      # However, when there is only one row, the list that is created 
-      # has its top level as "pref" and "suff", the prefix and suffix.
-      # Need to wrap it in a list.
-      if (nrow(a) == 1) {
-        ps <- list(ps)
+    if (1 %in% this_margin) {
+      new_rnames <- rownames(a_mat) %>% 
+        RCLabels::get_piece(piece = this_piece, 
+                            notation = this_notation,
+                            prepositions = these_prepositions)
+      new_rt <- rowtype(a_mat)
+      if (!is.null(new_rt)) {
+        new_rt <- new_rt %>%
+          RCLabels::get_piece(piece = this_piece, 
+                              notation = this_notation, 
+                              prepositions = these_prepositions)
       }
-      if (keep == "prefix") {
-        # If prefixes are desired, simply transpose the list and grab the "pref" item.
-        new_rnames <- ps %>% 
-          purrr::transpose() %>% 
-          magrittr::extract2("pref")
-        # Also deal with rowtype, but only if there was a rowtype for a.
-        new_rt <- rowtype(a)
-        if (!is.null(new_rt)) {
-          new_rt <- rowtype(a) %>% 
-            split_pref_suff(notation = notation) %>% 
-            magrittr::extract2("pref")
-        }
-      } else {
-        # We want the suffix.
-        # Be careful for rows in which a suffix was not found.
-        # In that case, return the prefix.
-        new_rnames <- lapply(ps, FUN = function(x) {
-          # if (is.null(x[["suff"]])) {
-          if (x[["suff"]] == "") {
-            return(x[["pref"]])
-          }
-          return(x[["suff"]])
-        })
-        # Also deal with rowtype, but only if there was a rowtype for a.
-        new_rt <- rowtype(a)
-        if (!is.null(new_rt)) {
-          new_rt <- rowtype(a) %>% 
-            split_pref_suff(notation = notation) %>% 
-            magrittr::extract2("suff")
-          if (new_rt == "") {
-            # There was no suffix, so return the prefix.
-            new_rt <- rowtype(a) %>% 
-              split_pref_suff(notation = notation) %>% 
-              magrittr::extract2("pref")
-          }
-        }
-      }
-      # Set new rownames
-      rownames(a) <- new_rnames
+      
+      # Set new rownames, without the names on the list (parts of the previous name)
+      rownames(a_mat) <- unname(new_rnames)
       # Set new rowtype
-      a <- setrowtype(a, new_rt)
+      a_mat <- setrowtype(a_mat, unname(new_rt))
     }
-
-    return(a)
+    
+    return(a_mat)
   }
   unaryapply_byname(rename_func, a = a,
-                    .FUNdots = list(keep = keep, margin = margin, notation = notation), 
+                    .FUNdots = list(this_piece = piece,
+                                    this_margin = margin,
+                                    this_notation = notation, 
+                                    these_prepositions = prepositions), 
                     rowcoltypes = "none")
+}
+
+
+#' Translate row and column types to integer margins
+#' 
+#' Converts row and column types to integer margins,
+#' based on `a` and `types`.
+#' If `types` is not a character vector, `types` is returned unmodified.
+#' If `types` is a character vector, an integer vector is returned
+#' corresponding to the margins on which `types` are found.
+#' If `types` are not found in the row or column types of `a`, 
+#' `NA_integer_` is returned.
+#'
+#' @param a A matrix or list of matrices.
+#' @param types A character vector or list of character vectors 
+#'              representing row or column types whose 
+#'              corresponding integer margins in `a` are to be determined.
+#'
+#' @return A vector of integers or list of vectors of integers 
+#'         corresponding to the margins on which `types` exist.
+#' 
+#' @export
+#'
+#' @examples
+#' # Works for single matrices
+#' m <- matrix(1) %>%
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' margin_from_types_byname(m, "Product")
+#' margin_from_types_byname(m, "Industry")
+#' margin_from_types_byname(m, c("Product", "Industry"))
+#' margin_from_types_byname(m, c("Industry", "Product"))
+#' # Works for lists of matrices
+#' margin_from_types_byname(list(m, m), types = "Product")
+#' margin_from_types_byname(list(m, m), types = "Industry")
+#' margin_from_types_byname(list(m, m), types = c("Product", "Product"))
+#' margin_from_types_byname(list(m, m), types = c("Industry", "Industry"))
+#' margin_from_types_byname(list(m, m), types = c("Product", "Industry"))
+#' margin_from_types_byname(list(m, m), types = list("Product", "Industry"))
+#' margin_from_types_byname(list(m, m), types = list(c("Product", "Industry")))
+#' margin_from_types_byname(list(m, m), types = list(c("Product", "Industry"), 
+#'                                                   c("Product", "Industry")))
+#' # Works in a data frame
+#' m2 <- matrix(2) %>%
+#'   setrowtype("Industry") %>% setcoltype("Product")
+#' df <- tibble::tibble(m = list(m, m2), types = list("Product", c("Product", "Industry")))
+#' res <- df %>%
+#'   dplyr::mutate(
+#'     margin = margin_from_types_byname(m, types)
+#'  )
+#' res$margin
+margin_from_types_byname <- function(a, types) {
+  
+  types <- prep_vector_arg(a, types)
+  
+  mft_fun <- function(a_mat, these_types) {
+    # At this point, a_mat and these_types should be single 
+    # items, ready for use.
+    if (!is.character(these_types)) {
+      return(these_types)
+    }
+    margin <- c()
+    if (rowtype(a_mat) %in% these_types) {
+      margin <- margin %>% 
+        append(1)
+    }
+    if (coltype(a_mat) %in% these_types) {
+      margin <- margin %>%
+        append(2)
+    }
+    if (length(margin) == 0) {
+      return(NA_integer_)
+    }
+    return(margin)
+  }
+  unaryapply_byname(mft_fun, a = a, .FUNdots = list(these_types = types), rowcoltypes = "none")
 }
 
 
@@ -606,6 +682,7 @@ setrowtype <- function(a, rowtype){
                     rowcoltypes = "none")
 }
 
+
 #' Sets column type for a matrix or a list of matrices
 #'
 #' This function is a wrapper for \code{attr} so that 
@@ -647,6 +724,7 @@ setcoltype <- function(a, coltype){
                     rowcoltypes = "none")
 }
 
+
 #' Row type
 #'
 #' Extracts row type of \code{a}.
@@ -671,6 +749,7 @@ rowtype <- function(a){
                     rowcoltypes = "none")
 }
 
+
 #' Column type
 #'
 #' Extracts column type of \code{a}.
@@ -693,6 +772,7 @@ coltype <- function(a){
   unaryapply_byname(attr, a = a, .FUNdots = list(which = "coltype"), 
                     rowcoltypes = "none")
 }
+
 
 #' Select (or de-select) rows of a matrix (or list of matrices) by name
 #'
@@ -718,7 +798,7 @@ coltype <- function(a){
 #' }
 #'
 #' Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
-#' \code{\link{make_pattern}} escapes regex strings using `Hmisc::escapeRegex()`.
+#' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escapeRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
 #' 
@@ -737,8 +817,12 @@ coltype <- function(a){
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_rows_byname(m, retain_pattern = make_pattern(c("i1", "i4"), pattern_type = "exact"))
-#' select_rows_byname(m, remove_pattern = make_pattern(c("i1", "i3"), pattern_type = "exact"))
+#' select_rows_byname(m, 
+#'                    retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"),
+#'                    pattern_type = "exact"))
+#' select_rows_byname(m, 
+#'                    remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), 
+#'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
@@ -803,6 +887,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
                     rowcoltypes = "none")
 }
 
+
 #' Select columns of a matrix (or list of matrices) by name
 #'
 #' Arguments indicate which columns are to be retained and which are to be removed.
@@ -826,7 +911,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #'
 #' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
 #' 
-#' \code{\link{make_pattern}} escapes regex strings using \code{\link[Hmisc]{escapeRegex}}.
+#' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escaprRegex()`.
 #' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 #' suitably escaped.
 #' 
@@ -848,8 +933,12 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' @examples
 #' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
-#' select_cols_byname(m, retain_pattern = make_pattern(c("p1", "p4"), pattern_type = "exact"))
-#' select_cols_byname(m, remove_pattern = make_pattern(c("p1", "p3"), pattern_type = "exact"))
+#' select_cols_byname(m, 
+#'                    retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), 
+#'                    pattern_type = "exact"))
+#' select_cols_byname(m, 
+#'                    remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), 
+#'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
 select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
@@ -865,6 +954,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   out %>% 
     transpose_byname()
 }
+
 
 #' Clean (delete) rows or columns of matrices that contain exclusively `clean_value`
 #' 
@@ -936,8 +1026,8 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
   }
   unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value, tol = tol), 
                     rowcoltypes = "all")
-  
 }
+
 
 #' Test whether this is the zero matrix
 #' 
@@ -974,6 +1064,7 @@ iszero_byname <- function(a, tol = 1e-6){
   unaryapply_byname(zero_func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")
 }
+
 
 #' Logarithmic mean of two numbers
 #' 
@@ -1117,7 +1208,6 @@ ncol_byname <- function(a) {
   }
   unaryapply_byname(ncol_func, a = a, rowcoltypes = "none")
 }
-
 
 
 #' Create a "byname" matrix from a vector
@@ -1308,16 +1398,19 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
 #' This function creates a vector using `a` as a template
 #' and `k` as its value.
 #' Row names are taken from the row names of `a`. 
-#' The column name is given by `colname`.
+#' The column name of the output is given by `colname`.
 #' Row and column types are transferred from `a` to the output, directly.
 #' 
-#' If `column == FALSE`, `colname` is interpreted as the row name for the output row identity vector.
+#' If `column` is `TRUE`, the output is a column vector with 
+#' row names taken from row names of `a` and a column named by `colname`.
+#' If `column` is `FALSE`, the output is a row vevtor with 
+#' column names taken from column names of `a` and a row named by `colname`.
 #'
 #' @param a The template matrix for the column vector.
-#' @param k The value of the entries in the vector.
+#' @param k The value of the entries in the output column vector.
 #' @param colname The name of the output vector's 1-sized dimension 
-#'                (the only column if `column == TRUE`, the only row otherwise).
-#' @param column Tells whether a column vector (`TRUE`, the default) or a row vector (`FALSE`) should be created.
+#'                (the only column if `column` is `TRUE`, the only row otherwise).
+#' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
 #'
 #' @return A vector vector formed from `a`.
 #' 
@@ -1326,7 +1419,10 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
 #' @examples
 #' kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
 #'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
-#'                           colname = "c1")
+#'                           colname = "new column")
+#' kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
+#'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
+#'                           colname = "new row", column = FALSE)
 kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   
   k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
@@ -1341,5 +1437,215 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   unaryapply_byname(FUN = k_from_template_func, a = a, 
                     .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "all")
 }
+
+
+
+#' Create a vector with labels from a matrix and values from a vector store
+#' 
+#' When a matrix is multiplied by a vector byname, 
+#' naming can be tricky. 
+#' There are times when pieces of the vector labels should be matched to 
+#' pieces of the matrix labels. 
+#' This function helps by performing the matching byname.
+#' For this function, vector `v` is considered a store of values 
+#' from which the output vector is created
+#' using special matching rules between `a` and `v`.
+#' 
+#' The output of this function is a vector
+#' (a column vector if `column` is `TRUE`, the default; 
+#' a row vector if `column` is `FALSE`).
+#' The label of the size = 1 dimension is taken from `colname`
+#' (so named, because the default is to return a column vector).
+#' The labels of the long dimension are taken from matrix `a`
+#' (the row names of `a` if `column` is `TRUE`; 
+#' the column names of `a` if `column` is `FALSE`).
+#' The values of the output vector are obtained from v
+#' when `a_piece` matches `v_piece` using the `RCLabels` package.
+#' The `v_piece`s of `v` must be unique.
+#' The default values for `a_piece` and `v_piece` are "all", 
+#' meaning that the entire label should be matched.
+#' Other options for `a_piece` and `v_piece` are "pref" and "suff",
+#' which will match the prefix or suffix of the labels.
+#' Alternatively, prepositions can be given such that 
+#' objects of prepositions will be matched.
+#' Examples include "from" or "in".
+#' Row and column types from `v` are applied to the output.
+#' If the piece given in `a_piece` is not present in row or column names of `a`, 
+#' `NA_real_` is returned.
+#' If the piece given in `v_piece` is not present in row or column names of `v`, 
+#' `NA_real_` is returned.
+#' 
+#' Note that `notation` and `prepositions` should be lists if `a` is a list
+#' but a single value otherwise. 
+#' The default values of `notation` and `prepositions` take care of this requirement,
+#' switching on the type of `a` (list or not).
+#'
+#' @param a A matrix from which row or column labels are taken.
+#'          Can also be a list or the name of a column in a data frame.
+#' @param v A vector from which values are taken, when `a_piece` matches `v_piece`.
+#'          Can also be a list or the name of a column in a data frame.
+#' @param a_piece The piece of labels on `a` that is to be matched. Default is "all".
+#' @param v_piece The piece of labels on `v` that is to be matched. Default is "all".
+#' @param colname The name of the output vector's 1-sized dimension 
+#'                (the only column if `column` is `TRUE`, the only row otherwise).
+#'                Default is `NULL`, meaning that the name of the 1-sized dimension in `v` 
+#'                should be used.
+#' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
+#' @param notation The notation for the row and column labels.
+#'                 Default is `RCLabels::bracket_notation`, wrapped as a list if `a` is a list.
+#' @param prepositions The strings that will count for prepositions.
+#'                     Default is `RCLables::prepositions`, wrapped as a list if `a` is a list..
+#'
+#' @return A vector with names from `a` and values from `v`.
+#' 
+#' @export
+#'
+#' @examples
+#' a <- matrix(42, nrow = 3, ncol = 5, 
+#'             dimnames = list(c("Electricity [from b in c]", 
+#'                               "Coal [from e in f]", 
+#'                               "Crude oil [from Production in USA]"), 
+#'                             c("Main activity producer electricity plants", 
+#'                               "Wind turbines", 
+#'                               "Oil refineries", 
+#'                               "Coal mines", 
+#'                               "Automobiles"))) %>%
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' a
+#' v <- matrix(1:7, nrow = 7, ncol = 1, 
+#'             dimnames = list(c("Electricity", 
+#'                               "Peat", 
+#'                               "Hydro", 
+#'                               "Crude oil",
+#'                               "Coal", 
+#'                               "Hard coal (if no detail)", 
+#'                               "Brown coal"), 
+#'                             "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' v
+#' vec_from_store_byname(a, v, a_piece = "pref")
+#' vec_from_store_byname(a, v, a_piece = "noun")
+#' 
+#' v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+#'              dimnames = list(c("Electricity", 
+#'                                "Peat", 
+#'                                "USA", 
+#'                                "c",
+#'                                "Coal", 
+#'                                "Hard coal (if no detail)", 
+#'                                "f"), 
+#'                              "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' vec_from_store_byname(a, v2, a_piece = "in")
+#' 
+#' # Works with lists
+#' v3 <- matrix(1:7, nrow = 7, ncol = 1, 
+#'              dimnames = list(c("Electricity [from USA]", 
+#'                                "Peat [from nowhere]", 
+#'                                "Production [from GHA]", 
+#'                                "e [from ZAF]",
+#'                                "Coal [from AUS]", 
+#'                                "Hard coal (if no detail) [from GBR]", 
+#'                                "b [from Nebraska]"), 
+#'                              "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' a_list <- list(a, a)
+#' v_list <- list(v3, v3)
+#' vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from")
+#' 
+#' # Also works in a data frame
+#' df <- tibble::tibble(a = list(a, a, a), 
+#'                      v = list(v3, v3, v3))
+#' df %>%
+#'   dplyr::mutate(
+#'     actual = vec_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from")
+#'   )
+vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
+                                  notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions)} else {RCLabels::prepositions}) {
+  
+  
+  vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 
+                       notation_val = notation, 
+                       prepositions_val = prepositions) {
+    # Get size of v vectors
+    v_size <- dim(v_vec)
+    # Make sure v is a matrix.
+    assertthat::assert_that(length(v_size) == 2, 
+                            msg = "v must be a matrix with 2 dimensions in vec_from_store_byname()")
+    # Make sure one of the dimensions is size 1
+    assertthat::assert_that(v_size[[1]] == 1 | v_size[[2]] == 1,
+                            msg = "v must be a vector with one dimension of size 1 in vec_from_store_byname()")
+    # Get the names that matter to us from the vector store
+    if (v_size[[1]] == 1) {
+      # Turn it into a column vector, so we can assume a column vector 
+      # for the rest of this function.
+      return(vec_func(a_mat, transpose_byname(v_vec), a_piece_val, v_piece_val, colname_val, column_val))
+    }
+    # If we want a row vector, transpose a_mat so that we want a column vector.
+    # By doing this, we can assume we want a column vector in the rest of this function.
+    if (!column_val) {
+      return(
+        a_mat %>%
+          transpose_byname() %>%
+          vec_func(v_vec, a_piece_val, v_piece_val, colname_val, column_val = TRUE) %>%
+          transpose_byname()        
+      )
+    }
+    # At this point, we have a_mat and v_vec such that we want
+    # names from the rows of a_mat and the values from the rows of v_vec.
+
+    # Get row names from the matrix and the vector
+    a_rownames <- dimnames(a_mat)[[1]]
+    v_rownames <- dimnames(v_vec)[[1]]
+    a_pieces <- RCLabels::get_piece(a_rownames, piece = a_piece, notation = notation_val, prepositions = prepositions_val)
+    v_pieces <- RCLabels::get_piece(v_rownames, piece = v_piece, notation = notation_val, prepositions = prepositions_val)
+    # Ensure that v_pieces are unique
+    assertthat::assert_that(length(v_pieces) == length(unique(v_pieces)), 
+                            msg = "v_pieces must be unique in vec_from_store_byname()")
+    # Find the size of the outgoing column vector
+    out_size <- dim(a_mat)[[1]]
+    if (is.null(colname_val)) {
+      # Pick up the column name from v_vec.
+      colname_val <- dimnames(v_vec)[[2]]
+    }
+    # Build the outgoing vector with NA's everywhere
+    out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
+                  dimnames = list(a_rownames, colname_val)) %>%
+      # Be sure to retain the row and column type of v_vec.
+      setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    # Fill the vector
+    for (i in 1:out_size) {
+      # Get the value we want
+      this_piece <- a_pieces[[i]]
+      rownum_in_v <- which(v_pieces == this_piece, arr.ind = TRUE)
+      
+      # We need both this_piece to be something (not "") and
+      # rownum_in_v to be different from 0 (i.e. present somewhere)
+      # to assign something different from NA_real_, the default value.
+      if (this_piece != "" & length(rownum_in_v) != 0) {
+        val <- v_vec[[rownum_in_v, 1]]
+        out[i, 1] <- val
+      }
+    }
+    return(out)
+  }
+  
+  binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE, set_rowcoltypes = FALSE,
+                     .FUNdots = list(a_piece_val = a_piece, v_piece_val = v_piece, 
+                                     colname_val = colname, column_val = column, 
+                                     notation_val = notation, 
+                                     prepositions_val = prepositions))
+}
+
+
+
+
+
+
+
+
+
+
 
 

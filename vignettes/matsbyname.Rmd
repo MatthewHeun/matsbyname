@@ -31,9 +31,10 @@ Example networks are given in the following table.
 
 | System type   | Flows      | Nodes
 |:--------------|:-----------|:---------
-| Ecological    | nutrients  | organisms
-| Manufacturing | materials  | factories
-| Economic      | money      | economic sectors
+| Ecological    | nutrients       | organisms
+| Manufacturing | materials       | factories
+| Economic      | money           | economic sectors
+| Energy        | energy carriers | energy conversion steps
 
 The power of matrices lies in their ability 
 to organize network-wide calculations,

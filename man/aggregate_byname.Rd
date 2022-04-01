@@ -18,13 +18,13 @@ aggregate_byname(
 
 \item{margin}{\code{1}, \code{2}, or \code{c(1, 2)} for row aggregation, column aggregation, or both.}
 
-\item{pattern_type}{See \code{make_pattern()}.}
+\item{pattern_type}{See \code{RCLabels::make_or_pattern()}.}
 }
 \value{
 A version of \code{a} with aggregated rows and/or columns
 }
 \description{
-Rows (\verb{margin  1}), columns (\code{margin = 2}), or both (\code{margin = c(1, 2)}, the default)
+Rows (\code{margin = 1}), columns (\code{margin = 2}), or both (\code{margin = c(1, 2)}, the default)
 are aggregated according to \code{aggregation_map}.
 }
 \details{
@@ -40,7 +40,7 @@ For example \code{aggregation_map = list(new_row = c("r1", "r2"))}
 will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row
 whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
 
-The items in \code{aggregation_map} are interpreted as regular expressions, and
+The values in the \code{aggregation_map} are interpreted as regular expressions, and
 they are escaped using \code{Hmisc::escapeRegex()} prior to use.
 
 Note that aggregation on one margin only will sort only the aggregated margin, because
@@ -52,7 +52,7 @@ library(tibble)
 m <- matrix(1:9, byrow = TRUE, nrow = 3, 
             dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) \%>\% 
   setrowtype("rows") \%>\% setcoltype("cols")
-# Aggregate all rows by establishing an aggregation map (am)
+# Aggregate all rows by establishing an aggregation map (`am`)
 am <- list(new_row = c("r1", "r2"))
 aggregate_byname(m, aggregation_map = am, margin = 1)
 # aggregate_byname() also works with lists and in data frames

@@ -4,7 +4,16 @@
 \alias{trim_rows_cols}
 \title{Trim rows and/or columns from a matrix}
 \usage{
-trim_rows_cols(a = NULL, mat = NULL, margin = c(1, 2))
+trim_rows_cols(
+  a = NULL,
+  mat = NULL,
+  margin = c(1, 2),
+  warn_if_a_incomplete = TRUE,
+  a_piece = "all",
+  mat_piece = "all",
+  notation = RCLabels::bracket_notation,
+  prepositions = RCLabels::prepositions
+)
 }
 \arguments{
 \item{a}{A matrix to be trimmed.}
@@ -13,6 +22,19 @@ trim_rows_cols(a = NULL, mat = NULL, margin = c(1, 2))
 
 \item{margin}{The dimension of \code{a} to be trimmed. \code{1} means rows; \code{2} means columns.
 Default is \code{c(1,2)}.}
+
+\item{warn_if_a_incomplete}{When \code{TRUE} (the default), a warning is emitted
+if \code{a} is missing entries on \code{margin} that are present in \code{mat}.}
+
+\item{a_piece}{The portion of \code{a} labels to be used for comparison. Default is "all".}
+
+\item{mat_piece}{The portion of \code{mat} labels to be used for comparison. Default is "all".}
+
+\item{notation}{The notation for row and column labels.
+Default is \code{RCLabels::bracket_notation}.}
+
+\item{prepositions}{The strings to be treated as prepositions in row and column labels.
+Default is \code{RCLabels::prepositions}.}
 }
 \value{
 Matrix \code{a} with rows or columns trimmed to match \code{mat}.
@@ -32,6 +54,26 @@ If \code{a} is \code{NULL}, \code{NULL} is returned.
 If \code{mat} is \code{NULL}, \code{a} is returned unmodified.
 If \code{mat} has \code{NULL} dimnames, \code{a} is returned unmodified.
 If \code{mat} has \code{NULL} for dimnames on \code{margin}, an error is returned.
+
+A common use case for this function is to trim \code{a}, because it has too many
+entries on \code{margin}s compared to \code{mat}.
+This trimming will result in a smaller result for any mathematical operations
+involving \code{a} and \code{mat}.
+Typically, \code{a} should cover all the entries in \code{mat} on \code{margin}.
+Thus, by default, this function warns if \code{a} is missing entries on \code{margin}
+that are present in \code{mat}.
+To turn off this checking behavior, set \code{warn_if_a_incomplete = FALSE}.
+
+\code{a_piece} and \code{mat_piece}
+control which part of row and column names are
+compared before trimming.
+The default values for \code{a_piece} and \code{mat_piece} are "all",
+meaning that the entire label should be matched.
+Other options for \code{a_piece} and \code{mat_piece} are "pref" and "suff",
+which will match the prefix or suffix of the labels.
+Alternatively, prepositions can be given such that
+objects of prepositions will be matched.
+Examples include "from" or "in".
 }
 \examples{
 a <- matrix(c(1, 2, 3, 
@@ -40,10 +82,13 @@ a <- matrix(c(1, 2, 3,
             dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))) \%>\% 
  setrowtype("rowtype") \%>\% setcoltype("coltype")
 mat <- matrix(c(1, 2, 3,
-              4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
             dimnames = list(c("r1", "bogus"), c("c1", "bogus", "c2"))) \%>\% 
  setrowtype("rowtype") \%>\% setcoltype("coltype")
 trim_rows_cols(a, mat, margin = 1)
 trim_rows_cols(a, mat, margin = 2)
 trim_rows_cols(a, mat)
+}
+\seealso{
+\code{RCLabels::get_piece()}, which is used internally.
 }

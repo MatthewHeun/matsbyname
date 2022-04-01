@@ -10,7 +10,8 @@ naryapply_byname(
   .FUNdots = NULL,
   match_type = c("all", "matmult", "none"),
   set_rowcoltypes = TRUE,
-  .organize = TRUE
+  .organize = TRUE,
+  .summarise = FALSE
 )
 }
 \arguments{
@@ -20,7 +21,7 @@ naryapply_byname(
 
 \item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
 
-\item{match_type}{one of "all", "matmult", or "none".
+\item{match_type}{One of "all", "matmult", or "none".
 When \code{...} are matrices,
 "all" (the default) indicates that
 rowtypes of all \code{...} matrices must match and
@@ -31,17 +32,21 @@ for every sequential invocation of \code{FUN}.
 If "none",
 neither coltypes nor rowtypes are checked by \code{naryapply_byname()}.}
 
-\item{set_rowcoltypes}{tells whether to apply row and column types from
+\item{set_rowcoltypes}{Tells whether to apply row and column types from
 operands in \code{...} to the output of each sequential invocation of \code{FUN}.
 Set \code{TRUE} (the default) to apply row and column types.
 Set \code{FALSE}, to \emph{not} apply row and column types to the output.}
 
-\item{.organize}{a boolean that tells whether or not to automatically
+\item{.organize}{A boolean that tells whether or not to automatically
 complete operands in \code{...} relative to each other and
 sort the rows and columns of the completed matrices.
 This organizing is done on each sequential invocation of \code{FUN}.
 Normally, this should be \code{TRUE} (the default).
 However, if \code{FUN} takes over this responsibility, set to \code{FALSE}.}
+
+\item{.summarise}{A boolean that tells whether this call is considered
+a summarise operation (like \code{dplyr::summarise()}).
+Default is \code{FALSE}.}
 }
 \value{
 the result of applying \code{FUN} to all operands in \code{...}

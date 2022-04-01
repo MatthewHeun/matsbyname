@@ -4,9 +4,78 @@ output: html_document
 ---
 
 
-# matsbyname 0.4.25 (2021-10-12) 
+# matsbyname 0.5.0 (2022-04-01)
 
-* New notation functions `prepostion_notation()`, `from_notation()`, and `of_notation()`.
+* New format for documentation pages,
+  including a search function!
+* New vignette "Using summarise in matsbyname"
+  clarifies issues around ambiguities in functions 
+  that use a `...` argument.
+* `aggregation-vignette` now includes details on
+  using `sum_byname(.summarise = TRUE)` 
+  with `dplyr::summarise()`.
+* `sum_byname()`, `matrixproduct_byname()`, 
+  `hadamardproduct_byname()`, 
+  `mean_byname()`, `geometricmean_byname()`, 
+  `equal_byname()`, `identical_byname()`, 
+  `samestructure_byname()`, and
+  `and_byname()` all gain argument `.summarise`
+  to signal intention to operate *down* a column
+  (`.summarise = TRUE`) or 
+  along a list
+  (`.summarise = FALSE`).
+  The default value is `.summarise = FALSE`,
+  thereby maintaining previous behavior.
+* New functions `agg_table_to_agg_map()` and
+  `agg_map_to_agg_table()`
+  assist with manipulating aggregation maps.
+* New vignette `aggregation-vignette` demonstrates 
+  the new aggregation functions.
+* Functions `rename_to_pref_suff_byname()` and 
+  `aggregate_to_pref_suff_byname()`
+  now route to new functions
+  `rename_to_piece_byname()` and
+  `aggregate_pieces_byname()`, 
+  thereby avoiding code duplication.
+  This change may break some code. 
+  These functions now return an empty string ("")
+  when a suffix is requested and one is not found.
+  Previously, these functions returned the entire
+  string when a suffix was not found.
+* New function `aggregate_pieces_byname()`
+  brings the flexibility of the `RCLabels` 
+  to `matsbyname`.
+* Remove (comment for now) 
+  notation functions in `notation.R` 
+  that have been moved to `RCLabels`.
+* New function `rename_to_piece_byname()` will assist
+  with renaming and aggregating
+  according to pieces of row and column names.
+* New function `vec_from_store_byname()` 
+  creates vectors from a matrix 
+  (from which row of column names are taken)
+  and a vector 
+  (which acts as a store of values)
+  based on matching of pieces of the labels.
+  This new function is made possible by the 
+  new `RCLabels` package.
+* Notation code moved to new package, `RCLabels`.
+* `RCLabels::make_or_pattern()` gains new `pattern_type`, "literal", which 
+  returns the `row_col_names` argument unmodified.
+* `trim_rows_cols()` gains a `warn_if_a_incomplete` argument. 
+  When `TRUE`, a warning is issued if argument `a` is missing entries on `margin`
+  that are present in `mat`.
+* Many new tests for new features.
+  But some functions have been moved to `RCLabels`, 
+  so the total number of tests
+  has gone down slightly.
+    - Now at 1072 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+# matsbyname 0.4.25 (2021-10-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565352.svg)](https://doi.org/10.5281/zenodo.5565352)
+
+* New notation functions `preposition_notation()`, `from_notation()`, and `of_notation()`.
 * Many new tests for new features.
     - Now at 1077 tests, all passing.
     - Test coverage remains at 100 %.

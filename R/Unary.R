@@ -420,11 +420,11 @@ identize_byname <- function(a, margin = c(1,2)) {
 #'             dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
 #'   setrowtype("Products") %>% setcoltype("Industries")
 #' m
-#' vectorize_byname(m, notation = arrow_notation())
+#' vectorize_byname(m, notation = RCLabels::arrow_notation)
 #' # If a single number is provided, the number will be returned as a 1x1 column vector 
 #' # with some additional attributes.
-#' vectorize_byname(42, notation = arrow_notation())
-#' attributes(vectorize_byname(42, notation = arrow_notation()))
+#' vectorize_byname(42, notation = RCLabels::arrow_notation)
+#' attributes(vectorize_byname(42, notation = RCLabels::arrow_notation))
 vectorize_byname <- function(a, notation) {
   if (is.null(a)) {
     return(NULL)
@@ -448,7 +448,7 @@ vectorize_byname <- function(a, notation) {
     new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>% 
       lapply(FUN = function(ps) {
         ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
-          paste_pref_suff(notation = notation)
+          RCLabels::paste_pref_suff(notation = notation)
       })
     
     # Put names on the rows of the vector
@@ -458,7 +458,7 @@ vectorize_byname <- function(a, notation) {
     
     # Change the rowtype and coltype if both are not NULL
     if (!is.null(rt <- rowtype(a_mat)) & !is.null(ct <- coltype(a_mat))) {
-      new_rowtype <- paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
+      new_rowtype <- RCLabels::paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
       vec <- vec %>% 
         setrowtype(new_rowtype) %>% 
         setcoltype(NULL)
@@ -492,7 +492,7 @@ vectorize_byname <- function(a, notation) {
 #'                                                   "p2 -> i2"))) %>% 
 #'   setrowtype("Products -> Industries")
 #' # Default separator is " -> ".
-#' matricize_byname(v, notation = arrow_notation())
+#' matricize_byname(v, notation = RCLabels::arrow_notation)
 matricize_byname <- function(a, notation) {
   matricize_func <- function(a_mat, notation) {
     # At this point, we should have a single matrix a_mat.
@@ -512,12 +512,7 @@ matricize_byname <- function(a, notation) {
     # Gather row names of the vector.
     rownames_a <- dimnames(a_mat)[[1]]
     # Split row names by notation
-    matrix_row_col_names <- split_pref_suff(rownames_a, notation = notation)
-    if (nrow(a_mat) > 1) {
-      # We have more than 1 row of names.
-      # Thus, we need to transpose the list.
-      matrix_row_col_names <- purrr::transpose(matrix_row_col_names)
-    }
+    matrix_row_col_names <- RCLabels::split_pref_suff(rownames_a, notation = notation)
     # Get the matrix row and column names separately.
     .rownames <- matrix_row_col_names %>% 
       magrittr::extract2(1) %>% 
@@ -567,7 +562,7 @@ matricize_byname <- function(a, notation) {
     }
     # Add row and column types after splitting the rowtype of a_mat
     rt <- rowtype(a_mat)
-    rctypes <- split_pref_suff(rt, notation = notation)
+    rctypes <- RCLabels::split_pref_suff(rt, notation = notation)
     m %>% setrowtype(rctypes[["pref"]]) %>% setcoltype(rctypes[["suff"]])
   } 
   unaryapply_byname(matricize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
@@ -1255,7 +1250,7 @@ any_byname <- function(a){
 
 #' Aggregate rows and columns in a matrix
 #' 
-#' Rows (`margin  1`), columns (`margin = 2`), or both (`margin = c(1, 2)`, the default)
+#' Rows (`margin = 1`), columns (`margin = 2`), or both (`margin = c(1, 2)`, the default)
 #' are aggregated according to `aggregation_map`.
 #' 
 #' When `aggregation_map` is `NULL` (the default), 
@@ -1270,7 +1265,7 @@ any_byname <- function(a){
 #' will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row 
 #' whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
 #' 
-#' The items in `aggregation_map` are interpreted as regular expressions, and 
+#' The values in the `aggregation_map` are interpreted as regular expressions, and 
 #' they are escaped using `Hmisc::escapeRegex()` prior to use.
 #' 
 #' Note that aggregation on one margin only will sort only the aggregated margin, because
@@ -1279,7 +1274,7 @@ any_byname <- function(a){
 #' @param a A matrix or list of matrices whose rows or columns are to be aggregated.
 #' @param aggregation_map A named list of rows or columns to be aggregated (or `NULL`). See `details`.
 #' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both.
-#' @param pattern_type See `make_pattern()`.
+#' @param pattern_type See `RCLabels::make_or_pattern()`.
 #'
 #' @return A version of `a` with aggregated rows and/or columns
 #' 
@@ -1291,7 +1286,7 @@ any_byname <- function(a){
 #' m <- matrix(1:9, byrow = TRUE, nrow = 3, 
 #'             dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
 #'   setrowtype("rows") %>% setcoltype("cols")
-#' # Aggregate all rows by establishing an aggregation map (am)
+#' # Aggregate all rows by establishing an aggregation map (`am`)
 #' am <- list(new_row = c("r1", "r2"))
 #' aggregate_byname(m, aggregation_map = am, margin = 1)
 #' # aggregate_byname() also works with lists and in data frames
@@ -1320,16 +1315,19 @@ any_byname <- function(a){
 aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), pattern_type = "exact") {
   margin <- prep_vector_arg(a, margin)
   
-  agg_func <- function(a_mat, aggregation_map, margin, pattern_type) {
+  agg_func <- function(a_mat, aggregation_map, this_margin, pattern_type) {
     # If we get here, a should be a single matrix.
-    assertthat::assert_that(all(margin %in% c(1, 2)))
+    # Figure out the margin.
+    this_margin <- margin_from_types_byname(a_mat, this_margin)
+    
+    assertthat::assert_that(all(this_margin %in% c(1, 2)))
     # Create our own aggregation_map if it is NULL
     if (is.null(aggregation_map)) {
       rcnames <- list()
-      if (1 %in% margin) {
+      if (1 %in% this_margin) {
         rcnames[["rnames"]] <- rownames(a_mat)
       }
-      if (2 %in% margin) {
+      if (2 %in% this_margin) {
         rcnames[["cnames"]] <- colnames(a_mat)
       }
       aggregation_map <- lapply(rcnames, FUN = function(x) {
@@ -1354,17 +1352,17 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
       }
     }
     out <- a_mat
-    if (2 %in% margin) {
+    if (2 %in% this_margin) {
       # Want to aggregate columns.
       # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
       out <- t(a_mat) %>% 
-        agg_func(aggregation_map = aggregation_map, margin = 1, pattern_type = pattern_type) %>% 
+        agg_func(aggregation_map = aggregation_map, this_margin = 1, pattern_type = pattern_type) %>% 
         t()
     }
-    if (1 %in% margin) {
+    if (1 %in% this_margin) {
       for (i in 1:length(aggregation_map)) {
         # Isolate rows to be aggregated
-        select_pattern <- make_pattern(row_col_names = aggregation_map[[i]], pattern_type = pattern_type)
+        select_pattern <- RCLabels::make_or_pattern(strings = aggregation_map[[i]], pattern_type = pattern_type)
         rows_to_aggregate <- select_rows_byname(out, retain_pattern = select_pattern)
         if (!is.null(rows_to_aggregate)) {
           # Sum the isolated rows (if any)
@@ -1394,12 +1392,13 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
   }
 
   unaryapply_byname(agg_func, a, 
-                    .FUNdots = list(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type))
+                    .FUNdots = list(aggregation_map = aggregation_map, this_margin = margin, pattern_type = pattern_type))
 }
 
 
 #' Aggregate a matrix to prefixes or suffixes of row and/or column names
 #' 
+#' `r lifecycle::badge("superseded")`
 #' Row and column names are often constructed in the form 
 #' `prefix_start` `prefix` `prefix_end` `suffix_start` `suffix` `suffix_end`
 #' and described by a notation vector.
@@ -1417,25 +1416,118 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' @param margin the dimension over which aggregation is to be performed; `1` for rows, `2` for columns, or `c(1, 2)` for both.
 #' @param pattern_type See `aggregate_byname()`.
 #'
-#' @return an aggregated version of `a`
+#' @return An aggregated version of `a`.
 #' 
 #' @export
 #'
 #' @examples
+#' # This function is superseded. 
+#' # Instead, use `aggregate_pieces_byname()`.
+#' # For example:
 #' m <- matrix((1:9), byrow = TRUE, nrow = 3, 
 #'             dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
 #' m
+#' aggregate_pieces_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+#' aggregate_pieces_byname(m, piece = "suff", notation = RCLabels::arrow_notation)
+#' 
+#' # Original examples:
 #' # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 #' # Doing renaming like this (without also aggregating) is potentially dangerous, because  
 #' # some rows and some columns could end up with same names.
-#' aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+#' aggregate_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
 #' # Aggregation by suffix reduces the number of rows and columns, 
 #' # because there are same suffixes in both rows and columns
-#' aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+#' aggregate_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
 aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL, 
                                           keep, margin = c(1, 2), notation,
                                           pattern_type = "exact") {
-  a %>% 
-    rename_to_pref_suff_byname(keep = keep, margin = margin, notation = notation) %>% 
-    aggregate_byname(aggregation_map = aggregation_map, margin = margin, pattern_type = pattern_type)
+  a %>%
+    aggregate_pieces_byname(piece = keep, margin = margin, notation = notation,
+                            aggregation_map = aggregation_map,
+                            pattern_type = pattern_type)
 }
+
+
+#' Aggregate a matrix by pieces of row and/or column names
+#' 
+#' Aggregate a matrix (or list of matrices or a column in a `matsindf` data frame)
+#' by pieces of the row and column names.
+#' 
+#' This is a convenience function that bundles two others
+#' for common use cases: 
+#' `rename_to_piece_byname()` followed by `aggregate_byname()`.
+#' 
+#' `aggregation_map` should aggregate according to pieces, 
+#' not according to the full, original row and/or column names.
+#'
+#' @param a A matrix or list of matrices
+#' @param piece See `rename_to_piece_byname()`.
+#' @param margin See `rename_to_piece_byname()`.
+#' @param notation See `rename_to_piece_byname()`.
+#' @param prepositions See `rename_to_piece_byname()`.
+#' @param aggregation_map See `aggregate_byname()`.
+#' @param pattern_type See `RCLabels::make_or_pattern()`.
+#'
+#' @return A version of `a` with rows and/or columns aggregated according to `aggregation_map`.
+#' 
+#' @export
+#'
+#' @examples
+#' a <- matrix(c(1, 2, 3, 
+#'               4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+#'             dimnames = list(c("a [from b]", "c [from d]"), 
+#'                             c("e [from f]", "g [from h]", "i [from j]")))
+#' a %>%
+#'   aggregate_pieces_byname(piece = "suff", 
+#'                           notation = RCLabels::from_notation,
+#'                           aggregation_map = list(rows = c("b", "d"), 
+#'                                                  cols = c("h", "j")))
+#' m <- matrix(c(1, 0, 0, 
+#'               0, 1, 1, 
+#'               0, 1, 1), nrow = 3, ncol = 3, byrow = TRUE, 
+#'             dimnames = list(c("Gasoline [from Oil refineries]", 
+#'                               "Electricity [from Main activity producer electricity plants]", 
+#'                               "Electricity [from Hydro]"),
+#'                             c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' mT <- transpose_byname(m)
+#' # Aggregate the "Electricity" rows.
+#' aggregate_pieces_byname(m, piece = "noun", margin = "Product",
+#'                         notation = RCLabels::bracket_notation)
+#' # Also works in a list.
+#' aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+#'                         margin = "Product",
+#'                         notation = RCLabels::bracket_notation)
+#' # Use an aggregation map
+#' aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+#'                         margin = "Product",
+#'                         aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+#'                         notation = RCLabels::bracket_notation)
+#' # Also works in a data frame.
+#' df <- tibble::tibble(m = list(m, mT), 
+#'                      pce = "noun",
+#'                      mgn = "Product",
+#'                      agg_map = list(list(final = c("Electricity", "Gasoline"))), 
+#'                      notn = list(RCLabels::bracket_notation)) %>%
+#'   dplyr::mutate(
+#'     agg = aggregate_pieces_byname(a = m, piece = pce, margin = mgn, 
+#'                                   aggregation_map = agg_map,
+#'                                   notation = notn)
+#'   )
+#' df$agg
+aggregate_pieces_byname <- function(a, 
+                                    piece,
+                                    margin = c(1, 2), 
+                                    notation, 
+                                    prepositions = RCLabels::prepositions, 
+                                    aggregation_map = NULL, 
+                                    pattern_type = "exact") {
+  a %>%
+    rename_to_piece_byname(piece = piece, margin = margin, 
+                           notation = notation, prepositions = prepositions) %>%
+    aggregate_byname(aggregation_map = aggregation_map, margin = margin, 
+                     pattern_type = pattern_type)
+}
+
+
+

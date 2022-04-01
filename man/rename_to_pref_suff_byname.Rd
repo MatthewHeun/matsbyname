@@ -19,6 +19,7 @@ rename_to_pref_suff_byname(a, keep, margin = c(1, 2), notation)
 \code{a} with potentially different row or column names.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
 It can be convenient to rename rows or columns of matrices
 based on retaining prefixes or suffixes.
 This function provides that capability.
@@ -38,11 +39,18 @@ The \code{keep} parameter tells which portion to retain (prefixes or suffixes),
 If prefixes or suffixes are not found in a row and/or column name, that name is unchanged.
 }
 \examples{
+# This function is superseded. 
+# Instead, use `rename_to_pieces_byname()`.
+# For example:
 m <- matrix(c(1, 2, 
               3, 4, 
               5, 6), nrow = 3, byrow = TRUE, 
             dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
 m
-rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
-rename_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+# Note, labels are lost, because some labels are missing a suffix.
+rename_to_piece_byname(m, piece = "suff", notation = RCLabels::arrow_notation)
+# Original documentation:
+rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
 }

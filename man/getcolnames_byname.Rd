@@ -10,7 +10,7 @@ getcolnames_byname(a)
 \item{a}{The matrix or data frame from which column names are to be retrieved}
 }
 \value{
-column names of \code{m}
+Column names of \code{m}.
 }
 \description{
 Gets column names in a way that is amenable to use in chaining operations in a functional programming way

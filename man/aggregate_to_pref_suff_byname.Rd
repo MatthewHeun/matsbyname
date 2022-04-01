@@ -27,9 +27,10 @@ aggregate_to_pref_suff_byname(
 \item{pattern_type}{See \code{aggregate_byname()}.}
 }
 \value{
-an aggregated version of \code{a}
+An aggregated version of \code{a}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
 Row and column names are often constructed in the form
 \code{prefix_start} \code{prefix} \code{prefix_end} \code{suffix_start} \code{suffix} \code{suffix_end}
 and described by a notation vector.
@@ -42,14 +43,21 @@ This function is a convenience function, as it bundles sequential calls to two h
 All arguments are passed to the helper functions.
 }
 \examples{
+# This function is superseded. 
+# Instead, use `aggregate_pieces_byname()`.
+# For example:
 m <- matrix((1:9), byrow = TRUE, nrow = 3, 
             dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
 m
+aggregate_pieces_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
+aggregate_pieces_byname(m, piece = "suff", notation = RCLabels::arrow_notation)
+
+# Original examples:
 # Aggregation by prefixes does nothing more than rename, because all prefixes are different.
 # Doing renaming like this (without also aggregating) is potentially dangerous, because  
 # some rows and some columns could end up with same names.
-aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation())
+aggregate_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
 # Aggregation by suffix reduces the number of rows and columns, 
 # because there are same suffixes in both rows and columns
-aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+aggregate_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
 }

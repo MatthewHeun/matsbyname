@@ -423,7 +423,7 @@ test_that("vectorize_byname works as expected", {
                       nrow = 4, ncol = 1, 
                       dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
     setrowtype("Products -> Industries") %>% setcoltype(NULL)
-  actual1 <- vectorize_byname(m1, notation = arrow_notation())
+  actual1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
   expect_equal(actual1, expected1)
   # Try with null notation
   expect_equal(vectorize_byname(m1, notation = NULL), m1)
@@ -442,14 +442,14 @@ test_that("vectorize_byname works as expected", {
                       nrow = 6, ncol = 1,
                       dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
     setrowtype("Products -> Industries") %>% setcoltype(NULL)
-  actual2 <- vectorize_byname(m2, notation = arrow_notation())
+  actual2 <- vectorize_byname(m2, notation = RCLabels::arrow_notation)
   expect_equal(actual2, expected2)
   # Try with a single number
   m3 <- 42
   expected3 <- m3
   dim(expected3) <- c(1, 1)
   dimnames(expected3) <- NULL
-  actual3 <- vectorize_byname(m3, notation = arrow_notation())
+  actual3 <- vectorize_byname(m3, notation = RCLabels::arrow_notation)
   expect_equal(actual3, expected3)
   # Try with a different separator
   m4 <- matrix(c(1, 5,
@@ -464,7 +464,7 @@ test_that("vectorize_byname works as expected", {
                       nrow = 4, ncol = 1, 
                       dimnames = list(c("p1---i1", "p2---i1", "p1---i2", "p2---i2"))) %>% 
     setrowtype("Products---Industries") %>% setcoltype(NULL)
-  actual4 <- vectorize_byname(m4, notation = notation_vec(sep = "---"))
+  actual4 <- vectorize_byname(m4, notation = RCLabels::notation_vec(sep = "---"))
   expect_equal(actual4, expected4)
   # Test with a matrix that is already a column vector
   m5 <- matrix(c(1,
@@ -473,7 +473,7 @@ test_that("vectorize_byname works as expected", {
                nrow = 3, ncol = 1,
                dimnames = list(c("p1", "p2", "p3"), "i1")) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  actual5 <- vectorize_byname(m5, notation = notation_vec(sep = "***"))
+  actual5 <- vectorize_byname(m5, notation = RCLabels::notation_vec(sep = "***"))
   expected5 <- matrix(c(1,
                         2,
                         3),
@@ -484,12 +484,12 @@ test_that("vectorize_byname works as expected", {
   # Test with NULL. Should get NULL back.
   expect_null(vectorize_byname(NULL, NULL))
   # Test with NA.
-  expect_error(vectorize_byname(NA, notation = arrow_notation()), "a is not numeric in vectorize_byname")
+  expect_error(vectorize_byname(NA, notation = RCLabels::arrow_notation), "a is not numeric in vectorize_byname")
   # Test with string
-  expect_error(vectorize_byname("a", notation = arrow_notation()), "a is not numeric in vectorize_byname")
+  expect_error(vectorize_byname("a", notation = RCLabels::arrow_notation), "a is not numeric in vectorize_byname")
   # Test with a list of matrices
   list6 <- list(m1, m1)
-  actual6 <- vectorize_byname(list6, notation = list(arrow_notation()))
+  actual6 <- vectorize_byname(list6, notation = list(RCLabels::arrow_notation))
   expected6 <- list(expected1, expected1)
   expect_equal(actual6, expected6)
 })
@@ -502,7 +502,7 @@ test_that("vectorize works with 4 matrices", {
               dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   l <- list(m, m, m, m)
-  actual <- vectorize_byname(l, notation = list(arrow_notation()))
+  actual <- vectorize_byname(l, notation = list(RCLabels::arrow_notation))
   e <- matrix(c(1, 
                 4, 
                 5, 
@@ -514,13 +514,9 @@ test_that("vectorize works with 4 matrices", {
 })
 
 
-###########################################################
-context("Matricize")
-###########################################################
-
 test_that("matricize_byname works as expected", {
   v1 <- array(dim = c(2, 2, 2))
-  expect_error(matricize_byname(v1, notation = arrow_notation()), "== 2 in matricize_byname")
+  expect_error(matricize_byname(v1, notation = RCLabels::arrow_notation), "== 2 in matricize_byname")
 
   # Try with a column vector  
   v2 <- matrix(c(1,
@@ -529,7 +525,7 @@ test_that("matricize_byname works as expected", {
                  4), 
                nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
     setrowtype("Products -> Industries")
-  actual2 <- matricize_byname(v2, notation = arrow_notation())
+  actual2 <- matricize_byname(v2, notation = RCLabels::arrow_notation)
   expected2 <- matrix(c(1, 3,
                         2, 4),
                       nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
@@ -540,7 +536,7 @@ test_that("matricize_byname works as expected", {
   v3 <- matrix(c(1, 2, 3, 4), 
                nrow = 1, ncol = 4, dimnames = list(NULL, c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
     setcoltype("Products -> Industries")
-  actual3 <- matricize_byname(v3, notation = arrow_notation())
+  actual3 <- matricize_byname(v3, notation = RCLabels::arrow_notation)
   expected3 <- matrix(c(1, 3,
                         2, 4),
                       nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
@@ -550,7 +546,7 @@ test_that("matricize_byname works as expected", {
   # Try with a 1x1 matrix as a column vector.
   v4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(c("p2 -> i1"))) %>% 
     setrowtype("Products -> Industries")
-  actual4 <- matricize_byname(v4, notation = arrow_notation())
+  actual4 <- matricize_byname(v4, notation = RCLabels::arrow_notation)
   expected4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("p2", "i1")) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   expect_equal(actual4, expected4)
@@ -558,7 +554,7 @@ test_that("matricize_byname works as expected", {
   # Try with a 1x1 matrix as a row vector.
   v5 <- matrix(42, nrow = 1, ncol = 1, dimnames = list(NULL, c("p2 -> i1"))) %>% 
     setcoltype("Products -> Industries")
-  actual5 <- matricize_byname(v5, notation = arrow_notation())
+  actual5 <- matricize_byname(v5, notation = RCLabels::arrow_notation)
   expected5 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("p2", "i1")) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   expect_equal(actual5, expected5)
@@ -569,7 +565,7 @@ test_that("matricize_byname works as expected", {
                                                            "p2 -> i1", "p2 -> i2",
                                                            "p3 -> i1", "p3 -> i2"))) %>% 
     setcoltype("Products -> Industries")
-  actual6 <- matricize_byname(v6, notation = arrow_notation())
+  actual6 <- matricize_byname(v6, notation = RCLabels::arrow_notation)
   expected6 <- matrix(c(1, 2, 
                         3, 4, 
                         5, 6),
@@ -579,22 +575,18 @@ test_that("matricize_byname works as expected", {
 })
 
 
-###########################################################
-context("Vectorize and Matricize")
-###########################################################
-
 test_that("vectorize and matricize are inverses of each other", {
   m1 <- matrix(c(1, 2, 
                  3, 4, 
                  5, 6),
                nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
-  v1 <- vectorize_byname(m1, notation = arrow_notation())
-  m2 <- matricize_byname(v1, notation = arrow_notation())
+  v1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
+  m2 <- matricize_byname(v1, notation = RCLabels::arrow_notation)
   expect_equal(m2, m1)
   # Do a regular transpose here (t), because transpose_byname switches rowtype and coltype.
   v3 <- transpose_byname(v1)
-  m4 <- matricize_byname(v3, notation = arrow_notation())
+  m4 <- matricize_byname(v3, notation = RCLabels::arrow_notation)
   expect_equal(m4, m1)
 })
 
@@ -761,8 +753,8 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
   expect_equal(select_rows_byname(m, retain_pattern = "^i1$"), 
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Try same test using the make_pattern utility function.
-  expect_equal(select_rows_byname(m, retain_pattern = make_pattern(row_col_names = "i1", pattern_type = "exact")), 
+  # Try same test using the make_or_pattern utility function.
+  expect_equal(select_rows_byname(m, retain_pattern = RCLabels::make_or_pattern(strings = "i1", pattern_type = "exact")), 
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   # Select rows 1 and 4 (i1, i4)
@@ -788,7 +780,7 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
   crazymat <- matrix(1, nrow = 2, ncol = 2, 
                      dimnames = list(c("i (1)", "i (2)"), c("p (1)", "p (2)"))) %>% 
     setrowtype("Industries") %>% setcoltype("Prodcuts")
-  expect_equal(select_rows_byname(crazymat, retain_pattern = make_pattern(row_col_names = "i (1)", pattern_type = "exact")), 
+  expect_equal(select_rows_byname(crazymat, retain_pattern = RCLabels::make_or_pattern(strings = "i (1)", pattern_type = "exact")), 
                matrix(1, nrow = 1, ncol = 2, dimnames = list("i (1)", c("p (1)", "p (2)"))) %>% 
                  setrowtype(rowtype(crazymat)) %>% setcoltype(coltype(crazymat)))
 })
@@ -822,7 +814,7 @@ test_that("matrix row selection by name in lists works as expected", {
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
   DF <- DF %>% dplyr::mutate(trimmed = select_rows_byname(.$m, 
-                                                   retain_pattern = make_pattern(row_col_names = c("i1", "i2"), 
+                                                   retain_pattern = RCLabels::make_or_pattern(strings = c("i1", "i2"), 
                                                                                  pattern_type = "exact")))
   DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
   DF_expected[[1,"m"]] <- m
@@ -844,8 +836,8 @@ test_that("matrix column selection by name with exact matches (^name$) works as 
   expect_equal(select_cols_byname(m, retain_pattern = "^p1$"), 
                matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Try same test using the make_pattern utility function.
-  expect_equal(select_cols_byname(m, retain_pattern = make_pattern(row_col_names = "p1", pattern_type = "exact")), 
+  # Try same test using the make_or_pattern utility function.
+  expect_equal(select_cols_byname(m, retain_pattern = RCLabels::make_or_pattern(strings = "p1", pattern_type = "exact")), 
                matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
                  setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
   # Select columns 1 and 4 (p1, p4)
@@ -896,7 +888,7 @@ test_that("matrix column selection by name in lists works as expected", {
   DF[[1,"m"]] <- m
   DF[[2,"m"]] <- m
   DF <- DF %>% dplyr::mutate(trimmed = select_cols_byname(.$m, 
-                                                   retain_pattern = make_pattern(row_col_names = c("p1", "p2"), 
+                                                   retain_pattern = RCLabels::make_or_pattern(strings = c("p1", "p2"), 
                                                                                  pattern_type = "exact")))
   DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
   DF_expected[[1,"m"]] <- m
@@ -1402,16 +1394,12 @@ context("Rename")
 test_that("rename_to_pref_suff_byname() works as expected", {
   m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
   # This aggregation should simply return m with a renamed column.
-  res <- rename_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = arrow_notation())
+  res <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expected <- m %>% 
     magrittr::set_colnames("Industry")
   expect_equal(res, expected)
 })
 
-
-###########################################################
-context("Aggregation")
-###########################################################
 
 test_that("aggregate works as expected", {
   m <- matrix(1:9, nrow = 3, byrow = TRUE,
@@ -1623,26 +1611,29 @@ test_that("aggregate works when removing multiple rows", {
 test_that("aggregate_to_pref_suff_byname() works as expected", {
   m <- matrix((1:9), byrow = TRUE, nrow = 3, 
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
-  # Aggregate by prefixes should do no more than rename, because all prefixes are different
-  expect_equal(aggregate_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation()), 
-               rename_to_pref_suff_byname(m, keep = "prefix", notation = arrow_notation()))
+  res1 <- aggregate_to_pref_suff_byname(m, keep = "pref", 
+                                        notation = RCLabels::arrow_notation)
+  expected1 <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+  expect_equal(res1, expected1)
   # Aggregate by suffixes should do a lot, because several prefixes are same.
-  expect_equal(aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation()), 
-               m %>% 
-                 rename_to_pref_suff_byname(keep = "suffix", notation = arrow_notation()) %>% 
-                 aggregate_byname())
+  res2 <- aggregate_to_pref_suff_byname(m, keep = "suff", 
+                                        notation = RCLabels::arrow_notation)
+  expected2 <- m %>% 
+    rename_to_pref_suff_byname(keep = "suff", notation = RCLabels::arrow_notation) %>% 
+    aggregate_byname()
+  expect_equal(res2, expected2)
 })
 
 
 test_that("aggregate_to_pref_suff_byname() works with a column vector", {
   # Ran into a bug where aggregating a column vector fails.
-  # A column vector should aggregate to itself..
+  # A column vector should aggregate to itself.
   # But instead, I get a "subscript out of bounds" error.
   # This test triggers that bug.
   #     -- MKH, 23 Nov 2020.
   m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
   # This aggregation should simply return m with renamed column
-  res <- aggregate_to_pref_suff_byname(m, keep = "suffix", margin = 2, notation = arrow_notation())
+  res <- aggregate_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expected <- m %>% 
     magrittr::set_colnames("Industry")
   expect_equal(res, expected)
@@ -1654,7 +1645,125 @@ test_that("aggregate_to_pref_suff_byname() handles types correctly", {
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y"))) %>% 
     setrowtype("row -> letter") %>% setcoltype("col -> letter")
   
-  res <- aggregate_to_pref_suff_byname(m, keep = "suffix", notation = arrow_notation())
+  res <- aggregate_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res), "letter")
   expect_equal(coltype(res), "letter")
 })
+
+
+test_that("aggregate_pieces_byname() works as expected", {
+  m <- matrix(c(1, 2, 3, 
+                4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("a [from b]", "c [from d]"), 
+                              c("e [from f]", "g [from h]", "i [from j]")))
+  
+  res1 <- m %>%
+    aggregate_pieces_byname(piece = "suff", 
+                            notation = RCLabels::from_notation,
+                            aggregation_map = list(rows = c("b", "d"), 
+                                                   cols = c("h", "j")))
+  
+  expected1 <- matrix(c(16, 5), nrow = 1, ncol = 2, byrow = TRUE, 
+                      dimnames = list("rows", c("cols", "f")))
+  expect_equal(res1, expected1)
+})
+
+
+test_that("aggregate_pieces_byname() works with aggregation by type", {
+  m <- matrix(c(1, 0, 0, 
+                0, 1, 1, 
+                0, 1, 1), nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("Gasoline [from Oil refineries]", 
+                                "Electricity [from Main activity producer electricity plants]", 
+                                "Electricity [from Hydro]"),
+                              c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  actual1 <- aggregate_pieces_byname(m, piece = "noun", margin = "Product",
+                                     notation = RCLabels::bracket_notation)
+  expected1 <- matrix(c(0, 2, 2, 
+                        1, 0, 0), nrow = 2, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("Electricity", "Gasoline"),
+                                      c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(actual1, expected1)
+
+  # Try transposed
+  mT <- transpose_byname(m)
+  actual2 <- aggregate_pieces_byname(mT, piece = "noun", margin = "Product", 
+                                     notation = RCLabels::bracket_notation)
+  expected2 <- transpose_byname(expected1)
+  expect_equal(actual2, expected2)
+  
+  # Try in a list
+  actual3 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     notation = RCLabels::bracket_notation)
+  expected3 <- list(expected1, expected2)
+  expect_equal(actual3, expected3)
+
+  # Try with an aggregation map
+  actual4 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     aggregation_map = list(list(final = c("Electricity", "Gasoline")),
+                                                            list(final = c("Electricity", "Gasoline"))),
+                                     notation = RCLabels::bracket_notation)
+  expected4 <- matrix(c(1, 2, 2), nrow = 1, ncol = 3, 
+                      dimnames = list("final", c("Automobiles", "LED lamps", "CFL lamps"))) %>%
+    setrowtype("Product") %>% setcoltype("Industry")
+  expect_equal(actual4, list(expected4, transpose_byname(expected4)))
+  
+  # Try with a single aggregation map that is spread to both items in the list.
+  actual5 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+                                     notation = RCLabels::bracket_notation)
+  expect_equal(actual5, list(expected4, transpose_byname(expected4)))
+  
+  # Try in a data frame.
+  df <- tibble::tibble(m = list(m, mT)) %>%
+    dplyr::mutate(
+      agg = aggregate_pieces_byname(a = m, piece = "noun", margin = "Product", 
+                                    aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+      notation = RCLabels::bracket_notation)
+    )
+  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
+
+
+# Try in a data frame using columns for arguments.
+  df <- tibble::tibble(m = list(m, mT), 
+                       pce = "noun",
+                       mgn = "Product",
+                       agg_map = list(list(final = c("Electricity", "Gasoline"))), 
+                       notn = list(RCLabels::bracket_notation)) %>%
+    dplyr::mutate(
+      agg = aggregate_pieces_byname(a = m, piece = pce, margin = mgn, 
+                                    aggregation_map = agg_map,
+                                    notation = notn)
+    )
+  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
+})
+
+
+test_that("aggregate_by_pieces() works with funny names", {
+  m_pieces <- matrix(c(1, 2, 3,
+                       4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                     dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
+                                     c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  
+  actual1 <- rename_to_piece_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation)
+  expected1 <- matrix(c(1, 2, 3,
+                        4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("Coal", "Solar"), 
+                                      c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  expect_equal(actual1, expected1)
+  
+  
+  actual2 <- aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation, 
+                                     aggregation_map = list(`All sources` = c("Coal", "Solar")))
+  expected2 <- matrix(c(5, 7, 9), nrow = 1, ncol = 3, byrow = TRUE, 
+                      dimnames = list(c("All sources"), 
+                                      c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  expect_equal(actual2, expected2)  
+})
+
+

@@ -30,9 +30,9 @@ m <- matrix(c(1, 5,
             dimnames = list(c("p1", "p2"), c("i1", "i2"))) \%>\% 
   setrowtype("Products") \%>\% setcoltype("Industries")
 m
-vectorize_byname(m, notation = arrow_notation())
+vectorize_byname(m, notation = RCLabels::arrow_notation)
 # If a single number is provided, the number will be returned as a 1x1 column vector 
 # with some additional attributes.
-vectorize_byname(42, notation = arrow_notation())
-attributes(vectorize_byname(42, notation = arrow_notation()))
+vectorize_byname(42, notation = RCLabels::arrow_notation)
+attributes(vectorize_byname(42, notation = RCLabels::arrow_notation))
 }

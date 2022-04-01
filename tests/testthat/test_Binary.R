@@ -188,6 +188,63 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
 })
 
 
+test_that("sum_byname() works as expected via grouping and summarise", {
+  df_simple <- tibble::tribble(~key, ~val, 
+                               "A", 1, 
+                               "A", 2, 
+                               "B", 10)
+  res_simple <- df_simple %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(val = sum(val))
+  expected_simple <- tibble::tribble(~key, ~val, 
+                                     "A", 3, 
+                                     "B", 10)
+  expect_equal(res_simple, expected_simple)
+  
+  # This works differently, and unexpectedly.
+  res_simple2 <- df_simple %>% 
+    dplyr::group_by(key) %>% 
+    # We don't use the .summarise = TRUE condition, so
+    # the resuult is just the original data frame (with groups)
+    dplyr::summarise(val = sum_byname(val), .groups = "keep")
+  # Here
+  expect_equal(res_simple2, df_simple %>% dplyr::group_by(key))
+  
+  res_simple3 <- df_simple %>% 
+    dplyr::group_by(key) %>% 
+    # Here, we use the .summarise = TRUE argument.
+    dplyr::summarise(val = sum_byname(val, .summarise = TRUE))
+  # So sum_byname() should produce the column sum along the data frame.
+  # The result is a list column, because a list column
+  # will also accommodate a list of matrices.
+  expected_simple3 <- expected_simple
+  expected_simple3$val <- list(3, 10)
+  expect_equal(res_simple3, expected_simple3)
+  
+  m <- matrix(c(11, 12, 13,
+                21, 22, 23), nrow = 2, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
+  res <- df %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(m = sum_byname(m, .summarise = TRUE))
+  expected <- tibble::tibble(key = c("A", "B"), 
+                             m = list(2 * m, m))
+  expect_equal(res, expected)
+  
+  # Try summarise with 2 columns
+  df2 <- df
+  df2$m2 <- list(3*m, 4*m, 5*m)
+  res2 <- df2 %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(m = sum_byname(m, .summarise = TRUE), m2 = sum_byname(m2, .summarise = TRUE))
+  expect_equal(res2$m[[1]], 2 * m)
+  expect_equal(res2$m[[2]], m)
+  expect_equal(res2$m2[[1]], 7 * m)
+  expect_equal(res2$m2[[2]], 5 * m)
+})
+
+
 ###########################################################
 context("Differences")
 ###########################################################
@@ -203,6 +260,7 @@ test_that("differences of constants works as expected", {
   # If differenced against NA, return NA
   expect_equal(difference_byname(2, NA), NA_integer_)
 })
+
 
 test_that("differences of matrices works as expected", {
   # If only one argument, return it.
@@ -267,6 +325,9 @@ test_that("matrixproduct_byname works as expected", {
   # Furthermore, rows and columns of Y are sorted to be in alphabetical order.
   expect_equal(matrixproduct_byname(V, Y), VY)
   expect_equal(matrixproduct_byname(V, Y, Z), VYZ)
+  
+  # Check that it works down a list if .summarise = TRUE.
+  expect_equal(matrixproduct_byname(list(V, Y, Z), .summarise = TRUE), list(VYZ))
   
   M <- matrix(c(11, 12,
                 21, 22),
@@ -382,6 +443,8 @@ test_that("hadamardproduct_byname works as expected", {
   expect_equal(hadamardproduct_byname(U, Y), UY_expected)
   expect_equal(hadamardproduct_byname(U, 0), matrix(c(0,0,0,0), nrow = 2, dimnames = dimnames(U)) %>% 
                  setrowtype("Products") %>% setcoltype("Industries"))
+  # Make sure it works down a list with .summarise = TRUE.
+  expect_equal(hadamardproduct_byname(list(U, Y), .summarise = TRUE), list(UY_expected))
   # See if a product of 4 vectors works as expected
   UUYY_expected <- matrix(c(16, 36, 36, 16), nrow = 2, dimnames = dimnames(U)) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
@@ -662,6 +725,7 @@ test_that("mean_byname works as expected", {
   
   # This also works with lists
   expect_equal(mean_byname(list(100, 100), list(50, 50)), list(75, 75))
+  expect_equal(mean_byname(list(100, 100), list(50, 50), list(75, 75), .summarise = TRUE), list(100, 50, 75))
   expect_equal(mean_byname(list(U,U), list(G,G)), list(UGavg, UGavg))
   expect_equal(mean_byname(list(A,A), list(B,B), list(C,C)), list(ABCavg_expected, ABCavg_expected))
   DF <- data.frame(U = I(list()), G = I(list()))
@@ -684,7 +748,8 @@ test_that("mean_byname works as expected", {
   expect_equal(DF %>% dplyr::mutate(means = mean_byname(U, G)), DF_expected)
 })
 
-test_that("geometricmean_byname works as expected", {
+
+test_that("geometricmean_byname() works as expected", {
   expect_equal(geometricmean_byname(0, 0), 0)
   expect_equal(geometricmean_byname(10, 20), sqrt(10*20))
   expect_equal(geometricmean_byname(10, 20, 30), (10*20*30)^(1/3))
@@ -721,6 +786,7 @@ test_that("geometricmean_byname works as expected", {
                  setrowtype("Commodities") %>% setcoltype("Industries"))
   # This also works with lists
   expect_equal(geometricmean_byname(list(10, 1000), list(1000, 10)), list(100, 100))
+  expect_equal(geometricmean_byname(list(1, 1000), list(10, 10), .summarise = TRUE), list(31.6227766, 10))
   expect_equal(geometricmean_byname(list(U,U), list(G,G)), list(UGgeomean, UGgeomean))
   DF <- data.frame(U = I(list()), G = I(list()))
   DF[[1,"U"]] <- U
@@ -751,7 +817,8 @@ test_that("geometricmean_byname works as expected", {
   )
 })
 
-test_that("logmean works as expected", {
+
+test_that("logmean() works as expected", {
   # The logmean function is an internal helper function that should also be tested.
   expect_equal(logmean(0, 0), 0)
   expect_equal(logmean(0, 1), 0)
@@ -774,7 +841,8 @@ test_that("logmean works as expected", {
   expect_true(is.nan(val2))
 })
 
-test_that("logarithmicmean_byname works as expected", {
+
+test_that("logarithmicmean_byname() works as expected", {
   # Should work with single numbers.
   expect_equal(logarithmicmean_byname(0, 0), 0)
   expect_equal(logarithmicmean_byname(0, 1), 0)
@@ -843,7 +911,7 @@ test_that("logarithmicmean_byname works as expected", {
 context("Equal and identical")
 ###########################################################
 
-test_that("equal_byname works as expected", {
+test_that("equal_byname() works as expected", {
   
   # Try with single numbers
   expect_true(equal_byname(2, 2))
@@ -882,7 +950,13 @@ test_that("equal_byname works as expected", {
   expect_true(equal_byname(a, b))
   
   # Try with lists.
+  expect_equal(equal_byname(list(2, 3), list(2, 3), list(42, 42)), list(FALSE, FALSE))
+  expect_equal(equal_byname(list(2, 3), list(2, 3), list(2, 3)), list(TRUE, TRUE))
+  expect_equal(equal_byname(list(2, 2), list(3, 3), list(42, 42), .summarise = TRUE), list(TRUE, TRUE, TRUE))
+  expect_equal(equal_byname(list(2, 2), list(3, 4), list(42, 42), .summarise = TRUE), list(TRUE, FALSE, TRUE))
+  
   expect_equal(equal_byname(list(a, a), list(b, b)), list(TRUE, TRUE))
+  expect_equal(equal_byname(list(a, a), list(b, b), .summarise = TRUE), list(TRUE, TRUE))
   
   # Try with two unsorted matrices. They should be equal (byname), 
   # because they will be sorted prior to comparison.
@@ -927,7 +1001,8 @@ test_that("equal_byname works as expected", {
   expect_false(identical_byname(e, f + 1e-100))
 })
 
-test_that("identical_byname works as expected", {
+
+test_that("identical_byname() works as expected", {
   expect_true(identical_byname(100, 100))
   # With a little bit of numerical fuzz, identical_byname fails
   expect_false(identical_byname(100, 100 + 1e-10))
@@ -949,6 +1024,12 @@ test_that("identical_byname works as expected", {
   expect_false(identical_byname(a, b)) 
   dimnames(b) <- dimnames(a)
   expect_true(identical_byname(a, b))
+  
+  # Try with lists
+  expect_equal(identical_byname(list(1, 2, 3), list(1, 2, 3)), list(TRUE, TRUE, TRUE))
+  expect_equal(identical_byname(list(1, 2, 4), list(1, 2, 3)), list(TRUE, TRUE, FALSE))
+  expect_equal(identical_byname(list(1, 1, 1), list(2, 2, 2), .summarise = TRUE), list(TRUE, TRUE))
+  expect_equal(identical_byname(list(1, 1, 1), list(2, 2, 3), .summarise = TRUE), list(TRUE, FALSE))
 })
 
   
@@ -957,7 +1038,7 @@ test_that("identical_byname works as expected", {
 context("Utilities")
 ###########################################################
 
-test_that("samestructure_byname works as expected", {
+test_that("samestructure_byname() works as expected", {
   expect_true(samestructure_byname(2, 2))
   expect_false(samestructure_byname(2, 2 %>% setrowtype("row")))
   expect_false(samestructure_byname(2 %>% setrowtype("row"), 2))
@@ -979,23 +1060,29 @@ test_that("samestructure_byname works as expected", {
   expect_true(all(samestructure_byname(list(U, U), list(U, U)) %>% as.logical()))
   expect_true(all(samestructure_byname(list(U, U), list(V, V)) %>% as.logical()))
   expect_true(all(samestructure_byname(list(V, V), list(U, U)) %>% as.logical()))
+  expect_true(all(samestructure_byname(list(U, V), list(U, V), .summarise = TRUE) %>% as.logical()))
+  expect_equal(samestructure_byname(list(U, V), list(U %>% setrowtype(NULL), V), .summarise = TRUE), list(TRUE, FALSE))
+  
   # Check when one or both of rowtype or coltype is NULL
   expect_false(samestructure_byname(U, U %>% setrowtype(NULL)))
   expect_false(samestructure_byname(U, U %>% setcoltype(NULL)))
 })
 
-test_that("make_pattern works as expected", {
-  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "exact"), "^a$|^b$")
-  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "leading"), "^a|^b")
-  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "trailing"), "a$|b$")
-  expect_equal(make_pattern(row_col_names = c("a", "b"), pattern_type = "anywhere"), "a|b")
-  expect_equal(make_pattern(row_col_names = "Non-specified (industry)", pattern_type = "exact"), "^Non-specified \\(industry\\)$")
+
+test_that("make_pattern() works as expected", {
+  expect_equal(RCLabels::make_or_pattern(strings = c("a", "b"), pattern_type = "exact"), "^a$|^b$")
+  expect_equal(RCLabels::make_or_pattern(strings = c("a", "b"), pattern_type = "leading"), "^a|^b")
+  expect_equal(RCLabels::make_or_pattern(strings = c("a", "b"), pattern_type = "trailing"), "a$|b$")
+  expect_equal(RCLabels::make_or_pattern(strings = c("a", "b"), pattern_type = "anywhere"), "a|b")
+  expect_equal(RCLabels::make_or_pattern(strings = c("^a$", "^b", "c$"), pattern_type = "literal"), c("^a$", "^b", "c$"))
+  expect_equal(RCLabels::make_or_pattern(strings = "Non-specified (industry)", pattern_type = "exact"), "^Non-specified \\(industry\\)$")
   # Check with a list and parentheses
-  expect_equal(make_pattern(row_col_names = c("a(1)", "a(2)"), pattern_type = "exact"), 
+  expect_equal(RCLabels::make_or_pattern(strings = c("a(1)", "a(2)"), pattern_type = "exact"), 
                "^a\\(1\\)$|^a\\(2\\)$")
 })
   
-test_that("list_of_rows_or_cols works as expected", {
+
+test_that("list_of_rows_or_cols() works as expected", {
   m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
     setrowtype(rowtype = "Products") %>% setcoltype(coltype = "Industries")
   expected_margin_1 <- list(p1 = matrix(seq(1, 5, by = 2), nrow = 3, ncol = 1, dimnames = list(c("i1", "i2", "i3"), "p1")) %>% 
@@ -1023,7 +1110,8 @@ test_that("list_of_rows_or_cols works as expected", {
   expect_equal(DF$extracted_cols, list(expected_margin_2, expected_margin_2))
 })
 
-test_that("organize_args works as expected", {
+
+test_that("organize_args() works as expected", {
   # If only one argument is a list, make the other argument also a list of equal length.
   expect_equal(matsbyname:::organize_args(a = list(1,2), b = 3), list(a = list(1,2), b = list(3,3)))
   expect_equal(matsbyname:::organize_args(a = 3, b = list(1,2)), list(a = list(3,3), b = list(1,2)))
@@ -1156,5 +1244,10 @@ test_that("and_byname works as expected", {
   # Test with lists of matrices
   expect_equal(and_byname(list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
   expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
+  
+  # Test with .summarise
+  expect_equal(and_byname(list(m1, m1), list(m2, m2), .summarise = TRUE), list(m1 & m1, m2 & m2))
+  expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2), .summarise = TRUE), list(m1 & m1, m1 & m1, m2 & m2))
+  
 })
 
