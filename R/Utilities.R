@@ -162,7 +162,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' 
 #' It is potentially ambiguous to specify a vector or matrix argument, say, `margin = c(1, 2)` when applying
 #' the `*_byname` functions to unary list of `a`.
-#' Rather, one should specify, say, `margin = list(c(1, 2)`
+#' Rather, one should specify, say, `margin = list(c(1, 2))`
 #' to avoid ambiguity.
 #' If `a` is a list, 
 #' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,
