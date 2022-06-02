@@ -78,9 +78,10 @@
 <div class="row">
   <main id="main"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Aggregation in `matsbyname`</h1>
-                        <h4 data-toc-skip class="author">Matthew Kuperus Heun</h4>
+                        <h4 data-toc-skip class="author">Matthew Kuperus
+Heun</h4>
             
-            <h4 data-toc-skip class="date">2022-04-01</h4>
+            <h4 data-toc-skip class="date">2022-06-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/vignettes/aggregation-vignette.Rmd" class="external-link"><code>vignettes/aggregation-vignette.Rmd</code></a></small>
       <div class="d-none name"><code>aggregation-vignette.Rmd</code></div>
@@ -91,13 +92,19 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <code>matsbyname</code> package provides several functions to assist renaming and aggregating rows and columns of matrices. This vignette shows how to use those functions.</p>
+<p>The <code>matsbyname</code> package provides several functions to
+assist renaming and aggregating rows and columns of matrices. This
+vignette shows how to use those functions.</p>
 </div>
 <div class="section level2">
 <h2 id="aggregate_byname">
 <code>aggregate_byname()</code><a class="anchor" aria-label="anchor" href="#aggregate_byname"></a>
 </h2>
-<p>By default (<code>aggregation_map = NULL, margin = c(1,2), pattern_type = "exact"</code>), <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code> sums all rows and columns with the same names, with the effect that remaining row and column names are unique.</p>
+<p>By default
+(<code>aggregation_map = NULL, margin = c(1,2), pattern_type = "exact"</code>),
+<code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code> sums all rows and columns with the same
+names, with the effect that remaining row and column names are
+unique.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, 
               <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span>, 
@@ -113,7 +120,12 @@
 <span class="co">#&gt;       George John Paul Ringo</span>
 <span class="co">#&gt; duck      10    6    8    12</span>
 <span class="co">#&gt; goose     11    9   10    12</span></code></pre></div>
-<p>An <code>aggregation_map</code> can be provided, giving instructions for rows or columns to aggregate and the names of the results. <code>aggregation_map</code> should be a list of named strings. The entries in the list give names of rows and columns to be aggregated. The names of the list entries provide the names of the resulting aggregates.</p>
+<p>An <code>aggregation_map</code> can be provided, giving instructions
+for rows or columns to aggregate and the names of the results.
+<code>aggregation_map</code> should be a list of named strings. The
+entries in the list give names of rows and columns to be aggregated. The
+names of the list entries provide the names of the resulting
+aggregates.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span>
 <span class="co">#&gt;       John Paul George Ringo</span>
@@ -124,7 +136,9 @@
                                            guitarists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"John"</span>, <span class="st">"Paul"</span>, <span class="st">"George"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;       guitarists Ringo</span>
 <span class="co">#&gt; birds         54    24</span></code></pre></div>
-<p>The margin over which the aggregation is to be performed is given by the <code>margin</code> argument (<code>1</code> for rows, <code>2</code> for columns).</p>
+<p>The margin over which the aggregation is to be performed is given by
+the <code>margin</code> argument (<code>1</code> for rows,
+<code>2</code> for columns).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span>
 <span class="co">#&gt;       John Paul George Ringo</span>
@@ -137,7 +151,9 @@
 <span class="co">#&gt; duck       10</span>
 <span class="co">#&gt; duck       26</span>
 <span class="co">#&gt; goose      42</span></code></pre></div>
-<p><code>aggregation_map</code> can use regular expressions to identify rows and columns to aggregate. Use <code>pattern_type = "literal"</code> for this feature.</p>
+<p><code>aggregation_map</code> can use regular expressions to identify
+rows and columns to aggregate. Use <code>pattern_type = "literal"</code>
+for this feature.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span>
 <span class="co">#&gt;       John Paul George Ringo</span>
@@ -150,7 +166,8 @@
 <span class="co">#&gt; duck           6     4</span>
 <span class="co">#&gt; duck          18     8</span>
 <span class="co">#&gt; goose         30    12</span></code></pre></div>
-<p>Note that rows and columns of aggregated matrices are always sorted alphabetically.</p>
+<p>Note that rows and columns of aggregated matrices are always sorted
+alphabetically.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span>
 <span class="co">#&gt;       John Paul George Ringo</span>
@@ -161,7 +178,11 @@
                                            zguitarists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"John"</span>, <span class="st">"Paul"</span>, <span class="st">"George"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;       Ringo zguitarists</span>
 <span class="co">#&gt; birds    24          54</span></code></pre></div>
-<p>It is an error to aggregate over a margin and leave identically named rows or columns. The following function call will fail, because it aggregates over both rows and columns (using the default <code>margin = c(1,2)</code>) with nothing in the <code>aggregation_map</code> to aggregate the two “duck” rows.</p>
+<p>It is an error to aggregate over a margin and leave identically named
+rows or columns. The following function call will fail, because it
+aggregates over both rows and columns (using the default
+<code>margin = c(1,2)</code>) with nothing in the
+<code>aggregation_map</code> to aggregate the two “duck” rows.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Not run</span>
 <span class="fu"><a href="../reference/aggregate_byname.html">aggregate_byname</a></span><span class="op">(</span><span class="va">m</span>, aggregation_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Beatles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"John"</span>, <span class="st">"Paul"</span>, <span class="st">"George"</span>, <span class="st">"Ringo"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -169,8 +190,15 @@
 <div class="section level2">
 <h2 id="pieces">Pieces<a class="anchor" aria-label="anchor" href="#pieces"></a>
 </h2>
-<p>Commonly, row and column names are complex, carrying information in prefixes, suffixes, and prepositional phrases. <code>matsbyname</code> can aggregate by pieces of a name, using the <code>RCLabels</code> package internally.</p>
-<p>We’ll use the following matrix to demonstrate aggregating by pieces. The rows and columns use different notations for names (“bracket” notation for rows and “arrow” notation for columns). The renaming and aggregation capabilities of <code>matsbyname</code> still work, despite the different notations.</p>
+<p>Commonly, row and column names are complex, carrying information in
+prefixes, suffixes, and prepositional phrases. <code>matsbyname</code>
+can aggregate by pieces of a name, using the <code>RCLabels</code>
+package internally.</p>
+<p>We’ll use the following matrix to demonstrate aggregating by pieces.
+The rows and columns use different notations for names (“bracket”
+notation for rows and “arrow” notation for columns). The renaming and
+aggregation capabilities of <code>matsbyname</code> still work, despite
+the different notations.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m_pieces</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>,
                      <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span>, 
@@ -185,7 +213,8 @@
 <h2 id="rename_to_piece_byname">
 <code>rename_to_piece_byname()</code><a class="anchor" aria-label="anchor" href="#rename_to_piece_byname"></a>
 </h2>
-<p>Rows and columns can be renamed to their prefixes, suffixes, or objects of prepositions, as demonstrated below.</p>
+<p>Rows and columns can be renamed to their prefixes, suffixes, or
+objects of prepositions, as demonstrated below.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m_pieces</span>
 <span class="co">#&gt;                          Motors -&gt; MD Cars -&gt; MD LED lamps -&gt; Light</span>
@@ -216,13 +245,22 @@
 <span class="co">#&gt;                          MD MD Light</span>
 <span class="co">#&gt; Electricity [from Coal]   1  2     3</span>
 <span class="co">#&gt; Electricity [from Solar]  4  5     6</span></code></pre></div>
-<p>These renamings can be used for aggregations in which identically named rows and columns are summed with <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>.</p>
+<p>These renamings can be used for aggregations in which identically
+named rows and columns are summed with
+<code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="aggregate_pieces_byname">
 <code>aggregate_pieces_byname()</code><a class="anchor" aria-label="anchor" href="#aggregate_pieces_byname"></a>
 </h2>
-<p><code><a href="../reference/aggregate_pieces_byname.html">aggregate_pieces_byname()</a></code> bundles renaming and aggregating tasks in a single function call. First, rows and/or columns are renamed to the requested <code>piece</code> with the <code><a href="../reference/rename_to_piece_byname.html">rename_to_piece_byname()</a></code> function. Then, aggregation is performed via <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>, according to an <code>aggregation_map</code> and the <code>pattern_type</code>, if provided. With the default <code>aggregation_map = NULL</code>, identically named pieces are aggregated together.</p>
+<p><code><a href="../reference/aggregate_pieces_byname.html">aggregate_pieces_byname()</a></code> bundles renaming and
+aggregating tasks in a single function call. First, rows and/or columns
+are renamed to the requested <code>piece</code> with the
+<code><a href="../reference/rename_to_piece_byname.html">rename_to_piece_byname()</a></code> function. Then, aggregation is
+performed via <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>, according to an
+<code>aggregation_map</code> and the <code>pattern_type</code>, if
+provided. With the default <code>aggregation_map = NULL</code>,
+identically named pieces are aggregated together.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m_pieces</span>
 <span class="co">#&gt;                          Motors -&gt; MD Cars -&gt; MD LED lamps -&gt; Light</span>
@@ -239,7 +277,9 @@
 <span class="co">#&gt;                          Light MD</span>
 <span class="co">#&gt; Electricity [from Coal]      3  3</span>
 <span class="co">#&gt; Electricity [from Solar]     6  9</span></code></pre></div>
-<p>When an <code>aggregation_map</code> is supplied, it applies to the requested <code>piece</code>, not to the original row and/or column names, as shown below.</p>
+<p>When an <code>aggregation_map</code> is supplied, it applies to the
+requested <code>piece</code>, not to the original row and/or column
+names, as shown below.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m_pieces</span>
 <span class="co">#&gt;                          Motors -&gt; MD Cars -&gt; MD LED lamps -&gt; Light</span>
@@ -262,7 +302,8 @@
 <div class="section level2">
 <h2 id="aggregations-of-lists-and-data-frames-of-matrices">Aggregations of lists and data frames of matrices<a class="anchor" aria-label="anchor" href="#aggregations-of-lists-and-data-frames-of-matrices"></a>
 </h2>
-<p>The functions for renaming and aggregating can be used on lists and data frames of matrices.</p>
+<p>The functions for renaming and aggregating can be used on lists and
+data frames of matrices.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m_pieces</span>
 <span class="co">#&gt;                          Motors -&gt; MD Cars -&gt; MD LED lamps -&gt; Light</span>
@@ -317,7 +358,9 @@
 <div class="section level2">
 <h2 id="aggregation-via-dplyrsummarise">Aggregation via <code>dplyr::summarise()</code><a class="anchor" aria-label="anchor" href="#aggregation-via-dplyrsummarise"></a>
 </h2>
-<p>Another type of aggregation is aided by the metadata columns of a <code>matsindf</code>-style data frame. With single numbers, an aggregation might look like this:</p>
+<p>Another type of aggregation is aided by the metadata columns of a
+<code>matsindf</code>-style data frame. With single numbers, an
+aggregation might look like this:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df_simple</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">key</span>, <span class="op">~</span><span class="va">val</span>, 
                              <span class="st">"A"</span>, <span class="fl">1</span>, 
@@ -338,7 +381,20 @@
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         3</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">2</span> B        10</span></code></pre></div>
-<p>The same aggregation gives unexpected results with the default arguments to the <code><a href="../reference/sum_byname.html">sum_byname()</a></code> function (specifically, <code>.summarise = FALSE</code>), because <code><a href="../reference/sum_byname.html">sum_byname()</a></code> is ambiguous for a data frame. Should the column be returned unchanged, because each element is interpreted as the augend for a series of sums that is missing addends, in which case the length of the returned object is the same as the length of the input? Or should the list of objects be summed down the column, returning only a single item (for each group), as in the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise()</a></code> function? (See the vignette titled “Using summarise in matsbyname” for additional detail about this ambiguity.) In the example below, the grouping has no effect on the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> function, because <code>sum_byname(.summarise = FALSE)</code> assumes that each row of <code>val</code> is an augend without an addend.</p>
+<p>The same aggregation gives unexpected results with the default
+arguments to the <code><a href="../reference/sum_byname.html">sum_byname()</a></code> function (specifically,
+<code>.summarise = FALSE</code>), because <code><a href="../reference/sum_byname.html">sum_byname()</a></code> is
+ambiguous for a data frame. Should the column be returned unchanged,
+because each element is interpreted as the augend for a series of sums
+that is missing addends, in which case the length of the returned object
+is the same as the length of the input? Or should the list of objects be
+summed down the column, returning only a single item (for each group),
+as in the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise()</a></code> function? (See the vignette
+titled “Using summarise in matsbyname” for additional detail about this
+ambiguity.) In the example below, the grouping has no effect on the
+<code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> function, because
+<code>sum_byname(.summarise = FALSE)</code> assumes that each row of
+<code>val</code> is an augend without an addend.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># 2 rows are expected. 3 are observed.</span>
 <span class="va">df_simple</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -350,7 +406,12 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         1</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">2</span> A         2</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">3</span> B        10</span></code></pre></div>
-<p>To signal intention to summarise down the <code>val</code> column, set <code>.summarise = TRUE</code> in the call to <code><a href="../reference/sum_byname.html">sum_byname()</a></code>. Note that <code>sum_byname(.summarise = TRUE)</code> <em>always</em> returns a list column, because if the summarised column were to contain matrices, it <em>must</em> be a list column.</p>
+<p>To signal intention to summarise down the <code>val</code> column,
+set <code>.summarise = TRUE</code> in the call to
+<code><a href="../reference/sum_byname.html">sum_byname()</a></code>. Note that
+<code>sum_byname(.summarise = TRUE)</code> <em>always</em> returns a
+list column, because if the summarised column were to contain matrices,
+it <em>must</em> be a list column.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">df_simple</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -368,7 +429,8 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt; [1] 10</span></code></pre></div>
-<p>The <code>.summarise = TRUE</code> argument works when there are matrices in a <code>matsindf</code> data frame, too.</p>
+<p>The <code>.summarise = TRUE</code> argument works when there are
+matrices in a <code>matsindf</code> data frame, too.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11</span>, <span class="fl">12</span>, <span class="fl">13</span>,
               <span class="fl">21</span>, <span class="fl">22</span>, <span class="fl">23</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span>, 
@@ -406,7 +468,10 @@
 <div class="section level2">
 <h2 id="working-with-aggregation-maps">Working with aggregation maps<a class="anchor" aria-label="anchor" href="#working-with-aggregation-maps"></a>
 </h2>
-<p>An aggregation map is defined to be a named list. But the source of that named list is often a data frame in which many-to-one relationships are defined. <code><a href="../reference/aggregation_map_helpers.html">agg_table_to_agg_map()</a></code> assists converting from a two-column data frame to an aggregation map.</p>
+<p>An aggregation map is defined to be a named list. But the source of
+that named list is often a data frame in which many-to-one relationships
+are defined. <code><a href="../reference/aggregation_map_helpers.html">agg_table_to_agg_map()</a></code> assists converting from
+a two-column data frame to an aggregation map.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">member</span>, <span class="op">~</span><span class="va">role</span>, <span class="op">~</span><span class="va">band</span>, 
                       <span class="st">"John"</span>, <span class="st">"guitarists"</span>, <span class="st">"The Beatles"</span>, 
@@ -447,7 +512,8 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $singers</span>
 <span class="co">#&gt; [1] "Mick"</span></code></pre></div>
-<p>In a similar manner, an aggregation map can be converted to a data frame to assist with join operations with data frames.</p>
+<p>In a similar manner, an aggregation map can be converted to a data
+frame to assist with join operations with data frames.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/aggregation_map_helpers.html">agg_map_to_agg_table</a></span><span class="op">(</span><span class="va">bands_membs_agg_map</span>, 
                       few_colname <span class="op">=</span> <span class="st">"bands"</span>,
@@ -468,7 +534,15 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p>The <code>matsbyname</code> package simplifies aggregation of matrix rows and columns based on row and column names or pieces of row and column names. In particular the functions <code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>, <code><a href="../reference/rename_to_piece_byname.html">rename_to_piece_byname()</a></code>, and <code><a href="../reference/aggregate_pieces_byname.html">aggregate_pieces_byname()</a></code> provide flexibility in how renaming and aggregation can be accomplished. When working with aggregation maps, the functions <code><a href="../reference/aggregation_map_helpers.html">agg_table_to_agg_map()</a></code> and <code><a href="../reference/aggregation_map_helpers.html">agg_map_to_agg_table()</a></code> assist conversion from one data shape to another.</p>
+<p>The <code>matsbyname</code> package simplifies aggregation of matrix
+rows and columns based on row and column names or pieces of row and
+column names. In particular the functions
+<code><a href="../reference/aggregate_byname.html">aggregate_byname()</a></code>, <code><a href="../reference/rename_to_piece_byname.html">rename_to_piece_byname()</a></code>,
+and <code><a href="../reference/aggregate_pieces_byname.html">aggregate_pieces_byname()</a></code> provide flexibility in how
+renaming and aggregation can be accomplished. When working with
+aggregation maps, the functions <code><a href="../reference/aggregation_map_helpers.html">agg_table_to_agg_map()</a></code> and
+<code><a href="../reference/aggregation_map_helpers.html">agg_map_to_agg_table()</a></code> assist conversion from one data
+shape to another.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -483,7 +557,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
     </footer>

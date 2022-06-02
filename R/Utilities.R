@@ -923,7 +923,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' @param a a matrix or a list of matrices
 #' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
 #' Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
+#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove.
 #' Default pattern (\code{$^}) removes nothing.
 #'
 #' @return a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.

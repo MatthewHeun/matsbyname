@@ -89,12 +89,26 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <code>*apply_byname()</code> family of functions are used internally by many functions in <code>matsbyname</code>. These functions (<code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code>, <code><a href="../reference/binaryapply_byname.html">binaryapply_byname()</a></code>, <code><a href="../reference/naryapply_byname.html">naryapply_byname()</a></code>) allow additional arguments, besides the matrices that are being transformed, which are passed via <code>.FUNdots</code>. Getting <code>.FUNdots</code> right can be challenging, and this vignette provides some background and explanation to those challenges. After reading this vignette, both callers of these functions and programmers who use these functions will be in a better position to take advantage of the various <code>*apply_byname()</code> functions.</p>
+<p>The <code>*apply_byname()</code> family of functions are used
+internally by many functions in <code>matsbyname</code>. These functions
+(<code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code>, <code><a href="../reference/binaryapply_byname.html">binaryapply_byname()</a></code>,
+<code><a href="../reference/naryapply_byname.html">naryapply_byname()</a></code>) allow additional arguments, besides the
+matrices that are being transformed, which are passed via
+<code>.FUNdots</code>. Getting <code>.FUNdots</code> right can be
+challenging, and this vignette provides some background and explanation
+to those challenges. After reading this vignette, both callers of these
+functions and programmers who use these functions will be in a better
+position to take advantage of the various <code>*apply_byname()</code>
+functions.</p>
 </div>
 <div class="section level2">
 <h2 id="an-example">An example<a class="anchor" aria-label="anchor" href="#an-example"></a>
 </h2>
-<p>To see how the <code>.FUNdots</code> argument works, let’s make an example function that takes advantage of <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code>. <code>mysum()</code> adds entries in matrix <code>a</code>, the result depending upon the value of <code>margin</code>.</p>
+<p>To see how the <code>.FUNdots</code> argument works, let’s make an
+example function that takes advantage of
+<code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code>. <code>mysum()</code> adds entries in
+matrix <code>a</code>, the result depending upon the value of
+<code>margin</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mysum</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">margin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">sum_func</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a_mat</span>, <span class="va">margin</span><span class="op">)</span> <span class="op">{</span>
@@ -111,7 +125,9 @@
   <span class="op">}</span>
   <span class="fu"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span><span class="op">(</span><span class="va">sum_func</span>, <span class="va">a</span>, .FUNdots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>margin <span class="op">=</span> <span class="va">margin</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
-<p>Structuring <code>mysum()</code> as shown above provides several interesting capabilities. First, <code>mysum()</code> works with single matrices.</p>
+<p>Structuring <code>mysum()</code> as shown above provides several
+interesting capabilities. First, <code>mysum()</code> works with single
+matrices.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">m</span>
@@ -189,7 +205,10 @@
 <div class="section level2">
 <h2 id="the-problem">The problem<a class="anchor" aria-label="anchor" href="#the-problem"></a>
 </h2>
-<p>In the above examples, <code>margin</code> was only <code>1</code> or <code>2</code>, not <code>c(1, 2)</code> for the list and data frame examples. Let’s see what happens when <code>margin = c(1, 2)</code> and <code>a</code> is a list.</p>
+<p>In the above examples, <code>margin</code> was only <code>1</code> or
+<code>2</code>, not <code>c(1, 2)</code> for the list and data frame
+examples. Let’s see what happens when <code>margin = c(1, 2)</code> and
+<code>a</code> is a list.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
          error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="va">e</span>, width <span class="op">=</span> <span class="fl">60</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
@@ -199,7 +218,8 @@
 <span class="co">#&gt; [4] "length(a) (= 3). Found length = 2 for argument 'margin',"   </span>
 <span class="co">#&gt; [5] "which is not a list. Consider converting argument 'margin'" </span>
 <span class="co">#&gt; [6] "into a list of length 1."</span></code></pre></div>
-<p>To understand better what is happening, let’s try when the list argument to <code>mysum()</code> has length <code>2</code>.</p>
+<p>To understand better what is happening, let’s try when the list
+argument to <code>mysum()</code> has length <code>2</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
@@ -210,24 +230,48 @@
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    4    6</span></code></pre></div>
-<p><code>margin = c(1, 2)</code> is interpreted by <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> as “use <code>margin = 1</code> for the first <code>m</code> in the list, and use <code>margin = 2</code> for the second <code>m</code> in the list.</p>
-<p>Now we see why passing <code>margin = c(1, 2)</code> failed for a list of length <code>3</code> (<code>list(m, m, m)</code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. But the third <code>m</code> had no margin available for it.</p>
-<p>We also see why passing <code>margin = c(1, 2)</code> was successful for a list of length <code>2</code> (<code>list(m, m)</code>): <code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the first <code>m</code>, <code>margin = 2</code> for the second <code>m</code>. In that case, we had exactly as many items in margin (2) as items in the list passed to <code>a</code> (2).</p>
-<p>Now that we understand the problem, how do we fix it? In other words, how can we apply <code>margin = c(1, 2)</code> to all entries in <code>list(m, m, m)</code>? Or, better yet, how could we apply <code>margin = 1</code> to the first <code>m</code>, <code>margin = 2</code> to the second <code>m</code>, and <code>margin = c(1, 2)</code> to the third <code>m</code>?</p>
+<p><code>margin = c(1, 2)</code> is interpreted by
+<code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> as “use <code>margin = 1</code> for the
+first <code>m</code> in the list, and use <code>margin = 2</code> for
+the second <code>m</code> in the list.</p>
+<p>Now we see why passing <code>margin = c(1, 2)</code> failed for a
+list of length <code>3</code> (<code>list(m, m, m)</code>):
+<code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the
+first <code>m</code>, <code>margin = 2</code> for the second
+<code>m</code>. But the third <code>m</code> had no margin available for
+it.</p>
+<p>We also see why passing <code>margin = c(1, 2)</code> was successful
+for a list of length <code>2</code> (<code>list(m, m)</code>):
+<code><a href="../reference/unaryapply_byname.html">unaryapply_byname()</a></code> applied <code>margin = 1</code> for the
+first <code>m</code>, <code>margin = 2</code> for the second
+<code>m</code>. In that case, we had exactly as many items in margin (2)
+as items in the list passed to <code>a</code> (2).</p>
+<p>Now that we understand the problem, how do we fix it? In other words,
+how can we apply <code>margin = c(1, 2)</code> to all entries in
+<code>list(m, m, m)</code>? Or, better yet, how could we apply
+<code>margin = 1</code> to the first <code>m</code>,
+<code>margin = 2</code> to the second <code>m</code>, and
+<code>margin = c(1, 2)</code> to the third <code>m</code>?</p>
 </div>
 <div class="section level2">
 <h2 id="the-fix">The fix<a class="anchor" aria-label="anchor" href="#the-fix"></a>
 </h2>
-<p>Fixes to the problem identified above can be provided by either the caller or (partially) by the programmer in three ways:</p>
+<p>Fixes to the problem identified above can be provided by either the
+caller or (partially) by the programmer in three ways:</p>
 <ul>
 <li>wrap vector arguments in a list (a caller fix),</li>
-<li>use the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> function (a programmer fix), and</li>
+<li>use the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> function (a programmer fix),
+and</li>
 <li>use a data frame (a caller fix).</li>
 </ul>
 <div class="section level3">
 <h3 id="wrap-vector-arguments-in-a-list">Wrap vector arguments in a list<a class="anchor" aria-label="anchor" href="#wrap-vector-arguments-in-a-list"></a>
 </h3>
-<p>If the caller is more specific, flexibility is gained. By wrapping <code>c(1, 2)</code> in a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>, the caller indicates “Take this margin (<code>c(1, 2)</code>), replicate it as many times as we have items in our <code>a</code> list, using one <code>c(1, 2)</code> for each item in the list.”</p>
+<p>If the caller is more specific, flexibility is gained. By wrapping
+<code>c(1, 2)</code> in a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>, the caller indicates
+“Take this margin (<code>c(1, 2)</code>), replicate it as many times as
+we have items in our <code>a</code> list, using one <code>c(1, 2)</code>
+for each item in the list.”</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
@@ -238,7 +282,8 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[3]]</span>
 <span class="co">#&gt; [1] 10</span></code></pre></div>
-<p>The caller can also supply different <code>margin</code>s for each item in the list of matrices.</p>
+<p>The caller can also supply different <code>margin</code>s for each
+item in the list of matrices.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
@@ -252,7 +297,9 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[3]]</span>
 <span class="co">#&gt; [1] 10</span></code></pre></div>
-<p>But the caller must provide either <code>1</code> or <code>length(a)</code> items in the <code>margin</code> argument, else an error is emitted.</p>
+<p>But the caller must provide either <code>1</code> or
+<code>length(a)</code> items in the <code>margin</code> argument, else
+an error is emitted.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu">mysum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
          error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="va">e</span>, width <span class="op">=</span> <span class="fl">60</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
@@ -265,8 +312,14 @@
 <div class="section level3">
 <h3 id="use-the-prep_vector_arg-function">Use the <code>prep_vector_arg()</code> function<a class="anchor" aria-label="anchor" href="#use-the-prep_vector_arg-function"></a>
 </h3>
-<p>To the extent possible, programmers should remove burdens on users of their functions. So, it would be helpful if there were a way to automatically wrap vector arguments in lists. To that end, <code>matsbyname</code> includes the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> function. <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> uses heuristics to wrap vector arguments in lists, if needed and when possible.</p>
-<p><code>mysum2()</code> demonstrates the use of <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code>.</p>
+<p>To the extent possible, programmers should remove burdens on users of
+their functions. So, it would be helpful if there were a way to
+automatically wrap vector arguments in lists. To that end,
+<code>matsbyname</code> includes the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code>
+function. <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> uses heuristics to wrap vector
+arguments in lists, if needed and when possible.</p>
+<p><code>mysum2()</code> demonstrates the use of
+<code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mysum2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">margin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">margin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_vector_arg.html">prep_vector_arg</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">margin</span><span class="op">)</span>
@@ -287,10 +340,15 @@
 <p>If</p>
 <ul>
 <li>argument <code>a</code> is a list,</li>
-<li>the vector argument (in this case <code>margin</code>) is not a list, and</li>
-<li>the vector argument’s length is greater than 1 but not equal to the length of a,</li>
+<li>the vector argument (in this case <code>margin</code>) is not a
+list, and</li>
+<li>the vector argument’s length is greater than 1 but not equal to the
+length of a,</li>
 </ul>
-<p>then <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> wraps the vector argument (in this case <code>margin</code>) in a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>, thereby relieving the caller of having to remember to make it into a <code>list</code>.</p>
+<p>then <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> wraps the vector argument (in
+this case <code>margin</code>) in a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>, thereby
+relieving the caller of having to remember to make it into a
+<code>list</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">mysum2</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
@@ -301,7 +359,9 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[3]]</span>
 <span class="co">#&gt; [1] 10</span></code></pre></div>
-<p>Note that if the length of the vector argument is equal to the length of the list in <code>a</code>, the caller’s intention is ambiguous, and the vector argument is passed without modification.</p>
+<p>Note that if the length of the vector argument is equal to the length
+of the list in <code>a</code>, the caller’s intention is ambiguous, and
+the vector argument is passed without modification.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">mysum2</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
@@ -312,7 +372,9 @@
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    4    6</span></code></pre></div>
-<p>If the caller wants <code>c(1, 2)</code> to be applied to each item in the <code>a</code> list, the caller must wrap <code>c(1, 2)</code> in a list.</p>
+<p>If the caller wants <code>c(1, 2)</code> to be applied to each item
+in the <code>a</code> list, the caller must wrap <code>c(1, 2)</code> in
+a list.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">mysum2</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
@@ -324,7 +386,9 @@
 <div class="section level3">
 <h3 id="use-a-data-frame">Use a data frame<a class="anchor" aria-label="anchor" href="#use-a-data-frame"></a>
 </h3>
-<p>The reason <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> cannot <em>always</em> wrap vector arguments in a list is that data frame columns are extracted as vectors when they are atomic.</p>
+<p>The reason <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> cannot <em>always</em> wrap
+vector arguments in a list is that data frame columns are extracted as
+vectors when they are atomic.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DF2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>mcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="va">DF2</span>
@@ -335,7 +399,10 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;int [2 × 2]&gt;</span>      2</span>
 <span class="va">DF2</span><span class="op">$</span><span class="va">margin</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; [1] "numeric"</span></code></pre></div>
-<p>It would be a mistake to wrap <code>DF2$margin</code> in a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> for the following call to <code>mysum2</code>, because the caller’s intent is clearly “apply <code>margin = 1</code> for the first row and <code>margin = 2</code> for the second row.</p>
+<p>It would be a mistake to wrap <code>DF2$margin</code> in a
+<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> for the following call to <code>mysum2</code>,
+because the caller’s intent is clearly “apply <code>margin = 1</code>
+for the first row and <code>margin = 2</code> for the second row.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res2</span> <span class="op">&lt;-</span> <span class="va">DF2</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
@@ -350,7 +417,8 @@
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]    4    6</span></code></pre></div>
-<p>The good news is that within the context of a data frame, the caller’s intent is unambiguous.</p>
+<p>The good news is that within the context of a data frame, the
+caller’s intent is unambiguous.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">DF3</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>mcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span>, <span class="va">m</span><span class="op">)</span>, margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
@@ -372,10 +440,13 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p>Dealing with vector arguments to the various <code>*apply_byname()</code> functions can be tricky. But there are three ways to solve any problems that arise:</p>
+<p>Dealing with vector arguments to the various
+<code>*apply_byname()</code> functions can be tricky. But there are
+three ways to solve any problems that arise:</p>
 <ul>
 <li>wrap vector arguments in a list (a caller fix),</li>
-<li>use the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> function (a programmer fix), and</li>
+<li>use the <code><a href="../reference/prep_vector_arg.html">prep_vector_arg()</a></code> function (a programmer fix),
+and</li>
 <li>use a data frame (a caller fix).</li>
 </ul>
 <p>This vignette illustrated all three fixes.</p>
@@ -393,7 +464,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
     </footer>
