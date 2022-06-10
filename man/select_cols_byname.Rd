@@ -12,7 +12,7 @@ select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^")
 \item{retain_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
 Default pattern (\code{$^}) retains nothing.}
 
-\item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
+\item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove.
 Default pattern (\code{$^}) removes nothing.}
 }
 \value{

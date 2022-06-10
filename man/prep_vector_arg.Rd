@@ -20,7 +20,7 @@ This is a helper function for many \verb{*_byname} functions.
 \details{
 It is potentially ambiguous to specify a vector or matrix argument, say, \code{margin = c(1, 2)} when applying
 the \verb{*_byname} functions to unary list of \code{a}.
-Rather, one should specify, say, \verb{margin = list(c(1, 2)}
+Rather, one should specify, say, \code{margin = list(c(1, 2))}
 to avoid ambiguity.
 If \code{a} is a list,
 \code{vector_arg} is not a list and has length > 1 and length not equal to the length of a,
