@@ -1403,7 +1403,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' `prefix_start` `prefix` `prefix_end` `suffix_start` `suffix` `suffix_end`
 #' and described by a notation vector.
 #' (See `notation_vec()`.)
-#' This function performs aggregation by prefix or suffix according to a notation vector..
+#' This function performs aggregation by prefix or suffix according to a notation vector.
 #' 
 #' This function is a convenience function, as it bundles sequential calls to two helper functions,
 #' `rename_to_pref_suff_byname()` and `aggregate_byname()`.
