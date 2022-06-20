@@ -451,7 +451,7 @@ setcolnames_byname <- function(a, colnames){
 #' rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
 rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
   rename_to_piece_byname(a, piece = keep, margin = margin, 
-                         notation = notation, prepositions = RCLabels::prepositions)
+                         notation = notation, prepositions = RCLabels::prepositions_list)
 }
 
 
@@ -488,7 +488,7 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'                 See `RCLabels`.
 #'                 
 #' @param prepositions Prepositions that can be used in the row and column label.
-#'                     Default is `RCLabels::prepositions`.
+#'                     Default is `RCLabels::prepositions_list`.
 #'
 #' @return A version of `a` with renamed rows and columns.
 #' 
@@ -512,7 +512,7 @@ rename_to_piece_byname <- function(a,
                                    piece,
                                    margin = c(1, 2),
                                    notation = RCLabels::bracket_notation,
-                                   prepositions = RCLabels::prepositions) {
+                                   prepositions = RCLabels::prepositions_list) {
   piece <- prep_vector_arg(a, piece)
   margin <- prep_vector_arg(a, margin)
   notation <- prep_vector_arg(a, notation)
@@ -1562,7 +1562,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'   )
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
-                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions)} else {RCLabels::prepositions}) {
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}) {
   
   
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 

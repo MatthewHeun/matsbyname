@@ -1519,7 +1519,7 @@ aggregate_pieces_byname <- function(a,
                                     piece,
                                     margin = c(1, 2), 
                                     notation, 
-                                    prepositions = RCLabels::prepositions, 
+                                    prepositions = RCLabels::prepositions_list, 
                                     aggregation_map = NULL, 
                                     pattern_type = "exact") {
   a %>%

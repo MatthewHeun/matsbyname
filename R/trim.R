@@ -45,7 +45,7 @@
 #' @param notation The notation for row and column labels. 
 #'                 Default is `RCLabels::bracket_notation`.
 #' @param prepositions The strings to be treated as prepositions in row and column labels.
-#'                     Default is `RCLabels::prepositions`.
+#'                     Default is `RCLabels::prepositions_list`.
 #'
 #' @return Matrix `a` with rows or columns trimmed to match `mat`.
 #' 
@@ -70,7 +70,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
                            margin = c(1,2), warn_if_a_incomplete = TRUE, 
                            a_piece = "all", mat_piece = "all", 
                            notation = RCLabels::bracket_notation, 
-                           prepositions = RCLabels::prepositions) {
+                           prepositions = RCLabels::prepositions_list) {
   
   if (is.null(a) & is.null(mat)) {
     stop("Both a and mat are NULL in complete_rows_cols.")

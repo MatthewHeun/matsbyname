@@ -18,10 +18,10 @@ vec_from_store_byname(
     RCLabels::bracket_notation
  },
   prepositions = if (is.list(a)) {
-     list(RCLabels::prepositions)
+     list(RCLabels::prepositions_list)
  } else {
-    
-    RCLabels::prepositions
+   
+     RCLabels::prepositions_list
  }
 )
 }
