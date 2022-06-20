@@ -87,11 +87,11 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
       # NULL values for the Map function.
       # Make a list of same length as the list of a.
       # Each value is NA.
-      mat <- make_list(NULL, length(a))
+      mat <- RCLabels::make_list(NULL, length(a))
     } else if (is.matrix(mat)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as a.
-      mat <- make_list(mat, length(a))
+      mat <- RCLabels::make_list(mat, length(a))
     }
   }
   

@@ -56,11 +56,11 @@ organize_args <- function(a, b, match_type = "all", fill){
   if (is.list(a) | is.list(b)) {
     if (!is.list(a)) {
       # b is a list, but a is not.  Make a into a list and give it same names as b.
-      a <- make_list(a, n = length(b)) %>% magrittr::set_names(names(b))
+      a <- RCLabels::make_list(a, n = length(b)) %>% magrittr::set_names(names(b))
     }
     if (!is.list(b)) {
       # a is a list, but b is not.  Make b into a list and give it same names as a.
-      b <- make_list(b, n = length(a)) %>% magrittr::set_names(names(a))
+      b <- RCLabels::make_list(b, n = length(a)) %>% magrittr::set_names(names(a))
     }
   }
   if (is.list(a) & is.list(b)) {
