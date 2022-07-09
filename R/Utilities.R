@@ -511,14 +511,18 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 rename_to_piece_byname <- function(a,
                                    piece,
                                    margin = c(1, 2),
-                                   notation = RCLabels::bracket_notation,
+                                   inf_notation = TRUE,
+                                   notation = RCLabels::notations_list,
+                                   choose_most_specific = FALSE,
                                    prepositions = RCLabels::prepositions_list) {
   piece <- prep_vector_arg(a, piece)
   margin <- prep_vector_arg(a, margin)
-  notation <- prep_vector_arg(a, notation)
+  inf_notation <- prep_vector_arg(a, inf_notation)
+  this_notation <- notation
+  choose_most_specific <- prep_vector_arg(a, choose_most_specific)
   prepositions <- prep_vector_arg(a, prepositions)
   
-  rename_func <- function(a_mat, this_piece, this_margin, this_notation, these_prepositions) {
+  rename_func <- function(a_mat, this_piece, this_margin, this_inf_notation, this_choose_most_specific, these_prepositions) {
     # At this point, a should be a single matrix, 
     # this_* should be individual items ready for use in this function.
     
@@ -531,7 +535,8 @@ rename_to_piece_byname <- function(a,
       a_mat <- transpose_byname(a_mat) %>% 
         rename_func(this_piece = this_piece, 
                     this_margin = 1,
-                    this_notation = this_notation, 
+                    this_inf_notation = this_inf_notation,
+                    this_choose_most_specific,
                     these_prepositions = these_prepositions) %>% 
         transpose_byname()
     }
@@ -539,13 +544,17 @@ rename_to_piece_byname <- function(a,
     if (1 %in% this_margin) {
       new_rnames <- rownames(a_mat) %>% 
         RCLabels::get_piece(piece = this_piece, 
-                            notation = this_notation,
+                            inf_notation = this_inf_notation,
+                            notation = notation,
+                            choose_most_specific = this_choose_most_specific,
                             prepositions = these_prepositions)
       new_rt <- rowtype(a_mat)
       if (!is.null(new_rt)) {
         new_rt <- new_rt %>%
           RCLabels::get_piece(piece = this_piece, 
-                              notation = this_notation, 
+                              inf_notation = this_inf_notation,
+                              notation = notation, 
+                              choose_most_specific = this_choose_most_specific,
                               prepositions = these_prepositions)
       }
       
@@ -560,7 +569,8 @@ rename_to_piece_byname <- function(a,
   unaryapply_byname(rename_func, a = a,
                     .FUNdots = list(this_piece = piece,
                                     this_margin = margin,
-                                    this_notation = notation, 
+                                    this_inf_notation = inf_notation,
+                                    this_choose_most_specific = choose_most_specific,
                                     these_prepositions = prepositions), 
                     rowcoltypes = "none")
 }

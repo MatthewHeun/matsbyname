@@ -1518,6 +1518,18 @@ test_that("rename_to_piece_byname() works as expected", {
 })
 
 
+test_that("rename_to_piece_byname() works as expected when inferring notation", {
+  m <- matrix(c(1, 2,
+                3, 4,
+                5, 6), nrow = 3, byrow = TRUE,
+              dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j")))
+  res1 <- rename_to_piece_byname(m, piece = "pref")
+  expected1 <- m
+  dimnames(expected1) <- list(c("a", "c", "e"), c("g", "i"))
+  expect_equal(res1, expected1)
+})
+
+
 test_that("margin_from_types_byname() works as expected", {
   # Try with a single matrix
   m <- matrix(1) %>%

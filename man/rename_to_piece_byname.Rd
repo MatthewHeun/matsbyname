@@ -8,7 +8,9 @@ rename_to_piece_byname(
   a,
   piece,
   margin = c(1, 2),
-  notation = RCLabels::bracket_notation,
+  inf_notation = TRUE,
+  notation = RCLabels::notations_list,
+  choose_most_specific = FALSE,
   prepositions = RCLabels::prepositions_list
 )
 }

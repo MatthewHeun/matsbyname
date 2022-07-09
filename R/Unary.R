@@ -1519,7 +1519,7 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 aggregate_pieces_byname <- function(a, 
                                     piece,
                                     margin = c(1, 2), 
-                                    notation, 
+                                    notation = RCLabels::notations_list, 
                                     prepositions = RCLabels::prepositions_list, 
                                     aggregation_map = NULL, 
                                     pattern_type = "exact") {

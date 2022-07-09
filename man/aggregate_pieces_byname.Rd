@@ -8,7 +8,7 @@ aggregate_pieces_byname(
   a,
   piece,
   margin = c(1, 2),
-  notation,
+  notation = RCLabels::notations_list,
   prepositions = RCLabels::prepositions_list,
   aggregation_map = NULL,
   pattern_type = "exact"
