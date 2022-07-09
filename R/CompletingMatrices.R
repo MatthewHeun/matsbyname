@@ -70,9 +70,12 @@
 #' complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 1) 
 #' complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 2)
 #' complete_rows_cols(a = list(m1,m1), 
-#'                    mat = make_list(matrix(0, nrow = 2, ncol = 2, 
-#'                                           dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
-#'                                    n = 2, lenx = 1))
+#'                    mat = RCLabels::make_list(matrix(0,
+#'                                                     nrow = 2, 
+#'                                                     ncol = 2, 
+#'                                                     dimnames = list(c("r10", "r11"), 
+#'                                                                     c("c10", "c11"))), 
+#'                                              n = 2, lenx = 1))
 #' # fillrow or fillcol can be specified
 #' a <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, 
 #'             dimnames = list(c("r1", "r2"), c("c1", "c2")))
@@ -99,19 +102,19 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
       # NULL values for the Map function.
       # Make a list of same length as the list of a.
       # Each value is NA.
-      mat <- make_list(NULL, length(a))
+      mat <- RCLabels::make_list(NULL, length(a))
     } else if (is.matrix(mat)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as a.
-      mat <- make_list(mat, length(a))
+      mat <- RCLabels::make_list(mat, length(a))
     }
   } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
     # a is NULL, and assume we have a list of matrices in the mat argument.
     # Under these conditions, we return matrices with same row and column names as each mat, but
     # filled with the "fill" value.
     # For that to work, we need to ensure that each of the other arguments are lists.
-    a = make_list(NULL, length(mat))
-    margin <- make_list(margin, length(mat), lenx = 1)
+    a = RCLabels::make_list(NULL, length(mat))
+    margin <- RCLabels::make_list(margin, length(mat), lenx = 1)
   }
 
   # Double-check that we have what we need for the margin argument.
@@ -467,66 +470,4 @@ complete_and_sort <- function(a, b, fill = 0, margin = c(1,2), roworder = NA, co
   b <- complete_rows_cols(b, a, fill = fill, margin = margin) %>%
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
   return(list(a = a, b = b))
-}
-
-#' Makes a list of items in x, regardless of x's type
-#'
-#' Repeats \code{x} as necessary to make \code{n} of them.
-#' Does not try to simplify \code{x}.
-#'
-#' @param x the object to be duplicated
-#' @param n the number of times to be duplicated
-#' @param lenx the length of item \code{x}. Normally \code{lenx} is taken to be \code{length(x)},
-#' but if \code{x} is itself a \code{list}, you may wish for the \code{list} to be duplicated several
-#' times. In that case, set \code{lenx = 1}.
-#'
-#' @return a list of \code{x} duplicated \code{n} times
-#'
-#' @export
-#'
-#' @examples
-#' m <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
-#' make_list(m, n = 1)
-#' make_list(m, n = 2)
-#' make_list(m, n = 5)
-#' make_list(list(c(1,2), c(1,2)), n = 4)
-#' m <- matrix(1:4, nrow = 2)
-#' l <- list(m, m+100)
-#' make_list(l, n = 4)
-#' make_list(l, n = 1) # Warning because l is trimmed.
-#' make_list(l, n = 5) # Warning because length(l) (i.e., 2) not evenly divisible by 5
-#' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2) # Confused by x being a list
-#' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1) # Fix by setting lenx = 1
-make_list <- function(x, n, lenx = ifelse(is.vector(x), length(x), 1)){
-  out <- vector(mode = "list", length = n)
-  reptimes <- as.integer(n / lenx)
-  if (n %% lenx != 0 & lenx != 1) {
-    warning("n not evenly divisible by length(x)")
-  }
-  if (lenx == 1) {
-    return(
-      lapply(X = 1:n, FUN = function(i){
-        out[[i]] <- x
-      })
-    )
-  }
-  if (n < lenx) {
-    # Fewer items than length of x is desired
-    return(x[[1:n]])
-  }
-  for (cycle in 1:reptimes) {
-    for (xindex in 1:lenx) {
-      outindex <- (cycle - 1)*lenx + (xindex)
-      out[[outindex]] <- x[[xindex]]
-    }
-  }
-  if (n %% length(x) == 0) {
-    # Had an even number of cycles
-    return(out)
-  }
-  for (outindex in (reptimes*lenx + 1):n) {
-    xindex <- outindex - reptimes*lenx
-    out[[outindex]] <- x[[xindex]]
-  }
-  return(out)
 }

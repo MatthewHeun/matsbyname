@@ -90,9 +90,12 @@ complete_rows_cols(a = list(m1,m1), mat = list(m2,m2))
 complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 1) 
 complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 2)
 complete_rows_cols(a = list(m1,m1), 
-                   mat = make_list(matrix(0, nrow = 2, ncol = 2, 
-                                          dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
-                                   n = 2, lenx = 1))
+                   mat = RCLabels::make_list(matrix(0,
+                                                    nrow = 2, 
+                                                    ncol = 2, 
+                                                    dimnames = list(c("r10", "r11"), 
+                                                                    c("c10", "c11"))), 
+                                             n = 2, lenx = 1))
 # fillrow or fillcol can be specified
 a <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, 
             dimnames = list(c("r1", "r2"), c("c1", "c2")))

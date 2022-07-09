@@ -1410,7 +1410,7 @@ test_that("vec_from_store_byname() works with lists", {
   # Try with notation and prepositions already wrapped in lists.
   res <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from", 
                         notation = list(RCLabels::bracket_notation), 
-                        prepositions = list(RCLabels::prepositions))  
+                        prepositions = list(RCLabels::prepositions_list))  
   expect_equal(res, expected_list)
   
   # Try with notation and prepositions not already wrapped in lists.

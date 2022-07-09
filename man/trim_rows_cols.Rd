@@ -12,7 +12,7 @@ trim_rows_cols(
   a_piece = "all",
   mat_piece = "all",
   notation = RCLabels::bracket_notation,
-  prepositions = RCLabels::prepositions
+  prepositions = RCLabels::prepositions_list
 )
 }
 \arguments{
@@ -34,7 +34,7 @@ if \code{a} is missing entries on \code{margin} that are present in \code{mat}.}
 Default is \code{RCLabels::bracket_notation}.}
 
 \item{prepositions}{The strings to be treated as prepositions in row and column labels.
-Default is \code{RCLabels::prepositions}.}
+Default is \code{RCLabels::prepositions_list}.}
 }
 \value{
 Matrix \code{a} with rows or columns trimmed to match \code{mat}.

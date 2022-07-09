@@ -9,7 +9,7 @@ rename_to_piece_byname(
   piece,
   margin = c(1, 2),
   notation = RCLabels::bracket_notation,
-  prepositions = RCLabels::prepositions
+  prepositions = RCLabels::prepositions_list
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ Default is \code{RCLabels::bracket_notation}.
 See \code{RCLabels}.}
 
 \item{prepositions}{Prepositions that can be used in the row and column label.
-Default is \code{RCLabels::prepositions}.}
+Default is \code{RCLabels::prepositions_list}.}
 }
 \value{
 A version of \code{a} with renamed rows and columns.
