@@ -1569,6 +1569,18 @@ test_that("rename_to_piece_byname() works as expected when inferring notation", 
   expected6 <- m2
   dimnames(expected6) <- list(c("b", "d", "f"), c("h", "j"))
   expect_equal(res6, expected6)
+  
+  # Try in a data frame with different notations.
+  df <- tibble::tribble(~m, ~piece, ~cms, ~expected, 
+                        m2, "pref", FALSE, expected3,
+                        m2, "suff", FALSE, expected4,
+                        m2, "suff", TRUE, expected5,
+                        m2, "in", FALSE, expected6)
+  res <- df %>% 
+    dplyr::mutate(res = rename_to_piece_byname(a = m, piece = piece, choose_most_specific = cms))
+  for (i in 1:nrow(df)) {
+    expect_equal(res$res[[i]], res$expected[[i]])
+  }
 })
 
 

@@ -1775,13 +1775,14 @@ test_that("aggregate_pieces_byname() works when inferring notation", {
                               c("e [from f]", "g [from h]", "i [from j]")))
   
   res1 <- m %>%
-    aggregate_pieces_byname(piece = "suff", 
+    aggregate_pieces_byname(piece = "suff",
+                            choose_most_specific = TRUE,
                             aggregation_map = list(rows = "d", 
                                                    cols = c("h", "j")))
   
-  expected1 <- matrix(c(1, 5, 
-                        11, 28), nrow = 2, ncol = 2, byrow = TRUE, 
-                      dimnames = list(c("a [from b]", "rows"), c("cols", "f")))
+  expected1 <- matrix(c(5, 1,
+                        28, 11), nrow = 2, ncol = 2, byrow = TRUE, 
+                      dimnames = list(c("b", "rows"), c("cols", "f")))
   expect_equal(res1, expected1)
   
 })
