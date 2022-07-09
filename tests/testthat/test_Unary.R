@@ -1736,7 +1736,9 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
                        agg_map = list(list(final = c("Electricity", "Gasoline"))), 
                        notn = list(RCLabels::bracket_notation)) %>%
     dplyr::mutate(
-      agg = aggregate_pieces_byname(a = m, piece = pce, margin = mgn, 
+      agg = aggregate_pieces_byname(a = m, 
+                                    piece = pce, 
+                                    margin = mgn, 
                                     aggregation_map = agg_map,
                                     notation = notn)
     )
