@@ -1550,19 +1550,21 @@ test_that("rename_to_piece_byname() works as expected when inferring notation", 
   dimnames(expected3) <- list(c("a", "c", "e"), c("g", "i"))
   expect_equal(res3, expected3)
 
-  # This one picks up the full suffix, because not choosing most specific.  
+  # This one picks up the full suffix, because not choosing most specific,
+  # which defaults to the first matching notation, which is bracket notation.
   res4 <- rename_to_piece_byname(m2, piece = "suff")
   expected4 <- m2
   dimnames(expected4) <- list(c("in b", "in d", "in f"), c("in h", "in j"))
   expect_equal(res4, expected4)
   
-  # Now choose the most specific, which will be the in_notation.
+  # Now choose the most specific, which will be the in notation.
   # Thus, we will have b, d, f, h, and j as the row and column names.
   res5 <- rename_to_piece_byname(m2, piece = "suff", choose_most_specific = TRUE)
   expected5 <- m2
   dimnames(expected5) <- list(c("b", "d", "f"), c("h", "j"))
   expect_equal(res5, expected5)
   
+  # Choose the object of the "in" preposition.
   res6 <- rename_to_piece_byname(m2, piece = "in")
   expected6 <- m2
   dimnames(expected6) <- list(c("b", "d", "f"), c("h", "j"))
