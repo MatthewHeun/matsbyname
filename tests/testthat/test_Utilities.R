@@ -1519,6 +1519,16 @@ test_that("rename_to_piece_byname() works as expected", {
 
 
 test_that("rename_to_piece_byname() works as expected when inferring notation", {
+  # Test with one that fails to infer.
+  bad_mat <- matrix(c(1, 2,
+                      3, 4,
+                      5, 6), nrow = 3, byrow = TRUE,
+                    dimnames = list(c("ab", "c -> d", "e -> f"), c("g -> h", "i -> j")))
+  expect_error(rename_to_piece_byname(m, piece = "pref"))
+  
+  
+  
+  
   m <- matrix(c(1, 2,
                 3, 4,
                 5, 6), nrow = 3, byrow = TRUE,
@@ -1527,6 +1537,13 @@ test_that("rename_to_piece_byname() works as expected when inferring notation", 
   expected1 <- m
   dimnames(expected1) <- list(c("a", "c", "e"), c("g", "i"))
   expect_equal(res1, expected1)
+  
+  # Test with other inferred pieces (suffix, prepositions)
+  res2 <- rename_to_piece_byname(m, piece = "suff")
+  expected2 <- m
+  dimnames(expected2) <- list(c("b", "d", "f"), c("h", "j"))
+  expect_equal(res2, expected2)
+  
 })
 
 
