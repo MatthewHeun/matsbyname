@@ -1722,18 +1722,20 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
   # Try in a data frame.
   df <- tibble::tibble(m = list(m, mT)) %>%
     dplyr::mutate(
-      agg = aggregate_pieces_byname(a = m, piece = "noun", margin = "Product", 
+      agg = aggregate_pieces_byname(a = m, 
+                                    piece = "noun",
+                                    margin = "Product", 
                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
       notation = RCLabels::bracket_notation)
     )
   expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 
 
-# Try in a data frame using columns for arguments.
+  # Try in a data frame using columns for arguments.
   df <- tibble::tibble(m = list(m, mT), 
                        pce = "noun",
                        mgn = "Product",
-                       agg_map = list(list(final = c("Electricity", "Gasoline"))), 
+                       agg_map = list(list(final = c("Electricity", "Gasoline"))),
                        notn = list(RCLabels::bracket_notation)) %>%
     dplyr::mutate(
       agg = aggregate_pieces_byname(a = m, 
