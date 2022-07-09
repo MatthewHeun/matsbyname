@@ -1225,15 +1225,16 @@ all_byname <- function(a){
   unaryapply_byname(FUN = all_func, a = a, rowcoltypes = "none")
 }
 
-#' Are any matrix elements \code{TRUE}?
+
+#' Are any matrix elements `TRUE`?
 #' 
-#' Tells whether any elements in matrix \code{a} are true.
+#' Tells whether any elements in matrix `a` are true.
 #' 
-#' \code{a} can be a matrix or a list of matrices.
+#' `a` can be a matrix or a list of matrices.
 #'
 #' @param a a matrix or list of matrices
 #'
-#' @return \code{TRUE} if any elements of \code{a} are \code{TRUE}, \code{FALSE} otherwise
+#' @return `TRUE` if any elements of `a` are `TRUE`, `FALSE` otherwise
 #' 
 #' @export
 #'
