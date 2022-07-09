@@ -35,7 +35,7 @@ Row and column names are often constructed in the form
 \code{prefix_start} \code{prefix} \code{prefix_end} \code{suffix_start} \code{suffix} \code{suffix_end}
 and described by a notation vector.
 (See \code{notation_vec()}.)
-This function performs aggregation by prefix or suffix according to a notation vector..
+This function performs aggregation by prefix or suffix according to a notation vector.
 }
 \details{
 This function is a convenience function, as it bundles sequential calls to two helper functions,
