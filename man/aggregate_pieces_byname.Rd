@@ -23,7 +23,11 @@ aggregate_pieces_byname(
 
 \item{margin}{See \code{rename_to_piece_byname()}.}
 
+\item{inf_notation}{See \code{rename_to_piece_byname()}.}
+
 \item{notation}{See \code{rename_to_piece_byname()}.}
+
+\item{choose_most_specific}{See \code{rename_to_piece_byname()}.}
 
 \item{prepositions}{See \code{rename_to_piece_byname()}.}
 

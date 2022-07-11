@@ -1464,7 +1464,9 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' @param a A matrix or list of matrices
 #' @param piece See `rename_to_piece_byname()`.
 #' @param margin See `rename_to_piece_byname()`.
+#' @param inf_notation See `rename_to_piece_byname()`.
 #' @param notation See `rename_to_piece_byname()`.
+#' @param choose_most_specific See `rename_to_piece_byname()`.
 #' @param prepositions See `rename_to_piece_byname()`.
 #' @param aggregation_map See `aggregate_byname()`.
 #' @param pattern_type See `RCLabels::make_or_pattern()`.

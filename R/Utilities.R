@@ -486,12 +486,20 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'               Default is `c(1, 2)`, meaning that both 
 #'               rows (`margin = 1`) and columns (`margin = 2`)
 #'               will be renamed.
+#' @param inf_notation A boolean that tells whether to infer notation.
+#'                     Default is `TRUE`.
 #' @param notation The notation used for row and column labels. 
 #'                 Default is `list(RCLabels::notations_list)`.
 #'                 The default value is wrapped in a list, 
 #'                 because `RCLabels::notations_list` is, itself, a list.
 #'                 See `RCLabels`.
-#'                 
+#' @param choose_most_specific A boolean that indicates whether the most-specific notation
+#'                             will be inferred when more than one of `notation` matches 
+#'                             a row or column label
+#'                             and `allow_multiple = FALSE`.
+#'                             When `FALSE`, the first matching notation in `notations`
+#'                             is returned when `allow_multiple = FALSE`.
+#'                             Default is `FALSE`.
 #' @param prepositions Prepositions that can be used in the row and column label.
 #'                     Default is `RCLabels::prepositions_list`.
 #'
