@@ -1524,7 +1524,8 @@ test_that("rename_to_piece_byname() works as expected when inferring notation", 
                       3, 4,
                       5, 6), nrow = 3, byrow = TRUE,
                     dimnames = list(c("ab", "c -> d", "e -> f"), c("g -> h", "i -> j")))
-  expect_error(rename_to_piece_byname(bad_mat, piece = "pref"), regexp = "Unable to infer notation for 'ab'")
+  expect_error(rename_to_piece_byname(bad_mat, piece = "pref"), 
+               regexp = "Unable to infer notation for 'ab'")
   
   m <- matrix(c(1, 2,
                 3, 4,

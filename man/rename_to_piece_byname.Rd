@@ -9,7 +9,7 @@ rename_to_piece_byname(
   piece,
   margin = c(1, 2),
   inf_notation = TRUE,
-  notation = RCLabels::notations_list,
+  notation = list(RCLabels::notations_list),
   choose_most_specific = FALSE,
   prepositions = RCLabels::prepositions_list
 )
@@ -28,7 +28,9 @@ rows (\code{margin = 1}) and columns (\code{margin = 2})
 will be renamed.}
 
 \item{notation}{The notation used for row and column labels.
-Default is \code{RCLabels::bracket_notation}.
+Default is \code{list(RCLabels::notations_list)}.
+The default value is wrapped in a list,
+because \code{RCLabels::notations_list} is, itself, a list.
 See \code{RCLabels}.}
 
 \item{prepositions}{Prepositions that can be used in the row and column label.

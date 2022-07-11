@@ -487,7 +487,9 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'               rows (`margin = 1`) and columns (`margin = 2`)
 #'               will be renamed.
 #' @param notation The notation used for row and column labels. 
-#'                 Default is `RCLabels::bracket_notation`.
+#'                 Default is `list(RCLabels::notations_list)`.
+#'                 The default value is wrapped in a list, 
+#'                 because `RCLabels::notations_list` is, itself, a list.
 #'                 See `RCLabels`.
 #'                 
 #' @param prepositions Prepositions that can be used in the row and column label.
@@ -515,7 +517,7 @@ rename_to_piece_byname <- function(a,
                                    piece,
                                    margin = c(1, 2),
                                    inf_notation = TRUE,
-                                   notation = RCLabels::notations_list,
+                                   notation = list(RCLabels::notations_list),
                                    choose_most_specific = FALSE,
                                    prepositions = RCLabels::prepositions_list) {
   piece <- prep_vector_arg(a, piece)
