@@ -1518,7 +1518,7 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' df$agg
 aggregate_pieces_byname <- function(a, 
                                     piece,
-                                    margin = c(1, 2), 
+                                    margin = list(c(1, 2)), 
                                     inf_notation = TRUE,
                                     notation = list(RCLabels::notations_list),
                                     choose_most_specific = FALSE,
