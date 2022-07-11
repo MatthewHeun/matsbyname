@@ -1722,29 +1722,33 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
   # Try in a data frame.
   df <- tibble::tibble(m = list(m, mT)) %>%
     dplyr::mutate(
-      agg = aggregate_pieces_byname(a = m, piece = "noun", margin = "Product", 
+      agg = aggregate_pieces_byname(a = m, 
+                                    piece = "noun",
+                                    margin = "Product", 
                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
-      notation = RCLabels::bracket_notation)
+                                    notation = RCLabels::bracket_notation)
     )
   expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 
 
-# Try in a data frame using columns for arguments.
+  # Try in a data frame using columns for arguments.
   df <- tibble::tibble(m = list(m, mT), 
                        pce = "noun",
                        mgn = "Product",
-                       agg_map = list(list(final = c("Electricity", "Gasoline"))), 
+                       agg_map = list(list(final = c("Electricity", "Gasoline"))),
                        notn = list(RCLabels::bracket_notation)) %>%
     dplyr::mutate(
-      agg = aggregate_pieces_byname(a = m, piece = pce, margin = mgn, 
-                                    aggregation_map = agg_map,
+      agg = aggregate_pieces_byname(a = m, 
+                                    piece = pce, 
+                                    margin = mgn, 
+                                    aggregation_map = agg_map, 
                                     notation = notn)
     )
   expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 })
 
 
-test_that("aggregate_by_pieces() works with funny names", {
+test_that("aggregate_pieces_byname() works with funny names", {
   m_pieces <- matrix(c(1, 2, 3,
                        4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
                      dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
@@ -1767,3 +1771,22 @@ test_that("aggregate_by_pieces() works with funny names", {
 })
 
 
+test_that("aggregate_pieces_byname() works when inferring notation", {
+  m <- matrix(c(1, 2, 3, 
+                4, 5, 6, 
+                7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("a [from b]", "c [from d]", "e [from d]"), 
+                              c("e [from f]", "g [from h]", "i [from j]")))
+  
+  res1 <- m %>%
+    aggregate_pieces_byname(piece = "suff",
+                            choose_most_specific = TRUE,
+                            aggregation_map = list(rows = "d", 
+                                                   cols = c("h", "j")))
+  
+  expected1 <- matrix(c(5, 1,
+                        28, 11), nrow = 2, ncol = 2, byrow = TRUE, 
+                      dimnames = list(c("b", "rows"), c("cols", "f")))
+  expect_equal(res1, expected1)
+  
+})

@@ -1464,7 +1464,9 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' @param a A matrix or list of matrices
 #' @param piece See `rename_to_piece_byname()`.
 #' @param margin See `rename_to_piece_byname()`.
+#' @param inf_notation See `rename_to_piece_byname()`.
 #' @param notation See `rename_to_piece_byname()`.
+#' @param choose_most_specific See `rename_to_piece_byname()`.
 #' @param prepositions See `rename_to_piece_byname()`.
 #' @param aggregation_map See `aggregate_byname()`.
 #' @param pattern_type See `RCLabels::make_or_pattern()`.
@@ -1518,14 +1520,20 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' df$agg
 aggregate_pieces_byname <- function(a, 
                                     piece,
-                                    margin = c(1, 2), 
-                                    notation, 
-                                    prepositions = RCLabels::prepositions_list, 
+                                    margin = list(c(1, 2)), 
+                                    inf_notation = TRUE,
+                                    notation = list(RCLabels::notations_list),
+                                    choose_most_specific = FALSE,
+                                    prepositions = list(RCLabels::prepositions_list), 
                                     aggregation_map = NULL, 
                                     pattern_type = "exact") {
   a %>%
-    rename_to_piece_byname(piece = piece, margin = margin, 
-                           notation = notation, prepositions = prepositions) %>%
+    rename_to_piece_byname(piece = piece, 
+                           margin = margin, 
+                           inf_notation = inf_notation,
+                           notation = notation,
+                           choose_most_specific = choose_most_specific,
+                           prepositions = prepositions) %>%
     aggregate_byname(aggregation_map = aggregation_map, margin = margin, 
                      pattern_type = pattern_type)
 }

@@ -1518,6 +1518,99 @@ test_that("rename_to_piece_byname() works as expected", {
 })
 
 
+test_that("rename_to_piece_byname() works as expected when inferring notation", {
+  # Test with one that fails to infer.
+  bad_mat <- matrix(c(1, 2,
+                      3, 4,
+                      5, 6), nrow = 3, byrow = TRUE,
+                    dimnames = list(c("ab", "c -> d", "e -> f"), c("g -> h", "i -> j")))
+  expect_error(rename_to_piece_byname(bad_mat, piece = "pref"), 
+               regexp = "Unable to infer notation for 'ab'")
+  
+  m <- matrix(c(1, 2,
+                3, 4,
+                5, 6), nrow = 3, byrow = TRUE,
+              dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j")))
+  res1 <- rename_to_piece_byname(m, piece = "pref")
+  expected1 <- m
+  dimnames(expected1) <- list(c("a", "c", "e"), c("g", "i"))
+  expect_equal(res1, expected1)
+  
+  # Test with other inferred pieces (suffix, prepositions)
+  res2 <- rename_to_piece_byname(m, piece = "suff")
+  expected2 <- m
+  dimnames(expected2) <- list(c("b", "d", "f"), c("h", "j"))
+  expect_equal(res2, expected2)
+  
+  m2 <- matrix(c(1, 2,
+                 3, 4,
+                 5, 6), nrow = 3, byrow = TRUE,
+               dimnames = list(c("a [in b]", "c [in d]", "e [in f]"), c("g [in h]", "i [in j]")))
+  res3 <- rename_to_piece_byname(m2, piece = "pref")
+  expected3 <- m2
+  dimnames(expected3) <- list(c("a", "c", "e"), c("g", "i"))
+  expect_equal(res3, expected3)
+
+  # This one picks up the full suffix, because not choosing most specific,
+  # which defaults to the first matching notation, which is bracket notation.
+  res4 <- rename_to_piece_byname(m2, piece = "suff")
+  expected4 <- m2
+  dimnames(expected4) <- list(c("in b", "in d", "in f"), c("in h", "in j"))
+  expect_equal(res4, expected4)
+  
+  # Now choose the most specific, which will be the in notation.
+  # Thus, we will have b, d, f, h, and j as the row and column names.
+  res5 <- rename_to_piece_byname(m2, piece = "suff", choose_most_specific = TRUE)
+  expected5 <- m2
+  dimnames(expected5) <- list(c("b", "d", "f"), c("h", "j"))
+  expect_equal(res5, expected5)
+  
+  # Choose the object of the "in" preposition.
+  res6 <- rename_to_piece_byname(m2, piece = "in")
+  expected6 <- m2
+  dimnames(expected6) <- list(c("b", "d", "f"), c("h", "j"))
+  expect_equal(res6, expected6)
+  
+  # Try in a data frame with different notations.
+  df <- tibble::tribble(~m, ~piece, ~cms, ~expected, 
+                        m2, "pref", FALSE, expected3,
+                        m2, "suff", FALSE, expected4,
+                        m2, "suff", TRUE, expected5,
+                        m2, "in", FALSE, expected6)
+  res <- df %>% 
+    dplyr::mutate(res = rename_to_piece_byname(a = m, piece = piece, choose_most_specific = cms))
+  for (i in 1:nrow(df)) {
+    expect_equal(res$res[[i]], res$expected[[i]])
+  }
+})
+
+
+test_that("rename_to_piece_byname() works with inferred margins", {
+  m1 <- matrix(c(1, 2, 3,
+                4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
+                              c("Motors -> MD", "Cars -> MD", "LED lamps -> Light"))) %>% 
+    setrowtype("Product [from Product]") %>% setcoltype("Industry -> Product")
+  res1 <- rename_to_piece_byname(m1, 
+                                 piece = "pref",
+                                 margin = "Product [from Product]", 
+                                 choose_most_specific = TRUE)
+  expected1 <- m1
+  expected1 <- setrownames_byname(expected1, c("Electricity", "Electricity"))
+  expected1 <- setrowtype(expected1, "Product")
+  expect_equal(res1, expected1)
+  
+  # Make sure it also works when the type doesn't have the same structure
+  # as the row and column names.
+  m2 <- m1 %>% 
+    setrowtype("Product") %>% setcoltype("Industry")
+  res2 <- rename_to_piece_byname(m2, piece = "pref", margin = "Product")
+  expected2 <- m2
+  expected2 <- setrownames_byname(expected2, c("Electricity", "Electricity"))
+  expect_equal(res2, expected2)
+})
+
+
 test_that("margin_from_types_byname() works as expected", {
   # Try with a single matrix
   m <- matrix(1) %>%
@@ -1574,3 +1667,14 @@ test_that("margin_from_types_byname() works as expected", {
   expect_equal(res$margin3, list(NA_integer_, NA_integer_))
 })
 
+
+test_that("prev_vector_arg() works as expected", {
+  a <- matrix(1)
+  res <- prep_vector_arg(a, list(RCLabels::notations_list))
+  expect_equal(res, RCLabels::notations_list)
+  
+  # Now try with a list of 2 matrices
+  a <- list(matrix(1), matrix(1))
+  res <- prep_vector_arg(a, list(RCLabels::notations_list))
+  expect_equal(res, list(RCLabels::notations_list))
+})

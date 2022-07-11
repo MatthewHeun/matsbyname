@@ -172,16 +172,19 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' 
 #' Note that if `vector_arg` is a single matrix, it is automatically enclosed by a list when `a` is a list.
 #'
-#' @param a a matrix or list of matrices
-#' @param vector_arg the vector argument over which to apply a calculation
+#' @param a A matrix or list of matrices.
+#' @param vector_arg The vector argument over which to apply a calculation.
 #'
-#' @return `vector_arg`, possibly modified when `a` is a list 
+#' @return `vector_arg`, possibly modified when `a` is a list.
 #' 
 #' @export
 #'
 #' @examples
 #' m <- matrix(c(2, 2))
-#' matsbyname:::prep_vector_arg(list(m, m), vector_arg = c(1,2))
+#' prep_vector_arg(m, vector_arg = c(1,2))
+#' prep_vector_arg(list(m), vector_arg = c(1,2))
+#' prep_vector_arg(list(m, m), vector_arg = c(1,2))
+#' prep_vector_arg(list(m, m, m), vector_arg = c(1,2))
 prep_vector_arg <- function(a, vector_arg) {
   if (is.list(a)) {
     if (is.matrix(vector_arg) | (!is.list(vector_arg) & length(vector_arg) > 1 & length(vector_arg) != length(a))) {
@@ -483,10 +486,20 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'               Default is `c(1, 2)`, meaning that both 
 #'               rows (`margin = 1`) and columns (`margin = 2`)
 #'               will be renamed.
+#' @param inf_notation A boolean that tells whether to infer notation.
+#'                     Default is `TRUE`.
 #' @param notation The notation used for row and column labels. 
-#'                 Default is `RCLabels::bracket_notation`.
+#'                 Default is `list(RCLabels::notations_list)`.
+#'                 The default value is wrapped in a list, 
+#'                 because `RCLabels::notations_list` is, itself, a list.
 #'                 See `RCLabels`.
-#'                 
+#' @param choose_most_specific A boolean that indicates whether the most-specific notation
+#'                             will be inferred when more than one of `notation` matches 
+#'                             a row or column label
+#'                             and `allow_multiple = FALSE`.
+#'                             When `FALSE`, the first matching notation in `notations`
+#'                             is returned when `allow_multiple = FALSE`.
+#'                             Default is `FALSE`.
 #' @param prepositions Prepositions that can be used in the row and column label.
 #'                     Default is `RCLabels::prepositions_list`.
 #'
@@ -510,15 +523,20 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'                        notation = RCLabels::arrow_notation)
 rename_to_piece_byname <- function(a,
                                    piece,
-                                   margin = c(1, 2),
-                                   notation = RCLabels::bracket_notation,
-                                   prepositions = RCLabels::prepositions_list) {
+                                   margin = list(c(1, 2)),
+                                   inf_notation = TRUE,
+                                   notation = list(RCLabels::notations_list),
+                                   choose_most_specific = FALSE,
+                                   prepositions = list(RCLabels::prepositions_list)) {
   piece <- prep_vector_arg(a, piece)
   margin <- prep_vector_arg(a, margin)
+  inf_notation <- prep_vector_arg(a, inf_notation)
   notation <- prep_vector_arg(a, notation)
+  choose_most_specific <- prep_vector_arg(a, choose_most_specific)
   prepositions <- prep_vector_arg(a, prepositions)
   
-  rename_func <- function(a_mat, this_piece, this_margin, this_notation, these_prepositions) {
+  rename_func <- function(a_mat, this_piece, this_margin, this_inf_notation, this_notation, 
+                          this_choose_most_specific, these_prepositions) {
     # At this point, a should be a single matrix, 
     # this_* should be individual items ready for use in this function.
     
@@ -531,7 +549,9 @@ rename_to_piece_byname <- function(a,
       a_mat <- transpose_byname(a_mat) %>% 
         rename_func(this_piece = this_piece, 
                     this_margin = 1,
-                    this_notation = this_notation, 
+                    this_inf_notation = this_inf_notation,
+                    this_notation = this_notation,
+                    this_choose_most_specific,
                     these_prepositions = these_prepositions) %>% 
         transpose_byname()
     }
@@ -539,14 +559,29 @@ rename_to_piece_byname <- function(a,
     if (1 %in% this_margin) {
       new_rnames <- rownames(a_mat) %>% 
         RCLabels::get_piece(piece = this_piece, 
+                            inf_notation = this_inf_notation,
                             notation = this_notation,
+                            choose_most_specific = this_choose_most_specific,
                             prepositions = these_prepositions)
+      # Default is to return the old rowtype as the new rowtype
       new_rt <- rowtype(a_mat)
       if (!is.null(new_rt)) {
-        new_rt <- new_rt %>%
-          RCLabels::get_piece(piece = this_piece, 
-                              notation = this_notation, 
-                              prepositions = these_prepositions)
+        # If we had a rowtype, see if we can find a notation for the rowtype.
+        inferred_notation <- RCLabels::infer_notation(new_rt, 
+                                                      inf_notation = this_inf_notation, 
+                                                      notation = this_notation, 
+                                                      choose_most_specific = this_choose_most_specific, 
+                                                      must_succeed = FALSE)
+        if (!is.null(inferred_notation)) {
+          # Notation could be inferred.
+          # Adjust the rowtype in the same way that we adjusted the row and column labels.
+          new_rt <- new_rt %>%
+            RCLabels::get_piece(piece = this_piece, 
+                                inf_notation = this_inf_notation,
+                                notation = this_notation, 
+                                choose_most_specific = this_choose_most_specific,
+                                prepositions = these_prepositions)
+        }
       }
       
       # Set new rownames, without the names on the list (parts of the previous name)
@@ -560,7 +595,9 @@ rename_to_piece_byname <- function(a,
   unaryapply_byname(rename_func, a = a,
                     .FUNdots = list(this_piece = piece,
                                     this_margin = margin,
-                                    this_notation = notation, 
+                                    this_inf_notation = inf_notation,
+                                    this_notation = notation,
+                                    this_choose_most_specific = choose_most_specific,
                                     these_prepositions = prepositions), 
                     rowcoltypes = "none")
 }

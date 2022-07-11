@@ -4,6 +4,14 @@ output: html_document
 ---
 
 
+* Aggregation vignette now demonstrates
+    - Margins for renaming and aggregating
+      can be determined from row and column types.
+    - Row and column label notation can be inferred.
+* Renaming and aggregation functions now (by default) infer 
+  row and column notations.
+
+
 # matsbyname 0.5.0 (2022-04-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6407149.svg)](https://doi.org/10.5281/zenodo.6407149)
 
 * New format for documentation pages,

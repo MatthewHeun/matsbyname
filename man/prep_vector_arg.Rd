@@ -7,12 +7,12 @@
 prep_vector_arg(a, vector_arg)
 }
 \arguments{
-\item{a}{a matrix or list of matrices}
+\item{a}{A matrix or list of matrices.}
 
-\item{vector_arg}{the vector argument over which to apply a calculation}
+\item{vector_arg}{The vector argument over which to apply a calculation.}
 }
 \value{
-\code{vector_arg}, possibly modified when \code{a} is a list
+\code{vector_arg}, possibly modified when \code{a} is a list.
 }
 \description{
 This is a helper function for many \verb{*_byname} functions.
@@ -32,5 +32,8 @@ Note that if \code{vector_arg} is a single matrix, it is automatically enclosed 
 }
 \examples{
 m <- matrix(c(2, 2))
-matsbyname:::prep_vector_arg(list(m, m), vector_arg = c(1,2))
+prep_vector_arg(m, vector_arg = c(1,2))
+prep_vector_arg(list(m), vector_arg = c(1,2))
+prep_vector_arg(list(m, m), vector_arg = c(1,2))
+prep_vector_arg(list(m, m, m), vector_arg = c(1,2))
 }
