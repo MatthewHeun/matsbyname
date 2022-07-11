@@ -4,6 +4,10 @@ output: html_document
 ---
 
 
+* Aggregation vignette now demonstrates
+    - Margins for renaming and aggregating
+      can be determined from row and column types.
+    - Row and column label notation can be inferred.
 * Renaming and aggregation functions now (by default) infer 
   row and column notations.
 
