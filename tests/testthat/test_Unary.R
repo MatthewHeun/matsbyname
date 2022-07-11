@@ -1726,7 +1726,7 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
                                     piece = "noun",
                                     margin = "Product", 
                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
-      notation = RCLabels::bracket_notation)
+                                    notation = RCLabels::bracket_notation)
     )
   expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 
@@ -1741,7 +1741,7 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
       agg = aggregate_pieces_byname(a = m, 
                                     piece = pce, 
                                     margin = mgn, 
-                                    aggregation_map = agg_map,
+                                    aggregation_map = agg_map, 
                                     notation = notn)
     )
   expect_equal(df$agg, list(expected4, transpose_byname(expected4)))

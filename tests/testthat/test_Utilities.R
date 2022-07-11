@@ -1640,3 +1640,14 @@ test_that("margin_from_types_byname() works as expected", {
   expect_equal(res$margin3, list(NA_integer_, NA_integer_))
 })
 
+
+test_that("prev_vector_arg() works as expected", {
+  a <- matrix(1)
+  res <- prep_vector_arg(a, list(RCLabels::notations_list))
+  expect_equal(res, RCLabels::notations_list)
+  
+  # Now try with a list of 2 matrices
+  a <- list(matrix(1), matrix(1))
+  res <- prep_vector_arg(a, list(RCLabels::notations_list))
+  expect_equal(res, list(RCLabels::notations_list))
+})
