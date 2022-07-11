@@ -7,7 +7,7 @@
 aggregate_pieces_byname(
   a,
   piece,
-  margin = c(1, 2),
+  margin = list(c(1, 2)),
   inf_notation = TRUE,
   notation = list(RCLabels::notations_list),
   choose_most_specific = FALSE,

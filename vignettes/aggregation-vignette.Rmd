@@ -24,6 +24,21 @@ library(matsindf)
 ```
 
 
+
+**** Infer notation
+**** Margin from row and column types
+
+
+
+
+
+
+
+
+
+
+
+
 ## Introduction
 
 The `matsbyname` package provides several
@@ -113,7 +128,8 @@ using the `RCLabels` package internally.
 
 We'll use the following matrix to demonstrate aggregating by pieces.
 The rows and columns use different notations for names
-("bracket" notation for rows and "arrow" notation for columns). 
+(`RCLabels::bracket_notation` for rows and
+`RCLabels::arrow_notation` for columns). 
 The renaming and aggregation capabilities of `matsbyname`
 still work, despite the different notations.
 
@@ -145,9 +161,61 @@ rename_to_piece_byname(m_pieces, piece = "suff", margin = 2,
                        notation = RCLabels::arrow_notation)
 ```
 
-These renamings can be used for aggregations
+In the examples above, 
+renaming was accomplished by specifying the notation for row or column names.
+But notation for row and column labels can also be inferred
+via `RCLabels::infer_notation()`.
+To infer notation when renaming, 
+set `inf_notation = TRUE` (the default) and 
+give a list of notations from which the notation can be inferred
+in the `notation` argument.  
+By default, `notation = list(RCLabels::notations_list)`, because
+each notation in `RCLabels::notations_list` is a list itself.
+
+```{r}
+m_pieces
+rename_to_piece_byname(m_pieces, piece = "pref", margin = 1)
+```
+
+When inferring notation, both margins can be renamed at the same time, 
+despite having different notations.
+
+```{r}
+rename_to_piece_byname(m_pieces, piece = "pref", margin = c(1, 2))
+```
+
+But `margin = c(1, 2)` is the default, so the code can be simpler still.
+```{r}
+rename_to_piece_byname(m_pieces, piece = "pref")
+rename_to_piece_byname(m_pieces, piece = "suff")
+```
+
+Note that "noun" is a synonym for "pref".
+
+```{r}
+rename_to_piece_byname(m_pieces, piece = "noun")
+```
+
+The margin can be specified using row or column types from which
+the numerical margin is inferred.
+
+```{r}
+m_pieces_with_types <- m_pieces %>% 
+  setrowtype("Product") %>% setcoltype("Industry")
+m_pieces_with_types
+m_pieces_with_types %>% 
+  rename_to_piece_byname(piece = "pref", margin = "Product")
+m_pieces_with_types %>% 
+  rename_to_piece_byname(piece = "suff", margin = "Industry")
+
+
+```
+
+
+Such renamings can be used for aggregations
 in which identically named rows and columns are summed
-with `aggregate_byname()`.
+with `aggregate_byname()`,
+as demonstrated in section below.
 
 
 ## `aggregate_pieces_byname()`
