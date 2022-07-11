@@ -515,11 +515,11 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'                        notation = RCLabels::arrow_notation)
 rename_to_piece_byname <- function(a,
                                    piece,
-                                   margin = c(1, 2),
+                                   margin = list(c(1, 2)),
                                    inf_notation = TRUE,
                                    notation = list(RCLabels::notations_list),
                                    choose_most_specific = FALSE,
-                                   prepositions = RCLabels::prepositions_list) {
+                                   prepositions = list(RCLabels::prepositions_list)) {
   piece <- prep_vector_arg(a, piece)
   margin <- prep_vector_arg(a, margin)
   inf_notation <- prep_vector_arg(a, inf_notation)
@@ -555,14 +555,25 @@ rename_to_piece_byname <- function(a,
                             notation = this_notation,
                             choose_most_specific = this_choose_most_specific,
                             prepositions = these_prepositions)
+      # Default is to return the old rowtype as the new rowtype
       new_rt <- rowtype(a_mat)
       if (!is.null(new_rt)) {
-        new_rt <- new_rt %>%
-          RCLabels::get_piece(piece = this_piece, 
-                              inf_notation = this_inf_notation,
-                              notation = this_notation, 
-                              choose_most_specific = this_choose_most_specific,
-                              prepositions = these_prepositions)
+        # If we had a rowtype, see if we can find a notation for the rowtype.
+        inferred_notation <- RCLabels::infer_notation(new_rt, 
+                                                      inf_notation = this_inf_notation, 
+                                                      notation = this_notation, 
+                                                      choose_most_specific = this_choose_most_specific, 
+                                                      must_succeed = FALSE)
+        if (!is.null(inferred_notation)) {
+          # Notation could be inferred.
+          # Adjust the rowtype in the same way that we adjusted the row and column labels.
+          new_rt <- new_rt %>%
+            RCLabels::get_piece(piece = this_piece, 
+                                inf_notation = this_inf_notation,
+                                notation = this_notation, 
+                                choose_most_specific = this_choose_most_specific,
+                                prepositions = these_prepositions)
+        }
       }
       
       # Set new rownames, without the names on the list (parts of the previous name)

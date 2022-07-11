@@ -24,21 +24,6 @@ library(matsindf)
 ```
 
 
-
-**** Infer notation
-**** Margin from row and column types
-
-
-
-
-
-
-
-
-
-
-
-
 ## Introduction
 
 The `matsbyname` package provides several
@@ -110,6 +95,8 @@ The following function call will fail,
 because it aggregates over both rows and columns
 (using the default `margin = c(1,2)`)
 with nothing in the `aggregation_map` to aggregate the two "duck" rows.
+The error is informative:
+"Row names not unique. Duplicated row names are: duck".
 
 ```{r, eval=FALSE}
 # Not run
@@ -162,13 +149,13 @@ rename_to_piece_byname(m_pieces, piece = "suff", margin = 2,
 ```
 
 In the examples above, 
-renaming was accomplished by specifying the notation for row or column names.
+renaming was accomplished by specifying the `notation` for row or column names.
 But notation for row and column labels can also be inferred
 via `RCLabels::infer_notation()`.
 To infer notation when renaming, 
 set `inf_notation = TRUE` (the default) and 
 give a list of notations from which the notation can be inferred
-in the `notation` argument.  
+in the `notation` argument.
 By default, `notation = list(RCLabels::notations_list)`, because
 each notation in `RCLabels::notations_list` is a list itself.
 
@@ -184,10 +171,25 @@ despite having different notations.
 rename_to_piece_byname(m_pieces, piece = "pref", margin = c(1, 2))
 ```
 
-But `margin = c(1, 2)` is the default, so the code can be simpler still.
+But `margin = list(c(1, 2))` is the default, so the code can be simpler still.
+
 ```{r}
 rename_to_piece_byname(m_pieces, piece = "pref")
 rename_to_piece_byname(m_pieces, piece = "suff")
+```
+
+Sometimes, a row or column label can match more than one possible `notation`.
+In the above example, the row names are inferred 
+to conform to `RCLabels::bracket_notation`, 
+the first match in `RCLabels::notations_list`.  
+To specify the most-specific notation, 
+set `choose_most_specific = TRUE`.
+With `choose_most_specific = TRUE`, `RCLabels::from_notation` is inferred, 
+the suffixes are different, and
+the renamed rows no longer contain "from ".
+
+```{r}
+rename_to_piece_byname(m_pieces, piece = "suff", choose_most_specific = TRUE)
 ```
 
 Note that "noun" is a synonym for "pref".
@@ -206,11 +208,14 @@ m_pieces_with_types
 m_pieces_with_types %>% 
   rename_to_piece_byname(piece = "pref", margin = "Product")
 m_pieces_with_types %>% 
+  rename_to_piece_byname(piece = "suff", margin = "Product")
+m_pieces_with_types %>% 
+  rename_to_piece_byname(piece = "from", margin = "Product")
+m_pieces_with_types %>% 
+  rename_to_piece_byname(piece = "suff", margin = "Product", choose_most_specific = TRUE)
+m_pieces_with_types %>% 
   rename_to_piece_byname(piece = "suff", margin = "Industry")
-
-
 ```
-
 
 Such renamings can be used for aggregations
 in which identically named rows and columns are summed

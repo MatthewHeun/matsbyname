@@ -1585,6 +1585,32 @@ test_that("rename_to_piece_byname() works as expected when inferring notation", 
 })
 
 
+test_that("rename_to_piece_byname() works with inferred margins", {
+  m1 <- matrix(c(1, 2, 3,
+                4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
+                              c("Motors -> MD", "Cars -> MD", "LED lamps -> Light"))) %>% 
+    setrowtype("Product [from Product]") %>% setcoltype("Industry -> Product")
+  res1 <- rename_to_piece_byname(m1, 
+                                 piece = "pref",
+                                 margin = "Product [from Product]", 
+                                 choose_most_specific = TRUE)
+  expected1 <- m1
+  expected1 <- setrownames_byname(expected1, c("Electricity", "Electricity"))
+  expected1 <- setrowtype(expected1, "Product")
+  expect_equal(res1, expected1)
+  
+  # Make sure it also works when the type doesn't have the same structure
+  # as the row and column names.
+  m2 <- m1 %>% 
+    setrowtype("Product") %>% setcoltype("Industry")
+  res2 <- rename_to_piece_byname(m2, piece = "pref", margin = "Product")
+  expected2 <- m2
+  expected2 <- setrownames_byname(expected2, c("Electricity", "Electricity"))
+  expect_equal(res2, expected2)
+})
+
+
 test_that("margin_from_types_byname() works as expected", {
   # Try with a single matrix
   m <- matrix(1) %>%
