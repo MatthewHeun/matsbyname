@@ -1670,7 +1670,7 @@ test_that("margin_from_types_byname() works as expected", {
 })
 
 
-test_that("prev_vector_arg() works as expected", {
+test_that("prep_vector_arg() works as expected", {
   a <- matrix(1)
   res <- prep_vector_arg(a, list(RCLabels::notations_list))
   expect_equal(res, RCLabels::notations_list)
