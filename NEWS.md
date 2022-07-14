@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* `aggregate_byname()` now returns its argument (`a_mat`)
+  if a string `margin` resolves to NA
+  (isn't a row of column type).
 * Aggregation vignette now demonstrates that
     - margins for renaming and aggregating
       can be determined from row and column types and
