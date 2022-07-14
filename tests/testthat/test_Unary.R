@@ -1401,7 +1401,7 @@ test_that("rename_to_pref_suff_byname() works as expected", {
 })
 
 
-test_that("aggregate works as expected", {
+test_that("aggregate_byname() works as expected", {
   m <- matrix(1:9, nrow = 3, byrow = TRUE,
               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
   expected <- matrix(c(5, 7, 9,
@@ -1425,7 +1425,7 @@ test_that("aggregate works as expected", {
 })
 
 
-test_that("aggregate works as expected for NULL aggregation_map", {
+test_that("aggregate_byname() works as expected for NULL aggregation_map", {
   m <- matrix(1:9, nrow = 3, byrow = TRUE,
               dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
   expected <- matrix(c(11, 13, 15,
@@ -1466,7 +1466,7 @@ test_that("aggregate works as expected for NULL aggregation_map", {
 })
 
 
-test_that("aggregate works as expected for lists", {
+test_that("aggregate_byname() works as expected for lists", {
   m <- matrix(1:9, nrow = 3, byrow = TRUE,
               dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
   expected <- matrix(c(11, 13, 15,
@@ -1491,7 +1491,7 @@ test_that("aggregate works as expected for lists", {
 })
 
 
-test_that("aggregate works when all rows collapse", {
+test_that("aggregate_byname() works when all rows collapse", {
   m <- matrix(1:6, byrow = TRUE, nrow = 2, 
               dimnames = list(c("a", "a"), c("c1", "c2", "c3")))
   e <- matrix(c(5, 7, 9), byrow = TRUE, nrow = 1, 
@@ -1500,7 +1500,7 @@ test_that("aggregate works when all rows collapse", {
 })
 
 
-test_that("aggregate works when aggregating all rows with an aggregation map", {
+test_that("aggregate_byname() works when aggregating all rows with an aggregation map", {
   m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
                dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -1514,7 +1514,7 @@ test_that("aggregate works when aggregating all rows with an aggregation map", {
 })
 
 
-test_that("aggregate works as expected in data frames", {
+test_that("aggregate_byname() works as expected in data frames", {
   m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
   e1 <- m1
@@ -1601,10 +1601,19 @@ test_that("aggregate works as expected in data frames", {
 })
 
 
-test_that("aggregate works when removing multiple rows", {
+test_that("aggregate_byname() works when removing multiple rows", {
   a <- matrix(1:4, nrow = 4, dimnames = list(c("a", "a", "b", "b"), "c1"))
   e <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "b"), "c1"))
   expect_equal(aggregate_byname(a), e)
+})
+
+
+test_that("aggregate_byname() works when margin is NA", {
+  Y <- matrix(1, nrow = 4, dimnames = list(c("a", "a", "b", "b"), "c1")) %>% 
+    setrowtype("Product") %>% setcoltype("Unit")
+  res <- Y %>% 
+    aggregate_byname(margin = "Industry")
+  expect_equal(res, Y)
 })
 
 

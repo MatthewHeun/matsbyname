@@ -1269,6 +1269,10 @@ any_byname <- function(a){
 #' The values in the `aggregation_map` are interpreted as regular expressions, and 
 #' they are escaped using `Hmisc::escapeRegex()` prior to use.
 #' 
+#' `margin` can be a string, in which case it is interpreted as a row or column type.
+#' If a string `margin` does not match a row or column type, 
+#' `a` is returned unmodified.
+#' 
 #' Note that aggregation on one margin only will sort only the aggregated margin, because
 #' the other margin is not guaranteed to have unique names.
 #'
@@ -1323,7 +1327,13 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
     # If we get here, a should be a single matrix.
     # Figure out the margin.
     this_margin <- margin_from_types_byname(a_mat, this_margin)
-    
+    if (length(this_margin) == 1) {
+      if (is.na(this_margin)) {
+        # Could not resolve the margin.
+        # Return the matrix unmodified.
+        return(a_mat)
+      }
+    }
     assertthat::assert_that(all(this_margin %in% c(1, 2)))
     # Create our own aggregation_map if it is NULL
     if (is.null(aggregation_map)) {
