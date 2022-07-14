@@ -1275,7 +1275,7 @@ any_byname <- function(a){
 #' @param a A matrix or list of matrices whose rows or columns are to be aggregated.
 #' @param aggregation_map A named list of rows or columns to be aggregated (or `NULL`). See `details`.
 #' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both.
-#'               Can be a row or column type. 
+#'               As a string, `margin` can be a row or column type. 
 #'               Default is `c(1, 2)`.
 #' @param pattern_type See `RCLabels::make_or_pattern()`.
 #'                     Default is "exact".
