@@ -16,9 +16,12 @@ aggregate_byname(
 
 \item{aggregation_map}{A named list of rows or columns to be aggregated (or \code{NULL}). See \code{details}.}
 
-\item{margin}{\code{1}, \code{2}, or \code{c(1, 2)} for row aggregation, column aggregation, or both.}
+\item{margin}{\code{1}, \code{2}, or \code{c(1, 2)} for row aggregation, column aggregation, or both.
+Can be a row or column type.
+Default is \code{c(1, 2)}.}
 
-\item{pattern_type}{See \code{RCLabels::make_or_pattern()}.}
+\item{pattern_type}{See \code{RCLabels::make_or_pattern()}.
+Default is "exact".}
 }
 \value{
 A version of \code{a} with aggregated rows and/or columns
