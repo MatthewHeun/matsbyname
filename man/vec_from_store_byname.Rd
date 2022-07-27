@@ -20,8 +20,8 @@ vec_from_store_byname(
   prepositions = if (is.list(a)) {
      list(RCLabels::prepositions_list)
  } else {
-   
-     RCLabels::prepositions_list
+    
+    RCLabels::prepositions_list
  }
 )
 }
