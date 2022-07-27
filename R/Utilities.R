@@ -995,7 +995,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 
 #' Clean (delete) rows or columns of matrices that contain exclusively `clean_value`
 #' 
-#' Cleaning is performed when all entries in a row or column or both, depending on the value of `margin`
+#' Cleaning is performed when all entries in a row or column or both, depending on the value of `margin`,
 #' are within `+/- tol` of `clean_value`.
 #' Internally, values are deemed within +/- of tol when 
 #' `abs(x - clean_value) <= tol`.
