@@ -785,7 +785,7 @@ sumall_byname <- function(a){
     a %>%
       rowsums_byname %>%
       colsums_byname %>%
-      as.numeric
+      as.numeric()
   }
   unaryapply_byname(sum_func, a = a, rowcoltypes = "none")
 }
