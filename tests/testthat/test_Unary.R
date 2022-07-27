@@ -972,7 +972,7 @@ test_that("colsums_byname works as expected", {
 })
 
 
-test_that("sumall_byname works as expected", {
+test_that("sumall_byname() works as expected", {
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Commodity")
   expect_equal(sumall_byname(m), 8)
