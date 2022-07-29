@@ -656,6 +656,7 @@ fractionize_byname <- function(a, margin){
 #'
 #' @examples
 #' library(dplyr)
+#' rowsums_byname(42)
 #' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' m
@@ -681,24 +682,30 @@ rowsums_byname <- function(a, colname = NA){
   #   # Set to NA so that we can try setting to coltype in rowsum.func
   #   colname <- NA_character_
   # }
-  rowsum_func <- function(a, colname){
+  rowsum_func <- function(a_mat, colname){
     if (!is.null(colname)) {
       if (is.na(colname)) {
-        colname <- coltype(a)
+        colname <- coltype(a_mat)
       }
     }
-    rowSums(a) %>%
-      # Preserve matrix structure (i.e., result will be a column vector of type matrix)
-      matrix(ncol = 1) %>%
-      # Preserve row names
-      setrownames_byname(rownames(a)) %>%
-      # Set column name
-      setcolnames_byname(colname) %>%
-      # But sort the result on names
-      sort_rows_cols() %>%
-      # Set types
-      setrowtype(rowtype(a)) %>%
-      setcoltype(coltype(a))
+    if (is.matrix(a_mat)) {
+      out <- a_mat %>% 
+        rowSums() %>%
+        # Preserve matrix structure (i.e., result will be a column vector of type matrix)
+        matrix(ncol = 1) %>%
+        # Preserve row names
+        setrownames_byname(rownames(a_mat)) %>%
+        # Set column name
+        setcolnames_byname(colname) %>%
+        # But sort the result on names
+        sort_rows_cols() 
+    } else if (is.numeric(a_mat)) {
+      out <- a_mat
+    } else {
+      stop("Unknown type for 'a' in rowsums_byname(). 'a' must be a matrix or numeric.")
+    }
+    # Set types and return
+    out %>% setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
   }
   unaryapply_byname(rowsum_func, a = a, .FUNdots = list(colname = colname), 
                     rowcoltypes = "none")
@@ -722,6 +729,7 @@ rowsums_byname <- function(a, colname = NA){
 #'
 #' @examples
 #' library(dplyr)
+#' colsums_byname(42)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' m
@@ -747,10 +755,22 @@ rowsums_byname <- function(a, colname = NA){
 #' )
 #' res$cs2
 colsums_byname <- function(a, rowname = NA){
-  a %>% 
-    transpose_byname() %>% 
-    rowsums_byname(colname = rowname) %>% 
-    transpose_byname()
+  
+  colsum_func <- function(a_mat, rowname){
+
+    if (is.matrix(a_mat)) {
+      return(a_mat %>% 
+               transpose_byname() %>% 
+               rowsums_byname(colname = rowname) %>% 
+               transpose_byname())
+    } else if (is.numeric(a_mat)) {
+      return(a_mat)
+    } else {
+      stop("Unknown type for 'a' in colsums_byname(). 'a' must be a matrix or numeric.")
+    }
+  }
+  unaryapply_byname(colsum_func, a = a, .FUNdots = list(rowname = rowname), 
+                    rowcoltypes = "none")
 }
 
 #' Sum of all elements in a matrix
@@ -765,6 +785,7 @@ colsums_byname <- function(a, rowname = NA){
 #'
 #' @examples
 #' library(dplyr)
+#' sumall_byname(42)
 #' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' sumall_byname(m)
@@ -781,11 +802,11 @@ colsums_byname <- function(a, rowname = NA){
 #' )
 #' res$sums
 sumall_byname <- function(a){
-  sum_func <- function(a){
-    a %>%
+  sum_func <- function(a_mat){
+    out <- a_mat %>%
       rowsums_byname %>%
       colsums_byname %>%
-      as.numeric
+      as.numeric()
   }
   unaryapply_byname(sum_func, a = a, rowcoltypes = "none")
 }

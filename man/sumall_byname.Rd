@@ -18,6 +18,7 @@ but returns a single numeric value instead of a 1x1 matrix.
 }
 \examples{
 library(dplyr)
+sumall_byname(42)
 m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
 sumall_byname(m)

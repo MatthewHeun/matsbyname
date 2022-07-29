@@ -905,7 +905,8 @@ test_that("matrix column selection by name in lists works as expected", {
 context("Row, column, and all sums")
 ###########################################################
 
-test_that("rowsums_byname works as expected", {
+test_that("rowsums_byname() works as expected", {
+  expect_error(rowsums_byname("bogus"), "Unknown type for 'a' in rowsums_byname")
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   # Note, columns are sorted by name after rowsums_byname
@@ -939,7 +940,16 @@ test_that("rowsums_byname works as expected", {
 })
 
 
-test_that("colsums_byname works as expected", {
+test_that("rowsums_byname() works with single numbers and matrices", {
+  expect_equal(rowsums_byname(1), 1)
+  expect_equal(rowsums_byname(matrix(1)), matrix(1))
+  expect_equal(rowsums_byname(list(1, 42)), list(1, 42))
+  expect_equal(rowsums_byname(list(matrix(c(1, 42)), matrix(c(2, 43)))), list(matrix(c(1, 42)), matrix(c(2, 43))))
+})
+
+
+test_that("colsums_byname() works as expected", {
+  expect_error(colsums_byname("bogus"), "Unknown type for 'a' in colsums_byname")
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   colsumsm_expected <- matrix(c(6, 15), nrow = 1, dimnames = list(rowtype(m), colnames(m))) %>% 
@@ -972,7 +982,16 @@ test_that("colsums_byname works as expected", {
 })
 
 
-test_that("sumall_byname works as expected", {
+test_that("colsums_byname() works with single numbers and matrices", {
+  expect_equal(colsums_byname(1), 1)
+  expect_equal(colsums_byname(matrix(1)), matrix(1))
+  expect_equal(colsums_byname(list(1, 42)), list(1, 42))
+  expect_equal(colsums_byname(list(matrix(c(1, 42)), matrix(c(2, 43)))), list(matrix(43), matrix(45)))
+})
+
+
+test_that("sumall_byname() works as expected", {
+  expect_error(sumall_byname("bogus"), "Unknown type for 'a' in rowsums_byname")
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Commodity")
   expect_equal(sumall_byname(m), 8)
@@ -997,6 +1016,15 @@ test_that("sumall_byname works as expected", {
   attr(DF_expected$summ, which = "class") <- NULL
   expect_equal(DF %>% dplyr::mutate(summ = sumall_byname(m)), DF_expected)
 })
+
+
+test_that("sumall_byname() works for single numbers", {
+  expect_equal(sumall_byname(matrix(1)), 1)
+  expect_equal(sumall_byname(list(matrix(1), matrix(42))), list(1, 42))
+  expect_equal(sumall_byname(1), 1)
+  expect_equal(sumall_byname(1), 1)
+})
+
 
 
 ###########################################################

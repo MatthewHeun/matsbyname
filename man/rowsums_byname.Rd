@@ -25,6 +25,7 @@ If \code{colname} is set to \code{NULL}, the column name is returned empty.
 }
 \examples{
 library(dplyr)
+rowsums_byname(42)
 m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 m
