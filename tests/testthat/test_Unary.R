@@ -991,7 +991,7 @@ test_that("colsums_byname() works with single numbers and matrices", {
 
 
 test_that("sumall_byname() works as expected", {
-  expect_error(sumall_byname("bogus"), "Unknown type for 'a' in rowsums_byname")
+  expect_error(sumall_byname("bogus"), "Unknown type for 'a' in sumall_byname")
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Commodity")
   expect_equal(sumall_byname(m), 8)

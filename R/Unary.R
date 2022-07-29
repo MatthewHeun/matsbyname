@@ -803,6 +803,9 @@ colsums_byname <- function(a, rowname = NA){
 #' res$sums
 sumall_byname <- function(a){
   sum_func <- function(a_mat){
+    if (!(is.matrix(a_mat) | is.numeric(a_mat))) {
+      stop("Unknown type for 'a' in sumall_byname(). 'a' must be a matrix or numeric.")
+    }
     out <- a_mat %>%
       rowsums_byname %>%
       colsums_byname %>%
