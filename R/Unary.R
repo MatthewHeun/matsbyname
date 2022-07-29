@@ -923,7 +923,7 @@ colprods_byname <- function(a, rowname = NA){
 #'
 #' @param a The matrix whose elements are to be multiplied.
 #'
-#' @return The product of all elements in \code{a} as a numeric.
+#' @return The product of all elements in `a` as a numeric.
 #' 
 #' @export
 #'
