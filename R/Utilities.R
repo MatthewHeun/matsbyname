@@ -1122,7 +1122,17 @@ iszero_byname <- function(a, tol = 1e-6) {
 #' @export
 #'
 #' @examples
-select_zero_rows_byname <- function(a, tol = 1e-6) {
+#' m <- matrix(c(0, 0, 1,
+#'               0, 0, 0), 
+#'             dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+#'             nrow = 2, ncol = 3, byrow = TRUE) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' m
+#' selectzerorows_byname(m)
+selectzerorows_byname <- function(a, tol = 1e-6) {
+  if (is.null(a)) {
+    return(NULL)
+  }
   zerorow_func <- function(a_mat, tol_val) {
     zero_rows <- sapply(1:nrow(a_mat), FUN = function(i_row) {
       this_row <- a_mat[i_row, ]
@@ -1131,7 +1141,7 @@ select_zero_rows_byname <- function(a, tol = 1e-6) {
       which()
     a_mat[zero_rows, , drop = FALSE]
   }
-  unaryapply_byname(zerorow_func, a = a, .FUNdots = list(tol = tol))
+  unaryapply_byname(zerorow_func, a = a, .FUNdots = list(tol_val = tol))
 }
 
 
@@ -1152,7 +1162,16 @@ select_zero_rows_byname <- function(a, tol = 1e-6) {
 #' @export
 #'
 #' @examples
-select_zero_cols_byname <- function(a, tol = 1e-6) {
+#' m <- matrix(c(1, 0, 1,
+#'               1, 0, 1),
+#'             dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+#'             nrow = 2, ncol = 3, byrow = TRUE) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' selectzerocols_byname(m)
+selectzerocols_byname <- function(a, tol = 1e-6) {
+  if (is.null(a)) {
+    return(NULL)
+  }
   zerocol_func <- function(a_mat, tol_val) {
     zero_cols <- sapply(1:ncol(a_mat), FUN = function(i_col) {
       this_col <- a_mat[ , i_col]
@@ -1161,7 +1180,41 @@ select_zero_cols_byname <- function(a, tol = 1e-6) {
       which()
     a_mat[ , zero_cols, drop = FALSE]
   }
-  unaryapply_byname(zerocol_func, a = a, .FUNdots = list(tol = tol))
+  unaryapply_byname(zerocol_func, a = a, .FUNdots = list(tol_val = tol))
+}
+
+
+#' Names of zero rows and columns
+#' 
+#' When a matrix has rows or columns full of zeroes, 
+#' it is singular, and can't be inverted. 
+#' This function returns the names of rows or columns that are full with zeroes.
+#'
+#' @param a A matrix or list of matrices.
+#' @param tol The allowable deviation from 0 for any element.
+#'
+#' @return A vector of names of zero rows or columns.
+#'
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1, 0, 1,
+#'               1, 0, 0, 
+#'               0, 0, 0),
+#'             dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")), 
+#'             nrow = 3, ncol = 3, byrow = TRUE)
+#' m
+#' getzerorowcolnames_byname(m)
+getzerorowcolnames_byname <- function(a, tol = 1e-6) {
+  zero_row_col_names_func <- function(a_mat, tol_val) {
+    zero_rows <- selectzerorows_byname(a_mat, tol = tol_val)
+    zero_cols <- selectzerocols_byname(a_mat, tol = tol_val)
+    zero_row_names <- getrownames_byname(zero_rows)
+    zero_col_names <- getcolnames_byname(zero_cols)
+    c(zero_row_names, zero_col_names)
+  }
+  unaryapply_byname(zero_row_col_names_func, a = a, .FUNdots = list(tol = tol), 
+                    rowcoltypes = "none")
 }
 
 

@@ -152,7 +152,7 @@ test_that("iszero_byname() works as expected", {
 })
 
 
-test_that("select_zero_rows_byname() works as expected", {
+test_that("selectzerorows_byname() works as expected", {
   fail <- matrix(c(1, 0, 1,
                    1, 0, 1),
                  dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
@@ -160,7 +160,7 @@ test_that("select_zero_rows_byname() works as expected", {
     setrowtype("rows") %>% setcoltype("cols")
   expected_fail <- fail[0, , drop = FALSE] %>% 
     setrowtype("rows") %>% setcoltype("cols")
-  expect_equal(select_zero_rows_byname(fail), expected_fail)
+  expect_equal(selectzerorows_byname(fail), expected_fail)
   
   
   succeed <- matrix(c(0, 0, 1,
@@ -170,11 +170,11 @@ test_that("select_zero_rows_byname() works as expected", {
     setrowtype("rows") %>% setcoltype("cols")
   expected_succeed <- succeed[2, , drop = FALSE] %>%
     setrowtype("rows") %>% setcoltype("cols")
-  expect_equal(select_zero_rows_byname(succeed), expected_succeed)
+  expect_equal(selectzerorows_byname(succeed), expected_succeed)
 })
 
 
-test_that("select_zero_cols_byname() works as expected", {
+test_that("selectzerocols_byname() works as expected", {
   m <- matrix(c(1, 0, 1,
                 1, 0, 1),
               dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
@@ -182,7 +182,7 @@ test_that("select_zero_cols_byname() works as expected", {
     setrowtype("rows") %>% setcoltype("cols")
   expected_m <- m[ , 2, drop = FALSE] %>% 
     setrowtype("rows") %>% setcoltype("cols")
-  expect_equal(select_zero_cols_byname(m), expected_m)
+  expect_equal(selectzerocols_byname(m), expected_m)
   
   
   m2 <- matrix(c(0, 0, 1,
@@ -192,11 +192,30 @@ test_that("select_zero_cols_byname() works as expected", {
     setrowtype("rows") %>% setcoltype("cols")
   expected_m2 <- m2[, 1:2, drop = FALSE] %>%
     setrowtype("rows") %>% setcoltype("cols")
-  expect_equal(select_zero_cols_byname(m2), expected_m2)
+  expect_equal(selectzerocols_byname(m2), expected_m2)
 })
 
 
-test_that("getting row names works as expected", {
+test_that("getzerorowcolnames_byname() works as expected", {
+  m <- matrix(c(1, 0, 1,
+                1, 0, 1),
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+              nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(getzerorowcolnames_byname(m), "c2")
+  expect_equal(getzerorowcolnames_byname(list(m, m)), list("c2", "c2"))
+
+  m2 <- matrix(c(1, 0, 1,
+                 1, 0, 0, 
+                 0, 0, 0),
+               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")), 
+               nrow = 3, ncol = 3, byrow = TRUE)
+  expect_equal(getzerorowcolnames_byname(m2), c("r3", "c2"))
+  expect_equal(getzerorowcolnames_byname(list(m2, m2)), list(c("r3", "c2"), c("r3", "c2")))
+})
+
+
+test_that("getrownames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   expect_equal(getrownames_byname(m), c("i1", "i2"))
@@ -210,7 +229,7 @@ test_that("getting row names works as expected", {
 })
 
 
-test_that("getting column names works as expected", {
+test_that("getcolnames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   expect_equal(getcolnames_byname(m), c("p1", "p2", "p3"))
@@ -224,7 +243,7 @@ test_that("getting column names works as expected", {
 })
 
 
-test_that("setrownames_byname works as expected", {
+test_that("setrownames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Commodities")
   m2 <- setrownames_byname(m, c("a", "b"))
@@ -240,7 +259,7 @@ test_that("setrownames_byname works as expected", {
 })
 
 
-test_that("setcolnames_byname works as expected", {
+test_that("setcolnames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Commodities")
   expect_equal(m %>% setcolnames_byname(c("a", "b", "c")) %>% colnames(), 

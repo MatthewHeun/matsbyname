@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* New functions `select_zero_rows_byname()` and 
+  `select_zero_cols_byname()` 
+  assist with detecting problem areas for singular matrices.
 * `rowsums_byname()`, `colsums_byname()`, and `sumall_byname()`
   now correctly return only a single number when a single number 
   is the input.
