@@ -16,6 +16,7 @@ abs_byname <- function(a){
   unaryapply_byname(abs, a = a)
 }
 
+
 #' Logarithm of matrix elements
 #' 
 #' Specify the base of the log with \code{base} argument.
@@ -37,6 +38,7 @@ log_byname <- function(a, base = exp(1)){
   unaryapply_byname(log, a = a, .FUNdots = list(base = base))
 }
 
+
 #' Exponential of matrix elements
 #' 
 #' Gives the exponential of all elements of a matrix or list of matrices
@@ -56,6 +58,7 @@ log_byname <- function(a, base = exp(1)){
 exp_byname <- function(a){
   unaryapply_byname(exp, a = a)
 }
+
 
 #' Invert a matrix
 #'
@@ -78,6 +81,7 @@ exp_byname <- function(a){
 invert_byname <- function(a){
   unaryapply_byname(solve, a = a, rowcoltypes = "transpose")
 }
+
 
 #' Transpose a matrix by name
 #'
@@ -708,6 +712,7 @@ rowsums_byname <- function(a, colname = NA){
                     rowcoltypes = "none")
 }
 
+
 #' Column sums, sorted by name
 #'
 #' Calculates column sums for a matrix by premultiplying by an identity vector (containing all 1's).
@@ -771,6 +776,7 @@ colsums_byname <- function(a, rowname = NA){
                     rowcoltypes = "none")
 }
 
+
 #' Sum of all elements in a matrix
 #'
 #' This function is equivalent to `a \%>\% rowsums_byname() \%>\% colsums_byname()`,
@@ -787,6 +793,7 @@ colsums_byname <- function(a, rowname = NA){
 #' sumall_byname(42)
 #' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' sumall_byname(m)
 #' rowsums_byname(m) %>% colsums_byname
 #' # Also works for lists
@@ -800,12 +807,13 @@ colsums_byname <- function(a, rowname = NA){
 #'   sums = sumall_byname(m)
 #' )
 #' res$sums
+#' sumall_byname(list(m, NULL))
 sumall_byname <- function(a){
   sum_func <- function(a_mat){
     if (!(is.matrix(a_mat) | is.numeric(a_mat))) {
       stop("Unknown type for 'a' in sumall_byname(). 'a' must be a matrix or numeric.")
     }
-    out <- a_mat %>%
+    a_mat %>%
       rowsums_byname %>%
       colsums_byname %>%
       as.numeric()
@@ -873,6 +881,7 @@ rowprods_byname <- function(a, colname = NA){
                     rowcoltypes = "none")
 }
 
+
 #' Column products, sorted by name
 #'
 #' Calculates column products (the product of all elements in a column) for a matrix.
@@ -916,6 +925,7 @@ colprods_byname <- function(a, rowname = NA){
     transpose_byname()
 }
 
+
 #' Product of all elements in a matrix
 #'
 #' This function is equivalent to `a \%>\% rowprods_byname() \%>\% colprods_byname()`,
@@ -953,6 +963,7 @@ prodall_byname <- function(a){
   }
   unaryapply_byname(prodall_func, a = a, rowcoltypes = "none")
 }
+
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
 #'
@@ -1031,6 +1042,7 @@ Iminus_byname <- function(a){
 cumsum_byname <- function(a){
   cumapply_byname(FUN = sum_byname, a)
 }
+
 
 #' Cumulative element-product that respects row and column names
 #'

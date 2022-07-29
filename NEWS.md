@@ -17,7 +17,7 @@ output: html_document
 * Renaming and aggregation functions now (by default) infer 
   row and column notations.
 * Many new tests for new features.
-    - Now at 1075 tests, all passing.
+    - Now at 1101 tests, all passing.
     - Test coverage remains at 100 %.
 
 

@@ -26,7 +26,7 @@ test_that("hatize_byname() works as expected", {
 })
 
 
-test_that("hatinv_byname works as expected", {
+test_that("hatinv_byname() works as expected", {
   # Test with a column vector
   v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
     setrowtype("Industries") %>% setcoltype(NA)
@@ -81,7 +81,7 @@ test_that("hatinv_byname works as expected", {
 context("Absolute value")
 ###########################################################
 
-test_that("abs_byname works as expected", {
+test_that("abs_byname() works as expected", {
   expect_equal(abs_byname(1), 1)
   expect_equal(abs_byname(-1), 1)
   m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
@@ -229,7 +229,7 @@ test_that("transpose_byname works with lists of lists", {
 context("Hatize")
 ###########################################################
 
-test_that("hatize_byname works as expected", {
+test_that("hatize_byname() works as expected", {
   # Check the absurd situation where a non-vector is sent to hatize()
   supposed_to_be_a_vector <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   expect_error(hatize_byname(supposed_to_be_a_vector, keep = "rownames"), 
@@ -282,7 +282,7 @@ test_that("hatize_byname works as expected", {
 })
 
 
-test_that("hatize_byname works with a simple vector", {
+test_that("hatize_byname() works with a simple vector", {
   # I'm running into a bug where hatize doesn't work on a 1x1 vector that lacks a column name
   # Verify that a 2x1 vector works correctly.
   v1 <- matrix(c(1, 
@@ -347,7 +347,7 @@ test_that("hatize_byname() issues a warning when keep is wrong", {
 context("Identize")
 ###########################################################
 
-test_that("identize_byname works as expected", {
+test_that("identize_byname() works as expected", {
   # Try first with a single number
   expect_equal(identize_byname(42), 1)
   # Now try with matrices.
@@ -1025,6 +1025,27 @@ test_that("sumall_byname() works for single numbers", {
   expect_equal(sumall_byname(1), 1)
 })
 
+
+test_that("sum_byname() and sumall_byname() behave same with NULL", {
+  expect_equal(sum_byname(0, 0), 0)
+  expect_equal(sum_byname(1, 0), 1)
+  expect_equal(sum_byname(1, NULL), 1)
+  # I wish this were 0, but can't figure out how to make it so at the moment.
+  # This result is inconsistent with sum_byname(NULL, NULL) returning 0.
+  # expect_true(sum_byname(NULL), 0)
+  expect_null(sum_byname(NULL))
+  expect_equal(sum_byname(NULL, NULL), 0)
+  expect_equal(sum_byname(NULL, NULL, NULL), 0)
+  
+  # Again, it seems like this should return 0, but it does not currently.
+  # expect_equal(sumall_byname(NULL), 0)
+  expect_null(sumall_byname(NULL))
+  # expect_equal(sumall_byname(list(NULL, NULL)), list(0, 0))
+  expect_equal(sum_byname(list(NULL, NULL)), list(NULL, NULL))
+  
+  expect_equal(sumall_byname(matrix(0, nrow = 1, ncol = 1)), 0)
+  expect_equal(sumall_byname(matrix(1, nrow = 1, ncol = 1)), 1)
+})
 
 
 ###########################################################

@@ -21,6 +21,7 @@ library(dplyr)
 sumall_byname(42)
 m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
+m
 sumall_byname(m)
 rowsums_byname(m) \%>\% colsums_byname
 # Also works for lists
@@ -34,4 +35,5 @@ res <- DF \%>\% mutate(
   sums = sumall_byname(m)
 )
 res$sums
+sumall_byname(list(m, NULL))
 }

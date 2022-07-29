@@ -23,7 +23,7 @@ contains exclusively \code{clean_value} (within \code{tol}), the row or column i
 a "cleaned" matrix, expunged of rows or columns that contain exclusively \code{clean_value.}
 }
 \description{
-Cleaning is performed when all entries in a row or column or both, depending on the value of \code{margin}
+Cleaning is performed when all entries in a row or column or both, depending on the value of \code{margin},
 are within \verb{+/- tol} of \code{clean_value}.
 Internally, values are deemed within +/- of tol when
 \code{abs(x - clean_value) <= tol}.
