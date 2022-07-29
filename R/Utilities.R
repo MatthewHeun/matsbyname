@@ -1068,12 +1068,14 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 
 #' Test whether this is the zero matrix
 #' 
-#' Note that this function tests whether the elements of \code{abs(a)} are \code{<= tol}.
-#' So, you can set \code{tol = 0} to discover if \code{a} is EXACTLY the zero matrix.
+#' Note that this function tests whether the elements of `abs(a)` are `<= tol`.
+#' The default value for `tol` is `1e-6`.
+#' So, you can set `tol = 0` to discover if `a` is EXACTLY the zero matrix.
 #'
-#' @param a a matrix of list of matrices
-#' @param tol the allowable deviation from 0 for any element
-#' @return \code{TRUE} iff this is the zero matrix within \code{tol}.
+#' @param a A matrix or list of matrices.
+#' @param tol The allowable deviation from 0 for any element.
+#' 
+#' @return `TRUE` iff this is the zero matrix within `tol`.
 #' 
 #' @export
 #'
@@ -1094,12 +1096,72 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #' iszero_byname(DF$B)
 #' iszero_byname(matrix(1e-10, nrow = 2))
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
-iszero_byname <- function(a, tol = 1e-6){
-  zero_func <- function(a, tol){
-    all(abs(a) <= tol)
+iszero_byname <- function(a, tol = 1e-6) {
+  zero_func <- function(a_mat, tol){
+    all(abs(a_mat) <= tol)
   }
   unaryapply_byname(zero_func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")
+}
+
+
+#' Select zero rows
+#' 
+#' Matrices with rows containing all zeroes are not invertible (singular).
+#' To diagnose this problem, it is useful to find the zero rows
+#' of a singular matrix. 
+#' This function selects (extracts) only the zero rows of a matrix.
+#' 
+#' A row is said to be a zero row if all elements are within `tol` of zero.
+#'
+#' @param a A matrix or a list of matrices.
+#' @param tol The allowable deviation from 0 for any element.
+#'
+#' @return `a` with only zero rows selected.
+#' 
+#' @export
+#'
+#' @examples
+select_zero_rows_byname <- function(a, tol = 1e-6) {
+  zerorow_func <- function(a_mat, tol_val) {
+    zero_rows <- sapply(1:nrow(a_mat), FUN = function(i_row) {
+      this_row <- a_mat[i_row, ]
+      all(abs(this_row) <= tol_val)
+    }) %>% 
+      which()
+    a_mat[zero_rows, , drop = FALSE]
+  }
+  unaryapply_byname(zerorow_func, a = a, .FUNdots = list(tol = tol))
+}
+
+
+#' Select zero columns
+#' 
+#' Matrices with columns containing all zeroes are not invertible (singular).
+#' To diagnose this problem, it is useful to find the zero columns
+#' of a singular matrix. 
+#' This function selects (extracts) only the zero columns of a matrix.
+#'
+#' A column is said to be a zero column if all elements are within `tol` of zero.
+#' 
+#' @param a A matrix or a list of matrices.
+#' @param tol The allowable deviation from 0 for any element.
+#'
+#' @return `a` with only zero columns selected.
+#' 
+#' @export
+#'
+#' @examples
+select_zero_cols_byname <- function(a, tol = 1e-6) {
+  zerocol_func <- function(a_mat, tol_val) {
+    zero_cols <- sapply(1:ncol(a_mat), FUN = function(i_col) {
+      this_col <- a_mat[ , i_col]
+      all(abs(this_col) <= tol_val)
+    }) %>% 
+      which()
+    a_mat[ , zero_cols, drop = FALSE]
+  }
+  unaryapply_byname(zerocol_func, a = a, .FUNdots = list(tol = tol))
 }
 
 

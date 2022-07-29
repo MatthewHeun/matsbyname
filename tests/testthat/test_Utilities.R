@@ -144,11 +144,55 @@ test_that("cleaning works with tolerance", {
 })
 
 
-test_that("iszero_byname works as expected", {
+test_that("iszero_byname() works as expected", {
   m <- matrix(0, nrow = 3, ncol = 2)
   expect_true(iszero_byname(m))
   n <- matrix(1, nrow = 42, ncol = 5)
   expect_false(iszero_byname(n))
+})
+
+
+test_that("select_zero_rows_byname() works as expected", {
+  fail <- matrix(c(1, 0, 1,
+                   1, 0, 1),
+                 dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                 nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_fail <- fail[0, , drop = FALSE] %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(select_zero_rows_byname(fail), expected_fail)
+  
+  
+  succeed <- matrix(c(0, 0, 1,
+                      0, 0, 0), 
+                    dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                    nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_succeed <- succeed[2, , drop = FALSE] %>%
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(select_zero_rows_byname(succeed), expected_succeed)
+})
+
+
+test_that("select_zero_cols_byname() works as expected", {
+  m <- matrix(c(1, 0, 1,
+                1, 0, 1),
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+              nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_m <- m[ , 2, drop = FALSE] %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(select_zero_cols_byname(m), expected_m)
+  
+  
+  m2 <- matrix(c(0, 0, 1,
+                 0, 0, 0), 
+               dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+               nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_m2 <- m2[, 1:2, drop = FALSE] %>%
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(select_zero_cols_byname(m2), expected_m2)
 })
 
 

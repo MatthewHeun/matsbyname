@@ -8,8 +8,8 @@
 <meta name="description" content="matsbyname">
 <title>Writing Custom Functions for `matsbyname` • matsbyname</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Writing Custom Functions for `matsbyname`">
 <meta property="og:description" content="matsbyname">
@@ -76,12 +76,12 @@
 
 
 <div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Writing Custom Functions for `matsbyname`</h1>
                         <h4 data-toc-skip class="author">Matthew Kuperus
 Heun</h4>
             
-            <h4 data-toc-skip class="date">2022-06-02</h4>
+            <h4 data-toc-skip class="date">2022-07-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/vignettes/applybyname-vignette.Rmd" class="external-link"><code>vignettes/applybyname-vignette.Rmd</code></a></small>
       <div class="d-none name"><code>applybyname-vignette.Rmd</code></div>
@@ -246,34 +246,34 @@ rowtype and coltype</td>
 </table>
 <p>A simple example follows.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">U</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span>
-<span class="va">U</span></code></pre></div>
-<pre><code><span class="co">##    i1 i2</span>
-<span class="co">## p1  1  3</span>
-<span class="co">## p2  2  4</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "Products"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "Industries"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">U</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span></span>
+<span><span class="va">U</span></span></code></pre></div>
+<pre><code><span><span class="co">##    i1 i2</span></span>
+<span><span class="co">## p1  1  3</span></span>
+<span><span class="co">## p2  2  4</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "Products"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "Industries"</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/difference_byname.html">difference_byname</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">U</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##    i1 i2</span>
-<span class="co">## p1 -1 -3</span>
-<span class="co">## p2 -2 -4</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "Products"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "Industries"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/difference_byname.html">difference_byname</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">U</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    i1 i2</span></span>
+<span><span class="co">## p1 -1 -3</span></span>
+<span><span class="co">## p2 -2 -4</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "Products"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "Industries"</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span><span class="op">(</span><span class="va">`-`</span>, <span class="va">U</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##    i1 i2</span>
-<span class="co">## p1 -1 -3</span>
-<span class="co">## p2 -2 -4</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "Products"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "Industries"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/unaryapply_byname.html">unaryapply_byname</a></span><span class="op">(</span><span class="va">`-`</span>, <span class="va">U</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    i1 i2</span></span>
+<span><span class="co">## p1 -1 -3</span></span>
+<span><span class="co">## p2 -2 -4</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "Products"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "Industries"</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="elementapply_byname">
@@ -285,28 +285,28 @@ matrix, a list of matrices, or (if used with
 matrices.</p>
 <p>A simple example follows.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">divide</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">divisor</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">x</span><span class="op">/</span><span class="va">divisor</span>
-<span class="op">}</span>
-<span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r1"</span>, <span class="st">"r2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c1"</span>, <span class="st">"c2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"row"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"col"</span><span class="op">)</span>
-<span class="va">m</span></code></pre></div>
-<pre><code><span class="co">##    c1 c2</span>
-<span class="co">## r1  1  3</span>
-<span class="co">## r2  2  4</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "row"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "col"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">divide</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">divisor</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">x</span><span class="op">/</span><span class="va">divisor</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r1"</span>, <span class="st">"r2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c1"</span>, <span class="st">"c2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"row"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"col"</span><span class="op">)</span></span>
+<span><span class="va">m</span></span></code></pre></div>
+<pre><code><span><span class="co">##    c1 c2</span></span>
+<span><span class="co">## r1  1  3</span></span>
+<span><span class="co">## r2  2  4</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "row"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "col"</span></span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/elementapply_byname.html">elementapply_byname</a></span><span class="op">(</span><span class="va">divide</span>, a <span class="op">=</span> <span class="va">m</span>, row <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="fl">1</span>, .FUNdots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>divisor <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##     c1 c2</span>
-<span class="co">## r1 0.5  3</span>
-<span class="co">## r2 2.0  4</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "row"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "col"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/elementapply_byname.html">elementapply_byname</a></span><span class="op">(</span><span class="va">divide</span>, a <span class="op">=</span> <span class="va">m</span>, row <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="fl">1</span>, .FUNdots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>divisor <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##     c1 c2</span></span>
+<span><span class="co">## r1 0.5  3</span></span>
+<span><span class="co">## r2 2.0  4</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "row"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "col"</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="binaryapply_byname">
@@ -356,45 +356,45 @@ each other and sort the rows and columns of the completed matrices.
 Normally, this should be <code>TRUE</code> (the default).</p>
 <p>A simple example follows.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">U</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span>
-<span class="va">U</span></code></pre></div>
-<pre><code><span class="co">##    i1 i2</span>
-<span class="co">## p1  1  3</span>
-<span class="co">## p2  2  4</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "Products"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "Industries"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">U</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i1"</span>, <span class="st">"i2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span></span>
+<span><span class="va">U</span></span></code></pre></div>
+<pre><code><span><span class="co">##    i1 i2</span></span>
+<span><span class="co">## p1  1  3</span></span>
+<span><span class="co">## p2  2  4</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "Products"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "Industries"</span></span></code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p2"</span>, <span class="st">"p1"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i2"</span>, <span class="st">"i1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span>
-<span class="va">Y</span></code></pre></div>
-<pre><code><span class="co">##    i2 i1</span>
-<span class="co">## p2  1  3</span>
-<span class="co">## p1  2  4</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "Products"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "Industries"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p2"</span>, <span class="st">"p1"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"i2"</span>, <span class="st">"i1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Products"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span></span>
+<span><span class="va">Y</span></span></code></pre></div>
+<pre><code><span><span class="co">##    i2 i1</span></span>
+<span><span class="co">## p2  1  3</span></span>
+<span><span class="co">## p1  2  4</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "Products"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "Industries"</span></span></code></pre>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">U</span>, <span class="va">Y</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##    i1 i2</span>
-<span class="co">## p1  5  5</span>
-<span class="co">## p2  5  5</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "Products"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "Industries"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">U</span>, <span class="va">Y</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    i1 i2</span></span>
+<span><span class="co">## p1  5  5</span></span>
+<span><span class="co">## p2  5  5</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "Products"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "Industries"</span></span></code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/binaryapply_byname.html">binaryapply_byname</a></span><span class="op">(</span><span class="va">`+`</span>, <span class="va">U</span>, <span class="va">Y</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##    i1 i2</span>
-<span class="co">## p1  5  5</span>
-<span class="co">## p2  5  5</span>
-<span class="co">## attr(,"rowtype")</span>
-<span class="co">## [1] "Products"</span>
-<span class="co">## attr(,"coltype")</span>
-<span class="co">## [1] "Industries"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/binaryapply_byname.html">binaryapply_byname</a></span><span class="op">(</span><span class="va">`+`</span>, <span class="va">U</span>, <span class="va">Y</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    i1 i2</span></span>
+<span><span class="co">## p1  5  5</span></span>
+<span><span class="co">## p2  5  5</span></span>
+<span><span class="co">## attr(,"rowtype")</span></span>
+<span><span class="co">## [1] "Products"</span></span>
+<span><span class="co">## attr(,"coltype")</span></span>
+<span><span class="co">## [1] "Industries"</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="cumapply_byname">
@@ -410,31 +410,31 @@ is a list with first element <code>FUN(m[[1]])</code>. For
 result list.</p>
 <p>Simple examples follow.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/cumapply_byname.html">cumapply_byname</a></span><span class="op">(</span><span class="va">sum_byname</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [[1]]</span>
-<span class="co">## [1] 1</span>
-<span class="co">## </span>
-<span class="co">## [[2]]</span>
-<span class="co">## [1] 3</span>
-<span class="co">## </span>
-<span class="co">## [[3]]</span>
-<span class="co">## [1] 6</span>
-<span class="co">## </span>
-<span class="co">## [[4]]</span>
-<span class="co">## [1] 10</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cumapply_byname.html">cumapply_byname</a></span><span class="op">(</span><span class="va">sum_byname</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [[1]]</span></span>
+<span><span class="co">## [1] 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span>
+<span><span class="co">## [1] 3</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[3]]</span></span>
+<span><span class="co">## [1] 6</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[4]]</span></span>
+<span><span class="co">## [1] 10</span></span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/cumapply_byname.html">cumapply_byname</a></span><span class="op">(</span><span class="va">hadamardproduct_byname</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [[1]]</span>
-<span class="co">## [1] 1</span>
-<span class="co">## </span>
-<span class="co">## [[2]]</span>
-<span class="co">## [1] 2</span>
-<span class="co">## </span>
-<span class="co">## [[3]]</span>
-<span class="co">## [1] 6</span>
-<span class="co">## </span>
-<span class="co">## [[4]]</span>
-<span class="co">## [1] 24</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cumapply_byname.html">cumapply_byname</a></span><span class="op">(</span><span class="va">hadamardproduct_byname</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [[1]]</span></span>
+<span><span class="co">## [1] 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span>
+<span><span class="co">## [1] 2</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[3]]</span></span>
+<span><span class="co">## [1] 6</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[4]]</span></span>
+<span><span class="co">## [1] 24</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
@@ -459,7 +459,7 @@ ready for prime time!</p>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>
