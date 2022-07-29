@@ -7,12 +7,12 @@
 rowprods_byname(a, colname = NA)
 }
 \arguments{
-\item{a}{a matrix or list of matrices from which row products are desired.}
+\item{a}{A matrix or list of matrices from which row products are desired.}
 
-\item{colname}{name of the output column containing row products}
+\item{colname}{The Name of the output column containing row products.}
 }
 \value{
-a column vector of type \code{matrix} containing the row products of \code{a}
+A column vector of type \code{matrix} containing the row products of \code{a}
 }
 \description{
 Calculates row products (the product of all elements in a row) for a matrix.

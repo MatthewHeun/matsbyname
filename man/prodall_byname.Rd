@@ -7,13 +7,13 @@
 prodall_byname(a)
 }
 \arguments{
-\item{a}{the matrix whose elements are to be multiplied}
+\item{a}{The matrix whose elements are to be multiplied.}
 }
 \value{
-the product of all elements in \code{a} as a numeric.
+The product of all elements in \code{a} as a numeric.
 }
 \description{
-This function is equivalent to \code{a \%>\% rowprods_byname() \%>\% colprods_byname()},
+This function is equivalent to \verb{a \\\%>\\\% rowprods_byname() \\\%>\\\% colprods_byname()},
 but returns a single numeric value instead of a 1x1 matrix.
 }
 \examples{

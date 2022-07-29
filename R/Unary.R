@@ -571,16 +571,16 @@ matricize_byname <- function(a, notation) {
 
 #' Compute fractions of matrix entries
 #' 
-#' This function divides all entries in \code{a} by the specified sum,
+#' This function divides all entries in `a` by the specified sum,
 #' thereby "fractionizing" the matrix.
 #'
-#' @param a the matrix to be fractionized
-#' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
-#' If \code{2} (columns), each entry in \code{a} is divided by its column's sum.
-#' If \code{c(1,2)} (both rows and columns), 
-#' each entry in \code{a} is divided by the sum of all entries in \code{a}.
+#' @param a The matrix to be fractionized.
+#' @param margin If `1` (rows), each entry in `a` is divided by its row's sum.
+#'               If `2` (columns), each entry in `a` is divided by its column's sum.
+#'               If `c(1,2)` (both rows and columns), 
+#'               each entry in `a` is divided by the sum of all entries in `a`.
 #'
-#' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
+#' @return A fractionized matrix of same dimensions and same row and column types as `a`.
 #' 
 #' @export
 #'
@@ -651,7 +651,8 @@ fractionize_byname <- function(a, margin){
 #' @param a A matrix or list of matrices from which row sums are desired.
 #' @param colname The name of the output column containing row sums.
 #'
-#' @return A column vector of type `matrix` containing the row sums of `m`
+#' @return A column vector of type `matrix` containing the row sums of `m`.
+#' 
 #' @export
 #'
 #' @examples
@@ -678,10 +679,6 @@ fractionize_byname <- function(a, margin){
 #' # Nonsensical
 #' \dontrun{rowsums_byname(NULL)}
 rowsums_byname <- function(a, colname = NA){
-  # if (is.null(colname)) {
-  #   # Set to NA so that we can try setting to coltype in rowsum.func
-  #   colname <- NA_character_
-  # }
   rowsum_func <- function(a_mat, colname){
     if (!is.null(colname)) {
       if (is.na(colname)) {
@@ -721,10 +718,11 @@ rowsums_byname <- function(a, colname = NA){
 #' the row name is set to the row type as given by `rowtype(a)`.
 #' If `rowname` is set to `NULL`, the row name is returned empty.
 #'
-#' @param a a matrix or list of matrices from which column sums are desired.
-#' @param rowname name of the output row containing column sums.
+#' @param a A matrix or list of matrices from which column sums are desired.
+#' @param rowname The name of the output row containing column sums.
 #'
-#' @return a row vector of type `matrix` containing the column sums of `a`.
+#' @return A row vector of type `matrix` containing the column sums of `a`.
+#' 
 #' @export
 #'
 #' @examples
@@ -775,12 +773,13 @@ colsums_byname <- function(a, rowname = NA){
 
 #' Sum of all elements in a matrix
 #'
-#' This function is equivalent to \code{a \%>\% rowsums_byname() \%>\% colsums_byname()},
+#' This function is equivalent to `a \%>\% rowsums_byname() \%>\% colsums_byname()`,
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
-#' @param a the matrix whose elements are to be summed
+#' @param a The matrix whose elements are to be summed.
 #'
-#' @return the sum of all elements in \code{a} as a numeric
+#' @return The sum of all elements in `a` as a numeric.
+#' 
 #' @export
 #'
 #' @examples
@@ -814,17 +813,18 @@ sumall_byname <- function(a){
   unaryapply_byname(sum_func, a = a, rowcoltypes = "none")
 }
 
+
 #' Row products, sorted by name
 #'
 #' Calculates row products (the product of all elements in a row) for a matrix.
-#' An optional \code{colname} for the resulting column vector can be supplied.
-#' If \code{colname} is \code{NULL} or \code{NA} (the default),
-#' the column name is set to the column type as given by \code{coltype(a)}.
+#' An optional `colname` for the resulting column vector can be supplied.
+#' If `colname` is `NULL` or `NA` (the default),
+#' the column name is set to the column type as given by `coltype(a)`.
 #'
-#' @param a a matrix or list of matrices from which row products are desired.
-#' @param colname name of the output column containing row products
+#' @param a A matrix or list of matrices from which row products are desired.
+#' @param colname The Name of the output column containing row products.
 #'
-#' @return a column vector of type \code{matrix} containing the row products of \code{a}
+#' @return A column vector of type `matrix` containing the row products of `a`
 #' 
 #' @export
 #'
@@ -876,14 +876,14 @@ rowprods_byname <- function(a, colname = NA){
 #' Column products, sorted by name
 #'
 #' Calculates column products (the product of all elements in a column) for a matrix.
-#' An optional \code{rowname} for the resulting row vector can be supplied.
-#' If \code{rowname} is \code{NULL} or \code{NA} (the default),
-#' the row name is set to the row type as given by \code{rowtype(a)}.
+#' An optional `rowname` for the resulting row vector can be supplied.
+#' If `rowname` is `NULL` or `NA` (the default),
+#' the row name is set to the row type as given by `rowtype(a)`.
 #'
-#' @param a a matrix or data frame from which column products are desired.
-#' @param rowname name of the output row containing column products.
+#' @param a A matrix or data frame from which column products are desired.
+#' @param rowname The Name of the output row containing column products.
 #'
-#' @return a row vector of type \code{matrix} containing the column products of \code{a}.
+#' @return a row vector of type `matrix` containing the column products of `a`.
 #' 
 #' @export
 #'
@@ -918,12 +918,12 @@ colprods_byname <- function(a, rowname = NA){
 
 #' Product of all elements in a matrix
 #'
-#' This function is equivalent to \code{a \%>\% rowprods_byname() \%>\% colprods_byname()},
+#' This function is equivalent to `a \%>\% rowprods_byname() \%>\% colprods_byname()`,
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
-#' @param a the matrix whose elements are to be multiplied
+#' @param a The matrix whose elements are to be multiplied.
 #'
-#' @return the product of all elements in \code{a} as a numeric.
+#' @return The product of all elements in \code{a} as a numeric.
 #' 
 #' @export
 #'

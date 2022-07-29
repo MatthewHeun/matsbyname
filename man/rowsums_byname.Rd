@@ -12,7 +12,7 @@ rowsums_byname(a, colname = NA)
 \item{colname}{The name of the output column containing row sums.}
 }
 \value{
-A column vector of type \code{matrix} containing the row sums of \code{m}
+A column vector of type \code{matrix} containing the row sums of \code{m}.
 }
 \description{
 Calculates row sums for a matrix by post-multiplying by an identity vector (containing all 1's).

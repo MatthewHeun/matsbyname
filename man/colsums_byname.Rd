@@ -7,12 +7,12 @@
 colsums_byname(a, rowname = NA)
 }
 \arguments{
-\item{a}{a matrix or list of matrices from which column sums are desired.}
+\item{a}{A matrix or list of matrices from which column sums are desired.}
 
-\item{rowname}{name of the output row containing column sums.}
+\item{rowname}{The name of the output row containing column sums.}
 }
 \value{
-a row vector of type \code{matrix} containing the column sums of \code{a}.
+A row vector of type \code{matrix} containing the column sums of \code{a}.
 }
 \description{
 Calculates column sums for a matrix by premultiplying by an identity vector (containing all 1's).
