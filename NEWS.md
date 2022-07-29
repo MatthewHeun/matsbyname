@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* `rowsums_byname()`, `colsums_byname()`, and `sumall_byname()`
+  now correctly return only a single number when a single number 
+  is the input.
 * `aggregate_byname()` now returns its argument (`a_mat`)
   if a string `margin` resolves to NA
   (isn't a row of column type).

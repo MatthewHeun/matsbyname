@@ -12,7 +12,7 @@ rowsums_byname(a, colname = NA)
 \item{colname}{The name of the output column containing row sums.}
 }
 \value{
-A column vector of type \code{matrix} containing the row sums of \code{m}
+A column vector of type \code{matrix} containing the row sums of \code{m}.
 }
 \description{
 Calculates row sums for a matrix by post-multiplying by an identity vector (containing all 1's).
@@ -25,6 +25,7 @@ If \code{colname} is set to \code{NULL}, the column name is returned empty.
 }
 \examples{
 library(dplyr)
+rowsums_byname(42)
 m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 m

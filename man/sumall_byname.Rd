@@ -7,17 +7,18 @@
 sumall_byname(a)
 }
 \arguments{
-\item{a}{the matrix whose elements are to be summed}
+\item{a}{The matrix whose elements are to be summed.}
 }
 \value{
-the sum of all elements in \code{a} as a numeric
+The sum of all elements in \code{a} as a numeric.
 }
 \description{
-This function is equivalent to \code{a \%>\% rowsums_byname() \%>\% colsums_byname()},
+This function is equivalent to \verb{a \\\%>\\\% rowsums_byname() \\\%>\\\% colsums_byname()},
 but returns a single numeric value instead of a 1x1 matrix.
 }
 \examples{
 library(dplyr)
+sumall_byname(42)
 m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
 sumall_byname(m)
