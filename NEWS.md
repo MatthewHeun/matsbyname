@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* `invert_byname()` now reports names of zero rows and columns 
+  when attempting to invert a singular matrix.
+  This new error message will be a huge help for debugging.
 * New functions `select_zero_rows_byname()` and 
   `select_zero_cols_byname()` 
   assist with detecting problem areas for singular matrices.
