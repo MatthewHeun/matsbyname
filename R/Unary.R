@@ -64,6 +64,9 @@ exp_byname <- function(a){
 #'
 #' This function transposes row and column names as well as row and column types.
 #' Rows and columns of `a` are sorted prior to inverting.
+#' 
+#' If `a` is a singular matrix, 
+#' names of zero rows and columns are reported in the error message.
 #'
 #' @param a The matrix to be inverted. `a` must be square.
 #'
