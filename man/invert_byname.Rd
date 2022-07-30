@@ -16,6 +16,10 @@ The inversion of \code{a}.
 This function transposes row and column names as well as row and column types.
 Rows and columns of \code{a} are sorted prior to inverting.
 }
+\details{
+If \code{a} is a singular matrix,
+names of zero rows and columns are reported in the error message.
+}
 \examples{
 m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
