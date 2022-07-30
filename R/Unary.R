@@ -63,11 +63,11 @@ exp_byname <- function(a){
 #' Invert a matrix
 #'
 #' This function transposes row and column names as well as row and column types.
-#' Rows and columns of \code{a} are sorted prior to inverting.
+#' Rows and columns of `a` are sorted prior to inverting.
 #'
-#' @param a the matrix to be inverted. \code{a} must be square.
+#' @param a The matrix to be inverted. `a` must be square.
 #'
-#' @return the inversion of \code{a}
+#' @return The inversion of `a`.
 #' 
 #' @export
 #'
@@ -78,8 +78,23 @@ exp_byname <- function(a){
 #' matrixproduct_byname(m, invert_byname(m))
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
-invert_byname <- function(a){
-  unaryapply_byname(solve, a = a, rowcoltypes = "transpose")
+invert_byname <- function(a) {
+  # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
+  invert_func <- function(a_mat) {
+    tryCatch({
+      solve(a_mat)  
+    }, error = function(e) {
+      if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:")) {
+        # Find any zero rows and columns
+        zero_rows_cols <- getzerorowcolnames_byname(a_mat)
+        # Create a helpful error message
+        err_msg <- paste0("Attempt to invert a singular matrix. Zero rows and columns: ", paste0(zero_rows_cols, collapse = ", "), ".")
+        stop(err_msg)
+      }
+      stop(e$message)
+    })
+  }
+  unaryapply_byname(invert_func, a = a, rowcoltypes = "transpose")
 }
 
 

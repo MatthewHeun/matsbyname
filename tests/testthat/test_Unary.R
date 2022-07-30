@@ -133,7 +133,14 @@ test_that("exp_byname works as expected", {
 context("Inversion")
 ###########################################################
 
-test_that("invert_byname works as expected", {
+test_that("invert_byname() works as expected", {
+  # Singular matrix
+  sing <- matrix(c(1, 0,
+                   42, 0), nrow = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  expect_error(invert_byname(sing), regexp = "Attempt to invert a singular matrix. Zero rows and columns: c2.")
+  # Not a matrix
+  expect_error(invert_byname("not a matrix"), "'a' must be a numeric matrix")
+  
   m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   # For matrix inversion, rows become columns and columns become rows.

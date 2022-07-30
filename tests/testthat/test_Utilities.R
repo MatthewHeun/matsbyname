@@ -163,7 +163,6 @@ test_that("selectzerorows_byname() works as expected", {
     setrowtype("rows") %>% setcoltype("cols")
   expect_equal(selectzerorows_byname(fail), expected_fail)
   
-  
   succeed <- matrix(c(0, 0, 1,
                       0, 0, 0), 
                     dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 

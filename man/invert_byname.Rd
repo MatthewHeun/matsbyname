@@ -7,10 +7,10 @@
 invert_byname(a)
 }
 \arguments{
-\item{a}{the matrix to be inverted. \code{a} must be square.}
+\item{a}{The matrix to be inverted. \code{a} must be square.}
 }
 \value{
-the inversion of \code{a}
+The inversion of \code{a}.
 }
 \description{
 This function transposes row and column names as well as row and column types.
