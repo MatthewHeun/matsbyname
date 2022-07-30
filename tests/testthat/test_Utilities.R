@@ -153,6 +153,7 @@ test_that("iszero_byname() works as expected", {
 
 
 test_that("selectzerorows_byname() works as expected", {
+  expect_null(selectzerorows_byname(NULL))
   fail <- matrix(c(1, 0, 1,
                    1, 0, 1),
                  dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
@@ -175,6 +176,7 @@ test_that("selectzerorows_byname() works as expected", {
 
 
 test_that("selectzerocols_byname() works as expected", {
+  expect_null(selectzerocols_byname(NULL))
   m <- matrix(c(1, 0, 1,
                 1, 0, 1),
               dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
