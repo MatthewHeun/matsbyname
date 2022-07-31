@@ -40,7 +40,7 @@ The power of matrices lies in their ability
 to organize network-wide calculations,
 thereby simplifying the work of analysts who study entire systems.
 However, three problems arise when performing matrix operations
-in <tt>R</tt> and other languages.
+in `R` and other languages.
 
 
 ### Problem 1
