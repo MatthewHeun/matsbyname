@@ -9,7 +9,7 @@ output: html_document
   passed to `base::solve()`.
 * `invert_byname()` now reports names of zero rows and columns 
   when attempting to invert a singular matrix.
-  This new error message will be a huge help for debugging.
+  The new error message will be a huge help for debugging.
 * New functions `select_zero_rows_byname()` and 
   `select_zero_cols_byname()` 
   assist with detecting problem areas for singular matrices.
@@ -26,7 +26,7 @@ output: html_document
 * Renaming and aggregation functions now (by default) infer 
   row and column notations.
 * Many new tests for new features.
-    - Now at 1101 tests, all passing.
+    - Now at 1117 tests, all passing.
     - Test coverage remains at 100 %.
 
 

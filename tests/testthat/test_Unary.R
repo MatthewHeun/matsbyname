@@ -174,7 +174,7 @@ test_that("invert_byname() works as expected", {
 })
 
 
-test_that("invert_byname(tol) works correctly", {
+test_that("invert_byname() works correctly with a tol argument", {
   m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   minv <- matrix(c(0.1, 0, 0, 0.01), nrow = 2, dimnames = list(colnames(m), rownames(m))) %>% 
