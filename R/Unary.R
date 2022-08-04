@@ -67,8 +67,13 @@ exp_byname <- function(a){
 #' 
 #' If `a` is a singular matrix, 
 #' names of zero rows and columns are reported in the error message.
+#' 
+#' `tol` should be a single value and applies to all matrices in `a`.
 #'
 #' @param a The matrix to be inverted. `a` must be square.
+#' @param tol The tolerance for detecting linear dependencies in the columns of `a`. 
+#'            Default is `.Machine$double.eps`. 
+#'            This value is passed to `base::solve()`.
 #'
 #' @return The inversion of `a`.
 #' 
@@ -81,11 +86,11 @@ exp_byname <- function(a){
 #' matrixproduct_byname(m, invert_byname(m))
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
-invert_byname <- function(a) {
+invert_byname <- function(a, tol = .Machine$double.eps) {
   # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
   invert_func <- function(a_mat) {
     tryCatch({
-      solve(a_mat)  
+      solve(a_mat, tol = tol)  
     }, error = function(e) {
       if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:")) {
         # Find any zero rows and columns

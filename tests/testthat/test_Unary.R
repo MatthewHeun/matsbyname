@@ -174,6 +174,19 @@ test_that("invert_byname() works as expected", {
 })
 
 
+test_that("invert_byname(tol) works correctly", {
+  m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  minv <- matrix(c(0.1, 0, 0, 0.01), nrow = 2, dimnames = list(colnames(m), rownames(m))) %>% 
+    setrowtype(coltype(m)) %>% setcoltype(rowtype(m))
+  # Make sure the tol argument is, ahem, tolerated.
+  expect_equal(invert_byname(m, tol = 0.1), minv)
+  expect_equal(invert_byname(m, tol = sqrt(.Machine$double.eps)), minv)
+  expect_equal(invert_byname(m, tol = .Machine$double.eps), minv)
+  expect_equal(invert_byname(m, tol = .Machine$double.eps^2), minv)
+})
+
+
 ###########################################################
 context("Transpose")
 ###########################################################

@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* Added `tol` argument added to `invert_byname()`.
+  The value of the `tol` argument is 
+  passed to `base::solve()`.
 * `invert_byname()` now reports names of zero rows and columns 
   when attempting to invert a singular matrix.
   This new error message will be a huge help for debugging.
