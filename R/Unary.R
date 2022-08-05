@@ -108,11 +108,11 @@ invert_byname <- function(a, tol = .Machine$double.eps) {
 
 #' Transpose a matrix by name
 #'
-#' Gives the transpose of a matrix or list of matrices
+#' Gives the transpose of a matrix or list of matrices.
 #'
-#' @param a the matrix to be transposed
+#' @param a The matrix to be transposed.
 #'
-#' @return the transposed matrix
+#' @return The transposed matrix.
 #' 
 #' @export
 #'
@@ -121,8 +121,96 @@ invert_byname <- function(a, tol = .Machine$double.eps) {
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
-transpose_byname <- function(a){
+transpose_byname <- function(a) {
   unaryapply_byname(t, a = a, rowcoltypes = "transpose")
+}
+
+
+#' Calculate eigenvalues of a matrix
+#' 
+#' Calculate the eigenvalues of a matrix or a list of matrices.
+#' 
+#' This function pairs with `eigenvectors_byname()`;
+#' the first value of the result is the eigenvalue
+#' for the eigenvector reported in the first column of the result from `eigenvectors_byname()`.
+#' The second value of the result is the eigenvalue
+#' for the eigenvector reported in the second column of the result from `eigenvectors_byname()`.
+#' Etc. 
+#' 
+#' Internally, this function uses `base::eigen(only.values = TRUE)`.
+#' 
+#' `complete_rows_cols()` is called prior to calculating the eigenvalues.
+#'
+#' @param a A matrix or list of matrices.
+#'
+#' @return A vector of eigenvalues.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c( 4,  6, 10, 
+#'                3, 10, 13, 
+#'               -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+#'             dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+#' m
+#' eigenvalues_byname(m)
+#' eigenvalues_byname(list(m, 2*m))
+#' DF <- tibble::tibble(m_col = list(m, 2*m)) %>% 
+#'   dplyr::mutate(
+#'     eigen_col = eigenvalues_byname(m_col)
+#'   )
+#' DF$eigen_col[[1]]
+#' DF$eigen_col[[2]]
+eigenvalues_byname <- function(a) {
+  eigenvals_func <- function(a_mat) {
+    completed_mat <- complete_rows_cols(a_mat)
+    eigen(completed_mat, only.values = TRUE)[["values"]]
+  }
+  unaryapply_byname(eigenvals_func, a = a, rowcoltypes = "none")
+}
+
+
+#' Calculate eigenvectors of a matrix
+#' 
+#' Calculate the eigenvectors of a matrix or a list of matrices.
+#' 
+#' This function pairs with `eigenvalues_byname()`;
+#' the first column of the resulting matrix is the eigenvector
+#' for the first eigenvalue reported by `eigenvalues_byname()`.
+#' The second column of the resulting matrix is the eigenvector
+#' for the second eigenvalue reported by `eigenvalues_byname()`.
+#' Etc.
+#' 
+#' Internally, this function uses `base::eigen()`.
+#' 
+#' `complete_rows_cols()` is called prior to calculating the eigenvectors.
+#'
+#' @param a A matrix or list of matrices.
+#'
+#' @return A matrix whose columns are the eigenvectors of `a`.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c( 4,  6, 10, 
+#'                3, 10, 13, 
+#'               -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+#'             dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+#' m
+#' eigenvectors_byname(m)
+#' eigenvectors_byname(list(m, 2*m))
+#' DF <- tibble::tibble(m_col = list(m, 2*m)) %>% 
+#'   dplyr::mutate(
+#'     eigen_col = eigenvectors_byname(m_col)
+#'   )
+#' DF$eigen_col[[1]]
+#' DF$eigen_col[[2]]
+eigenvectors_byname <- function(a) {
+  eigenvecs_func <- function(a_mat) {
+    completed_mat <- complete_rows_cols(a_mat)
+    eigen(completed_mat)[["vectors"]]
+  }
+  unaryapply_byname(eigenvecs_func, a = a, rowcoltypes = "none")
 }
 
 

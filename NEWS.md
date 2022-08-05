@@ -4,6 +4,10 @@ output: html_document
 ---
 
 
+* New functions `eigenvalues_byname()` and
+  `eigenvectors_byname()` calculate 
+  eigenvalues and eigenvectors of
+  matrices or lists of matrices.
 * Added `tol` argument added to `invert_byname()`.
   The value of the `tol` argument is 
   passed to `base::solve()`.
@@ -26,7 +30,7 @@ output: html_document
 * Renaming and aggregation functions now (by default) infer 
   row and column notations.
 * Many new tests for new features.
-    - Now at 1117 tests, all passing.
+    - Now at 1125 tests, all passing.
     - Test coverage remains at 100 %.
 
 

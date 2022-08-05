@@ -191,7 +191,7 @@ test_that("invert_byname() works correctly with a tol argument", {
 context("Transpose")
 ###########################################################
 
-test_that("transpose_byname works as expected", {
+test_that("transpose_byname() works as expected", {
   m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   mT <- matrix(c(11, 12, 21, 22, 31, 32), nrow = 2, dimnames = list(paste0("p", 1:2), paste0("i", 1:3))) %>% 
@@ -216,7 +216,8 @@ test_that("transpose_byname works as expected", {
   expect_equal(DF %>% dplyr::mutate(mT = transpose_byname(m)), DF_expected)
 })
 
-test_that("transpose_byname works with lists of lists", {
+
+test_that("transpose_byname() works with lists of lists", {
   m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   mT <- matrix(c(11, 12, 21, 22, 31, 32), nrow = 2, dimnames = list(paste0("p", 1:2), paste0("i", 1:3))) %>% 
@@ -242,6 +243,52 @@ test_that("transpose_byname works with lists of lists", {
   # Ensure that names of the list are preserved
   expect_equal(names(res$listofmT[[1]]), c("a", "b"))
   expect_equal(names(res$listofmT[[2]]), c("a", "b"))
+})
+
+
+###########################################################
+context("Eigenvalues and eigenvectors")
+###########################################################
+
+test_that("eigenvalues_byname() works as expected", {
+  m <- matrix(c(4, 6, 10, 
+                3, 10 , 13, 
+                -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+              dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+  expected <- c(4, 2, 0)
+  expect_equal(eigenvalues_byname(m), expected)
+  
+  expect_equal(eigenvalues_byname(list(m, 2*m)), list(expected, 2*expected)) 
+  
+  
+  DF <- tibble::tibble(m_col = list(m, 2*m)) %>% 
+    dplyr::mutate(
+      eigen_col = eigenvalues_byname(m_col)
+    )
+  expect_equal(DF$eigen_col[[1]], expected)
+  expect_equal(DF$eigen_col[[2]], 2*expected)
+})
+
+
+test_that("eigenvectors_byname() works as expected", {
+  m <- matrix(c(4, 6, 10, 
+                3, 10 , 13, 
+                -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+              dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+  expected <- matrix(c(0.457495711, 0.408248290, -0.577350269,
+                       0.762492852, -0.816496581, -0.577350269,
+                       -0.457495711, 0.408248290, 0.577350269), byrow = TRUE, nrow = 3, ncol = 3)
+  expect_equal(eigenvectors_byname(m), expected)
+  
+  expect_equal(eigenvectors_byname(list(m, 2*m)), list(expected, expected)) 
+  
+  
+  DF <- tibble::tibble(m_col = list(m, 2*m)) %>% 
+    dplyr::mutate(
+      eigen_col = eigenvectors_byname(m_col)
+    )
+  expect_equal(DF$eigen_col[[1]], expected)
+  expect_equal(DF$eigen_col[[2]], expected)
 })
 
 
@@ -604,7 +651,7 @@ test_that("vectorize and matricize are inverses of each other", {
   v1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
   m2 <- matricize_byname(v1, notation = RCLabels::arrow_notation)
   expect_equal(m2, m1)
-  # Do a regular transpose here (t), because transpose_byname switches rowtype and coltype.
+  # Do a regular transpose here (t), because transpose_byname() switches rowtype and coltype.
   v3 <- transpose_byname(v1)
   m4 <- matricize_byname(v3, notation = RCLabels::arrow_notation)
   expect_equal(m4, m1)
