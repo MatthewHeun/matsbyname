@@ -36,8 +36,11 @@ Both \code{tol} and \code{method} should be a single values and apply to all mat
 \examples{
 m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
+m
 invert_byname(m)
 matrixproduct_byname(m, invert_byname(m))
 matrixproduct_byname(invert_byname(m), m)
 invert_byname(list(m,m))
+invert_byname(m, method = "QR")
+invert_byname(m, method = "SVD")
 }
