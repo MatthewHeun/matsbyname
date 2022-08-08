@@ -202,6 +202,7 @@ test_that("invert_byname() works correctly with the method argument", {
                  dimnames = list(colnames(m), rownames(m))) %>% 
     setrowtype(coltype(m)) %>% setcoltype(rowtype(m))
 
+  expect_error(invert_byname(m, method = "bogus"), regexp = "'arg' should be one of ")
   expect_equal(invert_byname(m), minv)
   expect_equal(invert_byname(m, method = "QR"), minv)
   expect_equal(invert_byname(m, method = "SVD"), minv)
