@@ -90,9 +90,14 @@ invert_byname <- function(a, method = c("solve", "QR", "SVD"), tol = .Machine$do
   # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
   invert_func <- function(a_mat) {
     tryCatch({
-      solve(a_mat, tol = tol)  
+      # solve(a_mat, tol = tol)
+      qr_mat <- qr(a_mat)
+      out <- solve.qr(qr_mat)
+      colnames(out) <- rownames(a_mat)
+      return(out)
     }, error = function(e) {
-      if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:")) {
+      if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:") | 
+          startsWith(e$message, "singular matrix 'a' in 'solve'")) {
         # Find any zero rows and columns
         zero_rows_cols <- getzerorowcolnames_byname(a_mat)
         # Create a helpful error message
