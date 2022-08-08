@@ -85,7 +85,9 @@ invert_byname <- function(a) {
   # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
   invert_func <- function(a_mat) {
     tryCatch({
-      solve(a_mat)  
+      # solve(a_mat)
+      qr_mat <- qr(a_mat)
+      solve.qr(qr_mat)
     }, error = function(e) {
       if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:")) {
         # Find any zero rows and columns
