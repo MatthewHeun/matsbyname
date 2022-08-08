@@ -157,6 +157,9 @@
     <loc>/reference/getrownames_byname.html</loc>
   </url>
   <url>
+    <loc>/reference/getzerorowcolnames_byname.html</loc>
+  </url>
+  <url>
     <loc>/reference/hadamardproduct_byname.html</loc>
   </url>
   <url>
@@ -287,6 +290,12 @@
   </url>
   <url>
     <loc>/reference/select_rows_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/selectzerocols_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/selectzerorows_byname.html</loc>
   </url>
   <url>
     <loc>/reference/setcolnames_byname.html</loc>
