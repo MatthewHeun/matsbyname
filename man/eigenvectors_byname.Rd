@@ -25,7 +25,7 @@ Etc.
 
 Internally, this function uses \code{base::eigen()}.
 
-\code{complete_rows_cols()} is called prior to calculating the eigenvalues.
+\code{complete_rows_cols()} is called prior to calculating the eigenvectors.
 }
 \examples{
 m <- matrix(c( 4,  6, 10, 
