@@ -4,10 +4,12 @@
 \alias{invert_byname}
 \title{Invert a matrix}
 \usage{
-invert_byname(a, tol = .Machine$double.eps)
+invert_byname(a, method = c("solve", "QR", "SVD"), tol = .Machine$double.eps)
 }
 \arguments{
 \item{a}{The matrix to be inverted. \code{a} must be square.}
+
+\item{method}{One of "solve", "QR", or "SVD". See details.}
 
 \item{tol}{The tolerance for detecting linear dependencies in the columns of \code{a}.
 Default is \code{.Machine$double.eps}.
@@ -21,6 +23,12 @@ This function transposes row and column names as well as row and column types.
 Rows and columns of \code{a} are sorted prior to inverting.
 }
 \details{
+The \code{method} argument specifies which method should be used for
+calculating the inverse.
+"solve" uses \code{base::solve()} and the value of \code{tol}.
+"QR" uses \code{base::solve.qr()} and the value of \code{tol}.
+"SVD" uses \code{matrixcalc::svd.inverse()} and ignores the \code{tol} argument.
+
 If \code{a} is a singular matrix,
 names of zero rows and columns are reported in the error message.
 

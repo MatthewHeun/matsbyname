@@ -175,15 +175,36 @@ test_that("invert_byname() works as expected", {
 
 
 test_that("invert_byname() works correctly with a tol argument", {
-  m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+  m <- matrix(c(-3, 4, 
+                2, 5), byrow = TRUE, nrow = 2, ncol = 2,
+              dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
-  minv <- matrix(c(0.1, 0, 0, 0.01), nrow = 2, dimnames = list(colnames(m), rownames(m))) %>% 
+  minv <- matrix(c(-5/23, 4/23, 
+                    2/23, 3/23), byrow = TRUE, nrow = 2, ncol = 2,  dimnames = list(colnames(m), rownames(m))) %>% 
     setrowtype(coltype(m)) %>% setcoltype(rowtype(m))
   # Make sure the tol argument is, ahem, tolerated.
-  expect_equal(invert_byname(m, tol = 0.1), minv)
-  expect_equal(invert_byname(m, tol = sqrt(.Machine$double.eps)), minv)
-  expect_equal(invert_byname(m, tol = .Machine$double.eps), minv)
-  expect_equal(invert_byname(m, tol = .Machine$double.eps^2), minv)
+  expect_equal(invert_byname(m), minv) # Default value of tol
+  expect_equal(invert_byname(m, tol = 1e-7), minv)
+  expect_equal(invert_byname(m, tol = 1e-10), minv)
+  expect_equal(invert_byname(m, tol = 1e-16), minv)
+})
+
+
+test_that("invert_byname() works correctly with the method argument", {
+  m <- matrix(c(4, -2, 1, 
+                5, 0, 3, 
+                -1, 2, 6), byrow = TRUE, nrow = 3, ncol = 3,
+              dimnames = list(paste0("i", 1:3), paste0("p", 1:3))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  minv <- matrix(c( -3/26,  7/26, -3/26, 
+                   -33/52, 25/52, -7/52, 
+                     5/26, -3/26,  5/26), byrow = TRUE, nrow = 3, ncol = 3, 
+                 dimnames = list(colnames(m), rownames(m))) %>% 
+    setrowtype(coltype(m)) %>% setcoltype(rowtype(m))
+
+  expect_equal(invert_byname(m), minv)
+  expect_equal(invert_byname(m, method = "QR"), minv)
+  expect_equal(invert_byname(m, method = "SVD"), minv)
 })
 
 

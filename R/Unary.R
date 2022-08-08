@@ -65,12 +65,19 @@ exp_byname <- function(a){
 #' This function transposes row and column names as well as row and column types.
 #' Rows and columns of `a` are sorted prior to inverting.
 #' 
+#' The `method` argument specifies which method should be used for 
+#' calculating the inverse. 
+#' "solve" uses `base::solve()` and the value of `tol`.
+#' "QR" uses `base::solve.qr()` and the value of `tol`.
+#' "SVD" uses `matrixcalc::svd.inverse()` and ignores the `tol` argument.
+#' 
 #' If `a` is a singular matrix, 
 #' names of zero rows and columns are reported in the error message.
 #' 
 #' `tol` should be a single value and applies to all matrices in `a`.
 #'
 #' @param a The matrix to be inverted. `a` must be square.
+#' @param method One of "solve", "QR", or "SVD". See details.
 #' @param tol The tolerance for detecting linear dependencies in the columns of `a`. 
 #'            Default is `.Machine$double.eps`. 
 #'            This value is passed to `base::solve()`.
@@ -87,13 +94,21 @@ exp_byname <- function(a){
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
 invert_byname <- function(a, method = c("solve", "QR", "SVD"), tol = .Machine$double.eps) {
+  method <- match.arg(method)
   # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
   invert_func <- function(a_mat) {
     tryCatch({
-      # solve(a_mat, tol = tol)
-      qr_mat <- qr(a_mat)
-      out <- solve.qr(qr_mat)
-      colnames(out) <- rownames(a_mat)
+      if (method == "solve") {
+        out <- solve(a_mat, tol = tol)
+      } else if (method == "QR") {
+        qr_res <- qr(a_mat)
+        out <- solve.qr(qr_res, tol = tol)
+        colnames(out) <- rownames(a_mat)
+      } else if (method == "SVD") {
+        out <- matrixcalc::svd.inverse(a_mat)
+        rownames(out) <- colnames(a_mat)
+        colnames(out) <- rownames(a_mat)
+      }
       return(out)
     }, error = function(e) {
       if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:") | 
