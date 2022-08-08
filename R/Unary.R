@@ -95,7 +95,9 @@ exp_byname <- function(a){
 #' invert_byname(list(m,m))
 #' invert_byname(m, method = "QR")
 #' invert_byname(m, method = "SVD")
-invert_byname <- function(a, method = c("solve", "QR", "SVD"), tol = .Machine$double.eps) {
+invert_byname <- function(a, 
+                          method = c("solve", "QR", "SVD"), 
+                          tol = .Machine$double.eps) {
   method <- match.arg(method)
   # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
   invert_func <- function(a_mat) {
