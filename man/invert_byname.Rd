@@ -9,11 +9,10 @@ invert_byname(a, method = c("solve", "QR", "SVD"), tol = .Machine$double.eps)
 \arguments{
 \item{a}{The matrix to be inverted. \code{a} must be square.}
 
-\item{method}{One of "solve", "QR", or "SVD". See details.}
+\item{method}{One of "solve", "QR", or "SVD". Default is "solve". See details.}
 
 \item{tol}{The tolerance for detecting linear dependencies in the columns of \code{a}.
-Default is \code{.Machine$double.eps}.
-This value is passed to \code{base::solve()}.}
+Default is \code{.Machine$double.eps}.}
 }
 \value{
 The inversion of \code{a}.
@@ -32,7 +31,7 @@ calculating the inverse.
 If \code{a} is a singular matrix,
 names of zero rows and columns are reported in the error message.
 
-\code{tol} should be a single value and applies to all matrices in \code{a}.
+Both \code{tol} and \code{method} should be a single values and apply to all matrices in \code{a}.
 }
 \examples{
 m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%

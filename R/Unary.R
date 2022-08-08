@@ -77,10 +77,9 @@ exp_byname <- function(a){
 #' Both `tol` and `method` should be a single values and apply to all matrices in `a`.
 #'
 #' @param a The matrix to be inverted. `a` must be square.
-#' @param method One of "solve", "QR", or "SVD". See details.
+#' @param method One of "solve", "QR", or "SVD". Default is "solve". See details.
 #' @param tol The tolerance for detecting linear dependencies in the columns of `a`. 
 #'            Default is `.Machine$double.eps`. 
-#'            This value is passed to `base::solve()`.
 #'
 #' @return The inversion of `a`.
 #' 
@@ -89,10 +88,13 @@ exp_byname <- function(a){
 #' @examples
 #' m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' invert_byname(m)
 #' matrixproduct_byname(m, invert_byname(m))
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
+#' invert_byname(m, method = "QR")
+#' invert_byname(m, method = "SVD")
 invert_byname <- function(a, method = c("solve", "QR", "SVD"), tol = .Machine$double.eps) {
   method <- match.arg(method)
   # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
