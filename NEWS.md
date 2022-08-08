@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+* New argument `method` on `invert_byname()`
+  allows callers to select the method for inverting a matrix.
 * New functions `eigenvalues_byname()` and
   `eigenvectors_byname()` calculate 
   eigenvalues and eigenvectors of

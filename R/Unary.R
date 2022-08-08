@@ -69,12 +69,12 @@ exp_byname <- function(a){
 #' calculating the inverse. 
 #' "solve" uses `base::solve()` and the value of `tol`.
 #' "QR" uses `base::solve.qr()` and the value of `tol`.
-#' "SVD" uses `matrixcalc::svd.inverse()` and ignores the `tol` argument.
+#' "SVD" uses `matrixcalc::svd.inverse()`, ignoring the `tol` argument.
 #' 
 #' If `a` is a singular matrix, 
 #' names of zero rows and columns are reported in the error message.
 #' 
-#' `tol` should be a single value and applies to all matrices in `a`.
+#' Both `tol` and `method` should be a single values and apply to all matrices in `a`.
 #'
 #' @param a The matrix to be inverted. `a` must be square.
 #' @param method One of "solve", "QR", or "SVD". See details.

@@ -27,7 +27,7 @@ The \code{method} argument specifies which method should be used for
 calculating the inverse.
 "solve" uses \code{base::solve()} and the value of \code{tol}.
 "QR" uses \code{base::solve.qr()} and the value of \code{tol}.
-"SVD" uses \code{matrixcalc::svd.inverse()} and ignores the \code{tol} argument.
+"SVD" uses \code{matrixcalc::svd.inverse()}, ignoring the \code{tol} argument.
 
 If \code{a} is a singular matrix,
 names of zero rows and columns are reported in the error message.
