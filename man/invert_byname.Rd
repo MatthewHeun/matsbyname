@@ -28,10 +28,10 @@ calculating the inverse.
 "QR" uses \code{base::solve.qr()} and the value of \code{tol}.
 "SVD" uses \code{matrixcalc::svd.inverse()}, ignoring the \code{tol} argument.
 
+Both \code{tol} and \code{method} should be a single values and apply to all matrices in \code{a}.
+
 If \code{a} is a singular matrix,
 names of zero rows and columns are reported in the error message.
-
-Both \code{tol} and \code{method} should be a single values and apply to all matrices in \code{a}.
 }
 \examples{
 m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
