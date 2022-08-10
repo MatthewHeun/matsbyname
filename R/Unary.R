@@ -238,6 +238,56 @@ eigenvectors_byname <- function(a) {
 }
 
 
+#' Calculate the U matrix in singular value decomposition
+#'
+#' The singular value decomposition decomposes matrix **A** into
+#' **A** = **U** **D** **V**^T, 
+#' where **U** and **V** are orthogonal matrices and **D** is a diagonal matrix.
+#' **U** is the left singular vectors of **A**. 
+#' **V** is the right singular vectors of **A**.
+#' 
+#' `which` determines the part of the singular value decomposition to be returned.
+#' "d" (default) gives the **D** matrix.
+#' "u" gives the **U** matrix.
+#' "v" gives the **V** matrix (not its transpose).
+#' 
+#' @param a A matrix to be decomposed.
+#' @param which The matrix to be returned. Default is "d". See details.
+#'
+#' @return A matrix of the singular value decomposition of `a`.
+#' 
+#' @export
+#'
+#' @examples
+svd_byname <- function(a, which = c("d", "u", "v")) {
+  which <- match.arg(which)
+  svd_func <- function(a_mat) {
+    res <- svd(a_mat)[[which]]
+    if (which == "d") {
+      res <- diag(res)
+      rownames(res) <- rownames(a_mat)
+      colnames(res) <- colnames(a_mat)
+      res <- res %>% 
+        setrowtype(rowtype(a_mat)) %>% 
+        setcoltype(coltype(a_mat))
+    } else if (which == "u") {
+      rownames(res) <- rownames(a_mat)
+      colnames(res) <- rownames(a_mat)
+      res <- res %>% 
+        setrowtype(rowtype(a_mat)) %>% 
+        setcoltype(rowtype(a_mat))
+    } else if (which == "v") {
+      rownames(res) <- colnames(a_mat)
+      colnames(res) <- colnames(a_mat)
+      res <- res %>% 
+        setrowtype(coltype(a_mat)) %>% 
+        setcoltype(coltype(a_mat))
+    }
+  }
+  unaryapply_byname(svd_func, a = a, rowcoltypes = "none")
+}
+
+
 #' Creates a diagonal "hat" matrix from a vector
 #'
 #' A "hat" matrix (or a diagonal matrix) is one in which the only non-zero elements are along on the diagonal.

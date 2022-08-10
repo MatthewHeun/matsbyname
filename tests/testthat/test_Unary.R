@@ -315,6 +315,52 @@ test_that("eigenvectors_byname() works as expected", {
 
 
 ###########################################################
+context("SVD")
+###########################################################
+
+test_that("svd_byname() works as expected", {
+  # Example from https://medium.com/intuition/singular-value-decomposition-svd-working-example-c2b6135673b5
+  A = matrix(c(4, 0, 
+               3, -5), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  
+  D <- svd_byname(A)
+  expected_D <- diag(c(sqrt(40), sqrt(10)))
+  rownames(expected_D) <- rownames(A)
+  colnames(expected_D) <- colnames(A)
+  expected_D <- expected_D %>% 
+    setrowtype(rowtype(A)) %>% 
+    setcoltype(coltype(A))
+  expect_equal(D, expected_D)
+
+  U <- svd_byname(A, which = "u")
+  expected_U <- matrix(c(-1/sqrt(5), -2/sqrt(5), 
+                         -2/sqrt(5),  1/sqrt(5)), byrow = TRUE, nrow = 2, ncol = 2)
+  rownames(expected_U) <- rownames(A)
+  colnames(expected_U) <- rownames(A)
+  expected_U <- expected_U %>% 
+    setrowtype(rowtype(A)) %>% 
+    setcoltype(rowtype(A))
+  expect_equal(U, expected_U)
+  
+  V <- svd_byname(A, which = "v")
+  expected_V <- matrix(c(-1/sqrt(2), -1/sqrt(2), 
+                          1/sqrt(2), -1/sqrt(2)), byrow = TRUE, nrow = 2, ncol = 2)
+  rownames(expected_V) <- colnames(A)
+  colnames(expected_V) <- colnames(A)
+  expected_V <- expected_V %>% 
+    setrowtype(coltype(A)) %>% 
+    setcoltype(coltype(A))
+  expect_equal(V, expected_V)
+  
+  # Double-check multiplication
+  should_be_A <- matrixproduct_byname(U, D) %>% 
+    matrixproduct_byname(transpose_byname(V))
+  expect_true(equal_byname(should_be_A, A))
+})
+
+
+###########################################################
 context("Hatize")
 ###########################################################
 

@@ -35,7 +35,7 @@
 #' @param FUN a unary function to be applied "by name" to `a`.
 #' @param a the argument to `FUN`.
 #' @param .FUNdots a list of additional named arguments passed to `FUN`.
-#' @param rowcoltypes a string that tells how to transfer row and column types of `a` to output. See `details`.
+#' @param rowcoltypes a string that tells how to transfer row and column types of `a` to output. See details.
 #'
 #' @return the result of applying `FUN` "by name" to `a`.
 #' 
