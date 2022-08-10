@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+* New function `svd_byname()` calculates singular value decomposition
+  of a matrix.
 * New argument `method` on `invert_byname()`
   allows callers to select the method for inverting a matrix.
 * New functions `eigenvalues_byname()` and

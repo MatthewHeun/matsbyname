@@ -27,3 +27,12 @@ where \strong{U} and \strong{V} are orthogonal matrices and \strong{D} is a diag
 "u" gives the \strong{U} matrix.
 "v" gives the \strong{V} matrix (not its transpose).
 }
+\examples{
+A = matrix(c(4, 0, 
+             3, -5), nrow = 2, ncol = 2, byrow = TRUE, 
+           dimnames = list(c("r1", "r2"), c("c1", "c2"))) \%>\% 
+  setrowtype("Product") \%>\% setcoltype("Industry")
+svd_byname(A) # Gives D matrix, by default
+svd_byname(A, which = "u")
+svd_byname(A, which = "v")
+}

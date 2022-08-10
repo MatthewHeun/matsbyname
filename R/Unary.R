@@ -259,6 +259,13 @@ eigenvectors_byname <- function(a) {
 #' @export
 #'
 #' @examples
+#' A = matrix(c(4, 0, 
+#'              3, -5), nrow = 2, ncol = 2, byrow = TRUE, 
+#'            dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' svd_byname(A) # Gives D matrix, by default
+#' svd_byname(A, which = "u")
+#' svd_byname(A, which = "v")
 svd_byname <- function(a, which = c("d", "u", "v")) {
   which <- match.arg(which)
   svd_func <- function(a_mat) {
