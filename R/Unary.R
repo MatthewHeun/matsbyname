@@ -366,6 +366,7 @@ svd_byname <- function(a, which = c("d", "u", "v")) {
 #' m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
 #'   setrowtype("Product -> Industry") %>% 
 #'   setcoltype("Industry -> Product")
+#' m
 #' m %>% 
 #'   hatize_byname(keep = "rownames")
 #' m %>% 

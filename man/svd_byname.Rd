@@ -32,7 +32,9 @@ A = matrix(c(4, 0,
              3, -5), nrow = 2, ncol = 2, byrow = TRUE, 
            dimnames = list(c("r1", "r2"), c("c1", "c2"))) \%>\% 
   setrowtype("Product") \%>\% setcoltype("Industry")
+A
 svd_byname(A) # Gives D matrix, by default
+svd_byname(A, which = "d")
 svd_byname(A, which = "u")
 svd_byname(A, which = "v")
 }
