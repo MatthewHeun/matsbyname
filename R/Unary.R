@@ -11,6 +11,7 @@
 #' abs_byname(-1)
 #' m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' abs_byname(m)
 abs_byname <- function(a){
   unaryapply_byname(abs, a = a)
@@ -32,6 +33,7 @@ abs_byname <- function(a){
 #' log_byname(exp(1))
 #' m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' log_byname(m)
 #' log_byname(m, base = 10)
 log_byname <- function(a, base = exp(1)){
@@ -54,6 +56,7 @@ log_byname <- function(a, base = exp(1)){
 #' m <- matrix(c(log(10),log(1),log(1),log(100)), 
 #'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' exp_byname(m)
 exp_byname <- function(a){
   unaryapply_byname(exp, a = a)
@@ -143,6 +146,7 @@ invert_byname <- function(a,
 #' @examples
 #' m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
 transpose_byname <- function(a) {
@@ -263,7 +267,9 @@ eigenvectors_byname <- function(a) {
 #'              3, -5), nrow = 2, ncol = 2, byrow = TRUE, 
 #'            dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
 #'   setrowtype("Product") %>% setcoltype("Industry")
+#' A
 #' svd_byname(A) # Gives D matrix, by default
+#' svd_byname(A, which = "d")
 #' svd_byname(A, which = "u")
 #' svd_byname(A, which = "v")
 svd_byname <- function(a, which = c("d", "u", "v")) {
@@ -331,9 +337,11 @@ svd_byname <- function(a, which = c("d", "u", "v")) {
 #' @examples
 #' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
+#' v
 #' hatize_byname(v, keep = "rownames")
 #' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
 #'   setrowtype(NA) %>% setcoltype("Commodities")
+#' r
 #' hatize_byname(r, keep = "colnames")
 #' # This also works with lists.
 #' hatize_byname(list(v, v), keep = "rownames")
