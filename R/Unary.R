@@ -462,12 +462,12 @@ hatize_byname <- function(v, keep = NULL){
 #' The default value of `Inf_becomes` is `.Machine$double.xmax`.
 #' Set `inf_becomes` to `NULL` to disable this behavior.
 #' 
-#' The default behavior is helpful for cases when the result of `hatinv_byname` is later multiplied by `0`
+#' The default behavior is helpful for cases when the result of `hatinv_byname()` is later multiplied by `0`
 #' to obtain `0`.
 #' Multiplying `Inf` by `0` gives `NaN` which would effectively end the stream of calculations.
 #' 
 #' @param v The vector to be hatized and inverted.
-#' @param keep See `matsbyname::hatize`.
+#' @param keep See `hatize_byname()`.
 #' @param inf_becomes A value to be substitute for any `Inf` produced by the inversion process. 
 #'        Default is `.Machine$double.xmax`.
 #'        If `FALSE` (the default), `Inf` is not handled differently.

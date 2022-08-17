@@ -9,7 +9,7 @@ hatinv_byname(v, keep = NULL, inf_becomes = .Machine$double.xmax)
 \arguments{
 \item{v}{The vector to be hatized and inverted.}
 
-\item{keep}{See \code{matsbyname::hatize}.}
+\item{keep}{See \code{hatize_byname()}.}
 
 \item{inf_becomes}{A value to be substitute for any \code{Inf} produced by the inversion process.
 Default is \code{.Machine$double.xmax}.
@@ -40,7 +40,7 @@ The sign of \code{Inf} is preserved in the substitution.
 The default value of \code{Inf_becomes} is \code{.Machine$double.xmax}.
 Set \code{inf_becomes} to \code{NULL} to disable this behavior.
 
-The default behavior is helpful for cases when the result of \code{hatinv_byname} is later multiplied by \code{0}
+The default behavior is helpful for cases when the result of \code{hatinv_byname()} is later multiplied by \code{0}
 to obtain \code{0}.
 Multiplying \code{Inf} by \code{0} gives \code{NaN} which would effectively end the stream of calculations.
 }
