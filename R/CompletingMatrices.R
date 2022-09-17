@@ -3,7 +3,7 @@
 #' "Completing" rows and columns means that `a` contains a union of rows and columns
 #' between `a` and `mat`,
 #' with missing data represented by the value for `fill` (`0`, by default), 
-#' `fillrow`, or `fillcol`..
+#' `fillrow`, or `fillcol`.
 #' 
 #' Note that `complete_rows_cols(mat1, mat2)` and `complete_rows_cols(mat2, mat1)` are 
 #' not guaranteed to have the same order for rows and columns.
