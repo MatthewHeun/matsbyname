@@ -7,16 +7,16 @@
 select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^")
 }
 \arguments{
-\item{a}{a matrix or a list of matrices}
+\item{a}{A matrix or a list of matrices.}
 
-\item{retain_pattern}{an extended regex or list of extended regular expressions that specifies which rows of \code{m} to retain.
-Default pattern (\code{$^}) retains nothing.}
+\item{retain_pattern}{An extended regex or list of extended regular expressions that specifies which rows of \code{a} to retain.
+Default pattern ("$^") retains nothing.}
 
-\item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
-Default pattern (\code{$^}) removes nothing.}
+\item{remove_pattern}{An extended regex or list of extended regular expressions that specifies which rows of \code{a} to remove,
+Default pattern ("$^") removes nothing.}
 }
 \value{
-a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
+A matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
 }
 \description{
 Arguments indicate which rows are to be retained and which are to be removed.
@@ -27,21 +27,21 @@ that are matched against row names.
 If \code{a} is \code{NULL}, \code{NULL} is returned.
 
 Patterns are compared against row names using extended regex.
-If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
-If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
-Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^})
+If no row names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
+If no row names of \code{a} match the \code{remove_pattern}, \code{m} is returned.
+Note that the default \code{retain_pattern} and \code{remove_pattern} ("$^")
 retain nothing and remove nothing.
 
 Retaining rows takes precedence over removing rows, always.
 
 Some typical patterns are:
 \itemize{
-\item{\code{^Electricity$|^Oil$}: row names that are EXACTLY \code{Electricity} or EXACTLY \code{Oil}.}
-\item{\code{^Electricity|^Oil}: row names that START WITH \code{Electricity} or START WITH \code{Oil}.}
-\item{\code{Electricity|Oil}: row names that CONTAIN \code{Electricity} or CONTAIN \code{Oil} anywhere within them.}
+\item{"^Electricity$|^Oil$": row names that are EXACTLY "Electricity" or EXACTLY "Oil".}
+\item{"^Electricity|^Oil": row names that START WITH "Electricity" or START WITH "Oil".}
+\item{"Electricity|Oil": row names that CONTAIN "Electricity" or CONTAIN "Oil" anywhere within them.}
 }
 
-Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
+Given a list of row names, a pattern can be constructed easily using \code{RCLabels::make_or_pattern()}.
 \code{RCLabels::make_or_pattern()} escapes regex strings using \code{Hmisc::escapeRegex()}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
@@ -49,7 +49,7 @@ suitably escaped.
 Note that if all rows are removed from \code{a}, \code{NULL} is returned.
 }
 \examples{
-m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
+m <- matrix(1:16, ncol = 4, dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
   setrowtype("Industries") \%>\% setcoltype("Commodities")
 select_rows_byname(m, 
                    retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"),
@@ -58,5 +58,5 @@ select_rows_byname(m,
                    remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), 
                    pattern_type = "exact"))
 # Also works for lists and data frames
-select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
+select_rows_byname(list(m, m), retain_pattern = "^i1$|^i4$")
 }

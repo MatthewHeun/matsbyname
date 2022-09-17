@@ -14,7 +14,7 @@ aggregate_to_pref_suff_byname(
 )
 }
 \arguments{
-\item{a}{a matrix of list of matrices to be aggregated by prefix or suffix}
+\item{a}{A matrix of list of matrices to be aggregated by prefix or suffix.}
 
 \item{aggregation_map}{See \code{aggregate_byname()}.}
 

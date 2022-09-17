@@ -46,7 +46,7 @@ whose names are obtained from \code{mat}.
 "Completing" rows and columns means that \code{a} contains a union of rows and columns
 between \code{a} and \code{mat},
 with missing data represented by the value for \code{fill} (\code{0}, by default),
-\code{fillrow}, or \code{fillcol}..
+\code{fillrow}, or \code{fillcol}.
 }
 \details{
 Note that \code{complete_rows_cols(mat1, mat2)} and \code{complete_rows_cols(mat2, mat1)} are
