@@ -1660,7 +1660,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' `rename_to_pref_suff_byname()` and `aggregate_byname()`.
 #' All arguments are passed to the helper functions.
 #'
-#' @param a a matrix of list of matrices to be aggregated by prefix or suffix
+#' @param a A matrix of list of matrices to be aggregated by prefix or suffix.
 #' @param aggregation_map See `aggregate_byname()`.
 #' @param notation See `notation_vec()`. 
 #' @param keep See `rename_to_pref_suff_byname()`

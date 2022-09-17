@@ -842,17 +842,17 @@ coltype <- function(a){
 #' Note that if all rows are removed from `a`, `NULL` is returned.
 #'
 #' @param a A matrix or a list of matrices.
-#' @param retain_pattern An extended regex or list of extended regular expressions that specifies which rows of \code{m} to retain.
-#'                       Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern An extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove,
-#'                       Default pattern (\code{$^}) removes nothing.
+#' @param retain_pattern An extended regex or list of extended regular expressions that specifies which rows of `a` to retain.
+#'                       Default pattern ("$^") retains nothing.
+#' @param remove_pattern An extended regex or list of extended regular expressions that specifies which rows of `a` to remove,
+#'                       Default pattern ("$^") removes nothing.
 #'
 #' @return A matrix that is a subset of `m` with rows selected by `retain_pattern` and `remove_pattern`.
 #' 
 #' @export
 #'
 #' @examples
-#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
+#' m <- matrix(1:16, ncol = 4, dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_rows_byname(m, 
 #'                    retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"),
@@ -861,7 +861,7 @@ coltype <- function(a){
 #'                    remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), 
 #'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
-#' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
+#' select_rows_byname(list(m, m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   if (is.null(a)) {
     return(NULL)
