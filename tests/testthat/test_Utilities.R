@@ -72,6 +72,7 @@ test_that("selecting rows and columns works even when there is a NULL situation"
 test_that("select_rowcol_piece_byname() works as expected", {
   expect_null(select_rowcol_piece_byname(a = NULL))
   
+  # Retain a row by its noun.
   m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
                 dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -82,6 +83,14 @@ test_that("select_rowcol_piece_byname() works as expected", {
 
   res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", notation = RCLabels::from_notation, margin = 1)
   expect_equal(res_1, expected_1)
+  
+  # Retain a row by a preposition.
+  expected_2 <- matrix(c(3,4), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "b", piece = "from", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_2, expected_2)
 })
 
 
