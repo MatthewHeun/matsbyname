@@ -69,6 +69,52 @@ test_that("selecting rows and columns works even when there is a NULL situation"
 })
 
 
+test_that("select_rowcol_piece_byname() works as expected", {
+  expect_null(select_rowcol_piece_byname(a = NULL))
+  
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expected_1 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_1, expected_1)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 test_that("setting row and column names works even when there is a NULL situation", {
   m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
