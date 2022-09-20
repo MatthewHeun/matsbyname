@@ -1028,6 +1028,11 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #'               Default is `NULL`, meaning that retaining is requested.
 #' @param piece The piece of row or column names to be assessed.
 #'              Default is "all", indicating that the entire label will be assessed.
+#' @param pattern_type The way to match label pieces.
+#'                     `pattern_type` is passed to `RCLabels::make_or_pattern()`.
+#'                     See `RCLabels::make_or_pattern()` for details.
+#'                     Default is "exact", meaning that exact matches are retained or removed.  
+#'                     Other options are "leading", "trailing", "anywhere", and "literal".
 #' @param prepositions The prepositions that can be used for identifying pieces.
 #'                     Default is `RCLabels::prepositions_list`.
 #' @param notation The notation for the row and column names. 
@@ -1045,6 +1050,7 @@ select_rowcol_piece_byname <- function(a,
                                        retain = NULL, 
                                        remove = NULL, 
                                        piece = "all",
+                                       pattern_type = "exact",
                                        prepositions = RCLabels::prepositions_list, 
                                        notation = RCLabels::notations_list, 
                                        margin = c(1, 2)) {
@@ -1070,7 +1076,7 @@ select_rowcol_piece_byname <- function(a,
       rnames <- getrownames_byname(a_mat)
       # Make the pattern.
       if (!is.null(retain)) {
-        keep_pattern <- RCLabels::make_or_pattern(retain, pattern_type = "exact")
+        keep_pattern <- RCLabels::make_or_pattern(retain, pattern_type = pattern_type)
         # Use RCLabels::match_by_pattern() to do the matching.
         which_to_keep <- RCLabels::match_by_pattern(labels = rnames, 
                                                     regex_pattern = keep_pattern, 
@@ -1079,7 +1085,7 @@ select_rowcol_piece_byname <- function(a,
                                                     notation = notation)
       } else {
         # When retain is NULL, we want to remove
-        remove_pattern <- RCLabels::make_or_pattern(remove, pattern_type = "exact")
+        remove_pattern <- RCLabels::make_or_pattern(remove, pattern_type = pattern_type)
         which_to_remove <- RCLabels::match_by_pattern(labels = rnames, 
                                                       regex_pattern = remove_pattern, 
                                                       pieces = piece, 

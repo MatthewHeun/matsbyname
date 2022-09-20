@@ -9,6 +9,7 @@ select_rowcol_piece_byname(
   retain = NULL,
   remove = NULL,
   piece = "all",
+  pattern_type = "exact",
   prepositions = RCLabels::prepositions_list,
   notation = RCLabels::notations_list,
   margin = c(1, 2)
@@ -25,6 +26,12 @@ Default is \code{NULL}, meaning that retaining is requested.}
 
 \item{piece}{The piece of row or column names to be assessed.
 Default is "all", indicating that the entire label will be assessed.}
+
+\item{pattern_type}{The way to match label pieces.
+\code{pattern_type} is passed to \code{RCLabels::make_or_pattern()}.
+See \code{RCLabels::make_or_pattern()} for details.
+Default is "exact", meaning that exact matches are retained or removed.
+Other options are "leading", "trailing", "anywhere", and "literal".}
 
 \item{prepositions}{The prepositions that can be used for identifying pieces.
 Default is \code{RCLabels::prepositions_list}.}
