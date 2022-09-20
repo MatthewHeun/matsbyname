@@ -1018,8 +1018,11 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' 
 #' Options for `piece` are 
 #' 
-#' * "all" (the default), meaning that the entire label will be matched
-#' * 
+#' * "all" (the default), meaning that the entire label will be matched,
+#' * "pref", meaning that the prefix will be matched,
+#' * "suff", meaning that the suffix will be matched,
+#' * "noun", meaning that the first part will be matched, and
+#' * "from" (or another preposition), meaning that the object of that preposition will be matched.
 #'
 #' @param a A matrix or list of matrices whose rows or columns are to be selected.
 #' @param retain The row or column piece values to be retained.
@@ -1039,6 +1042,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #'                 Default is `RCLabels::notations_list`, meaning that all notations known to 
 #'                 `RCLabels` will be assessed.
 #' @param margin The margin to which row or column removal is requested.
+#'               `1` indicates rows; `2` indicates columns.
 #'               Default is `c(1, 2)`, meaning that action should be taken on both rows and columns.
 #'
 #' @return `a` with rows and/or column retained or removed.
@@ -1046,6 +1050,26 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' @export
 #'
 #' @examples
+#' m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+#'               dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+#'                               c("c1 [from c]", "c2 [from d]"))) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' m
+#' select_rowcol_piece_byname(m, retain = "r1", piece = "noun", 
+#'                            notation = RCLabels::to_notation, 
+#'                            margin = 1)
+#' select_rowcol_piece_byname(m, retain = "b", piece = "to", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 1)
+#' select_rowcol_piece_byname(m, retain = "c1", piece = "noun",
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 2)
+#' select_rowcol_piece_byname(m, retain = "d", piece = "from", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 2)
+#' select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+#'                            notation = RCLabels::from_notation, 
+#'                            margin = 2)
 select_rowcol_piece_byname <- function(a, 
                                        retain = NULL, 
                                        remove = NULL, 
@@ -1058,13 +1082,12 @@ select_rowcol_piece_byname <- function(a,
     return(NULL)
   }
   
-  
   select_func <- function(a_mat) {
     # Decode the margin if margin is a string
     margin <- margin_from_types_byname(a_mat, margin)
     # If we want to select columns, transpose and select rows.
     if (2 %in% margin) {
-      # Transpose and select
+      # Transpose, perform the selection (or de-selection), and re-transpose
       a_mat <- transpose_byname(a_mat) %>% 
         select_rowcol_piece_byname(retain = retain, remove = remove, piece = piece, 
                                    prepositions = prepositions, notation = notation, margin = 1) %>% 
@@ -1098,7 +1121,6 @@ select_rowcol_piece_byname <- function(a,
     }
     return(a_mat)
   }
-  
   
   unaryapply_byname(select_func, a = a)
 }

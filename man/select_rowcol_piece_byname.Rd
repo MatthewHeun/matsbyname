@@ -41,6 +41,7 @@ Default is \code{RCLabels::notations_list}, meaning that all notations known to
 \code{RCLabels} will be assessed.}
 
 \item{margin}{The margin to which row or column removal is requested.
+\code{1} indicates rows; \code{2} indicates columns.
 Default is \code{c(1, 2)}, meaning that action should be taken on both rows and columns.}
 }
 \value{
@@ -71,7 +72,27 @@ Retaining takes precedence over removing, always.
 
 Options for \code{piece} are
 \itemize{
-\item "all" (the default), meaning that the entire label will be matched
-\item 
+\item "all" (the default), meaning that the entire label will be matched,
+\item "pref", meaning that the prefix will be matched,
+\item "suff", meaning that the suffix will be matched,
+\item "noun", meaning that the first part will be matched, and
+\item "from" (or another preposition), meaning that the object of that preposition will be matched.
 }
+}
+\examples{
+m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) \%>\% 
+  setrowtype("rows") \%>\% setcoltype("cols")
+m
+select_rowcol_piece_byname(m, retain = "r1", piece = "noun", 
+                           notation = RCLabels::from_notation, 
+                           margin = 1)
+select_rowcol_piece_byname(m, retain = "b", piece = "to", 
+                           notation = RCLabels::bracket_notation, 
+                           margin = 1)
+select_rowcol_piece_byname(m, retain = "c1", piece = "noun",
+                           notation = RCLabels::bracket_notation, 
+                           margin = 2)
+
 }

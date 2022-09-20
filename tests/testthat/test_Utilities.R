@@ -105,6 +105,14 @@ test_that("select_rowcol_piece_byname() works for selecting rows", {
   # Retain a row by prefix
   res_5 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::bracket_notation, margin = 1)
   expect_equal(res_5, expected_2)
+  
+  # Replace based on pattern type
+  res_6 <- select_rowcol_piece_byname(m_1, retain = "2", piece = "noun",
+                                      pattern_type = "trailing", 
+                                      notation = RCLabels::bracket_notation, 
+                                      margin = 1)
+  expect_equal(res_6, expected_2)
+  
 })
 
 
@@ -134,38 +142,11 @@ test_that("select_rowcol_piece_byname() works for removing rows", {
   # Remove a row by noun
   res_4 <- select_rowcol_piece_byname(m_1, remove = "r1", piece = "noun", notation = RCLabels::bracket_notation, margin = 1)
   expect_equal(res_4, expected_1)
-  
-  
-  
-  # Retain a column by noun
-  
-  
-  # Retain a column by preposition
-  
-  
-  # Remove a column by prefix
-  
-  
-  # Remove a column by suffix
-  
-  
-  # Remove a column by noun
-  
-  
-  # Remove a column by preposition
-  
-  
-  # Remove a column by prefix
-  
-  
-  # Remove a column by suffix
-  
 })
 
 
 test_that("select_rowcol_piece_byname() works with both retain and remove", {
-  # Retain and remove at same time.  Retain should take precedence
-  
+  # Retain and remove at same time.  Retain should take precedence.
   m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
                 dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -192,23 +173,59 @@ test_that("select_rowcol_piece_byname() works with both retain and remove", {
 })
 
 
+test_that("select_rowcol_piece_byname() works when selecting columns", {
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "c1", piece = "noun", 
+                                      notation = RCLabels::from_notation, margin = 2)  
+  
+  expected_1 <- matrix(c(1, 3), nrow = 2, ncol = 1, byrow = TRUE, 
+                       dimnames = list(c("r1 [from a]", "r2 [from b]"), "c1 [from c]")) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(res_1, expected_1)
+  
+  # Deselect a column
+  res_2 <- select_rowcol_piece_byname(m_1, remove = "c2", piece = "noun", 
+                                      notation = RCLabels::bracket_notation, margin = 2)  
+  expect_equal(res_2, expected_1)
+})
+
+
+test_that("select_rowcol_piece_byname() example works as intended", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  res <- select_rowcol_piece_byname(m, retain = "r1", piece = "noun", 
+                                    notation = RCLabels::to_notation, 
+                                    margin = 1)
+  expected <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                     dimnames = list("r1 [to a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res, expected)
+  
+  res_2 <- select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+                                      notation = RCLabels::from_notation, 
+                                      margin = 2)
+  expected_2 <- matrix(c(1,3), nrow = 2, ncol = 1, byrow = TRUE, 
+                       dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                                       c("c1 [from c]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res_2, expected_2)
+})
+
+
+test_that("select_rowcol_piece_byname() works in a data frame", {
+  
+})
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Test specifying multiple notations to ensure that 
+# the correct one is selected.
 
 
 
