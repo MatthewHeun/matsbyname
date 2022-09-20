@@ -178,6 +178,17 @@ test_that("select_rowcol_piece_byname() works with both retain and remove", {
     matsbyname::setrowtype("rows") %>% setcoltype("cols")
   
   expect_equal(res_1, expected_1)
+  
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "r1", remove = "r2", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_2, expected_1)
+  
+  res_3 <- select_rowcol_piece_byname(m_1, retain = "r2", remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  
+  expected_2 <- matrix(c(3,4), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(res_3, expected_2)
 })
 
 
