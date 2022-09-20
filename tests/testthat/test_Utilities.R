@@ -93,6 +93,20 @@ test_that("select_rowcol_piece_byname() works as expected", {
   # If from_notation is used, "from" is not a valid piece.
   res_2 <- select_rowcol_piece_byname(m_1, retain = "b", piece = "from", notation = RCLabels::bracket_notation, margin = 1)
   expect_equal(res_2, expected_2)
+  
+  # Retain a row by prefix. Should give the same result as expected_2
+  res_3 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_3, expected_2)
+  
+  # Retain a row by suffix
+  res_4 <- select_rowcol_piece_byname(m_1, retain = "a", piece = "suff", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_4, expected_1)
+  
+  # Retain a row by prefix
+  res_5 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_5, expected_2)
+  
+  
 })
 
 
