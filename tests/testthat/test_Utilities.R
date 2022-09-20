@@ -106,6 +106,41 @@ test_that("select_rowcol_piece_byname() works as expected", {
   res_5 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::bracket_notation, margin = 1)
   expect_equal(res_5, expected_2)
   
+  # Remove a row by prefix
+  
+  
+  # Remove a row by suffix
+  
+  
+  # Remove a row by preposition
+  
+  
+  # Retain and remove at same time.  Regain should take precedence
+  
+  
+  # Retain a column by noun
+  
+  
+  # Retain a column by preposition
+  
+  
+  # Remove a column by prefix
+  
+  
+  # Remove a column by suffix
+  
+  
+  # Remove a column by noun
+  
+  
+  # Remove a column by preposition
+  
+  
+  # Remove a column by prefix
+  
+  
+  # Remove a column by suffix
+  
   
 })
 
