@@ -89,7 +89,9 @@ test_that("select_rowcol_piece_byname() works as expected", {
                        dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
     matsbyname::setrowtype("rows") %>% setcoltype("cols")
   
-  res_2 <- select_rowcol_piece_byname(m_1, retain = "b", piece = "from", notation = RCLabels::from_notation, margin = 1)
+  # The next line needs to have bracket_notation.
+  # If from_notation is used, "from" is not a valid piece.
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "b", piece = "from", notation = RCLabels::bracket_notation, margin = 1)
   expect_equal(res_2, expected_2)
 })
 
