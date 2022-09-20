@@ -1069,13 +1069,24 @@ select_rowcol_piece_byname <- function(a,
       # Get the rownames
       rnames <- getrownames_byname(a_mat)
       # Make the pattern.
-      keep_pattern <- RCLabels::make_or_pattern(retain, pattern_type = "exact")
-      # Use RCLabels::match_by_pattern() to do the matching.
-      which_to_keep <- RCLabels::match_by_pattern(labels = rnames, 
-                                                  regex_pattern = keep_pattern, 
-                                                  pieces = piece, 
-                                                  prepositions = prepositions,
-                                                  notation = notation)
+      if (!is.null(retain)) {
+        keep_pattern <- RCLabels::make_or_pattern(retain, pattern_type = "exact")
+        # Use RCLabels::match_by_pattern() to do the matching.
+        which_to_keep <- RCLabels::match_by_pattern(labels = rnames, 
+                                                    regex_pattern = keep_pattern, 
+                                                    pieces = piece, 
+                                                    prepositions = prepositions,
+                                                    notation = notation)
+      } else {
+        # When retain is NULL, we want to remove
+        remove_pattern <- RCLabels::make_or_pattern(remove, pattern_type = "exact")
+        which_to_remove <- RCLabels::match_by_pattern(labels = rnames, 
+                                                      regex_pattern = remove_pattern, 
+                                                      pieces = piece, 
+                                                      prepositions = prepositions,
+                                                      notation = notation)
+        which_to_keep <- ! which_to_remove
+      }
       # Now keep only the rows that we want, retaining all columns.
       a_mat <- a_mat[which_to_keep, , drop = FALSE]
     }

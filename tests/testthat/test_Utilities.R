@@ -69,7 +69,7 @@ test_that("selecting rows and columns works even when there is a NULL situation"
 })
 
 
-test_that("select_rowcol_piece_byname() works as expected", {
+test_that("select_rowcol_piece_byname() works for selecting rows", {
   expect_null(select_rowcol_piece_byname(a = NULL))
   
   # Retain a row by its noun.
@@ -105,9 +105,20 @@ test_that("select_rowcol_piece_byname() works as expected", {
   # Retain a row by prefix
   res_5 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::bracket_notation, margin = 1)
   expect_equal(res_5, expected_2)
+})
+
+
+test_that("select_rowcol_piece_byname() works for removing rows", {
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
   
   # Remove a row by prefix
-  
+  res_1 <- select_rowcol_piece_byname(m_1, remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expected_1 <- matrix(3:4, nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res_1, expected_1)
   
   # Remove a row by suffix
   
@@ -141,10 +152,7 @@ test_that("select_rowcol_piece_byname() works as expected", {
   
   # Remove a column by suffix
   
-  
 })
-
-
 
 
 
