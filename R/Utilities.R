@@ -931,39 +931,39 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against column names.
 #'
-#' If \code{a} is \code{NULL}, \code{NULL} is returned.
+#' If `a` is `NULL`, `NULL` is returned.
 #' 
 #' Patterns are compared against column names using extended regex.
-#' If no column names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
-#' If no column names of \code{a} match the \code{remove_pattern}, \code{a} is returned.
+#' If no column names of `a` match the `retain_pattern`, `NULL` is returned.
+#' If no column names of `a` match the `remove_pattern`, `a` is returned.
 #'
 #' Retaining columns takes precedence over removing columns, always.
 #'
 #' Some typical patterns are:
 #' \itemize{
-#'   \item{\code{^Electricity$|^Oil$}: column names that are EXACTLY \code{Electricity} or \code{Oil}.}
-#'   \item{\code{^Electricity|^Oil}: column names that START WITH \code{Electricity} or \code{Oil}.}
-#'   \item{\code{Electricity|Oil}: column names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
+#'   \item{"^Electricity$|^Oil$": column names that are EXACTLY "Electricity" or "Oil".}
+#'   \item{"^Electricity|^Oil": column names that START WITH "Electricity" or "Oil".}
+#'   \item{"Electricity|Oil": column names that CONTAIN "Electricity" or "Oil" anywhere within them.}
 #' }
 #'
-#' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
+#' Given a list of column names, a pattern can be constructed easily using the `make_pattern` function.
 #' 
 #' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escaprRegex()`.
-#' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
+#' This function assumes that `retain_pattern` and `remove_pattern` have already been
 #' suitably escaped.
 #' 
-#' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
+#' Note that the default `retain_pattern` and `remove_pattern` ("$^") 
 #' retain nothing and remove nothing.
 #' 
 #' Note that if all columns are removed from `a`, `NULL` is returned.
 #' 
 #' @param a a matrix or a list of matrices
-#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
-#' Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove.
-#' Default pattern (\code{$^}) removes nothing.
+#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of `m` to retain.
+#' Default pattern ("$^") retains nothing.
+#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of `m` to remove.
+#' Default pattern ("$^") removes nothing.
 #'
-#' @return a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
+#' @return a matrix that is a subset of `a` with columns selected by `retain_pattern` and `remove_pattern`.
 #' 
 #' @export
 #'
