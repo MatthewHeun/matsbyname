@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+* New function `select_rowcol_piece_byname()` enables
+  selecting rows and columns using the `RCLabels` notation and label pieces.
 * New function `svd_byname()` calculates singular value decomposition
   of a matrix.
 * New argument `method` on `invert_byname()`
