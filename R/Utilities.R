@@ -1068,7 +1068,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #'                            notation = RCLabels::bracket_notation, 
 #'                            margin = 2)
 #' select_rowcol_piece_byname(m, retain = "c", piece = "from", 
-#'                            notation = RCLabels::from_notation, 
+#'                            notation = RCLabels::bracket_notation, 
 #'                            margin = 2)
 select_rowcol_piece_byname <- function(a, 
                                        retain = NULL, 

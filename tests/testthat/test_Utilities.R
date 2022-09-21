@@ -194,7 +194,7 @@ test_that("select_rowcol_piece_byname() works when selecting columns", {
 })
 
 
-test_that("select_rowcol_piece_byname() example works as intended", {
+test_that("select_rowcol_piece_byname() examples work as intended", {
   m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
               dimnames = list(c("r1 [to a]", "r2 [to b]"), 
                               c("c1 [from c]", "c2 [from d]"))) %>% 
@@ -208,13 +208,28 @@ test_that("select_rowcol_piece_byname() example works as intended", {
   expect_equal(res, expected)
   
   res_2 <- select_rowcol_piece_byname(m, retain = "c", piece = "from", 
-                                      notation = RCLabels::from_notation, 
+                                      notation = RCLabels::bracket_notation, 
                                       margin = 2)
   expected_2 <- matrix(c(1,3), nrow = 2, ncol = 1, byrow = TRUE, 
                        dimnames = list(c("r1 [to a]", "r2 [to b]"), 
                                        c("c1 [from c]"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
   expect_equal(res_2, expected_2)
+})
+
+
+test_that("select_rowcol_piece_byname() works when specifying both rows and cols", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Use default margin (c(1,2)).
+  res <- select_rowcol_piece_byname(m, retain = c("r1", "c1", "r3", "c3"), piece = "noun", 
+                                    notation = RCLabels::bracket_notation)
+  expected <- matrix(1, nrow = 1, ncol = 1, 
+                     dimnames = list("r1 [to a]", "c1 [from c]")) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res, expected)
 })
 
 

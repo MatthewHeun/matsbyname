@@ -86,7 +86,7 @@ m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE,
   setrowtype("rows") \%>\% setcoltype("cols")
 m
 select_rowcol_piece_byname(m, retain = "r1", piece = "noun", 
-                           notation = RCLabels::from_notation, 
+                           notation = RCLabels::to_notation, 
                            margin = 1)
 select_rowcol_piece_byname(m, retain = "b", piece = "to", 
                            notation = RCLabels::bracket_notation, 
@@ -94,5 +94,10 @@ select_rowcol_piece_byname(m, retain = "b", piece = "to",
 select_rowcol_piece_byname(m, retain = "c1", piece = "noun",
                            notation = RCLabels::bracket_notation, 
                            margin = 2)
-
+select_rowcol_piece_byname(m, retain = "d", piece = "from", 
+                           notation = RCLabels::bracket_notation, 
+                           margin = 2)
+select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+                           notation = RCLabels::from_notation, 
+                           margin = 2)
 }
