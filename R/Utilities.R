@@ -680,17 +680,17 @@ margin_from_types_byname <- function(a, types) {
 
 #' Sets row type for a matrix or a list of matrices
 #'
-#' This function is a wrapper for \code{attr} so that 
-#' setting can be accomplished by the pipe operator (\code{\%>\%}).
-#' Row types are strings stored in the \code{rowtype} attribute.
+#' This function is a wrapper for `attr()` so that 
+#' setting can be accomplished by the pipe operator (`%>%`).
+#' Row types are strings stored in the `rowtype` attribute.
 #' 
-#' If \code{is.null(rowtype)}, the rowtype attribute is deleted
-#' and subsequent calls to \code{rowtype} will return \code{NULL}.
+#' If `is.null(rowtype)`, the rowtype attribute is deleted
+#' and subsequent calls to `rowtype` will return `NULL`.
 #'
-#' @param a the matrix on which row type is to be set
-#' @param rowtype the type of item stored in rows
+#' @param a The matrix on which row type is to be set.
+#' @param rowtype The type of item stored in rows.
 #'
-#' @return \code{a} with rowtype attribute set to \code{rowtype}.
+#' @return `a` with rowtype attribute set to `rowtype.`
 #' 
 #' @export
 #'
@@ -722,17 +722,17 @@ setrowtype <- function(a, rowtype){
 
 #' Sets column type for a matrix or a list of matrices
 #'
-#' This function is a wrapper for \code{attr} so that 
-#' setting can be accomplished by the pipe operator (\code{\%>\%}).
-#' Column types are strings stored in the \code{coltype} attribute.
+#' This function is a wrapper for `attr()` so that 
+#' setting can be accomplished by the pipe operator (`%>%`).
+#' Column types are strings stored in the `coltype` attribute.
 #' 
-#' #' If \code{is.null(coltype)}, the coltype attribute is deleted
-#' and subsequent calls to \code{coltype} will return \code{NULL}.
+#' If `is.null(coltype)`, the coltype attribute is deleted
+#' and subsequent calls to `coltype` will return `NULL`.
 #'
-#' @param a the matrix on which column type is to be set
-#' @param coltype the type of item stored in columns
+#' @param a The matrix on which column type is to be set.
+#' @param coltype The type of item stored in columns.
 #'
-#' @return \code{a} with \code{coltype} attribute set.
+#' @return `a` with `coltype` attribute set.
 #' 
 #' @export
 #'
@@ -764,11 +764,11 @@ setcoltype <- function(a, coltype){
 
 #' Row type
 #'
-#' Extracts row type of \code{a}.
+#' Extracts row type of `a`.
 #'
-#' @param a the object from which you want to extract row types
+#' @param a The object from which you want to extract row types.
 #'
-#' @return the row type of \code{a}
+#' @return The row type of `a`.
 #' 
 #' @export
 #'
@@ -789,11 +789,11 @@ rowtype <- function(a){
 
 #' Column type
 #'
-#' Extracts column type of \code{a}.
+#' Extracts column type of `a`.
 #'
-#' @param a the object from which you want to extract column types
+#' @param a The object from which you want to extract column types.
 #'
-#' @return the column type of \code{a}
+#' @return The column type of `a`.
 #' 
 #' @export
 #'

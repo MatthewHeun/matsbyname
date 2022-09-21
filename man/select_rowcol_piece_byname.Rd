@@ -98,6 +98,12 @@ select_rowcol_piece_byname(m, retain = "d", piece = "from",
                            notation = RCLabels::bracket_notation, 
                            margin = 2)
 select_rowcol_piece_byname(m, retain = "c", piece = "from", 
-                           notation = RCLabels::from_notation, 
+                           notation = RCLabels::bracket_notation, 
                            margin = 2)
+select_rowcol_piece_byname(m, retain = "b", piece = "to", 
+                           notation = RCLabels::bracket_notation, 
+                           margin = "rows")
+select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+                           notation = RCLabels::bracket_notation, 
+                           margin = "cols")
 }

@@ -7,20 +7,20 @@
 setcoltype(a, coltype)
 }
 \arguments{
-\item{a}{the matrix on which column type is to be set}
+\item{a}{The matrix on which column type is to be set.}
 
-\item{coltype}{the type of item stored in columns}
+\item{coltype}{The type of item stored in columns.}
 }
 \value{
 \code{a} with \code{coltype} attribute set.
 }
 \description{
-This function is a wrapper for \code{attr} so that
-setting can be accomplished by the pipe operator (\code{\%>\%}).
+This function is a wrapper for \code{attr()} so that
+setting can be accomplished by the pipe operator (\verb{\%>\%}).
 Column types are strings stored in the \code{coltype} attribute.
 }
 \details{
-#' If \code{is.null(coltype)}, the coltype attribute is deleted
+If \code{is.null(coltype)}, the coltype attribute is deleted
 and subsequent calls to \code{coltype} will return \code{NULL}.
 }
 \examples{

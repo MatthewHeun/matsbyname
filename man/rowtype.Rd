@@ -7,10 +7,10 @@
 rowtype(a)
 }
 \arguments{
-\item{a}{the object from which you want to extract row types}
+\item{a}{The object from which you want to extract row types.}
 }
 \value{
-the row type of \code{a}
+The row type of \code{a}.
 }
 \description{
 Extracts row type of \code{a}.

@@ -7,10 +7,10 @@
 coltype(a)
 }
 \arguments{
-\item{a}{the object from which you want to extract column types}
+\item{a}{The object from which you want to extract column types.}
 }
 \value{
-the column type of \code{a}
+The column type of \code{a}.
 }
 \description{
 Extracts column type of \code{a}.
