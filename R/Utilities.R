@@ -993,6 +993,145 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 }
 
 
+#' Select or remove rows or columns based on pieces of the names.
+#' 
+#' `select_rows_byname()` and `select_cols_byname()`
+#' select rows and columns using regex patterns
+#' This function performs similar actions
+#' based on the pieces of row and column labels.
+#' 
+#' This function uses the `RCLabels` package to match 
+#' row and column names by pieces.
+#' 
+#' To retain rows or columns, specify `retain`. 
+#' To remove rows or columns, specify `remove`.
+#' 
+#' If `a` has row and column types, a string may be passed to `margin`,
+#' in which case the margin will be resolved.
+#' See examples.
+#' 
+#' `notation` may be a list of notations that could apply in `a`. 
+#' This function will try to infer the notation that applies
+#' to row and column names. 
+#' 
+#' Retaining takes precedence over removing, always.
+#' 
+#' Options for `piece` are 
+#' 
+#' * "all" (the default), meaning that the entire label will be matched,
+#' * "pref", meaning that the prefix will be matched,
+#' * "suff", meaning that the suffix will be matched,
+#' * "noun", meaning that the first part will be matched, and
+#' * "from" (or another preposition), meaning that the object of that preposition will be matched.
+#'
+#' @param a A matrix or list of matrices whose rows or columns are to be selected.
+#' @param retain The row or column piece values to be retained.
+#'               Default is `NULL`, meaning that removal is requested.
+#' @param remove The row or column piece values to be removed.
+#'               Default is `NULL`, meaning that retaining is requested.
+#' @param piece The piece of row or column names to be assessed.
+#'              Default is "all", indicating that the entire label will be assessed.
+#' @param pattern_type The way to match label pieces.
+#'                     `pattern_type` is passed to `RCLabels::make_or_pattern()`.
+#'                     See `RCLabels::make_or_pattern()` for details.
+#'                     Default is "exact", meaning that exact matches are retained or removed.  
+#'                     Other options are "leading", "trailing", "anywhere", and "literal".
+#' @param prepositions The prepositions that can be used for identifying pieces.
+#'                     Default is `RCLabels::prepositions_list`.
+#' @param notation The notation for the row and column names. 
+#'                 Default is `RCLabels::notations_list`, meaning that all notations known to 
+#'                 `RCLabels` will be assessed.
+#' @param margin The margin to which row or column removal is requested.
+#'               `1` indicates rows; `2` indicates columns.
+#'               Default is `c(1, 2)`, meaning that action should be taken on both rows and columns.
+#'
+#' @return `a` with rows and/or column retained or removed.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+#'               dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+#'                               c("c1 [from c]", "c2 [from d]"))) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' m
+#' select_rowcol_piece_byname(m, retain = "r1", piece = "noun", 
+#'                            notation = RCLabels::to_notation, 
+#'                            margin = 1)
+#' select_rowcol_piece_byname(m, retain = "b", piece = "to", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 1)
+#' select_rowcol_piece_byname(m, retain = "c1", piece = "noun",
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 2)
+#' select_rowcol_piece_byname(m, retain = "d", piece = "from", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 2)
+#' select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 2)
+#' select_rowcol_piece_byname(m, retain = "b", piece = "to", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = "rows")
+#' select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = "cols")
+select_rowcol_piece_byname <- function(a, 
+                                       retain = NULL, 
+                                       remove = NULL, 
+                                       piece = "all",
+                                       pattern_type = "exact",
+                                       prepositions = RCLabels::prepositions_list, 
+                                       notation = RCLabels::notations_list, 
+                                       margin = c(1, 2)) {
+  if (is.null(a)) {
+    return(NULL)
+  }
+  
+  select_func <- function(a_mat) {
+    # Decode the margin if margin is a string
+    margin <- margin_from_types_byname(a_mat, margin)
+    # If we want to select columns, transpose and select rows.
+    if (2 %in% margin) {
+      # Transpose, perform the selection (or de-selection), and re-transpose
+      a_mat <- transpose_byname(a_mat) %>% 
+        select_rowcol_piece_byname(retain = retain, remove = remove, piece = piece, 
+                                   prepositions = prepositions, notation = notation, margin = 1) %>% 
+        # Re-transpose
+        transpose_byname()
+    }
+    if (1 %in% margin) {
+      # Get the rownames
+      rnames <- getrownames_byname(a_mat)
+      # Make the pattern.
+      if (!is.null(retain)) {
+        keep_pattern <- RCLabels::make_or_pattern(retain, pattern_type = pattern_type)
+        # Use RCLabels::match_by_pattern() to do the matching.
+        which_to_keep <- RCLabels::match_by_pattern(labels = rnames, 
+                                                    regex_pattern = keep_pattern, 
+                                                    pieces = piece, 
+                                                    prepositions = prepositions,
+                                                    notation = notation)
+      } else {
+        # When retain is NULL, we want to remove
+        remove_pattern <- RCLabels::make_or_pattern(remove, pattern_type = pattern_type)
+        which_to_remove <- RCLabels::match_by_pattern(labels = rnames, 
+                                                      regex_pattern = remove_pattern, 
+                                                      pieces = piece, 
+                                                      prepositions = prepositions,
+                                                      notation = notation)
+        which_to_keep <- ! which_to_remove
+      }
+      # Now keep only the rows that we want, retaining all columns.
+      a_mat <- a_mat[which_to_keep, , drop = FALSE]
+    }
+    return(a_mat)
+  }
+  
+  unaryapply_byname(select_func, a = a)
+}
+
+
 #' Clean (delete) rows or columns of matrices that contain exclusively `clean_value`
 #' 
 #' Cleaning is performed when all entries in a row or column or both, depending on the value of `margin`,
@@ -1003,16 +1142,19 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' If there is concern about machine precision, you might want to call this function with 
 #' `tol = .Machine$double.eps`.
 #'
-#' @param a the matrix to be cleaned
-#' @param margin the dimension over which cleaning should occur, `1` for rows, `2` for columns,
-#'               or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
-#' @param clean_value the undesirable value. Default is `0`.
-#' @param tol the tolerance with which any value is deemed equal to `clean_value`. Default is `0`.
-#'
 #' When a row (when `margin = 1`) or a column (when `margin = 2`)
 #' contains exclusively `clean_value` (within `tol`), the row or column is deleted from the matrix.
 #'
-#' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively `clean_value.`
+#' @param a The matrix to be cleaned.
+#' @param margin The dimension over which cleaning should occur, `1` for rows, `2` for columns,
+#'               or `c(1, 2)` for both rows and columns. 
+#'               Default is `c(1, 2)`.
+#' @param clean_value The undesirable value. 
+#'                    Default is `0`.
+#' @param tol The tolerance with which any value is deemed equal to `clean_value`.
+#'            Default is `0`.
+#'
+#' @return A "cleaned" matrix, expunged of rows or columns that contain exclusively `clean_value.`
 #' 
 #' @export
 #'

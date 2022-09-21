@@ -1035,7 +1035,7 @@ test_that("identical_byname() works as expected", {
   
 
 ###########################################################
-context("Utilities")
+context("Utilities in test_Binary")
 ###########################################################
 
 test_that("samestructure_byname() works as expected", {

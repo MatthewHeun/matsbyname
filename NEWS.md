@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+* New function `select_rowcol_piece_byname()` enables
+  selecting rows and columns using the `RCLabels` notation and label pieces.
 * New function `svd_byname()` calculates singular value decomposition
   of a matrix.
 * New argument `method` on `invert_byname()`
@@ -34,7 +36,7 @@ output: html_document
 * Renaming and aggregation functions now (by default) infer 
   row and column notations.
 * Many new tests for new features.
-    - Now at 1129 tests, all passing.
+    - Now at 1157 tests, all passing.
     - Test coverage remains at 100 %.
 
 
