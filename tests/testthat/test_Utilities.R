@@ -233,8 +233,34 @@ test_that("select_rowcol_piece_byname() works when specifying both rows and cols
 })
 
 
-test_that("select_rowcol_piece_byname() works in a data frame", {
+test_that("select_rowcol_piece_byname() works in a list and a data frame", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  n <- matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
+                              c("c1 [from d]", "c2 [from e]", "c3 [from f]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
   
+  # Try in a list
+  res <- list(m, n) %>% 
+    select_rowcol_piece_byname(retain = c("r1", "r2"), piece = "noun", notation = RCLabels::bracket_notation, margin = 1)
+  expected_m <- m # No change, because only rows r1 and r2
+  # Eliminates r3.
+  expected_n <-   n <- matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE, 
+                              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                                              c("c1 [from d]", "c2 [from e]", "c3 [from f]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res, list(expected_m, expected_n))
+  
+  # Try in a data frame.
+  df <- tibble::tibble(mats = list(m, n))
+  res_df <- df %>% 
+    dplyr::mutate(
+      r1r2 = select_rowcol_piece_byname(mats, retain = c("r1", "r2"), piece = "noun", notation = RCLabels::bracket_notation, margin = 1)
+    )
+  expect_equal(res_df$r1r2, list(expected_m, expected_n))
 })
 
 
