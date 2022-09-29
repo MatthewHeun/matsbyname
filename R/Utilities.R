@@ -1024,10 +1024,13 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' * "noun", meaning that the first part will be matched, and
 #' * "from" (or another preposition), meaning that the object of that preposition will be matched.
 #'
+#' If retaining or removing rows or columns results in no rows or columns remaining
+#' in the matrix, `NULL` is returned.
+#' 
 #' @param a A matrix or list of matrices whose rows or columns are to be selected.
-#' @param retain The row or column piece values to be retained.
+#' @param retain The row or column names to be retained.
 #'               Default is `NULL`, meaning that removal is requested.
-#' @param remove The row or column piece values to be removed.
+#' @param remove The row or column names to be removed.
 #'               Default is `NULL`, meaning that retaining is requested.
 #' @param piece The piece of row or column names to be assessed.
 #'              Default is "all", indicating that the entire label will be assessed.
@@ -1124,6 +1127,12 @@ select_rowcol_piece_byname <- function(a,
       }
       # Now keep only the rows that we want, retaining all columns.
       a_mat <- a_mat[which_to_keep, , drop = FALSE]
+    }
+    if (is.null(a_mat)) {
+      return(NULL)
+    }
+    if (matsbyname::nrow_byname(a_mat) == 0 | matsbyname::ncol_byname(a_mat) == 0) {
+      a_mat <- NULL
     }
     return(a_mat)
   }
