@@ -18,10 +18,10 @@ select_rowcol_piece_byname(
 \arguments{
 \item{a}{A matrix or list of matrices whose rows or columns are to be selected.}
 
-\item{retain}{The row or column piece values to be retained.
+\item{retain}{The row or column names to be retained.
 Default is \code{NULL}, meaning that removal is requested.}
 
-\item{remove}{The row or column piece values to be removed.
+\item{remove}{The row or column names to be removed.
 Default is \code{NULL}, meaning that retaining is requested.}
 
 \item{piece}{The piece of row or column names to be assessed.
@@ -78,6 +78,9 @@ Options for \code{piece} are
 \item "noun", meaning that the first part will be matched, and
 \item "from" (or another preposition), meaning that the object of that preposition will be matched.
 }
+
+If retaining or removing rows or columns results in no rows or columns remaining
+in the matrix, \code{NULL} is returned.
 }
 \examples{
 m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
