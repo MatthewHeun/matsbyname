@@ -150,7 +150,17 @@ invert_byname <- function(a,
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
 transpose_byname <- function(a) {
-  unaryapply_byname(t, a = a, rowcoltypes = "transpose")
+  
+  transpose_func <- function(a_mat) {
+    if (!is.matrix(a_mat)) {
+      # In the event that we don't have a matrix, 
+      # we probably have a single number.
+      # Don't try to transpose.
+      return(a_mat)
+    }
+    t(a_mat)
+  }
+  unaryapply_byname(transpose_func, a = a, rowcoltypes = "transpose")
 }
 
 

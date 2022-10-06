@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+* `transpose_byname()` no longer converts a constant
+  into a 1x1 matrix without row or column names.
 * New function `select_rowcol_piece_byname()` enables
   selecting rows and columns using the `RCLabels` notation and label pieces.
 * New function `svd_byname()` calculates singular value decomposition
