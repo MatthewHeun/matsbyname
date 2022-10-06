@@ -270,6 +270,7 @@ test_that("transpose_byname() works with lists of lists", {
 
 test_that("transpose_byname() correctly handles constants", {
   expect_equal(transpose_byname(0), 0)
+  expect_true(!is.matrix(transpose_byname(0)))
   expect_equal(transpose_byname(42), 42)
   expect_equal(transpose_byname(-10), -10)
 })
