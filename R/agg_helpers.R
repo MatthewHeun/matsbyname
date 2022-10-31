@@ -54,7 +54,7 @@ NULL
 agg_table_to_agg_map <- function(.df, few_colname, many_colname) {
   out <- .df %>%
     # Select only the columns of interest
-    dplyr::select(.data[[few_colname]], .data[[many_colname]]) %>%
+    dplyr::select(dplyr::all_of(c(few_colname, many_colname))) %>%
     # Get rid of NA cases.
     dplyr::filter(!is.na(.data[[few_colname]]) & !is.na(.data[[many_colname]])) %>%
     # Get rid of duplicates.
@@ -80,6 +80,6 @@ agg_map_to_agg_table <- function(aggregation_map, few_colname, many_colname) {
     dplyr::mutate(
       "{few_colname}" := names(aggregation_map)
     ) %>%
-    tidyr::unnest(cols = .data[[many_colname]]) %>%
-    dplyr::relocate(.data[[many_colname]], .after = .data[[few_colname]])
+    tidyr::unnest(cols = dplyr::all_of(many_colname)) %>%
+    dplyr::relocate(dplyr::all_of(many_colname), .after = dplyr::all_of(few_colname))
 }
