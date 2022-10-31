@@ -4,6 +4,7 @@ output: html_document
 ---
 
 
+* Responded to deprecation warnings from `tidyselect`.
 * `transpose_byname()` no longer converts a constant
   into a 1x1 matrix without row or column names.
 * New function `select_rowcol_piece_byname()` enables
