@@ -660,7 +660,18 @@ vectorize_byname <- function(a, notation) {
     }
     dim(vec) <- c(n_entries, 1)
     # Figure out names, based on notation
-    new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>% 
+    new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>%
+    # new_rownames <- expand.grid(rownames(a_mat), colnames(a_mat)) %>% 
+    #   magrittr::set_names(c("rownames", "colnames")) %>% 
+    #   dplyr::mutate(
+    #     rownames = as.character(rownames), 
+    #     colnames = as.character(colnames)
+    #   ) %>% 
+    #   tibble::as_tibble() %>% 
+    #   as.list() %>%
+    #   unname() %>%
+    #   purrr::transpose() %>% 
+    
       lapply(FUN = function(ps) {
         ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
           RCLabels::paste_pref_suff(notation = notation)
