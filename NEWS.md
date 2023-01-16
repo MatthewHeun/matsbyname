@@ -4,6 +4,7 @@ output: html_document
 ---
 
 
+* Responded to deprecation warnings from `purrr::cross2()`.
 * Responded to deprecation warnings from `tidyselect`.
 * `transpose_byname()` no longer converts a constant
   into a 1x1 matrix without row or column names.
@@ -39,7 +40,7 @@ output: html_document
 * Renaming and aggregation functions now (by default) infer 
   row and column notations.
 * Many new tests for new features.
-    - Now at 1157 tests, all passing.
+    - Now at 1165 tests, all passing.
     - Test coverage remains at 100 %.
 
 
