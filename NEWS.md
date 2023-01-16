@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+# matsbyname 0.5.1 (2023-01-16) 
+
 * Responded to deprecation warnings from `purrr::cross2()`.
 * Responded to deprecation warnings from `tidyselect`.
 * `transpose_byname()` no longer converts a constant
