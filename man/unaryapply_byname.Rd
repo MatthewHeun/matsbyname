@@ -18,7 +18,7 @@ unaryapply_byname(
 
 \item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
 
-\item{rowcoltypes}{a string that tells how to transfer row and column types of \code{a} to output. See \code{details}.}
+\item{rowcoltypes}{a string that tells how to transfer row and column types of \code{a} to output. See details.}
 }
 \value{
 the result of applying \code{FUN} "by name" to \code{a}.

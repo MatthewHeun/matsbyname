@@ -56,11 +56,11 @@ organize_args <- function(a, b, match_type = "all", fill){
   if (is.list(a) | is.list(b)) {
     if (!is.list(a)) {
       # b is a list, but a is not.  Make a into a list and give it same names as b.
-      a <- make_list(a, n = length(b)) %>% magrittr::set_names(names(b))
+      a <- RCLabels::make_list(a, n = length(b)) %>% magrittr::set_names(names(b))
     }
     if (!is.list(b)) {
       # a is a list, but b is not.  Make b into a list and give it same names as a.
-      b <- make_list(b, n = length(a)) %>% magrittr::set_names(names(a))
+      b <- RCLabels::make_list(b, n = length(a)) %>% magrittr::set_names(names(a))
     }
   }
   if (is.list(a) & is.list(b)) {
@@ -162,7 +162,7 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' 
 #' It is potentially ambiguous to specify a vector or matrix argument, say, `margin = c(1, 2)` when applying
 #' the `*_byname` functions to unary list of `a`.
-#' Rather, one should specify, say, `margin = list(c(1, 2)`
+#' Rather, one should specify, say, `margin = list(c(1, 2))`
 #' to avoid ambiguity.
 #' If `a` is a list, 
 #' `vector_arg` is not a list and has length > 1 and length not equal to the length of a,
@@ -172,16 +172,19 @@ organize_args <- function(a, b, match_type = "all", fill){
 #' 
 #' Note that if `vector_arg` is a single matrix, it is automatically enclosed by a list when `a` is a list.
 #'
-#' @param a a matrix or list of matrices
-#' @param vector_arg the vector argument over which to apply a calculation
+#' @param a A matrix or list of matrices.
+#' @param vector_arg The vector argument over which to apply a calculation.
 #'
-#' @return `vector_arg`, possibly modified when `a` is a list 
+#' @return `vector_arg`, possibly modified when `a` is a list.
 #' 
 #' @export
 #'
 #' @examples
 #' m <- matrix(c(2, 2))
-#' matsbyname:::prep_vector_arg(list(m, m), vector_arg = c(1,2))
+#' prep_vector_arg(m, vector_arg = c(1,2))
+#' prep_vector_arg(list(m), vector_arg = c(1,2))
+#' prep_vector_arg(list(m, m), vector_arg = c(1,2))
+#' prep_vector_arg(list(m, m, m), vector_arg = c(1,2))
 prep_vector_arg <- function(a, vector_arg) {
   if (is.list(a)) {
     if (is.matrix(vector_arg) | (!is.list(vector_arg) & length(vector_arg) > 1 & length(vector_arg) != length(a))) {
@@ -451,7 +454,7 @@ setcolnames_byname <- function(a, colnames){
 #' rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
 rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
   rename_to_piece_byname(a, piece = keep, margin = margin, 
-                         notation = notation, prepositions = RCLabels::prepositions)
+                         notation = notation, prepositions = RCLabels::prepositions_list)
 }
 
 
@@ -483,12 +486,22 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'               Default is `c(1, 2)`, meaning that both 
 #'               rows (`margin = 1`) and columns (`margin = 2`)
 #'               will be renamed.
+#' @param inf_notation A boolean that tells whether to infer notation.
+#'                     Default is `TRUE`.
 #' @param notation The notation used for row and column labels. 
-#'                 Default is `RCLabels::bracket_notation`.
+#'                 Default is `list(RCLabels::notations_list)`.
+#'                 The default value is wrapped in a list, 
+#'                 because `RCLabels::notations_list` is, itself, a list.
 #'                 See `RCLabels`.
-#'                 
+#' @param choose_most_specific A boolean that indicates whether the most-specific notation
+#'                             will be inferred when more than one of `notation` matches 
+#'                             a row or column label
+#'                             and `allow_multiple = FALSE`.
+#'                             When `FALSE`, the first matching notation in `notations`
+#'                             is returned when `allow_multiple = FALSE`.
+#'                             Default is `FALSE`.
 #' @param prepositions Prepositions that can be used in the row and column label.
-#'                     Default is `RCLabels::prepositions`.
+#'                     Default is `RCLabels::prepositions_list`.
 #'
 #' @return A version of `a` with renamed rows and columns.
 #' 
@@ -510,15 +523,20 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'                        notation = RCLabels::arrow_notation)
 rename_to_piece_byname <- function(a,
                                    piece,
-                                   margin = c(1, 2),
-                                   notation = RCLabels::bracket_notation,
-                                   prepositions = RCLabels::prepositions) {
+                                   margin = list(c(1, 2)),
+                                   inf_notation = TRUE,
+                                   notation = list(RCLabels::notations_list),
+                                   choose_most_specific = FALSE,
+                                   prepositions = list(RCLabels::prepositions_list)) {
   piece <- prep_vector_arg(a, piece)
   margin <- prep_vector_arg(a, margin)
+  inf_notation <- prep_vector_arg(a, inf_notation)
   notation <- prep_vector_arg(a, notation)
+  choose_most_specific <- prep_vector_arg(a, choose_most_specific)
   prepositions <- prep_vector_arg(a, prepositions)
   
-  rename_func <- function(a_mat, this_piece, this_margin, this_notation, these_prepositions) {
+  rename_func <- function(a_mat, this_piece, this_margin, this_inf_notation, this_notation, 
+                          this_choose_most_specific, these_prepositions) {
     # At this point, a should be a single matrix, 
     # this_* should be individual items ready for use in this function.
     
@@ -531,7 +549,9 @@ rename_to_piece_byname <- function(a,
       a_mat <- transpose_byname(a_mat) %>% 
         rename_func(this_piece = this_piece, 
                     this_margin = 1,
-                    this_notation = this_notation, 
+                    this_inf_notation = this_inf_notation,
+                    this_notation = this_notation,
+                    this_choose_most_specific,
                     these_prepositions = these_prepositions) %>% 
         transpose_byname()
     }
@@ -539,14 +559,29 @@ rename_to_piece_byname <- function(a,
     if (1 %in% this_margin) {
       new_rnames <- rownames(a_mat) %>% 
         RCLabels::get_piece(piece = this_piece, 
+                            inf_notation = this_inf_notation,
                             notation = this_notation,
+                            choose_most_specific = this_choose_most_specific,
                             prepositions = these_prepositions)
+      # Default is to return the old rowtype as the new rowtype
       new_rt <- rowtype(a_mat)
       if (!is.null(new_rt)) {
-        new_rt <- new_rt %>%
-          RCLabels::get_piece(piece = this_piece, 
-                              notation = this_notation, 
-                              prepositions = these_prepositions)
+        # If we had a rowtype, see if we can find a notation for the rowtype.
+        inferred_notation <- RCLabels::infer_notation(new_rt, 
+                                                      inf_notation = this_inf_notation, 
+                                                      notation = this_notation, 
+                                                      choose_most_specific = this_choose_most_specific, 
+                                                      must_succeed = FALSE)
+        if (!is.null(inferred_notation)) {
+          # Notation could be inferred.
+          # Adjust the rowtype in the same way that we adjusted the row and column labels.
+          new_rt <- new_rt %>%
+            RCLabels::get_piece(piece = this_piece, 
+                                inf_notation = this_inf_notation,
+                                notation = this_notation, 
+                                choose_most_specific = this_choose_most_specific,
+                                prepositions = these_prepositions)
+        }
       }
       
       # Set new rownames, without the names on the list (parts of the previous name)
@@ -560,7 +595,9 @@ rename_to_piece_byname <- function(a,
   unaryapply_byname(rename_func, a = a,
                     .FUNdots = list(this_piece = piece,
                                     this_margin = margin,
-                                    this_notation = notation, 
+                                    this_inf_notation = inf_notation,
+                                    this_notation = notation,
+                                    this_choose_most_specific = choose_most_specific,
                                     these_prepositions = prepositions), 
                     rowcoltypes = "none")
 }
@@ -643,17 +680,17 @@ margin_from_types_byname <- function(a, types) {
 
 #' Sets row type for a matrix or a list of matrices
 #'
-#' This function is a wrapper for \code{attr} so that 
-#' setting can be accomplished by the pipe operator (\code{\%>\%}).
-#' Row types are strings stored in the \code{rowtype} attribute.
+#' This function is a wrapper for `attr()` so that 
+#' setting can be accomplished by the pipe operator (`%>%`).
+#' Row types are strings stored in the `rowtype` attribute.
 #' 
-#' If \code{is.null(rowtype)}, the rowtype attribute is deleted
-#' and subsequent calls to \code{rowtype} will return \code{NULL}.
+#' If `is.null(rowtype)`, the rowtype attribute is deleted
+#' and subsequent calls to `rowtype` will return `NULL`.
 #'
-#' @param a the matrix on which row type is to be set
-#' @param rowtype the type of item stored in rows
+#' @param a The matrix on which row type is to be set.
+#' @param rowtype The type of item stored in rows.
 #'
-#' @return \code{a} with rowtype attribute set to \code{rowtype}.
+#' @return `a` with rowtype attribute set to `rowtype.`
 #' 
 #' @export
 #'
@@ -685,17 +722,17 @@ setrowtype <- function(a, rowtype){
 
 #' Sets column type for a matrix or a list of matrices
 #'
-#' This function is a wrapper for \code{attr} so that 
-#' setting can be accomplished by the pipe operator (\code{\%>\%}).
-#' Column types are strings stored in the \code{coltype} attribute.
+#' This function is a wrapper for `attr()` so that 
+#' setting can be accomplished by the pipe operator (`%>%`).
+#' Column types are strings stored in the `coltype` attribute.
 #' 
-#' #' If \code{is.null(coltype)}, the coltype attribute is deleted
-#' and subsequent calls to \code{coltype} will return \code{NULL}.
+#' If `is.null(coltype)`, the coltype attribute is deleted
+#' and subsequent calls to `coltype` will return `NULL`.
 #'
-#' @param a the matrix on which column type is to be set
-#' @param coltype the type of item stored in columns
+#' @param a The matrix on which column type is to be set.
+#' @param coltype The type of item stored in columns.
 #'
-#' @return \code{a} with \code{coltype} attribute set.
+#' @return `a` with `coltype` attribute set.
 #' 
 #' @export
 #'
@@ -727,11 +764,11 @@ setcoltype <- function(a, coltype){
 
 #' Row type
 #'
-#' Extracts row type of \code{a}.
+#' Extracts row type of `a`.
 #'
-#' @param a the object from which you want to extract row types
+#' @param a The object from which you want to extract row types.
 #'
-#' @return the row type of \code{a}
+#' @return The row type of `a`.
 #' 
 #' @export
 #'
@@ -752,11 +789,11 @@ rowtype <- function(a){
 
 #' Column type
 #'
-#' Extracts column type of \code{a}.
+#' Extracts column type of `a`.
 #'
-#' @param a the object from which you want to extract column types
+#' @param a The object from which you want to extract column types.
 #'
-#' @return the column type of \code{a}
+#' @return The column type of `a`.
 #' 
 #' @export
 #'
@@ -780,42 +817,42 @@ coltype <- function(a){
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against row names.
 #'
-#' If \code{a} is \code{NULL}, \code{NULL} is returned.
+#' If `a` is `NULL`, `NULL` is returned.
 #' 
 #' Patterns are compared against row names using extended regex.
-#' If no row names of \code{m} match the \code{retain_pattern}, \code{NULL} is returned.
-#' If no row names of \code{m} match the \code{remove_pattern}, \code{m} is returned.
-#' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
+#' If no row names of `a` match the `retain_pattern`, `NULL` is returned.
+#' If no row names of `a` match the `remove_pattern`, `m` is returned.
+#' Note that the default `retain_pattern` and `remove_pattern` ("$^") 
 #' retain nothing and remove nothing.
 #'
 #' Retaining rows takes precedence over removing rows, always.
 #'
 #' Some typical patterns are:
 #' \itemize{
-#'   \item{\code{^Electricity$|^Oil$}: row names that are EXACTLY \code{Electricity} or EXACTLY \code{Oil}.}
-#'   \item{\code{^Electricity|^Oil}: row names that START WITH \code{Electricity} or START WITH \code{Oil}.}
-#'   \item{\code{Electricity|Oil}: row names that CONTAIN \code{Electricity} or CONTAIN \code{Oil} anywhere within them.}
+#'   \item{"^Electricity$|^Oil$": row names that are EXACTLY "Electricity" or EXACTLY "Oil".}
+#'   \item{"^Electricity|^Oil": row names that START WITH "Electricity" or START WITH "Oil".}
+#'   \item{"Electricity|Oil": row names that CONTAIN "Electricity" or CONTAIN "Oil" anywhere within them.}
 #' }
 #'
-#' Given a list of row names, a pattern can be constructed easily using the \code{make_pattern} function.
+#' Given a list of row names, a pattern can be constructed easily using `RCLabels::make_or_pattern()`.
 #' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escapeRegex()`.
-#' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
+#' This function assumes that `retain_pattern` and `remove_pattern` have already been
 #' suitably escaped.
 #' 
 #' Note that if all rows are removed from `a`, `NULL` is returned.
 #'
-#' @param a a matrix or a list of matrices
-#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to retain.
-#' Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which rows of \code{m} to remove
-#' Default pattern (\code{$^}) removes nothing.
+#' @param a A matrix or a list of matrices.
+#' @param retain_pattern An extended regex or list of extended regular expressions that specifies which rows of `a` to retain.
+#'                       Default pattern ("$^") retains nothing.
+#' @param remove_pattern An extended regex or list of extended regular expressions that specifies which rows of `a` to remove,
+#'                       Default pattern ("$^") removes nothing.
 #'
-#' @return a matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
+#' @return A matrix that is a subset of `m` with rows selected by `retain_pattern` and `remove_pattern`.
 #' 
 #' @export
 #'
 #' @examples
-#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
+#' m <- matrix(1:16, ncol = 4, dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' select_rows_byname(m, 
 #'                    retain_pattern = RCLabels::make_or_pattern(c("i1", "i4"),
@@ -824,7 +861,7 @@ coltype <- function(a){
 #'                    remove_pattern = RCLabels::make_or_pattern(c("i1", "i3"), 
 #'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
-#' select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$")
+#' select_rows_byname(list(m, m), retain_pattern = "^i1$|^i4$")
 select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   if (is.null(a)) {
     return(NULL)
@@ -894,39 +931,39 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' For maximum flexibility, arguments are extended regex patterns
 #' that are matched against column names.
 #'
-#' If \code{a} is \code{NULL}, \code{NULL} is returned.
+#' If `a` is `NULL`, `NULL` is returned.
 #' 
 #' Patterns are compared against column names using extended regex.
-#' If no column names of \code{a} match the \code{retain_pattern}, \code{NULL} is returned.
-#' If no column names of \code{a} match the \code{remove_pattern}, \code{a} is returned.
+#' If no column names of `a` match the `retain_pattern`, `NULL` is returned.
+#' If no column names of `a` match the `remove_pattern`, `a` is returned.
 #'
 #' Retaining columns takes precedence over removing columns, always.
 #'
 #' Some typical patterns are:
 #' \itemize{
-#'   \item{\code{^Electricity$|^Oil$}: column names that are EXACTLY \code{Electricity} or \code{Oil}.}
-#'   \item{\code{^Electricity|^Oil}: column names that START WITH \code{Electricity} or \code{Oil}.}
-#'   \item{\code{Electricity|Oil}: column names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
+#'   \item{"^Electricity$|^Oil$": column names that are EXACTLY "Electricity" or "Oil".}
+#'   \item{"^Electricity|^Oil": column names that START WITH "Electricity" or "Oil".}
+#'   \item{"Electricity|Oil": column names that CONTAIN "Electricity" or "Oil" anywhere within them.}
 #' }
 #'
-#' Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
+#' Given a list of column names, a pattern can be constructed easily using the `make_pattern` function.
 #' 
 #' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escaprRegex()`.
-#' This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
+#' This function assumes that `retain_pattern` and `remove_pattern` have already been
 #' suitably escaped.
 #' 
-#' Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^}) 
+#' Note that the default `retain_pattern` and `remove_pattern` ("$^") 
 #' retain nothing and remove nothing.
 #' 
 #' Note that if all columns are removed from `a`, `NULL` is returned.
 #' 
 #' @param a a matrix or a list of matrices
-#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
-#' Default pattern (\code{$^}) retains nothing.
-#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
-#' Default pattern (\code{$^}) removes nothing.
+#' @param retain_pattern an extended regex or list of extended regular expressions that specifies which columns of `m` to retain.
+#' Default pattern ("$^") retains nothing.
+#' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of `m` to remove.
+#' Default pattern ("$^") removes nothing.
 #'
-#' @return a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
+#' @return a matrix that is a subset of `a` with columns selected by `retain_pattern` and `remove_pattern`.
 #' 
 #' @export
 #'
@@ -956,9 +993,157 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 }
 
 
+#' Select or remove rows or columns based on pieces of the names.
+#' 
+#' `select_rows_byname()` and `select_cols_byname()`
+#' select rows and columns using regex patterns
+#' This function performs similar actions
+#' based on the pieces of row and column labels.
+#' 
+#' This function uses the `RCLabels` package to match 
+#' row and column names by pieces.
+#' 
+#' To retain rows or columns, specify `retain`. 
+#' To remove rows or columns, specify `remove`.
+#' 
+#' If `a` has row and column types, a string may be passed to `margin`,
+#' in which case the margin will be resolved.
+#' See examples.
+#' 
+#' `notation` may be a list of notations that could apply in `a`. 
+#' This function will try to infer the notation that applies
+#' to row and column names. 
+#' 
+#' Retaining takes precedence over removing, always.
+#' 
+#' Options for `piece` are 
+#' 
+#' * "all" (the default), meaning that the entire label will be matched,
+#' * "pref", meaning that the prefix will be matched,
+#' * "suff", meaning that the suffix will be matched,
+#' * "noun", meaning that the first part will be matched, and
+#' * "from" (or another preposition), meaning that the object of that preposition will be matched.
+#'
+#' If retaining or removing rows or columns results in no rows or columns remaining
+#' in the matrix, `NULL` is returned.
+#' 
+#' @param a A matrix or list of matrices whose rows or columns are to be selected.
+#' @param retain The row or column names to be retained.
+#'               Default is `NULL`, meaning that removal is requested.
+#' @param remove The row or column names to be removed.
+#'               Default is `NULL`, meaning that retaining is requested.
+#' @param piece The piece of row or column names to be assessed.
+#'              Default is "all", indicating that the entire label will be assessed.
+#' @param pattern_type The way to match label pieces.
+#'                     `pattern_type` is passed to `RCLabels::make_or_pattern()`.
+#'                     See `RCLabels::make_or_pattern()` for details.
+#'                     Default is "exact", meaning that exact matches are retained or removed.  
+#'                     Other options are "leading", "trailing", "anywhere", and "literal".
+#' @param prepositions The prepositions that can be used for identifying pieces.
+#'                     Default is `RCLabels::prepositions_list`.
+#' @param notation The notation for the row and column names. 
+#'                 Default is `RCLabels::notations_list`, meaning that all notations known to 
+#'                 `RCLabels` will be assessed.
+#' @param margin The margin to which row or column removal is requested.
+#'               `1` indicates rows; `2` indicates columns.
+#'               Default is `c(1, 2)`, meaning that action should be taken on both rows and columns.
+#'
+#' @return `a` with rows and/or column retained or removed.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+#'               dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+#'                               c("c1 [from c]", "c2 [from d]"))) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' m
+#' select_rowcol_piece_byname(m, retain = "r1", piece = "noun", 
+#'                            notation = RCLabels::to_notation, 
+#'                            margin = 1)
+#' select_rowcol_piece_byname(m, retain = "b", piece = "to", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 1)
+#' select_rowcol_piece_byname(m, retain = "c1", piece = "noun",
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 2)
+#' select_rowcol_piece_byname(m, retain = "d", piece = "from", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 2)
+#' select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = 2)
+#' select_rowcol_piece_byname(m, retain = "b", piece = "to", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = "rows")
+#' select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+#'                            notation = RCLabels::bracket_notation, 
+#'                            margin = "cols")
+select_rowcol_piece_byname <- function(a, 
+                                       retain = NULL, 
+                                       remove = NULL, 
+                                       piece = "all",
+                                       pattern_type = "exact",
+                                       prepositions = RCLabels::prepositions_list, 
+                                       notation = RCLabels::notations_list, 
+                                       margin = c(1, 2)) {
+  if (is.null(a)) {
+    return(NULL)
+  }
+  
+  select_func <- function(a_mat) {
+    # Decode the margin if margin is a string
+    margin <- margin_from_types_byname(a_mat, margin)
+    # If we want to select columns, transpose and select rows.
+    if (2 %in% margin) {
+      # Transpose, perform the selection (or de-selection), and re-transpose
+      a_mat <- transpose_byname(a_mat) %>% 
+        select_rowcol_piece_byname(retain = retain, remove = remove, piece = piece, 
+                                   prepositions = prepositions, notation = notation, margin = 1) %>% 
+        # Re-transpose
+        transpose_byname()
+    }
+    if (1 %in% margin) {
+      # Get the rownames
+      rnames <- getrownames_byname(a_mat)
+      # Make the pattern.
+      if (!is.null(retain)) {
+        keep_pattern <- RCLabels::make_or_pattern(retain, pattern_type = pattern_type)
+        # Use RCLabels::match_by_pattern() to do the matching.
+        which_to_keep <- RCLabels::match_by_pattern(labels = rnames, 
+                                                    regex_pattern = keep_pattern, 
+                                                    pieces = piece, 
+                                                    prepositions = prepositions,
+                                                    notation = notation)
+      } else {
+        # When retain is NULL, we want to remove
+        remove_pattern <- RCLabels::make_or_pattern(remove, pattern_type = pattern_type)
+        which_to_remove <- RCLabels::match_by_pattern(labels = rnames, 
+                                                      regex_pattern = remove_pattern, 
+                                                      pieces = piece, 
+                                                      prepositions = prepositions,
+                                                      notation = notation)
+        which_to_keep <- ! which_to_remove
+      }
+      # Now keep only the rows that we want, retaining all columns.
+      a_mat <- a_mat[which_to_keep, , drop = FALSE]
+    }
+    if (is.null(a_mat)) {
+      return(NULL)
+    }
+    if (matsbyname::nrow_byname(a_mat) == 0 | matsbyname::ncol_byname(a_mat) == 0) {
+      a_mat <- NULL
+    }
+    return(a_mat)
+  }
+  
+  unaryapply_byname(select_func, a = a)
+}
+
+
 #' Clean (delete) rows or columns of matrices that contain exclusively `clean_value`
 #' 
-#' Cleaning is performed when all entries in a row or column or both, depending on the value of `margin`
+#' Cleaning is performed when all entries in a row or column or both, depending on the value of `margin`,
 #' are within `+/- tol` of `clean_value`.
 #' Internally, values are deemed within +/- of tol when 
 #' `abs(x - clean_value) <= tol`.
@@ -966,16 +1151,19 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' If there is concern about machine precision, you might want to call this function with 
 #' `tol = .Machine$double.eps`.
 #'
-#' @param a the matrix to be cleaned
-#' @param margin the dimension over which cleaning should occur, `1` for rows, `2` for columns,
-#'               or `c(1, 2)` for both rows and columns. Default is `c(1, 2)`.
-#' @param clean_value the undesirable value. Default is `0`.
-#' @param tol the tolerance with which any value is deemed equal to `clean_value`. Default is `0`.
-#'
 #' When a row (when `margin = 1`) or a column (when `margin = 2`)
 #' contains exclusively `clean_value` (within `tol`), the row or column is deleted from the matrix.
 #'
-#' @return a "cleaned" matrix, expunged of rows or columns that contain exclusively `clean_value.`
+#' @param a The matrix to be cleaned.
+#' @param margin The dimension over which cleaning should occur, `1` for rows, `2` for columns,
+#'               or `c(1, 2)` for both rows and columns. 
+#'               Default is `c(1, 2)`.
+#' @param clean_value The undesirable value. 
+#'                    Default is `0`.
+#' @param tol The tolerance with which any value is deemed equal to `clean_value`.
+#'            Default is `0`.
+#'
+#' @return A "cleaned" matrix, expunged of rows or columns that contain exclusively `clean_value.`
 #' 
 #' @export
 #'
@@ -1031,12 +1219,14 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 
 #' Test whether this is the zero matrix
 #' 
-#' Note that this function tests whether the elements of \code{abs(a)} are \code{<= tol}.
-#' So, you can set \code{tol = 0} to discover if \code{a} is EXACTLY the zero matrix.
+#' Note that this function tests whether the elements of `abs(a)` are `<= tol`.
+#' The default value for `tol` is `1e-6`.
+#' So, you can set `tol = 0` to discover if `a` is EXACTLY the zero matrix.
 #'
-#' @param a a matrix of list of matrices
-#' @param tol the allowable deviation from 0 for any element
-#' @return \code{TRUE} iff this is the zero matrix within \code{tol}.
+#' @param a A matrix or list of matrices.
+#' @param tol The allowable deviation from 0 for any element.
+#' 
+#' @return `TRUE` iff this is the zero matrix within `tol`.
 #' 
 #' @export
 #'
@@ -1057,11 +1247,124 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #' iszero_byname(DF$B)
 #' iszero_byname(matrix(1e-10, nrow = 2))
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
-iszero_byname <- function(a, tol = 1e-6){
-  zero_func <- function(a, tol){
-    all(abs(a) <= tol)
+iszero_byname <- function(a, tol = 1e-6) {
+  zero_func <- function(a_mat, tol){
+    all(abs(a_mat) <= tol)
   }
   unaryapply_byname(zero_func, a = a, .FUNdots = list(tol = tol), 
+                    rowcoltypes = "none")
+}
+
+
+#' Select zero rows
+#' 
+#' Matrices with rows containing all zeroes are not invertible (singular).
+#' To diagnose this problem, it is useful to find the zero rows
+#' of a singular matrix. 
+#' This function selects (extracts) only the zero rows of a matrix.
+#' 
+#' A row is said to be a zero row if all elements are within `tol` of zero.
+#'
+#' @param a A matrix or a list of matrices.
+#' @param tol The allowable deviation from 0 for any element.
+#'
+#' @return `a` with only zero rows selected.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(0, 0, 1,
+#'               0, 0, 0), 
+#'             dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+#'             nrow = 2, ncol = 3, byrow = TRUE) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' m
+#' selectzerorows_byname(m)
+selectzerorows_byname <- function(a, tol = 1e-6) {
+  if (is.null(a)) {
+    return(NULL)
+  }
+  zerorow_func <- function(a_mat, tol_val) {
+    zero_rows <- sapply(1:nrow(a_mat), FUN = function(i_row) {
+      this_row <- a_mat[i_row, ]
+      all(abs(this_row) <= tol_val)
+    }) %>% 
+      which()
+    a_mat[zero_rows, , drop = FALSE]
+  }
+  unaryapply_byname(zerorow_func, a = a, .FUNdots = list(tol_val = tol))
+}
+
+
+#' Select zero columns
+#' 
+#' Matrices with columns containing all zeroes are not invertible (singular).
+#' To diagnose this problem, it is useful to find the zero columns
+#' of a singular matrix. 
+#' This function selects (extracts) only the zero columns of a matrix.
+#'
+#' A column is said to be a zero column if all elements are within `tol` of zero.
+#' 
+#' @param a A matrix or a list of matrices.
+#' @param tol The allowable deviation from 0 for any element.
+#'
+#' @return `a` with only zero columns selected.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1, 0, 1,
+#'               1, 0, 1),
+#'             dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+#'             nrow = 2, ncol = 3, byrow = TRUE) %>% 
+#'   setrowtype("rows") %>% setcoltype("cols")
+#' selectzerocols_byname(m)
+selectzerocols_byname <- function(a, tol = 1e-6) {
+  if (is.null(a)) {
+    return(NULL)
+  }
+  zerocol_func <- function(a_mat, tol_val) {
+    zero_cols <- sapply(1:ncol(a_mat), FUN = function(i_col) {
+      this_col <- a_mat[ , i_col]
+      all(abs(this_col) <= tol_val)
+    }) %>% 
+      which()
+    a_mat[ , zero_cols, drop = FALSE]
+  }
+  unaryapply_byname(zerocol_func, a = a, .FUNdots = list(tol_val = tol))
+}
+
+
+#' Names of zero rows and columns
+#' 
+#' When a matrix has rows or columns full of zeroes, 
+#' it is singular, and can't be inverted. 
+#' This function returns the names of rows or columns that are full with zeroes.
+#'
+#' @param a A matrix or list of matrices.
+#' @param tol The allowable deviation from 0 for any element.
+#'
+#' @return A vector of names of zero rows or columns.
+#'
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(1, 0, 1,
+#'               1, 0, 0, 
+#'               0, 0, 0),
+#'             dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")), 
+#'             nrow = 3, ncol = 3, byrow = TRUE)
+#' m
+#' getzerorowcolnames_byname(m)
+getzerorowcolnames_byname <- function(a, tol = 1e-6) {
+  zero_row_col_names_func <- function(a_mat, tol_val) {
+    zero_rows <- selectzerorows_byname(a_mat, tol = tol_val)
+    zero_cols <- selectzerocols_byname(a_mat, tol = tol_val)
+    zero_row_names <- getrownames_byname(zero_rows)
+    zero_col_names <- getcolnames_byname(zero_cols)
+    c(zero_row_names, zero_col_names)
+  }
+  unaryapply_byname(zero_row_col_names_func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")
 }
 
@@ -1562,7 +1865,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'   )
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
-                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions)} else {RCLabels::prepositions}) {
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}) {
   
   
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 

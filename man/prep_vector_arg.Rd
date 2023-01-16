@@ -7,12 +7,12 @@
 prep_vector_arg(a, vector_arg)
 }
 \arguments{
-\item{a}{a matrix or list of matrices}
+\item{a}{A matrix or list of matrices.}
 
-\item{vector_arg}{the vector argument over which to apply a calculation}
+\item{vector_arg}{The vector argument over which to apply a calculation.}
 }
 \value{
-\code{vector_arg}, possibly modified when \code{a} is a list
+\code{vector_arg}, possibly modified when \code{a} is a list.
 }
 \description{
 This is a helper function for many \verb{*_byname} functions.
@@ -20,7 +20,7 @@ This is a helper function for many \verb{*_byname} functions.
 \details{
 It is potentially ambiguous to specify a vector or matrix argument, say, \code{margin = c(1, 2)} when applying
 the \verb{*_byname} functions to unary list of \code{a}.
-Rather, one should specify, say, \verb{margin = list(c(1, 2)}
+Rather, one should specify, say, \code{margin = list(c(1, 2))}
 to avoid ambiguity.
 If \code{a} is a list,
 \code{vector_arg} is not a list and has length > 1 and length not equal to the length of a,
@@ -32,5 +32,8 @@ Note that if \code{vector_arg} is a single matrix, it is automatically enclosed 
 }
 \examples{
 m <- matrix(c(2, 2))
-matsbyname:::prep_vector_arg(list(m, m), vector_arg = c(1,2))
+prep_vector_arg(m, vector_arg = c(1,2))
+prep_vector_arg(list(m), vector_arg = c(1,2))
+prep_vector_arg(list(m, m), vector_arg = c(1,2))
+prep_vector_arg(list(m, m, m), vector_arg = c(1,2))
 }

@@ -7,9 +7,11 @@
 aggregate_pieces_byname(
   a,
   piece,
-  margin = c(1, 2),
-  notation,
-  prepositions = RCLabels::prepositions,
+  margin = list(c(1, 2)),
+  inf_notation = TRUE,
+  notation = list(RCLabels::notations_list),
+  choose_most_specific = FALSE,
+  prepositions = list(RCLabels::prepositions_list),
   aggregation_map = NULL,
   pattern_type = "exact"
 )
@@ -21,7 +23,11 @@ aggregate_pieces_byname(
 
 \item{margin}{See \code{rename_to_piece_byname()}.}
 
+\item{inf_notation}{See \code{rename_to_piece_byname()}.}
+
 \item{notation}{See \code{rename_to_piece_byname()}.}
+
+\item{choose_most_specific}{See \code{rename_to_piece_byname()}.}
 
 \item{prepositions}{See \code{rename_to_piece_byname()}.}
 

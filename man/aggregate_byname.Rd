@@ -16,9 +16,12 @@ aggregate_byname(
 
 \item{aggregation_map}{A named list of rows or columns to be aggregated (or \code{NULL}). See \code{details}.}
 
-\item{margin}{\code{1}, \code{2}, or \code{c(1, 2)} for row aggregation, column aggregation, or both.}
+\item{margin}{\code{1}, \code{2}, or \code{c(1, 2)} for row aggregation, column aggregation, or both.
+As a string, \code{margin} can be a row or column type.
+Default is \code{c(1, 2)}.}
 
-\item{pattern_type}{See \code{RCLabels::make_or_pattern()}.}
+\item{pattern_type}{See \code{RCLabels::make_or_pattern()}.
+Default is "exact".}
 }
 \value{
 A version of \code{a} with aggregated rows and/or columns
@@ -42,6 +45,10 @@ whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
 
 The values in the \code{aggregation_map} are interpreted as regular expressions, and
 they are escaped using \code{Hmisc::escapeRegex()} prior to use.
+
+\code{margin} can be a string, in which case it is interpreted as a row or column type.
+If a string \code{margin} does not match a row or column type,
+\code{a} is returned unmodified.
 
 Note that aggregation on one margin only will sort only the aggregated margin, because
 the other margin is not guaranteed to have unique names.

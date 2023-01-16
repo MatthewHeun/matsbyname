@@ -7,7 +7,7 @@
 fractionize_byname(a, margin)
 }
 \arguments{
-\item{a}{the matrix to be fractionized}
+\item{a}{The matrix to be fractionized.}
 
 \item{margin}{If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
 If \code{2} (columns), each entry in \code{a} is divided by its column's sum.
@@ -15,7 +15,7 @@ If \code{c(1,2)} (both rows and columns),
 each entry in \code{a} is divided by the sum of all entries in \code{a}.}
 }
 \value{
-a fractionized matrix of same dimensions and same row and column types as \code{a}.
+A fractionized matrix of same dimensions and same row and column types as \code{a}.
 }
 \description{
 This function divides all entries in \code{a} by the specified sum,

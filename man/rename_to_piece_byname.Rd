@@ -7,9 +7,11 @@
 rename_to_piece_byname(
   a,
   piece,
-  margin = c(1, 2),
-  notation = RCLabels::bracket_notation,
-  prepositions = RCLabels::prepositions
+  margin = list(c(1, 2)),
+  inf_notation = TRUE,
+  notation = list(RCLabels::notations_list),
+  choose_most_specific = FALSE,
+  prepositions = list(RCLabels::prepositions_list)
 )
 }
 \arguments{
@@ -25,12 +27,25 @@ Default is \code{c(1, 2)}, meaning that both
 rows (\code{margin = 1}) and columns (\code{margin = 2})
 will be renamed.}
 
+\item{inf_notation}{A boolean that tells whether to infer notation.
+Default is \code{TRUE}.}
+
 \item{notation}{The notation used for row and column labels.
-Default is \code{RCLabels::bracket_notation}.
+Default is \code{list(RCLabels::notations_list)}.
+The default value is wrapped in a list,
+because \code{RCLabels::notations_list} is, itself, a list.
 See \code{RCLabels}.}
 
+\item{choose_most_specific}{A boolean that indicates whether the most-specific notation
+will be inferred when more than one of \code{notation} matches
+a row or column label
+and \code{allow_multiple = FALSE}.
+When \code{FALSE}, the first matching notation in \code{notations}
+is returned when \code{allow_multiple = FALSE}.
+Default is \code{FALSE}.}
+
 \item{prepositions}{Prepositions that can be used in the row and column label.
-Default is \code{RCLabels::prepositions}.}
+Default is \code{RCLabels::prepositions_list}.}
 }
 \value{
 A version of \code{a} with renamed rows and columns.

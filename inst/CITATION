@@ -3,13 +3,13 @@ citHeader("To cite package ‘matsbyname’ in publications use:")
 citEntry(entry = "Manual",
   title        = "matsbyname: An Implementation of Matrix Mathematics",
   author       = personList(as.person("Matthew Kuperus Heun")),
-  year         = "2022",
-  note         = "R package version 0.5.0",
+  year         = "2023",
+  note         = "R package version 0.5.1",
   url          = "https://CRAN.R-project.org/package=matsbyname",
 
   textVersion  =
-  paste("Matthew Kuperus Heun (2022).",
+  paste("Matthew Kuperus Heun (2023).",
         "matsbyname: An Implementation of Matrix Mathematics.",
-        "R package version 0.5.0.",
+        "R package version 0.5.1.",
         "https://CRAN.R-project.org/package=matsbyname")
 )

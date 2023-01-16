@@ -1035,7 +1035,7 @@ test_that("identical_byname() works as expected", {
   
 
 ###########################################################
-context("Utilities")
+context("Utilities in test_Binary")
 ###########################################################
 
 test_that("samestructure_byname() works as expected", {
@@ -1195,7 +1195,7 @@ test_that("matrix multiplied by a constant in a data frame works", {
     # on all rows of the data frame.
     rbind(., .) %>% 
     dplyr::mutate(
-      constant = make_list(x = 1:2, n = 2, lenx = 2),
+      constant = RCLabels::make_list(x = 1:2, n = 2, lenx = 2),
       # Multiplies matrices in the sum column by corresponding constants in the c column.
       product = hadamardproduct_byname(constant, A)
     )

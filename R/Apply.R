@@ -35,7 +35,7 @@
 #' @param FUN a unary function to be applied "by name" to `a`.
 #' @param a the argument to `FUN`.
 #' @param .FUNdots a list of additional named arguments passed to `FUN`.
-#' @param rowcoltypes a string that tells how to transfer row and column types of `a` to output. See `details`.
+#' @param rowcoltypes a string that tells how to transfer row and column types of `a` to output. See details.
 #'
 #' @return the result of applying `FUN` "by name" to `a`.
 #' 
@@ -122,7 +122,7 @@ prepare_.FUNdots <- function(a, .FUNdots) {
   
   if (is.null(.FUNdots)) {
     if (is.list(a)) {
-      return(make_list(NULL, n = length(a), lenx = 1))
+      return(RCLabels::make_list(NULL, n = length(a), lenx = 1))
     } else {
       return(NULL)
     }
@@ -152,7 +152,7 @@ prepare_.FUNdots <- function(a, .FUNdots) {
                                              "' in a list()."))
         if (len == 1) {
           # Replicate the item of .FUNdots to match length of a.
-          .FUNdots[[i]] <- make_list(.FUNdots[[i]][[1]], n = length(a), lenx = 1)
+          .FUNdots[[i]] <- RCLabels::make_list(.FUNdots[[i]][[1]], n = length(a), lenx = 1)
         }
       } else {
         #'   * a is NOT a list, but the item of .FUNdots IS a list
@@ -196,7 +196,7 @@ prepare_.FUNdots <- function(a, .FUNdots) {
                                                      names(.FUNdots)[[i]], 
                                                      "' into a list of length 1."))
         if (is.null(.FUNdots[[i]]) | length(.FUNdots[[i]]) == 1) {
-          .FUNdots[[i]] <- make_list(.FUNdots[[i]], n = length(a), lenx = 1)
+          .FUNdots[[i]] <- RCLabels::make_list(.FUNdots[[i]], n = length(a), lenx = 1)
         }
         # Otherwise, do nothing.
 
@@ -257,8 +257,8 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
   }
   if (is.list(a)) {
     lfun <- replicate(n = length(a), expr = FUN, simplify = FALSE)
-    lrow <- make_list(x = row, n = length(a), lenx = 1)
-    lcol <- make_list(x = col, n = length(a), lenx = 1)
+    lrow <- RCLabels::make_list(x = row, n = length(a), lenx = 1)
+    lcol <- RCLabels::make_list(x = col, n = length(a), lenx = 1)
     lFUNdots <- prepare_.FUNdots(a, .FUNdots)
     return(Map(elementapply_byname, lfun, a, lrow, lcol, lFUNdots) %>% 
              # Preserve names of a (if present) in the outgoing list.

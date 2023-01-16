@@ -7,17 +7,18 @@
 transpose_byname(a)
 }
 \arguments{
-\item{a}{the matrix to be transposed}
+\item{a}{The matrix to be transposed.}
 }
 \value{
-the transposed matrix
+The transposed matrix.
 }
 \description{
-Gives the transpose of a matrix or list of matrices
+Gives the transpose of a matrix or list of matrices.
 }
 \examples{
 m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
+m
 transpose_byname(m)
 transpose_byname(list(m,m))
 }

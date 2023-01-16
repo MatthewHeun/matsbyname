@@ -40,7 +40,7 @@ The power of matrices lies in their ability
 to organize network-wide calculations,
 thereby simplifying the work of analysts who study entire systems.
 However, three problems arise when performing matrix operations
-in <tt>R</tt> and other languages.
+in `R` and other languages.
 
 
 ### Problem 1
@@ -403,7 +403,7 @@ result <- mats %>%
   dplyr::bind_rows(., .) %>%
   dplyr::mutate(
     # Create a column of constants.
-    c = make_list(x = 1:2, n = 2, lenx = 2),
+    c = RCLabels::make_list(x = 1:2, n = 2, lenx = 2),
     # Sum all rows of the data frame with a single instruction.
     sum = sum_byname(A, B),
     # Multiply matrices in the sum column by corresponding constants in the c column.
@@ -417,7 +417,7 @@ result$product[[2]]
 ```
 
 
-## Suggested workflow using <tt>matsbyname</tt> and <tt>matsindf</tt>
+## Suggested workflow using `matsbyname` and `matsindf`
 
 A suggested analysis workflow is as follows:
 

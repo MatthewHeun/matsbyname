@@ -69,6 +69,268 @@ test_that("selecting rows and columns works even when there is a NULL situation"
 })
 
 
+test_that("select_rowcol_piece_byname() works for selecting rows", {
+  expect_null(select_rowcol_piece_byname(a = NULL))
+  
+  # Retain a row by its noun.
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expected_1 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_1, expected_1)
+  
+  # Retain a row by a preposition.
+  expected_2 <- matrix(c(3,4), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  # The next line needs to have bracket_notation.
+  # If from_notation is used, "from" is not a valid piece.
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "b", piece = "from", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_2, expected_2)
+  
+  # Retain a row by prefix. Should give the same result as expected_2
+  res_3 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_3, expected_2)
+  
+  # Retain a row by suffix
+  res_4 <- select_rowcol_piece_byname(m_1, retain = "a", piece = "suff", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_4, expected_1)
+  
+  # Retain a row by prefix
+  res_5 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_5, expected_2)
+  
+  # Replace based on pattern type
+  res_6 <- select_rowcol_piece_byname(m_1, retain = "2", piece = "noun",
+                                      pattern_type = "trailing", 
+                                      notation = RCLabels::bracket_notation, 
+                                      margin = 1)
+  expect_equal(res_6, expected_2)
+  
+})
+
+
+test_that("select_rowcol_piece_byname() works for removing rows", {
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  # Remove a row by prefix
+  res_1 <- select_rowcol_piece_byname(m_1, remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expected_1 <- matrix(3:4, nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res_1, expected_1)
+  
+  # Remove a row by suffix
+  res_2 <- select_rowcol_piece_byname(m_1, remove = "b", piece = "suff", notation = RCLabels::from_notation, margin = 1)
+  expected_2 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res_2, expected_2)
+  
+  # Remove a row by preposition
+  res_3 <- select_rowcol_piece_byname(m_1, remove = "a", piece = "from", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_3, expected_1)
+  
+  # Remove a row by noun
+  res_4 <- select_rowcol_piece_byname(m_1, remove = "r1", piece = "noun", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_4, expected_1)
+})
+
+
+test_that("select_rowcol_piece_byname() works with both retain and remove", {
+  # Retain and remove at same time.  Retain should take precedence.
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  # Remove a row by prefix
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  
+  expected_1 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(res_1, expected_1)
+  
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "r1", remove = "r2", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_2, expected_1)
+  
+  res_3 <- select_rowcol_piece_byname(m_1, retain = "r2", remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  
+  expected_2 <- matrix(c(3,4), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(res_3, expected_2)
+})
+
+
+test_that("select_rowcol_piece_byname() works when selecting columns", {
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "c1", piece = "noun", 
+                                      notation = RCLabels::from_notation, margin = 2)  
+  
+  expected_1 <- matrix(c(1, 3), nrow = 2, ncol = 1, byrow = TRUE, 
+                       dimnames = list(c("r1 [from a]", "r2 [from b]"), "c1 [from c]")) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(res_1, expected_1)
+  
+  # Deselect a column
+  res_2 <- select_rowcol_piece_byname(m_1, remove = "c2", piece = "noun", 
+                                      notation = RCLabels::bracket_notation, margin = 2)  
+  expect_equal(res_2, expected_1)
+})
+
+
+test_that("select_rowcol_piece_byname() examples work as intended", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  res <- select_rowcol_piece_byname(m, retain = "r1", piece = "noun", 
+                                    notation = RCLabels::to_notation, 
+                                    margin = 1)
+  expected <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                     dimnames = list("r1 [to a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res, expected)
+  
+  res_2 <- select_rowcol_piece_byname(m, retain = "c", piece = "from", 
+                                      notation = RCLabels::bracket_notation, 
+                                      margin = 2)
+  expected_2 <- matrix(c(1,3), nrow = 2, ncol = 1, byrow = TRUE, 
+                       dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                                       c("c1 [from c]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res_2, expected_2)
+})
+
+
+test_that("select_rowcol_piece_byname() works when specifying both rows and cols", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Use default margin (c(1,2)).
+  res <- select_rowcol_piece_byname(m, retain = c("r1", "c1", "r3", "c3"), piece = "noun", 
+                                    notation = RCLabels::bracket_notation)
+  expected <- matrix(1, nrow = 1, ncol = 1, 
+                     dimnames = list("r1 [to a]", "c1 [from c]")) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res, expected)
+})
+
+
+test_that("select_rowcol_piece_byname() works in a list and a data frame", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  n <- matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
+                              c("c1 [from d]", "c2 [from e]", "c3 [from f]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  # Try in a list
+  res <- list(m, n) %>% 
+    select_rowcol_piece_byname(retain = c("r1", "r2"), piece = "noun", notation = RCLabels::bracket_notation, margin = 1)
+  expected_m <- m # No change, because only rows r1 and r2
+  # Eliminates r3.
+  expected_n <-   n <- matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE, 
+                              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                                              c("c1 [from d]", "c2 [from e]", "c3 [from f]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(res, list(expected_m, expected_n))
+  
+  # Try in a data frame.
+  res_df <- tibble::tibble(mats = list(m, n)) %>% 
+    dplyr::mutate(
+      r1r2 = select_rowcol_piece_byname(mats, retain = c("r1", "r2"), piece = "noun", notation = RCLabels::bracket_notation, margin = 1)
+    )
+  expect_equal(res_df$r1r2, list(expected_m, expected_n))
+})
+
+
+test_that("select_rowcol_piece_byname() interprets margins correctly", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  n <- matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
+                              c("c1 [from d]", "c2 [from e]", "c3 [from f]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expected_m <- matrix(c(2,4), nrow = 2, ncol = 1, byrow = TRUE, 
+                       dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                                       "c2 [from d]")) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_n <- matrix(c(1, 4, 7), nrow = 3, ncol = 1, byrow = TRUE, 
+                       dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
+                                       "c1 [from d]")) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+
+  res_df <- tibble::tibble(mats = list(m, n)) %>% 
+    dplyr::mutate(
+      res_col = select_rowcol_piece_byname(mats, retain = "d", piece = "from", notation = RCLabels::bracket_notation, margin = "cols")
+    )
+  expect_equal(res_df$res_col, list(expected_m, expected_n))
+  
+  res_df_2 <- tibble::tibble(mats = list(m, transpose_byname(n))) %>% 
+    dplyr::mutate(
+      # Picks up the correct margin with the string.
+      res_col = select_rowcol_piece_byname(mats, retain = "d", piece = "from", notation = RCLabels::bracket_notation, margin = "cols")
+    )
+  expect_equal(res_df_2$res_col, list(expected_m, transpose_byname(expected_n)))
+})
+
+
+test_that("select_rowcol_piece_byname() works with notation inference", {
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expected_1 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  # Don't specify notation to force inference.
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", margin = 1)
+  expect_equal(res_1, expected_1)
+})
+
+
+test_that("select_rowcol_piece_byname() works when all rows or all cols are removed", {
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "bogus", piece = "noun", margin = 1)
+  expect_null(res_1)
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "bogus", piece = "all", margin = 2)
+  expect_null(res_2)
+  
+  # Try in a data frame
+  df <- tibble::tibble(m = list(m_1, m_1)) %>% 
+    dplyr::mutate(
+      res = select_rowcol_piece_byname(m, retain = "bogus", piece = "all", margin = 1)
+    )
+  expect_null(df$res[[1]])
+  expect_null(df$res[[2]])
+})
+
+
 test_that("setting row and column names works even when there is a NULL situation", {
   m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -144,7 +406,7 @@ test_that("cleaning works with tolerance", {
 })
 
 
-test_that("iszero_byname works as expected", {
+test_that("iszero_byname() works as expected", {
   m <- matrix(0, nrow = 3, ncol = 2)
   expect_true(iszero_byname(m))
   n <- matrix(1, nrow = 42, ncol = 5)
@@ -152,7 +414,71 @@ test_that("iszero_byname works as expected", {
 })
 
 
-test_that("getting row names works as expected", {
+test_that("selectzerorows_byname() works as expected", {
+  expect_null(selectzerorows_byname(NULL))
+  fail <- matrix(c(1, 0, 1,
+                   1, 0, 1),
+                 dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                 nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_fail <- fail[0, , drop = FALSE] %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(selectzerorows_byname(fail), expected_fail)
+  
+  succeed <- matrix(c(0, 0, 1,
+                      0, 0, 0), 
+                    dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                    nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_succeed <- succeed[2, , drop = FALSE] %>%
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(selectzerorows_byname(succeed), expected_succeed)
+})
+
+
+test_that("selectzerocols_byname() works as expected", {
+  expect_null(selectzerocols_byname(NULL))
+  m <- matrix(c(1, 0, 1,
+                1, 0, 1),
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+              nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_m <- m[ , 2, drop = FALSE] %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(selectzerocols_byname(m), expected_m)
+  
+  
+  m2 <- matrix(c(0, 0, 1,
+                 0, 0, 0), 
+               dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+               nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_m2 <- m2[, 1:2, drop = FALSE] %>%
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(selectzerocols_byname(m2), expected_m2)
+})
+
+
+test_that("getzerorowcolnames_byname() works as expected", {
+  m <- matrix(c(1, 0, 1,
+                1, 0, 1),
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+              nrow = 2, ncol = 3, byrow = TRUE) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(getzerorowcolnames_byname(m), "c2")
+  expect_equal(getzerorowcolnames_byname(list(m, m)), list("c2", "c2"))
+
+  m2 <- matrix(c(1, 0, 1,
+                 1, 0, 0, 
+                 0, 0, 0),
+               dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")), 
+               nrow = 3, ncol = 3, byrow = TRUE)
+  expect_equal(getzerorowcolnames_byname(m2), c("r3", "c2"))
+  expect_equal(getzerorowcolnames_byname(list(m2, m2)), list(c("r3", "c2"), c("r3", "c2")))
+})
+
+
+test_that("getrownames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   expect_equal(getrownames_byname(m), c("i1", "i2"))
@@ -166,7 +492,7 @@ test_that("getting row names works as expected", {
 })
 
 
-test_that("getting column names works as expected", {
+test_that("getcolnames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   expect_equal(getcolnames_byname(m), c("p1", "p2", "p3"))
@@ -180,7 +506,7 @@ test_that("getting column names works as expected", {
 })
 
 
-test_that("setrownames_byname works as expected", {
+test_that("setrownames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Commodities")
   m2 <- setrownames_byname(m, c("a", "b"))
@@ -196,7 +522,7 @@ test_that("setrownames_byname works as expected", {
 })
 
 
-test_that("setcolnames_byname works as expected", {
+test_that("setcolnames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Commodities")
   expect_equal(m %>% setcolnames_byname(c("a", "b", "c")) %>% colnames(), 
@@ -1410,7 +1736,7 @@ test_that("vec_from_store_byname() works with lists", {
   # Try with notation and prepositions already wrapped in lists.
   res <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from", 
                         notation = list(RCLabels::bracket_notation), 
-                        prepositions = list(RCLabels::prepositions))  
+                        prepositions = list(RCLabels::prepositions_list))  
   expect_equal(res, expected_list)
   
   # Try with notation and prepositions not already wrapped in lists.
@@ -1518,6 +1844,101 @@ test_that("rename_to_piece_byname() works as expected", {
 })
 
 
+test_that("rename_to_piece_byname() works as expected when inferring notation", {
+  # Test with one that fails to infer.
+  bad_mat <- matrix(c(1, 2,
+                      3, 4,
+                      5, 6), nrow = 3, byrow = TRUE,
+                    dimnames = list(c("ab", "c -> d", "e -> f"), c("g -> h", "i -> j")))
+  expected <- bad_mat
+  rownames(expected) <- c("ab", "c", "e")
+  colnames(expected) <- c("g", "i")
+  expect_equal(rename_to_piece_byname(bad_mat, piece = "pref"), expected)
+  
+  m <- matrix(c(1, 2,
+                3, 4,
+                5, 6), nrow = 3, byrow = TRUE,
+              dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j")))
+  res1 <- rename_to_piece_byname(m, piece = "pref")
+  expected1 <- m
+  dimnames(expected1) <- list(c("a", "c", "e"), c("g", "i"))
+  expect_equal(res1, expected1)
+  
+  # Test with other inferred pieces (suffix, prepositions)
+  res2 <- rename_to_piece_byname(m, piece = "suff")
+  expected2 <- m
+  dimnames(expected2) <- list(c("b", "d", "f"), c("h", "j"))
+  expect_equal(res2, expected2)
+  
+  m2 <- matrix(c(1, 2,
+                 3, 4,
+                 5, 6), nrow = 3, byrow = TRUE,
+               dimnames = list(c("a [in b]", "c [in d]", "e [in f]"), c("g [in h]", "i [in j]")))
+  res3 <- rename_to_piece_byname(m2, piece = "pref")
+  expected3 <- m2
+  dimnames(expected3) <- list(c("a", "c", "e"), c("g", "i"))
+  expect_equal(res3, expected3)
+
+  # This one picks up the full suffix, because not choosing most specific,
+  # which defaults to the first matching notation, which is bracket notation.
+  res4 <- rename_to_piece_byname(m2, piece = "suff")
+  expected4 <- m2
+  dimnames(expected4) <- list(c("in b", "in d", "in f"), c("in h", "in j"))
+  expect_equal(res4, expected4)
+  
+  # Now choose the most specific, which will be the in notation.
+  # Thus, we will have b, d, f, h, and j as the row and column names.
+  res5 <- rename_to_piece_byname(m2, piece = "suff", choose_most_specific = TRUE)
+  expected5 <- m2
+  dimnames(expected5) <- list(c("b", "d", "f"), c("h", "j"))
+  expect_equal(res5, expected5)
+  
+  # Choose the object of the "in" preposition.
+  res6 <- rename_to_piece_byname(m2, piece = "in")
+  expected6 <- m2
+  dimnames(expected6) <- list(c("b", "d", "f"), c("h", "j"))
+  expect_equal(res6, expected6)
+  
+  # Try in a data frame with different notations.
+  df <- tibble::tribble(~m, ~piece, ~cms, ~expected, 
+                        m2, "pref", FALSE, expected3,
+                        m2, "suff", FALSE, expected4,
+                        m2, "suff", TRUE, expected5,
+                        m2, "in", FALSE, expected6)
+  res <- df %>% 
+    dplyr::mutate(res = rename_to_piece_byname(a = m, piece = piece, choose_most_specific = cms))
+  for (i in 1:nrow(df)) {
+    expect_equal(res$res[[i]], res$expected[[i]])
+  }
+})
+
+
+test_that("rename_to_piece_byname() works with inferred margins", {
+  m1 <- matrix(c(1, 2, 3,
+                4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
+                              c("Motors -> MD", "Cars -> MD", "LED lamps -> Light"))) %>% 
+    setrowtype("Product [from Product]") %>% setcoltype("Industry -> Product")
+  res1 <- rename_to_piece_byname(m1, 
+                                 piece = "pref",
+                                 margin = "Product [from Product]", 
+                                 choose_most_specific = TRUE)
+  expected1 <- m1
+  expected1 <- setrownames_byname(expected1, c("Electricity", "Electricity"))
+  expected1 <- setrowtype(expected1, "Product")
+  expect_equal(res1, expected1)
+  
+  # Make sure it also works when the type doesn't have the same structure
+  # as the row and column names.
+  m2 <- m1 %>% 
+    setrowtype("Product") %>% setcoltype("Industry")
+  res2 <- rename_to_piece_byname(m2, piece = "pref", margin = "Product")
+  expected2 <- m2
+  expected2 <- setrownames_byname(expected2, c("Electricity", "Electricity"))
+  expect_equal(res2, expected2)
+})
+
+
 test_that("margin_from_types_byname() works as expected", {
   # Try with a single matrix
   m <- matrix(1) %>%
@@ -1574,3 +1995,14 @@ test_that("margin_from_types_byname() works as expected", {
   expect_equal(res$margin3, list(NA_integer_, NA_integer_))
 })
 
+
+test_that("prep_vector_arg() works as expected", {
+  a <- matrix(1)
+  res <- prep_vector_arg(a, list(RCLabels::notations_list))
+  expect_equal(res, RCLabels::notations_list)
+  
+  # Now try with a list of 2 matrices
+  a <- list(matrix(1), matrix(1))
+  res <- prep_vector_arg(a, list(RCLabels::notations_list))
+  expect_equal(res, list(RCLabels::notations_list))
+})

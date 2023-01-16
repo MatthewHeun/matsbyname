@@ -11,10 +11,12 @@
 #' abs_byname(-1)
 #' m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' abs_byname(m)
 abs_byname <- function(a){
   unaryapply_byname(abs, a = a)
 }
+
 
 #' Logarithm of matrix elements
 #' 
@@ -31,11 +33,13 @@ abs_byname <- function(a){
 #' log_byname(exp(1))
 #' m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' log_byname(m)
 #' log_byname(m, base = 10)
 log_byname <- function(a, base = exp(1)){
   unaryapply_byname(log, a = a, .FUNdots = list(base = base))
 }
+
 
 #' Exponential of matrix elements
 #' 
@@ -52,50 +56,258 @@ log_byname <- function(a, base = exp(1)){
 #' m <- matrix(c(log(10),log(1),log(1),log(100)), 
 #'   nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' exp_byname(m)
 exp_byname <- function(a){
   unaryapply_byname(exp, a = a)
 }
 
+
 #' Invert a matrix
 #'
 #' This function transposes row and column names as well as row and column types.
-#' Rows and columns of \code{a} are sorted prior to inverting.
+#' Rows and columns of `a` are sorted prior to inverting.
+#' 
+#' The `method` argument specifies which method should be used for 
+#' calculating the inverse. 
+#' "solve" uses `base::solve()` and the value of `tol`.
+#' "QR" uses `base::solve.qr()` and the value of `tol`.
+#' "SVD" uses `matrixcalc::svd.inverse()`, ignoring the `tol` argument.
+#' 
+#' Both `tol` and `method` should be a single values and apply to all matrices in `a`.
 #'
-#' @param a the matrix to be inverted. \code{a} must be square.
+#' If `a` is a singular matrix, 
+#' names of zero rows and columns are reported in the error message.
+#' 
+#' @param a The matrix to be inverted. `a` must be square.
+#' @param method One of "solve", "QR", or "SVD". Default is "solve". See details.
+#' @param tol The tolerance for detecting linear dependencies in the columns of `a`. 
+#'            Default is `.Machine$double.eps`. 
 #'
-#' @return the inversion of \code{a}
+#' @return The inversion of `a`.
 #' 
 #' @export
 #'
 #' @examples
 #' m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' invert_byname(m)
 #' matrixproduct_byname(m, invert_byname(m))
 #' matrixproduct_byname(invert_byname(m), m)
 #' invert_byname(list(m,m))
-invert_byname <- function(a){
-  unaryapply_byname(solve, a = a, rowcoltypes = "transpose")
+#' invert_byname(m, method = "QR")
+#' invert_byname(m, method = "SVD")
+invert_byname <- function(a, 
+                          method = c("solve", "QR", "SVD"), 
+                          tol = .Machine$double.eps) {
+  method <- match.arg(method)
+  # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
+  invert_func <- function(a_mat) {
+    tryCatch({
+      if (method == "solve") {
+        out <- solve(a_mat, tol = tol)
+      } else if (method == "QR") {
+        qr_res <- qr(a_mat)
+        out <- solve.qr(qr_res, tol = tol)
+        colnames(out) <- rownames(a_mat)
+      } else if (method == "SVD") {
+        out <- matrixcalc::svd.inverse(a_mat)
+        rownames(out) <- colnames(a_mat)
+        colnames(out) <- rownames(a_mat)
+      }
+      return(out)
+    }, error = function(e) {
+      if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:") | 
+          startsWith(e$message, "singular matrix 'a' in 'solve'")) {
+        # Find any zero rows and columns
+        zero_rows_cols <- getzerorowcolnames_byname(a_mat)
+        # Create a helpful error message
+        err_msg <- paste0("Attempt to invert a singular matrix. Zero rows and columns: ", paste0(zero_rows_cols, collapse = ", "), ".")
+        stop(err_msg)
+      }
+      stop(e$message)
+    })
+  }
+  unaryapply_byname(invert_func, a = a, rowcoltypes = "transpose")
 }
+
 
 #' Transpose a matrix by name
 #'
-#' Gives the transpose of a matrix or list of matrices
+#' Gives the transpose of a matrix or list of matrices.
 #'
-#' @param a the matrix to be transposed
+#' @param a The matrix to be transposed.
 #'
-#' @return the transposed matrix
+#' @return The transposed matrix.
 #' 
 #' @export
 #'
 #' @examples
 #' m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
-transpose_byname <- function(a){
-  unaryapply_byname(t, a = a, rowcoltypes = "transpose")
+transpose_byname <- function(a) {
+  
+  transpose_func <- function(a_mat) {
+    if (!is.matrix(a_mat)) {
+      # In the event that we don't have a matrix, 
+      # we probably have a single number.
+      # Don't try to transpose.
+      return(a_mat)
+    }
+    t(a_mat)
+  }
+  unaryapply_byname(transpose_func, a = a, rowcoltypes = "transpose")
+}
+
+
+#' Calculate eigenvalues of a matrix
+#' 
+#' Calculate the eigenvalues of a matrix or a list of matrices.
+#' 
+#' This function pairs with `eigenvectors_byname()`;
+#' the first value of the result is the eigenvalue
+#' for the eigenvector reported in the first column of the result from `eigenvectors_byname()`.
+#' The second value of the result is the eigenvalue
+#' for the eigenvector reported in the second column of the result from `eigenvectors_byname()`.
+#' Etc. 
+#' 
+#' Internally, this function uses `base::eigen(only.values = TRUE)`.
+#' 
+#' `complete_rows_cols()` is called prior to calculating the eigenvalues.
+#'
+#' @param a A matrix or list of matrices.
+#'
+#' @return A vector of eigenvalues.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c( 4,  6, 10, 
+#'                3, 10, 13, 
+#'               -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+#'             dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+#' m
+#' eigenvalues_byname(m)
+#' eigenvalues_byname(list(m, 2*m))
+#' DF <- tibble::tibble(m_col = list(m, 2*m)) %>% 
+#'   dplyr::mutate(
+#'     eigen_col = eigenvalues_byname(m_col)
+#'   )
+#' DF$eigen_col[[1]]
+#' DF$eigen_col[[2]]
+eigenvalues_byname <- function(a) {
+  eigenvals_func <- function(a_mat) {
+    completed_mat <- complete_rows_cols(a_mat)
+    eigen(completed_mat, only.values = TRUE)[["values"]]
+  }
+  unaryapply_byname(eigenvals_func, a = a, rowcoltypes = "none")
+}
+
+
+#' Calculate eigenvectors of a matrix
+#' 
+#' Calculate the eigenvectors of a matrix or a list of matrices.
+#' 
+#' This function pairs with `eigenvalues_byname()`;
+#' the first column of the resulting matrix is the eigenvector
+#' for the first eigenvalue reported by `eigenvalues_byname()`.
+#' The second column of the resulting matrix is the eigenvector
+#' for the second eigenvalue reported by `eigenvalues_byname()`.
+#' Etc.
+#' 
+#' Internally, this function uses `base::eigen()`.
+#' 
+#' `complete_rows_cols()` is called prior to calculating the eigenvectors.
+#'
+#' @param a A matrix or list of matrices.
+#'
+#' @return A matrix whose columns are the eigenvectors of `a`.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c( 4,  6, 10, 
+#'                3, 10, 13, 
+#'               -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+#'             dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+#' m
+#' eigenvectors_byname(m)
+#' eigenvectors_byname(list(m, 2*m))
+#' DF <- tibble::tibble(m_col = list(m, 2*m)) %>% 
+#'   dplyr::mutate(
+#'     eigen_col = eigenvectors_byname(m_col)
+#'   )
+#' DF$eigen_col[[1]]
+#' DF$eigen_col[[2]]
+eigenvectors_byname <- function(a) {
+  eigenvecs_func <- function(a_mat) {
+    completed_mat <- complete_rows_cols(a_mat)
+    eigen(completed_mat)[["vectors"]]
+  }
+  unaryapply_byname(eigenvecs_func, a = a, rowcoltypes = "none")
+}
+
+
+#' Calculate the U matrix in singular value decomposition
+#'
+#' The singular value decomposition decomposes matrix **A** into
+#' **A** = **U** **D** **V**^T, 
+#' where **U** and **V** are orthogonal matrices and **D** is a diagonal matrix.
+#' **U** is the left singular vectors of **A**. 
+#' **V** is the right singular vectors of **A**.
+#' 
+#' `which` determines the part of the singular value decomposition to be returned.
+#' "d" (default) gives the **D** matrix.
+#' "u" gives the **U** matrix.
+#' "v" gives the **V** matrix (not its transpose).
+#' 
+#' @param a A matrix to be decomposed.
+#' @param which The matrix to be returned. Default is "d". See details.
+#'
+#' @return A matrix of the singular value decomposition of `a`.
+#' 
+#' @export
+#'
+#' @examples
+#' A = matrix(c(4, 0, 
+#'              3, -5), nrow = 2, ncol = 2, byrow = TRUE, 
+#'            dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' A
+#' svd_byname(A) # Gives D matrix, by default
+#' svd_byname(A, which = "d")
+#' svd_byname(A, which = "u")
+#' svd_byname(A, which = "v")
+svd_byname <- function(a, which = c("d", "u", "v")) {
+  which <- match.arg(which)
+  svd_func <- function(a_mat) {
+    res <- svd(a_mat)[[which]]
+    if (which == "d") {
+      res <- diag(res)
+      rownames(res) <- rownames(a_mat)
+      colnames(res) <- colnames(a_mat)
+      res <- res %>% 
+        setrowtype(rowtype(a_mat)) %>% 
+        setcoltype(coltype(a_mat))
+    } else if (which == "u") {
+      rownames(res) <- rownames(a_mat)
+      colnames(res) <- rownames(a_mat)
+      res <- res %>% 
+        setrowtype(rowtype(a_mat)) %>% 
+        setcoltype(rowtype(a_mat))
+    } else if (which == "v") {
+      rownames(res) <- colnames(a_mat)
+      colnames(res) <- colnames(a_mat)
+      res <- res %>% 
+        setrowtype(coltype(a_mat)) %>% 
+        setcoltype(coltype(a_mat))
+    }
+  }
+  unaryapply_byname(svd_func, a = a, rowcoltypes = "none")
 }
 
 
@@ -135,9 +347,11 @@ transpose_byname <- function(a){
 #' @examples
 #' v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) %>%
 #'   setrowtype("Industries") %>% setcoltype(NA)
+#' v
 #' hatize_byname(v, keep = "rownames")
 #' r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
 #'   setrowtype(NA) %>% setcoltype("Commodities")
+#' r
 #' hatize_byname(r, keep = "colnames")
 #' # This also works with lists.
 #' hatize_byname(list(v, v), keep = "rownames")
@@ -162,6 +376,7 @@ transpose_byname <- function(a){
 #' m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
 #'   setrowtype("Product -> Industry") %>% 
 #'   setcoltype("Industry -> Product")
+#' m
 #' m %>% 
 #'   hatize_byname(keep = "rownames")
 #' m %>% 
@@ -257,12 +472,12 @@ hatize_byname <- function(v, keep = NULL){
 #' The default value of `Inf_becomes` is `.Machine$double.xmax`.
 #' Set `inf_becomes` to `NULL` to disable this behavior.
 #' 
-#' The default behavior is helpful for cases when the result of `hatinv_byname` is later multiplied by `0`
+#' The default behavior is helpful for cases when the result of `hatinv_byname()` is later multiplied by `0`
 #' to obtain `0`.
 #' Multiplying `Inf` by `0` gives `NaN` which would effectively end the stream of calculations.
 #' 
 #' @param v The vector to be hatized and inverted.
-#' @param keep See `matsbyname::hatize`.
+#' @param keep See `hatize_byname()`.
 #' @param inf_becomes A value to be substitute for any `Inf` produced by the inversion process. 
 #'        Default is `.Machine$double.xmax`.
 #'        If `FALSE` (the default), `Inf` is not handled differently.
@@ -445,7 +660,25 @@ vectorize_byname <- function(a, notation) {
     }
     dim(vec) <- c(n_entries, 1)
     # Figure out names, based on notation
-    new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>% 
+    # new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>%
+    # purrr::cross2() has been deprecated.
+    # This messy code works in its place:
+    if (is.null(rownames(a_mat)) & is.null(colnames(a_mat))) {
+      # We probably have a bare number in a_mat.
+      new_rownames_list <- list()
+    } else {
+      new_rownames_list <- expand.grid(rownames(a_mat), colnames(a_mat)) %>%
+        magrittr::set_names(c("rownames", "colnames")) %>%
+        dplyr::mutate(
+          rownames = as.character(rownames),
+          colnames = as.character(colnames)
+        ) %>%
+        tibble::as_tibble() %>%
+        as.list() %>%
+        unname() %>%
+        purrr::transpose()
+    }
+    new_rownames <- new_rownames_list %>%
       lapply(FUN = function(ps) {
         ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
           RCLabels::paste_pref_suff(notation = notation)
@@ -571,16 +804,16 @@ matricize_byname <- function(a, notation) {
 
 #' Compute fractions of matrix entries
 #' 
-#' This function divides all entries in \code{a} by the specified sum,
+#' This function divides all entries in `a` by the specified sum,
 #' thereby "fractionizing" the matrix.
 #'
-#' @param a the matrix to be fractionized
-#' @param margin If \code{1} (rows), each entry in \code{a} is divided by its row's sum.
-#' If \code{2} (columns), each entry in \code{a} is divided by its column's sum.
-#' If \code{c(1,2)} (both rows and columns), 
-#' each entry in \code{a} is divided by the sum of all entries in \code{a}.
+#' @param a The matrix to be fractionized.
+#' @param margin If `1` (rows), each entry in `a` is divided by its row's sum.
+#'               If `2` (columns), each entry in `a` is divided by its column's sum.
+#'               If `c(1,2)` (both rows and columns), 
+#'               each entry in `a` is divided by the sum of all entries in `a`.
 #'
-#' @return a fractionized matrix of same dimensions and same row and column types as \code{a}.
+#' @return A fractionized matrix of same dimensions and same row and column types as `a`.
 #' 
 #' @export
 #'
@@ -651,11 +884,13 @@ fractionize_byname <- function(a, margin){
 #' @param a A matrix or list of matrices from which row sums are desired.
 #' @param colname The name of the output column containing row sums.
 #'
-#' @return A column vector of type `matrix` containing the row sums of `m`
+#' @return A column vector of type `matrix` containing the row sums of `m`.
+#' 
 #' @export
 #'
 #' @examples
 #' library(dplyr)
+#' rowsums_byname(42)
 #' m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("c", 1:2))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' m
@@ -677,32 +912,35 @@ fractionize_byname <- function(a, margin){
 #' # Nonsensical
 #' \dontrun{rowsums_byname(NULL)}
 rowsums_byname <- function(a, colname = NA){
-  # if (is.null(colname)) {
-  #   # Set to NA so that we can try setting to coltype in rowsum.func
-  #   colname <- NA_character_
-  # }
-  rowsum_func <- function(a, colname){
+  rowsum_func <- function(a_mat, colname){
     if (!is.null(colname)) {
       if (is.na(colname)) {
-        colname <- coltype(a)
+        colname <- coltype(a_mat)
       }
     }
-    rowSums(a) %>%
-      # Preserve matrix structure (i.e., result will be a column vector of type matrix)
-      matrix(ncol = 1) %>%
-      # Preserve row names
-      setrownames_byname(rownames(a)) %>%
-      # Set column name
-      setcolnames_byname(colname) %>%
-      # But sort the result on names
-      sort_rows_cols() %>%
-      # Set types
-      setrowtype(rowtype(a)) %>%
-      setcoltype(coltype(a))
+    if (is.matrix(a_mat)) {
+      out <- a_mat %>% 
+        rowSums() %>%
+        # Preserve matrix structure (i.e., result will be a column vector of type matrix)
+        matrix(ncol = 1) %>%
+        # Preserve row names
+        setrownames_byname(rownames(a_mat)) %>%
+        # Set column name
+        setcolnames_byname(colname) %>%
+        # But sort the result on names
+        sort_rows_cols() 
+    } else if (is.numeric(a_mat)) {
+      out <- a_mat
+    } else {
+      stop("Unknown type for 'a' in rowsums_byname(). 'a' must be a matrix or numeric.")
+    }
+    # Set types and return
+    out %>% setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
   }
   unaryapply_byname(rowsum_func, a = a, .FUNdots = list(colname = colname), 
                     rowcoltypes = "none")
 }
+
 
 #' Column sums, sorted by name
 #'
@@ -714,14 +952,16 @@ rowsums_byname <- function(a, colname = NA){
 #' the row name is set to the row type as given by `rowtype(a)`.
 #' If `rowname` is set to `NULL`, the row name is returned empty.
 #'
-#' @param a a matrix or list of matrices from which column sums are desired.
-#' @param rowname name of the output row containing column sums.
+#' @param a A matrix or list of matrices from which column sums are desired.
+#' @param rowname The name of the output row containing column sums.
 #'
-#' @return a row vector of type `matrix` containing the column sums of `a`.
+#' @return A row vector of type `matrix` containing the column sums of `a`.
+#' 
 #' @export
 #'
 #' @examples
 #' library(dplyr)
+#' colsums_byname(42)
 #' m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 3:1))) %>%
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' m
@@ -747,26 +987,42 @@ rowsums_byname <- function(a, colname = NA){
 #' )
 #' res$cs2
 colsums_byname <- function(a, rowname = NA){
-  a %>% 
-    transpose_byname() %>% 
-    rowsums_byname(colname = rowname) %>% 
-    transpose_byname()
+  
+  colsum_func <- function(a_mat, rowname){
+
+    if (is.matrix(a_mat)) {
+      return(a_mat %>% 
+               transpose_byname() %>% 
+               rowsums_byname(colname = rowname) %>% 
+               transpose_byname())
+    } else if (is.numeric(a_mat)) {
+      return(a_mat)
+    } else {
+      stop("Unknown type for 'a' in colsums_byname(). 'a' must be a matrix or numeric.")
+    }
+  }
+  unaryapply_byname(colsum_func, a = a, .FUNdots = list(rowname = rowname), 
+                    rowcoltypes = "none")
 }
+
 
 #' Sum of all elements in a matrix
 #'
-#' This function is equivalent to \code{a \%>\% rowsums_byname() \%>\% colsums_byname()},
+#' This function is equivalent to `a \%>\% rowsums_byname() \%>\% colsums_byname()`,
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
-#' @param a the matrix whose elements are to be summed
+#' @param a The matrix whose elements are to be summed.
 #'
-#' @return the sum of all elements in \code{a} as a numeric
+#' @return The sum of all elements in `a` as a numeric.
+#' 
 #' @export
 #'
 #' @examples
 #' library(dplyr)
+#' sumall_byname(42)
 #' m <- matrix(2, nrow=2, ncol=2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
 #'   setrowtype("Industry") %>% setcoltype("Commodity")
+#' m
 #' sumall_byname(m)
 #' rowsums_byname(m) %>% colsums_byname
 #' # Also works for lists
@@ -780,27 +1036,32 @@ colsums_byname <- function(a, rowname = NA){
 #'   sums = sumall_byname(m)
 #' )
 #' res$sums
+#' sumall_byname(list(m, NULL))
 sumall_byname <- function(a){
-  sum_func <- function(a){
-    a %>%
+  sum_func <- function(a_mat){
+    if (!(is.matrix(a_mat) | is.numeric(a_mat))) {
+      stop("Unknown type for 'a' in sumall_byname(). 'a' must be a matrix or numeric.")
+    }
+    a_mat %>%
       rowsums_byname %>%
       colsums_byname %>%
-      as.numeric
+      as.numeric()
   }
   unaryapply_byname(sum_func, a = a, rowcoltypes = "none")
 }
 
+
 #' Row products, sorted by name
 #'
 #' Calculates row products (the product of all elements in a row) for a matrix.
-#' An optional \code{colname} for the resulting column vector can be supplied.
-#' If \code{colname} is \code{NULL} or \code{NA} (the default),
-#' the column name is set to the column type as given by \code{coltype(a)}.
+#' An optional `colname` for the resulting column vector can be supplied.
+#' If `colname` is `NULL` or `NA` (the default),
+#' the column name is set to the column type as given by `coltype(a)`.
 #'
-#' @param a a matrix or list of matrices from which row products are desired.
-#' @param colname name of the output column containing row products
+#' @param a A matrix or list of matrices from which row products are desired.
+#' @param colname The Name of the output column containing row products.
 #'
-#' @return a column vector of type \code{matrix} containing the row products of \code{a}
+#' @return A column vector of type `matrix` containing the row products of `a`
 #' 
 #' @export
 #'
@@ -849,17 +1110,18 @@ rowprods_byname <- function(a, colname = NA){
                     rowcoltypes = "none")
 }
 
+
 #' Column products, sorted by name
 #'
 #' Calculates column products (the product of all elements in a column) for a matrix.
-#' An optional \code{rowname} for the resulting row vector can be supplied.
-#' If \code{rowname} is \code{NULL} or \code{NA} (the default),
-#' the row name is set to the row type as given by \code{rowtype(a)}.
+#' An optional `rowname` for the resulting row vector can be supplied.
+#' If `rowname` is `NULL` or `NA` (the default),
+#' the row name is set to the row type as given by `rowtype(a)`.
 #'
-#' @param a a matrix or data frame from which column products are desired.
-#' @param rowname name of the output row containing column products.
+#' @param a A matrix or data frame from which column products are desired.
+#' @param rowname The Name of the output row containing column products.
 #'
-#' @return a row vector of type \code{matrix} containing the column products of \code{a}.
+#' @return a row vector of type `matrix` containing the column products of `a`.
 #' 
 #' @export
 #'
@@ -892,14 +1154,15 @@ colprods_byname <- function(a, rowname = NA){
     transpose_byname()
 }
 
+
 #' Product of all elements in a matrix
 #'
-#' This function is equivalent to \code{a \%>\% rowprods_byname() \%>\% colprods_byname()},
+#' This function is equivalent to `a \%>\% rowprods_byname() \%>\% colprods_byname()`,
 #' but returns a single numeric value instead of a 1x1 matrix.
 #'
-#' @param a the matrix whose elements are to be multiplied
+#' @param a The matrix whose elements are to be multiplied.
 #'
-#' @return the product of all elements in \code{a} as a numeric.
+#' @return The product of all elements in `a` as a numeric.
 #' 
 #' @export
 #'
@@ -929,6 +1192,7 @@ prodall_byname <- function(a){
   }
   unaryapply_byname(prodall_func, a = a, rowcoltypes = "none")
 }
+
 
 #' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
 #'
@@ -1007,6 +1271,7 @@ Iminus_byname <- function(a){
 cumsum_byname <- function(a){
   cumapply_byname(FUN = sum_byname, a)
 }
+
 
 #' Cumulative element-product that respects row and column names
 #'
@@ -1225,15 +1490,16 @@ all_byname <- function(a){
   unaryapply_byname(FUN = all_func, a = a, rowcoltypes = "none")
 }
 
-#' Are any matrix elements \code{TRUE}?
+
+#' Are any matrix elements `TRUE`?
 #' 
-#' Tells whether any elements in matrix \code{a} are true.
+#' Tells whether any elements in matrix `a` are true.
 #' 
-#' \code{a} can be a matrix or a list of matrices.
+#' `a` can be a matrix or a list of matrices.
 #'
 #' @param a a matrix or list of matrices
 #'
-#' @return \code{TRUE} if any elements of \code{a} are \code{TRUE}, \code{FALSE} otherwise
+#' @return `TRUE` if any elements of `a` are `TRUE`, `FALSE` otherwise
 #' 
 #' @export
 #'
@@ -1268,13 +1534,20 @@ any_byname <- function(a){
 #' The values in the `aggregation_map` are interpreted as regular expressions, and 
 #' they are escaped using `Hmisc::escapeRegex()` prior to use.
 #' 
+#' `margin` can be a string, in which case it is interpreted as a row or column type.
+#' If a string `margin` does not match a row or column type, 
+#' `a` is returned unmodified.
+#' 
 #' Note that aggregation on one margin only will sort only the aggregated margin, because
 #' the other margin is not guaranteed to have unique names.
 #'
 #' @param a A matrix or list of matrices whose rows or columns are to be aggregated.
 #' @param aggregation_map A named list of rows or columns to be aggregated (or `NULL`). See `details`.
 #' @param margin `1`, `2`, or `c(1, 2)` for row aggregation, column aggregation, or both.
+#'               As a string, `margin` can be a row or column type. 
+#'               Default is `c(1, 2)`.
 #' @param pattern_type See `RCLabels::make_or_pattern()`.
+#'                     Default is "exact".
 #'
 #' @return A version of `a` with aggregated rows and/or columns
 #' 
@@ -1319,7 +1592,13 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
     # If we get here, a should be a single matrix.
     # Figure out the margin.
     this_margin <- margin_from_types_byname(a_mat, this_margin)
-    
+    if (length(this_margin) == 1) {
+      if (is.na(this_margin)) {
+        # Could not resolve the margin.
+        # Return the matrix unmodified.
+        return(a_mat)
+      }
+    }
     assertthat::assert_that(all(this_margin %in% c(1, 2)))
     # Create our own aggregation_map if it is NULL
     if (is.null(aggregation_map)) {
@@ -1403,13 +1682,13 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
 #' `prefix_start` `prefix` `prefix_end` `suffix_start` `suffix` `suffix_end`
 #' and described by a notation vector.
 #' (See `notation_vec()`.)
-#' This function performs aggregation by prefix or suffix according to a notation vector..
+#' This function performs aggregation by prefix or suffix according to a notation vector.
 #' 
 #' This function is a convenience function, as it bundles sequential calls to two helper functions,
 #' `rename_to_pref_suff_byname()` and `aggregate_byname()`.
 #' All arguments are passed to the helper functions.
 #'
-#' @param a a matrix of list of matrices to be aggregated by prefix or suffix
+#' @param a A matrix of list of matrices to be aggregated by prefix or suffix.
 #' @param aggregation_map See `aggregate_byname()`.
 #' @param notation See `notation_vec()`. 
 #' @param keep See `rename_to_pref_suff_byname()`
@@ -1463,7 +1742,9 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' @param a A matrix or list of matrices
 #' @param piece See `rename_to_piece_byname()`.
 #' @param margin See `rename_to_piece_byname()`.
+#' @param inf_notation See `rename_to_piece_byname()`.
 #' @param notation See `rename_to_piece_byname()`.
+#' @param choose_most_specific See `rename_to_piece_byname()`.
 #' @param prepositions See `rename_to_piece_byname()`.
 #' @param aggregation_map See `aggregate_byname()`.
 #' @param pattern_type See `RCLabels::make_or_pattern()`.
@@ -1517,14 +1798,20 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' df$agg
 aggregate_pieces_byname <- function(a, 
                                     piece,
-                                    margin = c(1, 2), 
-                                    notation, 
-                                    prepositions = RCLabels::prepositions, 
+                                    margin = list(c(1, 2)), 
+                                    inf_notation = TRUE,
+                                    notation = list(RCLabels::notations_list),
+                                    choose_most_specific = FALSE,
+                                    prepositions = list(RCLabels::prepositions_list), 
                                     aggregation_map = NULL, 
                                     pattern_type = "exact") {
   a %>%
-    rename_to_piece_byname(piece = piece, margin = margin, 
-                           notation = notation, prepositions = prepositions) %>%
+    rename_to_piece_byname(piece = piece, 
+                           margin = margin, 
+                           inf_notation = inf_notation,
+                           notation = notation,
+                           choose_most_specific = choose_most_specific,
+                           prepositions = prepositions) %>%
     aggregate_byname(aggregation_map = aggregation_map, margin = margin, 
                      pattern_type = pattern_type)
 }

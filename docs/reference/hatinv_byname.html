@@ -7,7 +7,7 @@ This function performs the hatizing and inverting of vector v in one step
 and takes advantage of computational efficiencies to achieve the desired result.
 The computational shortcut is apparent when one observes that the matrix produced by hatizing and inverting
 a vector is a diagonal matrix whose non-zero elements are the numerical inverses of the individual elements of v.
-So this function first inverts each element of v then places the inverted elements on the diagonal of a diagonal matrix."><title>Hatize and invert a vector — hatinv_byname • matsbyname</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Hatize and invert a vector — hatinv_byname"><meta property="og:description" content="When dividing rows or columns of a matrix by elements of a vector,
+So this function first inverts each element of v then places the inverted elements on the diagonal of a diagonal matrix."><title>Hatize and invert a vector — hatinv_byname • matsbyname</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Hatize and invert a vector — hatinv_byname"><meta property="og:description" content="When dividing rows or columns of a matrix by elements of a vector,
 the vector elements are placed on the diagonal of a new matrix,
 the diagonal matrix is inverted, and
 the result is pre- or post-multiplied into the matrix.
@@ -26,7 +26,7 @@ So this function first inverts each element of v then places the inverted elemen
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,24 +87,31 @@ So this function first inverts each element of <code>v</code> then places the in
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v</span>, keep <span class="op">=</span> <span class="cn">NULL</span>, inf_becomes <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.xmax</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v</span>, keep <span class="op">=</span> <span class="cn">NULL</span>, inf_becomes <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.xmax</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>v</dt>
 <dd><p>The vector to be hatized and inverted.</p></dd>
+
+
 <dt>keep</dt>
-<dd><p>See <code>matsbyname::hatize</code>.</p></dd>
+<dd><p>See <code><a href="hatize_byname.html">hatize_byname()</a></code>.</p></dd>
+
+
 <dt>inf_becomes</dt>
 <dd><p>A value to be substitute for any <code>Inf</code> produced by the inversion process.
 Default is <code>.Machine$double.xmax</code>.
 If <code>FALSE</code> (the default), <code>Inf</code> is not handled differently.
 If <code>TRUE</code>, <code>Inf</code> values in the resulting matrix are converted to zeroes.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a square diagonal matrix with inverted elements of <code>v</code> on the diagonal</p>
+    
+
+<p>a square diagonal matrix with inverted elements of <code>v</code> on the diagonal</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -116,18 +123,18 @@ arguably a better answer.
 The sign of <code>Inf</code> is preserved in the substitution.
 The default value of <code>Inf_becomes</code> is <code>.Machine$double.xmax</code>.
 Set <code>inf_becomes</code> to <code>NULL</code> to disable this behavior.</p>
-<p>The default behavior is helpful for cases when the result of <code>hatinv_byname</code> is later multiplied by <code>0</code>
+<p>The default behavior is helpful for cases when the result of <code>hatinv_byname()</code> is later multiplied by <code>0</code>
 to obtain <code>0</code>.
 Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which would effectively end the stream of calculations.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, ncol <span class="op">=</span> <span class="fl">1</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"i"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, nrow <span class="op">=</span> <span class="fl">1</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r1"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"c"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Commodities"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, ncol <span class="op">=</span> <span class="fl">1</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"i"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, nrow <span class="op">=</span> <span class="fl">1</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r1"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"c"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Commodities"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     i1 i10  i2        i3   i4  i5        i6        i7    i8        i9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i1   1 0.0 0.0 0.0000000 0.00 0.0 0.0000000 0.0000000 0.000 0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i10  0 0.1 0.0 0.0000000 0.00 0.0 0.0000000 0.0000000 0.000 0.0000000</span>
@@ -143,7 +150,7 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
-<span class="r-in"><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">r</span>, keep <span class="op">=</span> <span class="st">"colnames"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">r</span>, keep <span class="op">=</span> <span class="st">"colnames"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    c1  c2        c3   c4  c5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c1  1 0.0 0.0000000 0.00 0.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c2  0 0.5 0.0000000 0.00 0.0</span>
@@ -154,8 +161,8 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Commodities"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Commodities"</span>
-<span class="r-in"><span class="co"># This function also works with lists.</span></span>
-<span class="r-in"><span class="fu">hatinv_byname</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">v</span><span class="op">)</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># This function also works with lists.</span></span></span>
+<span class="r-in"><span><span class="fu">hatinv_byname</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">v</span><span class="op">)</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     i1 i10  i2        i3   i4  i5        i6        i7    i8        i9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i1   1 0.0 0.0 0.0000000 0.00 0.0 0.0000000 0.0000000 0.000 0.0000000</span>
@@ -190,13 +197,13 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="co"># Watch out for 0 values</span></span>
-<span class="r-in"><span class="va">v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">1</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"i"</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># Produces singular matrix error</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="va">v2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="hatize_byname.html">hatize_byname</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="va">invert_byname</span></span>
-<span class="r-in"><span class="co"># Handles 0 values well</span></span>
-<span class="r-in"><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v2</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># Watch out for 0 values</span></span></span>
+<span class="r-in"><span><span class="va">v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">1</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"i"</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Produces singular matrix error</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="va">v2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="hatize_byname.html">hatize_byname</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="va">invert_byname</span></span></span>
+<span class="r-in"><span><span class="co"># Handles 0 values well</span></span></span>
+<span class="r-in"><span><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v2</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               i0 i1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i0 1.797693e+308  0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i1  0.000000e+00  1</span>
@@ -204,7 +211,7 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
-<span class="r-in"><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v2</span>, inf_becomes <span class="op">=</span> <span class="fl">42</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v2</span>, inf_becomes <span class="op">=</span> <span class="fl">42</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    i0 i1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i0 42  0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i1  0  1</span>
@@ -212,7 +219,7 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
-<span class="r-in"><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v2</span>, inf_becomes <span class="op">=</span> <span class="cn">NA</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">hatinv_byname</span><span class="op">(</span><span class="va">v2</span>, inf_becomes <span class="op">=</span> <span class="cn">NA</span>, keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    i0 i1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i0 NA  0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i1  0  1</span>
@@ -220,20 +227,20 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
-<span class="r-in"><span class="co"># Deals with 1x1 matrices well, if the `keep` argument is set.</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">42</span>, nrow <span class="op">=</span> <span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">1</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"r1"</span>, <span class="st">"c1"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Product -&gt; Industry"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industry -&gt; Product"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu">hatinv_byname</span><span class="op">(</span>keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># Deals with 1x1 matrices well, if the `keep` argument is set.</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">42</span>, nrow <span class="op">=</span> <span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">1</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"r1"</span>, <span class="st">"c1"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Product -&gt; Industry"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Industry -&gt; Product"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu">hatinv_byname</span><span class="op">(</span>keep <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            r1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r1 0.02380952</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Product -&gt; Industry"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Product -&gt; Industry"</span>
-<span class="r-in"><span class="va">m</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu">hatinv_byname</span><span class="op">(</span>keep <span class="op">=</span> <span class="st">"colnames"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu">hatinv_byname</span><span class="op">(</span>keep <span class="op">=</span> <span class="st">"colnames"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            c1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c1 0.02380952</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
@@ -251,7 +258,7 @@ Multiplying <code>Inf</code> by <code>0</code> gives <code>NaN</code> which woul
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
     </footer></div>

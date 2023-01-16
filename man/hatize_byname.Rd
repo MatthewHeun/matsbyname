@@ -43,9 +43,11 @@ an error is thrown.
 \examples{
 v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("c1"))) \%>\%
   setrowtype("Industries") \%>\% setcoltype(NA)
+v
 hatize_byname(v, keep = "rownames")
 r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) \%>\%
   setrowtype(NA) \%>\% setcoltype("Commodities")
+r
 hatize_byname(r, keep = "colnames")
 # This also works with lists.
 hatize_byname(list(v, v), keep = "rownames")
@@ -70,6 +72,7 @@ matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\%
 m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) \%>\% 
   setrowtype("Product -> Industry") \%>\% 
   setcoltype("Industry -> Product")
+m
 m \%>\% 
   hatize_byname(keep = "rownames")
 m \%>\% 

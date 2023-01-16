@@ -7,16 +7,16 @@
 setrowtype(a, rowtype)
 }
 \arguments{
-\item{a}{the matrix on which row type is to be set}
+\item{a}{The matrix on which row type is to be set.}
 
-\item{rowtype}{the type of item stored in rows}
+\item{rowtype}{The type of item stored in rows.}
 }
 \value{
-\code{a} with rowtype attribute set to \code{rowtype}.
+\code{a} with rowtype attribute set to \code{rowtype.}
 }
 \description{
-This function is a wrapper for \code{attr} so that
-setting can be accomplished by the pipe operator (\code{\%>\%}).
+This function is a wrapper for \code{attr()} so that
+setting can be accomplished by the pipe operator (\verb{\%>\%}).
 Row types are strings stored in the \code{rowtype} attribute.
 }
 \details{

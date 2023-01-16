@@ -11,10 +11,18 @@ vec_from_store_byname(
   v_piece = "all",
   colname = NULL,
   column = TRUE,
-  notation = if (is.list(a)) {     list(RCLabels::bracket_notation) } else {    
-    RCLabels::bracket_notation },
-  prepositions = if (is.list(a)) {     list(RCLabels::prepositions) } else {    
-    RCLabels::prepositions }
+  notation = if (is.list(a)) {
+     list(RCLabels::bracket_notation)
+ } else {
+    
+    RCLabels::bracket_notation
+ },
+  prepositions = if (is.list(a)) {
+     list(RCLabels::prepositions_list)
+ } else {
+    
+    RCLabels::prepositions_list
+ }
 )
 }
 \arguments{

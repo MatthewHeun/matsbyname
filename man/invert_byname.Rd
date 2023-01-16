@@ -4,23 +4,43 @@
 \alias{invert_byname}
 \title{Invert a matrix}
 \usage{
-invert_byname(a)
+invert_byname(a, method = c("solve", "QR", "SVD"), tol = .Machine$double.eps)
 }
 \arguments{
-\item{a}{the matrix to be inverted. \code{a} must be square.}
+\item{a}{The matrix to be inverted. \code{a} must be square.}
+
+\item{method}{One of "solve", "QR", or "SVD". Default is "solve". See details.}
+
+\item{tol}{The tolerance for detecting linear dependencies in the columns of \code{a}.
+Default is \code{.Machine$double.eps}.}
 }
 \value{
-the inversion of \code{a}
+The inversion of \code{a}.
 }
 \description{
 This function transposes row and column names as well as row and column types.
 Rows and columns of \code{a} are sorted prior to inverting.
 }
+\details{
+The \code{method} argument specifies which method should be used for
+calculating the inverse.
+"solve" uses \code{base::solve()} and the value of \code{tol}.
+"QR" uses \code{base::solve.qr()} and the value of \code{tol}.
+"SVD" uses \code{matrixcalc::svd.inverse()}, ignoring the \code{tol} argument.
+
+Both \code{tol} and \code{method} should be a single values and apply to all matrices in \code{a}.
+
+If \code{a} is a singular matrix,
+names of zero rows and columns are reported in the error message.
+}
 \examples{
 m <- matrix(c(10,0,0,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
+m
 invert_byname(m)
 matrixproduct_byname(m, invert_byname(m))
 matrixproduct_byname(invert_byname(m), m)
 invert_byname(list(m,m))
+invert_byname(m, method = "QR")
+invert_byname(m, method = "SVD")
 }

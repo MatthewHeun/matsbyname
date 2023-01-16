@@ -1,55 +1,63 @@
 #' Complete rows and columns in one matrix relative to another
 #' 
-#' "Completing" rows and columns means that \code{a} contains a union of rows and columns
-#' between \code{a} and \code{m},
-#' with missing data represented by the value for \code{fill} (0, by default).
+#' "Completing" rows and columns means that `a` contains a union of rows and columns
+#' between `a` and `mat`,
+#' with missing data represented by the value for `fill` (`0`, by default), 
+#' `fillrow`, or `fillcol`.
 #' 
-#' Note that \code{complete_rows_cols(mat1, mat2)} and \code{complete_rows_cols(mat2, mat1)} are 
+#' Note that `complete_rows_cols(mat1, mat2)` and `complete_rows_cols(mat2, mat1)` are 
 #' not guaranteed to have the same order for rows and columns.
 #' (Nor are the values in the matrix guaranteed to have the same positions.)
-#' If \code{dimnames(mat)} is NULL, \code{a} is returned unmodified.
-#' If either \code{a} or \code{matrix} are missing names on a margin (row or column),
+#' 
+#' If `dimnames(mat)` is `NULL`, `a` is returned unmodified.
+#' 
+#' If either `a` or `mat` are missing names on a margin (row or column),
 #' an error is given.
-#' Matrices can be completed relative to themselves,
-#' meaning that \code{a} will be made square,  
-#' containing the union of row and column names from \code{a} itself.
-#' All added rows and columns will be created from one of the \code{fill*} arguments.
-#' When conflicts arise, precedence among the \code{fill*} arguments is 
-#' \code{fillrow} then \code{fillcol} then \code{fill}.
-#' Self-completion occurs if \code{a} is non-NULL and 
-#' both \code{is.null(matrix)} and \code{is.null(names)}.
+#' 
+#' When `a` is non-`NULL`, 
+#' `a` is named, and `mat` is `NULL` (the default),
+#' `a` is completed relative to itself,
+#' meaning that `a` will be made square,  
+#' containing the union of row and column names from `a`.
 #' Under these conditions, no warning is given.
-#' If \code{is.null(names)} and dimnames of \code{matrix} cannot be determined
-#' (because, for example, \code{matrix} doesn't have any dimnames),
-#' \code{a} is completed relative to itself and a warning is given.
+#' 
+#' If `mat` is non-`NULL` and dimnames of `mat` cannot be determined
+#' (because, for example, `mat` doesn't have dimnames),
+#' `a` is completed relative to itself and a warning is given.
+#' 
+#' All added rows and columns will be created from one of the `fill*` arguments.
+#' When conflicts arise, precedence among the `fill*` arguments is 
+#' `fillrow` then `fillcol` then `fill`.
 #'
-#' @param a a matrix or list of matrices to be completed. 
-#' @param mat a \code{matrix} from which \code{dimnames} will be extracted
-#'        for the purposes of completing \code{a} with respect to \code{mat}.
-#' @param fill rows and columns added to \code{a} will contain the value \code{fill}. 
-#'        (Default is 0.) 
-#' @param fillrow a row vector of type \code{matrix} with same column names as \code{a}. 
-#'        Any rows added to \code{a} will be \code{fillrow}.  
-#'        If non-\code{NULL}, \code{fillrow} takes precedence over both \code{fillcol} and \code{fill}
-#'        in the case of conflicts.
-#' @param fillcol a column vector of type \code{matrix} with same row names as \code{a}. 
-#'        Any columns added to \code{a} will be \code{fillcol}.  
-#'        If non-\code{NULL}, \code{fillcol} takes precedence over \code{fill}
-#'        in the case of conflicts.
-#' @param margin specifies the subscript(s) in \code{a} over which completion will occur
-#'        \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}
-#'        For rows only, give \code{1}; 
-#'        for columns only, give \code{2};
-#'        for both rows and columns, give \code{c(1,2)}, the default value.
+#' @param a A matrix or list of matrices to be completed. 
+#' @param mat A matrix from which dimnames will be extracted
+#'            for the purposes of completing `a` with respect to `mat`.
+#' @param fill Rows and columns added to `a` will contain the value `fill`. 
+#'             (Default is `0`.) 
+#' @param fillrow A row vector of type `matrix` with same column names as `a`. 
+#'                Any rows added to `a` will be `fillrow`.  
+#'                If non-`NULL`, `fillrow` takes precedence over both `fillcol` and `fill`
+#'                in the case of conflicts.
+#' @param fillcol A column vector of type matrix with same row names as `a`. 
+#'                Any columns added to `a` will be `fillcol`.  
+#'                If non-`NULL`, `fillcol` takes precedence over `fill`
+#'                in the case of conflicts.
+#' @param margin Specifies the subscript(s) in `a` over which completion will occur
+#'               `margin` has nearly the same semantic meaning as in `base::apply()`
+#'               For rows only, give `1`; 
+#'               for columns only, give `2`;
+#'               for both rows and columns, give `c(1,2)`, the default value.
 #'        
 #' @export
 #' 
-#' @return A modified version of \code{a} possibly containing additional rows and columns 
-#' whose names are obtained from \code{matrix}
+#' @return A modified version of `a` possibly containing additional rows and columns 
+#'         whose names are obtained from `mat`.
 #' 
 #' @examples
 #' m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+#' m1
 #' m2 <- matrix(c(7:12), ncol=3, dimnames = list(c("r2", "r3"), c("c2", "c3", "c4")))
+#' m2
 #' complete_rows_cols(m1, m2) # Adds empty column c4
 #' complete_rows_cols(m1, t(m2)) # Creates r2, r3 columns; c2, c3, c4 rows
 #' complete_rows_cols(m1, m2, margin = 1) # No changes because r2 and r3 already present in m1
@@ -70,9 +78,12 @@
 #' complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 1) 
 #' complete_rows_cols(a = list(m1,m1), mat = list(m2,m2), margin = 2)
 #' complete_rows_cols(a = list(m1,m1), 
-#'                    mat = make_list(matrix(0, nrow = 2, ncol = 2, 
-#'                                           dimnames = list(c("r10", "r11"), c("c10", "c11"))), 
-#'                                    n = 2, lenx = 1))
+#'                    mat = RCLabels::make_list(matrix(0,
+#'                                                     nrow = 2, 
+#'                                                     ncol = 2, 
+#'                                                     dimnames = list(c("r10", "r11"), 
+#'                                                                     c("c10", "c11"))), 
+#'                                              n = 2, lenx = 1))
 #' # fillrow or fillcol can be specified
 #' a <- matrix(c(11, 12, 21, 22), byrow = TRUE, nrow = 2, ncol = 2, 
 #'             dimnames = list(c("r1", "r2"), c("c1", "c2")))
@@ -99,19 +110,19 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
       # NULL values for the Map function.
       # Make a list of same length as the list of a.
       # Each value is NA.
-      mat <- make_list(NULL, length(a))
+      mat <- RCLabels::make_list(NULL, length(a))
     } else if (is.matrix(mat)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as a.
-      mat <- make_list(mat, length(a))
+      mat <- RCLabels::make_list(mat, length(a))
     }
   } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
     # a is NULL, and assume we have a list of matrices in the mat argument.
     # Under these conditions, we return matrices with same row and column names as each mat, but
     # filled with the "fill" value.
     # For that to work, we need to ensure that each of the other arguments are lists.
-    a = make_list(NULL, length(mat))
-    margin <- make_list(margin, length(mat), lenx = 1)
+    a = RCLabels::make_list(NULL, length(mat))
+    margin <- RCLabels::make_list(margin, length(mat), lenx = 1)
   }
 
   # Double-check that we have what we need for the margin argument.
@@ -467,66 +478,4 @@ complete_and_sort <- function(a, b, fill = 0, margin = c(1,2), roworder = NA, co
   b <- complete_rows_cols(b, a, fill = fill, margin = margin) %>%
     sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
   return(list(a = a, b = b))
-}
-
-#' Makes a list of items in x, regardless of x's type
-#'
-#' Repeats \code{x} as necessary to make \code{n} of them.
-#' Does not try to simplify \code{x}.
-#'
-#' @param x the object to be duplicated
-#' @param n the number of times to be duplicated
-#' @param lenx the length of item \code{x}. Normally \code{lenx} is taken to be \code{length(x)},
-#' but if \code{x} is itself a \code{list}, you may wish for the \code{list} to be duplicated several
-#' times. In that case, set \code{lenx = 1}.
-#'
-#' @return a list of \code{x} duplicated \code{n} times
-#'
-#' @export
-#'
-#' @examples
-#' m <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
-#' make_list(m, n = 1)
-#' make_list(m, n = 2)
-#' make_list(m, n = 5)
-#' make_list(list(c(1,2), c(1,2)), n = 4)
-#' m <- matrix(1:4, nrow = 2)
-#' l <- list(m, m+100)
-#' make_list(l, n = 4)
-#' make_list(l, n = 1) # Warning because l is trimmed.
-#' make_list(l, n = 5) # Warning because length(l) (i.e., 2) not evenly divisible by 5
-#' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2) # Confused by x being a list
-#' make_list(list(c("r10", "r11"), c("c10", "c11")), n = 2, lenx = 1) # Fix by setting lenx = 1
-make_list <- function(x, n, lenx = ifelse(is.vector(x), length(x), 1)){
-  out <- vector(mode = "list", length = n)
-  reptimes <- as.integer(n / lenx)
-  if (n %% lenx != 0 & lenx != 1) {
-    warning("n not evenly divisible by length(x)")
-  }
-  if (lenx == 1) {
-    return(
-      lapply(X = 1:n, FUN = function(i){
-        out[[i]] <- x
-      })
-    )
-  }
-  if (n < lenx) {
-    # Fewer items than length of x is desired
-    return(x[[1:n]])
-  }
-  for (cycle in 1:reptimes) {
-    for (xindex in 1:lenx) {
-      outindex <- (cycle - 1)*lenx + (xindex)
-      out[[outindex]] <- x[[xindex]]
-    }
-  }
-  if (n %% length(x) == 0) {
-    # Had an even number of cycles
-    return(out)
-  }
-  for (outindex in (reptimes*lenx + 1):n) {
-    xindex <- outindex - reptimes*lenx
-    out[[outindex]] <- x[[xindex]]
-  }
-  return(out)
 }

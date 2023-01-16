@@ -7,9 +7,9 @@
 colprods_byname(a, rowname = NA)
 }
 \arguments{
-\item{a}{a matrix or data frame from which column products are desired.}
+\item{a}{A matrix or data frame from which column products are desired.}
 
-\item{rowname}{name of the output row containing column products.}
+\item{rowname}{The Name of the output row containing column products.}
 }
 \value{
 a row vector of type \code{matrix} containing the column products of \code{a}.

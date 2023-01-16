@@ -4,7 +4,49 @@ output: html_document
 ---
 
 
-# matsbyname 0.5.0 (2022-04-01)
+# matsbyname 0.5.1 (2023-01-16) 
+
+* Responded to deprecation warnings from `purrr::cross2()`.
+* Responded to deprecation warnings from `tidyselect`.
+* `transpose_byname()` no longer converts a constant
+  into a 1x1 matrix without row or column names.
+* New function `select_rowcol_piece_byname()` enables
+  selecting rows and columns using the `RCLabels` notation and label pieces.
+* New function `svd_byname()` calculates singular value decomposition
+  of a matrix.
+* New argument `method` on `invert_byname()`
+  allows callers to select the method for inverting a matrix.
+* New functions `eigenvalues_byname()` and
+  `eigenvectors_byname()` calculate 
+  eigenvalues and eigenvectors of
+  matrices or lists of matrices.
+* Added `tol` argument added to `invert_byname()`.
+  The value of the `tol` argument is 
+  passed to `base::solve()`.
+* `invert_byname()` now reports names of zero rows and columns 
+  when attempting to invert a singular matrix.
+  The new error message will be a huge help for debugging.
+* New functions `select_zero_rows_byname()` and 
+  `select_zero_cols_byname()` 
+  assist with detecting problem areas for singular matrices.
+* `rowsums_byname()`, `colsums_byname()`, and `sumall_byname()`
+  now correctly return only a single number when a single number 
+  is the input.
+* `aggregate_byname()` now returns its argument (`a_mat`)
+  if a string `margin` resolves to NA
+  (isn't a row of column type).
+* Aggregation vignette now demonstrates that
+    - margins for renaming and aggregating
+      can be determined from row and column types and
+    - inference on row and column label notation.
+* Renaming and aggregation functions now (by default) infer 
+  row and column notations.
+* Many new tests for new features.
+    - Now at 1165 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+# matsbyname 0.5.0 (2022-04-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6407149.svg)](https://doi.org/10.5281/zenodo.6407149)
 
 * New format for documentation pages,
   including a search function!

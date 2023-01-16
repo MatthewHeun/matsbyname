@@ -10,10 +10,10 @@ select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^")
 \item{a}{a matrix or a list of matrices}
 
 \item{retain_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to retain.
-Default pattern (\code{$^}) retains nothing.}
+Default pattern ("$^") retains nothing.}
 
-\item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove
-Default pattern (\code{$^}) removes nothing.}
+\item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove.
+Default pattern ("$^") removes nothing.}
 }
 \value{
 a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -34,9 +34,9 @@ Retaining columns takes precedence over removing columns, always.
 
 Some typical patterns are:
 \itemize{
-\item{\code{^Electricity$|^Oil$}: column names that are EXACTLY \code{Electricity} or \code{Oil}.}
-\item{\code{^Electricity|^Oil}: column names that START WITH \code{Electricity} or \code{Oil}.}
-\item{\code{Electricity|Oil}: column names that CONTAIN \code{Electricity} or \code{Oil} anywhere within them.}
+\item{"^Electricity$|^Oil$": column names that are EXACTLY "Electricity" or "Oil".}
+\item{"^Electricity|^Oil": column names that START WITH "Electricity" or "Oil".}
+\item{"Electricity|Oil": column names that CONTAIN "Electricity" or "Oil" anywhere within them.}
 }
 
 Given a list of column names, a pattern can be constructed easily using the \code{make_pattern} function.
@@ -45,7 +45,7 @@ Given a list of column names, a pattern can be constructed easily using the \cod
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 
-Note that the default \code{retain_pattern} and \code{remove_pattern} (\code{$^})
+Note that the default \code{retain_pattern} and \code{remove_pattern} ("$^")
 retain nothing and remove nothing.
 
 Note that if all columns are removed from \code{a}, \code{NULL} is returned.
