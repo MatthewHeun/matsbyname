@@ -121,6 +121,12 @@
     <loc>/reference/difference_byname.html</loc>
   </url>
   <url>
+    <loc>/reference/eigenvalues_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/eigenvectors_byname.html</loc>
+  </url>
+  <url>
     <loc>/reference/elementapply_byname.html</loc>
   </url>
   <url>
@@ -289,6 +295,9 @@
     <loc>/reference/select_cols_byname.html</loc>
   </url>
   <url>
+    <loc>/reference/select_rowcol_piece_byname.html</loc>
+  </url>
+  <url>
     <loc>/reference/select_rows_byname.html</loc>
   </url>
   <url>
@@ -317,6 +326,9 @@
   </url>
   <url>
     <loc>/reference/sumall_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/svd_byname.html</loc>
   </url>
   <url>
     <loc>/reference/switch_notation_byname.html</loc>
