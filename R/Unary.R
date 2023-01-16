@@ -664,6 +664,7 @@ vectorize_byname <- function(a, notation) {
     # purrr::cross2() has been deprecated.
     # This messy code works in its place:
     if (is.null(rownames(a_mat)) & is.null(colnames(a_mat))) {
+      # We probably have a bare number in a_mat.
       new_rownames_list <- list()
     } else {
       new_rownames_list <- expand.grid(rownames(a_mat), colnames(a_mat)) %>%
