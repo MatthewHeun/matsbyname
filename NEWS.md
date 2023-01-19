@@ -4,6 +4,9 @@ output: html_document
 ---
 
 
+* Update to latest GitHub actions continuous integration workflow.
+
+
 # matsbyname 0.5.1 (2023-01-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7541455.svg)](https://doi.org/10.5281/zenodo.7541455)
 
 * Responded to deprecation warnings from `purrr::cross2()`.
