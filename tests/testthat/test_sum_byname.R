@@ -237,3 +237,22 @@ test_that("sum_byname() works as expected via grouping and summarise", {
   expect_equal(res2$m2[[1]], 7 * m)
   expect_equal(res2$m2[[2]], 5 * m)
 })
+
+
+test_that("sum_byname() works with sparse Matrix objects", {
+  # Try with regular matrix objects
+  a <- matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  b <- matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r3", "r4"), c("c3", "c4")))
+  res1 <- sum_byname(a, b)
+  expected1 <- matrix(0, nrow = 4, ncol = 4, dimnames = list(paste0("r", 1:4), paste0("c", 1:4)))
+  expect_equal(res1, expected1)
+  
+  # Try with Matrix objects
+  A <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  B <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r3", "r4"), c("c3", "c4")))
+
+  res2 <- sum_byname(A, B)
+  expected2 <- Matrix::Matrix(0, nrow = 4, ncol = 4, dimnames = list(paste0("r", 1:4), paste0("c", 1:4)))
+  expect_equal(res2, expected2)
+})
+  
