@@ -1,6 +1,6 @@
 # This file contains tests for functions in Utilities.R.
 
-test_that("errors are generated when organize_args is called with baloney", {
+test_that("errors are generated when organize_args() is called with baloney", {
   expect_error(matsbyname:::organize_args(b = 42), 
                "Missing argument a with no fill in organize_args.")
   expect_error(matsbyname:::organize_args(a = NULL, b = 42), 
