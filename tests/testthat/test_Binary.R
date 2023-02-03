@@ -1,9 +1,5 @@
 # Contains tests for binary functions in the byname package.
 
-###########################################################
-context("Sums")
-###########################################################
-
 # Define some matrices with product and industry names and types
 # These matrices will be used in the tests below.
 productnames <- c("p1", "p2")
