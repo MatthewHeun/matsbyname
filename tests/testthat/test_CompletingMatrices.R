@@ -4,7 +4,7 @@
 context("Sorting rows and columns")
 ###########################################################
 
-test_that("sort_rows_cols works as expected", {
+test_that("sort_rows_cols() works as expected", {
   m <- matrix(c(1:6), nrow = 3, dimnames = list(c("r3", "r5", "r1"), c("c4", "c2")))
   msorted <- matrix(c(6, 3,
                       4, 1,
@@ -82,7 +82,8 @@ test_that("sort_rows_cols works as expected", {
   expect_equal(sort_rows_cols(mtypes), msorted %>% setrowtype("row") %>% setcoltype("col"))
 })
 
-test_that("sort_rows_cols works with different-length arguments for lists", {
+
+test_that("sort_rows_cols() works with different-length arguments for lists", {
   m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
   m_sorted <- matrix(c(2, 1, 4, 3), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
@@ -113,7 +114,7 @@ test_that("sort_rows_cols works with different-length arguments for lists", {
 })
 
 
-test_that("sort_rows_cols works when specifying a row or col name that isn't present in a", {
+test_that("sort_rows_cols() works when specifying a row or col name that isn't present in a", {
   m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
   sorted_m <- matrix(c(2, 4, 1, 3), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
@@ -131,7 +132,8 @@ test_that("sort_rows_cols works when specifying a row or col name that isn't pre
                  setrowtype("row") %>% setcoltype("col"))
 })
 
-test_that("sort_rows_cols fails when row and col names are not unique", {
+
+test_that("sort_rows_cols() fails when row and col names are not unique", {
   mrowprob <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r1", "r1"), c("c1", "c1"))) %>% 
     setrowtype("row") %>% setcoltype("col")
   expect_error(sort_rows_cols(mrowprob), "Row names not unique")
@@ -140,7 +142,8 @@ test_that("sort_rows_cols fails when row and col names are not unique", {
   expect_error(sort_rows_cols(mcolprob), "Column names not unique")
 })
 
-test_that("sort_rows_cols duplicates a row when requested", {
+
+test_that("sort_rows_cols() duplicates a row when requested", {
   m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("r2", "r1"), c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
   expect_equal(sort_rows_cols(m, roworder = c("r1", "r1")), 
@@ -149,7 +152,8 @@ test_that("sort_rows_cols duplicates a row when requested", {
                  setrowtype("row") %>% setcoltype("col"))
 })  
 
-test_that("sort_rows_cols works when sorting rows but rows are not named", {
+
+test_that("sort_rows_cols() works when sorting rows but rows are not named", {
   m <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(NULL, c("c1", "c2"))) %>% 
     setrowtype("row") %>% setcoltype("col")
   # In this situation, nothing is done.  Expect that m will be returned.
