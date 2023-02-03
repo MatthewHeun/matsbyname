@@ -206,9 +206,9 @@ test_that("sum_byname() works as expected via grouping and summarise", {
     dplyr::group_by(key) %>% 
     # We don't use the .summarise = TRUE condition, so
     # the resuult is just the original data frame (with groups)
-    dplyr::summarise(val = sum_byname(val), .groups = "keep")
-  # Here
-  expect_equal(res_simple2, df_simple %>% dplyr::group_by(key))
+    dplyr::reframe(val = sum_byname(val))
+  # Here is what we expect.
+  expect_equal(res_simple2, df_simple)
   
   res_simple3 <- df_simple %>% 
     dplyr::group_by(key) %>% 
