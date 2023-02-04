@@ -29,9 +29,10 @@ Suggests:
     knitr,
     matsindf,
     rmarkdown,
-    testthat,
+    testthat (>= 3.0.0),
     tidyr
 VignetteBuilder: 
     knitr
 URL: https://github.com/MatthewHeun/matsbyname
 BugReports: https://github.com/MatthewHeun/matsbyname/issues
+Config/testthat/edition: 3
