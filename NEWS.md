@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+* In tests, cleaned up many warnings emanating from
+  the change to `testthat` v3.
 * Reacted to a change in grouping policy in `dplyr`
   that caused one test to issue a deprecation warning.
 * Update to latest GitHub actions continuous integration workflow.
