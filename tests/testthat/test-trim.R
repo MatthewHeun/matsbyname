@@ -105,10 +105,6 @@ test_that("trim_rows_cols() works when a list is given", {
                list(res, res))
   
   # Try with an unbalanced list
-  # expect_warning(trim_rows_cols(a_list, # 2 here
-  #                               list(mat, mat, mat), # 3 here
-  #                               margin = list(c(1,2), c(1,2))), # 2 here
-  #                "longer argument not a multiple of length of shorter")
   expect_warning(trim_rows_cols(a_list, # 2 here
                                 list(mat, mat, mat), # 3 here
                                 margin = list(c(1,2), c(1,2))), # 2 here
