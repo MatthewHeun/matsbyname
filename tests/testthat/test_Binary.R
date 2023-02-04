@@ -22,11 +22,7 @@ UminusZ <- matrix(0, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
 Uplus100 <- U + 100
 
 
-###########################################################
-context("Differences")
-###########################################################
-
-test_that("differences of constants works as expected", {
+test_that("difference_byname() with constants works as expected", {
   # Simple difference of constants
   expect_equal(difference_byname(100, 50), 50)
   
@@ -39,7 +35,7 @@ test_that("differences of constants works as expected", {
 })
 
 
-test_that("differences of matrices works as expected", {
+test_that("difference_byname() of matrices works as expected", {
   # If only one argument, return it.
   expect_equal(difference_byname(U), U)
   
@@ -63,7 +59,8 @@ test_that("differences of matrices works as expected", {
   expect_equal(difference_byname(subtrahend = Z), hadamardproduct_byname(-1, Z))
 })
   
-test_that("differences of matrices in lists and data frames works as expected", {
+
+test_that("difference_byname() of matrices in lists and data frames works as expected", {
   # Define a data frame to be used with testing below.
   DF <- data.frame(U = I(list()), Z = I(list()))
   DF[[1,"U"]] <- U
@@ -79,11 +76,7 @@ test_that("differences of matrices in lists and data frames works as expected", 
 })
 
 
-###########################################################
-context("Products")
-###########################################################
-
-test_that("matrixproduct_byname works as expected", {
+test_that("matrixproduct_byname() works as expected", {
   V <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("p1", "p2", "p3"))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   Y <- matrix(1:4, ncol = 2, dimnames = list(c("p2", "p1"), c("s2", "s1"))) %>%
@@ -177,7 +170,7 @@ test_that("matrixproduct_byname works as expected", {
 })
 
 
-test_that("matrix product with NA is correct", {
+test_that("matrixproduct_byname() with NA is correct", {
   Z <- 42 %>% setrowtype("Product") %>% setcoltype("Industry")
   D <- 42 %>% setrowtype("Industry") %>% setcoltype("Product")
   expect_equal(matrixproduct_byname(NA_real_, D), 
@@ -197,7 +190,7 @@ test_that("matrix product with NA is correct", {
 })
 
 
-test_that("hadamardproduct_byname works as expected", {
+test_that("hadamardproduct_byname() works as expected", {
   expect_equal(hadamardproduct_byname(2, 2), 4)
   expect_equal(hadamardproduct_byname(2, 2, 2), 8)
   expect_equal(hadamardproduct_byname(matrix(c(10, 10), nrow = 2, ncol = 1), 1000), 
@@ -304,11 +297,7 @@ test_that("hadamardproduct_byname works as expected", {
 })
 
 
-###########################################################
-context("Quotients")
-###########################################################
-
-test_that("quotient_byname works as expected", {
+test_that("quotient_byname() works as expected", {
   expect_equal(quotient_byname(100, 50), 2)
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
@@ -368,7 +357,7 @@ test_that("quotient_byname works as expected", {
 })
 
 
-test_that("detailed example of quotient_byname works as expected", {
+test_that("quotient_byname() detailed example works as expected", {
   Lv <- list(
     matrix(c(36.40956907, 
              86.56170245), nrow = 2, ncol = 1), 
@@ -413,11 +402,7 @@ test_that("detailed example of quotient_byname works as expected", {
 })
 
 
-###########################################################
-context("Element power")
-###########################################################
-
-test_that("pow_byname works as expected", {
+test_that("pow_byname() works as expected", {
   # Try with single numbers
   expect_equal(pow_byname(2, 2), 4)
   expect_equal(pow_byname(2, 3), 8)
@@ -460,11 +445,7 @@ test_that("pow_byname works as expected", {
 })
 
 
-###########################################################
-context("Means")
-###########################################################
-
-test_that("mean_byname works as expected", {
+test_that("mean_byname() works as expected", {
   expect_equal(mean_byname(100, 50), 75)
   expect_equal(mean_byname(0, 0), 0)
   expect_equal(mean_byname(-2, -4), -3)
@@ -683,11 +664,6 @@ test_that("logarithmicmean_byname() works as expected", {
 })
 
 
-
-###########################################################
-context("Equal and identical")
-###########################################################
-
 test_that("equal_byname() works as expected", {
   
   # Try with single numbers
@@ -758,8 +734,6 @@ test_that("equal_byname() works as expected", {
     )
   expect_equal(DF_2$equal, list(TRUE, TRUE))
   
-
-
   # When two objects have different order for attributes, equal_byname should still return true.
   a <- 2 %>% setrowtype("row") %>% setcoltype("col")
   b <- 2 %>% setcoltype("col") %>% setrowtype("row")
@@ -810,11 +784,6 @@ test_that("identical_byname() works as expected", {
 })
 
   
-
-###########################################################
-context("Utilities in test_Binary")
-###########################################################
-
 test_that("samestructure_byname() works as expected", {
   expect_true(samestructure_byname(2, 2))
   expect_false(samestructure_byname(2, 2 %>% setrowtype("row")))
@@ -952,10 +921,6 @@ test_that("organize_args() works as expected", {
 })
 
 
-###########################################################
-context("Testing in a data frame")
-###########################################################
-
 test_that("matrix multiplied by a constant in a data frame works", {
   matA <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
     setrowtype("Industries") %>% setcoltype("Products")
@@ -989,11 +954,7 @@ test_that("matrix multiplied by a constant in a data frame works", {
 })
 
 
-###########################################################
-context("And")
-###########################################################
-
-test_that("and_byname works as expected", {
+test_that("and_byname() works as expected", {
   # Test with non-logicals. 0 is interpreted as FALSE, any other number is interpreted as TRUE.
   expect_true(and_byname(2, 2))
   expect_false(and_byname(0, -1000))

@@ -1,23 +1,25 @@
 # Define some matrices with product and industry names and types
 # These matrices will be used in the tests below.
-productnames <- c("p1", "p2")
-industrynames <- c("i1", "i2")
-U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
-  setrowtype("Products") %>% setcoltype("Industries")
-V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, productnames)) %>%
-  setrowtype("Industries") %>% setcoltype("Products")
-Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
-  setrowtype("Products") %>% setcoltype("Industries")
-Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
-  setrowtype("Products") %>% setcoltype("Industries")
 
-UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
-  setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
-UYZ <- sum_byname(U, Y) %>% sum_byname(Z)
-UminusZ <- matrix(0, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>% 
-  setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
 
-Uplus100 <- U + 100
+# productnames <- c("p1", "p2")
+# industrynames <- c("i1", "i2")
+# U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+#   setrowtype("Products") %>% setcoltype("Industries")
+# V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, productnames)) %>%
+#   setrowtype("Industries") %>% setcoltype("Products")
+# Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+#   setrowtype("Products") %>% setcoltype("Industries")
+# Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+#   setrowtype("Products") %>% setcoltype("Industries")
+# 
+# UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
+#   setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
+# UYZ <- sum_byname(U, Y) %>% sum_byname(Z)
+# UminusZ <- matrix(0, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>% 
+#   setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
+# 
+# Uplus100 <- U + 100
 
 test_that("sums of constants works as expected", {
   # Simple sum of constants
@@ -38,8 +40,18 @@ test_that("sums of constants works as expected", {
 
 
 test_that("sums of matrices works as expected", {
-  # If only one argument, return it.
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+
+    # If only one argument, return it.
   expect_equal(sum_byname(U), U)
+  
+  Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
   
   # This is a non-sensical test.  Row and column names are not respected. 
   # Row names, column names, and row and column types come from the first operand (U).
@@ -47,6 +59,8 @@ test_that("sums of matrices works as expected", {
                matrix(c(2, 4, 6, 8), ncol = 2, dimnames = dimnames(U)) %>% 
                  setrowtype(rowtype(U)) %>% setcoltype(coltype(U)))
   # Now, row and column names are respected.
+  UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
+    setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
   expect_equal(sum_byname(U, Y), UplusY)
   expect_equal(sum_byname(U, Y, Z), sum_byname(U, Z) %>% sum_byname(Y))
   
@@ -57,6 +71,8 @@ test_that("sums of matrices works as expected", {
   
   # This is a non-sensical test.  Row and column names are not respected.
   # Row names, column names, and row and column types come from the first operand (U).
+  V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, productnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
   expect_equal(U + V,
                matrix(c(2, 4, 6, 8), ncol = 2, dimnames = dimnames(U)) %>% 
                  setrowtype(rowtype(U)) %>% setcoltype(coltype(U)))
@@ -80,6 +96,20 @@ test_that("sum gives error when they are vectors without row names", {
 
 
 test_that("sums of matrices in lists and data frames works as expected", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+
+  UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
+    setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
+  UYZ <- sum_byname(U, Y) %>% sum_byname(Z)
+  Uplus100 <- U + 100
+
   # Define a data frame to be used with testing below.
   DF <- data.frame(U = I(list()), Y = I(list()), Z = I(list()))
   DF[[1,"U"]] <- U
@@ -105,6 +135,19 @@ test_that("sums of matrices in lists and data frames works as expected", {
 
 
 test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+
+  UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
+    setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
+  UYZ <- sum_byname(U, Y) %>% sum_byname(Z)
+
   ulist <- list(U, U)
   ylist <- list(Y, Y)
   zlist <- list(Z, Z)
@@ -136,6 +179,16 @@ test_that("sums of matrices that are in lists in a cell of a data frame works as
 
 
 test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+
+  UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
+    setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
+
   # Now check to see what happens when one of the operands
   # is a list and the other is not.
   DF2 <- data.frame(ulist2_col = I(list()), Y = I(list()))

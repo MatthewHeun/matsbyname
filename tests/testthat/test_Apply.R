@@ -1,10 +1,7 @@
 # Contains tests for apply_byname functions in the byname package.
 
-###########################################################
-context("Element apply")
-###########################################################
 
-test_that("elementapply_byname works as expected", {
+test_that("elementapply_byname() works as expected", {
   half <- function(x){
     x/2
   }
@@ -56,11 +53,7 @@ test_that("elementapply_byname works as expected", {
 })
 
 
-###########################################################
-context("Unary apply")
-###########################################################
-
-test_that("unaryapply_byname works as expected", {
+test_that("unaryapply_byname() works as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
@@ -73,11 +66,7 @@ test_that("unaryapply_byname works as expected", {
 })
 
 
-###########################################################
-context("Binary apply")
-###########################################################
-
-test_that("binaryapply_byname works as expected", {
+test_that("binaryapply_byname() works as expected", {
   # Test a pathological case
   expect_equal(binaryapply_byname(FUN = sum, a = list(1, 2, 3), b = list(4,5,6)), 
                list(5, 7, 9))
@@ -88,21 +77,13 @@ test_that("binaryapply_byname works as expected", {
 })
 
 
-###########################################################
-context("Cumulative apply")
-###########################################################
-
-test_that("cumapply_byname works as expected", {
+test_that("cumapply_byname() works as expected", {
   expect_equal(cumapply_byname(FUN = `sum`, a = list(1, 2, 3)), list(1, 3, 6))
   expect_equal(cumapply_byname(FUN = `prod`, a = list(1, 2, 3)), list(1, 2, 6))
 })
 
 
-###########################################################
-context("n-ary apply")
-###########################################################
-
-test_that("naryapply_byname works as expected", {
+test_that("naryapply_byname() works as expected", {
   # Test when there is only 1 item in ...
   expect_equal(naryapply_byname(FUN = `-`, 42), -42)
   expect_equal(naryapply_byname(FUN = `sum`, ... = list(1,2,3)), list(1,2,3))

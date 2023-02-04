@@ -101,13 +101,26 @@ test_that("trim_rows_cols() works when a list is given", {
   expect_equal(trim_rows_cols(a_list, mat, margin = list(c(1,2), c(1,2)), warn_if_a_incomplete = FALSE), 
                list(res, res))
   
-  expect_equal(trim_rows_cols(a_list, list(mat, mat), margin = list(c(1,2), c(1,2)), warn_if_a_incomplete = FALSE), 
+  expect_equal(trim_rows_cols(a_list, mat_list, margin = list(c(1,2), c(1,2)), warn_if_a_incomplete = FALSE), 
                list(res, res))
   
   # Try with an unbalanced list
-  expect_warning(trim_rows_cols(a_list, list(mat, mat, mat), margin = list(c(1,2), c(1,2))), 
-                 "longer argument not a multiple of length of shorter")
-  
+  # expect_warning(trim_rows_cols(a_list, # 2 here
+  #                               list(mat, mat, mat), # 3 here
+  #                               margin = list(c(1,2), c(1,2))), # 2 here
+  #                "longer argument not a multiple of length of shorter")
+  expect_warning(trim_rows_cols(a_list, # 2 here
+                                list(mat, mat, mat), # 3 here
+                                margin = list(c(1,2), c(1,2))), # 2 here
+                 "In trim_rows_cols") %>% 
+    expect_warning("In trim_rows_cols") %>% 
+    expect_warning("In trim_rows_cols") %>% 
+    expect_warning("In trim_rows_cols") %>% 
+    expect_warning("In trim_rows_cols") %>% 
+    expect_warning("In trim_rows_cols") %>% 
+    expect_warning("longer argument not a multiple of length of shorter") %>% 
+    expect_warning("longer argument not a multiple of length of shorter")
+
   # Try with a being a list and mat being NULL.
   # Should get 2 a matrices.
   expect_equal(trim_rows_cols(a_list, NULL, margin = list(c(1,2), c(1,2))), 
@@ -177,3 +190,4 @@ test_that("trim_rows_cols() respects pieces", {
   expect_equal(res2, expected1)
 
 })
+

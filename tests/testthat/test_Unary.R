@@ -1,6 +1,3 @@
-###########################################################
-context("Hatize and Inverse")
-###########################################################
 
 test_that("hatize_byname() works as expected", {
   g <- matrix(4, dimnames = list("I", "Products"))
@@ -77,10 +74,6 @@ test_that("hatinv_byname() works as expected", {
 })
 
 
-###########################################################
-context("Absolute value")
-###########################################################
-
 test_that("abs_byname() works as expected", {
   expect_equal(abs_byname(1), 1)
   expect_equal(abs_byname(-1), 1)
@@ -90,11 +83,7 @@ test_that("abs_byname() works as expected", {
 })
 
 
-###########################################################
-context("Log and Exp")
-###########################################################
-
-test_that("log_byname works as expected", {
+test_that("log_byname() works as expected", {
   expect_equal(log_byname(exp(1)), 1)
   m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
@@ -114,7 +103,8 @@ test_that("log_byname works as expected", {
   expect_equal(log_byname(list(m, m), base = 10), list(expected_log10, expected_log10))
 })
 
-test_that("exp_byname works as expected", {
+
+test_that("exp_byname() works as expected", {
   expect_equal(exp_byname(1), exp(1))
   m <- matrix(c(log(10),log(1),log(1),log(100)), 
               nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
@@ -129,10 +119,6 @@ test_that("exp_byname works as expected", {
 })
   
   
-###########################################################
-context("Inversion")
-###########################################################
-
 test_that("invert_byname() works as expected", {
   # Singular matrix
   sing <- matrix(c(1, 0,
@@ -209,10 +195,6 @@ test_that("invert_byname() works correctly with the method argument", {
 })
 
 
-###########################################################
-context("Transpose")
-###########################################################
-
 test_that("transpose_byname() works as expected", {
   m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
@@ -276,10 +258,6 @@ test_that("transpose_byname() correctly handles constants", {
 })
 
 
-###########################################################
-context("Eigenvalues and eigenvectors")
-###########################################################
-
 test_that("eigenvalues_byname() works as expected", {
   m <- matrix(c(4, 6, 10, 
                 3, 10 , 13, 
@@ -322,10 +300,6 @@ test_that("eigenvectors_byname() works as expected", {
 })
 
 
-###########################################################
-context("SVD")
-###########################################################
-
 test_that("svd_byname() works as expected", {
   # Example from https://medium.com/intuition/singular-value-decomposition-svd-working-example-c2b6135673b5
   A = matrix(c(4, 0, 
@@ -367,10 +341,6 @@ test_that("svd_byname() works as expected", {
   expect_true(equal_byname(should_be_A, A))
 })
 
-
-###########################################################
-context("Hatize")
-###########################################################
 
 test_that("hatize_byname() works as expected", {
   # Check the absurd situation where a non-vector is sent to hatize()
@@ -486,10 +456,6 @@ test_that("hatize_byname() issues a warning when keep is wrong", {
 })
 
 
-###########################################################
-context("Identize")
-###########################################################
-
 test_that("identize_byname() works as expected", {
   # Try first with a single number
   expect_equal(identize_byname(42), 1)
@@ -548,11 +514,7 @@ test_that("identize_byname() works as expected", {
 })
 
 
-###########################################################
-context("Vectorize")
-###########################################################
-
-test_that("vectorize_byname works as expected", {
+test_that("vectorize_byname() works as expected", {
   # Try with a square matrix
   m1 <- matrix(c(1, 5,
                  4, 5),
@@ -638,7 +600,7 @@ test_that("vectorize_byname works as expected", {
 })
 
 
-test_that("vectorize works with 4 matrices", {
+test_that("vectorize_byname() works with 4 matrices", {
   m <- matrix(c(1, 5,
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
@@ -657,7 +619,7 @@ test_that("vectorize works with 4 matrices", {
 })
 
 
-test_that("matricize_byname works as expected", {
+test_that("matricize_byname() works as expected", {
   v1 <- array(dim = c(2, 2, 2))
   expect_error(matricize_byname(v1, notation = RCLabels::arrow_notation), "== 2 in matricize_byname")
 
@@ -718,7 +680,7 @@ test_that("matricize_byname works as expected", {
 })
 
 
-test_that("vectorize and matricize are inverses of each other", {
+test_that("vectorize_byname() and matricize_byname() are inverses of each other", {
   m1 <- matrix(c(1, 2, 
                  3, 4, 
                  5, 6),
@@ -734,11 +696,7 @@ test_that("vectorize and matricize are inverses of each other", {
 })
 
 
-###########################################################
-context("Fractionize")
-###########################################################
-
-test_that("fractionze_byname works as expected", {
+test_that("fractionze_byname() works as expected", {
   M <- matrix(c(1, 5,
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
@@ -878,20 +836,12 @@ test_that("fractionze_byname works as expected", {
 })
 
 
-###########################################################
-context("Row selection")
-###########################################################
-
-m_rownames <- paste0("i", 1:4)
-m_colnames <- paste0("p", 1:4)
-m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
-  setrowtype("Industries") %>% setcoltype("Products")
-
-n1 <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
-n2 <- setcolnames_byname(m, c("a1", "a2", "b1", "b2"))
-
-
 test_that("matrix row selection by name with exact matches (^name$) works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+
   # Select only the first row (i1)
   expect_equal(select_rows_byname(m, retain_pattern = "^i1$"), 
                matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
@@ -930,6 +880,13 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
 
 
 test_that("matrix row selection by name with inexact matches works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+
+  n1 <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+
   # Matches first two rows, because partial match is OK.
   expect_equal(select_rows_byname(n1, retain_pattern = "^a"), 
                n1[c(1,2), ] %>% setrowtype(rowtype(n1)) %>% setcoltype(coltype(n1)))
@@ -940,6 +897,12 @@ test_that("matrix row selection by name with inexact matches works as expected",
 
 
 test_that("matrix row selection by name with inexact matches and multiple selectors", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  n1 <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+  
   # The retain_pattern selects all rows whose names start with "a" or "b".
   # This approach should retain rows with names "a1", "a2", "b1", and "b2", i.e.,
   # all rows in n1.
@@ -948,6 +911,11 @@ test_that("matrix row selection by name with inexact matches and multiple select
 
 
 test_that("matrix row selection by name in lists works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+
   # Use same row names for each item in the list
   expect_equal(select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$"),
                list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
@@ -966,15 +934,16 @@ test_that("matrix row selection by name in lists works as expected", {
   DF_expected[[2,"trimmed"]] <- select_rows_byname(m, retain_pattern = "^i1$|^i2$")
   # Need to use "expect_equivalent" because attributes are different 
   # because DF_expected was made differently from how the mutated data fram was made.
-  expect_equivalent(DF, DF_expected)
+  expect_equal(DF, DF_expected, ignore_attr = TRUE)
 })
 
 
-###########################################################
-context("Column selection")
-###########################################################
-
 test_that("matrix column selection by name with exact matches (^name$) works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  
   # Select only the first column (p1)
   expect_equal(select_cols_byname(m, retain_pattern = "^p1$"), 
                matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
@@ -1004,6 +973,12 @@ test_that("matrix column selection by name with exact matches (^name$) works as 
 
 
 test_that("matrix column selection by name with inexact matches works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  n2 <- setcolnames_byname(m, c("a1", "a2", "b1", "b2")) 
+  
   # Matches first two columns, because partial match is OK.
   expect_equal(select_cols_byname(n2, retain_pattern = "^a"), 
                n2[ , c(1,2)] %>% setrowtype(rowtype(n2)) %>% setcoltype(coltype(n2)))
@@ -1014,6 +989,12 @@ test_that("matrix column selection by name with inexact matches works as expecte
 
 
 test_that("matrix column selection by name with inexact matches and multiple selectors", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  n2 <- setcolnames_byname(m, c("a1", "a2", "b1", "b2")) 
+  
   # The retain_pattern selects all columns whose names start with "a" or "b".
   # This approach should retain columns with names "a1", "a2", "b1", and "b2", i.e.,
   # all columns in n2.
@@ -1022,6 +1003,11 @@ test_that("matrix column selection by name with inexact matches and multiple sel
 
 
 test_that("matrix column selection by name in lists works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+
   # Use same column names for each item in the list
   expect_equal(select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$"),
                list(m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
@@ -1040,15 +1026,16 @@ test_that("matrix column selection by name in lists works as expected", {
   DF_expected[[2,"trimmed"]] <- select_cols_byname(m, retain_pattern = "^p1$|^p2$")
   # Need to use "expect_equivalent" because attributes are different 
   # because DF_expected was made differently from how the mutated data fram was made.
-  expect_equivalent(DF, DF_expected)
+  expect_equal(DF, DF_expected, ignore_attr = TRUE)
 })
 
 
-###########################################################
-context("Row, column, and all sums")
-###########################################################
-
 test_that("rowsums_byname() works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+
   expect_error(rowsums_byname("bogus"), "Unknown type for 'a' in rowsums_byname")
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
@@ -1191,11 +1178,7 @@ test_that("sum_byname() and sumall_byname() behave same with NULL", {
 })
 
 
-###########################################################
-context("Row, column, and all prods")
-###########################################################
-
-test_that("rowprods_byname works as expected", {
+test_that("rowprods_byname() works as expected", {
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   # Note, columns are sorted by name after rowprods_byname
@@ -1227,7 +1210,7 @@ test_that("rowprods_byname works as expected", {
 })
 
 
-test_that("colprods_byname works as expected", {
+test_that("colprods_byname() works as expected", {
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   colprodsm_expected <- matrix(c(6, 120), nrow = 1, dimnames = list(rowtype(m), colnames(m))) %>% 
@@ -1258,7 +1241,7 @@ test_that("colprods_byname works as expected", {
 })
 
 
-test_that("prodall_byname works as expected", {
+test_that("prodall_byname() works as expected", {
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
   expect_equal(prodall_byname(m), 16)
@@ -1285,11 +1268,7 @@ test_that("prodall_byname works as expected", {
 })
 
 
-###########################################################
-context("Iminus")
-###########################################################
-
-test_that("Iminus_byname works as expected", {
+test_that("Iminus_byname() works as expected", {
   m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   Iminus_expected <- matrix(c(11, 12, 
@@ -1332,11 +1311,7 @@ test_that("Iminus_byname works as expected", {
 })
 
 
-###########################################################
-context("Matrix cleaning")
-###########################################################
-
-test_that("matrix cleaning works as expected", {
+test_that("clean_byname() works as expected", {
   # Clean on rows
   mat1 <- matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
     setrowtype("Rows") %>% setcoltype("Cols")
@@ -1358,11 +1333,7 @@ test_that("matrix cleaning works as expected", {
 })
 
 
-###########################################################
-context("Cumulative sum")
-###########################################################
-
-test_that("cumsum_byname works as expected", {
+test_that("cumsum_byname() works as expected", {
   expect_null(cumsum_byname(NULL))
   expect_true(is.na(cumsum_byname(NA)))
   expect_equal(cumsum_byname(2), 2)
@@ -1412,11 +1383,7 @@ test_that("cumsum_byname works as expected", {
 })
 
 
-###########################################################
-context("Cumulative product")
-###########################################################
-
-test_that("cumprod_byname works as expected", {
+test_that("cumprod_byname() works as expected", {
   expect_null(cumprod_byname(NULL))
   expect_true(is.na(cumprod_byname(NA)))
   expect_equal(cumprod_byname(2), 2)
@@ -1468,11 +1435,7 @@ test_that("cumprod_byname works as expected", {
 })
 
 
-###########################################################
-context("Replace NaN")
-###########################################################
-
-test_that("replaceNaN works as expected", {
+test_that("replaceNaN() works as expected", {
   expected <- matrix(c(1,0))
   suppressWarnings(a <- matrix(c(1, sqrt(-1))))
   expect_equal(replaceNaN_byname(a), expected)
@@ -1483,11 +1446,7 @@ test_that("replaceNaN works as expected", {
 })
 
 
-###########################################################
-context("Counting values")
-###########################################################
-
-test_that("count_vals_byname works as expected", {
+test_that("count_vals_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   expect_equal(count_vals_byname(m), 2)
@@ -1507,7 +1466,7 @@ test_that("count_vals_byname works as expected", {
 })
 
 
-test_that("compare_byname works as expected", {
+test_that("compare_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   expect_equal(compare_byname(m), matrix(c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
   expect_equal(compare_byname(m, "<", 3), 
@@ -1515,7 +1474,7 @@ test_that("compare_byname works as expected", {
 })
   
   
-test_that("count_vals_inrows_byname works as expected", {
+test_that("count_vals_inrows_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   expect_equal(count_vals_inrows_byname(m), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
@@ -1536,7 +1495,7 @@ test_that("count_vals_inrows_byname works as expected", {
 })
 
 
-test_that("count_vals_incols_byname works as expected", {
+test_that("count_vals_incols_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   expect_equal(count_vals_incols_byname(m), matrix(c(1, 1), nrow = 1, ncol = 2))
@@ -1557,11 +1516,7 @@ test_that("count_vals_incols_byname works as expected", {
 })
 
 
-###########################################################
-context("Any")
-###########################################################
-
-test_that("any_byname works as expected", {
+test_that("any_byname() works as expected", {
   m <- matrix(rep(TRUE, times = 4), nrow = 2, ncol = 2)
   expect_true(all_byname(m))
   expect_true(any_byname(m))
@@ -1578,10 +1533,6 @@ test_that("any_byname works as expected", {
   
 })
 
-
-###########################################################
-context("Rename")
-###########################################################
 
 test_that("rename_to_pref_suff_byname() works as expected", {
   m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
