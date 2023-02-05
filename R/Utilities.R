@@ -1941,14 +1941,3 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
                                      prepositions_val = prepositions))
 }
 
-
-
-
-
-
-
-
-
-
-
-
