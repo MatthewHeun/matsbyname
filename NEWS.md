@@ -4,6 +4,10 @@ output: html_document
 ---
 
 
+* First function (`sum_byname()`) now works with
+  `Matrix` objects,
+  paving the way for sparse matrix representation
+  throughout `matsbyname`.
 * In tests, cleaned up many warnings emanating from
   the change to `testthat` v3.
 * Reacted to a change in grouping policy in `dplyr`

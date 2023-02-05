@@ -307,5 +307,21 @@ test_that("sum_byname() works with sparse Matrix objects", {
   res2 <- sum_byname(A, B)
   expected2 <- Matrix::Matrix(0, nrow = 4, ncol = 4, dimnames = list(paste0("r", 1:4), paste0("c", 1:4)))
   matsbyname:::expect_equal_matrix_or_Matrix(res2, expected2)
+  
+  D <- Matrix::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  E <- Matrix::Matrix(2, nrow = 2, ncol = 2, dimnames = list(c("r3", "r4"), c("c3", "c4")))
+  res3 <- sum_byname(D, E)
+  expected3 <- Matrix::Matrix(c(1, 1, 0, 0, 
+                                1, 1, 0, 0,
+                                0, 0, 2, 2, 
+                                0, 0, 2, 2), nrow = 4, ncol = 4, byrow = TRUE,
+                              dimnames = list(paste0("r", 1:4), paste0("c", 1:4)))
+  matsbyname:::expect_equal_matrix_or_Matrix(res3, expected3)
+  
+  # Check with a matrix and a Matrix
+  f <- matrix(2, nrow = 2, ncol = 2, dimnames = list(c("r3", "r4"), c("c3", "c4")))
+  res4 <- sum_byname(f, E)
+  expected4 <- expected3
+  matsbyname:::expect_equal_matrix_or_Matrix(res4, expected4)
 })
   
