@@ -5,34 +5,34 @@
 #' Completes each matrix relative to each other, thereby assuring that
 #' both matrices have same row and column names.
 #' Missing rows and columns (relative to the other matrix)
-#' are filled with \code{fill}.
+#' are filled with `fill`.
 #' Thereafter, rows and columns of the matrices are sorted
 #' such that they are in the same order (by name).
-#' To complete rows of \code{m1} relative to columns of \code{m2},
-#' set the \code{m2} argument to \code{transpose_byname(m2)}.
+#' To complete rows of `m1` relative to columns of `m2`,
+#' set the `m2` argument to `transpose_byname(m2)`.
 #'
-#' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
-#' For rows only, give \code{1};
-#' for columns only, give \code{2};
-#' for both rows and columns, give \code{c(1,2)}, the default value.
+#' `margin` has nearly the same semantic meaning as in `base::apply()`.
+#' For rows only, give `1`;
+#' for columns only, give `2`;
+#' for both rows and columns, give `c(1,2)`, the default value.
 #'
-#' If only \code{m1} is specified, rows of \code{m1} are completed and sorted
-#' relative to columns of \code{m1}.
-#' If neither \code{m1} nor \code{m2} have dimnames,
-#' \code{m1} and \code{m2} are returned unmodified.
-#' If only one of \code{m1} or \code{m2} has dimnames, an error is thrown.
+#' If only `m1` is specified, rows of `m1` are completed and sorted
+#' relative to columns of `m1`.
+#' If neither `m1` nor `m2` have dimnames,
+#' `m1` and `m2` are returned unmodified.
+#' If only one of `m1` or `m2` has dimnames, an error is thrown.
 #'
 #' @param a The first matrix
 #' @param b The second (optional) matrix.
-#' @param fill rows and columns added to \code{a} and \code{b} will contain the value \code{fill}. (a double)
-#' @param margin Specifies the dimension(s) of \code{a} and \code{b} over which
+#' @param fill rows and columns added to `a` and `b` will contain the value `fill` (a double).
+#' @param margin Specifies the dimension(s) of `a` and `b` over which
 #'        completing and sorting will occur
 #' @param roworder Specifies a custom ordering for rows of returned matrices.
 #'        Unspecified rows are dropped.
 #' @param colorder Specifies a custom ordering for columns of returned matrices.
 #'        Unspecified columns are dropped.
 #'
-#' @return A named list containing completed and sorted versions of \code{a} and \code{b}.
+#' @return A named list containing completed and sorted versions of `a` and `b`.
 #'
 #' @export
 #'

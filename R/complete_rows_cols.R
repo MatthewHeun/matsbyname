@@ -29,8 +29,9 @@
 #' When conflicts arise, precedence among the `fill*` arguments is 
 #' `fillrow` then `fillcol` then `fill`.
 #'
-#' @param a A matrix or list of matrices to be completed. 
-#' @param mat A matrix from which dimnames will be extracted
+#' @param a A `matrix` or list of `matrix` objects to be completed. 
+#'          `a` can be `Matrix` objects, too.
+#' @param mat A `matrix` or `Matrix` from which dimnames will be extracted
 #'            for the purposes of completing `a` with respect to `mat`.
 #' @param fill Rows and columns added to `a` will contain the value `fill`. 
 #'             (Default is `0`.) 
@@ -51,7 +52,8 @@
 #' @export
 #' 
 #' @return A modified version of `a` possibly containing additional rows and columns 
-#'         whose names are obtained from `mat`.
+#'         whose names are obtained from `mat` and whose values are obtained from
+#'         `fillrow`, `fillcol` or `fill` (in that order of preference).
 #' 
 #' @examples
 #' m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
@@ -97,12 +99,12 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
                                margin = c(1,2)){
   
   if (is.null(a) & is.null(mat)) {
-    stop("Both a and mat are NULL in complete_rows_cols.")
+    stop("Both a and mat are NULL in complete_rows_cols().")
   }
   if (is.data.frame(a)) {
-    stop("a cannot be a data frame in complete_rows_cols.")
+    stop("a cannot be a data frame in complete_rows_cols().")
   }
-  if (is.list(a) & !is.data.frame(a) & !is.matrix(a)) {
+  if (is.list(a) & !is.data.frame(a) & !is_matrix_or_Matrix(a)) {
     # Assume we have a list of matrices for a, not a single matrix.
     # Double-check that we have what we need in the mat argument.
     if (is.null(mat)) {
@@ -111,12 +113,12 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
       # Make a list of same length as the list of a.
       # Each value is NA.
       mat <- RCLabels::make_list(NULL, length(a))
-    } else if (is.matrix(mat)) {
+    } else if (is_matrix_or_Matrix(mat)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as a.
       mat <- RCLabels::make_list(mat, length(a))
     }
-  } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
+  } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is_matrix_or_Matrix(mat)) {
     # a is NULL, and assume we have a list of matrices in the mat argument.
     # Under these conditions, we return matrices with same row and column names as each mat, but
     # filled with the "fill" value.
@@ -136,36 +138,36 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     
     # Check that fillrow, if present, is appropriate
     if (!is.null(fillrow)) {
-      if (!is.matrix(fillrow)) {
-        stop("fillrow must be a matrix in complete_rows_cols.")
+      if (!is_matrix_or_Matrix(fillrow)) {
+        stop("fillrow must be a matrix or a Matrix in complete_rows_cols.")
       }
       if (!nrow(fillrow) == 1) {
-        stop("fillrow must be a matrix with one row in complete_rows_cols.")
+        stop("fillrow must be a matrix or a Matrix with one row in complete_rows_cols().")
       }
     }
     
     # Check that fillcol, if present, is appropriate
     if (!is.null(fillcol)) {
-      if (!is.matrix(fillcol)) {
-        stop("fillcol must be a matrix in complete_rows_cols.")
+      if (!is_matrix_or_Matrix(fillcol)) {
+        stop("fillcol must be a matrix or a Matrix in complete_rows_cols().")
       }
       if (!ncol(fillcol) == 1) {
-        stop("fillcol must be a matrix with one column in complete_rows_cols.")
+        stop("fillcol must be a matrix or a Matrix with one column in complete_rows_cols().")
       }
     }
     
     if (is.null(dimnamesmat)) {
       # dimnamesmat is null, even after trying to gather row and column names from mat.  
-      # If a is a matrix with names, complete it relative to itself.
-      if (is.matrix(a) & !is.null(dimnames(a))) {
+      # If a is a matrix or Matrix with names, complete it relative to itself.
+      if (is_matrix_or_Matrix(a) & !is.null(dimnames(a))) {
         if (!is.null(mat)) {
           # If we get here but matrix is not NULL, the user was probably trying
-          # to complete a relative to matrix.
-          # But matrix doens't have any dimnames.
+          # to complete a relative to matrix or a Matrix.
+          # But the matrix doesn't have any dimnames.
           # Warn that we're going to complete a relative to itself.
-          warning("NULL names in complete_rows_cols, despite 'mat' being specified. Completing a relative to itself.")
+          warning("NULL names in complete_rows_cols(), despite 'mat' being specified. Completing a relative to itself.")
         }
-        return(complete_rows_cols(a, mat = t(a)))
+        return(complete_rows_cols(a, mat = t_matrix_or_Matrix(a)))
       }
       # a is a matrix without dimnames.  Just return a.
       return(a)
@@ -173,7 +175,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     
     rt <- rowtype(a)
     ct <- coltype(a)
-    if ((is.null(a) | (is.matrix(a) & all(dim(a) == 0))) & length(dimnamesmat) == 2) {
+    if ((is.null(a) | (is_matrix_or_Matrix(a) & all(dim(a) == 0))) & length(dimnamesmat) == 2) {
       # a is NULL or a 0x0 matrix, but dimnamesmat is a nxn list.
       # We can work with this.
       # If we have fillcol, make a matrix consisting of repeated fillcols 
@@ -181,15 +183,16 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
       if (!is.null(fillcol) & is.null(fillrow)) {
         # Verify that we have the right size.
         if (!isTRUE(all.equal(rownames(fillcol), dimnamesmat[[1]]))) {
-          stop("rownames of fillcol must match rownames of mat in complete_rows_cols.")
+          stop("rownames of fillcol must match rownames of mat in complete_rows_cols().")
         }
         return(matrix(rep.int(fillcol, times = ncol(mat)), nrow = nrow(mat), ncol = ncol(mat),
-                      dimnames = dimnamesmat) %>% setrowtype(rt) %>% setcoltype(ct))
+                      dimnames = dimnamesmat) %>% 
+                 setrowtype(rt) %>% setcoltype(ct))
       }
       if (!is.null(fillrow)) {
         # Verify that we have the right size.
         if (!isTRUE(all.equal(colnames(fillrow), dimnamesmat[[2]]))) {
-          stop("colnames of fillrow must match colnames of mat in complete_rows_cols.")
+          stop("colnames of fillrow must match colnames of mat in complete_rows_cols().")
         }
         return(matrix(rep.int(fillrow, times = nrow(mat)), byrow = TRUE, nrow = nrow(mat), ncol = ncol(mat),
                       dimnames = dimnamesmat) %>% setrowtype(rt) %>% setcoltype(ct))
@@ -232,26 +235,17 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
         fillcols <- matrix(fill, ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
       } else {
-        # # fillcol is present. Ensure that row names on fillcol are identical to rownames in a
-        # if (!isTRUE(all.equal(rownames(fillcol), rownames(a)))) {
-        #   stop("row names of fillcol must match row names of a in complete_rows_cols.")
-        # }
-        # # Make the fillcols matrix from the fillcol row vector
-        # fillcols <- matrix(rep.int(fillcol, length(fillcolnames)), 
-        #                    ncol = length(fillcolnames), nrow = nrow(a), 
-        #                    dimnames = list(rownames(a), fillcolnames))
-        
         # fillcol is present. Perform some tests.
         # Stop if fillcol or a has any duplicated column names
         if (any(duplicated(rownames(fillcol)))) {
-          stop("Duplicated row names found in matrix fillcol in complete_rows_cols.")
+          stop("Duplicated row names found in matrix fillcol in complete_rows_cols().")
         }
         if (any(duplicated(rownames(a)))) {
-          stop("Duplicated row names found in matrix a in complete_rows_cols.")
+          stop("Duplicated row names found in matrix a in complete_rows_cols().")
         }
         # Ensure that all of the row names in matrix a are present in fillcol
         if (!all(rownames(a) %in% rownames(fillcol))) {
-          stop("Some rows of matrix a are not present in matrix fillcol in complete_rows_cols.")
+          stop("Some rows of matrix a are not present in matrix fillcol in complete_rows_cols().")
         }
         # Ensure that the order of rows in fillcol is the same as the order of rows in a.
         fillcol <- fillcol[rownames(a), , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
@@ -260,7 +254,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
                            ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
       }
-      a <- cbind(a, fillcols) %>% 
+      a <- cbind_matrix_or_Matrix(a, fillcols) %>% 
         setrowtype(rt) %>% setcoltype(ct)
     }
     
@@ -290,7 +284,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
                            nrow = length(fillrownames), ncol = ncol(a), 
                            dimnames = list(fillrownames, colnames(a)))
       }
-      a <- rbind(a, fillrows) %>% 
+      a <- rbind_matrix_or_Matrix(a, fillrows) %>% 
         setrowtype(rt) %>% setcoltype(ct)
     }
     return(a)

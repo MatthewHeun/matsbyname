@@ -195,7 +195,8 @@ test_that("complete_and_sort() works as expected", {
   expect_equal(complete_and_sort(a, b), list(a = a, b = b))
 })
 
-test_that("complete_and_sort preserves row and column types", {
+
+test_that("complete_and_sort() preserves row and column types", {
   # a and b are same matrices.
   # Completing and sorting against each other should produce a (or b).
   a <- matrix(c(1:4), nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
@@ -209,19 +210,7 @@ test_that("complete_and_sort preserves row and column types", {
 })
 
 
-test_that("complete_rows_cols() works with a 0x0 matrix", {
-  m <- matrix(c(1), dimnames = list("r1", "c1"))
-  # Make a 0x0 matrix
-  a <- m[0, 0]
+test_that("complete_and_sort() works with Matrix objects", {
   
-  mat <- matrix(c(1, 2,
-                  3, 4), nrow = 2, ncol = 2, byrow = TRUE, 
-                  dimnames = list(c("r1", "r2"), c("c1", "c2")))
-  
-  expect_equal(complete_rows_cols(a, mat), 
-               matrix(c(0, 0, 
-                        0, 0), nrow = 2, ncol = 2, byrow = TRUE, 
-                      dimnames = list(c("r1", "r2"), c("c1", "c2"))))
 })
-
 

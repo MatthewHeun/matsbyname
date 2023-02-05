@@ -63,7 +63,7 @@ test_that("complete_rows_cols() works as expected", {
   m1 <- matrix(c(1:6), nrow = 3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   m2 <- matrix(c(7:12), ncol = 3)
   expect_warning(complete_rows_cols(a = m1, mat = m2), 
-                 "NULL names in complete_rows_cols, despite 'mat' being specified. Completing a relative to itself.")
+                 "NULL names in complete_rows_cols\\(\\), despite 'mat' being specified. Completing a relative to itself.")
   
   res <- complete_rows_cols(a = m1, mat = m2) %>% 
     suppressWarnings()
@@ -262,10 +262,10 @@ test_that("complete_rows_cols() works correctly when fillrow is specified.", {
   b <- matrix(c(1:6), byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   # Test for problematic cases.
   # fillrow is not a matrix
-  expect_error(complete_rows_cols(a, b, fillrow = 42), "fillrow must be a matrix in complete_rows_cols.")
+  expect_error(complete_rows_cols(a, b, fillrow = 42), "fillrow must be a matrix or a Matrix in complete_rows_cols.")
   # Number of rows is greater than 1
   fillrow_tall <- matrix(c(42, 42), nrow = 2, ncol = 1, dimnames = list(c("r43", "r44"), "c2"))
-  expect_error(complete_rows_cols(a, b, fillrow = fillrow_tall), "fillrow must be a matrix with one row in complete_rows_cols.")
+  expect_error(complete_rows_cols(a, b, fillrow = fillrow_tall), "fillrow must be a matrix or a Matrix with one row in complete_rows_cols.")
   # Number of columns doesn't match
   fillrow_wide <- matrix(42, nrow = 1, ncol = 3, dimnames = list("r42", c("c1", "c2", "c3")))
   expect_equal(complete_rows_cols(a, b, fillrow = fillrow_wide), 
@@ -289,10 +289,10 @@ test_that("complete_rows_cols() works correctly when fillcol is specified.", {
   b <- matrix(c(1:6), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
   # Test for problematic cases.
   # fillcol is not a matrix
-  expect_error(complete_rows_cols(a, b, fillcol = 42), "fillcol must be a matrix in complete_rows_cols.")
+  expect_error(complete_rows_cols(a, b, fillcol = 42), "fillcol must be a matrix or a Matrix in complete_rows_cols.")
   # Number of columns is greater than 1
   fillcol_wide <- matrix(c(42, 42), nrow = 1, ncol = 2, dimnames = list("r42", c("c42", "c43")))
-  expect_error(complete_rows_cols(a, b, fillcol = fillcol_wide), "fillcol must be a matrix with one column in complete_rows_cols.")
+  expect_error(complete_rows_cols(a, b, fillcol = fillcol_wide), "fillcol must be a matrix or a Matrix with one column in complete_rows_cols.")
   # Number of rows doesn't match
   fillcol_tall <- matrix(42, nrow = 3, ncol = 1, dimnames = list(c("r1", "r2", "r3"), "c3"))
   expect_equal(complete_rows_cols(a, b, fillcol = fillcol_tall), 
@@ -377,13 +377,40 @@ test_that("complete_rows_cols() works when orders are different for column fill"
 
 
 test_that("complete_rows_cols() works with a Matrix", {
-  # a is a matrix with dimnames, mat is NULL.  a is completed relative to itself
-  expect_equal(complete_rows_cols(a = Matrix::Matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))), 
-               Matrix::Matrix(c(42, 0, 0, 
+  # A is a Matrix with dimnames, mat is NULL.  a is completed relative to itself
+  A <- Matrix::Matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
+  res1 <- complete_rows_cols(A)
+  expected1 <- Matrix::Matrix(c(42, 0, 0, 
                                 42, 0, 0, 
                                  0, 0, 0), byrow = TRUE, 
-                              nrow = 3, ncol = 3, dimnames = list(c("r1", "r2", "c1"), c("c1", "r1", "r2"))))
+                              nrow = 3, ncol = 3, dimnames = list(c("r1", "r2", "c1"), c("c1", "r1", "r2")))
+  expect_true(all(res1 == expected1))
+  expect_equal(dimnames(res1), dimnames(expected1))
   
-  
-  
+  # Try with 2 Matrix objects
+  # Add one row (r3) and one column (c2)
+  B <- Matrix::Matrix(0, nrow = 1, ncol = 1, dimnames = list("r3", "c2"))
+  res2 <- complete_rows_cols(A, B)
+  expected2 <- Matrix::Matrix(c(42, 0, 
+                                42, 0, 
+                                 0, 0), byrow = TRUE, 
+                              nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  expect_equal(res2, expected2)
 })
+
+
+test_that("complete_rows_cols() works with a 0x0 matrix", {
+  m <- matrix(c(1), dimnames = list("r1", "c1"))
+  # Make a 0x0 matrix
+  a <- m[0, 0]
+  
+  mat <- matrix(c(1, 2,
+                  3, 4), nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  
+  expect_equal(complete_rows_cols(a, mat), 
+               matrix(c(0, 0, 
+                        0, 0), nrow = 2, ncol = 2, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2"), c("c1", "c2"))))
+})
+
