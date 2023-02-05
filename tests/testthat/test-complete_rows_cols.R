@@ -38,11 +38,11 @@ test_that("complete_rows_cols() works as expected", {
                                                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))), 
                "Can't complete a that is missing dimnames with non-NULL dimnames on mat.")
   
-  # a is a matrix with dimnames, matrix is NULL.  a is completed relative to itself
+  # a is a matrix with dimnames, mat is NULL.  a is completed relative to itself
   expect_equal(complete_rows_cols(a = matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))), 
                matrix(c(42, 0, 0, 
                         42, 0, 0, 
-                        0, 0, 0), byrow = TRUE, 
+                         0, 0, 0), byrow = TRUE, 
                       nrow = 3, ncol = 3, dimnames = list(c("r1", "r2", "c1"), c("c1", "r1", "r2"))))
   
   # a is a matrix with dimnames, names is NULL, but matrix is present.  Take names from matrix to complete a.
@@ -375,3 +375,15 @@ test_that("complete_rows_cols() works when orders are different for column fill"
                "Duplicated row names found in matrix fillcol in complete_rows_cols.")
 })
 
+
+test_that("complete_rows_cols() works with a Matrix", {
+  # a is a matrix with dimnames, mat is NULL.  a is completed relative to itself
+  expect_equal(complete_rows_cols(a = Matrix::Matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))), 
+               Matrix::Matrix(c(42, 0, 0, 
+                                42, 0, 0, 
+                                 0, 0, 0), byrow = TRUE, 
+                              nrow = 3, ncol = 3, dimnames = list(c("r1", "r2", "c1"), c("c1", "r1", "r2"))))
+  
+  
+  
+})
