@@ -9,5 +9,4 @@ test_that("is.matrix_or_Matrix() works correctly", {
   expect_equal(matsbyname:::is.matrix_or_Matrix(list(matrix(1), matrix(2))), c(TRUE, TRUE))
 
   expect_equal(matsbyname:::is.matrix_or_Matrix(list(matrix(1), Matrix::Matrix(2), "42", 42)), c(TRUE, TRUE, FALSE, FALSE))
-  
 })
