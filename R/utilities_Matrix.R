@@ -48,3 +48,17 @@ rbind_matrix_or_Matrix <- function(a, b) {
   }
   return(res)
 }
+
+
+equal_matrix_or_Matrix <- function(a, b) {
+  # Matrix objects can have various types
+  # Perform tests that are independent of 
+  # the actual Matrix type.
+  if (!all(a == b)) {
+    return(FALSE)
+  }
+  if (!all.equal(dimnames(a), dimnames(b))) {
+    return(FALSE)
+  }
+  return(TRUE)
+}

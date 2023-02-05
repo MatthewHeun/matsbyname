@@ -75,7 +75,8 @@ organize_args <- function(a, b, match_type = "all", fill){
   }
   
   # Neither a nor b are lists.
-  if (!is.matrix(a) & !is.matrix(b)) {
+  # if (!is.matrix(a) & !is.matrix(b)) {
+  if (!is_matrix_or_Matrix(a) & !is_matrix_or_Matrix(b)) {
     # Neither a nor b are matrices. Assume we have two constants. Return the constants in a vector.
     return(list(a = a, b = b))
   }
@@ -87,7 +88,8 @@ organize_args <- function(a, b, match_type = "all", fill){
   }
   # We don't know if one or both a and b is a matrix.
   # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
-  if (!is.matrix(a) & is.matrix(b)) {
+  # if (!is.matrix(a) & is.matrix(b)) {
+  if (!is_matrix_or_Matrix(a) & is_matrix_or_Matrix(b)) {
     a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
     if (match_type == "all") {
       a <- a %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
@@ -96,7 +98,7 @@ organize_args <- function(a, b, match_type = "all", fill){
       a <- a %>% setcoltype(rowtype(b))
     }
     # If matchtype == "none", we don't to anything.
-  } else if (is.matrix(a) & !is.matrix(b)) {
+  } else if (is_matrix_or_Matrix(a) & !is_matrix_or_Matrix(b)) {
     b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
     if (match_type == "all") {
       b <- b %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
