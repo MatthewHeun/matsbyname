@@ -62,3 +62,8 @@ equal_matrix_or_Matrix <- function(a, b) {
   }
   return(TRUE)
 }
+
+
+expect_equal_matrix_or_Matrix <- function(a, b) {
+  testthat::expect_true(equal_matrix_or_Matrix(a, b))
+}

@@ -384,7 +384,7 @@ test_that("complete_rows_cols() works with a Matrix", {
                                 42, 0, 0, 
                                  0, 0, 0), byrow = TRUE, 
                               nrow = 3, ncol = 3, dimnames = list(c("r1", "r2", "c1"), c("c1", "r1", "r2")))
-  expect_true(equal_matrix_or_Matrix(res1, expected1))
+  expect_equal_matrix_or_Matrix(res1, expected1)
 
   # Try with 2 Matrix objects
   # Add one row (r3) and one column (c2)

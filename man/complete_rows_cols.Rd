@@ -14,9 +14,10 @@ complete_rows_cols(
 )
 }
 \arguments{
-\item{a}{A matrix or list of matrices to be completed.}
+\item{a}{A \code{matrix} or list of \code{matrix} objects to be completed.
+\code{a} can be \code{Matrix} objects, too.}
 
-\item{mat}{A matrix from which dimnames will be extracted
+\item{mat}{A \code{matrix} or \code{Matrix} from which dimnames will be extracted
 for the purposes of completing \code{a} with respect to \code{mat}.}
 
 \item{fill}{Rows and columns added to \code{a} will contain the value \code{fill}.
@@ -40,7 +41,8 @@ for both rows and columns, give \code{c(1,2)}, the default value.}
 }
 \value{
 A modified version of \code{a} possibly containing additional rows and columns
-whose names are obtained from \code{mat}.
+whose names are obtained from \code{mat} and whose values are obtained from
+\code{fillrow}, \code{fillcol} or \code{fill} (in that order of preference).
 }
 \description{
 "Completing" rows and columns means that \code{a} contains a union of rows and columns
