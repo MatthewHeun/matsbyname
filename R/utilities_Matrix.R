@@ -51,7 +51,7 @@ rbind_matrix_or_Matrix <- function(a, b) {
 
 
 equal_matrix_or_Matrix <- function(a, b) {
-  # Matrix objects can have various types
+  # Matrix objects can have various actual classes.
   # Perform tests that are independent of 
   # the actual Matrix type.
   if (!all(a == b)) {
