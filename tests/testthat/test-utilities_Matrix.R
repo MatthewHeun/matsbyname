@@ -95,3 +95,27 @@ test_that("expect_equal_matrix_or_Matrix() works as expected", {
   # Try with 2 matrix objects
   matsbyname:::expect_equal_matrix_or_Matrix(a, b)
 })
+
+
+test_that("equal_matrix_or_Matrix() works with row and col types", { 
+  A <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  matsbyname:::expect_equal_matrix_or_Matrix(A, A)
+  
+  B <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows")
+  expect_false(matsbyname:::equal_matrix_or_Matrix(A, B))
+  expect_false(matsbyname:::equal_matrix_or_Matrix(B, A))
+  
+  D <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  expect_false(matsbyname:::equal_matrix_or_Matrix(A, D))
+  
+  E <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("bogus")
+  expect_false(matsbyname:::equal_matrix_or_Matrix(A, E))
+  
+  G <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("bogus") %>% setcoltype("cols")
+  expect_false(matsbyname:::equal_matrix_or_Matrix(A, G))
+  
+})
