@@ -1,5 +1,5 @@
 
-test_that("sums of constants works as expected", {
+test_that("sum_byname() of constants works as expected", {
   # Simple sum of constants
   expect_equal(sum_byname(2, 3), 5)
   expect_equal(sum_byname(2, 3, 4), 9)
@@ -17,7 +17,7 @@ test_that("sums of constants works as expected", {
 })
 
 
-test_that("sums of matrices works as expected", {
+test_that("sum_byname() of matrices works as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
@@ -64,7 +64,7 @@ test_that("sums of matrices works as expected", {
 })
 
 
-test_that("sum gives error when they are vectors without row names", {
+test_that("sum_byname() gives error when they are vectors without row names", {
   a <- matrix(c(1, 2, 3), nrow = 1, dimnames = list(NULL, c("c1", "c2", "c3"))) %>% 
     setcoltype("coltype")
   b <- 2 * a
@@ -73,7 +73,7 @@ test_that("sum gives error when they are vectors without row names", {
 })
 
 
-test_that("sums of matrices in lists and data frames works as expected", {
+test_that("sum_byname() of matrices in lists and data frames works as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
@@ -112,51 +112,105 @@ test_that("sums of matrices in lists and data frames works as expected", {
 })
 
 
-test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
+test_that("sum_byname() of Matrix objects in lists and data frames works as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
-  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+  U <- Matrix::Matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
-  Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+  Y <- Matrix::Matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
     setrowtype("Products") %>% setcoltype("Industries")
-  Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+  Z <- Matrix::Matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
     setrowtype("Products") %>% setcoltype("Industries")
-
-  UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
+  
+  UplusY <- Matrix::Matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
     setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
   UYZ <- sum_byname(U, Y) %>% sum_byname(Z)
-
-  ulist <- list(U, U)
-  ylist <- list(Y, Y)
-  zlist <- list(Z, Z)
-  DF <- data.frame(Ulist = I(list()), Ylist = I(list()), Zlist = I(list()))
-  # Put lists in each cell of the data frame.
-  DF[[1,"Ulist"]] <- ulist
-  DF[[2,"Ulist"]] <- ulist
-  DF[[1,"Ylist"]] <- ylist
-  DF[[2,"Ylist"]] <- ylist
-  DF[[1,"Zlist"]] <- zlist
-  DF[[2,"Zlist"]] <- zlist
+  Uplus100 <- U + 100
   
-  # Operate on the lists in each cell of the data frame.
-  res <- DF %>% 
-    dplyr::mutate(
-      sum = sum_byname(Ulist, Ylist),
-      bigsum = sum_byname(Ulist, Ylist, Zlist)
-    )
-  expect_equal(res$sum[[1]][[1]], UplusY)
-  expect_equal(res$sum[[1]][[2]], UplusY)
-  expect_equal(res$sum[[2]][[1]], UplusY)
-  expect_equal(res$sum[[2]][[2]], UplusY)
+  # Define a data frame to be used with testing below.
+  DF <- data.frame(U = I(list()), Y = I(list()), Z = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"Y"]] <- Y
+  DF[[2,"Y"]] <- Y
+  DF[[1,"Z"]] <- Z
+  DF[[2,"Z"]] <- Z
   
-  expect_equal(res$bigsum[[1]][[1]], UYZ)
-  expect_equal(res$bigsum[[1]][[2]], UYZ)
-  expect_equal(res$bigsum[[2]][[1]], UYZ)
-  expect_equal(res$bigsum[[2]][[2]], UYZ)
+  # sum_byname should also work with lists.
+  expect_equal(sum_byname(list(U,U), list(Y, Y)), list(UplusY, UplusY))
+  expect_equal(sum_byname(list(U,U), list(100,100)), list(Uplus100, Uplus100))
+  expect_equal(sum_byname(list(U,U), as.list(rep_len(100, 2))), list(Uplus100, Uplus100))
+  
+  # sum_byname also should work with data frames, as they are lists.
+  expect_equal(sum_byname(DF$U, DF$Y), list(UplusY, UplusY))
+  expect_equal(DF %>% dplyr::mutate(sums = sum_byname(U, Y)), 
+               DF %>% dplyr::mutate(sums = list(UplusY, UplusY)))
+  
+  # And sum_byname should work with more than 2 operands.
+  expect_equal(sum_byname(DF$U, DF$Y, DF$Z), list(UYZ, UYZ))
 })
 
 
-test_that("sums of matrices that are in lists in a cell of a data frame works as expected", {
+test_that("sum_byname() of matrices that are in lists in a cell of a data frame works as expected", {
+  test_func <- function(this_U, this_Y, this_Z) {
+    UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(this_U)) %>%
+      setrowtype(rowtype(this_U)) %>% setcoltype(coltype(this_U))
+    UYZ <- sum_byname(this_U, this_Y, this_Z)
+    
+    ulist <- list(this_U, this_U)
+    ylist <- list(this_Y, this_Y)
+    zlist <- list(this_Z, this_Z)
+    DF <- data.frame(Ulist = I(list()), Ylist = I(list()), Zlist = I(list()))
+    # Put lists in each cell of the data frame.
+    DF[[1,"Ulist"]] <- ulist
+    DF[[2,"Ulist"]] <- ulist
+    DF[[1,"Ylist"]] <- ylist
+    DF[[2,"Ylist"]] <- ylist
+    DF[[1,"Zlist"]] <- zlist
+    DF[[2,"Zlist"]] <- zlist
+    
+    # Operate on the lists in each cell of the data frame.
+    res <- DF %>% 
+      dplyr::mutate(
+        sum = sum_byname(Ulist, Ylist),
+        bigsum = sum_byname(Ulist, Ylist, Zlist)
+      )
+    matsbyname:::expect_equal_matrix_or_Matrix(res$sum[[1]][[1]], UplusY)
+    matsbyname:::expect_equal_matrix_or_Matrix(res$sum[[1]][[2]], UplusY)
+    matsbyname:::expect_equal_matrix_or_Matrix(res$sum[[2]][[1]], UplusY)
+    matsbyname:::expect_equal_matrix_or_Matrix(res$sum[[2]][[2]], UplusY)
+    
+    matsbyname:::expect_equal_matrix_or_Matrix(res$bigsum[[1]][[1]], UYZ)
+    matsbyname:::expect_equal_matrix_or_Matrix(res$bigsum[[1]][[2]], UYZ)
+    matsbyname:::expect_equal_matrix_or_Matrix(res$bigsum[[2]][[1]], UYZ)
+    matsbyname:::expect_equal_matrix_or_Matrix(res$bigsum[[2]][[2]], UYZ)
+  }
+  
+  # Test with matrix objects
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  Um <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Ym <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Zm <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  
+  test_func(Um, Ym, Zm)
+
+  # Test with Matrix objects
+  UM <- Matrix::Matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  YM <- Matrix::Matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  ZM <- Matrix::Matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  
+  test_func(UM, YM, ZM)
+})
+
+
+test_that("sum_byname() of matrices that are in lists in a cell of a data frame works as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
