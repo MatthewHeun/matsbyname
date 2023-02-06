@@ -10,7 +10,7 @@
 # because they are not intended for use
 # outside of this package.
 # 
-# None of these functions is vectorized.
+# None of these functions are vectorized.
 # 
 # --- MKH, 5 Feb 2023
 
