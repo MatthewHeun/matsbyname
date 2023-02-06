@@ -50,13 +50,13 @@ rbind_matrix_or_Matrix <- function(a, b) {
 }
 
 
-equal_matrix_or_Matrix <- function(a, b) {
+equal_matrix_or_Matrix <- function(a, b, tolerance = 1e-16) {
   # Matrix objects can have various actual classes.
   # Perform tests that are independent of 
   # the actual Matrix type.
 
   # Check numbers
-  if (!all(a == b)) {
+  if (!all(abs(a - b) < tolerance)) {
     return(FALSE)
   }
   # Check row and column names
@@ -92,6 +92,6 @@ equal_matrix_or_Matrix <- function(a, b) {
 }
 
 
-expect_equal_matrix_or_Matrix <- function(a, b) {
-  testthat::expect_true(equal_matrix_or_Matrix(a, b))
+expect_equal_matrix_or_Matrix <- function(a, b, tolerance = 1e-16) {
+  testthat::expect_true(equal_matrix_or_Matrix(a, b, tolerance))
 }

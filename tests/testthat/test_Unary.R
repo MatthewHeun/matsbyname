@@ -80,6 +80,11 @@ test_that("abs_byname() works as expected", {
   m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Commodity")
   expect_equal(abs_byname(m), abs(m))
+  
+  # Test with a Matrix object
+  M <- Matrix::Matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Commodity")
+  expect_equal(abs_byname(M), abs(M))
 })
 
 
@@ -101,6 +106,26 @@ test_that("log_byname() works as expected", {
   expect_equal(log_byname(m, base = 10), expected_log10)
   # Also works with lists
   expect_equal(log_byname(list(m, m), base = 10), list(expected_log10, expected_log10))
+})
+
+
+test_that("log_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(10,1,1,100), nrow = 2,
+                      dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  
+  matsbyname:::expect_equal_matrix_or_Matrix(log_byname(M), 
+                                             Matrix::Matrix(c(2.302585, 0, 
+                                                              0, 4.60517), byrow = TRUE, nrow = 2, ncol = 2,
+                                                            dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+                                               setrowtype("Industry") %>% setcoltype("Product"), 
+                                             tolerance = 1e-6)
+  expected_log10 <- Matrix::Matrix(c(1, 0, 
+                                     0, 2), byrow = TRUE, nrow = 2, ncol = 2,
+                                   dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+    setrowtype("Industry") %>% setcoltype("Product")
+  matsbyname:::expect_equal_matrix_or_Matrix(log_byname(M, base = 10), expected_log10)
+  
 })
 
 
