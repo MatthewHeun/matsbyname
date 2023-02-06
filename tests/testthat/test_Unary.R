@@ -150,12 +150,13 @@ test_that("exp_byname() works as expected", {
                       byrow = TRUE, nrow = 2, ncol = 2, 
                       dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
+  # rownames(M) are same as colnames(M). Why?
   expectedM <- matrix(c(10, 1,
                          1, 100), 
                       byrow = TRUE, nrow = 2, ncol = 2, 
                       dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
     setrowtype("Industry") %>% setcoltype("Product")
-  matsbyname:::expect_equal_matrix_or_Matrix(exp_byname(M), expectedM)
+  matsbyname:::expect_equal_matrix_or_Matrix(exp_byname(M), expectedM, tolerance = 1e-12)
 })
   
   
