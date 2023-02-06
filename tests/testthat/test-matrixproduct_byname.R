@@ -11,16 +11,44 @@ test_that("matrixproduct_byname() works as expected", {
                dimnames = list(c("i1", "i2"), c("s1", "s2"))) %>% 
     setrowtype("Industries") %>% setcoltype("Sectors")
   VYZ <- matrixproduct_byname(VY, Z)
-  # Fails. 3 columns of V cannot be matrix multiplied into 2 rows of Y.  Y lacks a row named p3.
-  expect_error(V %*% Y, "non-conformable arguments")
-  # Succeeds because Y is completed to include a row named p3 (that contains zeroes).
-  # Furthermore, rows and columns of Y are sorted to be in alphabetical order.
-  expect_equal(matrixproduct_byname(V, Y), VY)
-  expect_equal(matrixproduct_byname(V, Y, Z), VYZ)
   
-  # Check that it works down a list if .summarise = TRUE.
-  expect_equal(matrixproduct_byname(list(V, Y, Z), .summarise = TRUE), list(VYZ))
+  test_func <- function(this_V, this_Y, this_Z, this_VY) {
+    # Fails. 3 columns of V cannot be matrix multiplied into 2 rows of Y.  Y lacks a row named p3.
+    expect_error(this_V %*% this_Y, "non-conformable arguments")
+    # Succeeds because Y is completed to include a row named p3 (that contains zeroes).
+    # Furthermore, rows and columns of Y are sorted to be in alphabetical order.
+    expect_equal(matrixproduct_byname(this_V, this_Y), this_VY)
+    expect_equal(matrixproduct_byname(this_V, this_Y, this_Z), VYZ)
+    
+    # Check that it works down a list if .summarise = TRUE.
+    expect_equal(matrixproduct_byname(list(this_V, this_Y, this_Z),
+                                      .summarise = TRUE),
+                 list(VYZ))
+  }
   
+  # Try with matrix objects
+
+  test_func(V, Y, Z, VY)
+  
+  # Try with Matrix objects
+  VM <- matrix(1:6, ncol = 3, dimnames = list(c("i1", "i2"), c("p1", "p2", "p3"))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  YM <- matrix(1:4, ncol = 2, dimnames = list(c("p2", "p1"), c("s2", "s1"))) %>%
+    setrowtype("Products") %>% setcoltype("Sectors")
+  ZM <- matrix(11:14, ncol = 2, dimnames = list(c("s2", "s1"), c("c1", "c2"))) %>% 
+    setrowtype("Sectors") %>% setcoltype("Columns")
+  VYM <- matrix(c(13,5,
+                 20,8),
+               nrow = 2, ncol = 2, byrow = TRUE,
+               dimnames = list(c("i1", "i2"), c("s1", "s2"))) %>% 
+    setrowtype("Industries") %>% setcoltype("Sectors")
+  
+  test_func(VM, YM, ZM, VYM)
+  
+  # Try with a mix of Matrix and matrix objects
+  test_func(VM, Y, Z, VYM)
+  
+    
   M <- matrix(c(11, 12,
                 21, 22),
               nrow = 2, ncol = 2, byrow = TRUE) %>% 
