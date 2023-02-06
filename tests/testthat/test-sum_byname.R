@@ -323,5 +323,9 @@ test_that("sum_byname() works with sparse Matrix objects", {
   res4 <- sum_byname(f, D)
   expected4 <- expected3
   matsbyname:::expect_equal_matrix_or_Matrix(res4, expected4)
+  
+  res5 <- sum_byname(D, f)
+  expected5 <- expected3
+  matsbyname:::expect_equal_matrix_or_Matrix(res5, expected5)
 })
   
