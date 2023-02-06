@@ -117,5 +117,4 @@ test_that("equal_matrix_or_Matrix() works with row and col types", {
   G <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("bogus") %>% setcoltype("cols")
   expect_false(matsbyname:::equal_matrix_or_Matrix(A, G))
-  
 })
