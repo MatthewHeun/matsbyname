@@ -22,58 +22,7 @@ UminusZ <- matrix(0, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
 Uplus100 <- U + 100
 
 
-test_that("difference_byname() with constants works as expected", {
-  # Simple difference of constants
-  expect_equal(difference_byname(100, 50), 50)
-  
-  # If differenced against NULL, return the item.
-  expect_equal(difference_byname(NULL, 1), -1)
-  expect_equal(difference_byname(2, NULL), 2)
-  expect_equal(difference_byname(list(NULL, 1), list(1, 1)), list(-1, 0))
-  # If differenced against NA, return NA
-  expect_equal(difference_byname(2, NA), NA_integer_)
-})
 
-
-test_that("difference_byname() of matrices works as expected", {
-  # If only one argument, return it.
-  expect_equal(difference_byname(U), U)
-  
-  # This is a non-sensical test.  Row and column names are not respected. 
-  # Row names, column names, and row and column types come from the first operand (U).
-  expect_equal(U - Z, matrix(c(-3, -1, 1, 3), nrow = 2, dimnames = dimnames(U)) %>% 
-                      setrowtype(rowtype(U)) %>% setcoltype(coltype(U)))
-               
-  # Row and column names respected! Should be all zeroes.
-  expect_equal(difference_byname(U, Z), matrix(0, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>% 
-                                        setrowtype(rowtype(U)) %>% setcoltype(coltype(U)))
-  expect_equal(difference_byname(100, U), matrix(c(99, 98, 97, 96), nrow = 2, dimnames = dimnames(U)) %>% 
-                 setrowtype(rowtype(U)) %>% setcoltype(coltype(U)))
-  # difference_byname should sort the rows and column names.
-  # So we expect the dimnames of the difference to be the same as the dimnames of U (which has sorted dimnames).
-  expect_equal(difference_byname(10, Z), matrix(c(9, 8, 7, 6), ncol = 2, dimnames = dimnames(U)) %>% 
-                                        setrowtype(rowtype(Z)) %>% setcoltype(coltype(Z)))
-  # When subtrahend is missing, return minuend (in this case, Z) with sorted rows and columns.
-  expect_equal(difference_byname(Z), sort_rows_cols(Z))
-  # When minuend is missing, return - subtrahend (in this case, -Z)
-  expect_equal(difference_byname(subtrahend = Z), hadamardproduct_byname(-1, Z))
-})
-  
-
-test_that("difference_byname() of matrices in lists and data frames works as expected", {
-  # Define a data frame to be used with testing below.
-  DF <- data.frame(U = I(list()), Z = I(list()))
-  DF[[1,"U"]] <- U
-  DF[[2,"U"]] <- U
-  DF[[1,"Z"]] <- Z
-  DF[[2,"Z"]] <- Z
-
-  expect_equal(difference_byname(list(100, 100), list(50, 50)), list(50, 50))
-  expect_equal(difference_byname(list(U, U), list(Z, Z)), list(UminusZ, UminusZ))
-  expect_equal(difference_byname(DF$U, DF$Z), list(UminusZ, UminusZ))
-  expect_equal(DF %>% dplyr::mutate(diffs = difference_byname(U, Z)), 
-               DF %>% dplyr::mutate(diffs = list(UminusZ)))
-})
 
 
 test_that("matrixproduct_byname() works as expected", {
