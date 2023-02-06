@@ -2,33 +2,6 @@
 
 # Define some matrices with product and industry names and types
 # These matrices will be used in the tests below.
-productnames <- c("p1", "p2")
-industrynames <- c("i1", "i2")
-U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
-  setrowtype("Products") %>% setcoltype("Industries")
-V <- matrix(1:4, ncol = 2, dimnames = list(industrynames, productnames)) %>%
-  setrowtype("Industries") %>% setcoltype("Products")
-Y <- matrix(1:4, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
-  setrowtype("Products") %>% setcoltype("Industries")
-Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
-  setrowtype("Products") %>% setcoltype("Industries")
-
-UplusY <- matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
-  setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
-UYZ <- sum_byname(U, Y) %>% sum_byname(Z)
-UminusZ <- matrix(0, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>% 
-  setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
-
-Uplus100 <- U + 100
-
-
-
-
-
-
-
-
-
 
 test_that("hadamardproduct_byname() works as expected", {
   expect_equal(hadamardproduct_byname(2, 2), 4)
