@@ -60,7 +60,7 @@ equal_matrix_or_Matrix <- function(a, b) {
     return(FALSE)
   }
   # Check row and column names
-  if (!all.equal(dimnames(a), dimnames(b))) {
+  if (!isTRUE(all.equal(dimnames(a), dimnames(b)))) {
     return(FALSE)
   }
   # Check row types

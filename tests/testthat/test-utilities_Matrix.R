@@ -74,6 +74,11 @@ test_that("equal_matrix_or_Matrix() works as expected", {
                       sparse = FALSE, doDiag = FALSE)
   expect_true(matsbyname:::equal_matrix_or_Matrix(A, B))
   
+  C <- Matrix::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  expect_false(matsbyname:::equal_matrix_or_Matrix(A, C))
+  
+  D <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r3"), c("c1", "c2")))
+  expect_false(matsbyname:::equal_matrix_or_Matrix(A, D))
 })
 
 
