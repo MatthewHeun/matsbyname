@@ -328,4 +328,14 @@ test_that("sum_byname() works with sparse Matrix objects", {
   expected5 <- expected3
   matsbyname:::expect_equal_matrix_or_Matrix(res5, expected5)
 })
+
+
+test_that("sum_byname() fails with mismatch row or col types on Matrix objects", {
+  A <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  B <- Matrix::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("Product") %>% setcoltype("Industry")
+  
+  expect_error(sum_byname(A, B), "rowtype\\(a\\) \\(rows\\) != rowtype\\(b\\) \\(Product\\)")
+})
   
