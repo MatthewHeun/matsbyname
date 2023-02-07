@@ -61,7 +61,22 @@ log_byname <- function(a, base = exp(1)){
 #' m
 #' exp_byname(m)
 exp_byname <- function(a){
-  unaryapply_byname(exp, a = a)
+  
+  exp_func <- function(a_mat) {
+    if (inherits(a_mat, "Matrix")) {
+      # Do something special if we have a Matrix object
+      # to get around a bug.
+      # The bug is that exp(a_mat) when a_mat is a square Matrix 
+      # results in row AND column names equal to colnames(Matrix)
+      rnames <- rownames(a_mat)
+      out <- exp(a_mat)
+      rownames(out) <- rnames
+      return(out)
+    }
+    return(exp(a_mat))
+  }
+  
+  unaryapply_byname(exp_func, a = a)
 }
 
 

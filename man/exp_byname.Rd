@@ -17,8 +17,10 @@ Gives the exponential of all elements of a matrix or list of matrices
 }
 \examples{
 exp_byname(1)
-m <- matrix(c(log(10),log(1),log(1),log(100)), 
-  nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
+m <- matrix(c(log(10),log(1),
+              log(1),log(100)), 
+              byrow = TRUE, nrow = 2, ncol = 2,
+              dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) \%>\%
   setrowtype("Industry") \%>\% setcoltype("Commodity")
 m
 exp_byname(m)

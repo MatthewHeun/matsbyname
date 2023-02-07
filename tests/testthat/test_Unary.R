@@ -132,7 +132,7 @@ test_that("log_byname() works with Matrix objects", {
 test_that("exp_byname() works as expected", {
   expect_equal(exp_byname(1), exp(1))
   m <- matrix(c(log(10), log(1),
-                log(1),log(100)), 
+                log(1),  log(100)), 
               byrow = TRUE, nrow = 2, ncol = 2,
               dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
@@ -146,17 +146,34 @@ test_that("exp_byname() works as expected", {
   
   # Test with Matrix objects
   M <- Matrix::Matrix(c(log(10), log(1),
-                        log(1),  log(100)), 
-                      byrow = TRUE, nrow = 2, ncol = 2, 
-                      dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+                        log(1),  log(100), 
+                        log(2),  log(42)), 
+                      byrow = TRUE, nrow = 3, ncol = 2, 
+                      dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
-  # rownames(M) are same as colnames(M). Why?
   expectedM <- matrix(c(10, 1,
-                         1, 100), 
-                      byrow = TRUE, nrow = 2, ncol = 2, 
-                      dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+                         1, 100, 
+                         2, 42), 
+                      byrow = TRUE, nrow = 3, ncol = 2, 
+                      dimnames = list(c("i1", "i2", "i3"), c("p1", "p2"))) %>% 
     setrowtype("Industry") %>% setcoltype("Product")
   matsbyname:::expect_equal_matrix_or_Matrix(exp_byname(M), expectedM, tolerance = 1e-12)
+  
+  
+  # rownames(M) are same as colnames(M). Why?
+  M2 <- Matrix::Matrix(c(log(10), log(1),
+                         log(1),  log(100)), 
+                       byrow = TRUE, nrow = 2, ncol = 2, 
+                       dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  expectedM2 <- matrix(c(10, 1,
+                         1, 100), 
+                       byrow = TRUE, nrow = 2, ncol = 2, 
+                       dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+    setrowtype("Industry") %>% setcoltype("Product")
+  matsbyname:::expect_equal_matrix_or_Matrix(exp_byname(M2), expectedM2, tolerance = 1e-12)
+  
+  
 })
   
   
