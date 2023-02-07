@@ -271,7 +271,7 @@ eigenvectors_byname <- function(a) {
 }
 
 
-#' Calculate the U matrix in singular value decomposition
+#' Calculate the singular value decomposition of a matrix
 #'
 #' The singular value decomposition decomposes matrix **A** into
 #' **A** = **U** **D** **V**^T, 

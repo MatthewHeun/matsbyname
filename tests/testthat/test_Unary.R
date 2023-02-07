@@ -1,77 +1,4 @@
 
-test_that("hatize_byname() works as expected", {
-  g <- matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatize_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
-  expect_equal(hatize_byname(g, keep = "rownames"), 
-               matrix(4, dimnames = list("I", "I")))
-  expect_equal(hatize_byname(g, keep = "colnames"), 
-               matrix(4, dimnames = list("Products", "Products")))
-  
-  v <- matrix(1:3, ncol = 1, dimnames = list(c(paste0("i", 1:3)), c("p1"))) %>%
-    setrowtype("Industries") %>% setcoltype(NA)
-  # Try to hatize with the wrong keep argument
-  expect_error(hatize_byname(v, keep = "colnames"), 'In hatize_byname\\(\\), argument "keep" set to "colnames", but you supplied a column vector. Consider setting keep = "rownames".')
-  expect_error(hatize_byname(matrix(v, nrow = 1), keep = "rownames"), 'In hatize_byname\\(\\), argument "keep" set to "rownames", but you supplied a row vector. Consider setting keep = "colnames".')
-  # Try to hatize a list.
-  v_list <- list(v, v)
-  expected_m <- matrix(c(1, 0, 0, 
-                         0, 2, 0,
-                         0, 0, 3), nrow = 3, byrow = TRUE, 
-                       dimnames = list(c("i1", "i2", "i3"), c("i1", "i2", "i3"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Industries")
-  expect_equal(hatize_byname(v_list, keep = "rownames"), list(expected_m, expected_m))
-})
-
-
-test_that("hatinv_byname() works as expected", {
-  # Test with a column vector
-  v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
-    setrowtype("Industries") %>% setcoltype(NA)
-  expect_equal(hatinv_byname(v, keep = "rownames"), v %>% hatize_byname(keep = "rownames") %>% invert_byname())
-  # Test with a row vector
-  r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
-    setrowtype(NA) %>% setcoltype("Commodities")
-  expect_equal(hatinv_byname(r, keep = "colnames"), r %>% hatize_byname(keep = "colnames") %>% invert_byname())
-  # Test with a list
-  v_list <- list(v, v)
-  expect_equal(hatinv_byname(v_list, keep = "rownames"), v_list %>% hatize_byname(keep = "rownames") %>% invert_byname())
-  # Test with a data frame
-  DF <- data.frame(v_list = I(list()))
-  DF[[1, "v_list"]] <- v
-  DF[[2, "v_list"]] <- v
-  DF <- DF %>% 
-    dplyr::mutate(
-      hatinv = hatinv_byname(v_list, keep = "rownames")
-    )
-  DF_expected <- data.frame(v_list = I(list()), hatinv = I(list()))
-  DF_expected[[1, "v_list"]] <- v
-  DF_expected[[2, "v_list"]] <- v
-  DF_expected[[1, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
-  DF_expected[[2, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
-  # The hatinv column of DF_expected will have class = 'AsIs', but
-  # the hatinv column of DF will have no class attribute.  
-  # Eliminate that mismatch.
-  attr(DF_expected$hatinv, which = "class") <- NULL
-  expect_equal(DF, DF_expected)
-  # Test when one of the elements of v is 0.
-  v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
-    setrowtype("Industries") %>% setcoltype(NA)
-  expect_equal(hatinv_byname(v2, keep = "rownames"), matrix(c(.Machine$double.xmax, 0,
-                                           0, 1), 
-               nrow = 2, ncol = 2, byrow = TRUE,
-               dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
-               setrowtype("Industries") %>% setcoltype("Industries"))
-  # Test when we want the 0 element of v to give Inf instead of .Machine$double.xmax.
-  expect_equal(hatinv_byname(v2, inf_becomes = NULL, keep = "rownames"), matrix(c(Inf, 0,
-                                                                                  0, 1), 
-                                                                                nrow = 2, ncol = 2, byrow = TRUE,
-                                                                                dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
-                 setrowtype("Industries") %>% setcoltype("Industries"))
-  
-  # Test that hatinv works with a 1x1 vector
-  g <- matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatinv_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
-})
 
 
 test_that("abs_byname() works as expected", {
@@ -161,6 +88,7 @@ test_that("exp_byname() works as expected", {
   
   
   # rownames(M) are same as colnames(M). Why?
+  # This looks to be a bug in the Matrix package.
   M2 <- Matrix::Matrix(c(log(10), log(1),
                          log(1),  log(100)), 
                        byrow = TRUE, nrow = 2, ncol = 2, 
@@ -267,6 +195,9 @@ test_that("invert_byname() works with Matrix objects", {
   expect_error(invert_byname(M, method = "bogus"), regexp = "'arg' should be one of ")
   expect_equal(invert_byname(M), Minv)
   expect_equal(invert_byname(M, method = "QR"), Minv)
+  # Next test does not work at the moment. 
+  # Need to figure out how to invert a Matrix via SVD
+  # and implement in invert_byname().
   expect_equal(invert_byname(M, method = "SVD"), Minv)
 })
 
@@ -363,6 +294,16 @@ test_that("eigenvalues_byname() works as expected", {
 })
 
 
+test_that("eigenvalues_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(4, 6, 10, 
+                        3, 10 , 13, 
+                        -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+                      dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+  expected <- c(4, 2, 0)
+  expect_equal(eigenvalues_byname(M), expected)
+})
+
+
 test_that("eigenvectors_byname() works as expected", {
   m <- matrix(c(4, 6, 10, 
                 3, 10 , 13, 
@@ -385,45 +326,126 @@ test_that("eigenvectors_byname() works as expected", {
 })
 
 
+test_that("eigenvectors_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(4, 6, 10, 
+                        3, 10 , 13, 
+                        -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+                      dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+  expected <- matrix(c(0.457495711, 0.408248290, -0.577350269,
+                       0.762492852, -0.816496581, -0.577350269,
+                       -0.457495711, 0.408248290, 0.577350269), byrow = TRUE, nrow = 3, ncol = 3)
+  expect_equal(eigenvectors_byname(M), expected)
+  
+  expect_equal(eigenvectors_byname(list(M, 2*M)), list(expected, expected)) 
+})
+
+
 test_that("svd_byname() works as expected", {
   # Example from https://medium.com/intuition/singular-value-decomposition-svd-working-example-c2b6135673b5
-  A = matrix(c(4, 0, 
+  test_func <- function(A_mat) {
+    D <- svd_byname(A_mat)
+    expected_D <- diag(c(sqrt(40), sqrt(10)))
+    rownames(expected_D) <- rownames(A_mat)
+    colnames(expected_D) <- colnames(A_mat)
+    expected_D <- expected_D %>% 
+      setrowtype(rowtype(A_mat)) %>% 
+      setcoltype(coltype(A_mat))
+    expect_equal(D, expected_D)
+    
+    U <- svd_byname(A_mat, which = "u")
+    expected_U <- matrix(c(-1/sqrt(5), -2/sqrt(5), 
+                           -2/sqrt(5),  1/sqrt(5)), byrow = TRUE, nrow = 2, ncol = 2)
+    rownames(expected_U) <- rownames(A_mat)
+    colnames(expected_U) <- rownames(A_mat)
+    expected_U <- expected_U %>% 
+      setrowtype(rowtype(A_mat)) %>% 
+      setcoltype(rowtype(A_mat))
+    expect_equal(U, expected_U)
+    
+    V <- svd_byname(A_mat, which = "v")
+    expected_V <- matrix(c(-1/sqrt(2), -1/sqrt(2), 
+                           1/sqrt(2), -1/sqrt(2)), byrow = TRUE, nrow = 2, ncol = 2)
+    rownames(expected_V) <- colnames(A_mat)
+    colnames(expected_V) <- colnames(A_mat)
+    expected_V <- expected_V %>% 
+      setrowtype(coltype(A_mat)) %>% 
+      setcoltype(coltype(A_mat))
+    expect_equal(V, expected_V)
+    
+    # Double-check multiplication
+    should_be_A <- matrixproduct_byname(U, D) %>% 
+      matrixproduct_byname(transpose_byname(V))
+    expect_true(equal_byname(should_be_A, A_mat))
+    
+  }
+  # Try with a matrix object
+  A <- matrix(c(4, 0, 
                3, -5), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rowtype") %>% setcoltype("coltype")
   
-  D <- svd_byname(A)
-  expected_D <- diag(c(sqrt(40), sqrt(10)))
-  rownames(expected_D) <- rownames(A)
-  colnames(expected_D) <- colnames(A)
-  expected_D <- expected_D %>% 
-    setrowtype(rowtype(A)) %>% 
-    setcoltype(coltype(A))
-  expect_equal(D, expected_D)
+  test_func(A)
+  # Try with a Matrix object
+  AM <- Matrix::Matrix(c(4, 0, 
+                         3, -5), nrow = 2, ncol = 2, byrow = TRUE, 
+                       dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  # Does not work at present. 
+  # Need to figure out how to do an SVD on a Matrix object
+  test_func(AM)
+})
 
-  U <- svd_byname(A, which = "u")
-  expected_U <- matrix(c(-1/sqrt(5), -2/sqrt(5), 
-                         -2/sqrt(5),  1/sqrt(5)), byrow = TRUE, nrow = 2, ncol = 2)
-  rownames(expected_U) <- rownames(A)
-  colnames(expected_U) <- rownames(A)
-  expected_U <- expected_U %>% 
-    setrowtype(rowtype(A)) %>% 
-    setcoltype(rowtype(A))
-  expect_equal(U, expected_U)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################ Stopped here.
+
+
+
+
+
+
+
+
+
+
+test_that("hatize_byname() works as expected", {
+  g <- matrix(4, dimnames = list("I", "Products"))
+  expect_error(hatize_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
+  expect_equal(hatize_byname(g, keep = "rownames"), 
+               matrix(4, dimnames = list("I", "I")))
+  expect_equal(hatize_byname(g, keep = "colnames"), 
+               matrix(4, dimnames = list("Products", "Products")))
   
-  V <- svd_byname(A, which = "v")
-  expected_V <- matrix(c(-1/sqrt(2), -1/sqrt(2), 
-                          1/sqrt(2), -1/sqrt(2)), byrow = TRUE, nrow = 2, ncol = 2)
-  rownames(expected_V) <- colnames(A)
-  colnames(expected_V) <- colnames(A)
-  expected_V <- expected_V %>% 
-    setrowtype(coltype(A)) %>% 
-    setcoltype(coltype(A))
-  expect_equal(V, expected_V)
-  
-  # Double-check multiplication
-  should_be_A <- matrixproduct_byname(U, D) %>% 
-    matrixproduct_byname(transpose_byname(V))
-  expect_true(equal_byname(should_be_A, A))
+  v <- matrix(1:3, ncol = 1, dimnames = list(c(paste0("i", 1:3)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  # Try to hatize with the wrong keep argument
+  expect_error(hatize_byname(v, keep = "colnames"), 'In hatize_byname\\(\\), argument "keep" set to "colnames", but you supplied a column vector. Consider setting keep = "rownames".')
+  expect_error(hatize_byname(matrix(v, nrow = 1), keep = "rownames"), 'In hatize_byname\\(\\), argument "keep" set to "rownames", but you supplied a row vector. Consider setting keep = "colnames".')
+  # Try to hatize a list.
+  v_list <- list(v, v)
+  expected_m <- matrix(c(1, 0, 0, 
+                         0, 2, 0,
+                         0, 0, 3), nrow = 3, byrow = TRUE, 
+                       dimnames = list(c("i1", "i2", "i3"), c("i1", "i2", "i3"))) %>% 
+    setrowtype("Industries") %>% setcoltype("Industries")
+  expect_equal(hatize_byname(v_list, keep = "rownames"), list(expected_m, expected_m))
 })
 
 
@@ -538,6 +560,57 @@ test_that("hatize_byname() issues a warning when keep is wrong", {
   expect_equal(hatize_byname(r, keep = "colnames"), matrix(c(1, 0, 
                                                              0, 2), nrow = 2, byrow = TRUE, dimnames = list(c("c1", "c2"), c("c1", "c2"))))
   expect_error(hatize_byname(r, keep = "bogus"), 'In hatize_byname\\(\\), argument "keep" must be one of "colnames" or "rownames".')
+})
+
+
+test_that("hatinv_byname() works as expected", {
+  # Test with a column vector
+  v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  expect_equal(hatinv_byname(v, keep = "rownames"), v %>% hatize_byname(keep = "rownames") %>% invert_byname())
+  # Test with a row vector
+  r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
+    setrowtype(NA) %>% setcoltype("Commodities")
+  expect_equal(hatinv_byname(r, keep = "colnames"), r %>% hatize_byname(keep = "colnames") %>% invert_byname())
+  # Test with a list
+  v_list <- list(v, v)
+  expect_equal(hatinv_byname(v_list, keep = "rownames"), v_list %>% hatize_byname(keep = "rownames") %>% invert_byname())
+  # Test with a data frame
+  DF <- data.frame(v_list = I(list()))
+  DF[[1, "v_list"]] <- v
+  DF[[2, "v_list"]] <- v
+  DF <- DF %>% 
+    dplyr::mutate(
+      hatinv = hatinv_byname(v_list, keep = "rownames")
+    )
+  DF_expected <- data.frame(v_list = I(list()), hatinv = I(list()))
+  DF_expected[[1, "v_list"]] <- v
+  DF_expected[[2, "v_list"]] <- v
+  DF_expected[[1, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
+  DF_expected[[2, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
+  # The hatinv column of DF_expected will have class = 'AsIs', but
+  # the hatinv column of DF will have no class attribute.  
+  # Eliminate that mismatch.
+  attr(DF_expected$hatinv, which = "class") <- NULL
+  expect_equal(DF, DF_expected)
+  # Test when one of the elements of v is 0.
+  v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  expect_equal(hatinv_byname(v2, keep = "rownames"), matrix(c(.Machine$double.xmax, 0,
+                                                              0, 1), 
+                                                            nrow = 2, ncol = 2, byrow = TRUE,
+                                                            dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
+                 setrowtype("Industries") %>% setcoltype("Industries"))
+  # Test when we want the 0 element of v to give Inf instead of .Machine$double.xmax.
+  expect_equal(hatinv_byname(v2, inf_becomes = NULL, keep = "rownames"), matrix(c(Inf, 0,
+                                                                                  0, 1), 
+                                                                                nrow = 2, ncol = 2, byrow = TRUE,
+                                                                                dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
+                 setrowtype("Industries") %>% setcoltype("Industries"))
+  
+  # Test that hatinv works with a 1x1 vector
+  g <- matrix(4, dimnames = list("I", "Products"))
+  expect_error(hatinv_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
 })
 
 
