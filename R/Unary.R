@@ -169,13 +169,15 @@ invert_byname <- function(a,
 transpose_byname <- function(a) {
   
   transpose_func <- function(a_mat) {
-    if (!is.matrix(a_mat)) {
-      # In the event that we don't have a matrix, 
-      # we probably have a single number.
-      # Don't try to transpose.
-      return(a_mat)
+    if (inherits(a_mat, "Matrix")) {
+      return(Matrix::t(a_mat))
+    } else if (is.matrix(a_mat)) {
+      return(t(a_mat))
     }
-    t(a_mat)
+    # In the event that we don't have a matrix, 
+    # we probably have a single number.
+    # Don't try to transpose.
+    return(a_mat)
   }
   unaryapply_byname(transpose_func, a = a, rowcoltypes = "transpose")
 }

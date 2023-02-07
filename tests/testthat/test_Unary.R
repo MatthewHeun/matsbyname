@@ -173,8 +173,6 @@ test_that("exp_byname() works as expected", {
     setrowtype("Industry") %>% setcoltype("Product")
   res2 <- exp_byname(M2)
   matsbyname:::expect_equal_matrix_or_Matrix(res2, expectedM2, tolerance = 1e-12)
-  
-  
 })
   
   
@@ -254,6 +252,25 @@ test_that("invert_byname() works correctly with the method argument", {
 })
 
 
+test_that("invert_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(4, -2, 1, 
+                        5, 0, 3, 
+                        -1, 2, 6), byrow = TRUE, nrow = 3, ncol = 3,
+                      dimnames = list(paste0("i", 1:3), paste0("p", 1:3))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  Minv <- matrix(c( -3/26,  7/26, -3/26, 
+                    -33/52, 25/52, -7/52, 
+                    5/26, -3/26,  5/26), byrow = TRUE, nrow = 3, ncol = 3, 
+                 dimnames = list(colnames(M), rownames(M))) %>% 
+    setrowtype(coltype(M)) %>% setcoltype(rowtype(M))
+  
+  expect_error(invert_byname(M, method = "bogus"), regexp = "'arg' should be one of ")
+  expect_equal(invert_byname(M), Minv)
+  expect_equal(invert_byname(M, method = "QR"), Minv)
+  expect_equal(invert_byname(M, method = "SVD"), Minv)
+})
+
+
 test_that("transpose_byname() works as expected", {
   m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
@@ -314,6 +331,15 @@ test_that("transpose_byname() correctly handles constants", {
   expect_true(!is.matrix(transpose_byname(0)))
   expect_equal(transpose_byname(42), 42)
   expect_equal(transpose_byname(-10), -10)
+})
+
+
+test_that("transpose_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  MT <- Matrix::Matrix(c(11, 12, 21, 22, 31, 32), nrow = 2, dimnames = list(paste0("p", 1:2), paste0("i", 1:3))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(transpose_byname(M), MT)
 })
 
 

@@ -1,21 +1,30 @@
 test_that("Matrix class is usable with matsbyname", {
   m <- Matrix::Matrix(c(1, 2, 
                         2, 3), byrow = TRUE, nrow = 2, ncol = 2)
+  # Works
   expect_true(Matrix::isSymmetric(m))
   
   m2 <- m
   dimnames(m2) <- list(c("r1", "r2"), c("c1", "c2"))
-  expect_equal(dimnames(m2), list(c("r1", "r2"), c("c1", "c2")))
+  # Fails, because rownames are wrong
+  expect_equal(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))) 
   
+  # Try to set the rownames  
   rownames(m2) <- c("r1", "r2")
+  # Fails, because the rownames are actually the column names
   expect_equal(rownames(m2), c("r1", "r2"))
   
+  # Works
   expect_true(Matrix::isSymmetric(m2))
   
   m3 <- Matrix::Matrix(c(1, 2, 
                          2, 3), byrow = TRUE, nrow = 2, ncol = 2, 
                        dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  # Works
   expect_equal(rownames(m3), c("r1", "r2"))
+  # Fails. The matrix itself is symmetric. 
+  # The row names are not symmetric.
+  # I think isSymmetric(m3) should return TRUE, but it returns FALSE.
   expect_true(Matrix::isSymmetric(m3))
 })
 
