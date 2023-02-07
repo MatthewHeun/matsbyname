@@ -1,3 +1,24 @@
+test_that("Matrix class is usable with matsbyname", {
+  m <- Matrix::Matrix(c(1, 2, 
+                        2, 3), byrow = TRUE, nrow = 2, ncol = 2)
+  expect_true(Matrix::isSymmetric(m))
+  
+  m2 <- m
+  dimnames(m2) <- list(c("r1", "r2"), c("c1", "c2"))
+  expect_equal(dimnames(m2), list(c("r1", "r2"), c("c1", "c2")))
+  
+  rownames(m2) <- c("r1", "r2")
+  expect_equal(rownames(m2), c("r1", "r2"))
+  
+  expect_true(Matrix::isSymmetric(m2))
+  
+  m3 <- Matrix::Matrix(c(1, 2, 
+                         2, 3), byrow = TRUE, nrow = 2, ncol = 2, 
+                       dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  expect_equal(rownames(m3), c("r1", "r2"))
+  expect_true(Matrix::isSymmetric(m3))
+})
+
 
 test_that("is_matrix_or_Matrix() works correctly", {
   expect_false(matsbyname:::is_matrix_or_Matrix(42))
@@ -123,3 +144,5 @@ test_that("equal_matrix_or_Matrix() works with row and col types", {
     setrowtype("bogus") %>% setcoltype("cols")
   expect_false(matsbyname:::equal_matrix_or_Matrix(A, G))
 })
+
+

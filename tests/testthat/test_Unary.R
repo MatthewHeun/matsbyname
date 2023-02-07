@@ -171,7 +171,8 @@ test_that("exp_byname() works as expected", {
                        byrow = TRUE, nrow = 2, ncol = 2, 
                        dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
     setrowtype("Industry") %>% setcoltype("Product")
-  matsbyname:::expect_equal_matrix_or_Matrix(exp_byname(M2), expectedM2, tolerance = 1e-12)
+  res2 <- exp_byname(M2)
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, expectedM2, tolerance = 1e-12)
   
   
 })
