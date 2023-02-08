@@ -592,7 +592,11 @@ test_that("hatinv_byname() works as expected", {
   # Test with a column vector
   v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
     setrowtype("Industries") %>% setcoltype(NA)
-  expect_equal(hatinv_byname(v, keep = "rownames"), v %>% hatize_byname(keep = "rownames") %>% invert_byname())
+  res <- hatinv_byname(v, keep = "rownames")
+  expected <- v %>% 
+    hatize_byname(keep = "rownames") %>% 
+    invert_byname()
+  expect_equal(res, expected)
   # Test with a row vector
   r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
     setrowtype(NA) %>% setcoltype("Commodities")
@@ -637,6 +641,43 @@ test_that("hatinv_byname() works as expected", {
   g <- matrix(4, dimnames = list("I", "Products"))
   expect_error(hatinv_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
 })
+
+
+test_that("hatinv_byname() works with a Matrix object", {
+  # Test with a column vector
+  v <- Matrix::Matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  res <- hatinv_byname(v, keep = "rownames")
+  expected <- v %>% 
+    hatize_byname(keep = "rownames") %>%
+    invert_byname()
+  expect_equal(res, expected)
+  
+  # Test with a row vector
+  r <- Matrix::Matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
+    setrowtype(NA) %>% setcoltype("Commodities")
+  expect_equal(hatinv_byname(r, keep = "colnames"), 
+               r %>% 
+                 hatize_byname(keep = "colnames") %>%
+                 invert_byname())
+  
+  # Test that hatinv works with a 1x1 Matrix
+  g <- Matrix::Matrix(4, dimnames = list("I", "Products"))
+  expect_error(hatinv_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
+})
+
+
+
+
+
+
+
+########## Ended here.
+
+
+
+
+
 
 
 test_that("identize_byname() works as expected", {

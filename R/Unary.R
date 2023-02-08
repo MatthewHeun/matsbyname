@@ -505,6 +505,12 @@ hatinv_byname <- function(v, keep = NULL, inf_becomes = .Machine$double.xmax){
     if (!is.null(inf_becomes)) {
       v_inv[v_inv == Inf] <- inf_becomes
       v_inv[v_inv == -Inf] <- -inf_becomes
+      if (inherits(v_vec, "Matrix")) {
+        # Matrix objects lose their rowtype and coltype at this point.
+        v_inv <- v_inv %>% 
+          setrowtype(rowtype(v_vec)) %>% 
+          setcoltype(coltype(v_vec))
+      }
     }
     hatize_byname(v_inv, keep = keep)
   }
