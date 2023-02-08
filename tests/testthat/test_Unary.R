@@ -70,8 +70,10 @@ test_that("exp_byname() works as expected", {
   expect_equal(exp_byname(m), expected)
   # Also works for lists.
   expect_equal(exp_byname(list(m, m)), list(expected, expected))
-  
-  # Test with Matrix objects
+})
+
+
+test_that("exp_byname() works with Matrix objects", {
   M <- Matrix::Matrix(c(log(10), log(1),
                         log(1),  log(100), 
                         log(2),  log(42)), 
@@ -79,15 +81,15 @@ test_that("exp_byname() works as expected", {
                       dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
   expectedM <- matrix(c(10, 1,
-                         1, 100, 
-                         2, 42), 
+                        1, 100, 
+                        2, 42), 
                       byrow = TRUE, nrow = 3, ncol = 2, 
                       dimnames = list(c("i1", "i2", "i3"), c("p1", "p2"))) %>% 
     setrowtype("Industry") %>% setcoltype("Product")
   matsbyname:::expect_equal_matrix_or_Matrix(exp_byname(M), expectedM, tolerance = 1e-12)
   
   
-  # rownames(M) are same as colnames(M). Why?
+  # rownames(M) are same as colnames(M). Why?  Because it is a symmetric matrix!
   # This looks to be a bug in the Matrix package.
   M2 <- Matrix::Matrix(c(log(10), log(1),
                          log(1),  log(100)), 
@@ -101,6 +103,7 @@ test_that("exp_byname() works as expected", {
     setrowtype("Industry") %>% setcoltype("Product")
   res2 <- exp_byname(M2)
   matsbyname:::expect_equal_matrix_or_Matrix(res2, expectedM2, tolerance = 1e-12)
+  
 })
   
   
@@ -193,7 +196,6 @@ test_that("invert_byname() works with Matrix objects", {
     setrowtype(coltype(M)) %>% setcoltype(rowtype(M))
   
   expect_error(invert_byname(M, method = "bogus"), regexp = "'arg' should be one of ")
-  # Not preserving row or column names.  Row and column types are being preserved.
   matsbyname:::expect_equal_matrix_or_Matrix(invert_byname(M), Minv, tolerance = 1e-15)
   expect_true(inherits(invert_byname(M, method = "solve"), "Matrix"))
   expect_false(inherits(invert_byname(M, method = "solve"), "matrix"))
@@ -201,10 +203,10 @@ test_that("invert_byname() works with Matrix objects", {
   resQR <- invert_byname(M, method = "QR")
   matsbyname:::expect_equal_matrix_or_Matrix(resQR, Minv, tolerance = 1e-15)
   expect_true(inherits(resQR, "Matrix"))
-  # Next test does not work at the moment. 
-  # Need to figure out how to invert a Matrix via SVD
-  # and implement in invert_byname().
-  matsbyname:::expect_equal_matrix_or_Matrix(invert_byname(M, method = "SVD"), Minv, tolerance = 1e-15)
+  
+  res_SVD <- invert_byname(M, method = "SVD")
+  matsbyname:::expect_equal_matrix_or_Matrix(res_SVD, Minv, tolerance = 1e-15)
+  expect_true(inherits(res_SVD, "Matrix"))
 })
 
 
@@ -381,9 +383,9 @@ test_that("svd_byname() works as expected", {
     # Double-check multiplication
     should_be_A <- matrixproduct_byname(U, D) %>% 
       matrixproduct_byname(transpose_byname(V))
-    expect_true(equal_byname(should_be_A, A_mat))
-    
+    matsbyname:::expect_equal_matrix_or_Matrix(should_be_A, A_mat, tolerance = 1e-14)
   }
+  
   # Try with a matrix object
   A <- matrix(c(4, 0, 
                3, -5), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
@@ -399,36 +401,6 @@ test_that("svd_byname() works as expected", {
   # Need to figure out how to do an SVD on a Matrix object
   test_func(AM)
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-################ Stopped here.
-
-
-
-
-
-
-
-
 
 
 test_that("hatize_byname() works as expected", {
@@ -567,6 +539,30 @@ test_that("hatize_byname() issues a warning when keep is wrong", {
                                                              0, 2), nrow = 2, byrow = TRUE, dimnames = list(c("c1", "c2"), c("c1", "c2"))))
   expect_error(hatize_byname(r, keep = "bogus"), 'In hatize_byname\\(\\), argument "keep" must be one of "colnames" or "rownames".')
 })
+
+
+test_that("hatize_byname() works with a Matrix vector", {
+  v1 <- Matrix::Matrix(c(1, 
+                         2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), c("c1"))) %>% 
+    setrowtype("Product -> Industry")
+  v1_hat <- hatize_byname(v1, keep = "rownames")
+  v1_hat_expected <- matrix(c(1, 0,
+                              0, 2), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("r1", "r2"))) %>% 
+    setrowtype("Product -> Industry") %>% 
+    setcoltype("Product -> Industry")
+  matsbyname:::expect_equal_matrix_or_Matrix(v1_hat, v1_hat_expected)
+  
+})
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("hatinv_byname() works as expected", {
