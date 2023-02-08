@@ -29,6 +29,54 @@ test_that("Matrix class is usable with matsbyname", {
 })
 
 
+test_that("I can create a non-symmetric sparse matrix", {
+  # I want to create a sparse matrix if half or more elements are zero ...
+  m <- Matrix::Matrix(c(1, 0, 2, 
+                        0, 3, 0, 
+                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  # so that when I adjust its dimnames ...
+  dimnames(m) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
+  # I get back what I assigned.
+  expect_equal(dimnames(m), list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+})
+
+
+test_that("A calculated symmetric Matrix doesn't lose row and column name information", {
+  m <- Matrix::Matrix(c(1, 0, 3, 
+                        0, 3, 0, 
+                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  dimnames(m) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
+  subtrahend <- Matrix::Matrix(c(0, 0, 1, 
+                                 0, 0, 0, 
+                                 0, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  m - subtrahend
+})
+
+
+test_that("inverting result in a sparse Matrix (or not)", {
+  m <- Matrix::Matrix(c(1, 0, 3, 
+                        0, 3, 0, 
+                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  invertedm <- solve(m)
+  expect_true(inherits(invertedm, "matrix"))
+  invertedM <- Matrix::Matrix(invertedm)
+  expect_true(inherits(invertedM, "Matrix"))
+  expect_true(inherits(invertedM, "dgCMatrix"))
+})
+
+
+test_that("I can create a sparse Matrix", {
+  m <- Matrix::Matrix(c(1, 2, 3, 
+                        4, 5, 6, 
+                        7, 8, 9), byrow = TRUE, nrow = 3, ncol = 3)
+  subtrahend <- Matrix::Matrix(c(0, 2, 3, 
+                                 4, 5, 6, 
+                                 7, 8, 9), byrow = TRUE, nrow = 3, ncol = 3)
+  m - subtrahend
+  Matrix::Matrix(m - subtrahend)
+})
+
+
 test_that("is_matrix_or_Matrix() works correctly", {
   expect_false(matsbyname:::is_matrix_or_Matrix(42))
   expect_false(matsbyname:::is_matrix_or_Matrix("42"))
