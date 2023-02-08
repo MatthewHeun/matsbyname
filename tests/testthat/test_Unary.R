@@ -551,18 +551,41 @@ test_that("hatize_byname() works with a Matrix vector", {
     setrowtype("Product -> Industry") %>% 
     setcoltype("Product -> Industry")
   matsbyname:::expect_equal_matrix_or_Matrix(v1_hat, v1_hat_expected)
+  expect_true(inherits(v1_hat, "ddiMatrix"))
   
+  v2 <- Matrix::Matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  orderedRowNames <- c("i1", "i10", paste0("i", 2:9))
+  v2_hat_expected <- Matrix::Matrix(c(1,0,0,0,0,0,0,0,0,0,
+                                      0,10,0,0,0,0,0,0,0,0,
+                                      0,0,2,0,0,0,0,0,0,0,
+                                      0,0,0,3,0,0,0,0,0,0,
+                                      0,0,0,0,4,0,0,0,0,0,
+                                      0,0,0,0,0,5,0,0,0,0,
+                                      0,0,0,0,0,0,6,0,0,0,
+                                      0,0,0,0,0,0,0,7,0,0,
+                                      0,0,0,0,0,0,0,0,8,0,
+                                      0,0,0,0,0,0,0,0,0,9),
+                                    nrow = 10, 
+                                    dimnames = list(orderedRowNames, orderedRowNames)) %>% 
+    setrowtype("Industries") %>% setcoltype("Industries")
+  res2 <- hatize_byname(v2)
+  expect_equal(res2, v2_hat_expected)
+  
+  
+  r <- Matrix::Matrix(1:5, nrow = 1, dimnames = list("i1", paste0("p", 1:5))) %>%
+    setrowtype(NA) %>% setcoltype("Commodities")
+  orderedColNames <- paste0("p", 1:5)
+  r_hat_expected <- Matrix::Matrix(c(1,0,0,0,0,
+                                     0,2,0,0,0,
+                                     0,0,3,0,0,
+                                     0,0,0,4,0,
+                                     0,0,0,0,5),
+                                   nrow = 5, 
+                                   dimnames = list(orderedColNames, orderedColNames)) %>% 
+    setrowtype(coltype(r)) %>% setcoltype(coltype(r))
+  expect_equal(hatize_byname(r, keep = "colnames"), r_hat_expected)
 })
-
-
-
-
-
-
-
-
-
-
 
 
 test_that("hatinv_byname() works as expected", {
