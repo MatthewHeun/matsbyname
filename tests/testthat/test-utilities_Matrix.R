@@ -22,10 +22,9 @@ test_that("Matrix class is usable with matsbyname", {
                        dimnames = list(c("r1", "r2"), c("c1", "c2")))
   # Works
   expect_equal(rownames(m3), c("r1", "r2"))
-  # Fails. The matrix itself is symmetric. 
-  # The row names are not symmetric.
-  # I think isSymmetric(m3) should return TRUE, but it returns FALSE.
-  expect_true(Matrix::isSymmetric(m3))
+  # The rownames are part of determining symmetry, 
+  # so we expect m3 to be asymmetric.
+  expect_false(Matrix::isSymmetric(m3))
 })
 
 
@@ -49,16 +48,18 @@ test_that("A calculated symmetric Matrix doesn't lose row and column name inform
   subtrahend <- Matrix::Matrix(c(0, 0, 1, 
                                  0, 0, 0, 
                                  0, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  m - subtrahend
+  res <- m - subtrahend
+  expect_equal(rownames(res), c("r1", "r2", "r3"))
+  expect_equal(colnames(res), c("c1", "c2", "c3"))
 })
 
 
-test_that("inverting result in a sparse Matrix (or not)", {
+test_that("inverting results in a sparse Matrix (or not)", {
   m <- Matrix::Matrix(c(1, 0, 3, 
                         0, 3, 0, 
                         2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  invertedm <- solve(m)
-  expect_true(inherits(invertedm, "matrix"))
+  invertedm <- Matrix::solve(m)
+  expect_true(inherits(invertedm, "Matrix"))
   invertedM <- Matrix::Matrix(invertedm)
   expect_true(inherits(invertedM, "Matrix"))
   expect_true(inherits(invertedM, "dgCMatrix"))
@@ -70,10 +71,33 @@ test_that("I can create a sparse Matrix", {
                         4, 5, 6, 
                         7, 8, 9), byrow = TRUE, nrow = 3, ncol = 3)
   subtrahend <- Matrix::Matrix(c(0, 2, 3, 
-                                 4, 5, 6, 
-                                 7, 8, 9), byrow = TRUE, nrow = 3, ncol = 3)
-  m - subtrahend
-  Matrix::Matrix(m - subtrahend)
+                                 4, 4, 6, 
+                                 7, 8, 6), byrow = TRUE, nrow = 3, ncol = 3)
+  res <- m - subtrahend
+  # It is a symmetric matrix
+  expect_true(Matrix::isSymmetric(res))
+  # But the underlying class has not jumped to a symmetric class
+  expect_true(inherits(res, "dgeMatrix"))
+  # Now push it through the Matrix creation process again.
+  res2 <- Matrix::Matrix(res)
+  # The matrix is sparse and symmetric, but not a symmetric subclass
+  expect_true(Matrix::isSymmetric(res2))
+  expect_true(is(res2, "sparseMatrix"))
+  
+  # Try with non-diagonal elements
+  subtrahend2 <- Matrix::Matrix(c(0, 2, 2, 
+                                  4, 5, 6, 
+                                  6, 8, 8), byrow = TRUE, nrow = 3, ncol = 3)
+  res3 <- m - subtrahend2
+  # It is a symmetric matrix
+  expect_true(Matrix::isSymmetric(res3))
+  # But the underlying class has not jumped to a symmetric class
+  expect_true(inherits(res3, "dgeMatrix"))
+  # Now push it through the Matrix creation process again.
+  res4 <- Matrix::Matrix(res3)
+  # The matrix is sparse and symmetric, but not a symmetric subclass
+  expect_true(Matrix::isSymmetric(res4))
+  expect_true(is(res4, "sparseMatrix"))
 })
 
 
@@ -88,7 +112,9 @@ test_that("Constructon order doesn't matter for a symmetric matrix", {
                          2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
   dimnames(m2) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
   
-  # These matrices should be identical  
+  # These matrices should be identical, but
+  #  they have different underlying classes, and
+  # their row/col names are different.
   expect_equal(m1, m2)
 })
 

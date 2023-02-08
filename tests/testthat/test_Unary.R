@@ -681,10 +681,10 @@ test_that("identize_byname() works as expected", {
                         dimnames = dimnames(m)) %>% 
     setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
   # Test for errors
-  expect_error(identize_byname(m, margin = c(1,2,3,4)), "margin should have length 1 or 2 in identize_byname.")
+  expect_error(identize_byname(m, margin = c(1,2,3,4)), "margin should have length 1 or 2 in identize_byname")
   expect_error(identize_byname(m, margin = c(3)), "Unknown margin 3 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
   expect_error(identize_byname(m, margin = c(-1)), "Unknown margin -1 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
-  expect_error(identize_byname(m, margin = c(1,1,2,2)), "margin should have length 1 or 2 in identize_byname.")
+  expect_error(identize_byname(m, margin = c(1,1,2,2)), "margin should have length 1 or 2 in identize_byname")
   
   # Test for column vector
   expect_equal(identize_byname(m, margin = 1), 
@@ -731,7 +731,7 @@ test_that("identize_byname() works with a Matrix object", {
                           0,0,1,0,
                           0,0,0,1),
                         nrow = 4, 
-                        dimnames = dimnames(m)) %>% 
+                        dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>% 
     setrowtype("Industries") %>% setcoltype("Products")
   # Try with matrices.
   m <- Matrix::Matrix(42, nrow = 4, ncol = 4, 
