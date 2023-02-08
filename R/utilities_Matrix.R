@@ -97,7 +97,7 @@ expect_equal_matrix_or_Matrix <- function(a, b, tolerance = 1e-16) {
 }
 
 
-solve_matrix_or_Matrix <- function(a_mat, 
+invert_matrix_or_Matrix <- function(a_mat, 
                                    method = c("solve", "QR", "SVD"),
                                    tol = .Machine$double.eps) {
   tryCatch({
@@ -115,16 +115,35 @@ solve_matrix_or_Matrix <- function(a_mat,
         out <- solve(a_mat, tol = tol)
       }
     } else if (method == "QR") {
-      qr_res <- qr(a_mat)
+      if (inherits(a_mat, "Matrix")) {
+        # Use the Matrix function.
+        qr_res <- Matrix::qr(a_mat)
+      } else {
+        qr_res <- qr(a_mat)
+      }
+      # Does not preserve column names
       out <- solve.qr(qr_res, tol = tol)
       colnames(out) <- rownames(a_mat)
       if (inherits(a_mat, "Matrix")) {
+        # If we came in with a Matrix, 
+        # send a Matrix back.
         out <- Matrix::Matrix(out)
       }
     } else if (method == "SVD") {
+      convert_to_Matrix <- FALSE
+      if (inherits(a_mat, "Matrix")) {
+        # There is no Matrix::svd.inverse function.
+        # So convert to a matrix.
+        a_mat <- as.matrix(a_mat)
+        convert_to_Matrix <- TRUE
+      }
       out <- matrixcalc::svd.inverse(a_mat)
       rownames(out) <- colnames(a_mat)
       colnames(out) <- rownames(a_mat)
+      # If we came in as a Matrix, go out as a Matrix
+      if (convert_to_Matrix) {
+        out <- Matrix::Matrix(out)
+      }
     }
     return(out)
   }, error = function(e) {

@@ -204,7 +204,7 @@ test_that("invert_byname() works with Matrix objects", {
   # Next test does not work at the moment. 
   # Need to figure out how to invert a Matrix via SVD
   # and implement in invert_byname().
-  expect_equal(invert_byname(M, method = "SVD"), Minv)
+  matsbyname:::expect_equal_matrix_or_Matrix(invert_byname(M, method = "SVD"), Minv, tolerance = 1e-15)
 })
 
 
