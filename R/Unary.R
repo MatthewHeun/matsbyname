@@ -564,7 +564,7 @@ identize_byname <- function(a, margin = c(1,2)) {
     }
     
     if (!length(margin) %in% c(1,2)) {
-      stop("margin should have length 1 or 2 in fractionize_byname")
+      stop("margin should have length 1 or 2 in identize_byname")
     }
     
     if (length(margin) == 2 && all(margin %in% c(1,2))) {
@@ -573,7 +573,12 @@ identize_byname <- function(a, margin = c(1,2)) {
       # of same dimensions as a
       # and same names and types as a.
       stopifnot(nrow(a) == ncol(a))
-      return(diag(nrow(a)) %>% 
+      if (inherits(a, "Matrix")) {
+        out <- Matrix::Diagonal(n = nrow(a), x = 1)
+      } else {
+        out <- diag(nrow(a))
+      }
+      return(out %>% 
                setrownames_byname(rownames(a)) %>% setcolnames_byname(colnames(a)) %>% 
                setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
     }
