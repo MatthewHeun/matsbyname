@@ -77,6 +77,57 @@ test_that("I can create a sparse Matrix", {
 })
 
 
+test_that("Constructon order doesn't matter for a symmetric matrix", {
+  m1 <- Matrix::Matrix(c(1, 0, 2, 
+                         0, 3, 0, 
+                         2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3, 
+                       dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+  
+  m2 <- Matrix::Matrix(c(1, 0, 2, 
+                         0, 3, 0, 
+                         2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  dimnames(m2) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
+  
+  # These matrices should be identical  
+  expect_equal(m1, m2)
+})
+
+
+test_that("Changing entries and dimnames makes a symmetric matrix asymmetric", {
+  # This is symmetric Matrix
+  m <- Matrix::Matrix(c(1, 0, 2, 
+                        0, 3, 0, 
+                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  expect_true(inherits(m, "dsCMatrix"))
+  # Change an entry to make it asymmetric, and the underlying class changes,
+  # as expected.
+  m2 <- m
+  m2[1, 3] <- 42
+  expect_true(inherits(m2, "dgCMatrix"))
+  
+  # Try the same procedure with dimnames.
+  # As a reminder, Mikael said 
+  # "Symmetry of dimnames(<symmetricMatrix>) is enforced"
+  m3 <- m
+  expect_true(inherits(m3, "dsCMatrix"))
+  # Change the dimnames to make m3 asymmetric, 
+  # and the underlying class does NOT change.
+  # Seems like if "symmetry of dimnames is enforced" and 
+  # if changing an element makes a dsCMatrix into a dgCMatrix, 
+  # the next line should change the underlying class to dgCMatrix, too.
+  # Alternatively, an error chould be emitted, something like
+  # "Setting asymmetric dimnames is not permitted on a symmatric Matrix of class dsCMatrix".
+  # That way, information loss will be avoided. 
+  # But the user should not need to know about the underlying class.
+  # I would prefer changing the underlying class from 
+  # dsCMatrix to dgCMatrix.
+  dimnames(m3) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
+  # Both of these expectations fail, because the underlying class has NOT changed.
+  expect_false(inherits(m3, "dsCMatrix"))
+  expect_true(inherits(m3, "dgCMatrix"))
+})
+
+
 test_that("is_matrix_or_Matrix() works correctly", {
   expect_false(matsbyname:::is_matrix_or_Matrix(42))
   expect_false(matsbyname:::is_matrix_or_Matrix("42"))
