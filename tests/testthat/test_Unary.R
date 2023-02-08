@@ -199,7 +199,8 @@ test_that("invert_byname() works with Matrix objects", {
   expect_false(inherits(invert_byname(M, method = "solve"), "matrix"))
   
   resQR <- invert_byname(M, method = "QR")
-  expect_equal(resQR, Minv)
+  matsbyname:::expect_equal_matrix_or_Matrix(resQR, Minv, tolerance = 1e-15)
+  expect_true(inherits(resQR, "Matrix"))
   # Next test does not work at the moment. 
   # Need to figure out how to invert a Matrix via SVD
   # and implement in invert_byname().
