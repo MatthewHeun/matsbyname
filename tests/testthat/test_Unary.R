@@ -681,10 +681,10 @@ test_that("identize_byname() works as expected", {
                         dimnames = dimnames(m)) %>% 
     setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
   # Test for errors
-  expect_error(identize_byname(m, margin = c(1,2,3,4)), "margin should have length 1 or 2 in fractionize_byname")
+  expect_error(identize_byname(m, margin = c(1,2,3,4)), "margin should have length 1 or 2 in identize_byname.")
   expect_error(identize_byname(m, margin = c(3)), "Unknown margin 3 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
   expect_error(identize_byname(m, margin = c(-1)), "Unknown margin -1 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
-  expect_error(identize_byname(m, margin = c(1,1,2,2)), "margin should have length 1 or 2 in fractionize_byname")
+  expect_error(identize_byname(m, margin = c(1,1,2,2)), "margin should have length 1 or 2 in identize_byname.")
   
   # Test for column vector
   expect_equal(identize_byname(m, margin = 1), 
