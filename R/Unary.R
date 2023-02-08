@@ -123,7 +123,12 @@ invert_byname <- function(a,
   invert_func <- function(a_mat) {
     tryCatch({
       if (method == "solve") {
-        out <- solve(a_mat, tol = tol)
+        if (inherits(a_mat, "Matrix")) {
+          out <- Matrix::solve(a_mat, tol = tol)
+        } else {
+          # Probably a regular matrix object.
+          out <- solve(a_mat, tol = tol)
+        }
       } else if (method == "QR") {
         qr_res <- qr(a_mat)
         out <- solve.qr(qr_res, tol = tol)

@@ -193,8 +193,8 @@ test_that("invert_byname() works with Matrix objects", {
     setrowtype(coltype(M)) %>% setcoltype(rowtype(M))
   
   expect_error(invert_byname(M, method = "bogus"), regexp = "'arg' should be one of ")
-  expect_equal(invert_byname(M), Minv)
-  # We should get a Matrix object back, but we don't.
+  # Not preserving row or column names.  Row and column types are being preserved.
+  matsbyname:::expect_equal_matrix_or_Matrix(invert_byname(M), Minv)
   expect_true(inherits(invert_byname(M, method = "solve"), "Matrix"))
   expect_false(inherits(invert_byname(M, method = "solve"), "matrix"))
   
