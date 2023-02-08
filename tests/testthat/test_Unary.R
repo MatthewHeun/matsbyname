@@ -194,11 +194,12 @@ test_that("invert_byname() works with Matrix objects", {
   
   expect_error(invert_byname(M, method = "bogus"), regexp = "'arg' should be one of ")
   # Not preserving row or column names.  Row and column types are being preserved.
-  matsbyname:::expect_equal_matrix_or_Matrix(invert_byname(M), Minv)
+  matsbyname:::expect_equal_matrix_or_Matrix(invert_byname(M), Minv, tolerance = 1e-15)
   expect_true(inherits(invert_byname(M, method = "solve"), "Matrix"))
   expect_false(inherits(invert_byname(M, method = "solve"), "matrix"))
   
-  expect_equal(invert_byname(M, method = "QR"), Minv)
+  resQR <- invert_byname(M, method = "QR")
+  expect_equal(resQR, Minv)
   # Next test does not work at the moment. 
   # Need to figure out how to invert a Matrix via SVD
   # and implement in invert_byname().

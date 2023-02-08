@@ -121,35 +121,36 @@ invert_byname <- function(a,
   method <- match.arg(method)
   # unaryapply_byname(solve, a = a, rowcoltypes = "transpose") 
   invert_func <- function(a_mat) {
-    tryCatch({
-      if (method == "solve") {
-        if (inherits(a_mat, "Matrix")) {
-          out <- Matrix::solve(a_mat, tol = tol)
-        } else {
-          # Probably a regular matrix object.
-          out <- solve(a_mat, tol = tol)
-        }
-      } else if (method == "QR") {
-        qr_res <- qr(a_mat)
-        out <- solve.qr(qr_res, tol = tol)
-        colnames(out) <- rownames(a_mat)
-      } else if (method == "SVD") {
-        out <- matrixcalc::svd.inverse(a_mat)
-        rownames(out) <- colnames(a_mat)
-        colnames(out) <- rownames(a_mat)
-      }
-      return(out)
-    }, error = function(e) {
-      if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:") | 
-          startsWith(e$message, "singular matrix 'a' in 'solve'")) {
-        # Find any zero rows and columns
-        zero_rows_cols <- getzerorowcolnames_byname(a_mat)
-        # Create a helpful error message
-        err_msg <- paste0("Attempt to invert a singular matrix. Zero rows and columns: ", paste0(zero_rows_cols, collapse = ", "), ".")
-        stop(err_msg)
-      }
-      stop(e$message)
-    })
+    # tryCatch({
+    #   if (method == "solve") {
+    #     if (inherits(a_mat, "Matrix")) {
+    #       out <- Matrix::solve(a_mat, tol = tol)
+    #     } else {
+    #       # Probably a regular matrix object.
+    #       out <- solve(a_mat, tol = tol)
+    #     }
+    #   } else if (method == "QR") {
+    #     qr_res <- qr(a_mat)
+    #     out <- solve.qr(qr_res, tol = tol)
+    #     colnames(out) <- rownames(a_mat)
+    #   } else if (method == "SVD") {
+    #     out <- matrixcalc::svd.inverse(a_mat)
+    #     rownames(out) <- colnames(a_mat)
+    #     colnames(out) <- rownames(a_mat)
+    #   }
+    #   return(out)
+    # }, error = function(e) {
+    #   if (startsWith(e$message, "Lapack routine dgesv: system is exactly singular:") | 
+    #       startsWith(e$message, "singular matrix 'a' in 'solve'")) {
+    #     # Find any zero rows and columns
+    #     zero_rows_cols <- getzerorowcolnames_byname(a_mat)
+    #     # Create a helpful error message
+    #     err_msg <- paste0("Attempt to invert a singular matrix. Zero rows and columns: ", paste0(zero_rows_cols, collapse = ", "), ".")
+    #     stop(err_msg)
+    #   }
+    #   stop(e$message)
+    # })
+    solve_matrix_or_Matrix(a_mat, method = method, tol = tol)
   }
   unaryapply_byname(invert_func, a = a, rowcoltypes = "transpose")
 }
