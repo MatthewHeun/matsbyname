@@ -589,16 +589,26 @@ identize_byname <- function(a, margin = c(1,2)) {
     
     if (1 %in% margin)  {
       # Return a column vector containing 1's
-      return(matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1) %>% 
-               setrownames_byname(rownames(a)) %>% setcolnames_byname(coltype(a)) %>% 
-               setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
+      if (inherits(a, "Matrix")) {
+        out <- Matrix::Matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1)
+      } else {
+        out <- matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1)
+      }
+      out <- out %>% 
+        setrownames_byname(rownames(a)) %>% setcolnames_byname(coltype(a))
     }
     if (2 %in% margin) {
       # Return a row vector containing 1's
-      return(matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a)) %>% 
-               setrownames_byname(rowtype(a)) %>% setcolnames_byname(colnames(a)) %>% 
-               setrowtype(rowtype(a)) %>% setcoltype(coltype(a)))
+      if (inherits(a, "Matrix")) {
+        out <- Matrix::Matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a))
+      } else {
+        out <- matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a))
+      }
+      out <- out %>% 
+        setrownames_byname(rowtype(a)) %>% setcolnames_byname(colnames(a))
     } 
+    out %>% 
+      setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     # Should never get here, but just in case:
     # stop(paste("Unknown margin", margin, "in identize_byname. margin should be 1, 2, or c(1,2)."))
   }
