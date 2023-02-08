@@ -624,12 +624,12 @@ identize_byname <- function(a, margin = c(1,2)) {
 #' with rows named via the `notation` argument.
 #' Callers may want to transpose the matrix first with `transpose_byname()`.
 #' 
-#' The `notation` argument is also applied to `rowtype` and `coltype` attributes.
+#' The `notation` is also applied to `rowtype` and `coltype` attributes.
 #'
-#' @param a the matrix to be vectorized.
-#' @param notation a string vector created by `notation_vec()`.
+#' @param a The matrix to be vectorized.
+#' @param notation A string vector created by `notation_vec()`.
 #'
-#' @return a column vector containing all elements of `a`, with row names assigned as "rowname `sep` colname".
+#' @return A column vector containing all elements of `a`, with row names assigned as "rowname `sep` colname".
 #' 
 #' @export
 #'
@@ -654,17 +654,37 @@ vectorize_byname <- function(a, notation) {
   }
   vectorize_func <- function(a_mat, notation) {
     # At this point, a_mat should be a single matrix.
-    if (!is.numeric(a_mat)) {
-      stop("a is not numeric in vectorize_byname")
+    if (!(is.numeric(a_mat) | inherits(a_mat, "Matrix"))) {
+      stop("a is not numeric or a Matrix in vectorize_byname")
     }
-    vec <- a_mat
-    n_entries <- nrow(vec) * ncol(vec)
+    n_entries <- nrow(a_mat) * ncol(a_mat)
     if (length(n_entries) == 0) {
       # Probably have a single number
       n_entries <- 1
     }
-    dim(vec) <- c(n_entries, 1)
-    # Figure out names, based on notation
+    if (inherits(a_mat, "Matrix")) {
+      rnames_df <- data.frame(rname = rownames(a_mat)) %>% 
+        tibble::rowid_to_column("i")
+      cnames_df <- data.frame(cname = colnames(a_mat)) %>% 
+        tibble::rowid_to_column("j")
+      triplet_df <- data.frame(Matrix::mat2triplet(a_mat, uniqT = TRUE)) %>% 
+        dplyr::left_join(rnames_df, by = "i") %>% 
+        dplyr::left_join(cnames_df, by = "j") %>% 
+        dplyr::mutate(
+          vec_rowname = RCLabels::paste_pref_suff(pref = .data[["rname"]], suff = .data[["cname"]], notation = notation), 
+          i = NULL, 
+          j = NULL, 
+          rname = NULL, 
+          cname = NULL
+        ) %>% 
+        tibble::column_to_rownames("vec_rowname") %>% 
+        as.matrix() %>% 
+        Matrix::Matrix()
+    } else {
+      vec <- a_mat
+      dim(vec) <- c(n_entries, 1) 
+    }
+    # Figure out row names, based on notation
     # new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>%
     # purrr::cross2() has been deprecated.
     # This messy code works in its place:
@@ -689,8 +709,9 @@ vectorize_byname <- function(a, notation) {
           RCLabels::paste_pref_suff(notation = notation)
       })
     
-    # Put names on the rows of the vector
-    vec <- vec %>% setrownames_byname(new_rownames) %>% 
+    vec <- vec %>% 
+      # Put names on the rows of the vector
+      setrownames_byname(new_rownames) %>% 
       # Eliminate the column names
       setcolnames_byname(NULL)
     

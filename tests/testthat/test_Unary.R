@@ -778,30 +778,6 @@ test_that("identize_byname() works with a Matrix object", {
 })
 
 
-
-
-
-
-
-
-
-############## Ended here.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("vectorize_byname() works as expected", {
   # Try with a square matrix
   m1 <- matrix(c(1, 5,
@@ -877,15 +853,54 @@ test_that("vectorize_byname() works as expected", {
   # Test with NULL. Should get NULL back.
   expect_null(vectorize_byname(NULL, NULL))
   # Test with NA.
-  expect_error(vectorize_byname(NA, notation = RCLabels::arrow_notation), "a is not numeric in vectorize_byname")
+  expect_error(vectorize_byname(NA, notation = RCLabels::arrow_notation), "a is not numeric or a Matrix in vectorize_byname")
   # Test with string
-  expect_error(vectorize_byname("a", notation = RCLabels::arrow_notation), "a is not numeric in vectorize_byname")
+  expect_error(vectorize_byname("a", notation = RCLabels::arrow_notation), "a is not numeric or a Matrix in vectorize_byname")
   # Test with a list of matrices
   list6 <- list(m1, m1)
   actual6 <- vectorize_byname(list6, notation = list(RCLabels::arrow_notation))
   expected6 <- list(expected1, expected1)
   expect_equal(actual6, expected6)
 })
+
+
+test_that("vectorize_byname() works with Matrix objects", {
+  # Try with a square matrix
+  m1 <- Matrix::Matrix(c(1, 5,
+                         4, 5),
+                       nrow = 2, ncol = 2, byrow = TRUE, 
+                       dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expected1 <- matrix(c(1, 
+                        4, 
+                        5, 
+                        5),
+                      nrow = 4, ncol = 1, 
+                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  actual1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
+  matsbyname:::expect_equal_matrix_or_Matrix(actual1, expected1)
+  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("vectorize_byname() works with 4 matrices", {
