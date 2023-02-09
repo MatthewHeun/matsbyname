@@ -864,46 +864,7 @@ test_that("vectorize_byname() works as expected", {
 })
 
 
-test_that("vectorize_byname() works with Matrix objects", {
-  # Try with a square matrix
-  m1 <- Matrix::Matrix(c(1, 5,
-                         4, 5),
-                       nrow = 2, ncol = 2, byrow = TRUE, 
-                       dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  expected1 <- matrix(c(1, 
-                        4, 
-                        5, 
-                        5),
-                      nrow = 4, ncol = 1, 
-                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
-    setrowtype("Products -> Industries") %>% setcoltype(NULL)
-  actual1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
-  matsbyname:::expect_equal_matrix_or_Matrix(actual1, expected1)
-  
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-test_that("vectorize_byname() works with 4 matrices", {
+test_that("vectorize_byname() works with 4 matrices in a list", {
   m <- matrix(c(1, 5,
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
@@ -920,6 +881,80 @@ test_that("vectorize_byname() works with 4 matrices", {
     setrowtype("Products -> Industries") %>% setcoltype(NULL)
   expect_equal(actual, list(e, e, e, e))
 })
+
+
+test_that("vectorize_byname() works with Matrix objects", {
+  # Try with a square Matrix
+  m1 <- Matrix::Matrix(c(1, 5,
+                         4, 5),
+                       nrow = 2, ncol = 2, byrow = TRUE, 
+                       dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expected1 <- matrix(c(1, 
+                        4, 
+                        5, 
+                        5),
+                      nrow = 4, ncol = 1, 
+                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  actual1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
+  matsbyname:::expect_equal_matrix_or_Matrix(actual1, expected1)
+  
+  # Try with a rectangular matrix
+  m2 <- Matrix::Matrix(c(1, 2, 3,
+                         4, 5, 6),
+                       nrow = 2, ncol = 3, byrow = TRUE,
+                       dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expected2 <- matrix(c(1, 
+                        4, 
+                        2, 
+                        5, 
+                        3, 
+                        6),
+                      nrow = 6, ncol = 1,
+                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  actual2 <- vectorize_byname(m2, notation = RCLabels::arrow_notation)
+  matsbyname:::expect_equal_matrix_or_Matrix(actual2, expected2)
+  
+  # Test with a Matrix that is already a column vector
+  m5 <- Matrix::Matrix(c(1,
+                         2,
+                         3),
+                       nrow = 3, ncol = 1,
+                       dimnames = list(c("p1", "p2", "p3"), "i1")) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  actual5 <- vectorize_byname(m5, notation = RCLabels::notation_vec(sep = "***"))
+  expected5 <- matrix(c(1,
+                        2,
+                        3),
+                      nrow = 3, ncol = 1,
+                      dimnames = list(c("p1***i1", "p2***i1", "p3***i1"))) %>% 
+    setrowtype("Products***Industries") %>% setcoltype(NULL)
+  matsbyname:::expect_equal_matrix_or_Matrix(actual5, expected5)
+})
+
+
+
+
+
+
+
+
+
+
+
+############ Ended here.
+
+
+
+
+
+
+
+
+
 
 
 test_that("matricize_byname() works as expected", {
