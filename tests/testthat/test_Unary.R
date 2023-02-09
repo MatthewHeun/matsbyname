@@ -1585,20 +1585,6 @@ test_that("iminus_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("clean_byname() works as expected", {
   # Clean on rows
   mat1 <- matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
@@ -1619,6 +1605,57 @@ test_that("clean_byname() works as expected", {
                matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r (1)", "r (2)"), "c (2)")) %>% 
                  setrowtype("Rows") %>% setcoltype("Cols"))
 })
+
+
+test_that("clean_byname() works as expected for Matrix objects", {
+  Mat1 <- Matrix::Matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
+    setrowtype("Rows") %>% setcoltype("Cols")
+  # Now clean in rows Should eliminate row 1.
+  res1 <- Mat1 %>% 
+    clean_byname(margin = 1, clean_value = 0)
+  expect_true(inherits(res1, "Matrix"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1, 
+                                             matrix(1, nrow = 1, ncol = 2, dimnames = list("r (2)", c("c (1)", "c (2)"))) %>% 
+                                               setrowtype("Rows") %>% setcoltype("Cols"))
+  # No column consists of all zeroes. So nothing to clean in columns Should get "mat1" back.
+  matsbyname:::expect_equal_matrix_or_Matrix(Mat1 %>% 
+                                               clean_byname(margin = 2, clean_value = 0), 
+                                             Mat1)
+  # Clean on columns
+  Mat2 <- Matrix::Matrix(c(0,0,1,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
+    setrowtype("Rows") %>% setcoltype("Cols")
+  res2 <- Mat2 %>% 
+    clean_byname(margin = 1, clean_value = 0)
+  # No row consists of all zeroes. So nothing to clean in rows. Should get "mat2" back.
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, Mat2)
+  # Now clean in columns. Should eliminate column 1.
+  res3 <- Mat2 %>%
+    clean_byname(margin = 2, clean_value = 0)
+  expect_true(inherits(res3, "Matrix"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res3, 
+                                             matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r (1)", "r (2)"), "c (2)")) %>% 
+                                               setrowtype("Rows") %>% setcoltype("Cols"))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("cumsum_byname() works as expected", {
