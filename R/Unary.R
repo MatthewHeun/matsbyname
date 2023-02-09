@@ -657,67 +657,68 @@ vectorize_byname <- function(a, notation) {
     if (!(is.numeric(a_mat) | inherits(a_mat, "Matrix"))) {
       stop("a is not numeric or a Matrix in vectorize_byname")
     }
-    n_entries <- nrow(a_mat) * ncol(a_mat)
-    if (length(n_entries) == 0) {
-      # Probably have a single number
-      n_entries <- 1
-    }
+    rnames_df <- data.frame(rname = rownames(a_mat)) %>% 
+      tibble::rowid_to_column("i")
+    cnames_df <- data.frame(cname = colnames(a_mat)) %>% 
+      tibble::rowid_to_column("j")
     if (inherits(a_mat, "Matrix")) {
-      rnames_df <- data.frame(rname = rownames(a_mat)) %>% 
-        tibble::rowid_to_column("i")
-      cnames_df <- data.frame(cname = colnames(a_mat)) %>% 
-        tibble::rowid_to_column("j")
-      triplet_df <- data.frame(Matrix::mat2triplet(a_mat, uniqT = TRUE)) %>% 
+      # This is the starting point, a data frame that will be joined later.
+      vector_df <- data.frame(Matrix::mat2triplet(a_mat, uniqT = TRUE))
+    } else {
+      # We have a base matrix
+      n_entries <- nrow(a_mat) * ncol(a_mat)
+      if (length(n_entries) == 0) {
+        # Probably have a single number
+        n_entries <- 1
+        nrow_a_mat <- 1
+        ncol_a_mat <- 1
+      } else {
+        nrow_a_mat <- nrow(a_mat)
+        ncol_a_mat <- ncol(a_mat)
+      }
+      vec <- a_mat
+      dim(vec) <- c(n_entries, 1) 
+      vector_df <- vec %>% 
+        as.data.frame() %>% 
+        magrittr::set_names("x") %>% 
+        tibble::rownames_to_column("index") %>% 
+        dplyr::mutate(
+          index = as.numeric(.data[["index"]]), 
+          i = ((.data[["index"]] - 1) %% nrow_a_mat) + 1,
+          j = floor((.data[["index"]] - 1)/nrow_a_mat) + 1, 
+          index = NULL
+        )
+    }
+    if (!is.null(rownames(a_mat)) & !is.null(colnames(a_mat))) {
+      # Add row names to vector_df
+      vector_df <- vector_df %>% 
         dplyr::left_join(rnames_df, by = "i") %>% 
         dplyr::left_join(cnames_df, by = "j") %>% 
         dplyr::mutate(
-          vec_rowname = RCLabels::paste_pref_suff(pref = .data[["rname"]], suff = .data[["cname"]], notation = notation), 
-          i = NULL, 
-          j = NULL, 
-          rname = NULL, 
-          cname = NULL
+          vec_rowname = RCLabels::paste_pref_suff(pref = .data[["rname"]], suff = .data[["cname"]], notation = notation)
         ) %>% 
-        tibble::column_to_rownames("vec_rowname") %>% 
-        as.matrix() %>% 
-        Matrix::Matrix()
-    } else {
-      vec <- a_mat
-      dim(vec) <- c(n_entries, 1) 
+        tibble::column_to_rownames("vec_rowname")  
     }
-    # Figure out row names, based on notation
-    # new_rownames <- purrr::cross2(rownames(a_mat), colnames(a_mat)) %>%
-    # purrr::cross2() has been deprecated.
-    # This messy code works in its place:
-    if (is.null(rownames(a_mat)) & is.null(colnames(a_mat))) {
-      # We probably have a bare number in a_mat.
-      new_rownames_list <- list()
-    } else {
-      new_rownames_list <- expand.grid(rownames(a_mat), colnames(a_mat)) %>%
-        magrittr::set_names(c("rownames", "colnames")) %>%
-        dplyr::mutate(
-          rownames = as.character(rownames),
-          colnames = as.character(colnames)
-        ) %>%
-        tibble::as_tibble() %>%
-        as.list() %>%
-        unname() %>%
-        purrr::transpose()
+    vec <- vector_df %>% 
+      dplyr::mutate(
+        # Eliminate columns we don't need
+        i = NULL, 
+        j = NULL, 
+        rname = NULL, 
+        cname = NULL
+      ) %>% 
+      as.matrix() %>% 
+      magrittr::set_colnames(NULL)
+    if (is.null(dimnames(a_mat))) {
+      dimnames(vec) <- NULL
     }
-    new_rownames <- new_rownames_list %>%
-      lapply(FUN = function(ps) {
-        ps %>% magrittr::set_names(value = c("pref", "suff")) %>% 
-          RCLabels::paste_pref_suff(notation = notation)
-      })
-    
-    vec <- vec %>% 
-      # Put names on the rows of the vector
-      setrownames_byname(new_rownames) %>% 
-      # Eliminate the column names
-      setcolnames_byname(NULL)
+    if (inherits(a_mat, "Matrix")) {
+      vec <- Matrix::Matrix(vec)
+    }
     
     # Change the rowtype and coltype if both are not NULL
     if (!is.null(rt <- rowtype(a_mat)) & !is.null(ct <- coltype(a_mat))) {
-      new_rowtype <- RCLabels::paste_pref_suff(list(pref = rt, suff = ct), notation = notation)
+      new_rowtype <- RCLabels::paste_pref_suff(pref = rt, suff = ct, notation = notation)
       vec <- vec %>% 
         setrowtype(new_rowtype) %>% 
         setcoltype(NULL)
