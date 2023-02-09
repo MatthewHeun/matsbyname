@@ -1016,6 +1016,34 @@ test_that("matricize_byname() works with Matrix objects", {
 })
 
 
+test_that("vectorize_byname() and matricize_byname() are inverses of each other", {
+  m1 <- matrix(c(1, 2, 
+                 3, 4, 
+                 5, 6),
+               nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  v1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
+  m2 <- matricize_byname(v1, notation = RCLabels::arrow_notation)
+  expect_equal(m2, m1)
+  v3 <- transpose_byname(v1)
+  m4 <- matricize_byname(v3, notation = RCLabels::arrow_notation)
+  expect_equal(m4, m1)
+  
+  # Try with a Matrix object.
+  M1 <- matrix(c(1, 2, 
+                 3, 4, 
+                 5, 6),
+               nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  V1 <- vectorize_byname(M1, notation = RCLabels::arrow_notation)
+  M2 <- matricize_byname(V1, notation = RCLabels::arrow_notation)
+  expect_equal(M2, M1)
+  V3 <- transpose_byname(V1)
+  M4 <- matricize_byname(V3, notation = RCLabels::arrow_notation)
+  expect_equal(M4, M1)
+})
+
+
 
 
 
@@ -1042,21 +1070,6 @@ test_that("matricize_byname() works with Matrix objects", {
 
 
 
-
-test_that("vectorize_byname() and matricize_byname() are inverses of each other", {
-  m1 <- matrix(c(1, 2, 
-                 3, 4, 
-                 5, 6),
-               nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  v1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
-  m2 <- matricize_byname(v1, notation = RCLabels::arrow_notation)
-  expect_equal(m2, m1)
-  # Do a regular transpose here (t), because transpose_byname() switches rowtype and coltype.
-  v3 <- transpose_byname(v1)
-  m4 <- matricize_byname(v3, notation = RCLabels::arrow_notation)
-  expect_equal(m4, m1)
-})
 
 
 test_that("fractionze_byname() works as expected", {
