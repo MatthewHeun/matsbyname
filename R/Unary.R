@@ -707,12 +707,12 @@ vectorize_byname <- function(a, notation) {
 #' Matricize a vector
 #' 
 #' Converts a vector with rows or columns named according to `notation`
-#' into a matrix.
+#' into a `matrix` or a `Matrix`, depending on the type of `a`.
 #'
-#' @param a a row (column) vector to be converted to a matrix based on its row (column) names.
-#' @param notation a string vector created by `notation_vec()` that identifies the notation for row or column names.
+#' @param a A row (column) vector to be converted to a matrix based on its row (column) names.
+#' @param notation A string vector created by `RCLabels::notation_vec()` that identifies the notation for row or column names.
 #'
-#' @return a matrix created from vector `a`.
+#' @return A matrix created from vector `a`.
 #' 
 #' @export
 #'
@@ -795,10 +795,16 @@ matricize_byname <- function(a, notation) {
       value <- mat_info[[values]][r]
       m[rownum, colnum] <- value
     }
+    # Convert to a Matrix if that's what came in.
+    if (inherits(a_mat, "Matrix")) {
+      m <- Matrix::Matrix(m)
+    }
     # Add row and column types after splitting the rowtype of a_mat
     rt <- rowtype(a_mat)
     rctypes <- RCLabels::split_pref_suff(rt, notation = notation)
-    m %>% setrowtype(rctypes[["pref"]]) %>% setcoltype(rctypes[["suff"]])
+    m %>% 
+      setrowtype(rctypes[["pref"]]) %>%
+      setcoltype(rctypes[["suff"]])
   } 
   unaryapply_byname(matricize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
 }

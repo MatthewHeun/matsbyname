@@ -1018,6 +1018,52 @@ test_that("matricize_byname() works as expected", {
 })
 
 
+test_that("matricize_byname() works with Matrix objects", {
+
+  # Try with a column vector that is a Matrix object
+  v2 <- Matrix::Matrix(c(1,
+                         2,
+                         3, 
+                         4), 
+                       nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products -> Industries")
+  actual2 <- matricize_byname(v2, notation = RCLabels::arrow_notation)
+  expected2 <- matrix(c(1, 3,
+                        2, 4),
+                      nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  matsbyname:::expect_equal_matrix_or_Matrix(actual2, expected2)
+  expect_true(inherits(actual2, "Matrix"))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## Ended here ######################
+
+
+
+
+
+
+
+
+
+
+
 test_that("vectorize_byname() and matricize_byname() are inverses of each other", {
   m1 <- matrix(c(1, 2, 
                  3, 4, 
