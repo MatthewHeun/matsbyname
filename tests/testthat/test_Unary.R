@@ -1638,26 +1638,6 @@ test_that("clean_byname() works as expected for Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("cumsum_byname() works as expected", {
   expect_null(cumsum_byname(NULL))
   expect_true(is.na(cumsum_byname(NA)))
@@ -1706,6 +1686,43 @@ test_that("cumsum_byname() works as expected", {
     )
   expect_equal(DF3$m2, list(m1, sum_byname(m1, m2), m3))
 })
+
+
+test_that("cumsum_byname() works with Matrix objects", {
+  rowmat <- Matrix::Matrix(c(1, 2, 3), nrow = 1)
+  expect_equal(cumsum_byname(rowmat), rowmat)
+  
+  # Test in a list
+  expect_equal(cumsum_byname(list(rowmat, rowmat, rowmat)), list(rowmat, 2*rowmat, 3*rowmat))
+  # Test in a data frame
+  DF2 <- data.frame(m = I(list(rowmat, rowmat, rowmat))) %>% 
+    dplyr::mutate(
+      m2 = cumsum_byname(m)
+    )
+  expect_equal(DF2$m2, list(rowmat, 2*rowmat, 3*rowmat))
+  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("cumprod_byname() works as expected", {

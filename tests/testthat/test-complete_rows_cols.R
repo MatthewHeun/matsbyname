@@ -377,14 +377,14 @@ test_that("complete_rows_cols() works when orders are different for column fill"
 
 
 test_that("complete_rows_cols() works with a Matrix", {
-  # A is a Matrix with dimnames, mat is NULL.  a is completed relative to itself
+  # A is a Matrix with dimnames, mat is NULL.  A is completed relative to itself
   A <- Matrix::Matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
   res1 <- complete_rows_cols(A)
   expected1 <- Matrix::Matrix(c(42, 0, 0, 
                                 42, 0, 0, 
                                  0, 0, 0), byrow = TRUE, 
                               nrow = 3, ncol = 3, dimnames = list(c("r1", "r2", "c1"), c("c1", "r1", "r2")))
-  expect_equal_matrix_or_Matrix(res1, expected1)
+  matsbyname:::expect_equal_matrix_or_Matrix(res1, expected1)
 
   # Try with 2 Matrix objects
   # Add one row (r3) and one column (c2)
@@ -413,3 +413,20 @@ test_that("complete_rows_cols() works with a 0x0 matrix", {
                       dimnames = list(c("r1", "r2"), c("c1", "c2"))))
 })
 
+
+test_that("complete_rows_cols() works with a Matrix with no dimnames", {
+  # A is a Matrix with dimnames, mat is NULL.  
+  # A should be completed relative to itself, but there is nothing to do.
+  A <- Matrix::Matrix(42, nrow = 2, ncol = 1)
+  res1 <- complete_rows_cols(A)
+  expected1 <- Matrix::Matrix(c(42, 
+                                42), byrow = TRUE, 
+                              nrow = 2, ncol = 1)
+  expect_equal(res1, expected1)
+  
+  # Try with 2 Matrix objects
+  # Add one row (r3) and one column (c2)
+  B <- Matrix::Matrix(0, nrow = 1, ncol = 1)
+  res2 <- complete_rows_cols(A, B)
+  expect_equal(res2, A)
+})

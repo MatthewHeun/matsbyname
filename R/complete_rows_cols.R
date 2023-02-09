@@ -134,7 +134,21 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     # When we get here, we should not have lists for any of the arguments.
     # We should have single matrices for a and/or matrix. 
     
+    dimnamesa <- dimnames(a)
+    # Sometimes, a Matrix will have a list for dimnames,
+    # but both components are NULL.
+    # Take care of that situation by NULLing dimnamesmat.
+    if (all(sapply(dimnamesa, is.null))) {
+      dimnamesa <- NULL
+    }
+    
     dimnamesmat <- dimnames(mat)
+    # Sometimes, a Matrix will have a list for dimnames,
+    # but both components are NULL.
+    # Take care of that situation by NULLing dimnamesmat.
+    if (all(sapply(dimnamesmat, is.null))) {
+      dimnamesmat <- NULL
+    }
     
     # Check that fillrow, if present, is appropriate
     if (!is.null(fillrow)) {
@@ -159,7 +173,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     if (is.null(dimnamesmat)) {
       # dimnamesmat is null, even after trying to gather row and column names from mat.  
       # If a is a matrix or Matrix with names, complete it relative to itself.
-      if (is_matrix_or_Matrix(a) & !is.null(dimnames(a))) {
+      if (is_matrix_or_Matrix(a) & !is.null(dimnamesa)) {
         if (!is.null(mat)) {
           # If we get here but matrix is not NULL, the user was probably trying
           # to complete a relative to matrix or a Matrix.
@@ -208,7 +222,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     # We don't know what row and column names are already present in a.
     # So we can't know how to complete a with the dimnames from mat.
     # Give an error.
-    if (is.null(dimnames(a)) & !is.null(dimnamesmat)) {
+    if (is.null(dimnamesa) & !is.null(dimnamesmat)) {
       stop("Can't complete a that is missing dimnames with non-NULL dimnames on mat.  How can we know which names are already present in a?")
     }
     
@@ -221,7 +235,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     for (mar in margin) {
       # Check that row or column names are available for the margin to be completed.
       # If not, this is almost certainly an unintended error by the caller.
-      if (is.null(dimnames(a)[[mar]])) {
+      if (is.null(dimnamesa[[mar]])) {
         stop(paste("NULL dimnames for margin =", mar, "on a"))
       }
     }

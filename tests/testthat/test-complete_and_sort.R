@@ -232,3 +232,12 @@ test_that("complete_and_sort() works with Matrix objects", {
   expect_equal(res1$b, expectedB)
 })
 
+
+test_that("complete_and_sort() works with unnamed Matrix objects", {
+  A <- Matrix::Matrix(1, nrow = 2, ncol = 2)
+  B <- Matrix::Matrix(1, nrow = 2, ncol = 2)
+  res1 <- complete_and_sort(A, B)
+  expect_equal(res1$a, A)
+  expect_equal(res1$b, B)
+})
+
