@@ -945,7 +945,7 @@ test_that("vectorize_byname() works with Matrix objects", {
 
 
 
-############ Ended here.
+############ Ended here. ################################################
 
 
 

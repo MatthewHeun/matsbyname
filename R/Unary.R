@@ -661,34 +661,8 @@ vectorize_byname <- function(a, notation) {
       tibble::rowid_to_column("i")
     cnames_df <- data.frame(cname = colnames(a_mat)) %>% 
       tibble::rowid_to_column("j")
-    if (inherits(a_mat, "Matrix")) {
-      # This is the starting point, a data frame that will be joined later.
-      vector_df <- data.frame(Matrix::mat2triplet(a_mat, uniqT = TRUE))
-    } else {
-      # We have a base matrix
-      n_entries <- nrow(a_mat) * ncol(a_mat)
-      if (length(n_entries) == 0) {
-        # Probably have a single number
-        n_entries <- 1
-        nrow_a_mat <- 1
-        ncol_a_mat <- 1
-      } else {
-        nrow_a_mat <- nrow(a_mat)
-        ncol_a_mat <- ncol(a_mat)
-      }
-      vec <- a_mat
-      dim(vec) <- c(n_entries, 1) 
-      vector_df <- vec %>% 
-        as.data.frame() %>% 
-        magrittr::set_names("x") %>% 
-        tibble::rownames_to_column("index") %>% 
-        dplyr::mutate(
-          index = as.numeric(.data[["index"]]), 
-          i = ((.data[["index"]] - 1) %% nrow_a_mat) + 1,
-          j = floor((.data[["index"]] - 1)/nrow_a_mat) + 1, 
-          index = NULL
-        )
-    }
+    vector_df <- Matrix::mat2triplet(a_mat, uniqT = TRUE) %>% 
+      data.frame()
     if (!is.null(rownames(a_mat)) & !is.null(colnames(a_mat))) {
       # Add row names to vector_df
       vector_df <- vector_df %>% 
@@ -707,6 +681,7 @@ vectorize_byname <- function(a, notation) {
         rname = NULL, 
         cname = NULL
       ) %>% 
+      # And convert to a matrix
       as.matrix() %>% 
       magrittr::set_colnames(NULL)
     if (is.null(dimnames(a_mat))) {
