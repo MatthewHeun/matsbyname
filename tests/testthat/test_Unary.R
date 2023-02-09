@@ -998,7 +998,6 @@ test_that("matricize_byname() works as expected", {
 
 
 test_that("matricize_byname() works with Matrix objects", {
-
   # Try with a column vector that is a Matrix object
   v2 <- Matrix::Matrix(c(1,
                          2,
@@ -1218,27 +1217,6 @@ test_that("fractionize_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-########## Ended here ######################
-
-
-
-
-
-
-
-
-
-
 test_that("rowsums_byname() works as expected", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
@@ -1287,6 +1265,19 @@ test_that("rowsums_byname() works with single numbers and matrices", {
 })
 
 
+test_that("rowsums_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  # Note, columns are sorted by name after rowsums_byname
+  rowsumsM_expected <- matrix(c(9, 7, 5), nrow = 3, dimnames = list(paste0("i", 1:3), coltype(M))) %>% 
+    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  res <- rowsums_byname(M)
+  expect_true(inherits(res, "Matrix"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, rowsumsM_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(rowsums_byname(M, "E.ktoe"), rowsumsM_expected %>% setcolnames_byname("E.ktoe"))
+})
+
+
 test_that("colsums_byname() works as expected", {
   expect_error(colsums_byname("bogus"), "Unknown type for 'a' in colsums_byname")
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
@@ -1327,6 +1318,37 @@ test_that("colsums_byname() works with single numbers and matrices", {
   expect_equal(colsums_byname(list(1, 42)), list(1, 42))
   expect_equal(colsums_byname(list(matrix(c(1, 42)), matrix(c(2, 43)))), list(matrix(43), matrix(45)))
 })
+
+
+test_that("colsums_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  colsumsM_expected <- matrix(c(6, 15), nrow = 1, dimnames = list(rowtype(M), colnames(M))) %>% 
+    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  res <- colsums_byname(M)
+  expect_true(inherits(res, "Matrix"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, colsumsM_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(colsums_byname(M, "E.ktoe"), colsumsM_expected %>% setrownames_byname("E.ktoe"))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("sumall_byname() works as expected", {
