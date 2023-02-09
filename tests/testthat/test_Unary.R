@@ -1700,7 +1700,6 @@ test_that("cumsum_byname() works with Matrix objects", {
       m2 = cumsum_byname(m)
     )
   expect_equal(DF2$m2, list(rowmat, 2*rowmat, 3*rowmat))
-  
 })
 
 
@@ -1712,7 +1711,7 @@ test_that("cumsum_byname() works with Matrix objects", {
 
 
 
-
+######## Got to here. ##############
 
 
 
