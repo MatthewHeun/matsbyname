@@ -1128,20 +1128,33 @@ rowprods_byname <- function(a, colname = NA){
     # Set the column name to NA so we can change it in the function.
     colname <- NA_character_
   }
-  rowprod_func <- function(a, colname){
+  rowprod_func <- function(a_mat, colname){
     if (is.na(colname)) {
-      colname <- coltype(a)
+      colname <- coltype(a_mat)
     }
-    apply(a, MARGIN = 1, FUN = prod) %>%
-      # Preserve matrix structure (i.e., result will be a column vector of type matrix)
-      matrix(byrow = TRUE) %>%
+    if (inherits(a_mat, "Matrix")) {
+      # There is no equivalents to apply() and prod() for Matrix objects.
+      # So convert to a matrix object and then recursively call this function.
+      out <- as.matrix(a_mat) %>% 
+        rowprod_func(colname = colname) %>% 
+        Matrix::Matrix() %>% 
+        setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
+      return(out)
+    } else {
+      # a_mat is probably a matrix
+      out <- apply(a_mat, MARGIN = 1, FUN = prod) %>%
+        # Preserve matrix structure (i.e., result will be a column vector of type matrix)
+        matrix(byrow = TRUE)
+    }
+    out %>%
       # Preserve row names
-      setrownames_byname(rownames(a)) %>%
-      # But sort the result on names
-      sort_rows_cols %>%
+      setrownames_byname(rownames(a_mat)) %>%
+      # Set column name
       setcolnames_byname(colname) %>%
-      setrowtype(rowtype(a)) %>%
-      setcoltype(coltype(a))
+      # Set types
+      setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat)) %>% 
+      # And sort the result on names
+      sort_rows_cols()
   }
   unaryapply_byname(rowprod_func, a = a, .FUNdots = list(colname = colname), 
                     rowcoltypes = "none")
