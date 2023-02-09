@@ -1044,34 +1044,6 @@ test_that("vectorize_byname() and matricize_byname() are inverses of each other"
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-########## Ended here ######################
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("fractionze_byname() works as expected", {
   M <- matrix(c(1, 5,
                 4, 5),
@@ -1210,6 +1182,82 @@ test_that("fractionze_byname() works as expected", {
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
 })
+
+
+test_that("fractionize_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(1, 5,
+                        4, 5),
+                      nrow = 2, ncol = 2, byrow = TRUE, 
+                      dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expectedM_rows <- Matrix::Matrix(c(1/6, 5/6,
+                                     4/9, 5/9),
+                                   nrow = 2, ncol = 2, byrow = TRUE,
+                                   dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expectedM_cols <- Matrix::Matrix(c(1/5, 5/10,
+                                     4/5, 5/10),
+                                   nrow = 2, ncol = 2, byrow = TRUE,
+                                   dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expectedM_sumall <- Matrix::Matrix(c(1/15, 5/15,
+                                       4/15, 5/15),
+                                     nrow = 2, ncol = 2, byrow = TRUE,
+                                     dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  
+  # Test dividing by row sums
+  expect_equal(fractionize_byname(M, margin = 1), expectedM_rows)
+  
+  # Test dividing by column sums
+  expect_equal(fractionize_byname(M, margin = 2), expectedM_cols)
+  
+  # Test dividing by sum of all entries
+  expect_equal(fractionize_byname(M, margin = c(1,2)), expectedM_sumall)
+  expect_equal(fractionize_byname(M, margin = c(2,1)), expectedM_sumall)
+  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## Ended here ######################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("matrix row selection by name with exact matches (^name$) works as expected", {

@@ -838,7 +838,7 @@ fractionize_byname <- function(a, margin){
   margin <- prep_vector_arg(a, margin)
 
   fractionize_func <- function(a, margin){
-    if (!inherits(a, "matrix") && !inherits(a, "data.frame")) {
+    if (!inherits(a, "matrix") && !inherits(a, "Matrix") && !inherits(a, "data.frame")) {
       # Assume we have a single number here
       # By dividing a by itself, we could throw a division by zero error,
       # which we would want to do.
@@ -862,14 +862,24 @@ fractionize_byname <- function(a, margin){
     if (1 %in% margin) {
       # Divide each entry by its row sum
       # Do this with (a*i)_hat_inv * a
-      # return(matrixproduct_byname(a %>% rowsums_byname %>% hatize_byname %>% invert_byname, a))
-      return(sweep(a, margin, rowSums(a), `/`))
+      return(matrixproduct_byname(a %>% 
+                                    rowsums_byname() %>% 
+                                    hatize_byname() %>% 
+                                    invert_byname(), 
+                                  a))
+      # The next line works only for matrix objects, not Matrix objects.
+      # return(sweep(a, margin, rowSums(a), `/`))
     }
     if (2 %in% margin) {
       # Divide each entry by its column sum
       # Do this with a * (i^T * a)_hat_inv
-      # return(matrixproduct_byname(a, colsums_byname(a) %>% hatize_byname %>% invert_byname))
-      return(sweep(a, margin, colSums(a), `/`))
+      return(matrixproduct_byname(a, 
+                                  a %>% 
+                                    colsums_byname() %>% 
+                                    hatize_byname() %>%
+                                    invert_byname()))
+      # The next line works only for matrix objects, not Matrix objects.
+      # return(sweep(a, margin, colSums(a), `/`))
     } 
     # Should never get here, but just in case:
     # stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
@@ -926,24 +936,33 @@ rowsums_byname <- function(a, colname = NA){
         colname <- coltype(a_mat)
       }
     }
-    if (is.matrix(a_mat)) {
-      out <- a_mat %>% 
-        rowSums() %>%
-        # Preserve matrix structure (i.e., result will be a column vector of type matrix)
-        matrix(ncol = 1) %>%
+    if (inherits(a, "Matrix") | is.matrix(a_mat)) {
+      if (inherits(a, "Matrix")) {
+        out <- a_mat %>% 
+          Matrix::rowSums() %>% 
+          Matrix::Matrix(ncol = 1)
+      } else if (is.matrix(a_mat)) {
+        out <- a_mat %>% 
+          rowSums() %>%
+          # Preserve matrix structure (i.e., result will be a column vector of type matrix)
+          matrix(ncol = 1) 
+      }
+      out <- out %>% 
         # Preserve row names
         setrownames_byname(rownames(a_mat)) %>%
         # Set column name
         setcolnames_byname(colname) %>%
         # But sort the result on names
-        sort_rows_cols() 
+        sort_rows_cols()
     } else if (is.numeric(a_mat)) {
       out <- a_mat
     } else {
       stop("Unknown type for 'a' in rowsums_byname(). 'a' must be a matrix or numeric.")
     }
     # Set types and return
-    out %>% setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
+    out %>% 
+      setrowtype(rowtype(a_mat)) %>%
+      setcoltype(coltype(a_mat))
   }
   unaryapply_byname(rowsum_func, a = a, .FUNdots = list(colname = colname), 
                     rowcoltypes = "none")
@@ -998,7 +1017,7 @@ colsums_byname <- function(a, rowname = NA){
   
   colsum_func <- function(a_mat, rowname){
 
-    if (is.matrix(a_mat)) {
+    if (is.matrix(a_mat) | inherits(a_mat, "Matrix")) {
       return(a_mat %>% 
                transpose_byname() %>% 
                rowsums_byname(colname = rowname) %>% 
@@ -1047,12 +1066,12 @@ colsums_byname <- function(a, rowname = NA){
 #' sumall_byname(list(m, NULL))
 sumall_byname <- function(a){
   sum_func <- function(a_mat){
-    if (!(is.matrix(a_mat) | is.numeric(a_mat))) {
+    if (!(is.matrix(a_mat) | inherits(a_mat, "Matrix") | is.numeric(a_mat))) {
       stop("Unknown type for 'a' in sumall_byname(). 'a' must be a matrix or numeric.")
     }
     a_mat %>%
-      rowsums_byname %>%
-      colsums_byname %>%
+      rowsums_byname() %>%
+      colsums_byname() %>%
       as.numeric()
   }
   unaryapply_byname(sum_func, a = a, rowcoltypes = "none")
