@@ -1446,28 +1446,6 @@ test_that("rowprods_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("colprods_byname() works as expected", {
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
@@ -1497,6 +1475,26 @@ test_that("colprods_byname() works as expected", {
   attr(DF_expected$iTm, which = "class") <- NULL
   expect_equal(DF %>% dplyr::mutate(iTm = colprods_byname(m)), DF_expected)
 })
+
+
+test_that("colprods_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  colprodsM_expected <- matrix(c(6, 120), nrow = 1, dimnames = list(rowtype(M), colnames(M))) %>% 
+    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  res <- colprods_byname(M)
+  expect_true(inherits(M, "Matrix"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, colprodsM_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(colprods_byname(M, "E.ktoe"), colprodsM_expected %>% setrownames_byname("E.ktoe"))
+})
+
+
+
+
+
+
+
+
 
 
 test_that("prodall_byname() works as expected", {
