@@ -13,8 +13,8 @@ hatinv_byname(v, keep = NULL, inf_becomes = .Machine$double.xmax)
 
 \item{inf_becomes}{A value to be substitute for any \code{Inf} produced by the inversion process.
 Default is \code{.Machine$double.xmax}.
-If \code{FALSE} (the default), \code{Inf} is not handled differently.
-If \code{TRUE}, \code{Inf} values in the resulting matrix are converted to zeroes.}
+Another reasonable value is \code{Inf}.
+Set to \code{NULL} to disable substitution.}
 }
 \value{
 a square diagonal matrix with inverted elements of \code{v} on the diagonal
@@ -37,7 +37,7 @@ when any of the elements of \code{v} are zero.
 This function will give \code{inf_becomes} on the diagonal of the result for each zero element of \code{v},
 arguably a better answer.
 The sign of \code{Inf} is preserved in the substitution.
-The default value of \code{Inf_becomes} is \code{.Machine$double.xmax}.
+The default value of \code{inf_becomes} is \code{.Machine$double.xmax}.
 Set \code{inf_becomes} to \code{NULL} to disable this behavior.
 
 The default behavior is helpful for cases when the result of \code{hatinv_byname()} is later multiplied by \code{0}

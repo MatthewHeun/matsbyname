@@ -405,7 +405,7 @@ test_that("svd_byname() works as expected", {
 
 test_that("hatize_byname() works as expected", {
   g <- matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatize_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
+  expect_error(hatize_byname(g), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
   expect_equal(hatize_byname(g, keep = "rownames"), 
                matrix(4, dimnames = list("I", "I")))
   expect_equal(hatize_byname(g, keep = "colnames"), 
@@ -516,7 +516,7 @@ test_that("hatize_byname() works with a simple vector", {
   v4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
     setrowtype("Product -> Industry") %>% 
     setcoltype("Industry -> Product")
-  expect_error(hatize_byname(v4), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
+  expect_error(hatize_byname(v4), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
   expect_equal(hatize_byname(v4, keep = "rownames"), matrix(42, dimnames = list("r1", "r1")) %>% 
                  setrowtype("Product -> Industry") %>% 
                  setcoltype("Product -> Industry"))
@@ -639,7 +639,7 @@ test_that("hatinv_byname() works as expected", {
   
   # Test that hatinv works with a 1x1 vector
   g <- matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatinv_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
+  expect_error(hatinv_byname(g), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
 })
 
 
@@ -663,7 +663,7 @@ test_that("hatinv_byname() works with a Matrix object", {
   
   # Test that hatinv works with a 1x1 Matrix
   g <- Matrix::Matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatinv_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
+  expect_error(hatinv_byname(g), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
 })
 
 
@@ -1128,7 +1128,7 @@ test_that("fractionze_byname() works as expected", {
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
   # Verify that the zero column now works and gives NaNs.
-  expect_equal(fractionize_byname(Mzerocol, margin = 2), 
+  expect_equal(fractionize_byname(Mzerocol, margin = 2, inf_becomes = Inf), 
                matrix(c(1/3, 0/0,
                         2/3, 0/0), 
                       nrow = 2, ncol = 2, byrow = TRUE,
@@ -1150,7 +1150,7 @@ test_that("fractionze_byname() works as expected", {
                         1/3, 2/3),
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
-  expect_equal(fractionize_byname(Mzerorow, margin = 1), 
+  expect_equal(fractionize_byname(Mzerorow, margin = 1, inf_becomes = NaN), 
                matrix(c(0/0, 0/0,
                         1/3, 2/3),
                       nrow = 2, ncol = 2, byrow = TRUE,
@@ -1166,12 +1166,12 @@ test_that("fractionze_byname() works as expected", {
                     0, 0),
                   nrow = 2, ncol = 2, byrow = TRUE,
                   dimnames = list(c("p1", "p2"), c("i1", "i2")))
-  expect_equal(fractionize_byname(Mzero, margin = 1), 
+  expect_equal(fractionize_byname(Mzero, margin = 1, inf_becomes = NaN), 
                matrix(c(0/0, 0/0,
                         0/0, 0/0), 
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
-  expect_equal(fractionize_byname(Mzero, margin = 2), 
+  expect_equal(fractionize_byname(Mzero, margin = 2, inf_becomes = NaN), 
                matrix(c(0/0, 0/0,
                         0/0, 0/0), 
                       nrow = 2, ncol = 2, byrow = TRUE,
@@ -1215,14 +1215,7 @@ test_that("fractionize_byname() works with Matrix objects", {
   # Test dividing by sum of all entries
   expect_equal(fractionize_byname(M, margin = c(1,2)), expectedM_sumall)
   expect_equal(fractionize_byname(M, margin = c(2,1)), expectedM_sumall)
-  
 })
-
-
-
-
-
-
 
 
 
@@ -1246,18 +1239,152 @@ test_that("fractionize_byname() works with Matrix objects", {
 
 
 
+test_that("rowsums_byname() works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  
+  expect_error(rowsums_byname("bogus"), "Unknown type for 'a' in rowsums_byname")
+  m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  # Note, columns are sorted by name after rowsums_byname
+  rowsumsm_expected <- matrix(c(9, 7, 5), nrow = 3, dimnames = list(paste0("i", 1:3), coltype(m))) %>% 
+    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
+  expect_equal(rowsums_byname(m), rowsumsm_expected)
+  expect_equal(rowsums_byname(m, "E.ktoe"), rowsumsm_expected %>% setcolnames_byname("E.ktoe"))
+  # This also works with lists
+  expect_equal(rowsums_byname(list(m, m)), list(rowsumsm_expected, rowsumsm_expected))
+  expect_equal(rowsums_byname(list(m, m), "E.ktoe"), 
+               list(rowsumsm_expected %>% setcolnames_byname("E.ktoe"), 
+                    rowsumsm_expected %>% setcolnames_byname("E.ktoe")))
+  rowsum_expected_no_colname <- rowsumsm_expected %>% 
+    magrittr::set_colnames(NULL)
+  expect_equal(rowsums_byname(list(m, m), NULL), list(rowsum_expected_no_colname, rowsum_expected_no_colname))
+  # Also works with data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(rowsums_byname(DF$m), list(rowsumsm_expected, rowsumsm_expected))
+  DF_expected <- data.frame(m = I(list()), mi = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"mi"]] <- rowsumsm_expected
+  DF_expected[[2,"mi"]] <- rowsumsm_expected
+  # Because DF_expected$mi is created with I(list()), its class is "AsIs".
+  # Because DF$mi is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$mi to NULL to get a match.
+  attr(DF_expected$mi, which = "class") <- NULL
+  expect_equal(DF %>% dplyr::mutate(mi = rowsums_byname(m)), DF_expected)
+})
 
 
+test_that("rowsums_byname() works with single numbers and matrices", {
+  expect_equal(rowsums_byname(1), 1)
+  expect_equal(rowsums_byname(matrix(1)), matrix(1))
+  expect_equal(rowsums_byname(list(1, 42)), list(1, 42))
+  expect_equal(rowsums_byname(list(matrix(c(1, 42)), matrix(c(2, 43)))), list(matrix(c(1, 42)), matrix(c(2, 43))))
+})
 
 
+test_that("colsums_byname() works as expected", {
+  expect_error(colsums_byname("bogus"), "Unknown type for 'a' in colsums_byname")
+  m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  colsumsm_expected <- matrix(c(6, 15), nrow = 1, dimnames = list(rowtype(m), colnames(m))) %>% 
+    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
+  expect_equal(colsums_byname(m), colsumsm_expected)
+  expect_equal(colsums_byname(m, "E.ktoe"), colsumsm_expected %>% setrownames_byname("E.ktoe"))
+  # This also works with lists
+  expect_equal(colsums_byname(list(m, m)), list(colsumsm_expected, colsumsm_expected))
+  expect_equal(colsums_byname(list(m, m), "E.ktoe"), 
+               list(colsumsm_expected %>% setrownames_byname("E.ktoe"), 
+                    colsumsm_expected %>% setrownames_byname("E.ktoe")))
+  colsum_expected_no_colname <- colsumsm_expected %>% 
+    magrittr::set_rownames(NULL)
+  expect_equal(colsums_byname(list(m, m), NULL), list(colsum_expected_no_colname, colsum_expected_no_colname))
+  # Also works with data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(colsums_byname(DF$m), list(colsumsm_expected, colsumsm_expected))
+  DF_expected <- data.frame(m = I(list()), iTm = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"iTm"]] <- colsumsm_expected
+  DF_expected[[2,"iTm"]] <- colsumsm_expected
+  # Because DF_expected$iTm is created with I(list()), its class is "AsIs".
+  # Because DF$iTm is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$iTm to NULL to get a match.
+  attr(DF_expected$iTm, which = "class") <- NULL
+  expect_equal(DF %>% dplyr::mutate(iTm = colsums_byname(m)), DF_expected)
+})
 
 
+test_that("colsums_byname() works with single numbers and matrices", {
+  expect_equal(colsums_byname(1), 1)
+  expect_equal(colsums_byname(matrix(1)), matrix(1))
+  expect_equal(colsums_byname(list(1, 42)), list(1, 42))
+  expect_equal(colsums_byname(list(matrix(c(1, 42)), matrix(c(2, 43)))), list(matrix(43), matrix(45)))
+})
 
 
+test_that("sumall_byname() works as expected", {
+  expect_error(sumall_byname("bogus"), "Unknown type for 'a' in sumall_byname")
+  m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Commodity")
+  expect_equal(sumall_byname(m), 8)
+  expect_equal(m %>% rowsums_byname %>% colsums_byname, 
+               matrix(8, nrow = 1, ncol = 1, dimnames = list(rowtype(m), coltype(m))) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Also works for lists
+  expect_equal(sumall_byname(list(m,m)), list(8, 8))
+  # Also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(sumall_byname(DF$m), list(8,8))
+  DF_expected <- data.frame(m = I(list()), summ = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m  
+  DF_expected[[1,"summ"]] <- 8
+  DF_expected[[2,"summ"]] <- 8
+  # Because DF_expected$summ is created with I(list()), its class is "AsIs".
+  # Because DF$summ is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$summ to NULL to get a match.
+  attr(DF_expected$summ, which = "class") <- NULL
+  expect_equal(DF %>% dplyr::mutate(summ = sumall_byname(m)), DF_expected)
+})
 
 
+test_that("sumall_byname() works for single numbers", {
+  expect_equal(sumall_byname(matrix(1)), 1)
+  expect_equal(sumall_byname(list(matrix(1), matrix(42))), list(1, 42))
+  expect_equal(sumall_byname(1), 1)
+  expect_equal(sumall_byname(1), 1)
+})
 
 
+test_that("sum_byname() and sumall_byname() behave same with NULL", {
+  expect_equal(sum_byname(0, 0), 0)
+  expect_equal(sum_byname(1, 0), 1)
+  expect_equal(sum_byname(1, NULL), 1)
+  # I wish this were 0, but can't figure out how to make it so at the moment.
+  # This result is inconsistent with sum_byname(NULL, NULL) returning 0.
+  # expect_true(sum_byname(NULL), 0)
+  expect_null(sum_byname(NULL))
+  expect_equal(sum_byname(NULL, NULL), 0)
+  expect_equal(sum_byname(NULL, NULL, NULL), 0)
+  
+  # Again, it seems like this should return 0, but it does not currently.
+  # expect_equal(sumall_byname(NULL), 0)
+  expect_null(sumall_byname(NULL))
+  # expect_equal(sumall_byname(list(NULL, NULL)), list(0, 0))
+  expect_equal(sum_byname(list(NULL, NULL)), list(NULL, NULL))
+  
+  expect_equal(sumall_byname(matrix(0, nrow = 1, ncol = 1)), 0)
+  expect_equal(sumall_byname(matrix(1, nrow = 1, ncol = 1)), 1)
+})
 
 
 test_that("matrix row selection by name with exact matches (^name$) works as expected", {
@@ -1453,153 +1580,6 @@ test_that("matrix column selection by name in lists works as expected", {
   expect_equal(DF, DF_expected, ignore_attr = TRUE)
 })
 
-
-test_that("rowsums_byname() works as expected", {
-  m_rownames <- paste0("i", 1:4)
-  m_colnames <- paste0("p", 1:4)
-  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
-
-  expect_error(rowsums_byname("bogus"), "Unknown type for 'a' in rowsums_byname")
-  m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
-  # Note, columns are sorted by name after rowsums_byname
-  rowsumsm_expected <- matrix(c(9, 7, 5), nrow = 3, dimnames = list(paste0("i", 1:3), coltype(m))) %>% 
-    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
-  expect_equal(rowsums_byname(m), rowsumsm_expected)
-  expect_equal(rowsums_byname(m, "E.ktoe"), rowsumsm_expected %>% setcolnames_byname("E.ktoe"))
-  # This also works with lists
-  expect_equal(rowsums_byname(list(m, m)), list(rowsumsm_expected, rowsumsm_expected))
-  expect_equal(rowsums_byname(list(m, m), "E.ktoe"), 
-               list(rowsumsm_expected %>% setcolnames_byname("E.ktoe"), 
-                    rowsumsm_expected %>% setcolnames_byname("E.ktoe")))
-  rowsum_expected_no_colname <- rowsumsm_expected %>% 
-    magrittr::set_colnames(NULL)
-  expect_equal(rowsums_byname(list(m, m), NULL), list(rowsum_expected_no_colname, rowsum_expected_no_colname))
-  # Also works with data frames
-  DF <- data.frame(m = I(list()))
-  DF[[1,"m"]] <- m
-  DF[[2,"m"]] <- m
-  expect_equal(rowsums_byname(DF$m), list(rowsumsm_expected, rowsumsm_expected))
-  DF_expected <- data.frame(m = I(list()), mi = I(list()))
-  DF_expected[[1,"m"]] <- m
-  DF_expected[[2,"m"]] <- m
-  DF_expected[[1,"mi"]] <- rowsumsm_expected
-  DF_expected[[2,"mi"]] <- rowsumsm_expected
-  # Because DF_expected$mi is created with I(list()), its class is "AsIs".
-  # Because DF$mi is created from an actual calculation, its class is NULL.
-  # Need to set the class of DF_expected$mi to NULL to get a match.
-  attr(DF_expected$mi, which = "class") <- NULL
-  expect_equal(DF %>% dplyr::mutate(mi = rowsums_byname(m)), DF_expected)
-})
-
-
-test_that("rowsums_byname() works with single numbers and matrices", {
-  expect_equal(rowsums_byname(1), 1)
-  expect_equal(rowsums_byname(matrix(1)), matrix(1))
-  expect_equal(rowsums_byname(list(1, 42)), list(1, 42))
-  expect_equal(rowsums_byname(list(matrix(c(1, 42)), matrix(c(2, 43)))), list(matrix(c(1, 42)), matrix(c(2, 43))))
-})
-
-
-test_that("colsums_byname() works as expected", {
-  expect_error(colsums_byname("bogus"), "Unknown type for 'a' in colsums_byname")
-  m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
-  colsumsm_expected <- matrix(c(6, 15), nrow = 1, dimnames = list(rowtype(m), colnames(m))) %>% 
-    setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
-  expect_equal(colsums_byname(m), colsumsm_expected)
-  expect_equal(colsums_byname(m, "E.ktoe"), colsumsm_expected %>% setrownames_byname("E.ktoe"))
-  # This also works with lists
-  expect_equal(colsums_byname(list(m, m)), list(colsumsm_expected, colsumsm_expected))
-  expect_equal(colsums_byname(list(m, m), "E.ktoe"), 
-               list(colsumsm_expected %>% setrownames_byname("E.ktoe"), 
-                    colsumsm_expected %>% setrownames_byname("E.ktoe")))
-  colsum_expected_no_colname <- colsumsm_expected %>% 
-    magrittr::set_rownames(NULL)
-  expect_equal(colsums_byname(list(m, m), NULL), list(colsum_expected_no_colname, colsum_expected_no_colname))
-  # Also works with data frames
-  DF <- data.frame(m = I(list()))
-  DF[[1,"m"]] <- m
-  DF[[2,"m"]] <- m
-  expect_equal(colsums_byname(DF$m), list(colsumsm_expected, colsumsm_expected))
-  DF_expected <- data.frame(m = I(list()), iTm = I(list()))
-  DF_expected[[1,"m"]] <- m
-  DF_expected[[2,"m"]] <- m
-  DF_expected[[1,"iTm"]] <- colsumsm_expected
-  DF_expected[[2,"iTm"]] <- colsumsm_expected
-  # Because DF_expected$iTm is created with I(list()), its class is "AsIs".
-  # Because DF$iTm is created from an actual calculation, its class is NULL.
-  # Need to set the class of DF_expected$iTm to NULL to get a match.
-  attr(DF_expected$iTm, which = "class") <- NULL
-  expect_equal(DF %>% dplyr::mutate(iTm = colsums_byname(m)), DF_expected)
-})
-
-
-test_that("colsums_byname() works with single numbers and matrices", {
-  expect_equal(colsums_byname(1), 1)
-  expect_equal(colsums_byname(matrix(1)), matrix(1))
-  expect_equal(colsums_byname(list(1, 42)), list(1, 42))
-  expect_equal(colsums_byname(list(matrix(c(1, 42)), matrix(c(2, 43)))), list(matrix(43), matrix(45)))
-})
-
-
-test_that("sumall_byname() works as expected", {
-  expect_error(sumall_byname("bogus"), "Unknown type for 'a' in sumall_byname")
-  m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
-    setrowtype("Industry") %>% setcoltype("Commodity")
-  expect_equal(sumall_byname(m), 8)
-  expect_equal(m %>% rowsums_byname %>% colsums_byname, 
-               matrix(8, nrow = 1, ncol = 1, dimnames = list(rowtype(m), coltype(m))) %>% 
-                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Also works for lists
-  expect_equal(sumall_byname(list(m,m)), list(8, 8))
-  # Also works for data frames
-  DF <- data.frame(m = I(list()))
-  DF[[1,"m"]] <- m
-  DF[[2,"m"]] <- m
-  expect_equal(sumall_byname(DF$m), list(8,8))
-  DF_expected <- data.frame(m = I(list()), summ = I(list()))
-  DF_expected[[1,"m"]] <- m
-  DF_expected[[2,"m"]] <- m  
-  DF_expected[[1,"summ"]] <- 8
-  DF_expected[[2,"summ"]] <- 8
-  # Because DF_expected$summ is created with I(list()), its class is "AsIs".
-  # Because DF$summ is created from an actual calculation, its class is NULL.
-  # Need to set the class of DF_expected$summ to NULL to get a match.
-  attr(DF_expected$summ, which = "class") <- NULL
-  expect_equal(DF %>% dplyr::mutate(summ = sumall_byname(m)), DF_expected)
-})
-
-
-test_that("sumall_byname() works for single numbers", {
-  expect_equal(sumall_byname(matrix(1)), 1)
-  expect_equal(sumall_byname(list(matrix(1), matrix(42))), list(1, 42))
-  expect_equal(sumall_byname(1), 1)
-  expect_equal(sumall_byname(1), 1)
-})
-
-
-test_that("sum_byname() and sumall_byname() behave same with NULL", {
-  expect_equal(sum_byname(0, 0), 0)
-  expect_equal(sum_byname(1, 0), 1)
-  expect_equal(sum_byname(1, NULL), 1)
-  # I wish this were 0, but can't figure out how to make it so at the moment.
-  # This result is inconsistent with sum_byname(NULL, NULL) returning 0.
-  # expect_true(sum_byname(NULL), 0)
-  expect_null(sum_byname(NULL))
-  expect_equal(sum_byname(NULL, NULL), 0)
-  expect_equal(sum_byname(NULL, NULL, NULL), 0)
-  
-  # Again, it seems like this should return 0, but it does not currently.
-  # expect_equal(sumall_byname(NULL), 0)
-  expect_null(sumall_byname(NULL))
-  # expect_equal(sumall_byname(list(NULL, NULL)), list(0, 0))
-  expect_equal(sum_byname(list(NULL, NULL)), list(NULL, NULL))
-  
-  expect_equal(sumall_byname(matrix(0, nrow = 1, ncol = 1)), 0)
-  expect_equal(sumall_byname(matrix(1, nrow = 1, ncol = 1)), 1)
-})
 
 
 test_that("rowprods_byname() works as expected", {

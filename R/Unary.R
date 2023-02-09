@@ -368,21 +368,29 @@ hatize_byname <- function(v, keep = NULL){
     if (!(nrow(v_vec) == 1 | ncol(v_vec) == 1)) {
       stop ('In hatize_byname(), matrix v must have at least 1 dimension of length 1.')
     }
-    if (is.null(keep)) {
-      # Test for the indeterminant case
-      if (nrow(v_vec) == 1 & ncol(v_vec) == 1) {
-        stop('In hatize_byname(), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
-      }
-    }
-    # Figure out which names we should keep.
+    # Figure out which names we should keep, based on the structure of v_vec.
     should_keep <- NULL
-    if (nrow(v_vec) > 1 & ncol(v_vec) == 1) {
+    if (nrow(v_vec) == 1 & ncol(v_vec) == 1) {
+      # Check if one of row/col names is specified but the other is not.
+      if (!is.null(rownames(v_vec)) & is.null(colnames(v_vec))) {
+        should_keep <- "rownames"
+      } else if (is.null(rownames(v_vec)) & !is.null(colnames(v_vec))) {
+        should_keep <- "colnames"
+      } else if (is.null(rownames(v_vec)) & is.null(rownames(v_vec))) {
+        should_keep <- NULL
+      } else if (!is.null(rownames(v_vec)) & !is.null(rownames(v_vec))) {
+        should_keep <- keep
+      } else {
+        stop('In hatize_byname(), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix and both of rownames and colnames are set.')
+      }
+    } else if (nrow(v_vec) > 1 & ncol(v_vec) == 1) {
       # We should keep column names
       should_keep <- "rownames"
-    }
-    if (nrow(v_vec) == 1 & ncol(v_vec) > 1) {
+    } else if (nrow(v_vec) == 1 & ncol(v_vec) > 1) {
       # We should keep row names.
       should_keep <- "colnames"
+    } else {
+      stop("v_vec has at least one dimension of zero size in hatize_byname().")
     }
     # Compare dimnames the caller wants to keep against should_keep.
     if (!is.null(keep) & !is.null(should_keep)) {
@@ -393,15 +401,13 @@ hatize_byname <- function(v, keep = NULL){
         stop('In hatize_byname(), argument "keep" set to "rownames", but you supplied a row vector. Consider setting keep = "colnames".')        
       }
     }
-    # Issue a warning if the caller didn't specify keep.
-    # Uncomment this code after matsbyname has been accepted.
-    # if (missing(keep)) {
-    #   warning(paste0("In hatize_byname(), keep is missing. Consider setting to '", should_keep, "'."))
-    # }
-    
+
     if (is.null(keep)) {
       # Set keep to should_keep to cover the case when keep is NULL.
       keep <- should_keep
+    }
+    if (is.null(keep)) {
+      stop("Unable to determine which names to keep (rows or cols) in hatize_byname(). Try setting the 'keep' argument.")
     }
     
     # At this point, we should have a vector and we should know which names to keep.
@@ -453,7 +459,7 @@ hatize_byname <- function(v, keep = NULL){
 #' This function will give `inf_becomes` on the diagonal of the result for each zero element of `v`,
 #' arguably a better answer.
 #' The sign of `Inf` is preserved in the substitution.
-#' The default value of `Inf_becomes` is `.Machine$double.xmax`.
+#' The default value of `inf_becomes` is `.Machine$double.xmax`.
 #' Set `inf_becomes` to `NULL` to disable this behavior.
 #' 
 #' The default behavior is helpful for cases when the result of `hatinv_byname()` is later multiplied by `0`
@@ -463,9 +469,9 @@ hatize_byname <- function(v, keep = NULL){
 #' @param v The vector to be hatized and inverted.
 #' @param keep See `hatize_byname()`.
 #' @param inf_becomes A value to be substitute for any `Inf` produced by the inversion process. 
-#'        Default is `.Machine$double.xmax`.
-#'        If `FALSE` (the default), `Inf` is not handled differently.
-#'        If `TRUE`, `Inf` values in the resulting matrix are converted to zeroes.
+#'        Default is `.Machine$double.xmax`. 
+#'        Another reasonable value is `Inf`.
+#'        Set to `NULL` to disable substitution.
 #'
 #' @return a square diagonal matrix with inverted elements of `v` on the diagonal
 #' 
@@ -820,7 +826,11 @@ matricize_byname <- function(a, notation) {
 #'               If `2` (columns), each entry in `a` is divided by its column's sum.
 #'               If `c(1,2)` (both rows and columns), 
 #'               each entry in `a` is divided by the sum of all entries in `a`.
-#'
+#' @param inf_becomes A value to be substitute for any `Inf` produced by division. 
+#'                    Default is `.Machine$double.xmax`. 
+#'                    Another reasonable value is `Inf`.
+#'                    Set to `NULL` to disable substitution.
+#'                    `inf_becomes` is passed to `hatinv_byname()`.
 #' @return A fractionized matrix of same dimensions and same row and column types as `a`.
 #' 
 #' @export
@@ -834,7 +844,7 @@ matricize_byname <- function(a, notation) {
 #' fractionize_byname(M, margin = c(1,2))
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
-fractionize_byname <- function(a, margin){
+fractionize_byname <- function(a, margin, inf_becomes = .Machine$double.eps){
   margin <- prep_vector_arg(a, margin)
 
   fractionize_func <- function(a, margin){
@@ -861,23 +871,23 @@ fractionize_byname <- function(a, margin){
     
     if (1 %in% margin) {
       # Divide each entry by its row sum
-      # Do this with (a*i)_hat_inv * a
+      # Could do this with (a*i)_hat_inv * a, 
+      # but singular matrix problems can arise.
       return(matrixproduct_byname(a %>% 
                                     rowsums_byname() %>% 
-                                    hatize_byname() %>% 
-                                    invert_byname(), 
+                                    hatinv_byname(inf_becomes = inf_becomes), 
                                   a))
       # The next line works only for matrix objects, not Matrix objects.
       # return(sweep(a, margin, rowSums(a), `/`))
     }
     if (2 %in% margin) {
       # Divide each entry by its column sum
-      # Do this with a * (i^T * a)_hat_inv
+      # Could do this with a * (i^T * a)_hat_inv, 
+      # but singula matrix problems can arise.
       return(matrixproduct_byname(a, 
                                   a %>% 
                                     colsums_byname() %>% 
-                                    hatize_byname() %>%
-                                    invert_byname()))
+                                    hatinv_byname(inf_becomes = inf_becomes)))
       # The next line works only for matrix objects, not Matrix objects.
       # return(sweep(a, margin, colSums(a), `/`))
     } 
