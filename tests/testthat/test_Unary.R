@@ -1489,14 +1489,6 @@ test_that("colprods_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
 test_that("prodall_byname() works as expected", {
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
@@ -1522,6 +1514,35 @@ test_that("prodall_byname() works as expected", {
   attr(DF_expected$prodm, which = "class") <- NULL
   expect_equal(DF %>% dplyr::mutate(prodm = prodall_byname(m)), DF_expected)
 })
+
+
+test_that("prodall_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
+    setrowtype("Industry") %>% setcoltype("Product")
+  expect_equal(prodall_byname(M), 16)
+  matsbyname:::expect_equal_matrix_or_Matrix(M %>% rowprods_byname() %>% colprods_byname(), 
+                                             matrix(16, nrow = 1, ncol = 1, dimnames = list(rowtype(M), coltype(M))) %>% 
+                                               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("Iminus_byname() works as expected", {
