@@ -936,27 +936,6 @@ test_that("vectorize_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-############ Ended here. ################################################
-
-
-
-
-
-
-
-
-
-
-
 test_that("matricize_byname() works as expected", {
   v1 <- array(dim = c(2, 2, 2))
   expect_error(matricize_byname(v1, notation = RCLabels::arrow_notation), "== 2 in matricize_byname")
