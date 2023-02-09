@@ -1526,25 +1526,6 @@ test_that("prodall_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("Iminus_byname() works as expected", {
   m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
@@ -1586,6 +1567,36 @@ test_that("Iminus_byname() works as expected", {
                       nrow = 3, byrow = TRUE, dimnames = list(c("a", "b", "c"), c("a", "b", "c"))) %>% 
                  setrowtype(rowtype(m2)) %>% setcoltype(coltype(m2)))
 })
+
+
+test_that("iminus_byname() works with Matrix objects", {
+  M <- Matrix::Matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  Iminus_expected <- Matrix::Matrix(c(11, 12, 
+                                      21, 22),
+                                    nrow = 2, byrow = TRUE, dimnames = list(c("a", "b"), c("a", "b"))) %>% 
+    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  # Rows and columns of m are unsorted
+  expect_equal(Matrix::Matrix(diag(1, nrow = 2) - M), Matrix::Matrix(c(22, 12, 21, 11), nrow = 2))
+  # Rows and columns of m are sorted prior to subtracting from the identity matrix
+  expect_equal(Iminus_byname(M), Iminus_expected)
+  # This also works with lists
+  expect_equal(Iminus_byname(list(M, M)), list(Iminus_expected, Iminus_expected))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("clean_byname() works as expected", {

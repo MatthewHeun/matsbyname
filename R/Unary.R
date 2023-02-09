@@ -1273,10 +1273,10 @@ prodall_byname <- function(a){
 #'   setrowtype("Industries") %>% setcoltype("Commodities")
 #' Iminus_byname(m2)
 Iminus_byname <- function(a){
-  iminus_func <- function(a){
-    A <- complete_and_sort(a) %>%
-      setrowtype(rowtype(a)) %>%
-      setcoltype(coltype(a))
+  iminus_func <- function(a_mat){
+    A <- complete_and_sort(a_mat) %>%
+      setrowtype(rowtype(a_mat)) %>%
+      setcoltype(coltype(a_mat))
     difference_byname(identize_byname(A), A)
   }
   unaryapply_byname(iminus_func, a = a, rowcoltypes = "all")
