@@ -14,6 +14,82 @@
 # 
 # --- MKH, 5 Feb 2023
 
+
+#' Create a Matrix amenable to use in the `matsbyname` package
+#' 
+#' The `matsbyname` package uses `Matrix` objects for its
+#' default data representation, taking advantage 
+#' of the sparse matrix capabilities of `Matrix` compared
+#' to the base `matrix` class. 
+#' This function routes to `Matrix::Matrix()`, with some important
+#' differences. See details. 
+#' 
+#' This function NEVER creates a symmetric matrix, 
+#' because symmetric matrices do not respect some future changes to `dimnames`,
+#' which can cause information loss in the `matsbyname` context. 
+#' A non-symmetric `Matrix` is assured by calling `as(out, "generalMatrix")`
+#' on the outgoing `Matrix` object.
+#' 
+#' This function has different defaults compared to `Matrix::Matrix()`, including
+#' 
+#' <ul>
+#' <li> Here, the default for `doDiag` is `FALSE`,
+#'      while the default for `doDiag` is `TRUE` for `Matrix::Matrix()`.
+#' <li> When `dimnames = NULL` (the default), `dimnames = NULL` is the result, 
+#'      to maintain compatibility with `matrix()`.
+#'      `Matrix::Matrix()` sets `dimnames = list(NULL, NULL)`.
+#' </ul>
+#'
+#' @param data An optional numeric data vector or matrix.
+#' @param nrow When data is not a matrix, the desired number of rows. 
+#'             Default is `1`.
+#' @param ncol When data is not a matrix, the desired number of columns.
+#'             Default is `1`.
+#' @param byrow A boolean. If `FALSE` (the default) the matrix is filled by columns, otherwise the matrix is filled by rows.
+#' @param dimnames A dimnames attribute for the matrix: a list of two character components. They are set if not NULL (as per default).
+#' @param sparse A boolean or `NULL`. Specifies whether the result should be sparse or not. 
+#'               By default (`NULL`), the Matrix is made sparse when more than half 
+#'               of the entries are `0`.
+#' @param doDiag A boolean indicating if a `diagonalMatrix` object should be returned
+#'               when the resulting matrix is diagonal (mathematically). 
+#'               Default is `FALSE`, which is different from `Matrix::Matrix()`.
+#' @param forceCheck A boolean indicating if the checks for structure should happen
+#'                   when `data` is already a `Matrix` object.
+#'                   Default is `FALSE`.
+#'
+#' @return A `Matrix` object.
+#' 
+#' @export
+#'
+#' @examples
+#' # matsbyname::Matrix() will not create a Matrix with a symmetric subclass ...
+#' matsbyname::Matrix(c(1, 0, 2, 
+#'                      0, 0, 0, 
+#'                      2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+#' # ... but Matrix::Matrix will create a symmetric matrix.
+#' Matrix::Matrix(c(1, 0, 2, 
+#'                  0, 0, 0, 
+#'                  2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+#' # matsbyname::Matrix() will not create a diagonal matrix ...
+#' matsbyname::Matrix(c(1, 0, 
+#'                      0, 1), byrow = TRUE, nrow = 2, ncol = 2)
+#' # ... but Matrix::Matrix will create a diagonal matrix.
+#' Matrix::Matrix(c(1, 0, 
+#'                  0, 1), byrow = TRUE, nrow = 2, ncol = 2)
+Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL,
+                   sparse = NULL, doDiag = FALSE, forceCheck = FALSE) {
+  if (inherits(data, "Matrix") | inherits(data, "matrix")) {
+    out <- Matrix::Matrix(data = data, 
+                          dimnames = dimnames, sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
+  } else {
+    out <- Matrix::Matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow,
+                          dimnames = dimnames, sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
+  }
+    # Ensure no symmetric matrices are created.
+    as(out, "generalMatrix")
+}
+
+
 is_matrix_or_Matrix <- function(a) {
   is.matrix(a) | inherits(a, "Matrix")
 }

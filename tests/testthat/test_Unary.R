@@ -1798,44 +1798,52 @@ test_that("replaceNaN() works as expected", {
 })
 
 
-
-
-
-
-########## Working on this test. #######################
-
-# test_that("replaceNaN_byname() works with Matrix objects", {
-#   suppressWarnings(a <- Matrix::Matrix(c(1, sqrt(-1))))
-#   expected <- Matrix::Matrix(c(1, 0))
-#   expect_equal(replaceNaN_byname(a), expected)
-#   # Should work with lists
-#   expect_equal(replaceNaN_byname(list(a,a)), list(expected, expected))
-#   # Try with a different value
-#   expect_equal(replaceNaN_byname(a, 42), matrix(c(1,42)))
-# })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+test_that("replaceNaN_byname() works with Matrix objects", {
+  suppressWarnings(a <- Matrix::Matrix(c(1, 
+                                         sqrt(-1)), byrow = TRUE,
+                                       nrow = 2, ncol = 1,
+                                       dimnames <- list(c("r1", "r2"), "c1")) %>% 
+                     setcoltype("col") %>% setrowtype("row"))
+  expected <- Matrix::Matrix(c(1, 
+                               0), byrow = TRUE, 
+                             nrow = 2, ncol = 1, 
+                             dimnames <- list(c("r1", "r2"), "c1")) %>% 
+    setcoltype("col") %>% setrowtype("row")
+  expect_equal(replaceNaN_byname(a), expected)
+  # Should work with lists
+  expect_equal(replaceNaN_byname(list(a,a)), list(expected, expected))
+  # Try with a different value
+  expect_equal(replaceNaN_byname(a, 42),
+               Matrix::Matrix(c(1, 
+                                42), byrow = TRUE, 
+                              nrow = 2, ncol = 1, 
+                              dimnames <- list(c("r1", "r2"), "c1")) %>% 
+                 setcoltype("col") %>% setrowtype("row"))
+})
 
 
 test_that("count_vals_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  expect_equal(count_vals_byname(m), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = `==`, 0), 2)
+  expect_equal(count_vals_byname(m, "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "!="), 4)
+  expect_equal(count_vals_byname(m, compare_fun = `!=`), 4)
+  expect_equal(count_vals_byname(m, "<", 1), 2)
+  expect_equal(count_vals_byname(m, "<=", 1), 3)
+  expect_equal(count_vals_byname(m, ">=", 3), 2)
+  expect_equal(count_vals_byname(m, ">", 4), 0)
+  expect_equal(count_vals_byname(m, `>`, 4), 0)
+  # Should also work for lists
+  l <- list(m, m)
+  expect_equal(count_vals_byname(l, `>`, 4), list(0, 0))
+})
+
+
+test_that("count_vals_byname() works with Matrix objects", {
+  m <- Matrix::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   expect_equal(count_vals_byname(m), 2)
   expect_equal(count_vals_byname(m, compare_fun = "==", 0), 2)
@@ -1860,8 +1868,17 @@ test_that("compare_byname() works as expected", {
   expect_equal(compare_byname(m, "<", 3), 
                matrix(c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
 })
-  
-  
+
+
+test_that("compare_byname() works with Matrix objects", {
+  m <- Matrix::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  matsbyname:::expect_equal_matrix_or_Matrix(compare_byname(m), 
+                                             Matrix::Matrix(c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
+  expect_equal(compare_byname(m, "<", 3), 
+               Matrix::Matrix(c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
+})
+
+
 test_that("count_vals_inrows_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
@@ -1881,6 +1898,46 @@ test_that("count_vals_inrows_byname() works as expected", {
   ans <- matrix(c(0, 0, 0), nrow = 3, ncol = 1)
   expect_equal(count_vals_inrows_byname(l, `>`, 4), list(ans, ans))
 })
+
+
+test_that("count_vals_inrows_byname() works with Matrix objects", {
+  
+  # Matrix::Matrix() creates dimnames = list(NULL, NULL)
+  # whereas matrix() creates dimnames = NULL.
+  # How do I fix that difference?
+  
+  m <- Matrix::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m), 
+                                             matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, compare_fun = "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, compare_fun = `==`, 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, compare_fun = "!="), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, compare_fun = `!=`), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, "<", 1), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, "<=", 1), matrix(1, nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, ">=", 3), matrix(c(1, 1, 0), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, ">", 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
+  expect_equal(count_vals_inrows_byname(m, `>`, 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
+  # Should also work for lists
+  l <- list(m, m)
+  ans <- matrix(c(0, 0, 0), nrow = 3, ncol = 1)
+  expect_equal(count_vals_inrows_byname(l, `>`, 4), list(ans, ans))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("count_vals_incols_byname() works as expected", {

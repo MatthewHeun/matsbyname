@@ -1,11 +1,15 @@
 test_that("Matrix class is usable with matsbyname", {
-  m <- Matrix::Matrix(c(1, 2, 
-                        2, 3), byrow = TRUE, nrow = 2, ncol = 2)
-  # Works
-  expect_true(Matrix::isSymmetric(m))
-  expect_true(inherits(m, "dsyMatrix"))
+  md <- Matrix::Matrix(c(1, 2, 
+                         2, 3), byrow = TRUE, nrow = 2, ncol = 2)
+  expect_true(Matrix::isSymmetric(md))
+  expect_true(inherits(md, "dsyMatrix"))
   
-  m2 <- m
+  m <- matsbyname::Matrix(c(1, 2, 
+                            2, 3), byrow = TRUE, nrow = 2, ncol = 2)
+  expect_true(Matrix::isSymmetric(m))
+  expect_true(inherits(m, "dgeMatrix"))
+  
+  m2 <- md
   dimnames(m2) <- list(c("r1", "r2"), c("c1", "c2"))
   # Not identical, because rownames are wrong for a symmetric matrix.
   expect_false(identical(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
@@ -17,7 +21,8 @@ test_that("Matrix class is usable with matsbyname", {
   expect_false(identical(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
   
   # Use the workaround provided by Mikael Jagen (author of the Matrix package)
-  m2_gen <- as(m2, "generalMatrix")
+  # Internally, matsbyname::Matrix uses as(m2, "generalMatrix")
+  m2_gen <- matsbyname::Matrix(m2)
   # m2_gen is symmetric, because its row and column names are still same
   expect_true(Matrix::isSymmetric(m2_gen))
   expect_true(inherits(m2_gen, "dgeMatrix"))
@@ -28,9 +33,9 @@ test_that("Matrix class is usable with matsbyname", {
   # m2_gen is not symmetric, because its row and column names are not same
   expect_false(Matrix::isSymmetric(m2_gen))
   
-  m3 <- Matrix::Matrix(c(1, 2, 
-                         2, 3), byrow = TRUE, nrow = 2, ncol = 2, 
-                       dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  m3 <- matsbyname::Matrix(c(1, 2, 
+                             2, 3), byrow = TRUE, nrow = 2, ncol = 2, 
+                           dimnames = list(c("r1", "r2"), c("c1", "c2")))
   # Works
   expect_equal(rownames(m3), c("r1", "r2"))
   # The rownames are part of determining symmetry, 
@@ -41,12 +46,9 @@ test_that("Matrix class is usable with matsbyname", {
 
 test_that("I can create a non-symmetric sparse matrix", {
   # I want to create a sparse matrix if half or more elements are zero ...
-  m <- Matrix::Matrix(c(1, 0, 2, 
-                        0, 3, 0, 
-                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3) %>% 
-    # This is the important bit. 
-    # Need to declare it as a general matrix (dgCMatrix)
-    as("generalMatrix")
+  m <- matsbyname::Matrix(c(1, 0, 2, 
+                            0, 3, 0, 
+                            2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
   # so that when I adjust its dimnames ...
   dimnames(m) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
   # I get back what I assigned.
@@ -55,9 +57,9 @@ test_that("I can create a non-symmetric sparse matrix", {
 
 
 test_that("inverting results in a sparse Matrix (or not)", {
-  m <- Matrix::Matrix(c(1, 0, 3, 
-                        0, 3, 0, 
-                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  m <- matsbyname::Matrix(c(1, 0, 3, 
+                            0, 3, 0, 
+                            2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
   invertedm <- Matrix::solve(m)
   expect_true(inherits(invertedm, "Matrix"))
   invertedM <- Matrix::Matrix(invertedm)
@@ -67,12 +69,12 @@ test_that("inverting results in a sparse Matrix (or not)", {
 
 
 test_that("I can create a sparse Matrix", {
-  m <- Matrix::Matrix(c(1, 2, 3, 
-                        4, 5, 6, 
-                        7, 8, 9), byrow = TRUE, nrow = 3, ncol = 3)
-  subtrahend <- Matrix::Matrix(c(0, 2, 3, 
-                                 4, 4, 6, 
-                                 7, 8, 6), byrow = TRUE, nrow = 3, ncol = 3)
+  m <- matsbyname::Matrix(c(1, 2, 3, 
+                            4, 5, 6, 
+                            7, 8, 9), byrow = TRUE, nrow = 3, ncol = 3)
+  subtrahend <- matsbyname::Matrix(c(0, 2, 3, 
+                                     4, 4, 6, 
+                                     7, 8, 6), byrow = TRUE, nrow = 3, ncol = 3)
   res <- m - subtrahend
   # It is a symmetric matrix
   expect_true(Matrix::isSymmetric(res))

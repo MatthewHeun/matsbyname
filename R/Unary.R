@@ -1376,7 +1376,17 @@ cumprod_byname <- function(a){
 replaceNaN_byname <- function(a, val = 0){
   replace_func <- function(a_mat){
     if (inherits(a_mat, "Matrix")) {
-      
+      # Get the triple
+      trip <- Matrix::mat2triplet(a_mat) %>% 
+        as.data.frame() %>% 
+        # Find rows in the triple that are NaN
+        dplyr::filter(is.nan(.data[["x"]]))
+      # Set those values to val
+      for (k in 1:nrow(trip)) {
+        i <- trip[k, "i"]
+        j <- trip[k, "j"]
+        a_mat[i, j] <- val
+      }
     } else {
       # Probably have a regular matrix object.
       a_mat[is.nan(a_mat)] <- val
