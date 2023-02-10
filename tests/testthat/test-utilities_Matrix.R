@@ -8,7 +8,7 @@ test_that("Matrix class is usable with matsbyname", {
   m2 <- m
   dimnames(m2) <- list(c("r1", "r2"), c("c1", "c2"))
   # Fails, because rownames are wrong
-  expect_false(allEqual(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
+  expect_false(all.equal(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
   
   # Try to set the rownames  
   rownames(m2) <- c("r1", "r2")
