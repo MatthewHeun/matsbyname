@@ -1703,27 +1703,6 @@ test_that("cumsum_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-######## Got to here. ##############
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("cumprod_byname() works as expected", {
   expect_null(cumprod_byname(NULL))
   expect_true(is.na(cumprod_byname(NA)))
@@ -1762,7 +1741,7 @@ test_that("cumprod_byname() works as expected", {
   m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>%
     setrowtype("row") %>% setcoltype("col")
   mlist <- list(m1, m2, m3)
-  expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2) %>% sum_byname(m3)) * 0)
+  expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2, m3)) * 0)
   expect_equal(cumprod_byname(mlist), expected)
 
   # Ensure that groups are respected in the context of mutate.
@@ -1776,8 +1755,39 @@ test_that("cumprod_byname() works as expected", {
 })
 
 
+test_that("cumprod_byname() works with Matrix objects", {
+  # Try with matrices
+  rowmat <- Matrix::Matrix(c(1, 2, 3), nrow = 1)
+  expect_equal(cumprod_byname(rowmat), rowmat)
+  # Test in a list
+  expected_powers <- list(rowmat, rowmat*rowmat, rowmat*rowmat*rowmat)
+  expect_equal(cumprod_byname(list(rowmat, rowmat, rowmat)), expected_powers)
+  # Test in a data frame
+  DF2 <- data.frame(m = I(list(rowmat, rowmat, rowmat))) %>%
+    dplyr::mutate(
+      m2 = cumprod_byname(m)
+    )
+  expect_equal(DF2$m2, expected_powers)
+  # Test with a matrix that will take advantage of the "by name" aspect of sum_byname
+  m1 <- Matrix::Matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>%
+    setrowtype("row") %>% setcoltype("col")
+  m2 <- Matrix::Matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>%
+    setrowtype("row") %>% setcoltype("col")
+  m3 <- Matrix::Matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>%
+    setrowtype("row") %>% setcoltype("col")
+  mlist <- list(m1, m2, m3)
+  res <- cumprod_byname(mlist)
+  expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2, m3)) * 0)
+
+  for (i in 1:3) {
+    expect_true(inherits(res[[i]], "Matrix"))
+    matsbyname:::expect_equal_matrix_or_Matrix(res[[i]], expected[[i]])
+  }
+})
+
+
 test_that("replaceNaN() works as expected", {
-  expected <- matrix(c(1,0))
+  expected <- matrix(c(1, 0))
   suppressWarnings(a <- matrix(c(1, sqrt(-1))))
   expect_equal(replaceNaN_byname(a), expected)
   # Should work with lists
@@ -1785,6 +1795,36 @@ test_that("replaceNaN() works as expected", {
   # Try with a different value
   expect_equal(replaceNaN_byname(a, 42), matrix(c(1,42)))
 })
+
+
+# test_that("replaceNaN() works with Matrix objects", {
+#   expected <- Matrix::Matrix(c(1, 0))
+#   suppressWarnings(a <- Matrix::Matrix(c(1, sqrt(-1))))
+#   expect_equal(replaceNaN_byname(a), expected)
+#   # Should work with lists
+#   expect_equal(replaceNaN_byname(list(a,a)), list(expected, expected))
+#   # Try with a different value
+#   expect_equal(replaceNaN_byname(a, 42), matrix(c(1,42)))
+# })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("count_vals_byname() works as expected", {

@@ -1244,17 +1244,17 @@ prodall_byname <- function(a){
 }
 
 
-#' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (\code{I})
+#' Subtract a matrix with named rows and columns from a suitably named and sized identity matrix (`I`)
 #'
-#' The order of rows and columns of \code{m} may change before subtracting from \code{I},
-#' because the rows and columns are sorted by name prior to subtracting from \code{I}.
-#' Furthermore, if \code{m} is not square, it will be made square
-#' before subtracting from \code{I} by calling \code{complete_and_sort}.
+#' The order of rows and columns of `m` may change before subtracting from `I`,
+#' because the rows and columns are sorted by name prior to subtracting from `I`.
+#' Furthermore, if `m` is not square, it will be made square
+#' before subtracting from `I` by calling `complete_and_sort()`.
 #'
-#' @param a the matrix to be subtracted from \code{I}
+#' @param a The matrix to be subtracted from `I`.
 #'
-#' @return The difference between an identity matrix (\code{I}) and \code{m}
-#' (whose rows and columns have been completed and sorted)
+#' @return The difference between an identity matrix (`I`) and `m`.
+#'         (whose rows and columns have been completed and sorted)
 #' 
 #' @export
 #' 
@@ -1286,22 +1286,22 @@ Iminus_byname <- function(a){
 #' Cumulative sum that respects row and column names
 #'
 #' Provides cumulative sums along a list or column of a data frame.
-#' If \code{a} is a single number, \code{a} is returned.
-#' If \code{a} is a list of numbers, a list representing the cumulative sum of the numbers is returned.
-#' If \code{a} is a single matrix, \code{a} is returned.
-#' If \code{a} is a list of matrices, a list representing the cumulative sum
+#' If `a` is a single number, `a` is returned.
+#' If `a` is a list of numbers, a list representing the cumulative sum of the numbers is returned.
+#' If `a` is a single matrix, `a` is returned.
+#' If `a` is a list of matrices, a list representing the cumulative sum
 #' of the matrices is returned. 
 #' In this case, each entry in the returned list is sum "by name," 
 #' such that row and column names of the matrices are respected.
 #' 
 #' If cumulative sums are desired in the context of a data frame, 
-#' groups in the data frame are respected if \code{mutate} is used.
+#' groups in the data frame are respected if `mutate` is used.
 #' See examples.
 #'
-#' @param a a number, list of numbers, matrix or list of matrices for which cumulative sum is desired
+#' @param a A number, list of numbers, matrix or list of matrices for which cumulative sum is desired.
 #'
-#' @return a single number, list of numbers, a single matrix, or a list of matrices,
-#'         depending on the nature of \code{a}
+#' @return A single number, list of numbers, a single matrix, or a list of matrices,
+#'         depending on the nature of `a`.
 #'         
 #' @export
 #'
@@ -1326,20 +1326,20 @@ cumsum_byname <- function(a){
 #' Cumulative element-product that respects row and column names
 #'
 #' Provides cumulative element-products along a list or column of a data frame.
-#' If \code{a} is a single number, \code{a} is returned.
-#' If \code{a} is a list of numbers, a list representing the cumulative product of the numbers is returned.
-#' If \code{a} is a single matrix, \code{a} is returned.
-#' If \code{a} is a list of matrices, a list representing the cumulative product
+#' If `a` is a single number, `a` is returned.
+#' If `a` is a list of numbers, a list representing the cumulative product of the numbers is returned.
+#' If `a` is a single matrix, `a` is returned.
+#' If `a` is a list of matrices, a list representing the cumulative product
 #' of the matrices is returned. 
 #' In this case, each entry in the returned list is product "by name," 
 #' such that row and column names of the matrices are respected.
 #' 
-#' This function respects groups if \code{a} is a variable in a data frame.
+#' This function respects groups if `a` is a variable in a data frame.
 #'
-#' @param a a number, list of numbers, matrix or list of matrices for which cumulative element product is desired
+#' @param a A number, list of numbers, matrix or list of matrices for which cumulative element product is desired.
 #'
-#' @return a single number, list of numbers, a single matrix, or a list of matrices,
-#'         depending on the nature of \code{a}
+#' @return A single number, list of numbers, a single matrix, or a list of matrices,
+#'         depending on the nature of `a`.
 #'         
 #' @export
 #'
@@ -1357,15 +1357,15 @@ cumprod_byname <- function(a){
 }
 
 
-#' Replace NaN values with a value
+#' Replace `NaN` values with a value
 #'
 #' In a matrix or within matrices in a list, 
-#' replace all \code{NaN} matrix values with \code{val}.
+#' replace all `NaN` matrix values with `val.`
 #' 
-#' @param a a matrix of list of matrices in which \code{NaN} will be replaced by \code{val}
-#' @param val \code{NaN}s are replace by \code{val}
+#' @param a A matrix of list of matrices in which `NaN` will be replaced by `val`.
+#' @param val `NaN`s are replace by `val.`
 #'
-#' @return a matrix or list of matrices in which all \code{NaN} are replaced by \code{val}
+#' @return A matrix or list of matrices in which all `NaN` are replaced by `val`.
 #' 
 #' @export
 #'
@@ -1374,9 +1374,13 @@ cumprod_byname <- function(a){
 #' replaceNaN_byname(a)
 #' replaceNaN_byname(a, 42)
 replaceNaN_byname <- function(a, val = 0){
-  replace_func <- function(a){
-    a[is.nan(a)] <- val
-    return(a)
+  replace_func <- function(a_mat){
+    if (inherits(a_mat, "Matrix")) {
+        
+    } else {
+      a_mat[is.nan(a_mat)] <- val
+    }
+    return(a_mat)
   }
   unaryapply_byname(replace_func, a = a, rowcoltypes = "all")
 }
