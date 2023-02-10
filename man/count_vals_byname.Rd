@@ -11,15 +11,17 @@ count_vals_byname(
 )
 }
 \arguments{
-\item{a}{a matrix or list of matrices whose values are to be counted according to \code{compare_fun}}
+\item{a}{A matrix or list of matrices whose values are to be counted according to \code{compare_fun}.}
 
-\item{compare_fun}{the comparison function, one of "\code{==}", "\code{!=}",
-"\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}".}
+\item{compare_fun}{The comparison function, one of "==", "!=",
+"<", "<=", ">", or ">=".
+Default is "==".}
 
-\item{val}{the value against which matrix entries are compared. Default is \code{0}.}
+\item{val}{The value against which matrix entries are compared.
+Default is \code{0}.}
 }
 \value{
-an integer indicating the number of entries in \code{a}
+An integer indicating the number of entries in \code{a}
 that meet the specified criterion
 }
 \description{
@@ -28,7 +30,7 @@ Expressions can be written in a natural way such as
 }
 \details{
 Either a single matrix or a list of matrices can be given as the \code{a} argument.
-\code{compare_fun} can be specified as a string (\code{"!="})
+\code{compare_fun} can be specified as a string ("!=")
 or as a back-quoted function (\code{`!=`}).
 }
 \examples{

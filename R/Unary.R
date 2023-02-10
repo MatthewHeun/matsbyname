@@ -1376,8 +1376,9 @@ cumprod_byname <- function(a){
 replaceNaN_byname <- function(a, val = 0){
   replace_func <- function(a_mat){
     if (inherits(a_mat, "Matrix")) {
-        
+      
     } else {
+      # Probably have a regular matrix object.
       a_mat[is.nan(a_mat)] <- val
     }
     return(a_mat)
@@ -1389,18 +1390,20 @@ replaceNaN_byname <- function(a, val = 0){
 #' Count the number of matrix entries that meet a criterion
 #' 
 #' Expressions can be written in a natural way such as 
-#' \code{count_vals_byname(m, "<=", 1)}.
+#' `count_vals_byname(m, "<=", 1)`.
 #' 
-#' Either a single matrix or a list of matrices can be given as the \code{a} argument.
-#' \code{compare_fun} can be specified as a string (\code{"!="})
+#' Either a single matrix or a list of matrices can be given as the `a` argument.
+#' `compare_fun` can be specified as a string ("!=")
 #' or as a back-quoted function (\code{`!=`}).
 #' 
-#' @param a a matrix or list of matrices whose values are to be counted according to \code{compare_fun}
-#' @param compare_fun the comparison function, one of "\code{==}", "\code{!=}", 
-#'        "\code{<}", "\code{<=}", "\code{>}", or "\code{>=}". Default is "\code{==}".
-#' @param val the value against which matrix entries are compared. Default is \code{0}.
+#' @param a A matrix or list of matrices whose values are to be counted according to `compare_fun`.
+#' @param compare_fun The comparison function, one of "==", "!=", 
+#'                    "<", "<=", ">", or ">=". 
+#'                    Default is "==".
+#' @param val The value against which matrix entries are compared. 
+#'            Default is `0`.
 #'
-#' @return an integer indicating the number of entries in \code{a} 
+#' @return An integer indicating the number of entries in `a` 
 #'         that meet the specified criterion
 #' 
 #' @export

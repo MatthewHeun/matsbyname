@@ -1797,9 +1797,15 @@ test_that("replaceNaN() works as expected", {
 })
 
 
-# test_that("replaceNaN() works with Matrix objects", {
-#   expected <- Matrix::Matrix(c(1, 0))
+
+
+
+
+########## Working on this test. #######################
+
+# test_that("replaceNaN_byname() works with Matrix objects", {
 #   suppressWarnings(a <- Matrix::Matrix(c(1, sqrt(-1))))
+#   expected <- Matrix::Matrix(c(1, 0))
 #   expect_equal(replaceNaN_byname(a), expected)
 #   # Should work with lists
 #   expect_equal(replaceNaN_byname(list(a,a)), list(expected, expected))
