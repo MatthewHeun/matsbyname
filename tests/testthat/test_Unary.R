@@ -95,7 +95,9 @@ test_that("exp_byname() works with Matrix objects", {
                          log(1),  log(100)), 
                        byrow = TRUE, nrow = 2, ncol = 2, 
                        dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+    as("generalMatrix") %>% 
     setrowtype("Industry") %>% setcoltype("Product")
+    
   expectedM2 <- matrix(c(10, 1,
                          1, 100), 
                        byrow = TRUE, nrow = 2, ncol = 2, 
@@ -103,7 +105,6 @@ test_that("exp_byname() works with Matrix objects", {
     setrowtype("Industry") %>% setcoltype("Product")
   res2 <- exp_byname(M2)
   matsbyname:::expect_equal_matrix_or_Matrix(res2, expectedM2, tolerance = 1e-12)
-  
 })
   
   

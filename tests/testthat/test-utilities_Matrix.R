@@ -7,16 +7,26 @@ test_that("Matrix class is usable with matsbyname", {
   
   m2 <- m
   dimnames(m2) <- list(c("r1", "r2"), c("c1", "c2"))
-  # Fails, because rownames are wrong
-  expect_false(all.equal(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
+  # Not identical, because rownames are wrong for a symmetric matrix.
+  expect_false(identical(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
   
   # Try to set the rownames  
   rownames(m2) <- c("r1", "r2")
-  # Fails, because the rownames are actually the column names
-  expect_equal(rownames(m2), c("r1", "r2"))
+  # Fails, because rownames and colnames MUST be same for a symmetric matrix.
+  # This leads to information loss, unfortunately. 
+  expect_false(identical(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
   
-  # Works
-  expect_true(Matrix::isSymmetric(m2))
+  # Use the workaround provided by Mikael Jagen (author of the Matrix package)
+  m2_gen <- as(m2, "generalMatrix")
+  # m2_gen is symmetric, because its row and column names are still same
+  expect_true(Matrix::isSymmetric(m2_gen))
+  expect_true(inherits(m2_gen, "dgeMatrix"))
+  rownames(m2_gen) <- c("r1", "r2")
+  # Now setting the dimnames works, because m2_gen is no longer a symmetric dsyMatrix.
+  # Row and column name equality is not enforced on a dgeMatrix.
+  expect_equal(dimnames(m2_gen), list(c("r1", "r2"), c("c1", "c2")))
+  # m2_gen is not symmetric, because its row and column names are not same
+  expect_false(Matrix::isSymmetric(m2_gen))
   
   m3 <- Matrix::Matrix(c(1, 2, 
                          2, 3), byrow = TRUE, nrow = 2, ncol = 2, 
@@ -33,15 +43,14 @@ test_that("I can create a non-symmetric sparse matrix", {
   # I want to create a sparse matrix if half or more elements are zero ...
   m <- Matrix::Matrix(c(1, 0, 2, 
                         0, 3, 0, 
-                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3) %>% 
+    # This is the important bit. 
+    # Need to declare it as a general matrix (dgCMatrix)
+    as("generalMatrix")
   # so that when I adjust its dimnames ...
   dimnames(m) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
   # I get back what I assigned.
   expect_equal(dimnames(m), list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
-})
-
-
-test_that("A calculated symmetric Matrix doesn't lose row and column name information", {
 })
 
 
@@ -100,12 +109,17 @@ test_that("Constructon order doesn't matter for a symmetric matrix", {
   
   m2 <- Matrix::Matrix(c(1, 0, 2, 
                          0, 3, 0, 
-                         2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+                         2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3) %>% 
+    # This is the important bit.
+    # If we convert it to a "generalMatrix", 
+    # an underlying symmetric matrix class won't be used,
+    # and dimname assignment WILL work.
+    as("generalMatrix")
   dimnames(m2) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
-  
-  # These matrices should be identical, but
-  #  they have different underlying classes, and
-  # their row/col names are different.
+
+  # These matrices are equal, but only because
+  # we were careful to convert to a generalMatrix, 
+  # thereby avoiding creating a symmetric matrix subclass.  
   expect_equal(m1, m2)
 })
 
@@ -122,24 +136,17 @@ test_that("Changing entries and dimnames makes a symmetric matrix asymmetric", {
   m2[1, 3] <- 42
   expect_true(inherits(m2, "dgCMatrix"))
   
-  # Try the same procedure with dimnames.
-  # As a reminder, Mikael said 
-  # "Symmetry of dimnames(<symmetricMatrix>) is enforced"
-  m3 <- m
-  expect_true(inherits(m3, "dsCMatrix"))
-  # Change the dimnames to make m3 asymmetric, 
-  # and the underlying class does NOT change.
-  # Seems like if "symmetry of dimnames is enforced" and 
-  # if changing an element makes a dsCMatrix into a dgCMatrix, 
-  # the next line should change the underlying class to dgCMatrix, too.
-  # Alternatively, an error chould be emitted, something like
-  # "Setting asymmetric dimnames is not permitted on a symmatric Matrix of class dsCMatrix".
-  # That way, information loss will be avoided. 
-  # But the user should not need to know about the underlying class.
-  # I would prefer changing the underlying class from 
-  # dsCMatrix to dgCMatrix.
+  # Need to change to a generalMatrix
+  # before dimnames will stick.
+  # Mikael said "Symmetry of dimnames(<symmetricMatrix>) is enforced"
+  # for symmetric matrix classes.
+  m3 <- as(m, "generalMatrix")
+  expect_true(inherits(m3, "dgCMatrix"))
+  # Now assign dimnames.
   dimnames(m3) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
-  # Both of these expectations fail, because the underlying class has NOT changed.
+  # Both of these expectations work, 
+  # because the underlying class changed 
+  # when we did as(m, "generalMatrix")
   expect_false(inherits(m3, "dsCMatrix"))
   expect_true(inherits(m3, "dgCMatrix"))
 })
