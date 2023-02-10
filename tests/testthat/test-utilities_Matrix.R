@@ -81,26 +81,35 @@ test_that("I can create a sparse Matrix", {
   # But the underlying class has not jumped to a symmetric class
   expect_true(inherits(res, "dgeMatrix"))
   # Now push it through the Matrix creation process again.
-  res2 <- Matrix::Matrix(res)
+  res2 <- matsbyname::Matrix(res)
   # The matrix is sparse and symmetric, but not a symmetric subclass
   expect_true(Matrix::isSymmetric(res2))
   expect_true(is(res2, "sparseMatrix"))
   
   # Try with non-diagonal elements
-  subtrahend2 <- Matrix::Matrix(c(0, 2, 2, 
-                                  4, 5, 6, 
-                                  6, 8, 8), byrow = TRUE, nrow = 3, ncol = 3)
+  subtrahend2 <- matsbyname::Matrix(c(0, 2, 2, 
+                                      4, 5, 6, 
+                                      6, 8, 8), byrow = TRUE, nrow = 3, ncol = 3)
   res3 <- m - subtrahend2
   # It is a symmetric matrix
   expect_true(Matrix::isSymmetric(res3))
   # But the underlying class has not jumped to a symmetric class
   expect_true(inherits(res3, "dgeMatrix"))
   # Now push it through the Matrix creation process again.
-  res4 <- Matrix::Matrix(res3)
+  res4 <- matsbyname::Matrix(res3)
   # The matrix is sparse and symmetric, but not a symmetric subclass
   expect_true(Matrix::isSymmetric(res4))
   expect_true(is(res4, "sparseMatrix"))
 })
+
+
+
+
+
+
+
+
+
 
 
 test_that("Constructon order doesn't matter for a symmetric matrix", {
