@@ -3,11 +3,12 @@ test_that("Matrix class is usable with matsbyname", {
                         2, 3), byrow = TRUE, nrow = 2, ncol = 2)
   # Works
   expect_true(Matrix::isSymmetric(m))
+  expect_true(inherits(m, "dsyMatrix"))
   
   m2 <- m
   dimnames(m2) <- list(c("r1", "r2"), c("c1", "c2"))
   # Fails, because rownames are wrong
-  expect_equal(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))) 
+  expect_false(allEqual(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
   
   # Try to set the rownames  
   rownames(m2) <- c("r1", "r2")
@@ -41,16 +42,6 @@ test_that("I can create a non-symmetric sparse matrix", {
 
 
 test_that("A calculated symmetric Matrix doesn't lose row and column name information", {
-  m <- Matrix::Matrix(c(1, 0, 3, 
-                        0, 3, 0, 
-                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  dimnames(m) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
-  subtrahend <- Matrix::Matrix(c(0, 0, 1, 
-                                 0, 0, 0, 
-                                 0, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  res <- m - subtrahend
-  expect_equal(rownames(res), c("r1", "r2", "r3"))
-  expect_equal(colnames(res), c("c1", "c2", "c3"))
 })
 
 
@@ -152,6 +143,52 @@ test_that("Changing entries and dimnames makes a symmetric matrix asymmetric", {
   expect_false(inherits(m3, "dsCMatrix"))
   expect_true(inherits(m3, "dgCMatrix"))
 })
+
+
+test_that("A sparse matrix cannot be coerced to a symmetric matrix", {
+  x <- Matrix::Matrix(c(1, 0, 2, 
+                        0, 3, 0, 
+                        2, 0, 0), byrow = TRUE, nrow = 3L, ncol = 3L)
+  expect_true(inherits(x, "dsCMatrix"))
+  y <- as(x, "generalMatrix")
+  expect_true(inherits(y, "dgCMatrix"))
+  
+  # See what happens to a general sparse Matrix when summed with the 0 Matrix
+  z <- y + Matrix::Matrix(0, nrow = 3, ncol = 3)
+  # y is not coerced to a symmetric Matrix.  Good!
+  expect_true(inherits(z, "dgCMatrix"))
+  
+  # See what happens to a general sparse Matrix when element-multiplied by the unity Matrix
+  a <- y * Matrix::Matrix(1, nrow = 3, ncol = 3)
+  # y is not coerced to a symmetric Matrix.  Good!
+  expect_true(inherits(a, "dgCMatrix"))
+  
+  # See what happens to a general sparse Matrix when matrix-multiplied by the identity Matrix
+  b <- y * Matrix::Matrix(c(1, 0, 0,
+                            0, 1, 0, 
+                            0, 0, 1), nrow = 3, ncol = 3)
+  # y is not coerced to a symmetric Matrix.  Good!
+  expect_true(inherits(b, "dgCMatrix"))
+  
+  # Try summing with a symmetric matrix.
+  d <- y + x
+  expect_true(inherits(d, "dgCMatrix"))
+  e <- x + y
+  expect_true(inherits(e, "dgCMatrix"))
+  
+  # Try with a non-trivial operation
+  m <- Matrix::Matrix(c(1, 0, 3, 
+                        0, 3, 0, 
+                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  subtrahend <- Matrix::Matrix(c(0, 0, 1, 
+                                 0, 0, 0, 
+                                 0, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  # The result is symmetric
+  res <- m - subtrahend
+  # But not represented by the dsCMatrix class.
+  expect_true(inherits(res, "dgCMatrix"))
+})
+
 
 
 test_that("is_matrix_or_Matrix() works correctly", {
