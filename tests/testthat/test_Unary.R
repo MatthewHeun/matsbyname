@@ -1906,12 +1906,7 @@ test_that("count_vals_inrows_byname() works as expected", {
 
 
 test_that("count_vals_inrows_byname() works with Matrix objects", {
-  
-  # Matrix::Matrix() creates dimnames = list(NULL, NULL)
-  # whereas matrix() creates dimnames = NULL.
-  # How do I fix that difference?
-  
-  m <- Matrix::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  m <- matsbyname::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m), 
                                              matrix(c(1, 0, 1), nrow = 3, ncol = 1))
