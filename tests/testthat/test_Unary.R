@@ -9,8 +9,8 @@ test_that("abs_byname() works as expected", {
   expect_equal(abs_byname(m), abs(m))
   
   # Test with a Matrix object
-  M <- Matrix::Matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
-    setrowtype("Industry") %>% setcoltype("Commodity")
+  M <- matsbyname::Matrix(c(-10,1,1,100), nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2)), 
+                          rowtype = "Industry", coltype = "Commodity")
   expect_equal(abs_byname(M), abs(M))
 })
 
@@ -1491,30 +1491,6 @@ test_that("colprods_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("prodall_byname() works as expected", {
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
@@ -1543,8 +1519,8 @@ test_that("prodall_byname() works as expected", {
 
 
 test_that("prodall_byname() works with Matrix objects", {
-  M <- Matrix::Matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
-    setrowtype("Industry") %>% setcoltype("Product")
+  M <- matsbyname::Matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2)), 
+                          rowtype = "Industry", coltype = "Product")
   expect_equal(prodall_byname(M), 16)
   matsbyname:::expect_equal_matrix_or_Matrix(M %>% rowprods_byname() %>% colprods_byname(), 
                                              matrix(16, nrow = 1, ncol = 1, dimnames = list(rowtype(M), coltype(M))) %>% 
@@ -1596,14 +1572,14 @@ test_that("Iminus_byname() works as expected", {
 
 
 test_that("iminus_byname() works with Matrix objects", {
-  M <- Matrix::Matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
-  Iminus_expected <- Matrix::Matrix(c(11, 12, 
-                                      21, 22),
-                                    nrow = 2, byrow = TRUE, dimnames = list(c("a", "b"), c("a", "b"))) %>% 
-    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  M <- matsbyname::Matrix(c(-21, -12, -21, -10), nrow = 2, ncol = 2, dimnames = list(c("b", "a"), c("b", "a")), 
+                          rowtype = "Industries", coltype = "Products")
+  Iminus_expected <- matsbyname::Matrix(c(11, 12, 
+                                          21, 22),
+                                        nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("a", "b"), c("a", "b")), 
+                                        rowtype = rowtype(M), coltype = coltype(M))
   # Rows and columns of m are unsorted
-  expect_equal(Matrix::Matrix(diag(1, nrow = 2) - M), Matrix::Matrix(c(22, 12, 21, 11), nrow = 2))
+  expect_equal(matsbyname::Matrix(diag(1, nrow = 2, ncol = 2) - M), matsbyname::Matrix(c(22, 12, 21, 11), nrow = 2, ncol = 2))
   # Rows and columns of m are sorted prior to subtracting from the identity matrix
   expect_equal(Iminus_byname(M), Iminus_expected)
   # This also works with lists
@@ -1634,8 +1610,8 @@ test_that("clean_byname() works as expected", {
 
 
 test_that("clean_byname() works as expected for Matrix objects", {
-  Mat1 <- Matrix::Matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
-    setrowtype("Rows") %>% setcoltype("Cols")
+  Mat1 <- matsbyname::Matrix(c(0,1,0,1), nrow = 2, ncol = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)")), 
+                             rowtype = "Rows", coltype = "Cols")
   # Now clean in rows Should eliminate row 1.
   res1 <- Mat1 %>% 
     clean_byname(margin = 1, clean_value = 0)
@@ -1648,8 +1624,8 @@ test_that("clean_byname() works as expected for Matrix objects", {
                                                clean_byname(margin = 2, clean_value = 0), 
                                              Mat1)
   # Clean on columns
-  Mat2 <- Matrix::Matrix(c(0,0,1,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
-    setrowtype("Rows") %>% setcoltype("Cols")
+  Mat2 <- matsbyname::Matrix(c(0,0,1,1), nrow = 2, ncol = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)")), 
+                             rowtype = "Rows", coltype = "Cols")
   res2 <- Mat2 %>% 
     clean_byname(margin = 1, clean_value = 0)
   # No row consists of all zeroes. So nothing to clean in rows. Should get "mat2" back.
@@ -1715,7 +1691,7 @@ test_that("cumsum_byname() works as expected", {
 
 
 test_that("cumsum_byname() works with Matrix objects", {
-  rowmat <- Matrix::Matrix(c(1, 2, 3), nrow = 1)
+  rowmat <- matsbyname::Matrix(c(1, 2, 3), nrow = 1, ncol = 3)
   expect_equal(cumsum_byname(rowmat), rowmat)
   
   # Test in a list
@@ -1783,7 +1759,7 @@ test_that("cumprod_byname() works as expected", {
 
 test_that("cumprod_byname() works with Matrix objects", {
   # Try with matrices
-  rowmat <- Matrix::Matrix(c(1, 2, 3), nrow = 1)
+  rowmat <- matsbyname::Matrix(c(1, 2, 3), nrow = 1, ncol = 3)
   expect_equal(cumprod_byname(rowmat), rowmat)
   # Test in a list
   expected_powers <- list(rowmat, rowmat*rowmat, rowmat*rowmat*rowmat)
@@ -1795,12 +1771,9 @@ test_that("cumprod_byname() works with Matrix objects", {
     )
   expect_equal(DF2$m2, expected_powers)
   # Test with a matrix that will take advantage of the "by name" aspect of sum_byname
-  m1 <- Matrix::Matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>%
-    setrowtype("row") %>% setcoltype("col")
-  m2 <- Matrix::Matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2")) %>%
-    setrowtype("row") %>% setcoltype("col")
-  m3 <- Matrix::Matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>%
-    setrowtype("row") %>% setcoltype("col")
+  m1 <- matsbyname::Matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1"), rowtype = "row", coltype = "col")
+  m2 <- matsbyname::Matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2"), rowtype = "row", coltype = "col")
+  m3 <- matsbyname::Matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3"), rowtype = "row", coltype = "col")
   mlist <- list(m1, m2, m3)
   res <- cumprod_byname(mlist)
   expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2, m3)) * 0)
@@ -1824,26 +1797,26 @@ test_that("replaceNaN() works as expected", {
 
 
 test_that("replaceNaN_byname() works with Matrix objects", {
-  suppressWarnings(a <- Matrix::Matrix(c(1, 
-                                         sqrt(-1)), byrow = TRUE,
-                                       nrow = 2, ncol = 1,
-                                       dimnames <- list(c("r1", "r2"), "c1")) %>% 
-                     setcoltype("col") %>% setrowtype("row"))
-  expected <- Matrix::Matrix(c(1, 
-                               0), byrow = TRUE, 
-                             nrow = 2, ncol = 1, 
-                             dimnames <- list(c("r1", "r2"), "c1")) %>% 
-    setcoltype("col") %>% setrowtype("row")
+  suppressWarnings(a <- matsbyname::Matrix(c(1, 
+                                             sqrt(-1)), byrow = TRUE,
+                                           nrow = 2, ncol = 1,
+                                           dimnames <- list(c("r1", "r2"), "c1"), 
+                                           rowtype = "row", coltype = "col"))
+  expected <- matsbyname::Matrix(c(1, 
+                                   0), byrow = TRUE, 
+                                 nrow = 2, ncol = 1, 
+                                 dimnames <- list(c("r1", "r2"), "c1"), 
+                                 rowtype = "row", coltype = "col")
   expect_equal(replaceNaN_byname(a), expected)
   # Should work with lists
   expect_equal(replaceNaN_byname(list(a,a)), list(expected, expected))
   # Try with a different value
   expect_equal(replaceNaN_byname(a, 42),
-               Matrix::Matrix(c(1, 
-                                42), byrow = TRUE, 
-                              nrow = 2, ncol = 1, 
-                              dimnames <- list(c("r1", "r2"), "c1")) %>% 
-                 setcoltype("col") %>% setrowtype("row"))
+               matsbyname::Matrix(c(1, 
+                                    42), byrow = TRUE, 
+                                  nrow = 2, ncol = 1, 
+                                  dimnames <- list(c("r1", "r2"), "c1"), 
+                                  coltype = "col", rowtype = "row"))
 })
 
 
@@ -1868,7 +1841,7 @@ test_that("count_vals_byname() works as expected", {
 
 
 test_that("count_vals_byname() works with Matrix objects", {
-  m <- Matrix::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  m <- matsbyname::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   expect_equal(count_vals_byname(m), 2)
   expect_equal(count_vals_byname(m, compare_fun = "==", 0), 2)
@@ -1896,11 +1869,11 @@ test_that("compare_byname() works as expected", {
 
 
 test_that("compare_byname() works with Matrix objects", {
-  m <- Matrix::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  m <- matsbyname::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   matsbyname:::expect_equal_matrix_or_Matrix(compare_byname(m), 
-                                             Matrix::Matrix(c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
+                                             matsbyname::Matrix(c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
   expect_equal(compare_byname(m, "<", 3), 
-               Matrix::Matrix(c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
+               matsbyname::Matrix(c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
 })
 
 
