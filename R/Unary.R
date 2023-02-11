@@ -596,7 +596,7 @@ identize_byname <- function(a, margin = c(1,2)) {
     if (1 %in% margin)  {
       # Return a column vector containing 1's
       if (inherits(a, "Matrix")) {
-        out <- Matrix::Matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1)
+        out <- matsbyname::Matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1)
       } else {
         out <- matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1)
       }
@@ -606,7 +606,7 @@ identize_byname <- function(a, margin = c(1,2)) {
     if (2 %in% margin) {
       # Return a row vector containing 1's
       if (inherits(a, "Matrix")) {
-        out <- Matrix::Matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a))
+        out <- matsbyname::Matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a))
       } else {
         out <- matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a))
       }
@@ -694,7 +694,7 @@ vectorize_byname <- function(a, notation) {
       dimnames(vec) <- NULL
     }
     if (inherits(a_mat, "Matrix")) {
-      vec <- Matrix::Matrix(vec)
+      vec <- matsbyname::Matrix(vec)
     }
     
     # Change the rowtype and coltype if both are not NULL
@@ -803,7 +803,7 @@ matricize_byname <- function(a, notation) {
     }
     # Convert to a Matrix if that's what came in.
     if (inherits(a_mat, "Matrix")) {
-      m <- Matrix::Matrix(m)
+      m <- matsbyname::Matrix(m)
     }
     # Add row and column types after splitting the rowtype of a_mat
     rt <- rowtype(a_mat)
@@ -844,15 +844,18 @@ matricize_byname <- function(a, notation) {
 #' fractionize_byname(M, margin = c(1,2))
 #' fractionize_byname(M, margin = 1)
 #' fractionize_byname(M, margin = 2)
-fractionize_byname <- function(a, margin, inf_becomes = .Machine$double.eps){
+fractionize_byname <- function(a, margin, inf_becomes = .Machine$double.xmax){
   margin <- prep_vector_arg(a, margin)
 
   fractionize_func <- function(a, margin){
     if (!inherits(a, "matrix") && !inherits(a, "Matrix") && !inherits(a, "data.frame")) {
       # Assume we have a single number here
-      # By dividing a by itself, we could throw a division by zero error,
-      # which we would want to do.
-      return(a/a)
+      if (a == 0) {
+        return(inf_becomes)
+      }
+      # Now we can't divide by zero.
+      # We should have a/a here, which is always 1
+      return(1)
     }
     if (length(margin) != length(unique(margin))) {
       stop("margin should contain unique integers in fractionize_byname")
@@ -946,12 +949,12 @@ rowsums_byname <- function(a, colname = NA){
         colname <- coltype(a_mat)
       }
     }
-    if (inherits(a, "Matrix") | is.matrix(a_mat)) {
-      if (inherits(a, "Matrix")) {
+    if (is_matrix_or_Matrix(a_mat)) {
+      if (inherits(a_mat, "Matrix")) {
         out <- a_mat %>% 
           Matrix::rowSums() %>% 
-          Matrix::Matrix(ncol = 1)
-      } else if (is.matrix(a_mat)) {
+          matsbyname::Matrix(nrow = nrow(a_mat), ncol = 1)
+      } else {
         out <- a_mat %>% 
           rowSums() %>%
           # Preserve matrix structure (i.e., result will be a column vector of type matrix)
@@ -1137,7 +1140,7 @@ rowprods_byname <- function(a, colname = NA){
       # So convert to a matrix object and then recursively call this function.
       out <- as.matrix(a_mat) %>% 
         rowprod_func(colname = colname) %>% 
-        Matrix::Matrix() %>% 
+        matsbyname::Matrix() %>% 
         setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
       return(out)
     } else {

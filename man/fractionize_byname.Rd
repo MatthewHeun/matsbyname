@@ -4,7 +4,7 @@
 \alias{fractionize_byname}
 \title{Compute fractions of matrix entries}
 \usage{
-fractionize_byname(a, margin, inf_becomes = .Machine$double.eps)
+fractionize_byname(a, margin, inf_becomes = .Machine$double.xmax)
 }
 \arguments{
 \item{a}{The matrix to be fractionized.}

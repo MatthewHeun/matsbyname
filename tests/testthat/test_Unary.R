@@ -1080,7 +1080,7 @@ test_that("fractionze_byname() works as expected", {
   expect_equal(fractionize_byname(2, margin = 1), 1) 
   expect_equal(fractionize_byname(-1, margin = 2), 1) 
   expect_equal(fractionize_byname(-5000, margin = c(1,2)), 1) 
-  expect_true(is.nan(fractionize_byname(0, margin = 1)))
+  expect_equal(fractionize_byname(0, margin = 1), .Machine$double.xmax)
   
   # Test dividing by row sums
   expect_equal(fractionize_byname(M, margin = 1), expectedM_rows)
@@ -1185,26 +1185,26 @@ test_that("fractionze_byname() works as expected", {
 
 
 test_that("fractionize_byname() works with Matrix objects", {
-  M <- Matrix::Matrix(c(1, 5,
-                        4, 5),
-                      nrow = 2, ncol = 2, byrow = TRUE, 
-                      dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  expectedM_rows <- Matrix::Matrix(c(1/6, 5/6,
-                                     4/9, 5/9),
-                                   nrow = 2, ncol = 2, byrow = TRUE,
-                                   dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  expectedM_cols <- Matrix::Matrix(c(1/5, 5/10,
-                                     4/5, 5/10),
-                                   nrow = 2, ncol = 2, byrow = TRUE,
-                                   dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  expectedM_sumall <- Matrix::Matrix(c(1/15, 5/15,
-                                       4/15, 5/15),
-                                     nrow = 2, ncol = 2, byrow = TRUE,
-                                     dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
+  M <- matsbyname::Matrix(c(1, 5,
+                            4, 5),
+                          nrow = 2, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                          rowtype = "Products", coltype = "Industries")
+  expectedM_rows <- matsbyname::Matrix(c(1/6, 5/6,
+                                         4/9, 5/9),
+                                       nrow = 2, ncol = 2, byrow = TRUE,
+                                       dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                                       rowtype = "Products", coltype = "Industries")
+  expectedM_cols <- matsbyname::Matrix(c(1/5, 5/10,
+                                         4/5, 5/10),
+                                       nrow = 2, ncol = 2, byrow = TRUE,
+                                       dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                                       rowtype = "Products", coltype = "Industries")
+  expectedM_sumall <- matsbyname::Matrix(c(1/15, 5/15,
+                                           4/15, 5/15),
+                                         nrow = 2, ncol = 2, byrow = TRUE,
+                                         dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                                         rowtype = "Products", coltype = "Industries")
   
   # Test dividing by row sums
   expect_equal(fractionize_byname(M, margin = 1), expectedM_rows)
@@ -1215,6 +1215,11 @@ test_that("fractionize_byname() works with Matrix objects", {
   # Test dividing by sum of all entries
   expect_equal(fractionize_byname(M, margin = c(1,2)), expectedM_sumall)
   expect_equal(fractionize_byname(M, margin = c(2,1)), expectedM_sumall)
+})
+
+
+test_that("fractionize_byname() works with a single number 0", {
+  expect_equal(fractionize_byname(0, margin = c(1, 2)), .Machine$double.xmax)
 })
 
 
@@ -1267,10 +1272,10 @@ test_that("rowsums_byname() works with single numbers and matrices", {
 
 
 test_that("rowsums_byname() works with Matrix objects", {
-  M <- Matrix::Matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
-  # Note, columns are sorted by name after rowsums_byname
-  rowsumsM_expected <- matrix(c(9, 7, 5), nrow = 3, dimnames = list(paste0("i", 1:3), coltype(M))) %>% 
+  M <- matsbyname::Matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2)), 
+                          rowtype = "Industries", coltype = "Products")
+  # Note, columns are sorted by name after rowsums_byname()
+  rowsumsM_expected <- matrix(c(9, 7, 5), nrow = 3, ncol = 1, dimnames = list(paste0("i", 1:3), coltype(M))) %>% 
     setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
   res <- rowsums_byname(M)
   expect_true(inherits(res, "Matrix"))
@@ -1910,27 +1915,27 @@ test_that("count_vals_inrows_byname() works with Matrix objects", {
   # By default, looks for 0's and checks for equality
   matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m), 
                                              matrix(c(1, 0, 1), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, compare_fun = "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, compare_fun = `==`, 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, compare_fun = "!="), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, compare_fun = `!=`), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, "<", 1), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, "<=", 1), matrix(1, nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, ">=", 3), matrix(c(1, 1, 0), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, ">", 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
-  expect_equal(count_vals_inrows_byname(m, `>`, 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, compare_fun = "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, compare_fun = `==`, 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, compare_fun = "!="), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, compare_fun = `!=`), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, "<", 1), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, "<=", 1), matrix(1, nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, ">=", 3), matrix(c(1, 1, 0), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, ">", 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, `>`, 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
   # Should also work for lists
   l <- list(m, m)
   ans <- matrix(c(0, 0, 0), nrow = 3, ncol = 1)
-  expect_equal(count_vals_inrows_byname(l, `>`, 4), list(ans, ans))
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, count_vals_inrows_byname(l, `>`, 4), list(ans, ans))
 })
 
 
 
 
 
-
+########## Ended here. ##################
 
 
 

@@ -9,10 +9,12 @@ Matrix(
   nrow = 1,
   ncol = 1,
   byrow = FALSE,
-  dimnames = NULL,
+  dimnames = list(NULL, NULL),
   sparse = NULL,
   doDiag = FALSE,
-  forceCheck = FALSE
+  forceCheck = FALSE,
+  rowtype = NULL,
+  coltype = NULL
 )
 }
 \arguments{
@@ -39,6 +41,10 @@ Default is \code{FALSE}, which is different from \code{Matrix::Matrix()}.}
 \item{forceCheck}{A boolean indicating if the checks for structure should happen
 when \code{data} is already a \code{Matrix} object.
 Default is \code{FALSE}.}
+
+\item{rowtype}{The rowtype for \code{data}. Default is \code{NULL}.}
+
+\item{coltype}{The coltype for \code{data}. Default is \code{NULL}.}
 }
 \value{
 A \code{Matrix} object.
@@ -58,6 +64,9 @@ which can cause information loss in the \code{matsbyname} context.
 A non-symmetric \code{Matrix} is assured by calling \code{as(out, "generalMatrix")}
 on the outgoing \code{Matrix} object.
 
+This function enables setting row and column types at the time of construction
+with the \code{rowtype} and \code{coltype} arguments.
+
 This function has different defaults compared to \code{Matrix::Matrix()}, including\if{html}{\out{
 <ul>
 <li> Here, the default for `doDiag` is `FALSE`,
@@ -65,6 +74,7 @@ This function has different defaults compared to \code{Matrix::Matrix()}, includ
 <li> When `dimnames = NULL` (the default), `dimnames = NULL` is the result, 
      to maintain compatibility with `matrix()`.
      `Matrix::Matrix()` sets `dimnames = list(NULL, NULL)`.
+<li> Preserves rowtype and coltype when `data` is a `matrix` or a `Matrix`.
 </ul>
 }}
 }

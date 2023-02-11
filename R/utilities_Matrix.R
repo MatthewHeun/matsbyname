@@ -30,6 +30,9 @@
 #' A non-symmetric `Matrix` is assured by calling `as(out, "generalMatrix")`
 #' on the outgoing `Matrix` object.
 #' 
+#' This function enables setting row and column types at the time of construction
+#' with the `rowtype` and `coltype` arguments.
+#' 
 #' This function has different defaults compared to `Matrix::Matrix()`, including
 #' 
 #' <ul>
@@ -38,6 +41,7 @@
 #' <li> When `dimnames = NULL` (the default), `dimnames = NULL` is the result, 
 #'      to maintain compatibility with `matrix()`.
 #'      `Matrix::Matrix()` sets `dimnames = list(NULL, NULL)`.
+#' <li> Preserves rowtype and coltype when `data` is a `matrix` or a `Matrix`.
 #' </ul>
 #'
 #' @param data An optional numeric data vector or matrix.
@@ -56,6 +60,8 @@
 #' @param forceCheck A boolean indicating if the checks for structure should happen
 #'                   when `data` is already a `Matrix` object.
 #'                   Default is `FALSE`.
+#' @param rowtype The rowtype for `data`. Default is `NULL`.
+#' @param coltype The coltype for `data`. Default is `NULL`.
 #'
 #' @return A `Matrix` object.
 #' 
@@ -76,17 +82,36 @@
 #' # ... but Matrix::Matrix will create a diagonal matrix.
 #' Matrix::Matrix(c(1, 0, 
 #'                  0, 1), byrow = TRUE, nrow = 2, ncol = 2)
-Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL,
-                   sparse = NULL, doDiag = FALSE, forceCheck = FALSE) {
-  if (inherits(data, "Matrix") | inherits(data, "matrix")) {
+Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = list(NULL, NULL),
+                   sparse = NULL, doDiag = FALSE, forceCheck = FALSE, rowtype = NULL, coltype = NULL) {
+  if (is_matrix_or_Matrix(data)) {
     out <- Matrix::Matrix(data = data, 
-                          dimnames = dimnames, sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
+                          sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
+    if (!is.null(rowtype)) {
+      rowtype <- rowtype(data)
+    }
+    if (!is.null(coltype)) {
+      rowtype <- coltype(data)
+    }
+    if (identical(dimnames, list(NULL, NULL)) | is.null(dimnames)) {
+      dimnames <- dimnames(data)
+    }
   } else {
     out <- Matrix::Matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow,
-                          dimnames = dimnames, sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
+                          sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
   }
-    # Ensure no symmetric matrices are created.
-    as(out, "generalMatrix")
+  # Ensure that we create a "generalMatrix" before assigning dimnames.
+  # A symmetric matrix subclass does not respect rowname assignment
+  # when rownames are different from colnames.
+  out <- methods::as(out, "generalMatrix")
+  if (is.null(dimnames)) {
+    dimnames <- list(NULL, NULL)
+  }
+  dimnames(out) <- dimnames
+  out <- out %>% 
+    setrowtype(rowtype) %>% 
+    setcoltype(coltype)
+  return(out)
 }
 
 
@@ -137,7 +162,16 @@ equal_matrix_or_Matrix <- function(a, b, tolerance = 1e-16) {
   }
   # Check row and column names
   if (!isTRUE(all.equal(dimnames(a), dimnames(b)))) {
-    return(FALSE)
+    # If no dimnames have been set, 
+    # a Matrix object always has list(NULL, NULL) for dimnames.
+    # If no dimnames have been set, 
+    # a matrix object will have NULL for dimnames.
+    # We eon't want to return FALSE in that situation.
+    dnaNULL <- all(sapply(dimnames(a), is.null))
+    dnbNULL <- all(sapply(dimnames(b), is.null))
+    if (!(dnaNULL & dnbNULL)) {
+      return(FALSE)
+    }
   }
   # Check row types
   if (xor(is.null(rowtype(a)), is.null(rowtype(b)))) {
@@ -163,7 +197,6 @@ equal_matrix_or_Matrix <- function(a, b, tolerance = 1e-16) {
       return(FALSE)
     }
   }
-  
   return(TRUE)
 }
 
