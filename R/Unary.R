@@ -1704,9 +1704,9 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
     if (2 %in% this_margin) {
       # Want to aggregate columns.
       # Easier to transpose, re-call ourselves to aggregate rows, and then transpose again.
-      out <- t(a_mat) %>% 
+      out <- t_matrix_or_Matrix(a_mat) %>% 
         agg_func(aggregation_map = aggregation_map, this_margin = 1, pattern_type = pattern_type) %>% 
-        t()
+        t_matrix_or_Matrix()
     }
     if (1 %in% this_margin) {
       for (i in 1:length(aggregation_map)) {

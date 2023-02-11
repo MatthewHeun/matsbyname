@@ -1920,19 +1920,6 @@ test_that("count_vals_inrows_byname() works with Matrix objects", {
 })
 
 
-
-
-
-########## Ended here. ##################
-
-
-
-
-
-
-
-
-
 test_that("count_vals_incols_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
@@ -1954,6 +1941,27 @@ test_that("count_vals_incols_byname() works as expected", {
 })
 
 
+test_that("count_vals_incols_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, compare_fun = "==", 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, compare_fun = `==`, 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, "==", 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, compare_fun = "!="), matrix(c(2, 2), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, compare_fun = `!=`), matrix(c(2, 2), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, "<", 1), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, "<=", 1), matrix(c(2, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, ">=", 3), matrix(c(0, 2), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, ">", 4), matrix(c(0, 0), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, `>`, 4), matrix(c(0, 0), nrow = 1, ncol = 2))
+  # Should also work for lists
+  l <- list(M, M)
+  ans <- matrix(c(0, 2), nrow = 1, ncol = 2)
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, count_vals_incols_byname(l, `>`, 2), list(ans, ans))
+})
+  
+
 test_that("any_byname() works as expected", {
   m <- matrix(rep(TRUE, times = 4), nrow = 2, ncol = 2)
   expect_true(all_byname(m))
@@ -1968,12 +1976,38 @@ test_that("any_byname() works as expected", {
   expect_equal(any_byname(list(m,m)), list(TRUE, TRUE))
   expect_equal(all_byname(list(n,n)), list(FALSE, FALSE))
   expect_equal(any_byname(list(n,n)), list(TRUE, TRUE))
+})
+
+
+test_that("any_byname() works as expected with Matrix objexts", {
+  M <- matsbyname::Matrix(rep(TRUE, times = 4), nrow = 2, ncol = 2)
+  expect_true(all_byname(M))
+  expect_true(any_byname(M))
   
+  N <- matsbyname::Matrix(c(TRUE, FALSE), nrow = 2, ncol = 1)
+  expect_false(all_byname(N))
+  expect_true(any_byname(N))
+  
+  # Also works for lists
+  expect_equal(all_byname(list(M, M)), list(TRUE, TRUE))
+  expect_equal(any_byname(list(M, M)), list(TRUE, TRUE))
+  expect_equal(all_byname(list(N, N)), list(FALSE, FALSE))
+  expect_equal(any_byname(list(N, N)), list(TRUE, TRUE))
 })
 
 
 test_that("rename_to_pref_suff_byname() works as expected", {
   m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
+  # This aggregation should simply return m with a renamed column.
+  res <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
+  expected <- m %>% 
+    magrittr::set_colnames("Industry")
+  expect_equal(res, expected)
+})
+
+
+test_that("rename_to_pref_suff_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(1:4, nrow = 4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
   # This aggregation should simply return m with a renamed column.
   res <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expected <- m %>% 
@@ -2003,6 +2037,32 @@ test_that("aggregate_byname() works as expected", {
   
   # Aggregate with a map that contains rows that don't exist.
   expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r4", "r5", "42", "supercalifragilisticexpialidocious")), margin = 1), m)
+})
+
+
+test_that("aggregate_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE,
+                          dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+  expected <- matrix(c(5, 7, 9,
+                       7, 8, 9), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r3"), c("c1", "c2", "c3")))
+  actual <- aggregate_byname(M, aggregation_map = list(a = c("r1", "r2")))
+  matsbyname:::expect_equal_matrix_or_Matrix(actual, expected)
+  
+  # Try with wrong margin.
+  # This will try to aggregate r1 and r2 in columns, but there are no r1 or r2 columns.
+  expect_equal(aggregate_byname(M, aggregation_map = list(a = c("r1", "r2")), margin = 2), M)
+  
+  # Try to aggregate with only 1 row.
+  # Should get same thing with a renamed column
+  expected <- M
+  dimnames(expected) <- list(c("r1", "a", "r3"), c("c1", "c2", "c3"))
+  matsbyname:::expect_equal_matrix_or_Matrix(aggregate_byname(M, aggregation_map = list(a = c("r2")), margin = 1) %>%
+                                               sort_rows_cols(margin = 1, roworder = dimnames(expected)[[1]]), 
+                                             expected)
+  
+  # Aggregate with a map that contains rows that don't exist.
+  expect_equal(aggregate_byname(M, aggregation_map = list(a = c("r4", "r5", "42", "supercalifragilisticexpialidocious")), margin = 1), M)
 })
 
 
@@ -2045,6 +2105,57 @@ test_that("aggregate_byname() works as expected for NULL aggregation_map", {
                       dimnames = list(c("a", "r1"), c("b", "c3")))
   expect_equal(aggregate_byname(m2), expected4)
 })
+
+
+test_that("aggregate_byname() works with Matrix objects for NULL aggregation_map", {
+  M <- matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE,
+              dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
+  expected <- matrix(c(11, 13, 15,
+                       1, 2, 3), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
+  # Nothing should change, because we're asking for aggregation by columns which have no repeated names.
+  expect_equal(aggregate_byname(M, margin = 2), M)
+  # Now we should get the expected result
+  expect_equal(aggregate_byname(M, margin = 1), expected)
+  # And, again should get the expected result, because we're asking for margin = c(1, 2), the default
+  expect_equal(aggregate_byname(M), expected)
+  
+  M1 <- matsbyname::Matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1")), 
+                           rowtype = "rows", coltype = "cols")
+  E1 <- M1
+  expect_equal(aggregate_byname(M1), E1)
+  expect_equal(aggregate_byname(list(M1)), list(E1))
+  
+  # Now aggregate on both rows and columns when some names are duplicated in both rows and cols.
+  # First, try to aggregate on rows.
+  M2 <- matsbyname::Matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE,
+                           dimnames = list(c("r1", "a", "a"), c("b", "b", "c3")))
+  expected2 <- matsbyname::Matrix(c(11, 13, 15,
+                                    1, 2, 3), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c("a", "r1"), c("b", "b", "c3")))
+  matsbyname:::expect_equal_matrix_or_Matrix(aggregate_byname(M2, margin = 1), expected2)
+  
+  # Now try to aggregate on columns
+  expected3 <- matsbyname::Matrix(c(3, 3,
+                                    9, 6,
+                                    15, 9), nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "a", "a"), c("b", "c3")))
+  matsbyname:::expect_equal_matrix_or_Matrix(aggregate_byname(M2, margin = 2), expected3)
+  
+  # Now try to aggregate both rows and columns.
+  expected4 <- matsbyname::Matrix(c(24, 15,
+                                    3, 3), nrow = 2, ncol = 2, byrow = TRUE,
+                                  dimnames = list(c("a", "r1"), c("b", "c3")))
+  matsbyname:::expect_equal_matrix_or_Matrix(aggregate_byname(M2), expected4)
+})
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("aggregate_byname() works as expected for lists", {
