@@ -354,13 +354,16 @@ test_that("cbind_matrix_or_Matrix() works correctly", {
 
 
 test_that("rbind_matrix_or_Matrix() works correctly", {
-  a <- matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
-  b <- matrix(1, nrow = 1, ncol = 2, dimnames = list("r3", c("c1", "c2")))  
+  a <- matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  b <- matrix(1, nrow = 1, ncol = 2, dimnames = list("r3", c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
   res1 <- matsbyname:::rbind_matrix_or_Matrix(a, b)
   expected1 <- matrix(c(0, 0,
                         0, 0, 
                         1, 1), nrow = 3, ncol = 2, byrow = TRUE, 
-                      dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+                      dimnames = list(c("r1", "r2", "r3"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
   expect_equal(res1, expected1)
   
   # Try with Matrix.
@@ -368,11 +371,10 @@ test_that("rbind_matrix_or_Matrix() works correctly", {
   B <- matsbyname::Matrix(1, nrow = 1, ncol = 2, dimnames = list("r3", c("c1", "c2")))  
   res2 <- matsbyname:::rbind_matrix_or_Matrix(A, B)
   expected2 <- matsbyname::Matrix(c(0, 0,
-                                0, 0, 
-                                1, 1), nrow = 3, ncol = 2, byrow = TRUE, 
-                              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+                                    0, 0, 
+                                    1, 1), nrow = 3, ncol = 2, byrow = TRUE, 
+                                  dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   expect_equal(res2, expected2)
-  
 })
 
 
@@ -434,3 +436,59 @@ test_that("equal_matrix_or_Matrix() works with row and col types", {
 })
 
 
+test_that("rowSums_matrix_or_Matrix() works as expected", {
+  m <- matrix(c(10, 20, 30, 
+                40, 50, 60), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  res1 <- matsbyname:::rowSums_matrix_or_Matrix(m)
+  expect_equal(res1, matrix(c(60, 
+                              150), byrow = TRUE, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "cols")) %>% 
+                 setrowtype("rows") %>% setcoltype("cols"))
+  
+  M <- matsbyname::Matrix(c(1, 2, 
+                            3, 4, 
+                            5, 6), byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")), 
+                          rowtype = "rows", coltype = "cols")
+  res2 <- matsbyname:::rowSums_matrix_or_Matrix(M)
+  expect_equal(res2, matsbyname::Matrix(c(3, 
+                                          7, 
+                                          11), byrow = TRUE, nrow = 3, ncol = 1, dimnames = list(c("r1", "r2", "r3"), "cols"), 
+                                        rowtype = "rows", coltype = "cols"))
+})
+
+
+test_that("colsSums_matrix_or_Matrix() works as expected", {
+  m <- matrix(c(10, 20, 30, 
+                40, 50, 60), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  res1 <- matsbyname:::colSums_matrix_or_Matrix(m)
+  expect_equal(res1, matrix(c(50, 70, 90), byrow = TRUE, nrow = 1, ncol = 3, dimnames = list("rows", c("c1", "c2", "c3"))) %>% 
+                 setrowtype("rows") %>% setcoltype("cols"))
+  
+  M <- matsbyname::Matrix(c(1, 2, 3,
+                            4, 5, 6), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                          rowtype = "rows", coltype = "cols")
+  res2 <- matsbyname:::colSums_matrix_or_Matrix(M)
+  expect_equal(res2, matsbyname::Matrix(c(5, 7, 9), byrow = TRUE, nrow = 1, ncol = 3, dimnames = list("rows", c("c1", "c2", "c3")), 
+                                        rowtype = "rows", coltype = "cols"))
+})
+
+
+test_that("check_row_col_types() works as expected", {
+  a <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r", "c")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  b <- matsbyname::Matrix(42, nrow = 1, ncol = 1, dimnames = list("r", "c"))
+  res <- matsbyname:::check_row_col_types(a, b)
+  expect_true(rowtype(res[[1]]) == rowtype(res[[2]]))
+  expect_true(coltype(res[[1]]) == coltype(res[[2]]))
+
+  res2 <- matsbyname:::check_row_col_types(b, a)  
+  expect_true(rowtype(res2[[1]]) == rowtype(res2[[2]]))
+  expect_true(coltype(res2[[1]]) == coltype(res2[[2]]))
+  
+  C <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r", "c")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  D <- matsbyname::Matrix(42, nrow = 1, ncol = 1, dimnames = list("r", "c")) %>% 
+    setrowtype("wrongrow") %>% setcoltype("wrongcol")
+  expect_error(matsbyname:::check_row_col_types(C, D), "Incompatible row types: row and wrongrow")
+})

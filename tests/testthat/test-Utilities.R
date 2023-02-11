@@ -1,6 +1,6 @@
 # This file contains tests for functions in Utilities.R.
 
-test_that("errors are generated when organize_args() is called with baloney", {
+test_that("organize_args() generates errors when called with baloney", {
   expect_error(matsbyname:::organize_args(b = 42), 
                "Missing argument a with no fill in organize_args.")
   expect_error(matsbyname:::organize_args(a = NULL, b = 42), 
@@ -27,7 +27,7 @@ test_that("oddball match_type works as expected", {
 })
 
 
-test_that("an error is generated when no retain or remove patterns are default", {
+test_that("select_rows_byname() generates an error when no retain or remove patterns are default", {
   # Check with non-NULL values for a.
   m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -38,7 +38,7 @@ test_that("an error is generated when no retain or remove patterns are default",
 })
 
 
-test_that("matrix row selection by name with exact matches (^name$) works as expected", {
+test_that("select_rows_byname() works with exact matches (^name$)", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
   m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
@@ -81,41 +81,22 @@ test_that("matrix row selection by name with exact matches (^name$) works as exp
 })
 
 
-test_that("Matrix row selection by name with exact matches (^name$) works as expected", {
+test_that("select_rows_byname() works with exact matches (^name$) for Matrix objects", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
-  M <- Matrix::Matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
-    setrowtype("Industries") %>% setcoltype("Products")
+  M <- matsbyname::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(m_rownames, m_colnames), 
+                          rowtype = "Industries", coltype = "Products")
   
   # Select only the first row (i1)
-  expect_equal(select_rows_byname(M, retain_pattern = "^i1$"), 
-               matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
-                 setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
-  
+  res <- select_rows_byname(M, retain_pattern = "^i1$")
+  expect_true(inherits(res, "Matrix"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, 
+                                             matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
+                                               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-test_that("matrix row selection by name with inexact matches works as expected", {
+test_that("select_rows_byname() works with inexact matches", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
   m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
@@ -132,7 +113,27 @@ test_that("matrix row selection by name with inexact matches works as expected",
 })
 
 
-test_that("matrix row selection by name with inexact matches and multiple selectors", {
+test_that("select_rows_byname() works with inexact matches on Matrix objects", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matsbyname::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(m_rownames, m_colnames), 
+                          rowtype = "Industries", coltype = "Products")
+  
+  n1 <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+  
+  # Matches first two rows, because partial match is OK.
+  res1 <- select_rows_byname(n1, retain_pattern = "^a")
+  expect_true(inherits(res1, "Matrix"))
+  expect_equal(res1, 
+               n1[c(1,2), ] %>% setrowtype(rowtype(n1)) %>% setcoltype(coltype(n1)))
+  # Deletes first two rows, because partial match is OK, and first two row names start with "a".
+  res2 <- select_rows_byname(n1, remove_pattern = "^a")
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, 
+                                             n1[c(3,4), ] %>% setrowtype(rowtype(n1)) %>% setcoltype(coltype(n1)))
+})
+
+
+test_that("select_rows_byname() works with inexact matches and multiple selectors", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
   m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
@@ -146,7 +147,21 @@ test_that("matrix row selection by name with inexact matches and multiple select
 })
 
 
-test_that("matrix row selection by name in lists works as expected", {
+test_that("select_rows_byname() works with inexact matches and multiple selectors for Matrix objects", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matsbyname:::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(m_rownames, m_colnames), 
+                           rowtype = "Industries", coltype = "Products")
+  n1 <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
+  
+  # The retain_pattern selects all rows whose names start with "a" or "b".
+  # This approach should retain rows with names "a1", "a2", "b1", and "b2", i.e.,
+  # all rows in n1.
+  expect_equal(select_rows_byname(n1, retain_pattern = "^a|^b"), n1)
+})
+
+
+test_that("select_rows_byname() works in lists", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
   m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
@@ -174,7 +189,35 @@ test_that("matrix row selection by name in lists works as expected", {
 })
 
 
-test_that("matrix column selection by name with exact matches (^name$) works as expected", {
+test_that("select_rows_byname() works in lists with Matrix objects", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matsbyname::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(m_rownames, m_colnames), 
+                          rowtype = "Industries", coltype = "Products")
+  
+  # Use same row names for each item in the list
+  expect_equal(select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$"),
+               list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
+                    m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
+  # Using data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  DF <- DF %>% dplyr::mutate(trimmed = select_rows_byname(.$m, 
+                                                          retain_pattern = RCLabels::make_or_pattern(strings = c("i1", "i2"), 
+                                                                                                     pattern_type = "exact")))
+  DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"trimmed"]] <- select_rows_byname(m, retain_pattern = "^i1$|^i2$")
+  DF_expected[[2,"trimmed"]] <- select_rows_byname(m, retain_pattern = "^i1$|^i2$")
+  # Need to use "expect_equivalent" because attributes are different 
+  # because DF_expected was made differently from how the mutated data fram was made.
+  expect_equal(DF, DF_expected, ignore_attr = TRUE)
+})
+
+
+test_that("select_cols_byname() works with exact matches (^name$)", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
   m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
@@ -208,7 +251,48 @@ test_that("matrix column selection by name with exact matches (^name$) works as 
 })
 
 
-test_that("matrix column selection by name with inexact matches works as expected", {
+test_that("select_cols_byname() works with exact matches (^name$) and Matrix objects", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matsbyname::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(m_rownames, m_colnames), 
+                          rowtype = "Industries", coltype = "Products")
+  
+  # Select only the first column (p1)
+  res1 <- select_cols_byname(m, retain_pattern = "^p1$")
+  expect_true(inherits(res1, "Matrix"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1, 
+                                             matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
+                                               setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Try same test using the make_or_pattern utility function.
+  res2 <- select_cols_byname(m, retain_pattern = RCLabels::make_or_pattern(strings = "p1", pattern_type = "exact"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, 
+                                             matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
+                                               setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Select columns 1 and 4 (p1, p4)
+  res3 <- select_cols_byname(m, retain_pattern = "^p1$|^p4$")
+  matsbyname:::expect_equal_matrix_or_Matrix(res3, 
+                                             m[ , c(1, 4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Eliminate column 3 (p3)
+  res4 <- select_cols_byname(m, remove_pattern = "^p3$")
+  matsbyname:::expect_equal_matrix_or_Matrix(res4, 
+                                             m[ , -3] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Eliminate columns 1 and 3
+  res5 <- select_cols_byname(m, remove_pattern = "^p1$|^p3$")
+  matsbyname:::expect_equal_matrix_or_Matrix(res5, 
+                                             m[ , c(-1,-3)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Retain column 4.  Retain has precedence over remove.
+  res6 <- select_cols_byname(m, retain_pattern = "^p4$", remove_pattern = "^p1$|^p3$|^p4$")
+  matsbyname:::expect_equal_matrix_or_Matrix(res6, 
+               matrix(13:16, ncol = 1, dimnames = list(m_rownames, c("p4"))) %>% 
+                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
+  # Matches nothing.  NULL is returned.
+  expect_null(select_cols_byname(m, retain_pattern = "^x$"))
+  # Matches nothing.  All of m is returned.
+  expect_equal(select_cols_byname(m, remove_pattern = "^x$"), m)
+})
+
+
+test_that("setcolnames_byname() works with inexact matches", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
   m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
@@ -224,7 +308,25 @@ test_that("matrix column selection by name with inexact matches works as expecte
 })
 
 
-test_that("matrix column selection by name with inexact matches and multiple selectors", {
+test_that("setcolnames_byname() works with inexact matches and Matrix objects", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matsbyname::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(m_rownames, m_colnames), 
+                          rowtype = "Industries", coltype = "Products")
+  n2 <- setcolnames_byname(m, c("a1", "a2", "b1", "b2")) 
+  
+  # Matches first two columns, because partial match is OK.
+  res1 <- select_cols_byname(n2, retain_pattern = "^a")
+  expect_true(inherits(res1, "Matrix"))
+  expect_equal(res1, 
+               n2[ , c(1,2)] %>% setrowtype(rowtype(n2)) %>% setcoltype(coltype(n2)))
+  # Deletes first two columns, because partial match is OK, and first two column names start with "a".
+  matsbyname:::expect_equal_matrix_or_Matrix(select_cols_byname(n2, remove_pattern = "^a"), 
+                                             n2[ , c(3,4)] %>% setrowtype(rowtype(n2)) %>% setcoltype(coltype(n2)))
+})
+
+
+test_that("select_cols_byname(0 works with inexact matches and multiple selectors", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
   m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
@@ -238,7 +340,21 @@ test_that("matrix column selection by name with inexact matches and multiple sel
 })
 
 
-test_that("matrix column selection by name in lists works as expected", {
+test_that("select_cols_byname(0 works with inexact matches and multiple selectors for Matrix objects", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matsbyname::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(m_rownames, m_colnames), 
+                          rowtype = "Industries", coltype = "Products")
+  n2 <- setcolnames_byname(m, c("a1", "a2", "b1", "b2")) 
+  
+  # The retain_pattern selects all columns whose names start with "a" or "b".
+  # This approach should retain columns with names "a1", "a2", "b1", and "b2", i.e.,
+  # all columns in n2.
+  expect_equal(select_cols_byname(n2, retain_pattern = "^a|^b"), n2)
+})
+
+
+test_that("select_cols_byname() works in lists", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
   m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
@@ -264,6 +380,57 @@ test_that("matrix column selection by name in lists works as expected", {
   # because DF_expected was made differently from how the mutated data fram was made.
   expect_equal(DF, DF_expected, ignore_attr = TRUE)
 })
+
+
+test_that("select_cols_byname() works in lists for Matrix objects", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matsbyname::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(m_rownames, m_colnames), 
+                          rowtype = "Industries", coltype = "Products")
+  
+  # Use same column names for each item in the list
+  res1 <- select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
+  expect_true(inherits(res1[[1]], "Matrix"))
+  expect_true(inherits(res1[[2]], "Matrix"))
+  expect_equal(select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$"),
+               list(m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
+                    m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
+  # Using data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  DF <- DF %>% dplyr::mutate(trimmed = select_cols_byname(.$m, 
+                                                          retain_pattern = RCLabels::make_or_pattern(strings = c("p1", "p2"), 
+                                                                                                     pattern_type = "exact")))
+  DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
+  DF_expected[[1,"m"]] <- m
+  DF_expected[[2,"m"]] <- m
+  DF_expected[[1,"trimmed"]] <- select_cols_byname(m, retain_pattern = "^p1$|^p2$")
+  DF_expected[[2,"trimmed"]] <- select_cols_byname(m, retain_pattern = "^p1$|^p2$")
+  # Need to use "expect_equivalent" because attributes are different 
+  # because DF_expected was made differently from how the mutated data fram was made.
+  expect_equal(DF, DF_expected, ignore_attr = TRUE)
+})
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
 
 
 test_that("selecting rows and columns works even when everything is removed", {

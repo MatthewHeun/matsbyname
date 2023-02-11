@@ -211,25 +211,25 @@ test_that("complete_and_sort() preserves row and column types", {
 
 
 test_that("complete_and_sort() works with Matrix objects", {
-  A <- Matrix::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
-  B <- Matrix::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r3", "r4"), c("c3", "c4")))
+  A <- matsbyname::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  B <- matsbyname::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r3", "r4"), c("c3", "c4")))
   res1 <- complete_and_sort(A, B)
-  expectedA <- Matrix::Matrix(c(1, 1, 0, 0,
-                                1, 1, 0, 0, 
-                                0, 0, 0, 0,
-                                0, 0, 0, 0),
-                              nrow = 4, ncol = 4, byrow = TRUE, 
-                              dimnames = list(c("r1", "r2", "r3", "r4"), 
-                                              c("c1", "c2", "c3", "c4")))
-  expectedB <- Matrix::Matrix(c(0, 0, 0, 0,
-                                0, 0, 0, 0, 
-                                0, 0, 1, 1,
-                                0, 0, 1, 1),
-                              nrow = 4, ncol = 4, byrow = TRUE, 
-                              dimnames = list(c("r1", "r2", "r3", "r4"), 
-                                              c("c1", "c2", "c3", "c4")))
-  expect_equal(res1$a, expectedA)
-  expect_equal(res1$b, expectedB)
+  expectedA <- matsbyname::Matrix(c(1, 1, 0, 0,
+                                    1, 1, 0, 0, 
+                                    0, 0, 0, 0,
+                                    0, 0, 0, 0),
+                                  nrow = 4, ncol = 4, byrow = TRUE, 
+                                  dimnames = list(c("r1", "r2", "r3", "r4"), 
+                                                  c("c1", "c2", "c3", "c4")))
+  expectedB <- matsbyname::Matrix(c(0, 0, 0, 0,
+                                    0, 0, 0, 0, 
+                                    0, 0, 1, 1,
+                                    0, 0, 1, 1),
+                                  nrow = 4, ncol = 4, byrow = TRUE, 
+                                  dimnames = list(c("r1", "r2", "r3", "r4"), 
+                                                  c("c1", "c2", "c3", "c4")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$a, expectedA)
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$b, expectedB)
 })
 
 

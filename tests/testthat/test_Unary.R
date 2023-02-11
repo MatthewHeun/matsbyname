@@ -2148,16 +2148,6 @@ test_that("aggregate_byname() works with Matrix objects for NULL aggregation_map
 })
 
 
-
-
-
-
-
-
-
-
-
-
 test_that("aggregate_byname() works as expected for lists", {
   m <- matrix(1:9, nrow = 3, byrow = TRUE,
               dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
@@ -2181,6 +2171,50 @@ test_that("aggregate_byname() works as expected for lists", {
   expect_equal(aggregate_byname(list(m2, m2), margin = list(c(1, 2))), list(expected2, expected2))
   expect_equal(aggregate_byname(list(m2, m2, m2, m2)), list(expected2, expected2, expected2, expected2))
 })
+
+
+test_that("aggregate_byname() works with Matrix objects for lists", {
+  M <- matsbyname::Matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE,
+                          dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
+  expected <- matrix(c(11, 13, 15,
+                       1, 2, 3), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, aggregate_byname(list(M, M, M)), list(expected, expected, expected))
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, aggregate_byname(list(M, M), margin = list(c(1, 2))), list(expected, expected))
+  
+  # Also check that row and column type are preserved
+  m2 <- matsbyname::Matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE, 
+                           dimnames = list(c("b", "a", "a"), c("e", "d", "d")), 
+                           rowtype = "rows", coltype = "cols")
+  expected2 <- matrix(c(28, 11,
+                        5, 1), nrow = 2, byrow = TRUE, 
+                      dimnames = list(c("a", "b"), c("d", "e"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  res <- aggregate_byname(m2)
+  expect_true(inherits(res, "Matrix"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, expected2)
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, aggregate_byname(list(m2)), list(expected2))
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, aggregate_byname(list(m2, m2), margin = list(c(1, 2))), list(expected2, expected2))
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, aggregate_byname(list(m2, m2, m2, m2), margin = list(c(1, 2))), list(expected2, expected2, expected2, expected2))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("aggregate_byname() works when all rows collapse", {

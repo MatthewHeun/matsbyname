@@ -872,9 +872,9 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
-  select_func <- function(a, retain_pattern, remove_pattern){
-    retain_indices <- grep(pattern = retain_pattern, x = rownames(a))
-    remove_indices <- grep(pattern = remove_pattern, x = rownames(a))
+  select_func <- function(a_mat, retain_pattern, remove_pattern){
+    retain_indices <- grep(pattern = retain_pattern, x = rownames(a_mat))
+    remove_indices <- grep(pattern = remove_pattern, x = rownames(a_mat))
     if (length(retain_indices) == 0) {
       # Nothing to be retained, so try removing columns
       if (length(remove_indices) == 0) {
@@ -890,7 +890,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
         # which is indicated by a non-default remove_pattern,
         # don't remove anything. Simply return a.
         if (remove_pattern != "$^") {
-          return(a)
+          return(a_mat)
         }
         # Neither retain_pattern nor remove_pattern is different from the default.
         # This is almost surely an error.
@@ -898,28 +898,32 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
       }
       # Remove
       # Check to see if we will remove all rows from a
-      rows_remaining <- nrow(a) - length(remove_indices)
+      rows_remaining <- nrow(a_mat) - length(remove_indices)
       if (rows_remaining <= 0) {
         return(NULL)
       }
-      return(a[-remove_indices , ] %>%
+      return(a_mat[-remove_indices , ] %>%
                # When only 1 row is selected, the natural result will be a numeric vector
                # We want to ensure that the return value is a matrix
                # with correct rowtype and coltype.
                # Thus, we need to take these additional steps.
                matrix(nrow = rows_remaining,
-                      dimnames = list(dimnames(a)[[1]][setdiff(1:nrow(a), remove_indices)],
-                                      dimnames(a)[[2]])) %>%
-               setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+                      dimnames = list(dimnames(a_mat)[[1]][setdiff(1:nrow(a_mat), remove_indices)],
+                                      dimnames(a_mat)[[2]])) %>%
+               setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
       )
     }
     # Retain
-    return(a[retain_indices , ] %>%
-             matrix(nrow = length(retain_indices),
-                    dimnames = list(dimnames(a)[[1]][retain_indices],
-                                    dimnames(a)[[2]])) %>%
-             setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
-    )
+    out <- a_mat[retain_indices , ]
+    if (inherits(a_mat, "Matrix")) {
+      out <- matsbyname::Matrix(out, nrow = length(retain_indices), ncol = ncol(a_mat))
+    } else {
+      out <- matrix(out, nrow = length(retain_indices), ncol = ncol(a_mat))
+    }
+    dimnames(out) <- list(dimnames(a_mat)[[1]][retain_indices],
+                          dimnames(a_mat)[[2]])
+    out %>% 
+      setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
   }
   unaryapply_byname(select_func, a = a, 
                     .FUNdots = list(retain_pattern = retain_pattern, remove_pattern = remove_pattern), 

@@ -122,32 +122,97 @@ is_matrix_or_Matrix <- function(a) {
 
 t_matrix_or_Matrix <- function(a) {
   if (is.matrix(a)) {
-    return(t(a))
+    out <- t(a)
   } else if (inherits(a, "Matrix")) {
-    return(Matrix::t(a))
+    out <- Matrix::t(a)
   }
-}
-
-
-cbind_matrix_or_Matrix <- function(a, b) {
-  res <- cbind(a, b)
-  if (inherits(a, "Matrix") | inherits(b, "Matrix")) {
-    # Create a new Matrix object that 
-    # takes on sparse characteristics, if possible.
-    return(Matrix::Matrix(res))
-  }
-  return(res)
+  # Also need to swap the rowtype and coltype on a.
+  out %>% 
+    setrowtype(coltype(a)) %>% setcoltype(rowtype(a))
 }
 
 
 rbind_matrix_or_Matrix <- function(a, b) {
-  res <- rbind(a, b)
-  if (inherits(a, "Matrix") | inherits(b, "Matrix")) {
-    # Create a new Matrix object that 
-    # takes on sparse characteristics, if possible.
-    return(Matrix::Matrix(res))
+  # Originally, it seemed that we needed to distinguish between matrix and Matrix.
+  # But rbind seems to work for both.
+  checked <- check_row_col_types(a, b)
+  rbind(checked[[1]], checked[[2]]) %>% 
+    # At this point, row and column types are guaranteed to be same, due to check_row_col_types()
+    setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+}
+
+
+cbind_matrix_or_Matrix <- function(a, b) {
+  # Originally, it seemed that we needed to distinguish between matrix and Matrix.
+  # But cbind seems to work for both.
+  checked <- check_row_col_types(a, b)
+  cbind(checked[[1]], checked[[2]]) %>% 
+    # At this point, row and column types are guaranteed to be same, due to check_row_col_types()
+    setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+}
+
+
+check_row_col_types <- function(a, b) {
+  rta <- rowtype(a)
+  cta <- coltype(a)
+  rtb <- rowtype(b)
+  ctb <- coltype(b)
+  
+  if (xor(is.null(rta), is.null(rtb))) {
+    # One of rta and rtb is NULL. Set to the non-NULL one.
+    if (is.null(rta)) {
+      a <- setrowtype(a, rtb)
+    } else {
+      b <- setrowtype(b, rta)
+    }
   }
-  return(res)
+  if (xor(is.null(cta), is.null(ctb))) {
+    # One of cta and ctb is NULL
+    if (is.null(cta)) {
+      a <- setcoltype(a, ctb)
+    } else {
+      b <- setcoltype(b, cta)
+    }
+  }
+  
+  # At this point, rowtype could be NULL on both a and b.
+  # In that case, we're fine.
+  # In the event that both are not NULL, we
+  # need to make sure rowtypes are the same. 
+  if (!is.null(rta) & !is.null(rtb)) {
+    if (rta != rtb) {
+      stop(paste("Incompatible row types:", rta, "and", rtb))
+    }
+  }
+  # Same for coltypes
+  if (!is.null(cta) & !is.null(ctb)) {
+    if (cta != ctb) {
+      stop(paste("Incompatible column types:", cta, "and", ctb))
+    }
+  }
+  return(list(a, b))
+}
+
+
+rowSums_matrix_or_Matrix <- function(a) {
+  if (inherits(a, "Matrix")) {
+    # Use the Matrix function.
+    out <- Matrix::rowSums(a) %>% 
+      matsbyname::Matrix(nrow = nrow(a), ncol = 1, dimnames = list(rownames(a), coltype(a)))
+  } else {
+    out <- rowSums(a) %>% 
+      matrix(nrow = nrow(a), ncol = 1, dimnames = list(rownames(a), coltype(a)))
+  }
+  out %>% 
+    setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+}
+
+
+colSums_matrix_or_Matrix <- function(a) {
+  a %>% 
+    t_matrix_or_Matrix() %>% 
+    rowSums_matrix_or_Matrix() %>% 
+    t_matrix_or_Matrix()
 }
 
 
@@ -268,6 +333,8 @@ invert_matrix_or_Matrix <- function(a_mat,
   })
 }
   
+
+
   
   
   

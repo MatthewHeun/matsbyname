@@ -1716,10 +1716,12 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
         if (!is.null(rows_to_aggregate)) {
           # Sum the isolated rows (if any)
           # aggregated_rows <- colsums_byname(rows_to_aggregate, rowname = names(aggregation_map[i]))
-          aggregated_rows <- colSums(rows_to_aggregate) %>% 
+          aggregated_rows <- colSums_matrix_or_Matrix(rows_to_aggregate) 
+          dimnames(aggregated_rows) <- list(c(names(aggregation_map[i])), c(colnames(rows_to_aggregate)))
+          # %>% 
             # Sadly, colSums simplifies 1-dimensional output to a vector. 
             # So, remake the matrix.
-            matrix(nrow = 1, dimnames = list(c(names(aggregation_map[i])), c(colnames(rows_to_aggregate))))
+            # matrix(nrow = 1, dimnames = list(c(names(aggregation_map[i])), c(colnames(rows_to_aggregate))))
           # If we found rows to aggregate, remove from a the rows that were aggregated and ...
           out <- out %>% 
             select_rows_byname(remove_pattern = select_pattern)
@@ -1730,7 +1732,7 @@ aggregate_byname <- function(a, aggregation_map = NULL, margin = c(1, 2), patter
           } else {
             # out is not NULL, we we need to add the aggregated rows to the remaining rows.
             out <- out %>% 
-              rbind(aggregated_rows) 
+              rbind_matrix_or_Matrix(aggregated_rows) 
           }
         }
       }
