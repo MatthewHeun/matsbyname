@@ -413,6 +413,74 @@ test_that("select_cols_byname() works in lists for Matrix objects", {
 })
 
 
+test_that("selecting rows and columns works even when everything is removed", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Try to remove all rows
+  expect_null(select_rows_byname(m, remove_pattern = "^r"))
+  # Try to remove all columns
+  expect_null(select_cols_byname(m, remove_pattern = "^c"))
+})
+
+
+test_that("selecting rows and columns works even when everything is removed with Matrix objects", {
+  m <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, 
+                          dimnames = list(c("r1", "r2"), c("c1", "c2")), 
+                          rowtype = "rows", coltype = "cols")
+  # Try to remove all rows
+  expect_null(select_rows_byname(m, remove_pattern = "^r"))
+  # Try to remove all columns
+  expect_null(select_cols_byname(m, remove_pattern = "^c"))
+})
+
+
+test_that("select_rows_byname() works even when there is a NULL situation", {
+  # Check the degenerate condition.
+  expect_null(select_rows_byname(a = NULL))
+  expect_null(select_cols_byname(a = NULL))
+  m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Try with rows
+  expect_equal(m %>% select_rows_byname(retain_pattern = "r1"), 
+               matrix(c(1, 3), ncol = 2, dimnames = list("r1", c("c1", "c2"))) %>% 
+                 setrowtype("rows") %>% setcoltype("cols"))
+  # Should work when there is nothing to select.
+  expect_null(m %>% select_rows_byname(retain_pattern = "r3"))
+  # Try with columns
+  expect_equal(m %>% select_cols_byname(retain_pattern = "c1"), 
+               matrix(1:2, nrow = 2, dimnames = list(c("r1", "r2"), "c1")) %>% 
+                 setrowtype("rows") %>% setcoltype("cols"))
+  # Should work when there is nothing to select.
+  expect_null(m %>% select_cols_byname(retain_pattern = "c3"))
+})
+
+
+test_that("select_rows_byname() works even when there is a NULL situation with Matrix objects", {
+  m <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, 
+                          dimnames = list(c("r1", "r2"), c("c1", "c2")), 
+                          rowtype = "rows", coltype = "cols")
+  # Try with rows
+  expect_equal(m %>% select_rows_byname(retain_pattern = "r1"), 
+               matsbyname::Matrix(c(1, 3), nrow = 1, ncol = 2,
+                                  dimnames = list("r1", c("c1", "c2")), 
+                                  rowtype = "rows", coltype = "cols"))
+  # Should work when there is nothing to select.
+  expect_null(m %>% select_rows_byname(retain_pattern = "r3"))
+  # Try with columns
+  expect_equal(m %>% select_cols_byname(retain_pattern = "c1"), 
+               matsbyname::Matrix(1:2, nrow = 2, ncol = 1,
+                                  dimnames = list(c("r1", "r2"), "c1"), 
+                                  rowtype = "rows", coltype = "cols"))
+  # Should work when there is nothing to select.
+  expect_null(m %>% select_cols_byname(retain_pattern = "c3"))
+})
+
+
+
+
+
+
+
 
 
 
@@ -433,35 +501,9 @@ test_that("select_cols_byname() works in lists for Matrix objects", {
 
 
 
-test_that("selecting rows and columns works even when everything is removed", {
-  m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  # Try to remove all rows
-  expect_null(select_rows_byname(m, remove_pattern = "^r"))
-  # Try to remove all columns
-  expect_null(select_cols_byname(m, remove_pattern = "^c"))
-})
 
 
-test_that("selecting rows and columns works even when there is a NULL situation", {
-  # Check the degenerate condition.
-  expect_null(select_rows_byname(a = NULL))
-  expect_null(select_cols_byname(a = NULL))
-  m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  # Try with rows
-  expect_equal(m %>% select_rows_byname(retain_pattern = "r1"), 
-               matrix(c(1, 3), ncol = 2, dimnames = list("r1", c("c1", "c2"))) %>% 
-                 setrowtype("rows") %>% setcoltype("cols"))
-  # Should work when there is nothing to select.
-  expect_null(m %>% select_rows_byname(retain_pattern = "r3"))
-  # Try with columns
-  expect_equal(m %>% select_cols_byname(retain_pattern = "c1"), 
-               matrix(1:2, nrow = 2, dimnames = list(c("r1", "r2"), "c1")) %>% 
-                 setrowtype("rows") %>% setcoltype("cols"))
-  # Should work when there is nothing to select.
-  expect_null(m %>% select_cols_byname(retain_pattern = "c3"))
-})
+
 
 
 test_that("select_rowcol_piece_byname() works for selecting rows", {
@@ -507,7 +549,6 @@ test_that("select_rowcol_piece_byname() works for selecting rows", {
                                       notation = RCLabels::bracket_notation, 
                                       margin = 1)
   expect_equal(res_6, expected_2)
-  
 })
 
 
