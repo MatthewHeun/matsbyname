@@ -2539,21 +2539,6 @@ test_that("aggregate_to_pref_suff_byname() handles types correctly for Matrix ob
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("aggregate_pieces_byname() works as expected", {
   m <- matrix(c(1, 2, 3, 
                 4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
@@ -2568,6 +2553,24 @@ test_that("aggregate_pieces_byname() works as expected", {
   
   expected1 <- matrix(c(16, 5), nrow = 1, ncol = 2, byrow = TRUE, 
                       dimnames = list("rows", c("cols", "f")))
+  expect_equal(res1, expected1)
+})
+
+
+test_that("aggregate_pieces_byname() works as expected", {
+  m <- matsbyname::Matrix(c(1, 2, 3, 
+                            4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                          dimnames = list(c("a [from b]", "c [from d]"), 
+                                          c("e [from f]", "g [from h]", "i [from j]")))
+  
+  res1 <- m %>%
+    aggregate_pieces_byname(piece = "suff", 
+                            notation = RCLabels::from_notation,
+                            aggregation_map = list(rows = c("b", "d"), 
+                                                   cols = c("h", "j")))
+  expect_true(inherits(res1, "Matrix"))
+  expected1 <- matsbyname::Matrix(c(16, 5), nrow = 1, ncol = 2, byrow = TRUE, 
+                                  dimnames = list("rows", c("cols", "f")))
   expect_equal(res1, expected1)
 })
 
@@ -2649,6 +2652,113 @@ test_that("aggregate_pieces_byname() works with aggregation by type", {
     )
   expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
 })
+
+
+test_that("aggregate_pieces_byname() works with aggregation by type in Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 0, 0, 
+                            0, 1, 1, 
+                            0, 1, 1), nrow = 3, ncol = 3, byrow = TRUE, 
+                          dimnames = list(c("Gasoline [from Oil refineries]", 
+                                            "Electricity [from Main activity producer electricity plants]", 
+                                            "Electricity [from Hydro]"),
+                                          c("Automobiles", "LED lamps", "CFL lamps")), 
+                          rowtype = "Product", coltype = "Industry")
+  actual1 <- aggregate_pieces_byname(m, piece = "noun", margin = "Product",
+                                     notation = RCLabels::bracket_notation)
+  expect_true(inherits(actual1, "Matrix"))
+  expected1 <- matsbyname::Matrix(c(0, 2, 2, 
+                                    1, 0, 0), nrow = 2, ncol = 3, byrow = TRUE, 
+                                  dimnames = list(c("Electricity", "Gasoline"),
+                                                  c("Automobiles", "LED lamps", "CFL lamps")), 
+                                  rowtype = "Product", coltype = "Industry")
+  expect_equal(actual1, expected1)
+  
+  # Try transposed
+  mT <- transpose_byname(m)
+  actual2 <- aggregate_pieces_byname(mT, piece = "noun", margin = "Product", 
+                                     notation = RCLabels::bracket_notation)
+  expected2 <- transpose_byname(expected1)
+  expect_equal(actual2, expected2)
+  
+  # Try in a list
+  actual3 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     notation = RCLabels::bracket_notation)
+  expected3 <- list(expected1, expected2)
+  expect_equal(actual3, expected3)
+  
+  # Try with an aggregation map
+  actual4 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     aggregation_map = list(list(final = c("Electricity", "Gasoline")),
+                                                            list(final = c("Electricity", "Gasoline"))),
+                                     notation = RCLabels::bracket_notation)
+  expected4 <- matsbyname::Matrix(c(1, 2, 2), nrow = 1, ncol = 3, 
+                                  dimnames = list("final", c("Automobiles", "LED lamps", "CFL lamps")), 
+                                  rowtype = "Product", coltype = "Industry")
+  expect_equal(actual4, list(expected4, transpose_byname(expected4)))
+  
+  # Try with a single aggregation map that is spread to both items in the list.
+  actual5 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
+                                     margin = "Product",
+                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+                                     notation = RCLabels::bracket_notation)
+  expect_equal(actual5, list(expected4, transpose_byname(expected4)))
+  
+  # Try in a data frame.
+  df <- tibble::tibble(m = list(m, mT)) %>%
+    dplyr::mutate(
+      agg = aggregate_pieces_byname(a = m, 
+                                    piece = "noun",
+                                    margin = "Product", 
+                                    aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
+                                    notation = RCLabels::bracket_notation)
+    )
+  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
+  
+  
+  # Try in a data frame using columns for arguments.
+  df <- tibble::tibble(m = list(m, mT), 
+                       pce = "noun",
+                       mgn = "Product",
+                       agg_map = list(list(final = c("Electricity", "Gasoline"))),
+                       notn = list(RCLabels::bracket_notation)) %>%
+    dplyr::mutate(
+      agg = aggregate_pieces_byname(a = m, 
+                                    piece = pce, 
+                                    margin = mgn, 
+                                    aggregation_map = agg_map, 
+                                    notation = notn)
+    )
+  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("aggregate_pieces_byname() works with funny names", {
