@@ -2199,29 +2199,20 @@ test_that("aggregate_byname() works with Matrix objects for lists", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("aggregate_byname() works when all rows collapse", {
-  m <- matrix(1:6, byrow = TRUE, nrow = 2, 
+  m <- matrix(1:6, byrow = TRUE, nrow = 2, ncol = 3, 
               dimnames = list(c("a", "a"), c("c1", "c2", "c3")))
-  e <- matrix(c(5, 7, 9), byrow = TRUE, nrow = 1, 
+  e <- matrix(c(5, 7, 9), byrow = TRUE, nrow = 1, ncol = 3,
               dimnames = list(c("a"), c("c1", "c2", "c3")))
+  expect_equal(aggregate_byname(m), e)
+})
+
+
+test_that("aggregate_byname() works when all rows collapse in a Matrix", {
+  m <- matsbyname::Matrix(1:6, byrow = TRUE, nrow = 2, ncol = 3,
+                          dimnames = list(c("a", "a"), c("c1", "c2", "c3")))
+  e <- matsbyname::Matrix(c(5, 7, 9), byrow = TRUE, nrow = 1, ncol = 3,
+                          dimnames = list(c("a"), c("c1", "c2", "c3")))
   expect_equal(aggregate_byname(m), e)
 })
 
@@ -2233,6 +2224,20 @@ test_that("aggregate_byname() works when aggregating all rows with an aggregatio
   e3 <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
                dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
+  # Aggregate all rows
+  am <- list(new_row = c("r1", "r2"))
+  a3 <- aggregate_byname(m3, aggregation_map = am, margin = 1)
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e3)
+})
+
+
+test_that("aggregate_byname() works when aggregating all rows with an aggregation map for a Matrix", {
+  m3 <- matsbyname::Matrix(1:9, byrow = TRUE, nrow = 3, ncol = 3,
+                           dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1")), 
+                           rowtype = "rows", coltype = "cols")
+  e3 <- matsbyname::Matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, ncol = 3,
+                           dimnames = list(c("new_row"), c("c2", "c1", "c1")), 
+                           rowtype = "rows", coltype = "cols")
   # Aggregate all rows
   am <- list(new_row = c("r1", "r2"))
   a3 <- aggregate_byname(m3, aggregation_map = am, margin = 1)
@@ -2325,6 +2330,114 @@ test_that("aggregate_byname() works as expected in data frames", {
     )
   expect_true(all(res2$equal))
 })
+
+
+test_that("aggregate_byname() works as expected in data frames for Matrix objects", {
+  m1 <- matsbyname::Matrix(42, nrow = 1, ncol = 1, dimnames = list(c("r1"), c("c1")), 
+                           rowtype = "rows", coltype = "cols")
+  e1 <- m1
+  m2 <- matsbyname::Matrix(1:4, byrow = TRUE, nrow = 2, ncol = 2,
+                           dimnames = list(c("a", "a"), c("a", "a")))
+  e2row <- matsbyname::Matrix(c(4, 6), byrow = TRUE, nrow = 1, ncol = 2,
+                              dimnames = list(c("a"), c("a", "a")))
+  e2col <- matsbyname::Matrix(c(3, 7), nrow = 2, ncol = 1, dimnames = list(c("a", "a"), c("a")))
+  e2both <- matsbyname::Matrix(10, nrow = 1,
+                               dimnames = list(c("a"), c("a")))
+  m3 <- matsbyname::Matrix(1:9, byrow = TRUE, nrow = 3, ncol = 3,
+                           dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1")), 
+                           rowtype = "rows", coltype = "cols")
+  e3row <- matsbyname::Matrix(c(11, 13, 15, 
+                                1, 2, 3), byrow = TRUE, nrow = 2, ncol = 3,
+                              dimnames = list(c("r1", "r2"), c("c2", "c1", "c1")), 
+                              rowtype = "rows", coltype = "cols")
+  e3col <- matsbyname::Matrix(c(5, 1, 
+                                11, 4, 
+                                17, 7), byrow = TRUE, nrow = 3, ncol = 2,
+                              dimnames = list(c("r2", "r1", "r1"), c("c1", "c2")), 
+                              rowtype = "rows", coltype = "cols")
+  e3both <- matsbyname::Matrix(c(28, 11, 
+                                 5, 1), byrow = TRUE, nrow = 2, ncol = 2,
+                               dimnames = list(c("r1", "r2"), c("c1", "c2")), 
+                               rowtype = "rows", coltype = "cols")
+  
+  expect_equal(aggregate_byname(m2, margin = 1), e2row)
+  expect_equal(aggregate_byname(m3, margin = 1), e3row)
+  expect_equal(aggregate_byname(m3, margin = c(1, 2)), e3both)
+  
+  DF <- tibble::tibble(m = list(m1, m1, m1, m2, m2, m2, m3, m3, m3), 
+                       margin = list(1, 2, c(1,2), 1, 2, c(1, 2), 1, 2, c(1, 2)), 
+                       expected = list(e1, e1, e1, e2row, e2col, e2both, e3row, e3col, e3both))
+  
+  expect_equal(aggregate_byname(DF$m, margin = DF$margin), DF$expected)
+  
+  res <- DF %>% 
+    dplyr::mutate(
+      actual = aggregate_byname(m, margin = margin), 
+      equal = all.equal(actual, expected)
+    )
+  expect_true(all(res$equal))
+  
+  # Now add an aggregation map
+  am <- list(new_row = c("r1", "r2"))
+  e4row <- matsbyname::Matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, ncol = 3,
+                              dimnames = list(c("new_row"), c("c2", "c1", "c1")), 
+                              rowtype = "rows", coltype = "cols")
+  e4col <- m3
+  e4both <- matsbyname::Matrix(c(28, 11, 
+                                 5, 1), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")), 
+                               rowtype = "rows", coltype = "cols")
+  
+  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e4row)
+  # The next call should fail, because we're 
+  # trying to aggregate on columns, but
+  # we're using an aggregation_map designed for rows.
+  # The aggregation fails to produce any changes in the data frame.
+  # When the aggregate_byname function tries to sort the columns, 
+  # it encounters duplicated row names and fails.
+  expect_error(aggregate_byname(m3, aggregation_map = am, margin = 2), "Row names not unique. Duplicated row names are: c1")
+  # The next call should fail, because we're trying to aggregate on both rows and columns (margin = c(1, 2)), but
+  # the aggregation_map only aggregates by rows.
+  # When we try to sum across both margins, 
+  # there is a duplicate name ("c1"), which causes a problem.
+  expect_error(aggregate_byname(m3, aggregation_map = am, margin = c(1, 2)), "Row names not unique. Duplicated row names are: c1")
+  
+  # The next call should work.
+  expect_equal(aggregate_byname(m3), e4both)
+  
+  DF2 <- tibble::tibble(
+    m = list(m3, m3, m3), 
+    margin = list(1, 2, c(1, 2)), 
+    expected = list(e4row, e3col, e4both), 
+    am = list(am, NULL, NULL)
+  )
+  res2 <- DF2 %>% 
+    dplyr::mutate(
+      actual = aggregate_byname(m, margin = margin, aggregation_map = am), 
+      equal = all.equal(actual, expected)
+    )
+  expect_true(all(res2$equal))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("aggregate_byname() works when removing multiple rows", {
