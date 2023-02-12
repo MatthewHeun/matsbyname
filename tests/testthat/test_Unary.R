@@ -2419,30 +2419,16 @@ test_that("aggregate_byname() works as expected in data frames for Matrix object
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("aggregate_byname() works when removing multiple rows", {
   a <- matrix(1:4, nrow = 4, dimnames = list(c("a", "a", "b", "b"), "c1"))
   e <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "b"), "c1"))
+  expect_equal(aggregate_byname(a), e)
+})
+
+
+test_that("aggregate_byname() works when removing multiple rows for Matrix objects", {
+  a <- matsbyname::Matrix(1:4, nrow = 4, ncol = 1, dimnames = list(c("a", "a", "b", "b"), "c1"))
+  e <- matsbyname::Matrix(c(3, 7), nrow = 2, ncol = 1, dimnames = list(c("a", "b"), "c1"))
   expect_equal(aggregate_byname(a), e)
 })
 
@@ -2456,9 +2442,35 @@ test_that("aggregate_byname() works when margin is NA", {
 })
 
 
+test_that("aggregate_byname() works when margin is NA for Matrix objects", {
+  Y <- matsbyname::Matrix(1, nrow = 4, ncol = 1, dimnames = list(c("a", "a", "b", "b"), "c1"), 
+                          rowtype = "Product", coltype = "Unit")
+  res <- Y %>% 
+    aggregate_byname(margin = "Industry")
+  expect_equal(res, Y)
+})
+
+
 test_that("aggregate_to_pref_suff_byname() works as expected", {
   m <- matrix((1:9), byrow = TRUE, nrow = 3, 
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
+  res1 <- aggregate_to_pref_suff_byname(m, keep = "pref", 
+                                        notation = RCLabels::arrow_notation)
+  expected1 <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+  expect_equal(res1, expected1)
+  # Aggregate by suffixes should do a lot, because several prefixes are same.
+  res2 <- aggregate_to_pref_suff_byname(m, keep = "suff", 
+                                        notation = RCLabels::arrow_notation)
+  expected2 <- m %>% 
+    rename_to_pref_suff_byname(keep = "suff", notation = RCLabels::arrow_notation) %>% 
+    aggregate_byname()
+  expect_equal(res2, expected2)
+})
+
+
+test_that("aggregate_to_pref_suff_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix((1:9), byrow = TRUE, nrow = 3, ncol = 3,
+                          dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
   res1 <- aggregate_to_pref_suff_byname(m, keep = "pref", 
                                         notation = RCLabels::arrow_notation)
   expected1 <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
@@ -2488,6 +2500,22 @@ test_that("aggregate_to_pref_suff_byname() works with a column vector", {
 })
 
 
+test_that("aggregate_to_pref_suff_byname() works with a column vector that is a Matrix", {
+  # Ran into a bug where aggregating a column vector fails.
+  # A column vector should aggregate to itself.
+  # But instead, I get a "subscript out of bounds" error.
+  # This test triggers that bug.
+  #     -- MKH, 23 Nov 2020.
+  m <- matsbyname::Matrix(1:4, nrow = 4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
+  # This aggregation should simply return m with renamed column
+  res <- aggregate_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
+  expect_true(inherits(res, "Matrix"))
+  expected <- m %>% 
+    magrittr::set_colnames("Industry")
+  expect_equal(res, expected)
+})
+
+
 test_that("aggregate_to_pref_suff_byname() handles types correctly", {
   m <- matrix((1:9), byrow = TRUE, nrow = 3, 
               dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y"))) %>% 
@@ -2497,6 +2525,33 @@ test_that("aggregate_to_pref_suff_byname() handles types correctly", {
   expect_equal(rowtype(res), "letter")
   expect_equal(coltype(res), "letter")
 })
+
+
+test_that("aggregate_to_pref_suff_byname() handles types correctly for Matrix objects", {
+  m <- matsbyname::Matrix((1:9), byrow = TRUE, nrow = 3, ncol = 3,
+                          dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")), 
+                          rowtype = "row -> letter", coltype = "col -> letter")
+  
+  res <- aggregate_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
+  expect_true(inherits(res, "Matrix"))
+  expect_equal(rowtype(res), "letter")
+  expect_equal(coltype(res), "letter")
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("aggregate_pieces_byname() works as expected", {
