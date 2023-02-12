@@ -2734,33 +2734,6 @@ test_that("aggregate_pieces_byname() works with aggregation by type in Matrix ob
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("aggregate_pieces_byname() works with funny names", {
   m_pieces <- matrix(c(1, 2, 3,
                        4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
@@ -2784,6 +2757,29 @@ test_that("aggregate_pieces_byname() works with funny names", {
 })
 
 
+test_that("aggregate_pieces_byname() works with funny names", {
+  m_pieces <- matsbyname::Matrix(c(1, 2, 3,
+                                   4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                                 dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
+                                                 c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  
+  actual1 <- rename_to_piece_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation)
+  expect_true(inherits(actual1, "Matrix"))
+  expected1 <- matsbyname::Matrix(c(1, 2, 3,
+                                    4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
+                                  dimnames = list(c("Coal", "Solar"), 
+                                                  c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  expect_equal(actual1, expected1)
+  
+  actual2 <- aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation, 
+                                     aggregation_map = list(`All sources` = c("Coal", "Solar")))
+  expected2 <- matsbyname::Matrix(c(5, 7, 9), nrow = 1, ncol = 3, byrow = TRUE, 
+                                  dimnames = list(c("All sources"), 
+                                                  c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
+  expect_equal(actual2, expected2)  
+})
+
+
 test_that("aggregate_pieces_byname() works when inferring notation", {
   m <- matrix(c(1, 2, 3, 
                 4, 5, 6, 
@@ -2802,4 +2798,24 @@ test_that("aggregate_pieces_byname() works when inferring notation", {
                       dimnames = list(c("b", "rows"), c("cols", "f")))
   expect_equal(res1, expected1)
   
+})
+
+
+test_that("aggregate_pieces_byname() works when inferring notation on Matric objects", {
+  m <- matsbyname::Matrix(c(1, 2, 3, 
+                            4, 5, 6, 
+                            7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE, 
+                          dimnames = list(c("a [from b]", "c [from d]", "e [from d]"), 
+                                          c("e [from f]", "g [from h]", "i [from j]")))
+  
+  res1 <- m %>%
+    aggregate_pieces_byname(piece = "suff",
+                            choose_most_specific = TRUE,
+                            aggregation_map = list(rows = "d", 
+                                                   cols = c("h", "j")))
+  expect_true(inherits(res1, "Matrix"))
+  expected1 <- matsbyname::Matrix(c(5, 1,
+                                    28, 11), nrow = 2, ncol = 2, byrow = TRUE, 
+                                  dimnames = list(c("b", "rows"), c("cols", "f")))
+  expect_equal(res1, expected1)
 })
