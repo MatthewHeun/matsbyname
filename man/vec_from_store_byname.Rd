@@ -22,7 +22,8 @@ vec_from_store_byname(
  } else {
     
     RCLabels::prepositions_list
- }
+ },
+  class = c("matrix", "Matrix")
 )
 }
 \arguments{
@@ -48,6 +49,11 @@ Default is \code{RCLabels::bracket_notation}, wrapped as a list if \code{a} is a
 
 \item{prepositions}{The strings that will count for prepositions.
 Default is \code{RCLables::prepositions}, wrapped as a list if \code{a} is a list..}
+
+\item{class}{One of "matrix" or "Matrix".
+"matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
+"Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
+Default is "matrix".}
 }
 \value{
 A vector with names from \code{a} and values from \code{v}.

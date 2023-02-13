@@ -2952,21 +2952,6 @@ test_that("create_colvec_byname() works for Matrix objects", {
 })
 
 
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
 test_that("kvec_from_template_byname() works as expected", {
   m <- matrix(42, nrow = 4, ncol = 2,
               dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2")))
@@ -3003,6 +2988,90 @@ test_that("kvec_from_template_byname() works as expected", {
   expect_equal(res1$with_rt_ct[[2]], matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")) %>% 
                  setrowtype("rt") %>% setcoltype("ct2"))
 })
+
+
+test_that("kvec_from_template_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(42, nrow = 4, ncol = 2,
+                          dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2")))
+  res <- kvec_from_template_byname(m, colname = "mycol", class = "Matrix")
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, 
+                                             matrix(1, nrow = 4, ncol = 1, 
+                                                    dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  
+  matsbyname:::expect_equal_matrix_or_Matrix(kvec_from_template_byname(m, colname = "myrow", column = FALSE), 
+                                             matrix(1, nrow = 1, ncol = 2, 
+                                                    dimnames = list("myrow", c("c1", "c2"))))
+  
+  # Try in a data frame.
+  df1 <- tibble::tibble(m = list(m, m), cnme = "mycol", rnme = "myrow", clmn = TRUE, k = c(42, 43), 
+                        rtype = "rt", ctype = c("ct1", "ct2"))
+  
+  res1 <- df1 %>% 
+    dplyr::mutate(
+      irow = kvec_from_template_byname(m, colname = rnme, column = FALSE, class = "Matrix"),
+      icol = kvec_from_template_byname(m, colname = cnme, column = clmn, class = "Matrix"), 
+      kcol = kvec_from_template_byname(m, k = k, colname = cnme, class = "Matrix"), 
+      with_rt_ct = kvec_from_template_byname(m %>% 
+                                               setrowtype(rtype) %>% 
+                                               setcoltype(ctype), 
+                                             colname = cnme, 
+                                             class = "Matrix")
+    )
+  
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$irow[[1]],
+                                             matrix(1, nrow = 1, ncol = 2, dimnames = list("myrow", c("c1", "c2"))))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$irow[[2]], 
+                                             matrix(1, nrow = 1, ncol = 2, dimnames = list("myrow", c("c1", "c2"))))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$icol[[1]],
+                                             matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$icol[[2]],
+                                             matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$icol[[2]], 
+                                             matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  # Try with non-1 value for k
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$kcol[[1]], 
+                                             matrix(42, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$kcol[[2]],
+                                             matrix(43, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")))
+  
+  # Test that row and column types are transferred correctly
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$with_rt_ct[[1]], 
+                                             matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")) %>% 
+                                               setrowtype("rt") %>% setcoltype("ct1"))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$with_rt_ct[[2]], 
+                                             matrix(1, nrow = 4, ncol = 1, dimnames = list(c("r1", "r2", "r3", "r4"), "mycol")) %>% 
+                                               setrowtype("rt") %>% setcoltype("ct2"))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("kvec_from_template_byname() function passes old i_byname tests", {

@@ -4,7 +4,13 @@
 \alias{kvec_from_template_byname}
 \title{Create a constant vector from matrix \code{a}}
 \usage{
-kvec_from_template_byname(a, k = 1, colname = NA, column = TRUE)
+kvec_from_template_byname(
+  a,
+  k = 1,
+  colname = NA,
+  column = TRUE,
+  class = c("matrix", "Matrix")
+)
 }
 \arguments{
 \item{a}{The template matrix for the column vector.}
@@ -15,6 +21,11 @@ kvec_from_template_byname(a, k = 1, colname = NA, column = TRUE)
 (the only column if \code{column} is \code{TRUE}, the only row otherwise).}
 
 \item{column}{Tells whether a column vector (if \code{TRUE}, the default) or a row vector (if \code{FALSE}) should be created.}
+
+\item{class}{One of "matrix" or "Matrix".
+"matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
+"Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
+Default is "matrix".}
 }
 \value{
 A vector vector formed from \code{a}.

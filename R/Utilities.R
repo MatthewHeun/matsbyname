@@ -1743,6 +1743,10 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, class = c("m
 #' @param colname The name of the output vector's 1-sized dimension 
 #'                (the only column if `column` is `TRUE`, the only row otherwise).
 #' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
+#' @param class One of "matrix" or "Matrix". 
+#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'              Default is "matrix".
 #'
 #' @return A vector vector formed from `a`.
 #' 
@@ -1755,21 +1759,20 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, class = c("m
 #' kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
 #'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
 #'                           colname = "new row", column = FALSE)
-kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
-  
+kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE, class = c("matrix", "Matrix")) {
+  class <- match.arg(class)
   k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
     # When we get here, a_mat should be a single matrix
     if (column_val) {
-      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val))
+      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), class = class)
     } else {
-      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)))
+      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), class = class)
     }
   }
 
   unaryapply_byname(FUN = k_from_template_func, a = a, 
                     .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "all")
 }
-
 
 
 #' Create a vector with labels from a matrix and values from a vector store
@@ -1827,6 +1830,10 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'                 Default is `RCLabels::bracket_notation`, wrapped as a list if `a` is a list.
 #' @param prepositions The strings that will count for prepositions.
 #'                     Default is `RCLables::prepositions`, wrapped as a list if `a` is a list..
+#' @param class One of "matrix" or "Matrix". 
+#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'              Default is "matrix".
 #'
 #' @return A vector with names from `a` and values from `v`.
 #' 
@@ -1894,17 +1901,17 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'   )
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
-                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}) {
-  
-  
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
+                                  class = c("matrix", "Matrix")) {
+  class <- match.arg(class)
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 
                        notation_val = notation, 
                        prepositions_val = prepositions) {
-    # Get size of v vectors
+    # Get size of the v vector
     v_size <- dim(v_vec)
-    # Make sure v is a matrix.
+    # Make sure v is a matrix with 2 dimensions.
     assertthat::assert_that(length(v_size) == 2, 
-                            msg = "v must be a matrix with 2 dimensions in vec_from_store_byname()")
+                            msg = "v must be a matrix or a Matrix with 2 dimensions in vec_from_store_byname()")
     # Make sure one of the dimensions is size 1
     assertthat::assert_that(v_size[[1]] == 1 | v_size[[2]] == 1,
                             msg = "v must be a vector with one dimension of size 1 in vec_from_store_byname()")
