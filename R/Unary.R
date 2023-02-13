@@ -576,7 +576,7 @@ identize_byname <- function(a, margin = c(1,2)) {
       # of same dimensions as a
       # and same names and types as a.
       stopifnot(nrow(a) == ncol(a))
-      if (inherits(a, "Matrix")) {
+      if (is.Matrix(a)) {
         out <- Matrix::Diagonal(n = nrow(a), x = 1)
       } else {
         out <- diag(nrow(a))
@@ -592,7 +592,7 @@ identize_byname <- function(a, margin = c(1,2)) {
     
     if (1 %in% margin)  {
       # Return a column vector containing 1's
-      if (inherits(a, "Matrix")) {
+      if (is.Matrix(a)) {
         out <- matsbyname::Matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1)
       } else {
         out <- matrix(rep_len(1, nrow(a)), nrow = nrow(a), ncol = 1)
@@ -602,7 +602,7 @@ identize_byname <- function(a, margin = c(1,2)) {
     }
     if (2 %in% margin) {
       # Return a row vector containing 1's
-      if (inherits(a, "Matrix")) {
+      if (is.Matrix(a)) {
         out <- matsbyname::Matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a))
       } else {
         out <- matrix(rep_len(1, ncol(a)), nrow = 1, ncol = ncol(a))
@@ -845,7 +845,7 @@ fractionize_byname <- function(a, margin, inf_becomes = .Machine$double.xmax){
   margin <- prep_vector_arg(a, margin)
 
   fractionize_func <- function(a, margin){
-    if (!inherits(a, "matrix") && !inherits(a, "Matrix") && !inherits(a, "data.frame")) {
+    if (!inherits(a, "matrix") && !is.Matrix(a) && !inherits(a, "data.frame")) {
       # Assume we have a single number here
       if (a == 0) {
         return(inf_becomes)

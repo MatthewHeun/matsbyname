@@ -147,7 +147,7 @@ is_matrix_or_Matrix <- function(a) {
 t_matrix_or_Matrix <- function(a) {
   if (is.matrix(a)) {
     out <- t(a)
-  } else if (inherits(a, "Matrix")) {
+  } else if (is.Matrix(a)) {
     out <- Matrix::t(a)
   }
   # Also need to swap the rowtype and coltype on a.
@@ -219,7 +219,7 @@ check_row_col_types <- function(a, b) {
 
 
 rowSums_matrix_or_Matrix <- function(a) {
-  if (inherits(a, "Matrix")) {
+  if (is.Matrix(a)) {
     # Use the Matrix function.
     out <- Matrix::rowSums(a) %>% 
       matsbyname::Matrix(nrow = nrow(a), ncol = 1, dimnames = list(rownames(a), coltype(a)))
