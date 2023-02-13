@@ -915,7 +915,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
     }
     # Retain
     out <- a_mat[retain_indices , ]
-    if (inherits(a_mat, "Matrix")) {
+    if (is.Matrix(a_mat)) {
       out <- matsbyname::Matrix(out, nrow = length(retain_indices), ncol = ncol(a_mat))
     } else {
       out <- matrix(out, nrow = length(retain_indices), ncol = ncol(a_mat))

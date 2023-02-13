@@ -300,7 +300,7 @@ invert_matrix_or_Matrix <- function(a_mat,
                                    tol = .Machine$double.eps) {
   tryCatch({
     if (method == "solve") {
-      if (inherits(a_mat, "Matrix")) {
+      if (is.Matrix(a_mat)) {
         rnames <- rownames(a_mat)
         cnames <- colnames(a_mat)
         # Matrix::solve() does not preserve dimnames.
@@ -313,7 +313,7 @@ invert_matrix_or_Matrix <- function(a_mat,
         out <- solve(a_mat, tol = tol)
       }
     } else if (method == "QR") {
-      if (inherits(a_mat, "Matrix")) {
+      if (is.Matrix(a_mat)) {
         # Use the Matrix function.
         qr_res <- Matrix::qr(a_mat)
       } else {
@@ -322,14 +322,14 @@ invert_matrix_or_Matrix <- function(a_mat,
       # Does not preserve column names
       out <- solve.qr(qr_res, tol = tol)
       colnames(out) <- rownames(a_mat)
-      if (inherits(a_mat, "Matrix")) {
+      if (is.Matrix(a_mat)) {
         # If we came in with a Matrix, 
         # send a Matrix back.
         out <- Matrix::Matrix(out)
       }
     } else if (method == "SVD") {
       convert_to_Matrix <- FALSE
-      if (inherits(a_mat, "Matrix")) {
+      if (is.Matrix(a_mat)) {
         # There is no Matrix::svd.inverse function.
         # So convert to a matrix.
         a_mat <- as.matrix(a_mat)

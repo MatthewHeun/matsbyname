@@ -657,7 +657,7 @@ vectorize_byname <- function(a, notation) {
   }
   vectorize_func <- function(a_mat, notation) {
     # At this point, a_mat should be a single matrix.
-    if (!(is.numeric(a_mat) | inherits(a_mat, "Matrix"))) {
+    if (!(is.numeric(a_mat) | is.Matrix(a_mat))) {
       stop("a is not numeric or a Matrix in vectorize_byname")
     }
     rnames_df <- data.frame(rname = rownames(a_mat)) %>% 
@@ -690,7 +690,7 @@ vectorize_byname <- function(a, notation) {
     if (is.null(dimnames(a_mat))) {
       dimnames(vec) <- NULL
     }
-    if (inherits(a_mat, "Matrix")) {
+    if (is.Matrix(a_mat)) {
       vec <- matsbyname::Matrix(vec)
     }
     
@@ -799,7 +799,7 @@ matricize_byname <- function(a, notation) {
       m[rownum, colnum] <- value
     }
     # Convert to a Matrix if that's what came in.
-    if (inherits(a_mat, "Matrix")) {
+    if (is.Matrix(a_mat)) {
       m <- matsbyname::Matrix(m)
     }
     # Add row and column types after splitting the rowtype of a_mat
@@ -947,7 +947,7 @@ rowsums_byname <- function(a, colname = NA){
       }
     }
     if (is_matrix_or_Matrix(a_mat)) {
-      if (inherits(a_mat, "Matrix")) {
+      if (is.Matrix(a_mat)) {
         out <- a_mat %>% 
           Matrix::rowSums() %>% 
           matsbyname::Matrix(nrow = nrow(a_mat), ncol = 1)
@@ -1027,7 +1027,7 @@ colsums_byname <- function(a, rowname = NA){
   
   colsum_func <- function(a_mat, rowname){
 
-    if (is.matrix(a_mat) | inherits(a_mat, "Matrix")) {
+    if (is.matrix(a_mat) | is.Matrix(a_mat)) {
       return(a_mat %>% 
                transpose_byname() %>% 
                rowsums_byname(colname = rowname) %>% 
@@ -1076,7 +1076,7 @@ colsums_byname <- function(a, rowname = NA){
 #' sumall_byname(list(m, NULL))
 sumall_byname <- function(a){
   sum_func <- function(a_mat){
-    if (!(is.matrix(a_mat) | inherits(a_mat, "Matrix") | is.numeric(a_mat))) {
+    if (!(is.matrix(a_mat) | is.Matrix(a_mat) | is.numeric(a_mat))) {
       stop("Unknown type for 'a' in sumall_byname(). 'a' must be a matrix or numeric.")
     }
     a_mat %>%
@@ -1132,7 +1132,7 @@ rowprods_byname <- function(a, colname = NA){
     if (is.na(colname)) {
       colname <- coltype(a_mat)
     }
-    if (inherits(a_mat, "Matrix")) {
+    if (is.Matrix(a_mat)) {
       # There is no equivalents to apply() and prod() for Matrix objects.
       # So convert to a matrix object and then recursively call this function.
       out <- as.matrix(a_mat) %>% 
@@ -1375,7 +1375,7 @@ cumprod_byname <- function(a){
 #' replaceNaN_byname(a, 42)
 replaceNaN_byname <- function(a, val = 0){
   replace_func <- function(a_mat){
-    if (inherits(a_mat, "Matrix")) {
+    if (is.Matrix(a_mat)) {
       # Get the triple
       trip <- Matrix::mat2triplet(a_mat) %>% 
         as.data.frame() %>% 

@@ -89,7 +89,7 @@ test_that("select_rows_byname() works with exact matches (^name$) for Matrix obj
   
   # Select only the first row (i1)
   res <- select_rows_byname(M, retain_pattern = "^i1$")
-  expect_true(inherits(res, "Matrix"))
+  expect_true(is.Matrix(res))
   matsbyname:::expect_equal_matrix_or_Matrix(res, 
                                              matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
                                                setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
@@ -123,7 +123,7 @@ test_that("select_rows_byname() works with inexact matches on Matrix objects", {
   
   # Matches first two rows, because partial match is OK.
   res1 <- select_rows_byname(n1, retain_pattern = "^a")
-  expect_true(inherits(res1, "Matrix"))
+  expect_true(is.Matrix(res1))
   expect_equal(res1, 
                n1[c(1,2), ] %>% setrowtype(rowtype(n1)) %>% setcoltype(coltype(n1)))
   # Deletes first two rows, because partial match is OK, and first two row names start with "a".
@@ -259,7 +259,7 @@ test_that("select_cols_byname() works with exact matches (^name$) and Matrix obj
   
   # Select only the first column (p1)
   res1 <- select_cols_byname(m, retain_pattern = "^p1$")
-  expect_true(inherits(res1, "Matrix"))
+  expect_true(is.Matrix(res1))
   matsbyname:::expect_equal_matrix_or_Matrix(res1, 
                                              matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
                                                setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
@@ -317,7 +317,7 @@ test_that("setcolnames_byname() works with inexact matches and Matrix objects", 
   
   # Matches first two columns, because partial match is OK.
   res1 <- select_cols_byname(n2, retain_pattern = "^a")
-  expect_true(inherits(res1, "Matrix"))
+  expect_true(is.Matrix(res1))
   expect_equal(res1, 
                n2[ , c(1,2)] %>% setrowtype(rowtype(n2)) %>% setcoltype(coltype(n2)))
   # Deletes first two columns, because partial match is OK, and first two column names start with "a".
