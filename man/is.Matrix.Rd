@@ -18,6 +18,8 @@ but it is not.
 We include it here for convenience.
 }
 \details{
+This function is not vectorized.
+
 \code{is.Matrix()} is a wrapper for \verb{inherits(a, "Matrix)}.
 }
 \examples{

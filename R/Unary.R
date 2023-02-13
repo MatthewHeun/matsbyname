@@ -128,12 +128,9 @@ invert_byname <- function(a,
 #' transpose_byname(m)
 #' transpose_byname(list(m,m))
 transpose_byname <- function(a) {
-  
   transpose_func <- function(a_mat) {
-    if (inherits(a_mat, "Matrix")) {
-      return(Matrix::t(a_mat))
-    } else if (is.matrix(a_mat)) {
-      return(t(a_mat))
+    if (is_matrix_or_Matrix(a_mat)) {
+      return(t_matrix_or_Matrix(a_mat))
     }
     # In the event that we don't have a matrix, 
     # we probably have a single number.

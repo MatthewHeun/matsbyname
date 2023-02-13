@@ -121,6 +121,8 @@ Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = list
 #' but it is not. 
 #' We include it here for convenience.
 #' 
+#' This function is not vectorized.
+#' 
 #' `is.Matrix()` is a wrapper for `inherits(a, "Matrix)`.
 #' 
 #' @param a The object to be queried if it is Matrix.
