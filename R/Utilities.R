@@ -1541,6 +1541,10 @@ ncol_byname <- function(a) {
 #'              Default is `FALSE.`
 #' @param dimnames The dimension names to be used for creating the matrices, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
+#' @param class One of "matrix" or "Matrix". 
+#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'              Default is "matrix".
 #'
 #' @return A matrix, list of matrices, or column in a data frame, depending on the input arguments.
 #' 
@@ -1551,11 +1555,18 @@ ncol_byname <- function(a) {
 #'                      dimnames = list(c("r1", "r2"), "c1"))
 #' create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
 #'                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
-create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames) {
-  
+create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames, 
+                                 class = c("matrix", "Matrix")) {
+  class <- match.arg(class)
   matrix_func <- function(a, nrow_val, ncol_val, byrow_val, 
                           dimnames_val, rowtype_val = NA, coltype_val = NA) {
-    matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val)
+    if (class == "matrix") {
+      return(matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
+    } 
+    if (class == "Matrix") {
+      out <- matsbyname::Matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val)
+    }
+    
   }
   
   unaryapply_byname(FUN = matrix_func, a = .dat,
