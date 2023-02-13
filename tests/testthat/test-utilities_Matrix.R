@@ -101,81 +101,6 @@ test_that("A sparse Matrix cannot be coerced to a symmetric Matrix", {
 })
 
 
-test_that("Changing entries and dimnames makes a symmetric matrix asymmetric", {
-  # This is symmetric Matrix
-  m <- Matrix::Matrix(c(1, 0, 2, 
-                        0, 3, 0, 
-                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  expect_true(inherits(m, "dsCMatrix"))
-  # Change an entry to make it asymmetric, and the underlying class changes,
-  # as expected.
-  m2 <- m
-  m2[1, 3] <- 42
-  expect_true(inherits(m2, "dgCMatrix"))
-  
-  # Need to change to a generalMatrix
-  # before dimnames will stick.
-  # Mikael said "Symmetry of dimnames(<symmetricMatrix>) is enforced"
-  # for symmetric matrix classes.
-  m3 <- as(m, "generalMatrix")
-  expect_true(inherits(m3, "dgCMatrix"))
-  # Now assign dimnames.
-  dimnames(m3) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
-  # Both of these expectations work, 
-  # because the underlying class changed 
-  # when we did as(m, "generalMatrix")
-  expect_false(inherits(m3, "dsCMatrix"))
-  expect_true(inherits(m3, "dgCMatrix"))
-})
-
-
-test_that("A sparse matrix cannot be coerced to a symmetric matrix", {
-  x <- Matrix::Matrix(c(1, 0, 2, 
-                        0, 3, 0, 
-                        2, 0, 0), byrow = TRUE, nrow = 3L, ncol = 3L)
-  expect_true(inherits(x, "dsCMatrix"))
-  y <- as(x, "generalMatrix")
-  expect_true(inherits(y, "dgCMatrix"))
-  
-  # See what happens to a general sparse Matrix when summed with the 0 Matrix (a ddiMatrix)
-  z <- y + Matrix::Matrix(0, nrow = 3, ncol = 3)
-  # y is not coerced to a symmetric Matrix.  Good!
-  expect_true(inherits(z, "dgCMatrix"))
-  
-  # See what happens to a general sparse Matrix when element-multiplied by the unity Matrix
-  a <- y * Matrix::Matrix(1, nrow = 3, ncol = 3)
-  # y is not coerced to a symmetric Matrix.  Good!
-  expect_true(inherits(a, "dgCMatrix"))
-  
-  # See what happens to a general sparse Matrix when matrix-multiplied by the identity Matrix
-  # (a ddiMatrix)
-  b <- y * Matrix::Matrix(c(1, 0, 0,
-                            0, 1, 0, 
-                            0, 0, 1), nrow = 3, ncol = 3)
-  # y is not coerced to a symmetric Matrix.  Good!
-  expect_true(inherits(b, "dgCMatrix"))
-  
-  # Try summing with a symmetric matrix.
-  d <- y + x
-  expect_true(inherits(d, "dgCMatrix"))
-  e <- x + y
-  expect_true(inherits(e, "dgCMatrix"))
-  
-  # Try with a non-trivial operation
-  m <- Matrix::Matrix(c(1, 0, 3, 
-                        0, 3, 0, 
-                        2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  subtrahend <- Matrix::Matrix(c(0, 0, 1, 
-                                 0, 0, 0, 
-                                 0, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  # The result is symmetric
-  res <- m - subtrahend
-  expect_true(Matrix::isSymmetric(res))
-  # But not represented by the dsCMatrix class.
-  expect_true(inherits(res, "dgCMatrix"))
-})
-
-
 # The following tests determine if matsbyname::Matrix() 
 # is usable with matsbyname functions.
 
@@ -232,30 +157,6 @@ test_that("is.Matrix() works as expected", {
 })
 
 
-test_that("matsbyname::Matrix() creates a non-symmetric sparse matrix", {
-  # I want to create a sparse matrix if half or more elements are zero ...
-  m <- matsbyname::Matrix(c(1, 0, 2, 
-                            0, 3, 0, 
-                            2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  # so that when I adjust its dimnames ...
-  dimnames(m) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
-  # I get back what I assigned.
-  expect_equal(dimnames(m), list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
-})
-
-
-test_that("inverting results in a sparse Matrix (or not)", {
-  m <- matsbyname::Matrix(c(1, 0, 3, 
-                            0, 3, 0, 
-                            2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  invertedm <- Matrix::solve(m)
-  expect_true(is.Matrix(invertedm))
-  invertedM <- matsbyname::Matrix(invertedm)
-  expect_true(is.Matrix(invertedM))
-  expect_true(is.Matrix(invertedM))
-})
-
-
 test_that("matsbyname::Matrix() creates a sparse Matrix", {
   m <- matsbyname::Matrix(c(1, 2, 3, 
                             4, 5, 6, 
@@ -291,6 +192,44 @@ test_that("matsbyname::Matrix() creates a sparse Matrix", {
 })
 
 
+test_that("matsbyname::Matrix() creates a non-symmetric sparse matrix", {
+  # I want to create a sparse matrix if half or more elements are zero ...
+  m <- matsbyname::Matrix(c(1, 0, 2, 
+                            0, 3, 0, 
+                            2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  # so that when I adjust its dimnames ...
+  dimnames(m) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
+  # I get back what I assigned.
+  expect_equal(dimnames(m), list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+})
+
+
+test_that("matsbyname::Matrix() picks up row and col type from matrix objects", {
+  m <- matrix(42, dimnames = list("r1", "r2")) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  M <- matsbyname::Matrix(m)
+  expect_equal(rowtype(M), "rows")
+  expect_equal(coltype(M), "cols")
+  
+  m3 <- matrix(42, dimnames = list("r1", "r2")) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  M3 <- matsbyname::Matrix(m3, rowtype = "rows3", coltype = "cols3")
+  expect_equal(rowtype(M3), "rows3")
+  expect_equal(coltype(M3), "cols3")
+})
+
+
+test_that("Matrix::solve() results in a sparse Matrix (or not)", {
+  m <- matsbyname::Matrix(c(1, 0, 3, 
+                            0, 3, 0, 
+                            2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+  invertedm <- Matrix::solve(m)
+  expect_true(is.Matrix(invertedm))
+  invertedM <- matsbyname::Matrix(invertedm)
+  expect_true(is.Matrix(invertedM))
+})
+
+
 test_that("is_matrix_or_Matrix() works correctly", {
   expect_false(matsbyname:::is_matrix_or_Matrix(42))
   expect_false(matsbyname:::is_matrix_or_Matrix("42"))
@@ -306,7 +245,7 @@ test_that("t.matrix_or_Matrix() works correctly", {
   res_m <- matsbyname:::t_matrix_or_Matrix(a)
   expected_m <- t(a)
   expect_equal(res_m, expected_m)
-    
+
   # Try with a Matrix object
   A <- matsbyname::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   res_M <- matsbyname:::t_matrix_or_Matrix(A)

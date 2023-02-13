@@ -9,12 +9,12 @@ Matrix(
   nrow = 1,
   ncol = 1,
   byrow = FALSE,
-  dimnames = list(NULL, NULL),
+  dimnames = base::dimnames(data),
   sparse = NULL,
   doDiag = FALSE,
   forceCheck = FALSE,
-  rowtype = NULL,
-  coltype = NULL
+  rowtype = matsbyname::rowtype(data),
+  coltype = matsbyname::coltype(data)
 )
 }
 \arguments{
@@ -42,9 +42,9 @@ Default is \code{FALSE}, which is different from \code{Matrix::Matrix()}.}
 when \code{data} is already a \code{Matrix} object.
 Default is \code{FALSE}.}
 
-\item{rowtype}{The rowtype for \code{data}. Default is \code{NULL}.}
+\item{rtype}{The rowtype for the result. Default is \code{matsbyname::rowtype(data)}.}
 
-\item{coltype}{The coltype for \code{data}. Default is \code{NULL}.}
+\item{ctype}{The coltype for the result. Default is \code{matsbyname::coltype(data)}.}
 }
 \value{
 A \code{Matrix} object.

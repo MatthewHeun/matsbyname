@@ -60,8 +60,8 @@
 #' @param forceCheck A boolean indicating if the checks for structure should happen
 #'                   when `data` is already a `Matrix` object.
 #'                   Default is `FALSE`.
-#' @param rowtype The rowtype for `data`. Default is `NULL`.
-#' @param coltype The coltype for `data`. Default is `NULL`.
+#' @param rtype The rowtype for the result. Default is `matsbyname::rowtype(data)`.
+#' @param ctype The coltype for the result. Default is `matsbyname::coltype(data)`.
 #'
 #' @return A `Matrix` object.
 #' 
@@ -82,36 +82,32 @@
 #' # ... but Matrix::Matrix will create a diagonal matrix.
 #' Matrix::Matrix(c(1, 0, 
 #'                  0, 1), byrow = TRUE, nrow = 2, ncol = 2)
-Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = list(NULL, NULL),
-                   sparse = NULL, doDiag = FALSE, forceCheck = FALSE, rowtype = NULL, coltype = NULL) {
+Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = base::dimnames(data),
+                   sparse = NULL, doDiag = FALSE, forceCheck = FALSE, 
+                   rowtype = matsbyname::rowtype(data), coltype = matsbyname::coltype(data)) {
   if (is_matrix_or_Matrix(data)) {
+    # Specifying nrow, ncol, or byrow results in a warning.
     out <- Matrix::Matrix(data = data, 
                           sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
-    if (!is.null(rowtype)) {
-      rowtype <- rowtype(data)
-    }
-    if (!is.null(coltype)) {
-      rowtype <- coltype(data)
-    }
-    if (identical(dimnames, list(NULL, NULL)) | is.null(dimnames)) {
-      dimnames <- dimnames(data)
-    }
   } else {
     out <- Matrix::Matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow,
-                          sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
+                          sparse = sparse, doDiag = doDiag, 
+                          forceCheck = forceCheck)
   }
-  # Ensure that we create a "generalMatrix" before assigning dimnames.
-  # A symmetric matrix subclass does not respect rowname assignment
-  # when rownames are different from colnames.
-  out <- methods::as(out, "generalMatrix")
-  if (is.null(dimnames)) {
-    dimnames <- list(NULL, NULL)
-  }
-  dimnames(out) <- dimnames
+  
+  # The call to Matrix::Matrix() can result in a symmetricMatrix,
+  # in which case, dimnames are not correctly preserved.
+  # Coerce to a generalMatrix, which can 
+  # correctly store dimnames.
   out <- out %>% 
-    setrowtype(rowtype) %>% 
-    setcoltype(coltype)
-  return(out)
+    methods::as("generalMatrix")
+  # Now set the dimnames based on the dimnames argument (if not NULL)
+  if (!(identical(dimnames, list(NULL, NULL)) | is.null(dimnames))) {
+    dimnames(out) <- dimnames
+  } 
+  # Finally, set row and column types based on the arguments.
+  out %>% 
+    setrowtype(rowtype) %>% setcoltype(coltype)
 }
 
 

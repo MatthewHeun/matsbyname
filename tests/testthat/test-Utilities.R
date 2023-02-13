@@ -883,10 +883,6 @@ test_that("select_rowcol_piece_byname() works in a list and a data frame of Matr
 
 
 
-
-
-
-
 test_that("select_rowcol_piece_byname() interprets margins correctly", {
   m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
               dimnames = list(c("r1 [to a]", "r2 [to b]"), 

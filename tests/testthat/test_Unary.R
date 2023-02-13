@@ -2797,7 +2797,6 @@ test_that("aggregate_pieces_byname() works when inferring notation", {
                         28, 11), nrow = 2, ncol = 2, byrow = TRUE, 
                       dimnames = list(c("b", "rows"), c("cols", "f")))
   expect_equal(res1, expected1)
-  
 })
 
 

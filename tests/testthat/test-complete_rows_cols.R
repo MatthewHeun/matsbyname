@@ -393,7 +393,8 @@ test_that("complete_rows_cols() works with a Matrix", {
   expected2 <- matsbyname::Matrix(c(42, 0, 
                                     42, 0, 
                                     0, 0), byrow = TRUE, 
-                                  nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+                                  nrow = 3, ncol = 2, 
+                                  dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   matsbyname:::expect_equal_matrix_or_Matrix(res2, expected2)
 })
 
