@@ -1950,10 +1950,16 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
       colname_val <- dimnames(v_vec)[[2]]
     }
     # Build the outgoing vector with NA's everywhere
-    out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
-                  dimnames = list(a_rownames, colname_val)) %>%
-      # Be sure to retain the row and column type of v_vec.
-      setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    if (is.Matrix(a_mat)) {
+      out <- matsbyname::Matrix(NA_real_, nrow = out_size, ncol = 1, 
+                                dimnames = list(a_rownames, colname_val), 
+                                rowtype = rowtype(v_vec), coltype = coltype(v_vec))
+    } else {
+      out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
+                    dimnames = list(a_rownames, colname_val)) %>%
+        # Be sure to retain the row and column type of v_vec.
+        setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    }
     # Fill the vector
     for (i in 1:out_size) {
       # Get the value we want
