@@ -1420,28 +1420,7 @@ test_that("setcolnames_byname() works as expected", {
 })
 
 
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-test_that("setting row names works as expected", {
+test_that("setrownames_byname() works as expected", {
   m1 <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Commodities")
   m2 <- setrownames_byname(m1, c("a", "b"))
@@ -1482,7 +1461,49 @@ test_that("setting row names works as expected", {
 })
 
 
-test_that("setting row names works with different names for each matrix", {
+test_that("setrownames_byname() works with Matrix objects", {
+  m1 <- matsbyname::Matrix(c(1:6), nrow = 2, ncol = 3,
+                           dimnames = list(paste0("i", 1:2), paste0("p", 1:3)), 
+                           rowtype = "Industries", coltype = "Commodities")
+  m2 <- setrownames_byname(m1, c("a", "b"))
+  expect_true(is.Matrix(m2))
+  expect_equal(rownames(m2), c("a", "b"))
+  m3 <- setrownames_byname(m1 %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("c", "d"))
+  expect_equal(rownames(m3), c("c", "d"))
+  m4 <- m1 %>% setrownames_byname(NULL)
+  expect_null(rownames(m4))
+  m5 <- m1 %>% setrownames_byname(c(NA, NA))
+  expect_equal(rownames(m5), c(NA_character_, NA_character_))
+  # This also works for lists
+  l1 <- list(m1, m1)
+  l2 <- setrownames_byname(l1, rownames = list(c("a", "b")))
+  expect_equal(list(rownames(l2[[1]]), rownames(l2[[2]])), list(c("a", "b"), c("a", "b")))
+  # Try without using a named argument (rownames) to see if they are inferred
+  l2 <- setrownames_byname(l1, list(c("a", "b")))
+  expect_equal(list(rownames(l2[[1]]), rownames(l2[[2]])), list(c("a", "b"), c("a", "b")))
+  # Try without a list. This should fail, because a is applied to the first matrix and b is applied to the second matrix.
+  # But each matrix needs 2 rownames.
+  expect_error(setrownames_byname(l1, c("a", "b")), "length of Dimnames")
+  
+  # This also works with data frames
+  DF1 <- data.frame(mcol = I(list()))
+  DF1[[1,"mcol"]] <- m1
+  DF1[[2,"mcol"]] <- m1
+  DF2 <- DF1 %>% 
+    dplyr::mutate(
+      mcol2 = setrownames_byname(mcol, list(c("r1", "r2")))
+    )
+  expect_equal(rownames(DF2$mcol2[[1]]), c("r1", "r2"))
+  expect_equal(rownames(DF2$mcol2[[2]]), c("r1", "r2"))
+  DF3 <- DF1 %>% 
+    dplyr::mutate(
+      mcol2 = setrownames_byname(mcol, list(c("r3", "r4")))
+    )
+  expect_equal(list(rownames(DF3$mcol2[[1]]), rownames(DF3$mcol2[[2]])), list(c("r3", "r4"), c("r3", "r4")))
+})
+
+
+test_that("setrownames_byname() works with different names for each matrix", {
   m <- matrix(c(1, 2, 
                 3, 4), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   mlist <- list(m, m, m)
@@ -1500,7 +1521,26 @@ test_that("setting row names works with different names for each matrix", {
 })
 
 
-test_that("setting col names works as expected", {
+test_that("setrownames_byname() works with different names for each Matrix", {
+  m <- matsbyname::Matrix(c(1, 2, 
+                            3, 4), nrow = 2, ncol = 2, byrow = TRUE,
+                          dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  mlist <- list(m, m, m)
+  new_rownames <- list(c("a", "b"), c("c", "d"), c("e", "f"))
+  renamed <- setrownames_byname(mlist, rownames = new_rownames)
+  expect_equal(getrownames_byname(renamed), new_rownames)
+  
+  # Try this in a data frame
+  DF <- data.frame(mcol = I(mlist), rownames_col = I(new_rownames))
+  DF_renamed <- DF %>% 
+    dplyr::mutate(
+      mcol_2 = setrownames_byname(mcol, rownames = rownames_col)
+    )
+  expect_equal(getrownames_byname(DF_renamed$mcol_2), new_rownames)
+})
+
+
+test_that("setcolnames_byname() works as expected", {
   m1 <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Commodities")
   m2 <- setcolnames_byname(m1, c("a", "b", "c"))
@@ -1533,7 +1573,42 @@ test_that("setting col names works as expected", {
 })
 
 
-test_that("setting column names works with different names for each matrix", {
+test_that("setcolnames_byname() works as expected", {
+  m1 <- matsbyname::Matrix(c(1:6), nrow = 2, ncol = 3, 
+                           dimnames = list(paste0("i", 1:2), paste0("p", 1:3)), 
+                           rowtype = "Industries", coltype = "Commodities")
+  m2 <- setcolnames_byname(m1, c("a", "b", "c"))
+  expect_true(is.Matrix(m2))
+  expect_equal(colnames(m2), c("a", "b", "c"))
+  m3 <- setcolnames_byname(m1 %>% setrowtype("Industries") %>% setcoltype("Commodities"), c("d", "e", "f"))
+  expect_equal(colnames(m3), c("d", "e", "f"))
+  m4 <- m1 %>% setcolnames_byname(NULL)
+  expect_null(colnames(m4))
+  m5 <- m1 %>% setcolnames_byname(c(NA, NA, NA))
+  expect_equal(colnames(m5), c(NA_character_, NA_character_, NA_character_))
+  # This also works for lists
+  l1 <- list(m1,m1)
+  l2 <- setcolnames_byname(l1, c("a", "b", "c"))
+  expect_equal(list(colnames(l2[[1]]), colnames(l2[[2]])), list(c("a", "b", "c"), c("a", "b", "c")))
+  # This also works with data frames
+  DF1 <- data.frame(mcol = I(list()))
+  DF1[[1,"mcol"]] <- m1
+  DF1[[2,"mcol"]] <- m1
+  DF2 <- DF1 %>% 
+    dplyr::mutate(
+      mcol2 = setcolnames_byname(mcol, c("c1", "c2", "c3"))
+    )
+  expect_equal(colnames(DF2$mcol2[[1]]), c("c1", "c2", "c3"))
+  expect_equal(colnames(DF2$mcol2[[2]]), c("c1", "c2", "c3"))
+  DF3 <- DF1 %>% 
+    dplyr::mutate(
+      mcol2 = setcolnames_byname(mcol, c("c1", "c2", "c3"))
+    )
+  expect_equal(list(colnames(DF3$mcol2[[1]]), colnames(DF3$mcol2[[2]])), list(c("c1", "c2", "c3"), c("c1", "c2", "c3")))
+})
+
+
+test_that("setcolnames_byname() works with different names for each matrix", {
   m <- matrix(c(1, 2,
                 3, 4, 
                 5, 6), nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
@@ -1552,7 +1627,27 @@ test_that("setting column names works with different names for each matrix", {
 })
 
 
-test_that("renaming rows to prefix or suffix works as expected", {
+test_that("setcolnames_byname() works with different names for each matrix", {
+  m <- matsbyname::Matrix(c(1, 2,
+                            3, 4, 
+                            5, 6), nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  mlist <- list(m, m, m)
+  new_colnames <- list(c("a", "b"), c("c", "d"), c("e", "f"))
+  renamed <- setcolnames_byname(mlist, colnames = new_colnames)
+  expect_true(all(sapply(renamed, is.Matrix)))
+  expect_equal(getcolnames_byname(renamed), new_colnames)
+  
+  # Try this in a data frame
+  DF <- data.frame(mcol = I(mlist), colnames_col = I(new_colnames))
+  DF_renamed <- DF %>% 
+    dplyr::mutate(
+      mcol_2 = setcolnames_byname(mcol, colnames = colnames_col)
+    )
+  expect_equal(getcolnames_byname(DF_renamed$mcol_2), new_colnames)
+})
+
+
+test_that("rename_to_pref_suff_byname() works as expected", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 
@@ -1571,6 +1666,49 @@ test_that("renaming rows to prefix or suffix works as expected", {
   actual <- rename_to_pref_suff_byname(list(m, m), keep = "suff", margin = 1, notation = RCLabels::arrow_notation)
   expect_equal(actual, list(expected, expected))
 })
+
+
+test_that("rename_to_pref_suff_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 2, 
+                            3, 4, 
+                            5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("a -> b", "r2", "r3"), c("c1", "c2")))
+  expected <- m
+  rownames(expected) <- c("a", "r2", "r3")
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", margin = 1, notation = RCLabels::arrow_notation)
+  expect_equal(actual, expected)
+  
+  expected <- m
+  rownames(expected) <- c("b", "", "")
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", margin = 1, notation = RCLabels::arrow_notation)
+  expect_equal(actual, expected)
+  
+  # Check that renaming works for a list
+  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suff", margin = 1, notation = RCLabels::arrow_notation)
+  expect_equal(actual, list(expected, expected))
+})
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("renaming columns to prefix or suffix works as expected", {
