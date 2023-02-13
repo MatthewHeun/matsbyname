@@ -2016,26 +2016,11 @@ test_that("rename_to_pref_suff_byname() works with full prefix identifiers on Ma
 })
 
 
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-test_that("setrowtype and rowtype works as expected", {
+test_that("setrowtype() and rowtype() work as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
-  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% 
+    setrowtype("Products")
   expect_null(U %>% setrowtype(NULL) %>% rowtype())
   expect_equal(rowtype(U), "Products")
   # This also works for lists
@@ -2054,7 +2039,34 @@ test_that("setrowtype and rowtype works as expected", {
 })
 
 
-test_that("setcoltype and coltype works as expected", {
+test_that("setrowtype() and rowtype() work with Matrix objects", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2,
+                          dimnames = list(productnames, industrynames), 
+                          rowtype = "Products")
+  expect_null(U %>% 
+                setrowtype(NULL) %>% 
+                rowtype())
+  expect_equal(rowtype(U), "Products")
+  # This also works for lists
+  Ul <- setrowtype(list(U,U), rowtype = "Products")
+  expect_true(all(sapply(Ul, is.Matrix)))
+  expect_equal(rowtype(Ul), list("Products", "Products"))
+  Ul2 <- setrowtype(list(U,U), rowtype = "Junk")
+  expect_equal(rowtype(Ul2), list("Junk", "Junk"))
+  # Also works for data frames
+  DF <- data.frame(U = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF2 <- setrowtype(DF$U, "Products")
+  expect_equal(rowtype(DF2), list("Products", "Products"))
+  DF3 <- DF %>% dplyr::mutate(newcol = setrowtype(U, "Products"))
+  expect_equal(DF3$newcol %>% rowtype, list("Products", "Products"))
+})
+
+
+test_that("setcoltype() and coltype() work as expected", {
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setcoltype("Industries")
@@ -2074,7 +2086,7 @@ test_that("setcoltype and coltype works as expected", {
   expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
   Ul6 <- setcoltype(list(U,U,U), coltype = list("Bogus"))
   expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
-  # This one should fail, becuase length of coltype is neither 1 nor length(a), namely 3.
+  # This one should fail, because length of coltype is neither 1 nor length(a), namely 3.
   expect_error(setcoltype(list(U,U,U), coltype = list("Bogus", "Bogus")), 
                "In prepare_.FUNdots\\(\\), when both 'a' and '.FUNdots' are lists, each top-level argument in .FUNdots must have length = 1 or length = length\\(a\\) \\(= 3\\). Found length = 2 for argument 'coltype', which is a list.")
   
@@ -2087,6 +2099,204 @@ test_that("setcoltype and coltype works as expected", {
   DF3 <- DF %>% dplyr::mutate(newcol = setcoltype(U, "Industries"))
   expect_equal(DF3$newcol %>% coltype, list("Industries", "Industries"))
 })
+
+
+test_that("setcoltype() and coltype() work with Matrix objects", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, 
+                          dimnames = list(productnames, industrynames), 
+                          coltype = "Industries") 
+  expect_null(U %>% setcoltype(NULL) %>% coltype())
+  expect_equal(coltype(U), "Industries")
+  # This also works for lists
+  Ul <- setcoltype(list(U,U), coltype = "Industries")
+  expect_equal(coltype(Ul), list("Industries", "Industries"))
+  Ul2 <- setcoltype(list(U,U), coltype = "Junk")
+  expect_equal(coltype(Ul2), list("Junk", "Junk"))
+  # Check that it works when the lists are not same structure as a.
+  Ul3 <- setcoltype(list(U,U), coltype = list("Junk", "Junk"))
+  expect_equal(coltype(Ul3), list("Junk", "Junk"))
+  Ul4 <- setcoltype(list(U,U,U), coltype = list("Junk", "Junk", "Bogus"))
+  expect_equal(coltype(Ul4), list("Junk", "Junk", "Bogus"))
+  Ul5 <- setcoltype(list(U,U,U), coltype = c("Bogus"))
+  expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
+  Ul6 <- setcoltype(list(U,U,U), coltype = list("Bogus"))
+  expect_equal(coltype(Ul5), list("Bogus", "Bogus", "Bogus"))
+  # This one should fail, because length of coltype is neither 1 nor length(a), namely 3.
+  expect_error(setcoltype(list(U,U,U), coltype = list("Bogus", "Bogus")), 
+               "In prepare_.FUNdots\\(\\), when both 'a' and '.FUNdots' are lists, each top-level argument in .FUNdots must have length = 1 or length = length\\(a\\) \\(= 3\\). Found length = 2 for argument 'coltype', which is a list.")
+  
+  # Also works for data frames
+  DF <- data.frame(U = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF2 <- setcoltype(DF$U, "Industries")
+  expect_equal(coltype(DF2), list("Industries", "Industries"))
+  DF3 <- DF %>% dplyr::mutate(newcol = setcoltype(U, "Industries"))
+  expect_equal(DF3$newcol %>% coltype, list("Industries", "Industries"))
+})
+
+
+test_that("nrow_byname() works as expected.", {
+  
+  # First, test with a single 2x2 matrix:
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  nrow_byname(U) %>%
+    expect_equal(2)
+  
+  # Second, test with a 3x2 matrix:
+  productnames <- c("p1", "p2", "p3")
+  industrynames <- c("i1", "i2")
+  U2 <- matrix(1:3, ncol = 2, nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  nrow_byname(U2) %>%
+    expect_equal(3)
+  
+  # Third, test with a 4x3 matrix:
+  productnames <- c("p1", "p2", "p3", "p4")
+  industrynames <- c("i1", "i2", "i3")
+  U3 <- matrix(1:4, ncol = length(industrynames), nrow = length(productnames), dimnames = list(productnames, industrynames)) %>% setrowtype("Products") %>% setcoltype("Industries")
+  nrow_byname(U3) %>%
+    expect_equal(4)
+  
+  # Try with a list
+  nrow_with_list <- nrow_byname(list(U, U2, U3))
+  expect_equal(nrow_with_list[[1]], 2)
+  expect_equal(nrow_with_list[[2]], 3)
+  expect_equal(nrow_with_list[[3]], 4)
+  
+  # Fourth, test with a data frame with U, U2, and U3 in a column:
+  dfUs <- data.frame(
+    year = numeric(),
+    matrix_byname = I(list())
+  )
+  
+  dfUs[[1, "matrix_byname"]] <- U
+  dfUs[[2, "matrix_byname"]] <- U2
+  dfUs[[3, "matrix_byname"]] <- U3
+  
+  dfUs[[1, "year"]] <- 2000
+  dfUs[[2, "year"]] <- 2001
+  dfUs[[3, "year"]] <- 2002
+  
+  number_rows <- matsbyname::nrow_byname(dfUs$matrix_byname)
+  
+  number_rows[[1]] %>%
+    testthat::expect_equal(2)
+  number_rows[[2]] %>%
+    testthat::expect_equal(3)
+  number_rows[[3]] %>%
+    testthat::expect_equal(4)
+  
+  
+  # Now trying with mutate:
+  a <- dfUs %>%
+    dplyr::mutate(
+      number_of_rows = matsbyname::nrow_byname(matrix_byname)
+    )
+  
+  testthat::expect_equal(a$number_of_rows[[1]], 2)
+  testthat::expect_equal(a$number_of_rows[[2]], 3)
+  testthat::expect_equal(a$number_of_rows[[3]], 4)
+})
+
+
+test_that("nrow_byname() works with Matrix objects", {
+  
+  # First, test with a single 2x2 matrix:
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2,
+                          dimnames = list(productnames, industrynames), 
+                          rowtype = "Products", coltype = "Industries")
+  nrow_byname(U) %>%
+    expect_equal(2)
+  
+  # Second, test with a 3x2 matrix:
+  productnames <- c("p1", "p2", "p3")
+  industrynames <- c("i1", "i2")
+  U2 <- matsbyname::Matrix(1:3, nrow = length(productnames), ncol = 2,
+                           dimnames = list(productnames, industrynames), 
+                           rowtype = "Products", coltype = "Industries")
+  nrow_byname(U2) %>%
+    expect_equal(3)
+  
+  # Third, test with a 4x3 matrix:
+  productnames <- c("p1", "p2", "p3", "p4")
+  industrynames <- c("i1", "i2", "i3")
+  U3 <- matsbyname::Matrix(1:4, nrow = length(productnames), ncol = length(industrynames), 
+                           dimnames = list(productnames, industrynames), 
+                           rowtype = "Products", coltype = "Industries")
+  nrow_byname(U3) %>%
+    expect_equal(4)
+  
+  # Try with a list
+  nrow_with_list <- nrow_byname(list(U, U2, U3))
+  expect_equal(nrow_with_list[[1]], 2)
+  expect_equal(nrow_with_list[[2]], 3)
+  expect_equal(nrow_with_list[[3]], 4)
+  
+  # Fourth, test with a data frame with U, U2, and U3 in a column:
+  dfUs <- data.frame(
+    year = numeric(),
+    matrix_byname = I(list())
+  )
+  
+  dfUs[[1, "matrix_byname"]] <- U
+  dfUs[[2, "matrix_byname"]] <- U2
+  dfUs[[3, "matrix_byname"]] <- U3
+  
+  dfUs[[1, "year"]] <- 2000
+  dfUs[[2, "year"]] <- 2001
+  dfUs[[3, "year"]] <- 2002
+  
+  number_rows <- matsbyname::nrow_byname(dfUs$matrix_byname)
+  
+  number_rows[[1]] %>%
+    testthat::expect_equal(2)
+  number_rows[[2]] %>%
+    testthat::expect_equal(3)
+  number_rows[[3]] %>%
+    testthat::expect_equal(4)
+  
+  
+  # Now trying with mutate:
+  a <- dfUs %>%
+    dplyr::mutate(
+      number_of_rows = matsbyname::nrow_byname(matrix_byname)
+    )
+  
+  testthat::expect_equal(a$number_of_rows[[1]], 2)
+  testthat::expect_equal(a$number_of_rows[[2]], 3)
+  testthat::expect_equal(a$number_of_rows[[3]], 4)
+})
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("nrow_byname() works as expected.", {
