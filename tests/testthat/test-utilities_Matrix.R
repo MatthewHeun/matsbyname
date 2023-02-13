@@ -422,6 +422,9 @@ test_that("check_row_col_types() works as expected", {
   C <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r", "c")) %>% 
     setrowtype("row") %>% setcoltype("col")
   D <- matsbyname::Matrix(42, nrow = 1, ncol = 1, dimnames = list("r", "c")) %>% 
-    setrowtype("wrongrow") %>% setcoltype("wrongcol")
+    setrowtype("wrongrow") %>% setcoltype("col")
   expect_error(matsbyname:::check_row_col_types(C, D), "Incompatible row types: row and wrongrow")
+  E <- matsbyname::Matrix(42, nrow = 1, ncol = 1, dimnames = list("r", "c")) %>% 
+    setrowtype("row") %>% setcoltype("wrongcol")
+  expect_error(matsbyname:::check_row_col_types(C, E), "Incompatible column types: col and wrongcol")
 })

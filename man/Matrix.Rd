@@ -20,22 +20,23 @@ Matrix(
 \arguments{
 \item{data}{An optional numeric data vector or matrix.}
 
-\item{nrow}{When data is not a matrix, the desired number of rows.
+\item{nrow}{When \code{data} is not a \code{matrix} or a \code{Matrix}, the desired number of rows.
 Default is \code{1}.}
 
-\item{ncol}{When data is not a matrix, the desired number of columns.
+\item{ncol}{When \code{data} is not a \code{matrix} or a \code{Matrix}, the desired number of columns.
 Default is \code{1}.}
 
-\item{byrow}{A boolean. If \code{FALSE} (the default) the matrix is filled by columns, otherwise the matrix is filled by rows.}
+\item{byrow}{A boolean. If \code{FALSE} (the default) the Matrix is filled by columns, otherwise the Matrix is filled by rows.}
 
-\item{dimnames}{A dimnames attribute for the matrix: a list of two character components. They are set if not NULL (as per default).}
+\item{dimnames}{A dimnames attribute for the Matrix: a list of two character components.
+Default is \code{base::dimnames(data)}.}
 
 \item{sparse}{A boolean or \code{NULL}. Specifies whether the result should be sparse or not.
 By default (\code{NULL}), the Matrix is made sparse when more than half
 of the entries are \code{0}.}
 
 \item{doDiag}{A boolean indicating if a \code{diagonalMatrix} object should be returned
-when the resulting matrix is diagonal (mathematically).
+when the resulting Matrix is diagonal (mathematically).
 Default is \code{FALSE}, which is different from \code{Matrix::Matrix()}.}
 
 \item{forceCheck}{A boolean indicating if the checks for structure should happen
@@ -71,10 +72,7 @@ This function has different defaults compared to \code{Matrix::Matrix()}, includ
 <ul>
 <li> Here, the default for `doDiag` is `FALSE`,
      while the default for `doDiag` is `TRUE` for `Matrix::Matrix()`.
-<li> When `dimnames = NULL` (the default), `dimnames = NULL` is the result, 
-     to maintain compatibility with `matrix()`.
-     `Matrix::Matrix()` sets `dimnames = list(NULL, NULL)`.
-<li> Preserves rowtype and coltype when `data` is a `matrix` or a `Matrix`.
+<li> Preserves rowtype and coltype on `data`.
 </ul>
 }}
 }

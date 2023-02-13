@@ -377,18 +377,14 @@ hatize_byname <- function(v, keep = NULL){
         should_keep <- NULL
       } else if (!is.null(rownames(v_vec)) & !is.null(rownames(v_vec))) {
         should_keep <- keep
-      } else {
-        stop('In hatize_byname(), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix and both of rownames and colnames are set.')
-      }
+      } 
     } else if (nrow(v_vec) > 1 & ncol(v_vec) == 1) {
       # We should keep column names
       should_keep <- "rownames"
     } else if (nrow(v_vec) == 1 & ncol(v_vec) > 1) {
       # We should keep row names.
       should_keep <- "colnames"
-    } else {
-      stop("v_vec has at least one dimension of zero size in hatize_byname().")
-    }
+    } 
     # Compare dimnames the caller wants to keep against should_keep.
     if (!is.null(keep) & !is.null(should_keep)) {
       if (should_keep == "rownames" & keep == "colnames") {

@@ -38,24 +38,22 @@
 #' <ul>
 #' <li> Here, the default for `doDiag` is `FALSE`,
 #'      while the default for `doDiag` is `TRUE` for `Matrix::Matrix()`.
-#' <li> When `dimnames = NULL` (the default), `dimnames = NULL` is the result, 
-#'      to maintain compatibility with `matrix()`.
-#'      `Matrix::Matrix()` sets `dimnames = list(NULL, NULL)`.
-#' <li> Preserves rowtype and coltype when `data` is a `matrix` or a `Matrix`.
+#' <li> Preserves rowtype and coltype on `data`.
 #' </ul>
 #'
 #' @param data An optional numeric data vector or matrix.
-#' @param nrow When data is not a matrix, the desired number of rows. 
+#' @param nrow When `data` is not a `matrix` or a `Matrix`, the desired number of rows. 
 #'             Default is `1`.
-#' @param ncol When data is not a matrix, the desired number of columns.
+#' @param ncol When `data` is not a `matrix` or a `Matrix`, the desired number of columns.
 #'             Default is `1`.
-#' @param byrow A boolean. If `FALSE` (the default) the matrix is filled by columns, otherwise the matrix is filled by rows.
-#' @param dimnames A dimnames attribute for the matrix: a list of two character components. They are set if not NULL (as per default).
+#' @param byrow A boolean. If `FALSE` (the default) the Matrix is filled by columns, otherwise the Matrix is filled by rows.
+#' @param dimnames A dimnames attribute for the Matrix: a list of two character components. 
+#'                 Default is `base::dimnames(data)`.
 #' @param sparse A boolean or `NULL`. Specifies whether the result should be sparse or not. 
 #'               By default (`NULL`), the Matrix is made sparse when more than half 
 #'               of the entries are `0`.
 #' @param doDiag A boolean indicating if a `diagonalMatrix` object should be returned
-#'               when the resulting matrix is diagonal (mathematically). 
+#'               when the resulting Matrix is diagonal (mathematically). 
 #'               Default is `FALSE`, which is different from `Matrix::Matrix()`.
 #' @param forceCheck A boolean indicating if the checks for structure should happen
 #'                   when `data` is already a `Matrix` object.

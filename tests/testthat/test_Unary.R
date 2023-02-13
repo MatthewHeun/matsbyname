@@ -587,6 +587,18 @@ test_that("hatize_byname() works with a Matrix vector", {
 })
 
 
+test_that("hatize_byname() tests hit all lines of code", {
+  v1 <- matrix(c(42), nrow = 1, ncol = 1)
+  expect_error(hatize_byname(v1), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
+  
+  v2 <- matrix(c(42), nrow = 1, ncol = 1, dimnames = list("r1"))
+  expect_error(hatize_byname(v2, keep = "bogus"), 'In hatize_byname\\(\\), argument "keep" must be one of "colnames" or "rownames".')
+  
+  expect_error(hatize_byname(NA), "argument is of length zero")
+  expect_null(hatize_byname(NULL))
+})
+
+
 test_that("hatinv_byname() works as expected", {
   # Test with a column vector
   v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
