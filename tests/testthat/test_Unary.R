@@ -201,11 +201,11 @@ test_that("invert_byname() works with Matrix objects", {
   
   resQR <- invert_byname(M, method = "QR")
   matsbyname:::expect_equal_matrix_or_Matrix(resQR, Minv, tolerance = 1e-15)
-  expect_true(inherits(resQR, "Matrix"))
+  expect_true(is.Matrix(resQR))
   
   res_SVD <- invert_byname(M, method = "SVD")
   matsbyname:::expect_equal_matrix_or_Matrix(res_SVD, Minv, tolerance = 1e-15)
-  expect_true(inherits(res_SVD, "Matrix"))
+  expect_true(is.Matrix(res_SVD))
 })
 
 
@@ -1008,7 +1008,7 @@ test_that("matricize_byname() works with Matrix objects", {
                       nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
     setrowtype("Products") %>% setcoltype("Industries")
   matsbyname:::expect_equal_matrix_or_Matrix(actual2, expected2)
-  expect_true(inherits(actual2, "Matrix"))
+  expect_true(is.Matrix(actual2))
 })
 
 
@@ -1485,7 +1485,7 @@ test_that("colprods_byname() works with Matrix objects", {
   colprodsM_expected <- matrix(c(6, 120), nrow = 1, dimnames = list(rowtype(M), colnames(M))) %>% 
     setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
   res <- colprods_byname(M)
-  expect_true(inherits(M, "Matrix"))
+  expect_true(is.Matrix(M))
   matsbyname:::expect_equal_matrix_or_Matrix(res, colprodsM_expected)
   matsbyname:::expect_equal_matrix_or_Matrix(colprods_byname(M, "E.ktoe"), colprodsM_expected %>% setrownames_byname("E.ktoe"))
 })
@@ -1633,7 +1633,7 @@ test_that("clean_byname() works as expected for Matrix objects", {
   # Now clean in columns. Should eliminate column 1.
   res3 <- Mat2 %>%
     clean_byname(margin = 2, clean_value = 0)
-  expect_true(inherits(res3, "Matrix"))
+  expect_true(is.Matrix(res3))
   matsbyname:::expect_equal_matrix_or_Matrix(res3, 
                                              matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r (1)", "r (2)"), "c (2)")) %>% 
                                                setrowtype("Rows") %>% setcoltype("Cols"))
@@ -1779,7 +1779,7 @@ test_that("cumprod_byname() works with Matrix objects", {
   expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2, m3)) * 0)
 
   for (i in 1:3) {
-    expect_true(inherits(res[[i]], "Matrix"))
+    expect_true(is.Matrix(res[[i]]))
     matsbyname:::expect_equal_matrix_or_Matrix(res[[i]], expected[[i]])
   }
 })
@@ -2665,7 +2665,7 @@ test_that("aggregate_pieces_byname() works with aggregation by type in Matrix ob
                           rowtype = "Product", coltype = "Industry")
   actual1 <- aggregate_pieces_byname(m, piece = "noun", margin = "Product",
                                      notation = RCLabels::bracket_notation)
-  expect_true(inherits(actual1, "Matrix"))
+  expect_true(is.Matrix(actual1))
   expected1 <- matsbyname::Matrix(c(0, 2, 2, 
                                     1, 0, 0), nrow = 2, ncol = 3, byrow = TRUE, 
                                   dimnames = list(c("Electricity", "Gasoline"),
@@ -2764,7 +2764,7 @@ test_that("aggregate_pieces_byname() works with funny names", {
                                                  c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
   
   actual1 <- rename_to_piece_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation)
-  expect_true(inherits(actual1, "Matrix"))
+  expect_true(is.Matrix(actual1))
   expected1 <- matsbyname::Matrix(c(1, 2, 3,
                                     4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
                                   dimnames = list(c("Coal", "Solar"), 
