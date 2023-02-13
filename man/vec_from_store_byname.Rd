@@ -22,8 +22,7 @@ vec_from_store_byname(
  } else {
     
     RCLabels::prepositions_list
- },
-  class = c("matrix", "Matrix")
+ }
 )
 }
 \arguments{
@@ -49,11 +48,6 @@ Default is \code{RCLabels::bracket_notation}, wrapped as a list if \code{a} is a
 
 \item{prepositions}{The strings that will count for prepositions.
 Default is \code{RCLables::prepositions}, wrapped as a list if \code{a} is a list..}
-
-\item{class}{One of "matrix" or "Matrix".
-"matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
-"Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
-Default is "matrix".}
 }
 \value{
 A vector with names from \code{a} and values from \code{v}.
@@ -97,6 +91,10 @@ Note that \code{notation} and \code{prepositions} should be lists if \code{a} is
 but a single value otherwise.
 The default values of \code{notation} and \code{prepositions} take care of this requirement,
 switching on the type of \code{a} (list or not).
+
+The class of the output object is determined from \code{a}.
+If \code{a} is a \code{Matrix}, the output will be a \code{Matrix}.
+Otherwise, the output will be a \code{matrix}.
 }
 \examples{
 a <- matrix(42, nrow = 3, ncol = 5, 

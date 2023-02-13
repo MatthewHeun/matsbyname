@@ -1817,6 +1817,10 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' but a single value otherwise. 
 #' The default values of `notation` and `prepositions` take care of this requirement,
 #' switching on the type of `a` (list or not).
+#' 
+#' The class of the output object is determined from `a`.
+#' If `a` is a `Matrix`, the output will be a `Matrix`.
+#' Otherwise, the output will be a `matrix`.
 #'
 #' @param a A matrix from which row or column labels are taken.
 #'          Can also be a list or the name of a column in a data frame.
@@ -1833,10 +1837,6 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'                 Default is `RCLabels::bracket_notation`, wrapped as a list if `a` is a list.
 #' @param prepositions The strings that will count for prepositions.
 #'                     Default is `RCLables::prepositions`, wrapped as a list if `a` is a list..
-#' @param class One of "matrix" or "Matrix". 
-#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
-#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
-#'              Default is "matrix".
 #'
 #' @return A vector with names from `a` and values from `v`.
 #' 
@@ -1904,9 +1904,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'   )
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
-                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
-                                  class = c("matrix", "Matrix")) {
-  class <- match.arg(class)
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}) {
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 
                        notation_val = notation, 
                        prepositions_val = prepositions) {
