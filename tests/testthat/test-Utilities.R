@@ -1846,36 +1846,24 @@ test_that("rename_to_pref_suff_byname() also changes rowtype and coltype on Matr
 })
 
 
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-test_that("changing row and column type correctly ignores missing suffixes", {
-  m <- matrix(c(1, 2, 
-                3, 4, 
-                5, 6), nrow = 3, byrow = TRUE, 
-              dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j"))) %>% 
-    setrowtype("Rows") %>% setcoltype("Product -> Industry")
+test_that("rename_to_pref_suff_byname() to change row and column type correctly ignores missing suffixes for Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 2, 
+                            3, 4, 
+                            5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j")), 
+                          rowtype = "Rows", coltype = "Product -> Industry")
   res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+  expect_true(is.Matrix(res))
   expect_equal(rowtype(res), "Rows")
   expect_equal(coltype(res), "Product")
-
+  
   res_2 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(rowtype(res_2), "")
   expect_equal(coltype(res_2), "Industry")
 })
 
 
-test_that("setting identical row/col names is OK", {
+test_that("rename_to_pref_suff_byname() is OK with setting identical row/col names", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 
@@ -1895,7 +1883,28 @@ test_that("setting identical row/col names is OK", {
 })
 
 
-test_that("renaming with full prefix identifiers works as expected.", {
+test_that("rename_to_pref_suff_byname() is OK with setting identical row/col names on Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 2, 
+                            3, 4, 
+                            5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("a -> b", "a -> c", "r3"), c("a -> b", "a -> z")))
+  expected <- m
+  rownames(expected) <- c("a", "a", "r3")
+  colnames(expected) <- c("a", "a")
+  # The next call will create duplicate row names and column names in m. 
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+  expect_true(is.Matrix(actual))
+  # Interestingly the command View(actual) or View(expected)
+  # shows row names that aren't true. 
+  # The 2nd row of actual and expected is shown as "a.1", 
+  # but the underlying objects have simply "a".
+  # (The column names are shown correctly.)
+  # This test ensures that R isn't messing with the actual row and column names on the objects.
+  expect_equal(actual, expected)
+})
+
+
+test_that("rename_to_pref_suff_byname() works with full prefix identifiers", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 
@@ -1920,12 +1929,12 @@ test_that("renaming with full prefix identifiers works as expected.", {
   dimnames(expected4) <- list(c("b", "d", "f"), c("h", "j"))
   actual4 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::bracket_notation)
   expect_equal(actual4, expected4)
-
+  
   expected5 <- m
   dimnames(expected5) <- list(c("b", "d", "f"), c("g [h]", "i [j]"))
   actual5 <- rename_to_pref_suff_byname(m, keep = "suff", margin = 1, notation = RCLabels::bracket_notation)
   expect_equal(expected5, actual5)
-
+  
   expected6 <- m
   dimnames(expected6) <- list(c("a [b]", "c [d]", "e [f]"), c("h", "j"))
   actual6 <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::bracket_notation)
@@ -1949,6 +1958,78 @@ test_that("renaming with full prefix identifiers works as expected.", {
     )
   expect_equal(res$actual, res$expected)
 })
+
+
+test_that("rename_to_pref_suff_byname() works with full prefix identifiers on Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 2, 
+                            3, 4, 
+                            5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("a [b]", "c [d]", "e [f]"), c("g [h]", "i [j]")))
+  expected <- m
+  dimnames(expected) <- list(c("a", "c", "e"), c("g", "i"))
+  # The next call will create duplicate row names and column names in m. 
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::bracket_notation)
+  expect_equal(actual, expected)
+  
+  expected2 <- m
+  dimnames(expected2) <- list(c("a", "c", "e"), c("g [h]", "i [j]"))
+  actual2 <- rename_to_pref_suff_byname(m, keep = "pref", margin = 1, notation = RCLabels::bracket_notation)
+  expect_equal(actual2, expected2)
+  
+  expected3 <- m
+  dimnames(expected3) <- list(c("a [b]", "c [d]", "e [f]"), c("g", "i"))
+  actual3 <- rename_to_pref_suff_byname(m, keep = "pref", margin = 2, notation = RCLabels::bracket_notation)
+  expect_equal(actual3, expected3)
+  
+  expected4 <- m
+  dimnames(expected4) <- list(c("b", "d", "f"), c("h", "j"))
+  actual4 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::bracket_notation)
+  expect_equal(actual4, expected4)
+  
+  expected5 <- m
+  dimnames(expected5) <- list(c("b", "d", "f"), c("g [h]", "i [j]"))
+  actual5 <- rename_to_pref_suff_byname(m, keep = "suff", margin = 1, notation = RCLabels::bracket_notation)
+  expect_equal(expected5, actual5)
+  
+  expected6 <- m
+  dimnames(expected6) <- list(c("a [b]", "c [d]", "e [f]"), c("h", "j"))
+  actual6 <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::bracket_notation)
+  expect_equal(expected6, actual6)
+  
+  # Try with a list
+  actual_list <- rename_to_pref_suff_byname(list(m, m), keep = "pref", margin = 1, notation = RCLabels::bracket_notation)
+  expect_equal(actual_list[[1]], expected2)
+  expect_equal(actual_list[[2]], expected2)
+  
+  # Try in a data frame
+  DF <- tibble::tibble(m = list(m, m, m, m, m, m), keep = c("pref", "pref", "pref", "suff", "suff", "suff"), 
+                       margin = list(c(1, 2), 1, 2, c(1, 2), 1, 2),
+                       notation = list(RCLabels::bracket_notation),
+                       expected = list(expected, expected2, expected3, expected4, expected5, expected6))
+  
+  res <- DF %>% 
+    dplyr::mutate(
+      actual = rename_to_pref_suff_byname(m, keep = keep, margin = margin, 
+                                          notation = notation)
+    )
+  expect_equal(res$actual, res$expected)
+})
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("setrowtype and rowtype works as expected", {
