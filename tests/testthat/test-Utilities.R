@@ -1002,6 +1002,40 @@ test_that("select_rowcol_piece_byname() works when all rows or all cols are remo
 })
 
 
+test_that("setrownames_byname() and setcolnames_byname() works even when there is a NULL situation", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  # Try with rows
+  expect_equal(m %>% setrownames_byname(c("a", "b")), 
+               matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("a", "b"), c("c1", "c2"))) %>% 
+                 setrowtype("rows") %>% setcoltype("cols"))
+  expect_null(setrownames_byname(NULL, c("a", "b")))
+  # Try with columns
+  expect_equal(m %>% setcolnames_byname(c("a", "b")), 
+               matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("a", "b"))) %>% 
+                 setrowtype("rows") %>% setcoltype("cols"))
+  expect_null(setcolnames_byname(NULL, c("a", "b")))
+})
+
+
+test_that("setrownames_byname() and setcolnames_byname() works even when there is a NULL situation", {
+  m <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")), 
+                          rowtype = "rows", coltype = "cols")
+  # Try with rows
+  expected1 <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("a", "b"), c("c1", "c2")), 
+                                  rowtype = "rows", coltype = "cols")
+  res1 <- m %>%
+    setrownames_byname(c("a", "b"))
+  expect_true(is.Matrix(res1))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1, expected1)
+  # Try with columns
+  expected2 <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("a", "b"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  res2 <- m %>%
+    setcolnames_byname(c("a", "b"))
+  expect_true(is.Matrix(res2))
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, expected2)
+})
 
 
 
@@ -1021,20 +1055,6 @@ test_that("select_rowcol_piece_byname() works when all rows or all cols are remo
 
 
 
-test_that("setting row and column names works even when there is a NULL situation", {
-  m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  # Try with rows
-  expect_equal(m %>% setrownames_byname(c("a", "b")), 
-               matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("a", "b"), c("c1", "c2"))) %>% 
-                 setrowtype("rows") %>% setcoltype("cols"))
-  expect_null(setrownames_byname(NULL, c("a", "b")))
-  # Try with columns
-  expect_equal(m %>% setcolnames_byname(c("a", "b")), 
-               matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("a", "b"))) %>% 
-                 setrowtype("rows") %>% setcoltype("cols"))
-  expect_null(setcolnames_byname(NULL, c("a", "b")))
-})
   
 
 test_that("bad margins in clean_byname work as expected", {
