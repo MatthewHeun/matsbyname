@@ -211,11 +211,23 @@ test_that("matsbyname::Matrix() picks up row and col type from matrix objects", 
   expect_equal(rowtype(M), "rows")
   expect_equal(coltype(M), "cols")
   
+  # Check that it picks up argument values as overrides
   m3 <- matrix(42, dimnames = list("r1", "r2")) %>% 
     setrowtype("rows") %>% setcoltype("cols")
   M3 <- matsbyname::Matrix(m3, rowtype = "rows3", coltype = "cols3")
   expect_equal(rowtype(M3), "rows3")
   expect_equal(coltype(M3), "cols3")
+})
+
+
+test_that("matsbyname::Matrix() correctly deals with override dimnames", {
+  m <- matrix(c(1, 0, 3, 
+                0, 3, 0, 
+                2, 0, 0), 
+              byrow = TRUE, nrow = 3, ncol = 3, 
+              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+  M <- matsbyname::Matrix(m, dimnames = list(c("a", "b", "c"), c("d", "e", "f")))
+  expect_equal(dimnames(M), list(c("a", "b", "c"), c("d", "e", "f")))
 })
 
 

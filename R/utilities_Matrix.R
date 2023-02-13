@@ -90,7 +90,8 @@ Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = base
     out <- Matrix::Matrix(data = data, 
                           sparse = sparse, doDiag = doDiag, forceCheck = forceCheck)
   } else {
-    out <- Matrix::Matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow,
+    out <- Matrix::Matrix(data = data, 
+                          nrow = nrow, ncol = ncol, byrow = byrow,
                           sparse = sparse, doDiag = doDiag, 
                           forceCheck = forceCheck)
   }
