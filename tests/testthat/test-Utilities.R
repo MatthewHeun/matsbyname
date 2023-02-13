@@ -390,8 +390,8 @@ test_that("select_cols_byname() works in lists for Matrix objects", {
   
   # Use same column names for each item in the list
   res1 <- select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
-  expect_true(inherits(res1[[1]], "Matrix"))
-  expect_true(inherits(res1[[2]], "Matrix"))
+  expect_true(is.Matrix(res1[[1]]))
+  expect_true(is.Matrix(res1[[2]]))
   expect_equal(select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$"),
                list(m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
                     m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))

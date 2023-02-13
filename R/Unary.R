@@ -415,7 +415,7 @@ hatize_byname <- function(v, keep = NULL){
       out <- v_sorted
     } else {
       v_sorted <- sort_rows_cols(v_vec)
-      if (inherits(v_sorted, "Matrix")) {
+      if (is.Matrix(v_sorted)) {
         out <- Matrix::Diagonal(x = as.matrix(v_sorted))
       } else {
         out <- diag(as.numeric(v_sorted))
@@ -508,7 +508,7 @@ hatinv_byname <- function(v, keep = NULL, inf_becomes = .Machine$double.xmax){
     if (!is.null(inf_becomes)) {
       v_inv[v_inv == Inf] <- inf_becomes
       v_inv[v_inv == -Inf] <- -inf_becomes
-      if (inherits(v_vec, "Matrix")) {
+      if (is.Matrix(v_vec)) {
         # Matrix objects lose their rowtype and coltype at this point.
         v_inv <- v_inv %>% 
           setrowtype(rowtype(v_vec)) %>% 

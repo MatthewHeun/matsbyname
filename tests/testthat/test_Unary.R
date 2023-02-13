@@ -196,8 +196,8 @@ test_that("invert_byname() works with Matrix objects", {
   
   expect_error(invert_byname(M, method = "bogus"), regexp = "'arg' should be one of ")
   matsbyname:::expect_equal_matrix_or_Matrix(invert_byname(M), Minv, tolerance = 1e-15)
-  expect_true(inherits(invert_byname(M, method = "solve"), "Matrix"))
-  expect_false(inherits(invert_byname(M, method = "solve"), "matrix"))
+  expect_true(is.Matrix(invert_byname(M, method = "solve")))
+  expect_false(is.matrix(invert_byname(M, method = "solve")))
   
   resQR <- invert_byname(M, method = "QR")
   matsbyname:::expect_equal_matrix_or_Matrix(resQR, Minv, tolerance = 1e-15)

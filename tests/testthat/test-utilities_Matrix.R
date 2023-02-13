@@ -249,10 +249,10 @@ test_that("inverting results in a sparse Matrix (or not)", {
                             0, 3, 0, 
                             2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
   invertedm <- Matrix::solve(m)
-  expect_true(inherits(invertedm, "Matrix"))
+  expect_true(is.Matrix(invertedm))
   invertedM <- matsbyname::Matrix(invertedm)
-  expect_true(inherits(invertedM, "Matrix"))
-  expect_true(inherits(invertedM, "dgCMatrix"))
+  expect_true(is.Matrix(invertedM))
+  expect_true(is.Matrix(invertedM))
 })
 
 
