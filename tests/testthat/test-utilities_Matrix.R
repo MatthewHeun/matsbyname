@@ -100,30 +100,6 @@ test_that("A sparse Matrix cannot be coerced to a symmetric Matrix", {
   expect_true(inherits(res, "dgCMatrix"))
 })
 
-test_that("Constructon order doesn't matter for a symmetric matrix", {
-  # The assignment of m1 works (without information loss), because
-  # asymmetric dimnames are assigned when the matrix is created.
-  # Thus, m1 is created as a dgCMatrix (genericMatrix),
-  # which allows separate row and column names.
-  m1 <- Matrix::Matrix(c(1, 0, 2, 
-                         0, 3, 0, 
-                         2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3, 
-                       dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
-  
-  m2 <- matsbyname::Matrix(c(1, 0, 2, 
-                             0, 3, 0, 
-                             2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-  # matsbyname::Matrix() converts to a "generalMatrix". 
-  # An underlying symmetric matrix class won't be used,
-  # and dimname assignment WILL work.
-  dimnames(m2) <- list(c("r1", "r2", "r3"), c("c1", "c2", "c3"))
-  
-  # These matrices are equal, but only because
-  # we were careful to convert to a generalMatrix, 
-  # thereby avoiding creating a symmetric matrix subclass.  
-  expect_equal(m1, m2)
-})
-
 
 test_that("Changing entries and dimnames makes a symmetric matrix asymmetric", {
   # This is symmetric Matrix
@@ -247,6 +223,12 @@ test_that("matsbyname::Matrix() is usable with matsbyname", {
   # The rownames are part of determining symmetry, 
   # so we expect m3 to be asymmetric.
   expect_false(Matrix::isSymmetric(m3))
+})
+
+
+test_that("is.Matrix() works as expected", {
+  expect_true(is.Matrix(Matrix(42)))
+  expect_false(is.Matrix(matrix(42)))
 })
 
 

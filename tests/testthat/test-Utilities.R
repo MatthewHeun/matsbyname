@@ -476,36 +476,6 @@ test_that("select_rows_byname() works even when there is a NULL situation with M
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("select_rowcol_piece_byname() works for selecting rows", {
   expect_null(select_rowcol_piece_byname(a = NULL))
   
@@ -517,7 +487,7 @@ test_that("select_rowcol_piece_byname() works for selecting rows", {
   expected_1 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
                        dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
     matsbyname::setrowtype("rows") %>% setcoltype("cols")
-
+  
   res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", notation = RCLabels::from_notation, margin = 1)
   expect_equal(res_1, expected_1)
   
@@ -550,6 +520,81 @@ test_that("select_rowcol_piece_byname() works for selecting rows", {
                                       margin = 1)
   expect_equal(res_6, expected_2)
 })
+
+
+test_that("select_rowcol_piece_byname() works for selecting rows for Matrix objects", {
+  # Retain a row by its noun.
+  m_1 <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                            dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]")), 
+                            rowtype = "rows", coltype = "cols")
+  
+  expected_1 <- matsbyname::Matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                                   dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]")), 
+                                   rowtype = "rows", coltype = "cols")
+  
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", notation = RCLabels::from_notation, margin = 1)
+  expect_true(is.Matrix(res_1))
+  expect_equal(res_1, expected_1)
+  
+  # Retain a row by a preposition.
+  expected_2 <- matsbyname::Matrix(c(3,4), nrow = 1, ncol = 2, byrow = TRUE, 
+                                   dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]")), 
+                                   rowtype = "rows", coltype = "cols")
+  
+  # The next line needs to have bracket_notation.
+  # If from_notation is used, "from" is not a valid piece.
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "b", piece = "from", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_2, expected_2)
+  
+  # Retain a row by prefix. Should give the same result as expected_2
+  res_3 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_3, expected_2)
+  
+  # Retain a row by suffix
+  res_4 <- select_rowcol_piece_byname(m_1, retain = "a", piece = "suff", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_4, expected_1)
+  
+  # Retain a row by prefix
+  res_5 <- select_rowcol_piece_byname(m_1, retain = "r2", piece = "pref", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_5, expected_2)
+  
+  # Replace based on pattern type
+  res_6 <- select_rowcol_piece_byname(m_1, retain = "2", piece = "noun",
+                                      pattern_type = "trailing", 
+                                      notation = RCLabels::bracket_notation, 
+                                      margin = 1)
+  expect_equal(res_6, expected_2)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("select_rowcol_piece_byname() works for removing rows", {
