@@ -2993,7 +2993,7 @@ test_that("kvec_from_template_byname() works as expected", {
 test_that("kvec_from_template_byname() works with Matrix objects", {
   m <- matsbyname::Matrix(42, nrow = 4, ncol = 2,
                           dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2")))
-  res <- kvec_from_template_byname(m, colname = "mycol", class = "Matrix")
+  res <- kvec_from_template_byname(m, colname = "mycol")
   expect_true(is.Matrix(res))
   matsbyname:::expect_equal_matrix_or_Matrix(res, 
                                              matrix(1, nrow = 4, ncol = 1, 
@@ -3009,14 +3009,13 @@ test_that("kvec_from_template_byname() works with Matrix objects", {
   
   res1 <- df1 %>% 
     dplyr::mutate(
-      irow = kvec_from_template_byname(m, colname = rnme, column = FALSE, class = "Matrix"),
-      icol = kvec_from_template_byname(m, colname = cnme, column = clmn, class = "Matrix"), 
-      kcol = kvec_from_template_byname(m, k = k, colname = cnme, class = "Matrix"), 
+      irow = kvec_from_template_byname(m, colname = rnme, column = FALSE),
+      icol = kvec_from_template_byname(m, colname = cnme, column = clmn), 
+      kcol = kvec_from_template_byname(m, k = k, colname = cnme), 
       with_rt_ct = kvec_from_template_byname(m %>% 
                                                setrowtype(rtype) %>% 
                                                setcoltype(ctype), 
-                                             colname = cnme, 
-                                             class = "Matrix")
+                                             colname = cnme)
     )
   
   matsbyname:::expect_equal_matrix_or_Matrix(res1$irow[[1]],

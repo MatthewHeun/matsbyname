@@ -1738,15 +1738,14 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, class = c("m
 #' If `column` is `FALSE`, the output is a row vevtor with 
 #' column names taken from column names of `a` and a row named by `colname`.
 #'
+#' If the class of `a` is `Matrix`, the output object will be a `Matrix`.
+#' Otherwise, the class of the output object will be a `matrix`.
+#'
 #' @param a The template matrix for the column vector.
 #' @param k The value of the entries in the output column vector.
 #' @param colname The name of the output vector's 1-sized dimension 
 #'                (the only column if `column` is `TRUE`, the only row otherwise).
 #' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
-#' @param class One of "matrix" or "Matrix". 
-#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
-#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
-#'              Default is "matrix".
 #'
 #' @return A vector vector formed from `a`.
 #' 
@@ -1759,14 +1758,18 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, class = c("m
 #' kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,
 #'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
 #'                           colname = "new row", column = FALSE)
-kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE, class = c("matrix", "Matrix")) {
-  class <- match.arg(class)
+kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
     # When we get here, a_mat should be a single matrix
-    if (column_val) {
-      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), class = class)
+    if (is.Matrix(a)) {
+      class_a <- "Matrix"
     } else {
-      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), class = class)
+      class_a <- "matrix"
+    }
+    if (column_val) {
+      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), class = class_a)
+    } else {
+      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), class = class_a)
     }
   }
 
