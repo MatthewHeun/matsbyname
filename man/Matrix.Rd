@@ -43,9 +43,9 @@ Default is \code{FALSE}, which is different from \code{Matrix::Matrix()}.}
 when \code{data} is already a \code{Matrix} object.
 Default is \code{FALSE}.}
 
-\item{rtype}{The rowtype for the result. Default is \code{matsbyname::rowtype(data)}.}
+\item{rowtype}{The rowtype for the result. Default is \code{matsbyname::rowtype(data)}.}
 
-\item{ctype}{The coltype for the result. Default is \code{matsbyname::coltype(data)}.}
+\item{coltype}{The coltype for the result. Default is \code{matsbyname::coltype(data)}.}
 }
 \value{
 A \code{Matrix} object.

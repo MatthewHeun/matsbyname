@@ -3074,7 +3074,7 @@ test_that("kvec_from_template_byname() works with Matrix objects", {
 
 
 
-test_that("kvec_from_template_byname() function passes old i_byname tests", {
+test_that("kvec_from_template_byname() passes old i_byname tests", {
   
   # First, test with single values.
   single_mat <- create_matrix_byname(1, nrow = 1, ncol = 1,

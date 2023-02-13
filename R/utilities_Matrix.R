@@ -58,8 +58,8 @@
 #' @param forceCheck A boolean indicating if the checks for structure should happen
 #'                   when `data` is already a `Matrix` object.
 #'                   Default is `FALSE`.
-#' @param rtype The rowtype for the result. Default is `matsbyname::rowtype(data)`.
-#' @param ctype The coltype for the result. Default is `matsbyname::coltype(data)`.
+#' @param rowtype The rowtype for the result. Default is `matsbyname::rowtype(data)`.
+#' @param coltype The coltype for the result. Default is `matsbyname::coltype(data)`.
 #'
 #' @return A `Matrix` object.
 #' 
