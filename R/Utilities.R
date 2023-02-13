@@ -1529,6 +1529,9 @@ ncol_byname <- function(a) {
 #' Row and column names are taken from the `dimnames` argument.
 #' 
 #' Any row or column type information on `.dat` is preserved on output.
+#' 
+#' The created object(s) can be of type `base::matrix` or `Matrix::Matrix`,
+#' the latter enables sparse objects to save both memory and disk.
 #'
 #' @param .dat The data to be used to create the matrix, in a list format, or as a data frame column
 #'             containing a list of the data to be used for each observation.
@@ -1564,7 +1567,7 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames,
       return(matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
     } 
     if (class == "Matrix") {
-      out <- matsbyname::Matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val)
+      return(matsbyname::Matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
     }
     
   }
@@ -1595,9 +1598,13 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames,
 #' @param rowname The name of the row of the row vector.
 #' @param dimnames The dimension names to be used for creating the row vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
+#' @param class One of "matrix" or "Matrix". 
+#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'              Default is "matrix".
 #'
 #' @return A row vector, a list of row vectors, or a data frame column of row vectors, depending on the 
-#'         value of `.dat`.
+#'         values of `.dat` and `class`.
 #'         
 #' @export
 #'
@@ -1624,8 +1631,8 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames,
 #' df1$rowvec_col[[1]]
 #' df1$rowvec_col[[2]]
 #' df1$rowvec_col[[3]]
-create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
-
+create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, class = c("matrix", "Matrix")){
+  class <- match.arg(class)
   rowvec_func <- function(a, dimnames_val, rowname_val) {
 
     # Figure out the column names.
@@ -1636,7 +1643,7 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
       dimnames_val <- list(rowname_val, names(a))
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val)
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val, class = class) 
   }
 
   unaryapply_byname(FUN = rowvec_func, 
@@ -1662,9 +1669,13 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
 #' @param colname The name of the column of the colvector.
 #' @param dimnames The dimension names to be used for creating the column vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
+#' @param class One of "matrix" or "Matrix". 
+#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'              Default is "matrix".
 #'
 #' @return A column vector, a list of column vectors, or a data frame column of column vectors, depending on the 
-#'         value of `.dat`.
+#'         value of `.dat` and `class`.
 #'         
 #' @export
 #'
@@ -1692,8 +1703,8 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
 #' df1$colvec_col[[1]]
 #' df1$colvec_col[[2]]
 #' df1$colvec_col[[3]]
-create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
-  
+create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, class = c("matrix", "Matrix")) {
+  class <- match.arg(class)
   colvec_func <- function(a, dimnames_val, colname_val) {
 
     # Figure out the row names.
@@ -1704,7 +1715,7 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
       dimnames_val <- list(names(a), colname_val)
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val)
+    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val, class = class)
   }
 
   unaryapply_byname(FUN = colvec_func,

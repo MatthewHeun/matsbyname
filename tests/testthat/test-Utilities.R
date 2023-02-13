@@ -2589,7 +2589,7 @@ test_that("create_matrix_byname() works as expected", {
 })
 
 
-test_that("create_matrix_byname() works with Matrix objects", {
+test_that("create_matrix_byname() works with class = Matrix", {
   
   single_mat_with_types <- create_matrix_byname(1 %>% 
                                                   setrowtype("testing_rowtype") %>% 
@@ -2787,42 +2787,30 @@ test_that("create_matrix_byname() works with Matrix objects", {
 })
 
 
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-test_that("create_rowvec_byname() works as expected", {
+test_that("create_rowvec_byname() works with Matrix objects", {
   # Try with a single number
-  single_vec <- create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), rowname = "r1")
-  expect_equal(single_vec, matrix(1, dimnames = list("r1", "c1")) %>% setrowtype("rt") %>% setcoltype("ct"))
+  single_vec <- create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), rowname = "r1", 
+                                     class = "Matrix")
+  expect_true(is.Matrix(single_vec))
+  matsbyname:::expect_equal_matrix_or_Matrix(single_vec, 
+                                             matrix(1, dimnames = list("r1", "c1")) %>%
+                                               setrowtype("rt") %>% setcoltype("ct"))
   
   # Test with dimnames
-  sv_dimnames <- create_rowvec_byname(1, dimnames = list("r1", "c1"))
-  expect_equal(sv_dimnames, matrix(1, dimnames = list("r1", "c1")))
+  sv_dimnames <- create_rowvec_byname(1, dimnames = list("r1", "c1"), class = "Matrix")
+  matsbyname:::expect_equal_matrix_or_Matrix(sv_dimnames, matrix(1, dimnames = list("r1", "c1")))
   
   # Try with a vector of numbers
-  vector_vec <- create_rowvec_byname(c(c1 = 1, c2 = 2), rowname = "r1")
-  expect_equal(vector_vec, matrix(c(1,2), ncol = 2, byrow = TRUE, dimnames = list("r1", c("c1", "c2"))))
+  vector_vec <- create_rowvec_byname(c(c1 = 1, c2 = 2), rowname = "r1", class = "Matrix")
+  matsbyname:::expect_equal_matrix_or_Matrix(vector_vec, 
+                                             matrix(c(1,2), ncol = 2, byrow = TRUE, dimnames = list("r1", c("c1", "c2"))))
   
   # Try with a list of vectors
   vv_vec <- create_rowvec_byname(list(c(c1 = 1, c2 = 2), c(C1 = 3, C2 = 4, C3 = 5)),
-                                 rowname = list("r1", "R1"))
-  expect_equal(vv_vec[[1]], matrix(c(1,2), ncol = 2, dimnames = list("r1", c("c1", "c2"))))
+                                 rowname = list("r1", "R1"), 
+                                 class = "Matrix")
+  matsbyname:::expect_equal_matrix_or_Matrix(vv_vec[[1]], 
+                                             matrix(c(1,2), ncol = 2, dimnames = list("r1", c("c1", "c2"))))
   
   # Try in a data frame
   dat <- list(c(c1 = 1), c(C1 = 2, C2 = 3), c(c1 = 1, c2 = 2, c3 = 3, c4 = 4, c5 = 5, c6 = 6))
@@ -2831,27 +2819,33 @@ test_that("create_rowvec_byname() works as expected", {
   df1 <- tibble::tibble(dat, rnms)
   res1 <- df1 %>%
     dplyr::mutate(
-      rowvec_col = create_rowvec_byname(dat, rowname = rnms)
+      rowvec_col = create_rowvec_byname(dat, rowname = rnms, class = "Matrix")
     )
-  expect_equal(res1$rowvec_col[[1]], matrix(1, dimnames = list("r1", "c1")))
-  expect_equal(res1$rowvec_col[[2]], matrix(c(2, 3), ncol = 2, dimnames = list("R1", c("C1", "C2"))))
-  expect_equal(res1$rowvec_col[[3]], matrix(c(1, 2, 3, 4, 5, 6), 
-                                            nrow = 1, ncol = 6,
-                                            dimnames = list("r1", c("c1", "c2", "c3", "c4", "c5", "c6"))))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$rowvec_col[[1]], 
+                                             matrix(1, dimnames = list("r1", "c1")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$rowvec_col[[2]],
+                                             matrix(c(2, 3), ncol = 2, dimnames = list("R1", c("C1", "C2"))))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$rowvec_col[[3]],
+                                             matrix(c(1, 2, 3, 4, 5, 6), 
+                                                    nrow = 1, ncol = 6,
+                                                    dimnames = list("r1", c("c1", "c2", "c3", "c4", "c5", "c6"))))
   
   # Try in data frame with dimnames and named vector.  See which one wins.
   dimnms <- list(list("r01", "c01"), list("R01", c("C01", "C02")), list("r01", c("c01", "c02", "c03", "c04", "c05", "c06")))
   df2 <- tibble::tibble(dat, rnms, dimnms)
   res2 <- df2 %>% 
     dplyr::mutate(
-      rowvec_col = create_rowvec_byname(dat, dimnames = dimnms, rowname = rnms)
+      rowvec_col = create_rowvec_byname(dat, dimnames = dimnms, rowname = rnms, class = "Matrix")
     )
   # Explicitly setting dimnames should win.
-  expect_equal(res2$rowvec_col[[1]], matrix(1, dimnames = list("r01", "c01")))
-  expect_equal(res2$rowvec_col[[2]], matrix(c(2, 3), ncol = 2, dimnames = list("R01", c("C01", "C02"))))
-  expect_equal(res2$rowvec_col[[3]], matrix(c(1, 2, 3, 4, 5, 6), 
-                                            nrow = 1, ncol = 6,
-                                            dimnames = list("r01", c("c01", "c02", "c03", "c04", "c05", "c06"))))
+  matsbyname:::expect_equal_matrix_or_Matrix(res2$rowvec_col[[1]], 
+                                             matrix(1, dimnames = list("r01", "c01")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res2$rowvec_col[[2]],
+                                             matrix(c(2, 3), ncol = 2, dimnames = list("R01", c("C01", "C02"))))
+  matsbyname:::expect_equal_matrix_or_Matrix(res2$rowvec_col[[3]],
+                                             matrix(c(1, 2, 3, 4, 5, 6), 
+                                                    nrow = 1, ncol = 6,
+                                                    dimnames = list("r01", c("c01", "c02", "c03", "c04", "c05", "c06"))))
 })
 
 
@@ -2899,6 +2893,78 @@ test_that("create_colvec_byname() works as expected", {
                                             nrow = 6, ncol = 1,
                                             dimnames = list(c("r01", "r02", "r03", "r04", "r05", "r06"), "c01")))
 })
+
+
+test_that("create_colvec_byname() works for Matrix objects", {
+  # Try with a single number
+  single_vec <- create_colvec_byname(c(r1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"),
+                                     colname = "c1", class = "Matrix")
+  expect_true(is.Matrix(single_vec))
+  matsbyname:::expect_equal_matrix_or_Matrix(single_vec, 
+                                             matrix(1, dimnames = list("r1", "c1")) %>% 
+                                               setrowtype("rt") %>% setcoltype("ct"))
+  
+  # Try with a vector of numbers
+  vector_vec <- create_colvec_byname(c(r1 = 1, r2 = 2), colname = "c1", class = "Matrix")
+  matsbyname:::expect_equal_matrix_or_Matrix(vector_vec, 
+                                             matrix(c(1,2), nrow = 2, dimnames = list(c("r1", "r2"), "c1")))
+  
+  # Try with a list of vectors
+  vv_vec <- create_colvec_byname(list(c(r1 = 1, r2 = 2), c(R1 = 3, R2 = 4, R3 = 5)),
+                                 colname = list("c1", "C1"), class = "Matrix")
+  matsbyname:::expect_equal_matrix_or_Matrix(vv_vec[[1]],
+                                             matrix(c(1,2), nrow = 2, dimnames = list(c("r1", "r2"), "c1")))
+  
+  # Try in a data frame
+  dat <- list(c(r1 = 1), c(R1 = 2, R2 = 3), c(r1 = 1, r2 = 2, r3 = 3, r4 = 4, r5 = 5, r6 = 6))
+  cnms <- list("c1", "C1", "c1")
+  
+  df1 <- tibble::tibble(dat, cnms)
+  res1 <- df1 %>%
+    dplyr::mutate(
+      colvec_col = create_colvec_byname(dat, colname = cnms, class = "Matrix")
+    )
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$colvec_col[[1]],
+                                             matrix(1, dimnames = list("r1", "c1")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$colvec_col[[2]],
+                                             matrix(c(2, 3), nrow = 2, dimnames = list(c("R1", "R2"), "C1")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1$colvec_col[[3]],
+                                             matrix(c(1, 2, 3, 4, 5, 6), 
+                                                    nrow = 6, ncol = 1,
+                                                    dimnames = list(c("r1", "r2", "r3", "r4", "r5", "r6"), "c1")))
+  
+  # Try in data frame with dimnames and named vector.  See which one wins.
+  dimnms <- list(list("r01", "c01"), list(c("R01", "R02"), "C01"), list(c("r01", "r02", "r03", "r04", "r05", "r06"), "c01"))
+  df2 <- tibble::tibble(dat, cnms, dimnms) 
+  res2 <- df2 %>% 
+    dplyr::mutate(
+      colvec_col = create_colvec_byname(dat, dimnames = dimnms, colname = cnms, class = "Matrix")
+    )
+  # Explicitly setting dimnames should win.
+  matsbyname:::expect_equal_matrix_or_Matrix(res2$colvec_col[[1]],
+                                             matrix(1, dimnames = list("r01", "c01")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res2$colvec_col[[2]],
+                                             matrix(c(2, 3), nrow = 2, dimnames = list(c("R01", "R02"), "C01")))
+  matsbyname:::expect_equal_matrix_or_Matrix(res2$colvec_col[[3]], 
+                                             matrix(c(1, 2, 3, 4, 5, 6), 
+                                                    nrow = 6, ncol = 1,
+                                                    dimnames = list(c("r01", "r02", "r03", "r04", "r05", "r06"), "c01")))
+})
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
 
 
 test_that("kvec_from_template_byname() works as expected", {

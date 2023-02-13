@@ -47,6 +47,9 @@ This function is similar to \code{matrix()}, but with "byname" characteristics.
 Row and column names are taken from the \code{dimnames} argument.
 
 Any row or column type information on \code{.dat} is preserved on output.
+
+The created object(s) can be of type \code{base::matrix} or \code{Matrix::Matrix},
+the latter enables sparse objects to save both memory and disk.
 }
 \examples{
 create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,
