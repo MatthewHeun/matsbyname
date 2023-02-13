@@ -1676,6 +1676,7 @@ test_that("rename_to_pref_suff_byname() works with Matrix objects", {
   expected <- m
   rownames(expected) <- c("a", "r2", "r3")
   actual <- rename_to_pref_suff_byname(m, keep = "pref", margin = 1, notation = RCLabels::arrow_notation)
+  expect_true(is.Matrix(actual))
   expect_equal(actual, expected)
   
   expected <- m
@@ -1689,29 +1690,7 @@ test_that("rename_to_pref_suff_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-test_that("renaming columns to prefix or suffix works as expected", {
+test_that("rename_to_pref_suff_byname() works as expected", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 
@@ -1737,8 +1716,35 @@ test_that("renaming columns to prefix or suffix works as expected", {
   expect_equal(coltype(res), "Rows")
 })
 
+test_that("rename_to_pref_suff_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 2, 
+                            3, 4, 
+                            5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+  expected <- m
+  colnames(expected) <- c("a", "c")
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", margin = 2, notation = RCLabels::arrow_notation)
+  expect_true(is.Matrix(actual))
+  expect_equal(actual, expected)
+  
+  expected <- m
+  colnames(expected) <- c("b", "d")
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
+  expect_equal(actual, expected)
+  
+  # Check that renaming works for a list
+  actual <- rename_to_pref_suff_byname(list(m, m), keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
+  expect_equal(actual, list(expected, expected))
+  
+  # Check that row and column types are preserved
+  m <- m %>% setrowtype("Rows -> Cols") %>% setcoltype("Cols -> Rows")
+  res <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
+  expect_equal(rowtype(res), "Cols")
+  expect_equal(coltype(res), "Rows")
+})
 
-test_that("renaming rows and columns to prefix or suffix works as expected", {
+
+test_that("rename_to_pref_suff_byname() works as expected 2", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 
@@ -1759,7 +1765,7 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
   # Check that renaming works for a list
   actual <- rename_to_pref_suff_byname(list(m, m), margin = list(c(1, 2)), keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(actual, list(expected, expected))
-
+  
   # Check that row and column types are preserved
   m <- m %>% setrowtype("Rows") %>% setcoltype("Cols")
   res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
@@ -1768,7 +1774,38 @@ test_that("renaming rows and columns to prefix or suffix works as expected", {
 })
 
 
-test_that("renaming rows and cols to pref and suff also changes rowtype and coltype", {
+test_that("rename_to_pref_suff_byname() works with Matrix objects 2", {
+  m <- matsbyname::Matrix(c(1, 2, 
+                            3, 4, 
+                            5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("a -> b", "r2", "r3"), c("a -> b", "c -> d")))
+  expected <- m
+  rownames(expected) <- c("a", "r2", "r3")
+  colnames(expected) <- c("a", "c")
+  # Default is margin = c(1, 2)
+  actual <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+  expect_true(is.Matrix(actual))
+  expect_equal(actual, expected)
+  
+  expected <- m
+  rownames(expected) <- c("b", "", "")
+  colnames(expected) <- c("b", "d")
+  actual <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
+  expect_equal(actual, expected)
+  
+  # Check that renaming works for a list
+  actual <- rename_to_pref_suff_byname(list(m, m), margin = list(c(1, 2)), keep = "suff", notation = RCLabels::arrow_notation)
+  expect_equal(actual, list(expected, expected))
+  
+  # Check that row and column types are preserved
+  m <- m %>% setrowtype("Rows") %>% setcoltype("Cols")
+  res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+  expect_equal(rowtype(res), "Rows")
+  expect_equal(coltype(res), "Cols")
+})
+
+
+test_that("rename_to_pref_suff_byname() also changes rowtype and coltype", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), nrow = 3, byrow = TRUE, 
@@ -1779,13 +1816,47 @@ test_that("renaming rows and cols to pref and suff also changes rowtype and colt
   expect_equal(colnames(res), c("g", "i"))
   expect_equal(rowtype(res), "Industry")
   expect_equal(coltype(res), "Product")
-
+  
   res2 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
   expect_equal(rownames(res2), c("b", "d", "f"))
   expect_equal(colnames(res2), c("h", "j"))
   expect_equal(rowtype(res2), "Product")
   expect_equal(coltype(res2), "Industry")
 })
+
+
+test_that("rename_to_pref_suff_byname() also changes rowtype and coltype on Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 2, 
+                            3, 4, 
+                            5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("a -> b", "c -> d", "e -> f"), c("g -> h", "i -> j")), 
+                          rowtype = "Industry -> Product", coltype = "Product -> Industry")
+  res <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
+  expect_true(is.Matrix(res))
+  expect_equal(rownames(res), c("a", "c", "e"))
+  expect_equal(colnames(res), c("g", "i"))
+  expect_equal(rowtype(res), "Industry")
+  expect_equal(coltype(res), "Product")
+  
+  res2 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
+  expect_equal(rownames(res2), c("b", "d", "f"))
+  expect_equal(colnames(res2), c("h", "j"))
+  expect_equal(rowtype(res2), "Product")
+  expect_equal(coltype(res2), "Industry")
+})
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
 
 
 test_that("changing row and column type correctly ignores missing suffixes", {
