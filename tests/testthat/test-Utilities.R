@@ -1038,26 +1038,7 @@ test_that("setrownames_byname() and setcolnames_byname() works even when there i
 })
 
 
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-  
-
-test_that("bad margins in clean_byname work as expected", {
+test_that("clean_byname() works with bad margins", {
   m <- matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   expect_error(clean_byname(m, margin = 42), 
                "margin = 42 in clean_byname\\(\\). Must be 1 or 2.")
@@ -1065,14 +1046,28 @@ test_that("bad margins in clean_byname work as expected", {
 })
 
 
-test_that("cleaning both rows and cols works as expected", {
+test_that("clean_byname() works with bad margins on a Matrix", {
+  m <- matsbyname::Matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  expect_error(clean_byname(m, margin = 42), 
+               "margin = 42 in clean_byname\\(\\). Must be 1 or 2.")
+})
+
+
+test_that("clean_byname() works for both rows and cols", {
   m <- matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   expect_equal(clean_byname(m), 
                matrix(1:3, nrow = 3, ncol = 1, dimnames = list(c("r1", "r2", "r3"), "c2")))
 })
 
 
-test_that("cleaning a vector works as expected", {
+test_that("clean_byname() works for both rows and cols in a Matrix", {
+  m <- matsbyname::Matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  matsbyname:::expect_equal_matrix_or_Matrix(clean_byname(m), 
+                                             matrix(1:3, nrow = 3, ncol = 1, dimnames = list(c("r1", "r2", "r3"), "c2")))
+})
+
+
+test_that("clean_byname() works for a vector", {
   v <- matrix(c(0, 
                 0, 
                 0, 
@@ -1082,7 +1077,19 @@ test_that("cleaning a vector works as expected", {
 })
 
 
-test_that("cleaning works with unnamed rows and/or columns", {
+test_that("clean_byname() works for a vector Matrix object", {
+  v <- matsbyname::Matrix(c(0, 
+                            0, 
+                            0, 
+                            42), nrow = 4, dimnames = list(c("r1", "r2", "r3", "r4"), c("c1")))
+  res <- clean_byname(v)
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, matrix(42, dimnames = list(c("r4"), c("c1"))))
+})
+
+
+
+test_that("clean_byname() works with unnamed rows and/or columns", {
   v <- matrix(c(0, 
                 0, 
                 0, 
@@ -1101,6 +1108,82 @@ test_that("cleaning works with unnamed rows and/or columns", {
 })
 
 
+test_that("clean_byname() works with unnamed rows and/or columns that are Matrix objects", {
+  v <- matsbyname::Matrix(c(0, 
+                            0, 
+                            0, 
+                            42), nrow = 4, dimnames = list(c("r1", "r2", "r3", "r4"), NULL))
+  matsbyname:::expect_equal_matrix_or_Matrix(clean_byname(v), 
+                                             matrix(42, nrow = 1, byrow = TRUE, dimnames = list(c("r4"), c(NULL))))
+  
+  
+  unnamed <- matsbyname::Matrix(c(1, 2, 0,
+                                  3, 4, 0,
+                                  5, 6, 0,
+                                  0, 0, 0), nrow = 4, ncol = 3, byrow = TRUE)
+  matsbyname:::expect_equal_matrix_or_Matrix(clean_byname(unnamed), matrix(c(1, 2,
+                                                                             3, 4, 
+                                                                             5, 6), nrow = 3, byrow = TRUE))
+})
+
+
+test_that("clean_byname() works with tolerance", {
+  unnamed <- matrix(c(1, 2, 0.1,
+                      3, 4, -0.1,
+                      5, 6, 0.05,
+                      0.01, -0.01, -0.05), nrow = 4, byrow = TRUE)
+  expect_equal(clean_byname(unnamed, tol = 0.1), matrix(c(1, 2,
+                                                          3, 4, 
+                                                          5, 6), nrow = 3, byrow = TRUE))
+  # Tighten tolerance to get different result.
+  expect_equal(clean_byname(unnamed, tol = 0.0999), matrix(c(1, 2, 0.1, 
+                                                             3, 4, -0.1,
+                                                             5, 6, 0.05), nrow = 3, byrow = TRUE))
+})
+
+
+test_that("clean_byname() works with tolerance for Matrix objects", {
+  unnamed <- matsbyname::Matrix(c(1, 2, 0.1,
+                                  3, 4, -0.1,
+                                  5, 6, 0.05,
+                                  0.01, -0.01, -0.05), nrow = 4, ncol = 3, byrow = TRUE)
+  res <- clean_byname(unnamed, tol = 0.1)
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, matrix(c(1, 2,
+                                                           3, 4, 
+                                                           5, 6), nrow = 3, byrow = TRUE))
+  # Tighten tolerance to get different result.
+  res2 <- clean_byname(unnamed, tol = 0.0999)
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, matrix(c(1, 2, 0.1, 
+                                                            3, 4, -0.1,
+                                                            5, 6, 0.05), nrow = 3, byrow = TRUE))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+  
 test_that("cleaning works with tolerance", {
   unnamed <- matrix(c(1, 2, 0.1,
                       3, 4, -0.1,
