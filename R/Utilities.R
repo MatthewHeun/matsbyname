@@ -1231,8 +1231,9 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #'
 #' @param a A matrix or list of matrices.
 #' @param tol The allowable deviation from 0 for any element.
+#'            Interpreted as an absolute value.
 #' 
-#' @return `TRUE` iff this is the zero matrix within `tol`.
+#' @return `TRUE` Iff this is the zero matrix within `tol`.
 #' 
 #' @export
 #'
@@ -1255,7 +1256,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
 iszero_byname <- function(a, tol = 1e-6) {
   zero_func <- function(a_mat, tol){
-    all(abs(a_mat) <= tol)
+    all(abs(a_mat) <= abs(tol))
   }
   unaryapply_byname(zero_func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")

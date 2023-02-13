@@ -9,10 +9,11 @@ iszero_byname(a, tol = 1e-06)
 \arguments{
 \item{a}{A matrix or list of matrices.}
 
-\item{tol}{The allowable deviation from 0 for any element.}
+\item{tol}{The allowable deviation from 0 for any element.
+Interpreted as an absolute value.}
 }
 \value{
-\code{TRUE} iff this is the zero matrix within \code{tol}.
+\code{TRUE} Iff this is the zero matrix within \code{tol}.
 }
 \description{
 Note that this function tests whether the elements of \code{abs(a)} are \verb{<= tol}.

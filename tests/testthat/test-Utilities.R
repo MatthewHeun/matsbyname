@@ -1160,49 +1160,18 @@ test_that("clean_byname() works with tolerance for Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-  
-test_that("cleaning works with tolerance", {
-  unnamed <- matrix(c(1, 2, 0.1,
-                      3, 4, -0.1,
-                      5, 6, 0.05,
-                      0.01, -0.01, -0.05), nrow = 4, byrow = TRUE)
-  expect_equal(clean_byname(unnamed, tol = 0.1), matrix(c(1, 2,
-                                                          3, 4, 
-                                                          5, 6), nrow = 3, byrow = TRUE))
-  # Tighten tolerance to get different result.
-  expect_equal(clean_byname(unnamed, tol = 0.0999), matrix(c(1, 2, 0.1, 
-                                                             3, 4, -0.1,
-                                                             5, 6, 0.05), nrow = 3, byrow = TRUE))
-})
-
-
 test_that("iszero_byname() works as expected", {
   m <- matrix(0, nrow = 3, ncol = 2)
   expect_true(iszero_byname(m))
   n <- matrix(1, nrow = 42, ncol = 5)
+  expect_false(iszero_byname(n))
+})
+
+
+test_that("iszero_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(0, nrow = 3, ncol = 2)
+  expect_true(iszero_byname(m))
+  n <- matsbyname::Matrix(1, nrow = 42, ncol = 5)
   expect_false(iszero_byname(n))
 })
 
@@ -1227,6 +1196,52 @@ test_that("selectzerorows_byname() works as expected", {
     setrowtype("rows") %>% setcoltype("cols")
   expect_equal(selectzerorows_byname(succeed), expected_succeed)
 })
+
+
+test_that("selectzerorows_byname() works as expected with Matrix objects", {
+  fail <- matsbyname::Matrix(c(1, 0, 1,
+                               1, 0, 1),
+                             dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                             nrow = 2, ncol = 3, byrow = TRUE, 
+                             rowtype = "rows", coltype = "cols")
+  expect_true(is.Matrix(fail))
+  expected_fail <- fail[0, , drop = FALSE] %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(selectzerorows_byname(fail), expected_fail)
+  
+  succeed <- matsbyname::Matrix(c(0, 0, 1,
+                                  0, 0, 0), 
+                                dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                                nrow = 2, ncol = 3, byrow = TRUE,
+                                rowtype = "rows", coltype = "cols")
+  expected_succeed <- succeed[2, , drop = FALSE] %>%
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(selectzerorows_byname(succeed), expected_succeed)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
 
 
 test_that("selectzerocols_byname() works as expected", {
