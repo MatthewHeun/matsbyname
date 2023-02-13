@@ -563,7 +563,7 @@ cumapply_byname <- function(FUN, a){
     # Note that length(NULL) == 0, so this tests for m == NULL, too.
     return(NULL)
   }
-  if (is.matrix(a) | inherits(a, "Matrix")) {
+  if (is_matrix_or_Matrix(a)) {
     # We have a single matrix. Just return it.
     return(FUN(a))
   }

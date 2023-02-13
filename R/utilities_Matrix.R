@@ -115,8 +115,30 @@ Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = list
 }
 
 
+#' Is an object a Matrix?
+#' 
+#' Arguably, this function should be in the `Matrix` package, 
+#' but it is not. 
+#' We include it here for convenience.
+#' 
+#' `is.Matrix()` is a wrapper for `inherits(a, "Matrix)`.
+#' 
+#' @param a The object to be queried if it is Matrix.
+#'
+#' @return A boolean. `TRUE` if `a` is a `Matrix`, `FALSE` otherwise.
+#' 
+#' @export
+#'
+#' @examples
+#' is.Matrix(matrix(42))
+#' is.Matrix(Matrix::Matrix(42))
+is.Matrix <- function(a) {
+  inherits(a, "Matrix")
+}
+
+
 is_matrix_or_Matrix <- function(a) {
-  is.matrix(a) | inherits(a, "Matrix")
+  is.matrix(a) | is.Matrix(a)
 }
 
 
