@@ -864,6 +864,104 @@ test_that("select_rowcol_piece_byname() works in a list and a data frame of Matr
 })
 
 
+test_that("select_rowcol_piece_byname() interprets margins correctly", {
+  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                              c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  n <- matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
+                              c("c1 [from d]", "c2 [from e]", "c3 [from f]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expected_m <- matrix(c(2,4), nrow = 2, ncol = 1, byrow = TRUE, 
+                       dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                                       "c2 [from d]")) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expected_n <- matrix(c(1, 4, 7), nrow = 3, ncol = 1, byrow = TRUE, 
+                       dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
+                                       "c1 [from d]")) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  res_df <- tibble::tibble(mats = list(m, n)) %>% 
+    dplyr::mutate(
+      res_col = select_rowcol_piece_byname(mats, retain = "d", piece = "from", notation = RCLabels::bracket_notation, margin = "cols")
+    )
+  expect_equal(res_df$res_col, list(expected_m, expected_n))
+  
+  res_df_2 <- tibble::tibble(mats = list(m, transpose_byname(n))) %>% 
+    dplyr::mutate(
+      # Picks up the correct margin with the string.
+      res_col = select_rowcol_piece_byname(mats, retain = "d", piece = "from", notation = RCLabels::bracket_notation, margin = "cols")
+    )
+  expect_equal(res_df_2$res_col, list(expected_m, transpose_byname(expected_n)))
+})
+
+
+test_that("select_rowcol_piece_byname() interprets margins correctly for Matrix objects", {
+  m <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                                          c("c1 [from c]", "c2 [from d]")), 
+                          rowtype = "rows", coltype = "cols")
+  n <- matsbyname::Matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE, 
+                          dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
+                                          c("c1 [from d]", "c2 [from e]", "c3 [from f]")), 
+                          rowtype = "rows", coltype = "cols")
+  
+  expected_m <- matsbyname::Matrix(c(2,4), nrow = 2, ncol = 1, byrow = TRUE, 
+                                   dimnames = list(c("r1 [to a]", "r2 [to b]"), 
+                                                   "c2 [from d]"), 
+                                   rowtype = "rows", coltype = "cols")
+  expected_n <- matsbyname::Matrix(c(1, 4, 7), nrow = 3, ncol = 1, byrow = TRUE, 
+                                   dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
+                                                   "c1 [from d]"), 
+                                   rowtype = "rows", coltype = "cols")
+  
+  res_df <- tibble::tibble(mats = list(m, n)) %>% 
+    dplyr::mutate(
+      res_col = select_rowcol_piece_byname(mats, retain = "d", piece = "from", notation = RCLabels::bracket_notation, margin = "cols")
+    )
+  expect_equal(res_df$res_col, list(expected_m, expected_n))
+  
+  res_df_2 <- tibble::tibble(mats = list(m, transpose_byname(n))) %>% 
+    dplyr::mutate(
+      # Picks up the correct margin with the string.
+      res_col = select_rowcol_piece_byname(mats, retain = "d", piece = "from", notation = RCLabels::bracket_notation, margin = "cols")
+    )
+  expect_true(all(sapply(res_df_2$res_col, is.Matrix)))
+  expect_equal(res_df_2$res_col, list(expected_m, transpose_byname(expected_n)))
+})
+
+
+test_that("select_rowcol_piece_byname() works with notation inference", {
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  expected_1 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  # Don't specify notation to force inference.
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", margin = 1)
+  expect_equal(res_1, expected_1)
+})
+
+
+test_that("select_rowcol_piece_byname() works with notation inference in Matrix objects", {
+  m_1 <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                            dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]")), 
+                            rowtype = "rows", coltype = "cols")
+  
+  expected_1 <- matsbyname::Matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                                   dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]")), 
+                                   rowtype = "rows", coltype = "cols")
+  
+  # Don't specify notation to force inference.
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", margin = 1)
+  expect_true(is.Matrix(res_1))
+  expect_equal(res_1, expected_1)
+})
 
 
 
@@ -883,53 +981,6 @@ test_that("select_rowcol_piece_byname() works in a list and a data frame of Matr
 
 
 
-test_that("select_rowcol_piece_byname() interprets margins correctly", {
-  m <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
-              dimnames = list(c("r1 [to a]", "r2 [to b]"), 
-                              c("c1 [from c]", "c2 [from d]"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  n <- matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE, 
-              dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
-                              c("c1 [from d]", "c2 [from e]", "c3 [from f]"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  
-  expected_m <- matrix(c(2,4), nrow = 2, ncol = 1, byrow = TRUE, 
-                       dimnames = list(c("r1 [to a]", "r2 [to b]"), 
-                                       "c2 [from d]")) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  expected_n <- matrix(c(1, 4, 7), nrow = 3, ncol = 1, byrow = TRUE, 
-                       dimnames = list(c("r1 [to a]", "r2 [to b]", "r3 [to c]"), 
-                                       "c1 [from d]")) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-
-  res_df <- tibble::tibble(mats = list(m, n)) %>% 
-    dplyr::mutate(
-      res_col = select_rowcol_piece_byname(mats, retain = "d", piece = "from", notation = RCLabels::bracket_notation, margin = "cols")
-    )
-  expect_equal(res_df$res_col, list(expected_m, expected_n))
-  
-  res_df_2 <- tibble::tibble(mats = list(m, transpose_byname(n))) %>% 
-    dplyr::mutate(
-      # Picks up the correct margin with the string.
-      res_col = select_rowcol_piece_byname(mats, retain = "d", piece = "from", notation = RCLabels::bracket_notation, margin = "cols")
-    )
-  expect_equal(res_df_2$res_col, list(expected_m, transpose_byname(expected_n)))
-})
-
-
-test_that("select_rowcol_piece_byname() works with notation inference", {
-  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
-                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  
-  expected_1 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
-                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
-    matsbyname::setrowtype("rows") %>% setcoltype("cols")
-  
-  # Don't specify notation to force inference.
-  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", piece = "noun", margin = 1)
-  expect_equal(res_1, expected_1)
-})
 
 
 test_that("select_rowcol_piece_byname() works when all rows or all cols are removed", {
