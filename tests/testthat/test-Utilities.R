@@ -1220,30 +1220,6 @@ test_that("selectzerorows_byname() works as expected with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
 test_that("selectzerocols_byname() works as expected", {
   expect_null(selectzerocols_byname(NULL))
   m <- matrix(c(1, 0, 1,
@@ -1255,12 +1231,34 @@ test_that("selectzerocols_byname() works as expected", {
     setrowtype("rows") %>% setcoltype("cols")
   expect_equal(selectzerocols_byname(m), expected_m)
   
-  
   m2 <- matrix(c(0, 0, 1,
                  0, 0, 0), 
                dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
                nrow = 2, ncol = 3, byrow = TRUE) %>% 
     setrowtype("rows") %>% setcoltype("cols")
+  expected_m2 <- m2[, 1:2, drop = FALSE] %>%
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(selectzerocols_byname(m2), expected_m2)
+})
+
+
+test_that("selectzerocols_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 0, 1,
+                            1, 0, 1),
+                          dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                          nrow = 2, ncol = 3, byrow = TRUE, 
+                          rowtype = "rows", coltype = "cols")
+  expected_m <- m[ , 2, drop = FALSE] %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  res <- selectzerocols_byname(m)
+  expect_true(is.Matrix(res))
+  expect_equal(res, expected_m)
+  
+  m2 <- matsbyname::Matrix(c(0, 0, 1,
+                             0, 0, 0), 
+                           dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                           nrow = 2, ncol = 3, byrow = TRUE, 
+                           rowtype = "rows", coltype = "cols")
   expected_m2 <- m2[, 1:2, drop = FALSE] %>%
     setrowtype("rows") %>% setcoltype("cols")
   expect_equal(selectzerocols_byname(m2), expected_m2)
@@ -1275,12 +1273,32 @@ test_that("getzerorowcolnames_byname() works as expected", {
     setrowtype("rows") %>% setcoltype("cols")
   expect_equal(getzerorowcolnames_byname(m), "c2")
   expect_equal(getzerorowcolnames_byname(list(m, m)), list("c2", "c2"))
-
+  
   m2 <- matrix(c(1, 0, 1,
                  1, 0, 0, 
                  0, 0, 0),
                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")), 
                nrow = 3, ncol = 3, byrow = TRUE)
+  expect_equal(getzerorowcolnames_byname(m2), c("r3", "c2"))
+  expect_equal(getzerorowcolnames_byname(list(m2, m2)), list(c("r3", "c2"), c("r3", "c2")))
+})
+
+
+test_that("getzerorowcolnames_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(1, 0, 1,
+                            1, 0, 1),
+                          dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")), 
+                          nrow = 2, ncol = 3, byrow = TRUE, 
+                          rowtype = "rows", coltype = "cols")
+  res <- getzerorowcolnames_byname(m)
+  expect_equal(res, "c2")
+  expect_equal(getzerorowcolnames_byname(list(m, m)), list("c2", "c2"))
+  
+  m2 <- matsbyname::Matrix(c(1, 0, 1,
+                             1, 0, 0, 
+                             0, 0, 0),
+                           dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")), 
+                           nrow = 3, ncol = 3, byrow = TRUE)
   expect_equal(getzerorowcolnames_byname(m2), c("r3", "c2"))
   expect_equal(getzerorowcolnames_byname(list(m2, m2)), list(c("r3", "c2"), c("r3", "c2")))
 })
@@ -1300,9 +1318,39 @@ test_that("getrownames_byname() works as expected", {
 })
 
 
+test_that("getrownames_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(1:6), nrow = 2, ncol = 3, 
+                          dimnames = list(paste0("i", 1:2), paste0("p", 1:3)), 
+                          rowtype = "Industries", coltype = "Products")
+  expect_equal(getrownames_byname(m), c("i1", "i2"))
+  # This also works for lists
+  expect_equal(getrownames_byname(list(m,m)), list(c("i1", "i2"), c("i1", "i2")))
+  # Also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(getrownames_byname(DF$m), list(c("i1", "i2"), c("i1", "i2")))
+})
+
+
 test_that("getcolnames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
+  expect_equal(getcolnames_byname(m), c("p1", "p2", "p3"))
+  # This also works for lists
+  expect_equal(getcolnames_byname(list(m,m)), list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+  # Also works for data frames
+  DF <- data.frame(m = I(list()))
+  DF[[1,"m"]] <- m
+  DF[[2,"m"]] <- m
+  expect_equal(getcolnames_byname(DF$m), list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+})
+
+
+test_that("getcolnames_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(1:6), nrow = 2, ncol = 3,
+                          dimnames = list(paste0("i", 1:2), paste0("p", 1:3)), 
+                          rowtype = "Industries", coltype = "Products")
   expect_equal(getcolnames_byname(m), c("p1", "p2", "p3"))
   # This also works for lists
   expect_equal(getcolnames_byname(list(m,m)), list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
@@ -1330,6 +1378,20 @@ test_that("setrownames_byname() works as expected", {
 })
 
 
+test_that("setrownames_byname() works on Matrix objects", {
+  m <- matsbyname::Matrix(c(1:6), nrow = 2, ncol = 3,
+                          dimnames = list(paste0("i", 1:2), paste0("c", 1:3)), 
+                          rowtype = "Industries", coltype = "Commodities")
+  m2 <- setrownames_byname(m, c("a", "b"))
+  expect_true(is.Matrix(m2))
+  expect_equal(m2 %>% rownames(), c("a", "b"))
+  expect_equal(m %>% setrownames_byname(rownames(m2)) %>% rownames(), c("a", "b"))
+  expect_equal(m %>% setrownames_byname(c("c", "d")) %>% rownames(), c("c", "d"))
+  expect_null(m %>% setrownames_byname(NULL) %>% rownames())
+  expect_equal(m %>% setrownames_byname(c(NA, NA)) %>% rownames(), c(NA_character_, NA_character_))
+})
+
+
 test_that("setcolnames_byname() works as expected", {
   m <- matrix(c(1:6), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:3))) %>%
     setrowtype("Industries") %>% setcoltype("Commodities")
@@ -1342,6 +1404,41 @@ test_that("setcolnames_byname() works as expected", {
   expect_equal(2 %>% setcolnames_byname("col"), 
                matrix(2, nrow = 1, ncol = 1, dimnames = list(NULL, c("col"))))
 })
+
+
+test_that("setcolnames_byname() works as expected", {
+  m <- matsbyname::Matrix(c(1:6), nrow = 2, ncol = 3, 
+                          dimnames = list(paste0("i", 1:2), paste0("c", 1:3)), 
+                          rowtype = "Industries", coltype = "Commodities")
+  res <- m %>% setcolnames_byname(c("a", "b", "c"))
+  expect_true(is.Matrix(res))
+  expect_equal(res %>% colnames(), 
+               c("a", "b", "c"))
+  expect_equal(m %>% setcolnames_byname(c("d", "e", "f")) %>% colnames(), c("d", "e", "f"))
+  expect_null(m %>% setcolnames_byname(NULL) %>% colnames())
+  expect_equal(m %>% setcolnames_byname(c(NA, NA, NA)) %>% colnames(), c(NA_character_, NA_character_, NA_character_))
+})
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("setting row names works as expected", {
