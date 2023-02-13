@@ -567,6 +567,93 @@ test_that("select_rowcol_piece_byname() works for selecting rows for Matrix obje
 })
 
 
+test_that("select_rowcol_piece_byname() works for removing rows from Matrix objects", {
+  m_1 <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                            dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]")), 
+                            rowtype = "rows", coltype = "cols")
+  
+  # Remove a row by prefix
+  res_1 <- select_rowcol_piece_byname(m_1, remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expected_1 <- matsbyname::Matrix(3:4, nrow = 1, ncol = 2, byrow = TRUE, 
+                                   dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]")), 
+                                   rowtype = "rows", coltype = "cols")
+  expect_equal(res_1, expected_1)
+  
+  # Remove a row by suffix
+  res_2 <- select_rowcol_piece_byname(m_1, remove = "b", piece = "suff", notation = RCLabels::from_notation, margin = 1)
+  expected_2 <- matsbyname::Matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                                   dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]")), 
+                                   rowtype = "rows", coltype = "cols")
+  expect_equal(res_2, expected_2)
+  
+  # Remove a row by preposition
+  res_3 <- select_rowcol_piece_byname(m_1, remove = "a", piece = "from", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_3, expected_1)
+  
+  # Remove a row by noun
+  res_4 <- select_rowcol_piece_byname(m_1, remove = "r1", piece = "noun", notation = RCLabels::bracket_notation, margin = 1)
+  expect_equal(res_4, expected_1)
+})
+
+
+test_that("select_rowcol_piece_byname() works with both retain and remove", {
+  # Retain and remove at same time.  Retain should take precedence.
+  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  
+  # Remove a row by prefix
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  
+  expected_1 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(res_1, expected_1)
+  
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "r1", remove = "r2", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_2, expected_1)
+  
+  res_3 <- select_rowcol_piece_byname(m_1, retain = "r2", remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  
+  expected_2 <- matrix(c(3,4), nrow = 1, ncol = 2, byrow = TRUE, 
+                       dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
+    matsbyname::setrowtype("rows") %>% setcoltype("cols")
+  
+  expect_equal(res_3, expected_2)
+})
+
+
+test_that("select_rowcol_piece_byname() works with both retain and remove for Matrix objects", {
+  # Retain and remove at same time.  Retain should take precedence.
+  m_1 <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                            dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]")), 
+                            rowtype = "rows", coltype = "cols")
+  
+  # Remove a row by prefix
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "r1", remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expect_true(is.Matrix(res_1))
+  expected_1 <- matsbyname::Matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
+                                   dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]")), 
+                                   rowtype = "rows", coltype = "cols")
+  
+  expect_equal(res_1, expected_1)
+  
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "r1", remove = "r2", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  expect_equal(res_2, expected_1)
+  
+  res_3 <- select_rowcol_piece_byname(m_1, retain = "r2", remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
+  
+  expected_2 <- matsbyname::Matrix(c(3,4), nrow = 1, ncol = 2, byrow = TRUE, 
+                                   dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]")), 
+                                   rowtype = "rows", coltype = "cols")
+  
+  expect_equal(res_3, expected_2)
+})
+
+
+
+
 
 
 
@@ -587,40 +674,6 @@ test_that("select_rowcol_piece_byname() works for selecting rows for Matrix obje
 
 
 
-
-
-
-
-
-
-
-test_that("select_rowcol_piece_byname() works for removing rows", {
-  m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
-                dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  
-  # Remove a row by prefix
-  res_1 <- select_rowcol_piece_byname(m_1, remove = "r1", piece = "pref", notation = RCLabels::from_notation, margin = 1)
-  expected_1 <- matrix(3:4, nrow = 1, ncol = 2, byrow = TRUE, 
-                       dimnames = list("r2 [from b]", c("c1 [from c]", "c2 [from d]"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  expect_equal(res_1, expected_1)
-  
-  # Remove a row by suffix
-  res_2 <- select_rowcol_piece_byname(m_1, remove = "b", piece = "suff", notation = RCLabels::from_notation, margin = 1)
-  expected_2 <- matrix(c(1,2), nrow = 1, ncol = 2, byrow = TRUE, 
-                       dimnames = list("r1 [from a]", c("c1 [from c]", "c2 [from d]"))) %>% 
-    matsbyname::setrowtype("rows") %>% setcoltype("cols")
-  expect_equal(res_2, expected_2)
-  
-  # Remove a row by preposition
-  res_3 <- select_rowcol_piece_byname(m_1, remove = "a", piece = "from", notation = RCLabels::bracket_notation, margin = 1)
-  expect_equal(res_3, expected_1)
-  
-  # Remove a row by noun
-  res_4 <- select_rowcol_piece_byname(m_1, remove = "r1", piece = "noun", notation = RCLabels::bracket_notation, margin = 1)
-  expect_equal(res_4, expected_1)
-})
 
 
 test_that("select_rowcol_piece_byname() works with both retain and remove", {

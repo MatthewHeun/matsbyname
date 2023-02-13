@@ -232,7 +232,7 @@ test_that("is.Matrix() works as expected", {
 })
 
 
-test_that("I can create a non-symmetric sparse matrix", {
+test_that("matsbyname::Matrix() creates a non-symmetric sparse matrix", {
   # I want to create a sparse matrix if half or more elements are zero ...
   m <- matsbyname::Matrix(c(1, 0, 2, 
                             0, 3, 0, 
@@ -256,7 +256,7 @@ test_that("inverting results in a sparse Matrix (or not)", {
 })
 
 
-test_that("I can create a sparse Matrix with matsbyname::Matrix", {
+test_that("matsbyname::Matrix() creates a sparse Matrix", {
   m <- matsbyname::Matrix(c(1, 2, 3, 
                             4, 5, 6, 
                             7, 8, 9), byrow = TRUE, nrow = 3, ncol = 3)
