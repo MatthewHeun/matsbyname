@@ -964,25 +964,6 @@ test_that("select_rowcol_piece_byname() works with notation inference in Matrix 
 })
 
 
-
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
 test_that("select_rowcol_piece_byname() works when all rows or all cols are removed", {
   m_1 <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
                 dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]"))) %>% 
@@ -1000,6 +981,44 @@ test_that("select_rowcol_piece_byname() works when all rows or all cols are remo
   expect_null(df$res[[1]])
   expect_null(df$res[[2]])
 })
+
+
+test_that("select_rowcol_piece_byname() works when all rows or all cols are removed in a Matrix object", {
+  m_1 <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE, 
+                            dimnames = list(c("r1 [from a]", "r2 [from b]"), c("c1 [from c]", "c2 [from d]")), 
+                            rowtype = "rows", coltype = "cols")
+  res_1 <- select_rowcol_piece_byname(m_1, retain = "bogus", piece = "noun", margin = 1)
+  expect_null(res_1)
+  res_2 <- select_rowcol_piece_byname(m_1, retain = "bogus", piece = "all", margin = 2)
+  expect_null(res_2)
+  
+  # Try in a data frame
+  df <- tibble::tibble(m = list(m_1, m_1)) %>% 
+    dplyr::mutate(
+      res = select_rowcol_piece_byname(m, retain = "bogus", piece = "all", margin = 1)
+    )
+  expect_null(df$res[[1]])
+  expect_null(df$res[[2]])
+})
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
 
 
 test_that("setting row and column names works even when there is a NULL situation", {
