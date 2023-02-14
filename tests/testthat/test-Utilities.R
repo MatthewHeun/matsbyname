@@ -3310,35 +3310,6 @@ test_that("vec_from_store_byname() works with single Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("vec_from_store_byname() works as expected with single matrices and nouns", {
   a <- matrix(42, nrow = 3, ncol = 5, 
               dimnames = list(c("Electricity [from b in c]", 
@@ -3368,6 +3339,67 @@ test_that("vec_from_store_byname() works as expected with single matrices and no
                                       "phi")) %>%
                  setrowtype("Product") %>% setcoltype("phi"))
 })
+
+
+test_that("vec_from_store_byname() works as expected with single Matrix objects and nouns", {
+  a <- matsbyname::Matrix(42, nrow = 3, ncol = 5, 
+                          dimnames = list(c("Electricity [from b in c]", 
+                                            "Coal [from e in f]", 
+                                            "Crude oil [from Production in USA]"), 
+                                          c("Main activity producer electricity plants", 
+                                            "Wind turbines", 
+                                            "Oil refineries", 
+                                            "Coal mines", 
+                                            "Automobiles")), 
+                          rowtype = "Product", coltype = "Industry")
+  v <- matsbyname::Matrix(1:7, nrow = 7, ncol = 1, 
+                          dimnames = list(c("Electricity", 
+                                            "Peat", 
+                                            "Hydro", 
+                                            "Crude oil",
+                                            "Coal", 
+                                            "Hard coal (if no detail)", 
+                                            "Brown coal"), 
+                                          "phi"), 
+                          rowtype = "Product", coltype = "phi")
+  res <- vec_from_store_byname(a, v, a_piece = "noun")
+  expect_equal(res, 
+               matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) %>%
+                 setrowtype("Product") %>% setcoltype("phi"))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("vec_from_store_byname() works as expected with single matrices and pref suff", {
