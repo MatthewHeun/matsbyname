@@ -904,24 +904,6 @@ test_that("logarithmicmean_byname() works wtih Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-########## Stopped here #####################
-
-
-
-
-
-
-
 test_that("equal_byname() works as expected", {
   
   # Try with single numbers
@@ -929,7 +911,7 @@ test_that("equal_byname() works as expected", {
   expect_true(equal_byname(2, 2, 2))
   expect_false(equal_byname(2, 3, 5))
   expect_false(equal_byname(2, 2, 5))
-
+  
   # Try without row and column names
   a <- matrix(1:4, nrow = 2)
   expect_true(equal_byname(a, a))
@@ -1005,9 +987,97 @@ test_that("equal_byname() works as expected", {
   f <- matrix(1:4, nrow = 2)
   # equal_byname works
   expect_true(equal_byname(e, f))
-  equal_byname(e, f + 1e-100)
+  expect_true(equal_byname(e, f + 1e-100))
   # But identical_byname should fail
   expect_false(identical_byname(e, f + 1e-100))
+})
+
+
+test_that("equal_byname() works with Matrix objects", {
+  
+  # Try without row and column names
+  a <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2)
+  expect_true(equal_byname(a, a))
+  expect_true(equal_byname(a, a, a))
+  b <- matsbyname::Matrix(4:1, nrow = 2, ncol = 2)
+  expect_true(equal_byname(b, b, b))
+  expect_false(equal_byname(a, b))
+  expect_false(equal_byname(a, a, b))
+  expect_false(equal_byname(b, a, a))
+  b <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2)
+  expect_true(equal_byname(a, b))
+  expect_true(equal_byname(a, a, b))
+  expect_true(equal_byname(b, a, a, b))
+  
+  a <- a %>% setrowtype("Industries") %>% setcoltype("Products")
+  # FALSE because a has row and column types, but b does not.
+  expect_false(equal_byname(a, b))
+  
+  b <- b %>% setrowtype("Industries") %>% setcoltype("Products")
+  # TRUE because b now has same row and column types as a.
+  expect_true(equal_byname(a, b))
+  
+  dimnames(a) <- list(c("i1", "i2"), c("p1", "p2"))
+  dimnames(b) <- list(c("p1", "p2"), c("i1", "i2"))
+  # FALSE, because row and column names are not equal
+  expect_false(equal_byname(a, b)) 
+  # Put back the way it was, and it should work.
+  dimnames(b) <- dimnames(a)
+  expect_true(equal_byname(a, b))
+  
+  # Try with lists.
+  expect_equal(equal_byname(list(a, a), list(b, b)), list(TRUE, TRUE))
+  expect_equal(equal_byname(list(a, a), list(b, b), .summarise = TRUE), list(TRUE, TRUE))
+  
+  # Try with two unsorted matrices. They should be equal (byname), 
+  # because they will be sorted prior to comparison.
+  matc <- matsbyname::Matrix(c(1, 2), nrow = 2, dimnames = list(c("r1", "r2"), c("c1")))
+  matd <- matsbyname::Matrix(c(2, 1), nrow = 2, dimnames = list(c("r2", "r1"), c("c1")))
+  # This is not what we want. Comparison is not done "byname", as we wish.
+  matsbyname:::expect_equal_matrix_or_Matrix(
+    matc == matd, 
+    matsbyname::Matrix(c(FALSE, FALSE), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), c("c1"))))
+  # This works as desired. The comparison is handled by the function, not the analyst.
+  expect_true(equal_byname(matc, matd))
+  expect_true(equal_byname(matc, matc, matd))
+  expect_equal(equal_byname(list(matc, matc), list(matd, matd), list(matc, matc)), list(TRUE, TRUE))
+  
+  # Try within data frames
+  DF <- data.frame(matc = I(list()), matd = I(list()))
+  DF[[1,"matc"]] <- matc
+  DF[[2,"matc"]] <- matc
+  DF[[1,"matd"]] <- matd
+  DF[[2,"matd"]] <- matd
+  DF_2 <- DF %>% 
+    dplyr::mutate(
+      equal = equal_byname(matc, matd)
+    )
+  expect_equal(DF_2$equal, list(TRUE, TRUE))
+  
+  # When two objects have different order for attributes, equal_byname should still return true.
+  a <- 2 %>% setrowtype("row") %>% setcoltype("col")
+  b <- 2 %>% setcoltype("col") %>% setrowtype("row")
+  expect_true(equal_byname(a, b))
+  # But if the objects have different attributes, the comparison should fail.
+  c <- a %>% setcoltype("cols")
+  expect_false(equal_byname(c, b))
+  
+  # Try with some numerical fuzz.
+  e <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2)
+  f <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2)
+  # equal_byname works
+  expect_true(equal_byname(e, f))
+  expect_true(equal_byname(e, f + 1e-100))
+  # But identical_byname should fail
+  # when the added value is large enough.
+  expect_true(identical_byname(e, f + 1e-16))
+  expect_true(identical_byname(e, f + 1.1e-16))
+  expect_false(identical_byname(e, f + 1.12e-16))
+  expect_false(identical_byname(e, f + 1.15e-16))
+  expect_false(identical_byname(e, f + 1.2e-16))
+  expect_false(identical_byname(e, f + 1.5e-16))
+  expect_false(identical_byname(e, f + 1.2e-16))
+  expect_false(identical_byname(e, f + 1e-15))
 })
 
 
@@ -1041,7 +1111,28 @@ test_that("identical_byname() works as expected", {
   expect_equal(identical_byname(list(1, 1, 1), list(2, 2, 3), .summarise = TRUE), list(TRUE, FALSE))
 })
 
-  
+
+test_that("identical_byname() works with Matrix objects", {
+  # Now try with matrices
+  a <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2)
+  b <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2)
+  expect_true(identical_byname(a, b))
+  # The sensitivity for Matrix is much smaller than for matrix.
+  expect_false(identical_byname(a, b + 1e-15))
+  a <- a %>% setrowtype("Industries") %>% setcoltype("Commodities")
+  # FALSE because a has row and column types, but b does not.
+  expect_false(identical_byname(a, b)) 
+  b <- b %>% setrowtype("Industries") %>% setcoltype("Commodities")
+  expect_true(identical_byname(a, b))
+  dimnames(a) <- list(c("i1", "i2"), c("c1", "c2"))
+  dimnames(b) <- list(c("c1", "c2"), c("i1", "i2"))
+  # FALSE, because row and column names are not equal
+  expect_false(identical_byname(a, b)) 
+  dimnames(b) <- dimnames(a)
+  expect_true(identical_byname(a, b))
+})
+
+
 test_that("samestructure_byname() works as expected", {
   expect_true(samestructure_byname(2, 2))
   expect_false(samestructure_byname(2, 2 %>% setrowtype("row")))
@@ -1051,6 +1142,34 @@ test_that("samestructure_byname() works as expected", {
   U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
   V <- matrix(5:8, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_true(samestructure_byname(U, U))
+  expect_true(samestructure_byname(U, V))
+  expect_true(samestructure_byname(V, U))
+  expect_false(samestructure_byname(U, U %>% setrowtype("row")))
+  expect_false(samestructure_byname(U %>% setcoltype("col"), U))
+  expect_false(samestructure_byname(U, U %>% setrownames_byname(c("a", "b"))))
+  expect_false(samestructure_byname(U, U %>% setcolnames_byname(c("a", "b"))))
+  expect_true(samestructure_byname(U, U))
+  # Also works for lists
+  expect_true(all(samestructure_byname(list(U, U), list(U, U)) %>% as.logical()))
+  expect_true(all(samestructure_byname(list(U, U), list(V, V)) %>% as.logical()))
+  expect_true(all(samestructure_byname(list(V, V), list(U, U)) %>% as.logical()))
+  expect_true(all(samestructure_byname(list(U, V), list(U, V), .summarise = TRUE) %>% as.logical()))
+  expect_equal(samestructure_byname(list(U, V), list(U %>% setrowtype(NULL), V), .summarise = TRUE), list(TRUE, FALSE))
+  
+  # Check when one or both of rowtype or coltype is NULL
+  expect_false(samestructure_byname(U, U %>% setrowtype(NULL)))
+  expect_false(samestructure_byname(U, U %>% setcoltype(NULL)))
+})
+
+
+test_that("samestructure_byname() works with Matrix objects", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  V <- matsbyname::Matrix(5:8, nrow = 2, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
   expect_true(samestructure_byname(U, U))
   expect_true(samestructure_byname(U, V))
@@ -1084,7 +1203,25 @@ test_that("make_pattern() works as expected", {
   expect_equal(RCLabels::make_or_pattern(strings = c("a(1)", "a(2)"), pattern_type = "exact"), 
                "^a\\(1\\)$|^a\\(2\\)$")
 })
-  
+
+
+
+
+
+
+
+
+
+
+
+
+########## Stopped here #####################
+
+
+
+
+
+
 
 test_that("list_of_rows_or_cols() works as expected", {
   m <- matrix(data = c(1:6), nrow = 2, ncol = 3, dimnames = list(c("p1", "p2"), c("i1", "i2", "i3"))) %>% 

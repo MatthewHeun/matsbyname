@@ -516,16 +516,16 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
       as.numeric()
     if (is.Matrix(a)) {
       out <- out %>% 
-        matsbyname::Matrix(nrow = nrow(a), ncol = ncol(a))
+        matsbyname::Matrix(nrow = nrow(a), ncol = ncol(a), 
+                           dimnames = list(rownames(a), colnames(a)))
     } else if (is.matrix(a)) {
       # If a and b are originally matrices, make out into a matrix
       # by rewrapping it. 
       out <- out %>% 
-        matrix(nrow = nrow(a), ncol = ncol(a))
+        matrix(nrow = nrow(a), ncol = ncol(a), 
+               dimnames = list(rownames(a), colnames(a)))
     }
-    out %>%  
-      # Add the row and column names to it.
-      setrownames_byname(rownames(a)) %>% setcolnames_byname(colnames(a)) %>% 
+    out %>% 
       # Add row and column types
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
