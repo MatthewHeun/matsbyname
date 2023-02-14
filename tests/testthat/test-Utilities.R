@@ -3684,35 +3684,6 @@ test_that("vec_from_store_byname() works as expected with single Matrix objects 
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("vec_from_store_byname() works when a row vector is desired.", {
   a <- matrix(42, nrow = 3, ncol = 2, 
               dimnames = list(c("Electricity [from b in c]", 
@@ -3758,6 +3729,85 @@ test_that("vec_from_store_byname() works when a row vector is desired.", {
                  setrowtype("eta") %>% setcoltype("Industry"))
   
 })
+
+
+test_that("vec_from_store_byname() works when a row vector Matrix object is desired.", {
+  a <- matsbyname::Matrix(42, nrow = 3, ncol = 2, 
+                          dimnames = list(c("Electricity [from b in c]", 
+                                            "Coal [from e in f]", 
+                                            "Crude oil [from Production in USA]"), 
+                                          c("Wind turbines", 
+                                            "Oil wells")), 
+                          rowtype = "Product", coltype = "Industry")
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "Wind turbines", 
+                                "c",
+                                "Oil wells", 
+                                "Hard coal (if no detail)", 
+                                "f"), 
+                              "eta")) %>%
+    setrowtype("Industry") %>% setcoltype("eta")
+  
+  res <- vec_from_store_byname(a, v, a_piece = "pref", column = FALSE)
+  matsbyname:::expect_equal_matrix_or_Matrix(
+    res, 
+    matrix(c(3, 5), nrow = 1, ncol = 2, 
+           dimnames = list("eta", 
+                           c("Wind turbines", 
+                             "Oil wells"))) %>%
+      setrowtype("eta") %>% setcoltype("Industry"))
+  
+  # See if it works with a row vector for v.
+  v_row <- matrix(1:7, nrow = 1, ncol = 7, 
+                  dimnames = list("eta", 
+                                  c("Electricity", 
+                                    "Peat", 
+                                    "Wind turbines", 
+                                    "c",
+                                    "Oil wells", 
+                                    "Hard coal (if no detail)", 
+                                    "f"))) %>%
+    setrowtype("eta") %>% setcoltype("Industry")
+  matsbyname:::expect_equal_matrix_or_Matrix(
+    vec_from_store_byname(a, v_row, a_piece = "pref", column = FALSE), 
+    matrix(c(3, 5), nrow = 1, ncol = 2, 
+           dimnames = list("eta", 
+                           c("Wind turbines", 
+                             "Oil wells"))) %>%
+      setrowtype("eta") %>% setcoltype("Industry"))
+  
+})
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("vec_from_store_byname() works with lists", {
