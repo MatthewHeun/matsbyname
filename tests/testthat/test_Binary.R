@@ -633,22 +633,6 @@ test_that("mean_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-########## Stopped here #####################
-
-
-
-
-
-
-
 test_that("geometricmean_byname() works as expected", {
   expect_equal(geometricmean_byname(0, 0), 0)
   expect_equal(geometricmean_byname(10, 20), sqrt(10*20))
@@ -716,6 +700,83 @@ test_that("geometricmean_byname() works as expected", {
                DF_expected
   )
 })
+
+
+test_that("geometricmean_byname() works with Matrix objects", {
+  expect_equal(geometricmean_byname(a = matsbyname::Matrix(c(10, 10), nrow = 2, ncol = 1), b = 1000), 
+               matsbyname::Matrix(c(100, 100), nrow = 2, ncol = 1))
+  expect_equal(geometricmean_byname(a = 1000, b = matsbyname::Matrix(c(10, 10), nrow = 2, ncol = 1)), 
+               matsbyname::Matrix(c(100, 100), nrow = 2, ncol = 1))
+  
+  commoditynames <- c("c1", "c2")
+  industrynames <- "i1"
+  U <- matsbyname::Matrix(c(10, 1000), ncol = 1, nrow = 2, dimnames = list(commoditynames, industrynames)) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  G <- matsbyname::Matrix(c(1e3, 1e5), ncol = 1, nrow = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  UGgeomean <- matsbyname::Matrix(c(1000, 1000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  UGGgeomean <- matsbyname::Matrix(c(10*1e5*1e5, 1000*1e3*1e3), nrow = 2, ncol = 1,
+                       dimnames = list(commoditynames, industrynames))^(1/3) %>% 
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  # Non-sensical. Row and column names not respected.
+  expect_equal(sqrt(U*G), 
+               matsbyname::Matrix(c(100, 10000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)))
+  # Row and column names respected!
+  expect_equal(geometricmean_byname(U, G), UGgeomean)
+  expect_equal(geometricmean_byname(U, G, G), UGGgeomean)
+  expect_equal(geometricmean_byname(1000, U), 
+               matsbyname::Matrix(c(100, 1000), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  expect_equal(geometricmean_byname(10, G), 
+               matsbyname::Matrix(c(1000, 100), nrow = 2, ncol = 1, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  # This also works with lists
+  expect_equal(geometricmean_byname(list(U,U), list(G,G)), list(UGgeomean, UGgeomean))
+  DF <- data.frame(U = I(list()), G = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"G"]] <- G
+  DF[[2,"G"]] <- G
+  expect_equal(geometricmean_byname(DF$U, DF$G), list(UGgeomean, UGgeomean))
+  DF_expected <- data.frame(U = I(list()), G = I(list()), geomeans = I(list()), UGGgeomean = I(list()))
+  DF_expected[[1, "U"]] <- U
+  DF_expected[[2, "U"]] <- U
+  DF_expected[[1, "G"]] <- G
+  DF_expected[[2, "G"]] <- G
+  DF_expected[[1, "geomeans"]] <- UGgeomean
+  DF_expected[[2, "geomeans"]] <- UGgeomean
+  DF_expected[[1, "UGGgeomean"]] <- UGGgeomean
+  DF_expected[[2, "UGGgeomean"]] <- UGGgeomean
+  # Because DF_expected$geomeans is created with I(list()), its class is "AsIs".
+  # Because DF$geomeans is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$geomeans to NULL to get a match.
+  attr(DF_expected$geomeans, which = "class") <- NULL
+  attr(DF_expected$UGGgeomean, which = "class") <- NULL
+  expect_equal(DF %>% 
+                 dplyr::mutate(
+                   geomeans = geometricmean_byname(U, G), 
+                   UGGgeomean = geometricmean_byname(U, G, G)
+                 ), 
+               DF_expected
+  )
+})
+
+
+
+
+
+
+
+
+
+
+########## Stopped here #####################
+
+
+
+
+
 
 
 test_that("logmean() works as expected", {
