@@ -199,6 +199,7 @@ test_that("complete_rows_cols() works as expected", {
   expect_equal(complete_rows_cols(mat = list(B, B), fill = 42), list(B_filled, B_filled))
 })
 
+
 test_that("completing fails when dimnames aren't present for a", {
   a <- matrix(1:4, byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(NULL, c("c1", "c2")))
   mata <- matrix(1:6, byrow = TRUE, nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
