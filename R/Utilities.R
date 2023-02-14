@@ -1759,17 +1759,18 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, class = c("m
 #'                                  dimnames = list(c("r1", "r2", "r3", "r4"), c("c1", "c2"))), 
 #'                           colname = "new row", column = FALSE)
 kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
+  
   k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
     # When we get here, a_mat should be a single matrix
-    if (is.Matrix(a)) {
-      class_a <- "Matrix"
+    if (is.Matrix(a_mat)) {
+      class_a_mat <- "Matrix"
     } else {
-      class_a <- "matrix"
+      class_a_mat <- "matrix"
     }
     if (column_val) {
-      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), class = class_a)
+      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), class = class_a_mat)
     } else {
-      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), class = class_a)
+      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), class = class_a_mat)
     }
   }
 
