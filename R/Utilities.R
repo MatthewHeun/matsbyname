@@ -1980,7 +1980,7 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
         out[i, 1] <- val
       }
     }
-    if (is.Matrix(v_vec)) {
+    if (is.Matrix(a_mat)) {
       # Unfortunately, the "out[i, 1] <- val" assignment causes the loss 
       # of rowtype and coltype information on Matrix objects.
       # So reset here.

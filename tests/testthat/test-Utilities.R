@@ -3363,43 +3363,15 @@ test_that("vec_from_store_byname() works as expected with single Matrix objects 
                                           "phi"), 
                           rowtype = "Product", coltype = "phi")
   res <- vec_from_store_byname(a, v, a_piece = "noun")
-  expect_equal(res, 
-               matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
-                      dimnames = list(c("Electricity [from b in c]", 
-                                        "Coal [from e in f]", 
-                                        "Crude oil [from Production in USA]"), 
-                                      "phi")) %>%
-                 setrowtype("Product") %>% setcoltype("phi"))
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, 
+                                             matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                                                    dimnames = list(c("Electricity [from b in c]", 
+                                                                      "Coal [from e in f]", 
+                                                                      "Crude oil [from Production in USA]"), 
+                                                                    "phi")) %>%
+                                               setrowtype("Product") %>% setcoltype("phi"))
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 test_that("vec_from_store_byname() works as expected with single matrices and pref suff", {
@@ -3434,14 +3406,14 @@ test_that("vec_from_store_byname() works as expected with single matrices and pr
                  setrowtype("Product") %>% setcoltype("phi"))
   # Try with suffixes
   v2 <- matrix(1:7, nrow = 7, ncol = 1, 
-              dimnames = list(c("Electricity", 
-                                "from e in f", 
-                                "Hydro", 
-                                "Crude oil",
-                                "from b in c", 
-                                "Hard coal (if no detail)", 
-                                "from Production in USA"), 
-                              "phi")) %>%
+               dimnames = list(c("Electricity", 
+                                 "from e in f", 
+                                 "Hydro", 
+                                 "Crude oil",
+                                 "from b in c", 
+                                 "Hard coal (if no detail)", 
+                                 "from Production in USA"), 
+                               "phi")) %>%
     setrowtype("Product") %>% setcoltype("phi")
   expect_equal(vec_from_store_byname(a, v2, a_piece = "suff"), 
                matrix(c(5, 2, 7), nrow = 3, ncol = 1, 
@@ -3450,6 +3422,59 @@ test_that("vec_from_store_byname() works as expected with single matrices and pr
                                         "Crude oil [from Production in USA]"), 
                                       "phi")) %>%
                  setrowtype("Product") %>% setcoltype("phi"))
+})
+
+
+test_that("vec_from_store_byname() works as expected with single Matrix objects and pref suff", {
+  a <- matsbyname::Matrix(42, nrow = 3, ncol = 5, 
+                          dimnames = list(c("Electricity [from b in c]", 
+                                            "Coal [from e in f]", 
+                                            "Crude oil [from Production in USA]"), 
+                                          c("Main activity producer electricity plants", 
+                                            "Wind turbines", 
+                                            "Oil refineries", 
+                                            "Coal mines", 
+                                            "Automobiles")), 
+                          rowtype = "Product", coltype = "Industry")
+  v <- matsbyname::Matrix(1:7, nrow = 7, ncol = 1, 
+                          dimnames = list(c("Electricity", 
+                                            "Peat", 
+                                            "Hydro", 
+                                            "Crude oil",
+                                            "Coal", 
+                                            "Hard coal (if no detail)", 
+                                            "Brown coal"), 
+                                          "phi"), 
+                          rowtype = "Product", coltype = "phi")
+  
+  # Try with prefixes
+  res <- vec_from_store_byname(a, v, a_piece = "pref")
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, 
+                                             matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                                                    dimnames = list(c("Electricity [from b in c]", 
+                                                                      "Coal [from e in f]", 
+                                                                      "Crude oil [from Production in USA]"), 
+                                                                    "phi")) %>%
+                                               setrowtype("Product") %>% setcoltype("phi"))
+  # Try with suffixes
+  v2 <- matsbyname::Matrix(1:7, nrow = 7, ncol = 1, 
+                           dimnames = list(c("Electricity", 
+                                             "from e in f", 
+                                             "Hydro", 
+                                             "Crude oil",
+                                             "from b in c", 
+                                             "Hard coal (if no detail)", 
+                                             "from Production in USA"), 
+                                           "phi"), 
+                           rowtype = "Product", coltype = "phi")
+  matsbyname:::expect_equal_matrix_or_Matrix(vec_from_store_byname(a, v2, a_piece = "suff"), 
+                                             matrix(c(5, 2, 7), nrow = 3, ncol = 1, 
+                                                    dimnames = list(c("Electricity [from b in c]", 
+                                                                      "Coal [from e in f]", 
+                                                                      "Crude oil [from Production in USA]"), 
+                                                                    "phi")) %>%
+                                               setrowtype("Product") %>% setcoltype("phi"))
 })
 
 
@@ -3483,7 +3508,7 @@ test_that("vec_from_store_byname() works as expected with single matrices and pr
                                       "phi")) %>%
                  setrowtype("Product") %>% setcoltype("phi"))
   
-
+  
   v2 <- matrix(1:7, nrow = 7, ncol = 1, 
                dimnames = list(c("Electricity", 
                                  "Peat", 
@@ -3534,8 +3559,8 @@ test_that("vec_from_store_byname() works as expected with single matrices and pr
   
   expect_error(vec_from_store_byname(a3, v3, a_piece = "in", v_piece = "from"), 
                "v_pieces must be unique in vec_from_store_byname")
-              
-               
+  
+  
   v4 <- matrix(1:7, nrow = 7, ncol = 1, 
                dimnames = list(c("Electricity [from USA]", 
                                  "Peat [from nowhere]", 
@@ -3547,15 +3572,145 @@ test_that("vec_from_store_byname() works as expected with single matrices and pr
                                "phi")) %>%
     setrowtype("Product") %>% setcoltype("phi")
   
-               
+  
   expect_equal(vec_from_store_byname(a3, v4, a_piece = "in", v_piece = "from"), 
-                matrix(c(6, NA_real_, 1), nrow = 3, ncol = 1, 
+               matrix(c(6, NA_real_, 1), nrow = 3, ncol = 1, 
                       dimnames = list(c("Electricity [from b in GBR]", 
                                         "Coal [from e in f]", 
                                         "Crude oil [from Production in USA]"), 
                                       "phi")) %>%
                  setrowtype("Product") %>% setcoltype("phi"))
 })
+
+
+test_that("vec_from_store_byname() works as expected with single Matrix objects and prepositions", {
+  a <- matsbyname::Matrix(42, nrow = 3, ncol = 5, 
+                          dimnames = list(c("Electricity [from b in c]", 
+                                            "Coal [from e in f]", 
+                                            "Crude oil [from Production in USA]"), 
+                                          c("Main activity producer electricity plants", 
+                                            "Wind turbines", 
+                                            "Oil refineries", 
+                                            "Coal mines", 
+                                            "Automobiles")), 
+                          rowtype = "Product", coltype = "Industry")
+  # Keep v as a matrix
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "USA", 
+                                "c",
+                                "Coal", 
+                                "Hard coal (if no detail)", 
+                                "f"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  res <- vec_from_store_byname(a, v, a_piece = "in")
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, 
+                                             matrix(c(4, 7, 3), nrow = 3, ncol = 1, 
+                                                    dimnames = list(c("Electricity [from b in c]", 
+                                                                      "Coal [from e in f]", 
+                                                                      "Crude oil [from Production in USA]"), 
+                                                                    "phi")) %>%
+                                               setrowtype("Product") %>% setcoltype("phi"))
+  
+  # Again, leave v2 as a matrix
+  v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+               dimnames = list(c("Electricity", 
+                                 "Peat", 
+                                 "Production", 
+                                 "e",
+                                 "Coal", 
+                                 "Hard coal (if no detail)", 
+                                 "b"), 
+                               "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  matsbyname:::expect_equal_matrix_or_Matrix(
+    vec_from_store_byname(a, v2, a_piece = "from"), 
+    matrix(c(7, 4, 3), nrow = 3, ncol = 1, 
+           dimnames = list(c("Electricity [from b in c]", 
+                             "Coal [from e in f]", 
+                             "Crude oil [from Production in USA]"), 
+                           "phi")) %>%
+      setrowtype("Product") %>% setcoltype("phi"))
+  # Try when the preposition (in this case "to") is not present in a.
+  res_null <- vec_from_store_byname(a, v, a_piece = "to")
+  expect_true(is.na(res_null[1, 1]))
+  expect_true(is.na(res_null[2, 1]))
+  expect_true(is.na(res_null[3, 1]))
+
+  # Try when we use different pieces of a and v.
+  a3 <- matsbyname::Matrix(42, nrow = 3, ncol = 5, 
+                           dimnames = list(c("Electricity [from b in GBR]", 
+                                             "Coal [from e in f]", 
+                                             "Crude oil [from Production in USA]"), 
+                                           c("Main activity producer electricity plants", 
+                                             "Wind turbines", 
+                                             "Oil refineries", 
+                                             "Coal mines", 
+                                             "Automobiles")), 
+                           rowtype = "Product", coltype = "Industry")
+  v3 <- matrix(1:7, nrow = 7, ncol = 1, 
+               dimnames = list(c("Electricity [from USA]", 
+                                 "Peat", 
+                                 "Production", 
+                                 "e",
+                                 "Coal", 
+                                 "Hard coal (if no detail) [from GBR]", 
+                                 "b"), 
+                               "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expect_error(vec_from_store_byname(a3, v3, a_piece = "in", v_piece = "from"), 
+               "v_pieces must be unique in vec_from_store_byname")
+  
+  
+  v4 <- matsbyname::Matrix(1:7, nrow = 7, ncol = 1, 
+                           dimnames = list(c("Electricity [from USA]", 
+                                             "Peat [from nowhere]", 
+                                             "Production [from GHA]", 
+                                             "e [from ZAF]",
+                                             "Coal [from AUS]", 
+                                             "Hard coal (if no detail) [from GBR]", 
+                                             "b [from Nebraska]"), 
+                                           "phi"), 
+                           rowtype = "Product", coltype = "phi")
+  res4 <- vec_from_store_byname(a3, v4, a_piece = "in", v_piece = "from")
+  expect_equal(res4[1, 1], 6)
+  expect_true(is.na(res4[2, 1]))
+  expect_equal(res4[3, 1], 1)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("vec_from_store_byname() works when a row vector is desired.", {
