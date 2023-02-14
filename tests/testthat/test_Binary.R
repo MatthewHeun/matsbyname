@@ -68,7 +68,7 @@ test_that("hadamardproduct_byname() works as expected", {
     UUYY = hadamardproduct_byname(U, Y, U, Y)
   ), 
   DF_expected)
-  # Test with a constant multipliying a column of the DF
+  # Test with a constant multiplying a column of the DF
   DF_2 <- DF %>% 
     dplyr::mutate(
       c = 10,
@@ -108,6 +108,140 @@ test_that("hadamardproduct_byname() works as expected", {
                                        setrowtype("Products") %>% setcoltype("Industries")), 
                list(Ux2_expected, Ux2_expected))
 })
+
+
+test_that("hadamardproduct_byname() works with Matrix objects", {
+  matsbyname:::expect_equal_matrix_or_Matrix(
+    hadamardproduct_byname(matsbyname::Matrix(c(10, 10), nrow = 2, ncol = 1), 1000), 
+    matrix(c(10000, 10000), nrow = 2, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(
+    hadamardproduct_byname(matsbyname::Matrix(c(10, 10), nrow = 2, ncol = 1), 1000, 10), 
+    matrix(c(100000, 100000), nrow = 2, ncol = 1))
+  
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, 
+                          dimnames = list(productnames, industrynames), 
+                          rowtype = "Products", coltype = "Industries")
+  Y <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2,
+                          dimnames = list(rev(productnames), rev(industrynames)), 
+                          rowtype = "Products", coltype = "Industries")
+  # Not what is desired, because names aren't aligned
+  res <- U * Y
+  expect_true(is.Matrix(res))
+  
+  matsbyname:::expect_equal_matrix_or_Matrix(
+    res, 
+    matrix(c(1,4,9,16), nrow = 2, dimnames = dimnames(U)))
+  UY_expected <- matsbyname::Matrix(c(4,6,6,4), ncol = 2, nrow = 2, dimnames = dimnames(U), 
+                                    rowtype = "Products", coltype = "Industries")
+  expect_equal(hadamardproduct_byname(U, Y), UY_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(hadamardproduct_byname(U, 0), 
+                                             matsbyname::Matrix(c(0,0,0,0), nrow = 2, ncol = 2, dimnames = dimnames(U), 
+                                                                rowtype = "Products", coltype = "Industries"))
+  # Make sure it works down a list with .summarise = TRUE.
+  expect_equal(hadamardproduct_byname(list(U, Y), .summarise = TRUE), list(UY_expected))
+  # See if a product of 4 vectors works as expected
+  UUYY_expected <- matsbyname::Matrix(c(16, 36, 36, 16), nrow = 2, ncol = 2, 
+                                      dimnames = dimnames(U), 
+                                      rowtype = "Products", coltype = "Industries")
+  expect_equal(hadamardproduct_byname(U, U, Y, Y), UUYY_expected)
+  
+  # Use dimnames(U), because after performing hadamardproduct_byname, 
+  # the rows and columns will be sorted alphabetically by name. 
+  # U has rows and columns that are sorted alphabetically by name.
+  matsbyname:::expect_equal_matrix_or_Matrix(
+    hadamardproduct_byname(0, Y), 
+    matrix(c(0,0,0,0), nrow = 2, ncol = 2, 
+           dimnames = dimnames(U)) %>% 
+      setrowtype("Products") %>% setcoltype("Industries"))
+  # This also works with lists
+  expect_equal(hadamardproduct_byname(list(U, U), list(Y, Y)), list(UY_expected, UY_expected))
+  # And it works with data frames 
+  DF <- data.frame(U = I(list()), Y = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"Y"]] <- Y
+  DF[[2,"Y"]] <- Y
+  expect_equal(hadamardproduct_byname(DF$U, DF$Y), list(UY_expected, UY_expected))
+  DF_expected <- data.frame(U = I(list()), Y = I(list()), elementprods = I(list()), UUYY = I(list()))
+  DF_expected[[1, "U"]] <- U
+  DF_expected[[2, "U"]] <- U
+  DF_expected[[1, "Y"]] <- Y
+  DF_expected[[2, "Y"]] <- Y
+  DF_expected[[1, "elementprods"]] <- UY_expected
+  DF_expected[[2, "elementprods"]] <- UY_expected
+  DF_expected[[1, "UUYY"]] <- UUYY_expected
+  DF_expected[[2, "UUYY"]] <- UUYY_expected
+  # Because DF_expected$elementprods and DF_expected$UUYY are created with I(list()), 
+  # their classes are "AsIs".
+  # Because DF$elementprods and DF$UUYY are created from an actual calculation, their classes are NULL.
+  # Need to set the class of DF_expected$elementprods 
+  # and DF_expected$UUYY to NULL to get a match.
+  attr(DF_expected$elementprods, which = "class") <- NULL
+  attr(DF_expected$UUYY, which = "class") <- NULL
+  expect_equal(DF %>% dplyr::mutate(
+    elementprods = hadamardproduct_byname(U, Y), 
+    UUYY = hadamardproduct_byname(U, Y, U, Y)
+  ), 
+  DF_expected)
+  # Test with a constant multiplying a column of the DF
+  DF_2 <- DF %>% 
+    dplyr::mutate(
+      c = 10,
+      A = hadamardproduct_byname(c, U)
+    )
+  for (i in c(1:2)) {
+    expect_equal(DF_2$A[[i]], DF$U[[i]]*10)
+  }
+  constant <- 20
+  DF_3 <- DF %>% 
+    dplyr::mutate(
+      B = hadamardproduct_byname(constant, U)
+    )
+  for (i in c(1:2)) {
+    expect_equal(DF_3$B[[i]], DF$U[[i]]*20)
+  }
+  # Try with two constants multiplying a column of the DF.
+  DF_3 <- DF_2 %>% 
+    dplyr::mutate(
+      d = 0.5,
+      B = hadamardproduct_byname(c, d, U)
+    )
+  for (i in c(1:2)) {
+    expect_equal(DF_3$B[[i]], DF$U[[i]]*10*0.5)
+  }
+  
+  # Try with a list of matrices and a single value.
+  Ux2_expected <- matsbyname::Matrix(c(2, 4, 6, 8), nrow = 2, ncol = 2, 
+                                     dimnames = dimnames(DF$U[[1]])) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(hadamardproduct_byname(DF$U, 2), list(Ux2_expected, Ux2_expected))
+  # Try with a list of matrices and a single matrix
+  expect_equal(hadamardproduct_byname(DF$U, 
+                                      matsbyname::Matrix(c(2,2,
+                                                           2,2), 
+                                                         nrow = 2, ncol = 2, 
+                                                         dimnames = dimnames(Ux2_expected)) %>% 
+                                        setrowtype("Products") %>% setcoltype("Industries")), 
+               list(Ux2_expected, Ux2_expected))
+})
+
+
+
+
+
+
+
+
+
+
+########## Stopped here #####################
+
+
+
+
+
 
 
 test_that("quotient_byname() works as expected", {

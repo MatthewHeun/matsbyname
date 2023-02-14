@@ -90,7 +90,11 @@ organize_args <- function(a, b, match_type = "all", fill){
   # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
   # if (!is.matrix(a) & is.matrix(b)) {
   if (!is_matrix_or_Matrix(a) & is_matrix_or_Matrix(b)) {
-    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
+    if (is.Matrix(b)) {
+      a <- matsbyname::Matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
+    } else {
+      a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
+    }
     if (match_type == "all") {
       a <- a %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
     } 
@@ -99,7 +103,11 @@ organize_args <- function(a, b, match_type = "all", fill){
     }
     # If matchtype == "none", we don't to anything.
   } else if (is_matrix_or_Matrix(a) & !is_matrix_or_Matrix(b)) {
-    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
+    if (is.Matrix(a)) {
+      b <- matsbyname::Matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
+    } else {
+      b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
+    }
     if (match_type == "all") {
       b <- b %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     }
