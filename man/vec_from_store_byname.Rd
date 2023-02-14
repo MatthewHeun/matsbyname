@@ -22,7 +22,8 @@ vec_from_store_byname(
  } else {
     
     RCLabels::prepositions_list
- }
+ },
+  missing = NA_real_
 )
 }
 \arguments{
@@ -47,7 +48,10 @@ should be used.}
 Default is \code{RCLabels::bracket_notation}, wrapped as a list if \code{a} is a list.}
 
 \item{prepositions}{The strings that will count for prepositions.
-Default is \code{RCLables::prepositions}, wrapped as a list if \code{a} is a list..}
+Default is \code{RCLabels::prepositions}, wrapped as a list if \code{a} is a list.}
+
+\item{missing}{The value used when the desired value is not found in \code{v}.
+Default is \code{NA_real_}.}
 }
 \value{
 A vector with names from \code{a} and values from \code{v}.

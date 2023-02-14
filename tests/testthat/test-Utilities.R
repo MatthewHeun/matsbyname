@@ -3781,35 +3781,6 @@ test_that("vec_from_store_byname() works when a row vector Matrix object is desi
 })
 
 
-
-
-
-
-
-
-
-
-########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 test_that("vec_from_store_byname() works with lists", {
   a <- matrix(42, nrow = 3, ncol = 5, 
               dimnames = list(c("Electricity [from b in GBR]", 
@@ -3848,16 +3819,96 @@ test_that("vec_from_store_byname() works with lists", {
   
   # Try with notation and prepositions already wrapped in lists.
   res <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from", 
-                        notation = list(RCLabels::bracket_notation), 
-                        prepositions = list(RCLabels::prepositions_list))  
+                               notation = list(RCLabels::bracket_notation), 
+                               prepositions = list(RCLabels::prepositions_list))  
   expect_equal(res, expected_list)
   
   # Try with notation and prepositions not already wrapped in lists.
-
+  
   res2 <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from")
   expect_equal(res2, expected_list)
-
+  
 })
+
+
+test_that("vec_from_store_byname() works with Matrix objects in lists", {
+  a <- matsbyname::Matrix(42, nrow = 3, ncol = 5, 
+                          dimnames = list(c("Electricity [from b in GBR]", 
+                                            "Coal [from e in f]", 
+                                            "Crude oil [from Production in USA]"), 
+                                          c("Main activity producer electricity plants", 
+                                            "Wind turbines", 
+                                            "Oil refineries", 
+                                            "Coal mines", 
+                                            "Automobiles")), 
+                          rowtype = "Product", coltype = "Indsutry")
+
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity [from USA]", 
+                                "Peat [from nowhere]", 
+                                "Production [from GHA]", 
+                                "e [from ZAF]",
+                                "Coal [from AUS]", 
+                                "Hard coal (if no detail) [from GBR]", 
+                                "b [from Nebraska]"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expected <- matrix(c(6, -9999, 1), nrow = 3, ncol = 1, 
+                     dimnames = list(c("Electricity [from b in GBR]", 
+                                       "Coal [from e in f]", 
+                                       "Crude oil [from Production in USA]"), 
+                                     "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  
+  a_list <- list(a, a, a)
+  v_list <- list(v, v, v)
+  expected_list <- list(expected, expected, expected)
+  
+  # Try with notation and prepositions already wrapped in lists.
+  res <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from", 
+                               notation = list(RCLabels::bracket_notation), 
+                               prepositions = list(RCLabels::prepositions_list), 
+                               missing = -9999)  
+  expect_true(all(mapply(matsbyname:::equal_matrix_or_Matrix, res, expected_list)))
+  
+  # Try with notation and prepositions not already wrapped in lists.
+  
+  res2 <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from", 
+                                missing = -9999)
+  expect_true(all(mapply(matsbyname:::equal_matrix_or_Matrix, res2, expected_list)))
+  
+})
+
+
+
+
+
+
+
+
+########## Got to here ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_that("vec_from_store_byname() works in a data frame", {

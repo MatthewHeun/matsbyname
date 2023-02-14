@@ -1837,7 +1837,9 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' @param notation The notation for the row and column labels.
 #'                 Default is `RCLabels::bracket_notation`, wrapped as a list if `a` is a list.
 #' @param prepositions The strings that will count for prepositions.
-#'                     Default is `RCLables::prepositions`, wrapped as a list if `a` is a list..
+#'                     Default is `RCLabels::prepositions`, wrapped as a list if `a` is a list.
+#' @param missing The value used when the desired value is not found in `v`.
+#'                Default is `NA_real_`.
 #'
 #' @return A vector with names from `a` and values from `v`.
 #' 
@@ -1905,7 +1907,8 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'   )
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
-                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}) {
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
+                                  missing = NA_real_) {
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 
                        notation_val = notation, 
                        prepositions_val = prepositions) {
@@ -1952,11 +1955,11 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
     }
     # Build the outgoing vector with NA's everywhere
     if (is.Matrix(a_mat)) {
-      out <- matsbyname::Matrix(NA_real_, nrow = out_size, ncol = 1, 
+      out <- matsbyname::Matrix(missing, nrow = out_size, ncol = 1, 
                                 dimnames = list(a_rownames, colname_val), 
                                 rowtype = rowtype(v_vec), coltype = coltype(v_vec))
     } else {
-      out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
+      out <- matrix(missing, nrow = out_size, ncol = 1, 
                     dimnames = list(a_rownames, colname_val)) %>%
         # Be sure to retain the row and column type of v_vec.
         setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
@@ -1969,7 +1972,7 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
       
       # We need both this_piece to be something (not "") and
       # rownum_in_v to be different from 0 (i.e. present somewhere)
-      # to assign something different from NA_real_, the default value.
+      # to assign something different from missing, the default value.
       if (this_piece != "" & length(rownum_in_v) != 0) {
         if (is.Matrix(v_vec)) {
           val <- v_vec[rownum_in_v, 1]
