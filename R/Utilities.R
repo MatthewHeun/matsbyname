@@ -240,21 +240,28 @@ prep_vector_arg <- function(a, vector_arg) {
 list_of_rows_or_cols <- function(a, margin){
   margin <- prep_vector_arg(a, margin)
   
-  lrc_func <- function(a, margin){
+  lrc_func <- function(a_mat, margin){
     stopifnot(length(margin) == 1)
     stopifnot(margin == 1 | margin == 2)
-    stopifnot(inherits(a, "matrix"))
+    stopifnot(is_matrix_or_Matrix(a_mat))
     # Strategy: perform all operations with margin to be split into a list in columns.
     if (margin == 1) {
       # Caller requested rows to be split into list items.
       # Transpose so operations will be easier.
-      out <- transpose_byname(a)
+      out <- transpose_byname(a_mat)
     } else {
-      out <- a
+      out <- a_mat
     }
     out <- lapply(seq_len(ncol(out)), function(i){
-      matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>%
-        setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
+      if (is.Matrix(a_mat)) {
+        result <- matsbyname::Matrix(out[,i], nrow = nrow(out), ncol = 1, 
+                                     dimnames = list(rownames(out), colnames(out)[[i]]), 
+                                     rowtype = rowtype(out), coltype = coltype(out))
+      } else {
+        result <- matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>%
+          setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
+      }
+      return(result)
     }) %>%
       magrittr::set_names(colnames(out))
     return(out)
