@@ -350,22 +350,6 @@ test_that("quotient_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-########## Stopped here #####################
-
-
-
-
-
-
-
 test_that("quotient_byname() detailed example works as expected", {
   Lv <- list(
     matrix(c(36.40956907, 
@@ -393,7 +377,52 @@ test_that("quotient_byname() detailed example works as expected", {
   # Then, organize_args turns it into a funky list.
   LVnumeric <- c(123.3151731, 208.1079558, 285.6464036)
   expect_equal(quotient_byname(Lv, LVnumeric), expected)
+  
+  # Now try these in a data frame
+  DF <- data.frame(Lv = I(list()), LV = I(list()))
+  DF[[1,"Lv"]] <- Lv[[1]]
+  DF[[2,"Lv"]] <- Lv[[2]]
+  DF[[3,"Lv"]] <- Lv[[3]]
+  
+  DF[[1,"LV"]] <- LV[[1]]
+  DF[[2,"LV"]] <- LV[[2]]
+  DF[[3,"LV"]] <- LV[[3]]
+  DF2 <- DF %>% 
+    dplyr::mutate(
+      wv = quotient_byname(Lv, LV)
+    )
+  expect_equal(DF2$wv, expected)
+})
 
+
+test_that("quotient_byname() detailed example works as expected with Matrix objects", {
+  Lv <- list(
+    matsbyname::Matrix(c(36.40956907, 
+                         86.56170245), nrow = 2, ncol = 1), 
+    matsbyname::Matrix(c(61.97848865, 
+                         145.7748236), nrow = 2, ncol = 1),
+    matsbyname::Matrix(c(56.71228867,
+                         226.8281467), nrow = 2, ncol = 1)) %>% 
+    setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor") %>% 
+    setrowtype("subcat") %>% setcoltype("factor")
+  LV <- list(123.3151731, 208.1079558, 285.6464036)
+  expected <- list(matsbyname::Matrix(c(0.295256197,
+                                        0.701955001), nrow = 2, ncol = 1), 
+                   matsbyname::Matrix(c(0.29781893, 
+                                        0.700476938), nrow = 2, ncol = 1),
+                   matsbyname::Matrix(c(0.198540181, 
+                                        0.794087179), nrow = 2, ncol = 1)) %>% 
+    setrownames_byname(c("subcat 1", "subcat 2")) %>% setcolnames_byname("factor") %>% 
+    setrowtype("subcat") %>% setcoltype("factor")
+  expect_equal(quotient_byname(Lv, LV), expected)
+  
+  # This is the failure mode.
+  # Somehow, LV is not maintained as a list. 
+  # It comes in as a numeric vector.
+  # Then, organize_args turns it into a funky list.
+  LVnumeric <- c(123.3151731, 208.1079558, 285.6464036)
+  expect_equal(quotient_byname(Lv, LVnumeric), expected)
+  
   # Now try these in a data frame
   DF <- data.frame(Lv = I(list()), LV = I(list()))
   DF[[1,"Lv"]] <- Lv[[1]]
@@ -427,6 +456,40 @@ test_that("pow_byname() works as expected", {
   sqrtm <- matrix(sqrt(2), nrow = 2, ncol = 3)
   identity <- matrix(1, nrow = 2, ncol = 3)
   squarem <- matrix(4, nrow = 2, ncol = 3)
+  
+  expect_equal(pow_byname(m, -1), one_over_m)
+  expect_equal(pow_byname(m, 0), identity)
+  expect_equal(pow_byname(m, 0.5), sqrtm)
+  expect_equal(pow_byname(m, 0), identity)
+  expect_equal(pow_byname(m, 2), squarem)
+  
+  # Try with a list of matrices
+  expect_equal(pow_byname(list(m, m), 0.5), list(sqrtm, sqrtm))
+  expect_equal(pow_byname(list(m, m), pow = list(0.5, 1)), list(sqrtm, m))
+  expect_equal(pow_byname(list(m, m, m, m, m), pow = list(-1, 0, 0.5, 1, 2)), list(one_over_m, identity, sqrtm, m, squarem))
+  
+  # Try in a data frame
+  DF <- data.frame(m = I(list()), pow = I(list()))
+  DF[[1, "m"]] <- m
+  DF[[2, "m"]] <- m
+  DF[[1, "pow"]] <- 0.5
+  DF[[2, "pow"]] <- -1
+  res <- DF %>% dplyr::mutate(
+    sqrtm = pow_byname(m, 0.5),
+    mtopow = pow_byname(m, pow)
+  )
+  expect_equal(res$sqrtm, list(sqrtm, sqrtm))
+  expect_equal(res$mtopow, list(m^0.5, m^-1))
+})
+
+
+test_that("pow_byname() works with Mattrix objects", {
+  # Try with single matrices
+  m <- matsbyname::Matrix(2, nrow = 2, ncol = 3)
+  one_over_m <- matsbyname::Matrix(0.5, nrow = 2, ncol = 3)
+  sqrtm <- matsbyname::Matrix(sqrt(2), nrow = 2, ncol = 3)
+  identity <- matsbyname::Matrix(1, nrow = 2, ncol = 3)
+  squarem <- matsbyname::Matrix(4, nrow = 2, ncol = 3)
   
   expect_equal(pow_byname(m, -1), one_over_m)
   expect_equal(pow_byname(m, 0), identity)
@@ -514,6 +577,76 @@ test_that("mean_byname() works as expected", {
   attr(DF_expected$means, which = "class") <- NULL
   expect_equal(DF %>% dplyr::mutate(means = mean_byname(U, G)), DF_expected)
 })
+
+
+test_that("mean_byname() works with Matrix objects", {
+  commoditynames <- c("c1", "c2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  G <- matsbyname::Matrix(rev(1:4), nrow = 2, ncol = 2, dimnames = list(rev(commoditynames), rev(industrynames))) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  UGavg <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+    setrowtype("Commodities") %>% setcoltype("Industries")
+  # Non-sensical. Row and column names not respected.
+  expect_equal((U + G) / 2, 
+               matsbyname::Matrix(2.5, nrow = 2, ncol = 2, dimnames = list(commoditynames, industrynames)))
+  # Row and column names respected! Should be 1, 2, 3, and 4.
+  expect_equal(mean_byname(U, G), UGavg)
+  expect_equal(mean_byname(100, U), 
+               matsbyname::Matrix((100 + 1:4)/2, nrow = 2, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  expect_equal(mean_byname(10, G), 
+               matsbyname::Matrix((10 + 1:4)/2, nrow = 2, ncol = 2, dimnames = list(commoditynames, industrynames)) %>%
+                 setrowtype("Commodities") %>% setcoltype("Industries"))
+  A <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  B <- 2*A
+  C <- 2*B
+  ABCavg_expected <- matsbyname::Matrix(c((1 + 2 + 4), (3 + 6 + 12), 
+                              (2 + 4 + 8), (4 + 8 + 16)) / 3, 
+                            byrow = TRUE, nrow = 2, ncol = 2, dimnames = dimnames(A)) %>% 
+    setrowtype("rows") %>% setcoltype("cols")
+  expect_equal(mean_byname(A, B, C), ABCavg_expected)
+  
+  # This also works with lists
+  expect_equal(mean_byname(list(U,U), list(G,G)), list(UGavg, UGavg))
+  expect_equal(mean_byname(list(A,A), list(B,B), list(C,C)), list(ABCavg_expected, ABCavg_expected))
+  DF <- data.frame(U = I(list()), G = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"G"]] <- G
+  DF[[2,"G"]] <- G
+  expect_equal(mean_byname(DF$U, DF$G), list(UGavg, UGavg))
+  DF_expected <- data.frame(U = I(list()), G = I(list()), means = I(list()))
+  DF_expected[[1, "U"]] <- U
+  DF_expected[[2, "U"]] <- U
+  DF_expected[[1, "G"]] <- G
+  DF_expected[[2, "G"]] <- G
+  DF_expected[[1, "means"]] <- UGavg
+  DF_expected[[2, "means"]] <- UGavg
+  # Because DF_expected$means is created with I(list()), its class is "AsIs".
+  # Because DF$means is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$means to NULL to get a match.
+  attr(DF_expected$means, which = "class") <- NULL
+  expect_equal(DF %>% dplyr::mutate(means = mean_byname(U, G)), DF_expected)
+})
+
+
+
+
+
+
+
+
+
+
+########## Stopped here #####################
+
+
+
+
+
 
 
 test_that("geometricmean_byname() works as expected", {
