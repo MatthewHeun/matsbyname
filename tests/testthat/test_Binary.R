@@ -228,22 +228,6 @@ test_that("hadamardproduct_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-########## Stopped here #####################
-
-
-
-
-
-
-
 test_that("quotient_byname() works as expected", {
   expect_equal(quotient_byname(100, 50), 2)
   productnames <- c("p1", "p2")
@@ -302,6 +286,84 @@ test_that("quotient_byname() works as expected", {
   attr(DF_expected$elementquotients, which = "class") <- NULL
   expect_equal(DF %>% dplyr::mutate(elementquotients = quotient_byname(U, Y)), DF_expected)
 })
+
+
+test_that("quotient_byname() works with Matrix objects", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Y <- matsbyname::Matrix(rev(1:4), nrow = 2, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  # Non-sensical.  Names aren't aligned
+  expect_equal(U/Y, 
+               matsbyname::Matrix(c(0.25, 2/3, 1.5, 4), nrow = 2, ncol = 2, 
+                                  dimnames = dimnames(U)))
+  UoverY_expected <- matsbyname::Matrix(c(1,1,1,1), nrow = 2, ncol = 2, 
+                                        dimnames = dimnames(U)) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(quotient_byname(U, Y), UoverY_expected)
+  expect_equal(quotient_byname(U, 10), 
+               matsbyname::Matrix(c(0.1, 0.2, 0.3, 0.4), nrow = 2, ncol = 2,
+                                  dimnames = dimnames(U)) %>% 
+                 setrowtype("Products") %>% setcoltype("Industries"))
+  tenoverY_expected <- matsbyname::Matrix(c(10, 5, 10/3, 2.5), nrow = 2, ncol = 2, dimnames = dimnames(U)) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(quotient_byname(10, Y), tenoverY_expected)
+  # This also works with lists
+  expect_equal(quotient_byname(10, list(Y,Y)), list(tenoverY_expected, tenoverY_expected))
+  # Try more-complicated lists
+  expect_equal(quotient_byname(list(10, 10, 10), list(Y, Y, Y)), 
+               list(tenoverY_expected, tenoverY_expected, tenoverY_expected))
+  mat12 <- matsbyname::Matrix(c(1, 2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
+  mat34 <- matsbyname::Matrix(c(3, 4), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c1"))
+  expect_equal(quotient_byname(list(mat12, mat34), list(2, 4)), 
+               list(mat12 / 2, mat34 / 4))
+  
+  # Use dimnames(U), because after performing quotient_byname, 
+  # the rows and columns will be sorted alphabetically by name. 
+  # U has rows and columns that are sorted alphabetically by name.
+  Yover10_expected <- matsbyname::Matrix(c(0.1, 0.2, 0.3, 0.4), nrow = 2, ncol = 2, 
+                                         dimnames = dimnames(U)) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  expect_equal(quotient_byname(list(Y,Y), 10), list(Yover10_expected, Yover10_expected))
+  expect_equal(quotient_byname(list(U, U), list(Y, Y)), list(UoverY_expected, UoverY_expected))
+  # Also works with data frames.
+  DF <- data.frame(U = I(list()), Y = I(list()))
+  DF[[1,"U"]] <- U
+  DF[[2,"U"]] <- U
+  DF[[1,"Y"]] <- Y
+  DF[[2,"Y"]] <- Y
+  expect_equal(quotient_byname(DF$U, DF$Y), list(UoverY_expected, UoverY_expected))
+  DF_expected <- data.frame(U = I(list()), Y = I(list()), elementquotients = I(list()))
+  DF_expected[[1, "U"]] <- U
+  DF_expected[[2, "U"]] <- U
+  DF_expected[[1, "Y"]] <- Y
+  DF_expected[[2, "Y"]] <- Y
+  DF_expected[[1, "elementquotients"]] <- UoverY_expected
+  DF_expected[[2, "elementquotients"]] <- UoverY_expected
+  # Because DF_expected$elementquotients is created with I(list()), its class is "AsIs".
+  # Because DF$elementquotients is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$elementquotients to NULL to get a match.
+  attr(DF_expected$elementquotients, which = "class") <- NULL
+  expect_equal(DF %>% dplyr::mutate(elementquotients = quotient_byname(U, Y)), DF_expected)
+})
+
+
+
+
+
+
+
+
+
+
+########## Stopped here #####################
+
+
+
+
+
 
 
 test_that("quotient_byname() detailed example works as expected", {
