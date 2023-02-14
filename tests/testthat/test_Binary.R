@@ -1205,90 +1205,6 @@ test_that("make_pattern() works as expected", {
 })
 
 
-
-
-
-
-
-
-
-
-
-########## Stopped here #####################
-
-
-
-
-
-
-
-
-
-
-test_that("organize_args() works as expected", {
-  # If only one argument is a list, make the other argument also a list of equal length.
-  expect_equal(matsbyname:::organize_args(a = list(1,2), b = 3), list(a = list(1,2), b = list(3,3)))
-  expect_equal(matsbyname:::organize_args(a = 3, b = list(1,2)), list(a = list(3,3), b = list(1,2)))
-  
-  # If both arguments are lists, ensure that they are same length.
-  expect_equal(matsbyname:::organize_args(a = list(1,2,3), b = list(4,5,6)), list(a = list(1,2,3), b = list(4,5,6)))
-  expect_error(matsbyname:::organize_args(a = list(1,2,3), b = list(4,5,6,7)), "length\\(a\\) == length\\(b\\) is not TRUE") 
-  
-  # If one argument is a matrix and the other is a constant, make the constant into a matrix.
-  m <- matrix(c(1,2,3,4), nrow = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  expect_equal(matsbyname:::organize_args(a = m, b = 2), 
-               list(a = m, b = matrix(2, nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
-                      setrowtype("Products") %>% setcoltype("Industries")))
-  
-  # Ensures that row and column types match
-  # Completes and sorts the matrices
-  n <- matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
-    setrowtype("Products") %>% setcoltype("Industries")
-  # Neither row nor column types match, but error will say column types are mismatched.
-  expect_error(matsbyname:::organize_args(a = m %>% setrowtype("rows"), b = n), 
-               "rowtype\\(a\\) \\(rows\\) != rowtype\\(b\\) \\(Products\\).")
-  # By setting the rowtype to match, the error should shift to mismatched column types
-  expect_error(matsbyname:::organize_args(a = m, b = n %>% setcoltype("cols")), 
-               "coltype\\(a\\) \\(Industries\\) != coltype\\(b\\) \\(cols\\).")
-  # This should work, because the rowtype and coltype are now same for both
-  expect_equal(matsbyname:::organize_args(a = m, b = n), 
-               list(a = matrix(c(1,3,
-                                 2,4,
-                                 0,0),
-                               nrow = 3, ncol = 2, byrow = TRUE,
-                               dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
-                      setrowtype("Products") %>% setcoltype("Industries"), 
-                    b = matrix(c(1,4,
-                                 2,5,
-                                 3,6),
-                               nrow = 3, ncol = 2, byrow = TRUE,
-                               dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
-                      setrowtype("Products") %>% setcoltype("Industries")))
-  
-  # If one argument is a list and the other argument is a matrix, duplicate the matrix to match the length of the list
-  expect_equal(matsbyname:::organize_args(a = list(1, 2), b = m), list(a = list(1, 2), b = list(m, m)))
-  expect_equal(matsbyname:::organize_args(a = n, b = list(m, m)), list(a = list(n, n), b = list(m, m)))
-  
-  # Test the match_type argument
-  p <- transpose_byname(n)
-  # If we don't specify match_type = "matmult", 
-  # organize_args will try to ensure that rows of m and rows of p are same type. 
-  # organize_args will also try to ensure that cols of m and cols of p are same type.
-  # These aren't true, so this will error.
-  expect_error(matsbyname:::organize_args(a = m, b = p), 
-               "rowtype\\(a\\) \\(Products\\) != rowtype\\(b\\) \\(Industries\\).")
-  # When we say match_type = "matmult", we indicate that the columns of a and the rows of b must match.
-  expect_equal(matsbyname:::organize_args(a = m, b = p, match_type = "matmult"), list(a = m, b = p))
-  
-  # Test that values are filled appropriately.
-  expect_equal(matsbyname:::organize_args(a = NULL, b = 5, fill = 42), list(a = 42, b = 5))
-  expect_equal(matsbyname:::organize_args(b = 5, fill = 42), list(a = 42, b = 5))
-  expect_equal(matsbyname:::organize_args(a = 3, b = NULL, fill = 42), list(a = 3, b = 42))
-  expect_equal(matsbyname:::organize_args(a = 3, fill = 42), list(a = 3, b = 42))
-})
-
-
 test_that("matrix multiplied by a constant in a data frame works", {
   matA <- matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
     setrowtype("Industries") %>% setcoltype("Products")
@@ -1317,6 +1233,39 @@ test_that("matrix multiplied by a constant in a data frame works", {
   expect_equal(mats$product[[2]], matrix(c(2, 6,
                                            4, 8),
                                          nrow = 2, byrow = TRUE) %>% 
+                 setrownames_byname(c("p1", "p2")) %>% setcolnames_byname(c("i1", "i2")) %>% 
+                 setrowtype("Industries") %>% setcoltype("Products"))
+})
+
+
+test_that("matrix multiplied by a constant in a data frame works with Matrix objects", {
+  matA <- matsbyname::Matrix(c(1:4), nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Industries") %>% setcoltype("Products")
+  temp <- data.frame(matrix = I(list()), vals = I(list()))
+  temp[[1, "matrix"]] <- "A"
+  temp[[1, "vals"]] <- matA
+  mats <- temp %>% 
+    dplyr::rename(
+      matrix.name = matrix,
+      matrix = vals
+    ) %>% 
+    tidyr::spread(key = matrix.name, value = matrix) %>% 
+    # Duplicate the row to demonstrate byname operating simultaneously 
+    # on all rows of the data frame.
+    rbind(., .) %>% 
+    dplyr::mutate(
+      constant = RCLabels::make_list(x = 1:2, n = 2, lenx = 2),
+      # Multiplies matrices in the sum column by corresponding constants in the c column.
+      product = hadamardproduct_byname(constant, A)
+    )
+  expect_equal(mats$product[[1]], matsbyname::Matrix(c(1, 3,
+                                                       2, 4),
+                                                     nrow = 2, ncol = 2, byrow = TRUE) %>% 
+                 setrownames_byname(c("p1", "p2")) %>% setcolnames_byname(c("i1", "i2")) %>% 
+                 setrowtype("Industries") %>% setcoltype("Products"))
+  expect_equal(mats$product[[2]], matsbyname::Matrix(c(2, 6,
+                                                       4, 8),
+                                                     nrow = 2, ncol = 2, byrow = TRUE) %>% 
                  setrownames_byname(c("p1", "p2")) %>% setcolnames_byname(c("i1", "i2")) %>% 
                  setrowtype("Industries") %>% setcoltype("Products"))
 })
@@ -1354,6 +1303,21 @@ test_that("and_byname() works as expected", {
   # Test with .summarise
   expect_equal(and_byname(list(m1, m1), list(m2, m2), .summarise = TRUE), list(m1 & m1, m2 & m2))
   expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2), .summarise = TRUE), list(m1 & m1, m1 & m1, m2 & m2))
-  
 })
 
+
+test_that("and_byname() works with Matrix objects", {
+  # Test with matrices
+  m1 <- matsbyname::Matrix(c(TRUE, TRUE, TRUE, FALSE), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  m2 <- matsbyname::Matrix(c(TRUE, FALSE, TRUE, TRUE), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  expect_equal(and_byname(m1, m1), m1)
+  expect_equal(and_byname(m1, m2), m1 & m2)
+  # Test with lists of matrices
+  expect_equal(and_byname(list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
+  expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2)), list(m1 & m2, m1 & m2))
+  
+  # Test with .summarise
+  expect_equal(and_byname(list(m1, m1), list(m2, m2), .summarise = TRUE), list(m1 & m1, m2 & m2))
+  expect_equal(and_byname(list(m1, m1), list(m1, m1), list(m2, m2), .summarise = TRUE), list(m1 & m1, m1 & m1, m2 & m2))
+  
+})
