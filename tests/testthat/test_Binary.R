@@ -763,22 +763,6 @@ test_that("geometricmean_byname() works with Matrix objects", {
 })
 
 
-
-
-
-
-
-
-
-
-########## Stopped here #####################
-
-
-
-
-
-
-
 test_that("logmean() works as expected", {
   # The logmean function is an internal helper function that should also be tested.
   expect_equal(logmean(0, 0), 0)
@@ -865,6 +849,77 @@ test_that("logarithmicmean_byname() works as expected", {
   attr(DF_expected$logmeans, which = "class") <- NULL
   expect_equal(DF %>% dplyr::mutate(logmeans = logarithmicmean_byname(m1, m2)), DF_expected)
 })
+
+
+test_that("logarithmicmean_byname() works wtih Matrix objects", {
+  # Try with a matrix and a constant.
+  m1 <- matsbyname::Matrix(c(1:6), nrow = 3, ncol = 2) %>% 
+    setrownames_byname(c("r1", "r2", "r3")) %>% setcolnames_byname(c("c1", "c2")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expected_lmm12 <- matsbyname::Matrix(c(1.442695041, 2.885390082, 
+                                         2, 3.274070004, 
+                                         2.466303462, 3.640956907), byrow = TRUE,
+                                       nrow = 3, ncol = 2, dimnames = dimnames(m1)) %>% 
+    setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1))
+  expect_equal(logarithmicmean_byname(m1, 2), expected_lmm12)
+  expect_equal(logarithmicmean_byname(2, m1), expected_lmm12) 
+  # Try with a matrix and a constant in lists
+  expect_equal(logarithmicmean_byname(list(m1, m1), list(2, 2)), list(expected_lmm12, expected_lmm12))
+  expect_equal(logarithmicmean_byname(list(2, 2), list(m1, m1)), list(expected_lmm12, expected_lmm12))
+  expect_equal(logarithmicmean_byname(list(m1, m1), 2), list(expected_lmm12, expected_lmm12))
+  expect_equal(logarithmicmean_byname(2, list(m1, m1)), list(expected_lmm12, expected_lmm12))
+  
+  # Try with two matrices
+  m2 <- matsbyname::Matrix(c(7:12), nrow = 3, ncol = 2) %>% 
+    setrownames_byname(c("r2", "r3", "r4")) %>% setcolnames_byname(c("c2", "c3")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  logmean <- logarithmicmean_byname(m1, m2)
+  expectedlm <- matsbyname::Matrix(c(0, 0, 0, 
+                                     0, 5.944026824, 0,
+                                     0, 6.952118994, 0,
+                                     0, 0, 0), nrow = 4, ncol = 3, byrow = TRUE) %>% 
+    setrownames_byname(c("r1", "r2", "r3", "r4")) %>% setcolnames_byname(c("c1", "c2", "c3")) %>% 
+    setrowtype("row") %>% setcoltype("col")
+  expect_equal(logmean, expectedlm)
+  # This also works with lists
+  expect_equal(logarithmicmean_byname(list(m1, m1), list(m2, m2)), list(expectedlm, expectedlm))
+  DF <- data.frame(m1 = I(list()), m2 = I(list()))
+  DF[[1,"m1"]] <- m1
+  DF[[2,"m1"]] <- m1
+  DF[[1,"m2"]] <- m2
+  DF[[2,"m2"]] <- m2
+  expect_equal(logarithmicmean_byname(DF$m1, DF$m2), list(expectedlm, expectedlm))
+  DF_expected <- data.frame(m1 = I(list()), m2 = I(list()), logmeans = I(list()))
+  DF_expected[[1, "m1"]] <- m1
+  DF_expected[[2, "m1"]] <- m1
+  DF_expected[[1, "m2"]] <- m2
+  DF_expected[[2, "m2"]] <- m2
+  DF_expected[[1, "logmeans"]] <- logmean
+  DF_expected[[2, "logmeans"]] <- logmean
+  # Because DF_expected$geomeans is created with I(list()), its class is "AsIs".
+  # Because DF$geomeans is created from an actual calculation, its class is NULL.
+  # Need to set the class of DF_expected$geomeans to NULL to get a match.
+  attr(DF_expected$logmeans, which = "class") <- NULL
+  expect_equal(DF %>% dplyr::mutate(logmeans = logarithmicmean_byname(m1, m2)), DF_expected)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+########## Stopped here #####################
+
+
+
+
+
 
 
 test_that("equal_byname() works as expected", {
