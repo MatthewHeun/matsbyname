@@ -3781,6 +3781,56 @@ test_that("vec_from_store_byname() works when a row vector Matrix object is desi
 })
 
 
+test_that("vec_from_store_byname() works when a is a Matrix and v is a matrix.", {
+  a <- matrix(42, nrow = 3, ncol = 2, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Wind turbines", 
+                                "Oil wells"))) %>% 
+    setrowtype("Product") %>% setcoltype("Industry")
+  v <- matsbyname::Matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity", 
+                                "Peat", 
+                                "Wind turbines", 
+                                "c",
+                                "Oil wells", 
+                                "Hard coal (if no detail)", 
+                                "f"), 
+                              "eta"), 
+              rowtype = "Industry", coltype = "eta")
+  
+  res <- vec_from_store_byname(a, v, a_piece = "pref", column = FALSE)
+  expect_equal(
+    res, 
+    matrix(c(3, 5), nrow = 1, ncol = 2, 
+           dimnames = list("eta", 
+                           c("Wind turbines", 
+                             "Oil wells"))) %>%
+      setrowtype("eta") %>% setcoltype("Industry"))
+  
+  # See if it works with a row vector for v.
+  v_row <- matsbyname::Matrix(1:7, nrow = 1, ncol = 7, 
+                              dimnames = list("eta", 
+                                              c("Electricity", 
+                                                "Peat", 
+                                                "Wind turbines", 
+                                                "c",
+                                                "Oil wells", 
+                                                "Hard coal (if no detail)", 
+                                                "f")), 
+                              rowtype = "eta", coltype = "Industry")
+  expect_equal(
+    vec_from_store_byname(a, v_row, a_piece = "pref", column = FALSE), 
+    matrix(c(3, 5), nrow = 1, ncol = 2, 
+           dimnames = list("eta", 
+                           c("Wind turbines", 
+                             "Oil wells"))) %>%
+      setrowtype("eta") %>% setcoltype("Industry"))
+  
+})
+
+
 test_that("vec_from_store_byname() works with lists", {
   a <- matrix(42, nrow = 3, ncol = 5, 
               dimnames = list(c("Electricity [from b in GBR]", 
@@ -3878,7 +3928,6 @@ test_that("vec_from_store_byname() works with Matrix objects in lists", {
   res2 <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from", 
                                 missing = -9999)
   expect_true(all(mapply(matsbyname:::equal_matrix_or_Matrix, res2, expected_list)))
-  
 })
 
 
@@ -3889,20 +3938,6 @@ test_that("vec_from_store_byname() works with Matrix objects in lists", {
 
 
 ########## Got to here ##############
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
