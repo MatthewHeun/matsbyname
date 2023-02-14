@@ -3268,9 +3268,9 @@ test_that("kvec_from_template_byname() passes old i_byname tests with Matrix obj
   expect_equal(res$unity_vec[[3]] %>% coltype(), "Industries")
   
   # Checking single coefficient values
-  expect_equal(res$unity_vec[[1]][["p1", "Product"]], 1)
-  expect_equal(res$unity_vec[[2]][["p2", "Product"]], 1)
-  expect_equal(res$unity_vec[[3]][["p3", "Product"]], 1)
+  expect_equal(res$unity_vec[[1]]["p1", "Product"], 1)
+  expect_equal(res$unity_vec[[2]]["p2", "Product"], 1)
+  expect_equal(res$unity_vec[[3]]["p3", "Product"], 1)
   
   # Checking sums
   res2 <- res %>%
@@ -3281,6 +3281,32 @@ test_that("kvec_from_template_byname() passes old i_byname tests with Matrix obj
   expect_equal(res2$sum_unity[[1]], 2)
   expect_equal(res2$sum_unity[[2]], 2)
   expect_equal(res2$sum_unity[[3]], 3)
+})
+
+
+test_that("vec_from_store_byname() works as expected with single matrices", {
+  a <- matrix(42, nrow = 2, ncol = 3, 
+              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  v <- matrix(1:10, nrow = 10, ncol = 1, 
+              dimnames = list(paste0("r", 1:10) %>% rev(), "c1")) %>%
+    setrowtype("rt") %>% setcoltype("ct")
+  expect_equal(vec_from_store_byname(a = a, v = v), 
+               matrix(c(10, 9), nrow = 2, ncol = 1, 
+                      dimnames = list(c("r1", "r2"), "c1")) %>%
+                 setrowtype("rt") %>% setcoltype("ct"))
+})
+
+
+test_that("vec_from_store_byname() works with single Matrix objects", {
+  a <- matsbyname::Matrix(42, nrow = 2, ncol = 3, 
+                          dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  v <- matsbyname::Matrix(1:10, nrow = 10, ncol = 1, 
+                          dimnames = list(paste0("r", 1:10) %>% rev(), "c1"), 
+                          rowtype = "rt", coltype = "ct")
+  matsbyname:::expect_equal_matrix_or_Matrix(vec_from_store_byname(a = a, v = v), 
+                                             matrix(c(10, 9), nrow = 2, ncol = 1, 
+                                                    dimnames = list(c("r1", "r2"), "c1")) %>%
+                                               setrowtype("rt") %>% setcoltype("ct"))
 })
 
 
@@ -3311,19 +3337,6 @@ test_that("kvec_from_template_byname() passes old i_byname tests with Matrix obj
 
 
 
-
-
-test_that("vec_from_store_byname() works as expected with single matrices", {
-  a <- matrix(42, nrow = 2, ncol = 3, 
-              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
-  v <- matrix(1:10, nrow = 10, ncol = 1, 
-              dimnames = list(paste0("r", 1:10) %>% rev(), "c1")) %>%
-    setrowtype("rt") %>% setcoltype("ct")
-  expect_equal(vec_from_store_byname(a = a, v = v), 
-               matrix(c(10, 9), nrow = 2, ncol = 1, 
-                      dimnames = list(c("r1", "r2"), "c1")) %>%
-                 setrowtype("rt") %>% setcoltype("ct"))
-})
 
 
 test_that("vec_from_store_byname() works as expected with single matrices and nouns", {

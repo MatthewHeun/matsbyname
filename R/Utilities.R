@@ -1971,10 +1971,22 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
       # rownum_in_v to be different from 0 (i.e. present somewhere)
       # to assign something different from NA_real_, the default value.
       if (this_piece != "" & length(rownum_in_v) != 0) {
-        val <- v_vec[[rownum_in_v, 1]]
+        if (is.Matrix(v_vec)) {
+          val <- v_vec[rownum_in_v, 1]
+        } else {
+          # Assume we have a matrix here.
+          val <- v_vec[[rownum_in_v, 1]]
+        }
         out[i, 1] <- val
       }
     }
+    if (is.Matrix(v_vec)) {
+      # Unfortunately, the "out[i, 1] <- val" assignment causes the loss 
+      # of rowtype and coltype information on Matrix objects.
+      # So reset here.
+      out <- out %>% 
+        setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    }        
     return(out)
   }
   
