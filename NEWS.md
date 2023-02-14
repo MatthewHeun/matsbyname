@@ -7,6 +7,7 @@ output: html_document
 * `create_matrix_byname()` gains `class` argument
   that tells whether the created object is of class
   `matrix` or `Matrix`.
+  Default is `matrix`.
 * New function `is.Matrix()` assists with determining
   whether an object is a `Matrix`.
   The base function`is.matrix()` assists with determining
