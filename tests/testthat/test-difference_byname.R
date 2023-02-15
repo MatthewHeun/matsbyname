@@ -65,7 +65,7 @@ test_that("difference_byname() of matrices in lists and data frames works as exp
   productnames <- c("p1", "p2")
   industrynames <- c("i1", "i2")
   # Try with U being a Matrix and Z being a matrix
-  U <- Matrix::Matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(productnames, industrynames)) %>%
     setrowtype("Products") %>% setcoltype("Industries")
   Z <- matrix(rev(1:4), ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
     setrowtype("Products") %>% setcoltype("Industries")

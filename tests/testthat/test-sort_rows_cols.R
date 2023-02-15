@@ -158,21 +158,21 @@ test_that("sort_rows_cols() works when sorting rows but rows are not named", {
 
 test_that("sort_rows_cols() works for a Matrix", {
   # Try with sparse Matrix objects
-  A <- Matrix::Matrix(c(0, 1, 0,
-                        0, 0, 0), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r2", "r1"), c("c1", "c2", "c3")))
+  A <- matsbyname::Matrix(c(0, 1, 0,
+                            0, 0, 0), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r2", "r1"), c("c1", "c2", "c3")))
   
   res1 <- sort_rows_cols(A)
-  expected1 <- Matrix::Matrix(c(0, 0, 0,
-                                0, 1, 0), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  expected1 <- matsbyname::Matrix(c(0, 0, 0,
+                                    0, 1, 0), byrow = TRUE, nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
   expect_equal(res1, expected1)
   
   # Try to dense Matrix objects
-  B <- Matrix::Matrix(c(1, 1, 1, 
-                        2, 1, 1), byrow = TRUE, nrow = 2, ncol = 3, 
-                      dimnames = list(c("r1", "r2"), c("c2", "c1", "c3")))
+  B <- matsbyname::Matrix(c(1, 1, 1, 
+                            2, 1, 1), byrow = TRUE, nrow = 2, ncol = 3, 
+                          dimnames = list(c("r1", "r2"), c("c2", "c1", "c3")))
   res2 <- sort_rows_cols(B)
-  expected2 <- Matrix::Matrix(c(1, 1, 1, 
-                                1, 2, 1), byrow = TRUE, nrow = 2, ncol = 3, 
-                              dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  expected2 <- matsbyname::Matrix(c(1, 1, 1, 
+                                    1, 2, 1), byrow = TRUE, nrow = 2, ncol = 3, 
+                                  dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
   expect_equal(res2, expected2)
 })
