@@ -267,6 +267,63 @@ test_that("sum_byname() of matrices that are in lists in a cell of a data frame 
 })
 
 
+test_that("sum_byname() of matrices that are in lists in a cell of a data frame works with Matrix objects", {
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(productnames, industrynames)) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  Y <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, dimnames = list(rev(productnames), rev(industrynames))) %>%
+    setrowtype("Products") %>% setcoltype("Industries")
+  
+  UplusY <- matsbyname::Matrix(5, nrow = 2, ncol = 2, dimnames = dimnames(U)) %>%
+    setrowtype(rowtype(U)) %>% setcoltype(coltype(U))
+  
+  # Now check to see what happens when one of the operands
+  # is a list and the other is not.
+  DF2 <- data.frame(ulist2_col = I(list()), Y = I(list()))
+  # Put lists in each cell of the data frame.
+  ulist2 <- list(U, U)
+  DF2[[1,"ulist2_col"]] <- ulist2
+  DF2[[2,"ulist2_col"]] <- ulist2
+  DF2[[1,"Y"]] <- Y
+  DF2[[2,"Y"]] <- Y
+  res2 <- DF2 %>% 
+    dplyr::mutate(
+      sum = sum_byname(ulist2_col, Y)
+    )
+  expect_equal(res2$sum[[1]][[1]], UplusY)
+  expect_equal(res2$sum[[1]][[2]], UplusY)
+  expect_equal(res2$sum[[2]][[1]], UplusY)
+  expect_equal(res2$sum[[2]][[2]], UplusY)
+  
+  # Try when the matrix length will not be a multiple of the list length.
+  U3 <- matsbyname::Matrix(1:5, nrow = 5, ncol = 1, dimnames = list(c("p1", "p2", "p3", "p4", "p5"), "i1")) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  U3plusY <- sum_byname(U3, Y)
+  ulist3 <- list(U3, U3, U3)
+  DF3 <- data.frame(ulist3_col = I(list()), Y = I(list()))
+  DF3[[1,"ulist3_col"]] <- ulist3
+  DF3[[2,"ulist3_col"]] <- ulist3
+  DF3[[3,"ulist3_col"]] <- ulist3
+  DF3[[1,"Y"]] <- Y
+  DF3[[2,"Y"]] <- Y
+  DF3[[3,"Y"]] <- Y
+  res3 <- DF3 %>% 
+    dplyr::mutate(
+      sum = sum_byname(ulist3_col, Y)
+    )
+  expect_equal(res3$sum[[1]][[1]], U3plusY)
+  expect_equal(res3$sum[[1]][[2]], U3plusY)
+  expect_equal(res3$sum[[1]][[3]], U3plusY)
+  expect_equal(res3$sum[[2]][[1]], U3plusY)
+  expect_equal(res3$sum[[2]][[2]], U3plusY)
+  expect_equal(res3$sum[[2]][[3]], U3plusY)
+  expect_equal(res3$sum[[3]][[1]], U3plusY)
+  expect_equal(res3$sum[[3]][[2]], U3plusY)
+  expect_equal(res3$sum[[3]][[3]], U3plusY)
+})
+
+
 test_that("sum_byname() works as expected via grouping and summarise", {
   df_simple <- tibble::tribble(~key, ~val, 
                                "A", 1, 
@@ -303,6 +360,31 @@ test_that("sum_byname() works as expected via grouping and summarise", {
   m <- matrix(c(11, 12, 13,
                 21, 22, 23), nrow = 2, ncol = 3, byrow = TRUE, 
               dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
+  res <- df %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(m = sum_byname(m, .summarise = TRUE))
+  expected <- tibble::tibble(key = c("A", "B"), 
+                             m = list(2 * m, m))
+  expect_equal(res, expected)
+  
+  # Try summarise with 2 columns
+  df2 <- df
+  df2$m2 <- list(3*m, 4*m, 5*m)
+  res2 <- df2 %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::summarise(m = sum_byname(m, .summarise = TRUE), m2 = sum_byname(m2, .summarise = TRUE))
+  expect_equal(res2$m[[1]], 2 * m)
+  expect_equal(res2$m[[2]], m)
+  expect_equal(res2$m2[[1]], 7 * m)
+  expect_equal(res2$m2[[2]], 5 * m)
+})
+
+
+test_that("sum_byname() works as expected via grouping and summarise for Matrix objects", {
+  m <- matsbyname::Matrix(c(11, 12, 13,
+                            21, 22, 23), nrow = 2, ncol = 3, byrow = TRUE, 
+                          dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
   df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
   res <- df %>% 
     dplyr::group_by(key) %>% 
@@ -363,9 +445,9 @@ test_that("sum_byname() works with sparse Matrix objects", {
 
 
 test_that("sum_byname() fails with mismatch row or col types on Matrix objects", {
-  A <- Matrix::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+  A <- matsbyname::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
-  B <- Matrix::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+  B <- matsbyname::Matrix(1, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("Product") %>% setcoltype("Industry")
   
   expect_error(sum_byname(A, B), "rowtype\\(a\\) \\(rows\\) != rowtype\\(b\\) \\(Product\\)")
