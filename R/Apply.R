@@ -266,6 +266,11 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
   }
   out <- a
   out[row, col] <- do.call(FUN, c(list(a[row, col]), .FUNdots))
+  if (is.Matrix(out)) {
+    # The assignment to out[row, col] strips the rowtype and coltype attributes
+    # for Matrix objects.
+    out <- out %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+  }
   return(out)
 }
 
