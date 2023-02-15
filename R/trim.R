@@ -79,7 +79,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
     stop("a cannot be a data frame in complete_rows_cols.")
   }
   
-  if (is.list(a) & !is.data.frame(a) & !is.matrix(a)) {
+  if (is.list(a) & !is.data.frame(a) & !is_matrix_or_Matrix(a)) {
     # Assume we have a list of matrices for a, not a single matrix.
     # Double-check that we have what we need in the mat argument.
     if (is.null(mat)) {
@@ -88,7 +88,7 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
       # Make a list of same length as the list of a.
       # Each value is NA.
       mat <- RCLabels::make_list(NULL, length(a))
-    } else if (is.matrix(mat)) {
+    } else if (is_matrix_or_Matrix(mat)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as a.
       mat <- RCLabels::make_list(mat, length(a))
@@ -113,16 +113,17 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
       return(a_mat)
     }
     
-    if (!is.matrix(a_mat)) {
-      stop("a_mat must be a matrix in matsbyname::trim_rows_cols().")
+    if (!is_matrix_or_Matrix(a_mat)) {
+      stop("a_mat must be a matrix or a Matrix in matsbyname::trim_rows_cols().")
     }
     
     assertthat::assert_that(all(margin %in% c(1, 2)), 
                             msg = "margin must be 1, 2 or both in matsbyname::trim_rows_cols()")
     
     dimnames_mat_mat <- dimnames(mat_mat)
-    if (is.null(dimnames_mat_mat)) {
-      # dimnamesmat is null, even after trying to gather row and column names from mat.  
+    if (is.null(dimnames_mat_mat) | identical(dimnames_mat_mat, list(NULL, NULL))) {
+      # dimnamesmat is NULL (for a matrix) or list(NULL, NULL) for a Matrix, 
+      # even after trying to gather row and column names from mat.  
       # We can't do anything, so issue a warning and return a_mat
       warning("NULL names in trim_rows_cols, despite 'mat_mat' being specified. Returning 'a_mat' unmodified.")
       return(a_mat)
