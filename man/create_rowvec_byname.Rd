@@ -19,7 +19,7 @@ containing a list of the dimension names to be used for each observation.}
 
 \item{rowname}{The name of the row of the row vector.}
 
-\item{class}{One of "matrix" or "Matrix".
+\item{matrix.class}{One of "matrix" or "Matrix".
 "matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
 "Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
 Default is "matrix".}

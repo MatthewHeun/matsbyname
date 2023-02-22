@@ -1559,10 +1559,10 @@ ncol_byname <- function(a) {
 #'              Default is `FALSE.`
 #' @param dimnames The dimension names to be used for creating the matrices, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param class One of "matrix" or "Matrix". 
-#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
-#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
-#'              Default is "matrix".
+#' @param matrix.class One of "matrix" or "Matrix". 
+#'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     Default is "matrix".
 #'
 #' @return A matrix, list of matrices, or column in a data frame, depending on the input arguments.
 #' 
@@ -1613,10 +1613,10 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames,
 #' @param rowname The name of the row of the row vector.
 #' @param dimnames The dimension names to be used for creating the row vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param class One of "matrix" or "Matrix". 
-#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
-#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
-#'              Default is "matrix".
+#' @param matrix.class One of "matrix" or "Matrix". 
+#'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     Default is "matrix".
 #'
 #' @return A row vector, a list of row vectors, or a data frame column of row vectors, depending on the 
 #'         values of `.dat` and `class`.
@@ -1684,10 +1684,10 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, matrix.class
 #' @param colname The name of the column of the colvector.
 #' @param dimnames The dimension names to be used for creating the column vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param class One of "matrix" or "Matrix". 
-#'              "matrix" creates a `base::matrix` object with the `matrix()` function.
-#'              "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
-#'              Default is "matrix".
+#' @param matrix.class One of "matrix" or "Matrix". 
+#'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     Default is "matrix".
 #'
 #' @return A column vector, a list of column vectors, or a data frame column of column vectors, depending on the 
 #'         value of `.dat` and `class`.
