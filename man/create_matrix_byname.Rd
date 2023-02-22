@@ -10,7 +10,7 @@ create_matrix_byname(
   ncol,
   byrow = FALSE,
   dimnames,
-  class = c("matrix", "Matrix")
+  matrix.class = c("matrix", "Matrix")
 )
 }
 \arguments{

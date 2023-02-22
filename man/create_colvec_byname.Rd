@@ -8,7 +8,7 @@ create_colvec_byname(
   .dat,
   dimnames = NA,
   colname = NA,
-  class = c("matrix", "Matrix")
+  matrix.class = c("matrix", "Matrix")
 )
 }
 \arguments{

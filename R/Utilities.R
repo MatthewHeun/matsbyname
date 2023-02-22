@@ -1574,14 +1574,14 @@ ncol_byname <- function(a) {
 #' create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
 #'                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
 create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames, 
-                                 class = c("matrix", "Matrix")) {
-  class <- match.arg(class)
+                                 matrix.class = c("matrix", "Matrix")) {
+  matrix.class <- match.arg(matrix.class)
   matrix_func <- function(a, nrow_val, ncol_val, byrow_val, 
                           dimnames_val, rowtype_val = NA, coltype_val = NA) {
-    if (class == "matrix") {
+    if (matrix.class == "matrix") {
       return(matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
     } 
-    if (class == "Matrix") {
+    if (matrix.class == "Matrix") {
       return(matsbyname::Matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
     }
     
@@ -1646,8 +1646,8 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames,
 #' df1$rowvec_col[[1]]
 #' df1$rowvec_col[[2]]
 #' df1$rowvec_col[[3]]
-create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, class = c("matrix", "Matrix")){
-  class <- match.arg(class)
+create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, matrix.class = c("matrix", "Matrix")){
+  matrix.class <- match.arg(matrix.class)
   rowvec_func <- function(a, dimnames_val, rowname_val) {
 
     # Figure out the column names.
@@ -1658,7 +1658,7 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, class = c("m
       dimnames_val <- list(rowname_val, names(a))
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val, class = class) 
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val, matrix.class = matrix.class) 
   }
 
   unaryapply_byname(FUN = rowvec_func, 
@@ -1718,8 +1718,8 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, class = c("m
 #' df1$colvec_col[[1]]
 #' df1$colvec_col[[2]]
 #' df1$colvec_col[[3]]
-create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, class = c("matrix", "Matrix")) {
-  class <- match.arg(class)
+create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, matrix.class = c("matrix", "Matrix")) {
+  matrix.class <- match.arg(matrix.class)
   colvec_func <- function(a, dimnames_val, colname_val) {
 
     # Figure out the row names.
@@ -1730,7 +1730,7 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, class = c("m
       dimnames_val <- list(names(a), colname_val)
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val, class = class)
+    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val, matrix.class = matrix.class)
   }
 
   unaryapply_byname(FUN = colvec_func,
@@ -1783,9 +1783,9 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
       class_a_mat <- "matrix"
     }
     if (column_val) {
-      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), class = class_a_mat)
+      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), matrix.class = class_a_mat)
     } else {
-      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), class = class_a_mat)
+      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), matrix.class = class_a_mat)
     }
   }
 
