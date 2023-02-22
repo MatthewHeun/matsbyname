@@ -8,10 +8,10 @@ output: html_document
   thereby enabling use of sparse matrices.
   Use `matsbyname::Matrix()` to create sparse matrices
   if appropriate.
-* `create_matrix_byname()` gains `class` argument
+* `create_matrix_byname()` gains `matrix.class` argument
   that tells whether the created object is of class
   `matrix` or `Matrix`.
-  Default is `matrix`.
+  Default is "matrix".
 * New function `is.Matrix()` assists with determining
   whether an object is a `Matrix`.
   The base function`is.matrix()` assists with determining
