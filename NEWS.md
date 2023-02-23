@@ -4,6 +4,24 @@ output: html_document
 ---
 
 
+* All functions now work with `Matrix` objects,
+  thereby enabling use of sparse matrices.
+  Use `matsbyname::Matrix()` to create sparse matrices
+  if appropriate.
+* `create_matrix_byname()` gains `matrix.class` argument
+  that tells whether the created object is of class
+  `matrix` or `Matrix`.
+  Default is "matrix".
+* New function `is.Matrix()` assists with determining
+  whether an object is a `Matrix`.
+  The base function`is.matrix()` assists with determining
+  whether an object is a `matrix`.'
+* First function (`sum_byname()`) now works with
+  `Matrix` objects,
+  paving the way for sparse matrix representation
+  throughout `matsbyname`.
+* In tests, cleaned up many warnings emanating from
+  the change to `testthat` v3.
 * Reacted to a change in grouping policy in `dplyr`
   that caused one test to issue a deprecation warning.
 * Update to latest GitHub actions continuous integration workflow.

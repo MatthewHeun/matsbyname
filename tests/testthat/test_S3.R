@@ -1,6 +1,6 @@
 
 ###########################################################
-context("Creating a mat_byname")
+# context("Creating a mat_byname")
 ###########################################################
 
 # test_that("mat_byname works as expected", {
@@ -17,7 +17,7 @@ context("Creating a mat_byname")
 
 
 ###########################################################
-context("Adding mat_bynames")
+# context("Adding mat_bynames")
 ###########################################################
 
 # test_that("adding two mat_bynames with '+' works as expected", {

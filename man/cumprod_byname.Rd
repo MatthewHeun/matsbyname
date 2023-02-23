@@ -7,11 +7,11 @@
 cumprod_byname(a)
 }
 \arguments{
-\item{a}{a number, list of numbers, matrix or list of matrices for which cumulative element product is desired}
+\item{a}{A number, list of numbers, matrix or list of matrices for which cumulative element product is desired.}
 }
 \value{
-a single number, list of numbers, a single matrix, or a list of matrices,
-depending on the nature of \code{a}
+A single number, list of numbers, a single matrix, or a list of matrices,
+depending on the nature of \code{a}.
 }
 \description{
 Provides cumulative element-products along a list or column of a data frame.

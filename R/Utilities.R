@@ -75,7 +75,8 @@ organize_args <- function(a, b, match_type = "all", fill){
   }
   
   # Neither a nor b are lists.
-  if (!is.matrix(a) & !is.matrix(b)) {
+  # if (!is.matrix(a) & !is.matrix(b)) {
+  if (!is_matrix_or_Matrix(a) & !is_matrix_or_Matrix(b)) {
     # Neither a nor b are matrices. Assume we have two constants. Return the constants in a vector.
     return(list(a = a, b = b))
   }
@@ -87,8 +88,13 @@ organize_args <- function(a, b, match_type = "all", fill){
   }
   # We don't know if one or both a and b is a matrix.
   # If one is not a matrix, assume it is a constant and try to make it into an appropriate-sized matrix.
-  if (!is.matrix(a) & is.matrix(b)) {
-    a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
+  # if (!is.matrix(a) & is.matrix(b)) {
+  if (!is_matrix_or_Matrix(a) & is_matrix_or_Matrix(b)) {
+    if (is.Matrix(b)) {
+      a <- matsbyname::Matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
+    } else {
+      a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
+    }
     if (match_type == "all") {
       a <- a %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
     } 
@@ -96,8 +102,12 @@ organize_args <- function(a, b, match_type = "all", fill){
       a <- a %>% setcoltype(rowtype(b))
     }
     # If matchtype == "none", we don't to anything.
-  } else if (is.matrix(a) & !is.matrix(b)) {
-    b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
+  } else if (is_matrix_or_Matrix(a) & !is_matrix_or_Matrix(b)) {
+    if (is.Matrix(a)) {
+      b <- matsbyname::Matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
+    } else {
+      b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
+    }
     if (match_type == "all") {
       b <- b %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     }
@@ -230,21 +240,28 @@ prep_vector_arg <- function(a, vector_arg) {
 list_of_rows_or_cols <- function(a, margin){
   margin <- prep_vector_arg(a, margin)
   
-  lrc_func <- function(a, margin){
+  lrc_func <- function(a_mat, margin){
     stopifnot(length(margin) == 1)
     stopifnot(margin == 1 | margin == 2)
-    stopifnot(inherits(a, "matrix"))
+    stopifnot(is_matrix_or_Matrix(a_mat))
     # Strategy: perform all operations with margin to be split into a list in columns.
     if (margin == 1) {
       # Caller requested rows to be split into list items.
       # Transpose so operations will be easier.
-      out <- transpose_byname(a)
+      out <- transpose_byname(a_mat)
     } else {
-      out <- a
+      out <- a_mat
     }
     out <- lapply(seq_len(ncol(out)), function(i){
-      matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>%
-        setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
+      if (is.Matrix(a_mat)) {
+        result <- matsbyname::Matrix(out[,i], nrow = nrow(out), ncol = 1, 
+                                     dimnames = list(rownames(out), colnames(out)[[i]]), 
+                                     rowtype = rowtype(out), coltype = coltype(out))
+      } else {
+        result <- matrix(out[,i], nrow = nrow(out), ncol = 1, dimnames = list(rownames(out), colnames(out)[[i]])) %>%
+          setrowtype(rowtype(out)) %>% setcoltype(coltype(out))
+      }
+      return(result)
     }) %>%
       magrittr::set_names(colnames(out))
     return(out)
@@ -870,9 +887,9 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   # because $ means end of line and ^ means beginning of line.
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
-  select_func <- function(a, retain_pattern, remove_pattern){
-    retain_indices <- grep(pattern = retain_pattern, x = rownames(a))
-    remove_indices <- grep(pattern = remove_pattern, x = rownames(a))
+  select_func <- function(a_mat, retain_pattern, remove_pattern){
+    retain_indices <- grep(pattern = retain_pattern, x = rownames(a_mat))
+    remove_indices <- grep(pattern = remove_pattern, x = rownames(a_mat))
     if (length(retain_indices) == 0) {
       # Nothing to be retained, so try removing columns
       if (length(remove_indices) == 0) {
@@ -888,7 +905,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
         # which is indicated by a non-default remove_pattern,
         # don't remove anything. Simply return a.
         if (remove_pattern != "$^") {
-          return(a)
+          return(a_mat)
         }
         # Neither retain_pattern nor remove_pattern is different from the default.
         # This is almost surely an error.
@@ -896,28 +913,32 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
       }
       # Remove
       # Check to see if we will remove all rows from a
-      rows_remaining <- nrow(a) - length(remove_indices)
+      rows_remaining <- nrow(a_mat) - length(remove_indices)
       if (rows_remaining <= 0) {
         return(NULL)
       }
-      return(a[-remove_indices , ] %>%
+      return(a_mat[-remove_indices , ] %>%
                # When only 1 row is selected, the natural result will be a numeric vector
                # We want to ensure that the return value is a matrix
                # with correct rowtype and coltype.
                # Thus, we need to take these additional steps.
                matrix(nrow = rows_remaining,
-                      dimnames = list(dimnames(a)[[1]][setdiff(1:nrow(a), remove_indices)],
-                                      dimnames(a)[[2]])) %>%
-               setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+                      dimnames = list(dimnames(a_mat)[[1]][setdiff(1:nrow(a_mat), remove_indices)],
+                                      dimnames(a_mat)[[2]])) %>%
+               setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
       )
     }
     # Retain
-    return(a[retain_indices , ] %>%
-             matrix(nrow = length(retain_indices),
-                    dimnames = list(dimnames(a)[[1]][retain_indices],
-                                    dimnames(a)[[2]])) %>%
-             setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
-    )
+    out <- a_mat[retain_indices , ]
+    if (is.Matrix(a_mat)) {
+      out <- matsbyname::Matrix(out, nrow = length(retain_indices), ncol = ncol(a_mat))
+    } else {
+      out <- matrix(out, nrow = length(retain_indices), ncol = ncol(a_mat))
+    }
+    dimnames(out) <- list(dimnames(a_mat)[[1]][retain_indices],
+                          dimnames(a_mat)[[2]])
+    out %>% 
+      setrowtype(rowtype(a_mat)) %>% setcoltype(coltype(a_mat))
   }
   unaryapply_byname(select_func, a = a, 
                     .FUNdots = list(retain_pattern = retain_pattern, remove_pattern = remove_pattern), 
@@ -1225,8 +1246,9 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #'
 #' @param a A matrix or list of matrices.
 #' @param tol The allowable deviation from 0 for any element.
+#'            Interpreted as an absolute value.
 #' 
-#' @return `TRUE` iff this is the zero matrix within `tol`.
+#' @return `TRUE` Iff this is the zero matrix within `tol`.
 #' 
 #' @export
 #'
@@ -1249,7 +1271,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
 iszero_byname <- function(a, tol = 1e-6) {
   zero_func <- function(a_mat, tol){
-    all(abs(a_mat) <= tol)
+    all(abs(a_mat) <= abs(tol))
   }
   unaryapply_byname(zero_func, a = a, .FUNdots = list(tol = tol), 
                     rowcoltypes = "none")
@@ -1522,6 +1544,9 @@ ncol_byname <- function(a) {
 #' Row and column names are taken from the `dimnames` argument.
 #' 
 #' Any row or column type information on `.dat` is preserved on output.
+#' 
+#' The created object(s) can be of type `base::matrix` or `Matrix::Matrix`,
+#' the latter enables sparse objects to save both memory and disk.
 #'
 #' @param .dat The data to be used to create the matrix, in a list format, or as a data frame column
 #'             containing a list of the data to be used for each observation.
@@ -1534,6 +1559,10 @@ ncol_byname <- function(a) {
 #'              Default is `FALSE.`
 #' @param dimnames The dimension names to be used for creating the matrices, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
+#' @param matrix.class One of "matrix" or "Matrix". 
+#'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     Default is "matrix".
 #'
 #' @return A matrix, list of matrices, or column in a data frame, depending on the input arguments.
 #' 
@@ -1544,11 +1573,18 @@ ncol_byname <- function(a) {
 #'                      dimnames = list(c("r1", "r2"), "c1"))
 #' create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
 #'                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
-create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames) {
-  
+create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames, 
+                                 matrix.class = c("matrix", "Matrix")) {
+  matrix.class <- match.arg(matrix.class)
   matrix_func <- function(a, nrow_val, ncol_val, byrow_val, 
                           dimnames_val, rowtype_val = NA, coltype_val = NA) {
-    matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val)
+    if (matrix.class == "matrix") {
+      return(matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
+    } 
+    if (matrix.class == "Matrix") {
+      return(matsbyname::Matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
+    }
+    
   }
   
   unaryapply_byname(FUN = matrix_func, a = .dat,
@@ -1577,9 +1613,13 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames) {
 #' @param rowname The name of the row of the row vector.
 #' @param dimnames The dimension names to be used for creating the row vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
+#' @param matrix.class One of "matrix" or "Matrix". 
+#'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     Default is "matrix".
 #'
 #' @return A row vector, a list of row vectors, or a data frame column of row vectors, depending on the 
-#'         value of `.dat`.
+#'         values of `.dat` and `class`.
 #'         
 #' @export
 #'
@@ -1606,8 +1646,8 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames) {
 #' df1$rowvec_col[[1]]
 #' df1$rowvec_col[[2]]
 #' df1$rowvec_col[[3]]
-create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
-
+create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, matrix.class = c("matrix", "Matrix")){
+  matrix.class <- match.arg(matrix.class)
   rowvec_func <- function(a, dimnames_val, rowname_val) {
 
     # Figure out the column names.
@@ -1618,7 +1658,7 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
       dimnames_val <- list(rowname_val, names(a))
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val)
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val, matrix.class = matrix.class) 
   }
 
   unaryapply_byname(FUN = rowvec_func, 
@@ -1644,9 +1684,13 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
 #' @param colname The name of the column of the colvector.
 #' @param dimnames The dimension names to be used for creating the column vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
+#' @param matrix.class One of "matrix" or "Matrix". 
+#'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
+#'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     Default is "matrix".
 #'
 #' @return A column vector, a list of column vectors, or a data frame column of column vectors, depending on the 
-#'         value of `.dat`.
+#'         value of `.dat` and `class`.
 #'         
 #' @export
 #'
@@ -1674,8 +1718,8 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA){
 #' df1$colvec_col[[1]]
 #' df1$colvec_col[[2]]
 #' df1$colvec_col[[3]]
-create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
-  
+create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, matrix.class = c("matrix", "Matrix")) {
+  matrix.class <- match.arg(matrix.class)
   colvec_func <- function(a, dimnames_val, colname_val) {
 
     # Figure out the row names.
@@ -1686,7 +1730,7 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
       dimnames_val <- list(names(a), colname_val)
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val)
+    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val, matrix.class = matrix.class)
   }
 
   unaryapply_byname(FUN = colvec_func,
@@ -1709,6 +1753,9 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA) {
 #' If `column` is `FALSE`, the output is a row vevtor with 
 #' column names taken from column names of `a` and a row named by `colname`.
 #'
+#' If the class of `a` is `Matrix`, the output object will be a `Matrix`.
+#' Otherwise, the class of the output object will be a `matrix`.
+#'
 #' @param a The template matrix for the column vector.
 #' @param k The value of the entries in the output column vector.
 #' @param colname The name of the output vector's 1-sized dimension 
@@ -1730,17 +1777,21 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   
   k_from_template_func <- function(a_mat, k_val, colname_val, column_val) {
     # When we get here, a_mat should be a single matrix
-    if (column_val) {
-      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val))
+    if (is.Matrix(a_mat)) {
+      class_a_mat <- "Matrix"
     } else {
-      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)))
+      class_a_mat <- "matrix"
+    }
+    if (column_val) {
+      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), matrix.class = class_a_mat)
+    } else {
+      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), matrix.class = class_a_mat)
     }
   }
 
   unaryapply_byname(FUN = k_from_template_func, a = a, 
                     .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "all")
 }
-
 
 
 #' Create a vector with labels from a matrix and values from a vector store
@@ -1782,6 +1833,10 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' but a single value otherwise. 
 #' The default values of `notation` and `prepositions` take care of this requirement,
 #' switching on the type of `a` (list or not).
+#' 
+#' The class of the output object is determined from `a`.
+#' If `a` is a `Matrix`, the output will be a `Matrix`.
+#' Otherwise, the output will be a `matrix`.
 #'
 #' @param a A matrix from which row or column labels are taken.
 #'          Can also be a list or the name of a column in a data frame.
@@ -1797,7 +1852,9 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' @param notation The notation for the row and column labels.
 #'                 Default is `RCLabels::bracket_notation`, wrapped as a list if `a` is a list.
 #' @param prepositions The strings that will count for prepositions.
-#'                     Default is `RCLables::prepositions`, wrapped as a list if `a` is a list..
+#'                     Default is `RCLabels::prepositions`, wrapped as a list if `a` is a list.
+#' @param missing The value used when the desired value is not found in `v`.
+#'                Default is `NA_real_`.
 #'
 #' @return A vector with names from `a` and values from `v`.
 #' 
@@ -1865,17 +1922,16 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'   )
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
-                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}) {
-  
-  
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
+                                  missing = NA_real_) {
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 
                        notation_val = notation, 
                        prepositions_val = prepositions) {
-    # Get size of v vectors
+    # Get size of the v vector
     v_size <- dim(v_vec)
-    # Make sure v is a matrix.
+    # Make sure v is a matrix with 2 dimensions.
     assertthat::assert_that(length(v_size) == 2, 
-                            msg = "v must be a matrix with 2 dimensions in vec_from_store_byname()")
+                            msg = "v must be a matrix or a Matrix with 2 dimensions in vec_from_store_byname()")
     # Make sure one of the dimensions is size 1
     assertthat::assert_that(v_size[[1]] == 1 | v_size[[2]] == 1,
                             msg = "v must be a vector with one dimension of size 1 in vec_from_store_byname()")
@@ -1913,10 +1969,16 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
       colname_val <- dimnames(v_vec)[[2]]
     }
     # Build the outgoing vector with NA's everywhere
-    out <- matrix(NA_real_, nrow = out_size, ncol = 1, 
-                  dimnames = list(a_rownames, colname_val)) %>%
-      # Be sure to retain the row and column type of v_vec.
-      setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    if (is.Matrix(a_mat)) {
+      out <- matsbyname::Matrix(missing, nrow = out_size, ncol = 1, 
+                                dimnames = list(a_rownames, colname_val), 
+                                rowtype = rowtype(v_vec), coltype = coltype(v_vec))
+    } else {
+      out <- matrix(missing, nrow = out_size, ncol = 1, 
+                    dimnames = list(a_rownames, colname_val)) %>%
+        # Be sure to retain the row and column type of v_vec.
+        setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    }
     # Fill the vector
     for (i in 1:out_size) {
       # Get the value we want
@@ -1925,12 +1987,24 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
       
       # We need both this_piece to be something (not "") and
       # rownum_in_v to be different from 0 (i.e. present somewhere)
-      # to assign something different from NA_real_, the default value.
+      # to assign something different from missing, the default value.
       if (this_piece != "" & length(rownum_in_v) != 0) {
-        val <- v_vec[[rownum_in_v, 1]]
+        if (is.Matrix(v_vec)) {
+          val <- v_vec[rownum_in_v, 1]
+        } else {
+          # Assume we have a matrix here.
+          val <- v_vec[[rownum_in_v, 1]]
+        }
         out[i, 1] <- val
       }
     }
+    if (is.Matrix(a_mat)) {
+      # Unfortunately, the "out[i, 1] <- val" assignment causes the loss 
+      # of rowtype and coltype information on Matrix objects.
+      # So reset here.
+      out <- out %>% 
+        setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    }        
     return(out)
   }
   
@@ -1940,15 +2014,4 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
                                      notation_val = notation, 
                                      prepositions_val = prepositions))
 }
-
-
-
-
-
-
-
-
-
-
-
 

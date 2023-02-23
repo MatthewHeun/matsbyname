@@ -266,6 +266,11 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
   }
   out <- a
   out[row, col] <- do.call(FUN, c(list(a[row, col]), .FUNdots))
+  if (is.Matrix(out)) {
+    # The assignment to out[row, col] strips the rowtype and coltype attributes
+    # for Matrix objects.
+    out <- out %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
+  }
   return(out)
 }
 
@@ -563,7 +568,7 @@ cumapply_byname <- function(FUN, a){
     # Note that length(NULL) == 0, so this tests for m == NULL, too.
     return(NULL)
   }
-  if (is.matrix(a)) {
+  if (is_matrix_or_Matrix(a)) {
     # We have a single matrix. Just return it.
     return(FUN(a))
   }

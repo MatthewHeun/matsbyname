@@ -4,7 +4,12 @@
 \alias{create_rowvec_byname}
 \title{Create row vectors from data}
 \usage{
-create_rowvec_byname(.dat, dimnames = NA, rowname = NA)
+create_rowvec_byname(
+  .dat,
+  dimnames = NA,
+  rowname = NA,
+  matrix.class = c("matrix", "Matrix")
+)
 }
 \arguments{
 \item{.dat}{Data to be converted to row vectors.}
@@ -13,10 +18,15 @@ create_rowvec_byname(.dat, dimnames = NA, rowname = NA)
 containing a list of the dimension names to be used for each observation.}
 
 \item{rowname}{The name of the row of the row vector.}
+
+\item{matrix.class}{One of "matrix" or "Matrix".
+"matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
+"Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
+Default is "matrix".}
 }
 \value{
 A row vector, a list of row vectors, or a data frame column of row vectors, depending on the
-value of \code{.dat}.
+values of \code{.dat} and \code{class}.
 }
 \description{
 This function takes data in the \code{.dat} and creates row vectors.

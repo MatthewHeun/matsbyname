@@ -4,7 +4,14 @@
 \alias{create_matrix_byname}
 \title{Create a "byname" matrix from a vector}
 \usage{
-create_matrix_byname(.dat, nrow, ncol, byrow = FALSE, dimnames)
+create_matrix_byname(
+  .dat,
+  nrow,
+  ncol,
+  byrow = FALSE,
+  dimnames,
+  matrix.class = c("matrix", "Matrix")
+)
 }
 \arguments{
 \item{.dat}{The data to be used to create the matrix, in a list format, or as a data frame column
@@ -22,6 +29,11 @@ Default is \code{FALSE.}}
 
 \item{dimnames}{The dimension names to be used for creating the matrices, in a list format, or as a data frame column
 containing a list of the dimension names to be used for each observation.}
+
+\item{matrix.class}{One of "matrix" or "Matrix".
+"matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
+"Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
+Default is "matrix".}
 }
 \value{
 A matrix, list of matrices, or column in a data frame, depending on the input arguments.
@@ -35,6 +47,9 @@ This function is similar to \code{matrix()}, but with "byname" characteristics.
 Row and column names are taken from the \code{dimnames} argument.
 
 Any row or column type information on \code{.dat} is preserved on output.
+
+The created object(s) can be of type \code{base::matrix} or \code{Matrix::Matrix},
+the latter enables sparse objects to save both memory and disk.
 }
 \examples{
 create_matrix_byname(c(1, 2), nrow = 2, ncol = 1,

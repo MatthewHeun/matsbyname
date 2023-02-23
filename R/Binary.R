@@ -514,15 +514,19 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
     out <- Map(f = logmean, as.numeric(a), as.numeric(b), base = base) %>% 
       # Map produces a list, but we need a numeric vector.
       as.numeric()
-    if (is.matrix(a)) {
+    if (is.Matrix(a)) {
+      out <- out %>% 
+        matsbyname::Matrix(nrow = nrow(a), ncol = ncol(a), 
+                           dimnames = list(rownames(a), colnames(a)))
+    } else if (is.matrix(a)) {
       # If a and b are originally matrices, make out into a matrix
       # by rewrapping it. 
       out <- out %>% 
-        matrix(nrow = nrow(a), ncol = ncol(a)) %>% 
-        # Add the row and column names to it.
-        setrownames_byname(rownames(a)) %>% setcolnames_byname(colnames(a))
+        matrix(nrow = nrow(a), ncol = ncol(a), 
+               dimnames = list(rownames(a), colnames(a)))
     }
-    out %>%  
+    out %>% 
+      # Add row and column types
       setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
   }
   binaryapply_byname(logmean_func, a = a, b = b, .FUNdots = list(base = base))
