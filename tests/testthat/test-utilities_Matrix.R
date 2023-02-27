@@ -266,6 +266,20 @@ test_that("t.matrix_or_Matrix() works correctly", {
 })
 
 
+test_that("t.matrix_or_Matrix() works with spaces in rownames", {
+  a <- matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r 1", "r 2"), c("c 1", "c 2")))
+  expected_m <- matrix(0, nrow = 2, ncol = 2, dimnames = list(c("c 1", "c 2"), c("r 1", "r 2")))
+  res_m <- matsbyname:::t_matrix_or_Matrix(a)
+  expect_equal(res_m, expected_m)
+  
+  # Try with a Matrix object
+  A <- matsbyname::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r 1", "r 2"), c("c 1", "c 2")))
+  expected_A <- matsbyname::Matrix(0, nrow = 2, ncol = 2, dimnames = list(c("c 1", "c 2"), c("r 1", "r 2")))
+  res_M <- matsbyname:::t_matrix_or_Matrix(A)
+  expect_equal(res_M, expected_A)
+})
+
+
 test_that("cbind_matrix_or_Matrix() works correctly", {
   a <- matrix(0, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   b <- matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), "c3"))  
