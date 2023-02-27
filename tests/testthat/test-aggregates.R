@@ -865,5 +865,5 @@ test_that("aggregate_pieces_byname() works with repeated row labels not in aggre
                             aggregation_map = list(f = c("a", "b")))
   expected2 <- matrix(c(5, 11,
                         1,  4), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("c", "f"), c("c1", "c2")))
-  expect_equal(res1, expected2)
+  expect_equal(res2, expected2)
 })

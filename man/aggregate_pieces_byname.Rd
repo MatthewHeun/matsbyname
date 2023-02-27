@@ -138,4 +138,18 @@ df <- tibble::tibble(m = list(m, mT),
                                   notation = notn)
   )
 df$agg
+# Works when renaming to the piece results in identical row or col names.
+b <- matrix(1:6, nrow = 3, ncol = 2, 
+            dimnames = list(c("a [from b]", "c [from d]", "c [from e]"), 
+                            c("c1", "c2")))
+b
+# This aggregation works, because the "c" rows
+# are aggregated before applying the aggregation_map,
+# which, itself, does NOT aggregate the "c" rows.
+b \%>\% 
+  aggregate_pieces_byname(piece = "noun",
+                          margin = 1,
+                          inf_notation = FALSE, 
+                          notation = RCLabels::bracket_notation, 
+                          aggregation_map = list(f = c("a", "b")))
 }

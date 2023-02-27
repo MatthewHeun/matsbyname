@@ -414,6 +414,20 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #'                                   notation = notn)
 #'   )
 #' df$agg
+#' # Works when renaming to the piece results in identical row or col names.
+#' b <- matrix(1:6, nrow = 3, ncol = 2, 
+#'             dimnames = list(c("a [from b]", "c [from d]", "c [from e]"), 
+#'                             c("c1", "c2")))
+#' b
+#' # This aggregation works, because the "c" rows
+#' # are aggregated before applying the aggregation_map,
+#' # which, itself, does NOT aggregate the "c" rows.
+#' b %>% 
+#'   aggregate_pieces_byname(piece = "noun",
+#'                           margin = 1,
+#'                           inf_notation = FALSE, 
+#'                           notation = RCLabels::bracket_notation, 
+#'                           aggregation_map = list(f = c("a", "b")))
 aggregate_pieces_byname <- function(a, 
                                     piece,
                                     margin = list(c(1, 2)), 
@@ -435,7 +449,8 @@ aggregate_pieces_byname <- function(a,
     # (and may not be in the aggregation_map).
     aggregate_byname(aggregation_map = NULL, margin = margin, 
                      pattern_type = pattern_type) %>% 
-    # Now aggregate using the aggregation_map.
+    # Now aggregate using the aggregation_map to sum 
+    # rows and columns according to the map.
     aggregate_byname(aggregation_map = aggregation_map, margin = margin, 
                      pattern_type = pattern_type)
 }
