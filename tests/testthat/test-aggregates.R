@@ -882,8 +882,17 @@ test_that("aggregate_pieces_byname() works with 2 notations", {
   res2 <- a %>% 
     aggregate_pieces_byname(piece = "noun", 
                             margin = 1,
-                            notation = c(RCLabels::bracket_notation, RCLabels::arrow_notation), 
-                            inf_notation = FALSE)
+                            notation = RCLabels::make_list(list(RCLabels::bracket_notation, RCLabels::arrow_notation), n = 1, lenx = 1), 
+                            inf_notation = TRUE)
   expected2 <- expected1
   expect_equal(res2, expected2)
+  
+  # Try in a list
+  res3 <- list(a, a) %>% 
+    aggregate_pieces_byname(piece = "noun", 
+                            margin = 1,
+                            notation = RCLabels::make_list(list(RCLabels::bracket_notation, RCLabels::arrow_notation), n = 2, lenx = 1), 
+                            inf_notation = TRUE)
+  expected3 <- list(expected1, expected1)
+  expect_equal(res3, expected3)
 })
