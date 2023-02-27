@@ -840,3 +840,30 @@ test_that("aggregate_pieces_byname() works when inferring notation on Matric obj
                                   dimnames = list(c("b", "rows"), c("cols", "f")))
   expect_equal(res1, expected1)
 })
+
+
+test_that("aggregate_pieces_byname() works with repeated row labels not in aggregation_map", {
+  # Ran into a bug where failure occurs if there are
+  # repeated row (or column) names that are not included 
+  # in the aggregation_map.
+  a <- matrix(1:6, nrow = 3, ncol = 2, dimnames = list(c("a [from b]", "c [from d]", "c [from e]"), c("c1", "c2")))
+  # This one already works, because we're aggregating the repeated row.
+  res1 <- a %>% 
+    aggregate_pieces_byname(piece = "noun",
+                            margin = 1,
+                            inf_notation = FALSE, 
+                            notation = RCLabels::bracket_notation, 
+                            aggregation_map = list(f = c("a", "c")))
+  expected1 <- matrix(c(6, 15), nrow = 1, ncol = 2, dimnames = list("f", c("c1", "c2")))
+  expect_equal(res1, expected1)
+  # This one is failing, because we're not aggregating the repeated row.
+  res2 <- a %>% 
+    aggregate_pieces_byname(piece = "noun",
+                            margin = 1,
+                            inf_notation = FALSE, 
+                            notation = RCLabels::bracket_notation, 
+                            aggregation_map = list(f = c("a", "b")))
+  expected2 <- matrix(c(1, 4, 
+                        5, 11), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("a", "c"), c("c1", "c2")))
+  expect_equal(res1, expected2)
+})
