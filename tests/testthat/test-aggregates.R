@@ -877,7 +877,10 @@ test_that("aggregate_pieces_byname() works with 2 notations", {
   expect_equal(res1, expected1)
   
   res2 <- a %>% 
-    aggregate_pieces_byname(piece = "noun", margin = 1, notation = c(RCLabels::bracket_notation, RCLabels::arrow_notation), inf_notation = TRUE)
+    aggregate_pieces_byname(piece = "noun", 
+                            margin = 1,
+                            notation = c(RCLabels::bracket_notation, RCLabels::arrow_notation), 
+                            inf_notation = FALSE)
   expected2 <- expected1
   expect_equal(res2, expected2)
 })
