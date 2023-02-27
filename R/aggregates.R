@@ -308,19 +308,64 @@ aggregate_to_pref_suff_byname <- function(a, aggregation_map = NULL,
 #' This is a convenience function that bundles two others
 #' for common use cases: 
 #' `rename_to_piece_byname()` followed by `aggregate_byname()`.
+#' Note that after renaming to the piece, 
+#' there may be rows or columns that are identically named.
+#' If those identically named names aren't included in the `aggregation_map`,
+#' an error will result.
+#' So, `aggregate_byname()` is called twice;
+#' first with `aggregation_map = NULL` to sweep up any 
+#' rows or columns that are identically named 
+#' after renaming and 
+#' second with `aggregation_map = aggregation_map` to 
+#' sum the desired rows or columns.
+#' See examples.
 #' 
-#' `aggregation_map` should aggregate according to pieces, 
-#' not according to the full, original row and/or column names.
-#'
-#' @param a A matrix or list of matrices
-#' @param piece See `rename_to_piece_byname()`.
-#' @param margin See `rename_to_piece_byname()`.
-#' @param inf_notation See `rename_to_piece_byname()`.
-#' @param notation See `rename_to_piece_byname()`.
-#' @param choose_most_specific See `rename_to_piece_byname()`.
-#' @param prepositions See `rename_to_piece_byname()`.
-#' @param aggregation_map See `aggregate_byname()`.
+#' When `aggregation_map` is `NULL` (the default), 
+#' rows (or columns or both) of same name are aggregated together. 
+#' 
+#' If `aggregation_map` is not `NULL`, it must be a named list.
+#' The name of each `aggregation_map` item is the name of a row or column in output
+#' that will contain the specified aggregation.
+#' The value of each item in `aggregation_map` must be a vector of names of rows or columns in `a`.
+#' The names in the value are aggregated and inserted into the output with the name of the value.
+#' For example `aggregation_map = list(new_row = c("r1", "r2"))` 
+#' will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row 
+#' whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.
+#' 
+#' The values in the `aggregation_map` are interpreted as regular expressions, and 
+#' they are escaped using `Hmisc::escapeRegex()` prior to use.
+#' 
+#' `aggregation_map` should aggregate by pieces, 
+#' not by the full, original row and/or column names.
+#' 
+#' @param a A matrix or list of matrices.
+#' @param piece A character string indicating which piece of the row or column names to retain, 
+#'              one of "noun", "pps", "pref" or "suff", or a preposition,
+#'              indicating which part of the row or column name is to be retained.
+#' @param margin As a character, the row type or column type to be renamed.
+#'               As an integer, the margin to be renamed.
+#'               Default is `c(1, 2)`, meaning that both 
+#'               rows (`margin = 1`) and columns (`margin = 2`)
+#'               will be renamed.
+#' @param inf_notation A boolean that tells whether to infer notation.
+#'                     Default is `TRUE`.
+#' @param notation The notation used for row and column labels. 
+#'                 Default is `list(RCLabels::notations_list)`.
+#'                 The default value is wrapped in a list, 
+#'                 because `RCLabels::notations_list` is, itself, a list.
+#'                 See `RCLabels`.
+#' @param choose_most_specific A boolean that indicates whether the most-specific notation
+#'                             will be inferred when more than one of `notation` matches 
+#'                             a row or column label
+#'                             and `allow_multiple = FALSE`.
+#'                             When `FALSE`, the first matching notation in `notations`
+#'                             is returned when `allow_multiple = FALSE`.
+#'                             Default is `FALSE`.
+#' @param prepositions Prepositions that can be used in the row and column label.
+#'                     Default is `RCLabels::prepositions_list`.
+#' @param aggregation_map A named list of rows or columns to be aggregated (or `NULL`). See `details`.
 #' @param pattern_type See `RCLabels::make_or_pattern()`.
+#'                     Default is "exact".
 #'
 #' @return A version of `a` with rows and/or columns aggregated according to `aggregation_map`.
 #' 
@@ -385,6 +430,12 @@ aggregate_pieces_byname <- function(a,
                            notation = notation,
                            choose_most_specific = choose_most_specific,
                            prepositions = prepositions) %>%
+    # Aggregate with a NULL aggregation map to sweep up 
+    # any rows or columns that are identically named
+    # (and may not be in the aggregation_map).
+    aggregate_byname(aggregation_map = NULL, margin = margin, 
+                     pattern_type = pattern_type) %>% 
+    # Now aggregate using the aggregation_map.
     aggregate_byname(aggregation_map = aggregation_map, margin = margin, 
                      pattern_type = pattern_type)
 }
