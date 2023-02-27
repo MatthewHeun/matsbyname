@@ -870,12 +870,15 @@ test_that("aggregate_pieces_byname() works with repeated row labels not in aggre
 
 
 test_that("aggregate_pieces_byname() works with 2 notations", {
+  # This works, when we are inferring notation
   a <- matrix(1:3, nrow = 3, ncol = 1, dimnames = list(c("a [from b]", "c -> d", "c -> e"), "c1"))
   res1 <- a %>% 
     aggregate_pieces_byname(piece = "noun")
   expected1 <- matrix(c(1, 5), nrow = 2, ncol = 1, dimnames = list(c("a", "c"), "c1"))
   expect_equal(res1, expected1)
   
+  # However, this fails when we are specifying notation and not inferring.
+  # The second notation (arrow notation) is not being renamed to the noun.
   res2 <- a %>% 
     aggregate_pieces_byname(piece = "noun", 
                             margin = 1,
