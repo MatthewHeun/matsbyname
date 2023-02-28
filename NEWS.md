@@ -19,7 +19,7 @@ output: html_document
 * New function `is.Matrix()` assists with determining
   whether an object is a `Matrix`.
   The base function`is.matrix()` assists with determining
-  whether an object is a `matrix`.'
+  whether an object is a `matrix`.
 * First function (`sum_byname()`) now works with
   `Matrix` objects,
   paving the way for sparse matrix representation
