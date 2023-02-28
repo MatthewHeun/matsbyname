@@ -4,6 +4,10 @@ output: html_document
 ---
 
 
+* Fixed a bug in `aggregate_pieces_byname()`
+  where failure occurred if there were
+  repeated row (or column) names not included 
+  in the aggregation_map.
 * All functions now work with `Matrix` objects,
   thereby enabling use of sparse matrices.
   Use `matsbyname::Matrix()` to create sparse matrices

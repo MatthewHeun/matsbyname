@@ -863,7 +863,36 @@ test_that("aggregate_pieces_byname() works with repeated row labels not in aggre
                             inf_notation = FALSE, 
                             notation = RCLabels::bracket_notation, 
                             aggregation_map = list(f = c("a", "b")))
-  expected2 <- matrix(c(1, 4, 
-                        5, 11), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("a", "c"), c("c1", "c2")))
-  expect_equal(res1, expected2)
+  expected2 <- matrix(c(5, 11,
+                        1,  4), byrow = TRUE, nrow = 2, ncol = 2, dimnames = list(c("c", "f"), c("c1", "c2")))
+  expect_equal(res2, expected2)
+})
+
+
+test_that("aggregate_pieces_byname() works with 2 notations", {
+  # This works, when we are inferring notation
+  a <- matrix(1:3, nrow = 3, ncol = 1, dimnames = list(c("a [from b]", "c -> d", "c -> e"), "c1"))
+  res1 <- a %>% 
+    aggregate_pieces_byname(piece = "noun")
+  expected1 <- matrix(c(1, 5), nrow = 2, ncol = 1, dimnames = list(c("a", "c"), "c1"))
+  expect_equal(res1, expected1)
+  
+  # However, this fails when we are specifying notation and not inferring.
+  # The second notation (arrow notation) is not being renamed to the noun.
+  res2 <- a %>% 
+    aggregate_pieces_byname(piece = "noun", 
+                            margin = 1,
+                            notation = RCLabels::make_list(list(RCLabels::bracket_notation, RCLabels::arrow_notation), n = 1, lenx = 1), 
+                            inf_notation = TRUE)
+  expected2 <- expected1
+  expect_equal(res2, expected2)
+  
+  # Try in a list
+  res3 <- list(a, a) %>% 
+    aggregate_pieces_byname(piece = "noun", 
+                            margin = 1,
+                            notation = RCLabels::make_list(list(RCLabels::bracket_notation, RCLabels::arrow_notation), n = 2, lenx = 1), 
+                            inf_notation = TRUE)
+  expected3 <- list(expected1, expected1)
+  expect_equal(res3, expected3)
 })
