@@ -16,7 +16,7 @@ the same order."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@ the same order."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Sorts rows and columns of a matrix</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/R/CompletingMatrices.R" class="external-link"><code>R/CompletingMatrices.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/R/sort_rows_cols.R" class="external-link"><code>R/sort_rows_cols.R</code></a></small>
       <div class="d-none name"><code>sort_rows_cols.Rd</code></div>
     </div>
 
@@ -78,26 +78,26 @@ the same order.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>a</dt>
-<dd><p>a matrix or data frame whose rows and columns are to be sorted</p></dd>
+<dd><p>A matrix or data frame whose rows and columns are to be sorted.</p></dd>
 
 
 <dt>margin</dt>
-<dd><p>specifies the subscript(s) in <code>a</code> over which sorting will occur.
-<code>margin</code> has nearly the same semantic meaning as in <code><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></code>.
+<dd><p>Specifies the subscript(s) in <code>a</code> over which sorting will occur.
+<code>margin</code> has nearly the same semantic meaning as in <code><a href="https://rdrr.io/r/base/apply.html" class="external-link">base::apply</a></code>.
 For rows only, give <code>1</code>;
 for columns only, give <code>2</code>;
 for both rows and columns, give <code>c(1,2)</code>, the default value.</p></dd>
 
 
 <dt>roworder</dt>
-<dd><p>specifies the order for rows with default <code>sort(rownames(a))</code>.
+<dd><p>Specifies the order for rows with default <code>sort(rownames(a))</code>.
 If <code>NA</code> (the default), default sort order is used.
 Unspecified rows are removed from the output, thus providing a way to delete rows from <code>a</code>.
 Extraneous row names (row names in <code>roworder</code> that do not appear in <code>a</code>) are ignored.</p></dd>
 
 
 <dt>colorder</dt>
-<dd><p>specifies the order for rows with default <code>sort(colnames(a))</code>.
+<dd><p>Specifies the order for rows with default <code>sort(colnames(a))</code>.
 If <code>NA</code> (the default), default sort order is used.
 Unspecified columns are removed from the output, thus providing a way to delete columns from <code>a</code>.
 Extraneous column names (column names in <code>colorder</code> that do not appear in <code>a</code>) are ignored.</p></dd>

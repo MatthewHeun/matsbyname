@@ -12,7 +12,7 @@ by pieces of the row and column names."><!-- mathjax --><script src="https://cdn
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@ by pieces of the row and column names."><!-- mathjax --><script src="https://cdn
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Aggregate a matrix by pieces of row and/or column names</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/R/Unary.R" class="external-link"><code>R/Unary.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/R/aggregates.R" class="external-link"><code>R/aggregates.R</code></a></small>
       <div class="d-none name"><code>aggregate_pieces_byname.Rd</code></div>
     </div>
 
@@ -82,39 +82,58 @@ by pieces of the row and column names.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>a</dt>
-<dd><p>A matrix or list of matrices</p></dd>
+<dd><p>A matrix or list of matrices.</p></dd>
 
 
 <dt>piece</dt>
-<dd><p>See <code><a href="rename_to_piece_byname.html">rename_to_piece_byname()</a></code>.</p></dd>
+<dd><p>A character string indicating which piece of the row or column names to retain,
+one of "noun", "pps", "pref" or "suff", or a preposition,
+indicating which part of the row or column name is to be retained.</p></dd>
 
 
 <dt>margin</dt>
-<dd><p>See <code><a href="rename_to_piece_byname.html">rename_to_piece_byname()</a></code>.</p></dd>
+<dd><p>As a character, the row type or column type to be renamed.
+As an integer, the margin to be renamed.
+Default is <code>c(1, 2)</code>, meaning that both
+rows (<code>margin = 1</code>) and columns (<code>margin = 2</code>)
+will be renamed.</p></dd>
 
 
 <dt>inf_notation</dt>
-<dd><p>See <code><a href="rename_to_piece_byname.html">rename_to_piece_byname()</a></code>.</p></dd>
+<dd><p>A boolean that tells whether to infer notation.
+Default is <code>TRUE</code>.</p></dd>
 
 
 <dt>notation</dt>
-<dd><p>See <code><a href="rename_to_piece_byname.html">rename_to_piece_byname()</a></code>.</p></dd>
+<dd><p>The notation used for row and column labels.
+Default is <code>list(RCLabels::notations_list)</code>.
+The default value is wrapped in a list,
+because <code><a href="https://rdrr.io/pkg/RCLabels/man/notations_list.html" class="external-link">RCLabels::notations_list</a></code> is, itself, a list.
+See <code>RCLabels</code>.</p></dd>
 
 
 <dt>choose_most_specific</dt>
-<dd><p>See <code><a href="rename_to_piece_byname.html">rename_to_piece_byname()</a></code>.</p></dd>
+<dd><p>A boolean that indicates whether the most-specific notation
+will be inferred when more than one of <code>notation</code> matches
+a row or column label
+and <code>allow_multiple = FALSE</code>.
+When <code>FALSE</code>, the first matching notation in <code>notations</code>
+is returned when <code>allow_multiple = FALSE</code>.
+Default is <code>FALSE</code>.</p></dd>
 
 
 <dt>prepositions</dt>
-<dd><p>See <code><a href="rename_to_piece_byname.html">rename_to_piece_byname()</a></code>.</p></dd>
+<dd><p>Prepositions that can be used in the row and column label.
+Default is <code><a href="https://rdrr.io/pkg/RCLabels/man/prepositions_list.html" class="external-link">RCLabels::prepositions_list</a></code>.</p></dd>
 
 
 <dt>aggregation_map</dt>
-<dd><p>See <code><a href="aggregate_byname.html">aggregate_byname()</a></code>.</p></dd>
+<dd><p>A named list of rows or columns to be aggregated (or <code>NULL</code>). See <code>details</code>.</p></dd>
 
 
 <dt>pattern_type</dt>
-<dd><p>See <code><a href="https://rdrr.io/pkg/RCLabels/man/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code>.</p></dd>
+<dd><p>See <code><a href="https://rdrr.io/pkg/RCLabels/man/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code>.
+Default is "exact".</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -127,9 +146,32 @@ by pieces of the row and column names.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This is a convenience function that bundles two others
 for common use cases:
-<code><a href="rename_to_piece_byname.html">rename_to_piece_byname()</a></code> followed by <code><a href="aggregate_byname.html">aggregate_byname()</a></code>.</p>
-<p><code>aggregation_map</code> should aggregate according to pieces,
-not according to the full, original row and/or column names.</p>
+<code><a href="rename_to_piece_byname.html">rename_to_piece_byname()</a></code> followed by <code><a href="aggregate_byname.html">aggregate_byname()</a></code>.
+Note that after renaming to the piece,
+there may be rows or columns that are identically named.
+If those identically named names aren't included in the <code>aggregation_map</code>,
+an error will result.
+So, <code><a href="aggregate_byname.html">aggregate_byname()</a></code> is called twice;
+first with <code>aggregation_map = NULL</code> to sweep up any
+rows or columns that are identically named
+after renaming and
+second with <code>aggregation_map = aggregation_map</code> to
+sum the desired rows or columns.
+See examples.</p>
+<p>When <code>aggregation_map</code> is <code>NULL</code> (the default),
+rows (or columns or both) of same name are aggregated together.</p>
+<p>If <code>aggregation_map</code> is not <code>NULL</code>, it must be a named list.
+The name of each <code>aggregation_map</code> item is the name of a row or column in output
+that will contain the specified aggregation.
+The value of each item in <code>aggregation_map</code> must be a vector of names of rows or columns in <code>a</code>.
+The names in the value are aggregated and inserted into the output with the name of the value.
+For example <code>aggregation_map = list(new_row = c("r1", "r2"))</code>
+will aggregate rows "r1" and "r2", delete rows "r1" and "r2", and insert a new row
+whose name is "new_row" and whose value is the sum of rows "r1" and "r2'.</p>
+<p>The values in the <code>aggregation_map</code> are interpreted as regular expressions, and
+they are escaped using <code><a href="https://rdrr.io/pkg/Hmisc/man/escapeRegex.html" class="external-link">Hmisc::escapeRegex()</a></code> prior to use.</p>
+<p><code>aggregation_map</code> should aggregate by pieces,
+not by the full, original row and/or column names.</p>
     </div>
 
     <div class="section level2">
@@ -240,6 +282,27 @@ not according to the full, original row and/or column names.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Product"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co"># Works when renaming to the piece results in identical row or col names.</span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow <span class="op">=</span> <span class="fl">3</span>, ncol <span class="op">=</span> <span class="fl">2</span>, </span></span>
+<span class="r-in"><span>            dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a [from b]"</span>, <span class="st">"c [from d]"</span>, <span class="st">"c [from e]"</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c1"</span>, <span class="st">"c2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">b</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            c1 c2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a [from b]  1  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c [from d]  2  5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c [from e]  3  6</span>
+<span class="r-in"><span><span class="co"># This aggregation works, because the "c" rows</span></span></span>
+<span class="r-in"><span><span class="co"># are aggregated before applying the aggregation_map,</span></span></span>
+<span class="r-in"><span><span class="co"># which, itself, does NOT aggregate the "c" rows.</span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu">aggregate_pieces_byname</span><span class="op">(</span>piece <span class="op">=</span> <span class="st">"noun"</span>,</span></span>
+<span class="r-in"><span>                          margin <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                          inf_notation <span class="op">=</span> <span class="cn">FALSE</span>, </span></span>
+<span class="r-in"><span>                          notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">bracket_notation</a></span>, </span></span>
+<span class="r-in"><span>                          aggregation_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   c1 c2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c  5 11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> f  1  4</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
