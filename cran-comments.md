@@ -1,14 +1,14 @@
 ## Context
 
-`matsbyname` v0.5.1
-adds several enhancements for matrix inversion functions
-and responds to deprecations in `tidyselect` and `purrr`.
+`matsbyname` v0.6.0
+adds the capability to use `Matrix` objects,
+thereby enabling sparse matrices.
 See `NEWS.md` for details.
 
 
 ## Test environments (10 in total) and R CMD check results
 
-* Local macOS X 13.1 (Ventura), R4.2.2
+* Local macOS X 13.2.1 (Ventura), R4.2.2
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0

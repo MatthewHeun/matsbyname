@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+# matsbyname 0.6.0 (2023-03-04)
+
 * Fixed a bug in `aggregate_pieces_byname()`
   where failure occurred if there were
   repeated row (or column) names not included 
