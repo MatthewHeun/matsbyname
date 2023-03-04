@@ -1,5 +1,5 @@
 bibentry(
-  header      = "To cite package matsbyname in publications use:",
+  header      = "To cite package ‘matsbyname’ in publications use:",
   bibtype     = "Manual", 
   title       = "matsbyname: An Implementation of Matrix Mathematics",
   author      = person(given = "Matthew Kuperus", 
