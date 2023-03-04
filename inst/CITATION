@@ -1,15 +1,17 @@
-citHeader("To cite package ‘matsbyname’ in publications use:")
-
-citEntry(entry = "Manual",
-  title        = "matsbyname: An Implementation of Matrix Mathematics",
-  author       = personList(as.person("Matthew Kuperus Heun")),
-  year         = "2023",
-  note         = "R package version 0.5.1",
-  url          = "https://CRAN.R-project.org/package=matsbyname",
-
-  textVersion  =
-  paste("Matthew Kuperus Heun (2023).",
-        "matsbyname: An Implementation of Matrix Mathematics.",
-        "R package version 0.5.1.",
-        "https://CRAN.R-project.org/package=matsbyname")
+bibentry(
+  header      = "To cite package ‘matsbyname’ in publications use:",
+  bibtype     = "Manual", 
+  title       = "matsbyname: An Implementation of Matrix Mathematics",
+  author      = person(given = "Matthew Kuperus", 
+                       family = "Heun", 
+                       email = "matthew.heun@me.com", 
+                       role = c("aut", "cre"), 
+                       comment = c(ORCID = "0000-0002-7438-214X")),
+  year        = "2023",
+  note        = "R package version 0.6.0",
+  url         = "https://CRAN.R-project.org/package=matsbyname",
+  textVersion = paste("Matthew Kuperus Heun (2023).", 
+                      "matsbyname: An Implementation of Matrix Mathematics.",
+                      "R package version 0.6.0.",
+                      "https://CRAN.R-project.org/package=matsbyname")
 )

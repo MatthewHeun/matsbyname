@@ -7,10 +7,10 @@
 abs_byname(a)
 }
 \arguments{
-\item{a}{a matrix or list of matrices}
+\item{a}{A matrix or list of matrices.}
 }
 \value{
-a with each element replaced by its absolute value
+\code{a} with each element replaced by its absolute value.
 }
 \description{
 Absolute value of matrix elements

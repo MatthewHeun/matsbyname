@@ -7,9 +7,9 @@
 log_byname(a, base = exp(1))
 }
 \arguments{
-\item{a}{a matrix or list of matrices}
+\item{a}{A matrix or list of matrices.}
 
-\item{base}{the base of the logarithm (default is \code{exp(1)}, giving the natural logarithm)}
+\item{base}{The base of the logarithm (default is \code{exp(1)}, giving the natural logarithm).}
 }
 \value{
 M with each element replaced by its base \code{base} logarithm

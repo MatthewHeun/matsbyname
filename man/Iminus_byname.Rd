@@ -7,17 +7,17 @@
 Iminus_byname(a)
 }
 \arguments{
-\item{a}{the matrix to be subtracted from \code{I}}
+\item{a}{The matrix to be subtracted from \code{I}.}
 }
 \value{
-The difference between an identity matrix (\code{I}) and \code{m}
+The difference between an identity matrix (\code{I}) and \code{m}.
 (whose rows and columns have been completed and sorted)
 }
 \description{
 The order of rows and columns of \code{m} may change before subtracting from \code{I},
 because the rows and columns are sorted by name prior to subtracting from \code{I}.
 Furthermore, if \code{m} is not square, it will be made square
-before subtracting from \code{I} by calling \code{complete_and_sort}.
+before subtracting from \code{I} by calling \code{complete_and_sort()}.
 }
 \examples{
 m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) \%>\%

@@ -22,7 +22,8 @@ vec_from_store_byname(
  } else {
     
     RCLabels::prepositions_list
- }
+ },
+  missing = NA_real_
 )
 }
 \arguments{
@@ -47,7 +48,10 @@ should be used.}
 Default is \code{RCLabels::bracket_notation}, wrapped as a list if \code{a} is a list.}
 
 \item{prepositions}{The strings that will count for prepositions.
-Default is \code{RCLables::prepositions}, wrapped as a list if \code{a} is a list..}
+Default is \code{RCLabels::prepositions}, wrapped as a list if \code{a} is a list.}
+
+\item{missing}{The value used when the desired value is not found in \code{v}.
+Default is \code{NA_real_}.}
 }
 \value{
 A vector with names from \code{a} and values from \code{v}.
@@ -91,6 +95,10 @@ Note that \code{notation} and \code{prepositions} should be lists if \code{a} is
 but a single value otherwise.
 The default values of \code{notation} and \code{prepositions} take care of this requirement,
 switching on the type of \code{a} (list or not).
+
+The class of the output object is determined from \code{a}.
+If \code{a} is a \code{Matrix}, the output will be a \code{Matrix}.
+Otherwise, the output will be a \code{matrix}.
 }
 \examples{
 a <- matrix(42, nrow = 3, ncol = 5, 

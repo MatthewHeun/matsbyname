@@ -1,85 +1,5 @@
-###########################################################
-context("Hatize and Inverse")
-###########################################################
-
-test_that("hatize_byname() works as expected", {
-  g <- matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatize_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
-  expect_equal(hatize_byname(g, keep = "rownames"), 
-               matrix(4, dimnames = list("I", "I")))
-  expect_equal(hatize_byname(g, keep = "colnames"), 
-               matrix(4, dimnames = list("Products", "Products")))
-  
-  v <- matrix(1:3, ncol = 1, dimnames = list(c(paste0("i", 1:3)), c("p1"))) %>%
-    setrowtype("Industries") %>% setcoltype(NA)
-  # Try to hatize with the wrong keep argument
-  expect_error(hatize_byname(v, keep = "colnames"), 'In hatize_byname\\(\\), argument "keep" set to "colnames", but you supplied a column vector. Consider setting keep = "rownames".')
-  expect_error(hatize_byname(matrix(v, nrow = 1), keep = "rownames"), 'In hatize_byname\\(\\), argument "keep" set to "rownames", but you supplied a row vector. Consider setting keep = "colnames".')
-  # Try to hatize a list.
-  v_list <- list(v, v)
-  expected_m <- matrix(c(1, 0, 0, 
-                         0, 2, 0,
-                         0, 0, 3), nrow = 3, byrow = TRUE, 
-                       dimnames = list(c("i1", "i2", "i3"), c("i1", "i2", "i3"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Industries")
-  expect_equal(hatize_byname(v_list, keep = "rownames"), list(expected_m, expected_m))
-})
 
 
-test_that("hatinv_byname() works as expected", {
-  # Test with a column vector
-  v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
-    setrowtype("Industries") %>% setcoltype(NA)
-  expect_equal(hatinv_byname(v, keep = "rownames"), v %>% hatize_byname(keep = "rownames") %>% invert_byname())
-  # Test with a row vector
-  r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
-    setrowtype(NA) %>% setcoltype("Commodities")
-  expect_equal(hatinv_byname(r, keep = "colnames"), r %>% hatize_byname(keep = "colnames") %>% invert_byname())
-  # Test with a list
-  v_list <- list(v, v)
-  expect_equal(hatinv_byname(v_list, keep = "rownames"), v_list %>% hatize_byname(keep = "rownames") %>% invert_byname())
-  # Test with a data frame
-  DF <- data.frame(v_list = I(list()))
-  DF[[1, "v_list"]] <- v
-  DF[[2, "v_list"]] <- v
-  DF <- DF %>% 
-    dplyr::mutate(
-      hatinv = hatinv_byname(v_list, keep = "rownames")
-    )
-  DF_expected <- data.frame(v_list = I(list()), hatinv = I(list()))
-  DF_expected[[1, "v_list"]] <- v
-  DF_expected[[2, "v_list"]] <- v
-  DF_expected[[1, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
-  DF_expected[[2, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
-  # The hatinv column of DF_expected will have class = 'AsIs', but
-  # the hatinv column of DF will have no class attribute.  
-  # Eliminate that mismatch.
-  attr(DF_expected$hatinv, which = "class") <- NULL
-  expect_equal(DF, DF_expected)
-  # Test when one of the elements of v is 0.
-  v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
-    setrowtype("Industries") %>% setcoltype(NA)
-  expect_equal(hatinv_byname(v2, keep = "rownames"), matrix(c(.Machine$double.xmax, 0,
-                                           0, 1), 
-               nrow = 2, ncol = 2, byrow = TRUE,
-               dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
-               setrowtype("Industries") %>% setcoltype("Industries"))
-  # Test when we want the 0 element of v to give Inf instead of .Machine$double.xmax.
-  expect_equal(hatinv_byname(v2, inf_becomes = NULL, keep = "rownames"), matrix(c(Inf, 0,
-                                                                                  0, 1), 
-                                                                                nrow = 2, ncol = 2, byrow = TRUE,
-                                                                                dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
-                 setrowtype("Industries") %>% setcoltype("Industries"))
-  
-  # Test that hatinv works with a 1x1 vector
-  g <- matrix(4, dimnames = list("I", "Products"))
-  expect_error(hatinv_byname(g), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
-})
-
-
-###########################################################
-context("Absolute value")
-###########################################################
 
 test_that("abs_byname() works as expected", {
   expect_equal(abs_byname(1), 1)
@@ -87,14 +7,15 @@ test_that("abs_byname() works as expected", {
   m <- matrix(c(-10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Commodity")
   expect_equal(abs_byname(m), abs(m))
+  
+  # Test with a Matrix object
+  M <- matsbyname::Matrix(c(-10,1,1,100), nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2)), 
+                          rowtype = "Industry", coltype = "Commodity")
+  expect_equal(abs_byname(M), abs(M))
 })
 
 
-###########################################################
-context("Log and Exp")
-###########################################################
-
-test_that("log_byname works as expected", {
+test_that("log_byname() works as expected", {
   expect_equal(log_byname(exp(1)), 1)
   m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
@@ -114,25 +35,77 @@ test_that("log_byname works as expected", {
   expect_equal(log_byname(list(m, m), base = 10), list(expected_log10, expected_log10))
 })
 
-test_that("exp_byname works as expected", {
+
+test_that("log_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(10,1,1,100), nrow = 2, ncol = 2,
+                          dimnames = list(paste0("i", 1:2), paste0("p", 1:2)), 
+                          rowtype = "Industry", coltype = "Product")
+  
+  matsbyname:::expect_equal_matrix_or_Matrix(log_byname(M), 
+                                             matsbyname::Matrix(c(2.302585, 0, 
+                                                                  0, 4.60517), byrow = TRUE, nrow = 2, ncol = 2,
+                                                                dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+                                               setrowtype("Industry") %>% setcoltype("Product"), 
+                                             tolerance = 1e-6)
+  expected_log10 <- matsbyname::Matrix(c(1, 0, 
+                                         0, 2), byrow = TRUE, nrow = 2, ncol = 2,
+                                       dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+    setrowtype("Industry") %>% setcoltype("Product")
+  matsbyname:::expect_equal_matrix_or_Matrix(log_byname(M, base = 10), expected_log10)
+})
+
+
+test_that("exp_byname() works as expected", {
   expect_equal(exp_byname(1), exp(1))
-  m <- matrix(c(log(10),log(1),log(1),log(100)), 
-              nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
+  m <- matrix(c(log(10), log(1),
+                log(1),  log(100)), 
+              byrow = TRUE, nrow = 2, ncol = 2,
+              dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
   expected <- matrix(c(10, 1,
-                       1, 100), byrow = TRUE, nrow = 2, ncol = 2, 
+                        1, 100), byrow = TRUE, nrow = 2, ncol = 2, 
                      dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
     setrowtype("Industry") %>% setcoltype("Product")
   expect_equal(exp_byname(m), expected)
   # Also works for lists.
   expect_equal(exp_byname(list(m, m)), list(expected, expected))
 })
-  
-  
-###########################################################
-context("Inversion")
-###########################################################
 
+
+test_that("exp_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(log(10), log(1),
+                        log(1),  log(100), 
+                        log(2),  log(42)), 
+                      byrow = TRUE, nrow = 3, ncol = 2, 
+                      dimnames = list(paste0("i", 1:3), paste0("p", 1:2)), 
+                      rowtype = "Industry", coltype = "Product")
+  expectedM <- matrix(c(10, 1,
+                        1, 100, 
+                        2, 42), 
+                      byrow = TRUE, nrow = 3, ncol = 2, 
+                      dimnames = list(c("i1", "i2", "i3"), c("p1", "p2"))) %>% 
+    setrowtype("Industry") %>% setcoltype("Product")
+  matsbyname:::expect_equal_matrix_or_Matrix(exp_byname(M), expectedM, tolerance = 1e-12)
+  
+  
+  # rownames(M) are same as colnames(M). Why?  Because it is a symmetric matrix!
+  # This looks to be a bug in the Matrix package.
+  M2 <- matsbyname::Matrix(c(log(10), log(1),
+                         log(1),  log(100)), 
+                       byrow = TRUE, nrow = 2, ncol = 2, 
+                       dimnames = list(paste0("i", 1:2), paste0("p", 1:2)), 
+                       rowtype = "Industry", coltype = "Product")
+    
+  expectedM2 <- matrix(c(10, 1,
+                         1, 100), 
+                       byrow = TRUE, nrow = 2, ncol = 2, 
+                       dimnames = list(c("i1", "i2"), c("p1", "p2"))) %>% 
+    setrowtype("Industry") %>% setcoltype("Product")
+  res2 <- exp_byname(M2)
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, expectedM2, tolerance = 1e-12)
+})
+  
+  
 test_that("invert_byname() works as expected", {
   # Singular matrix
   sing <- matrix(c(1, 0,
@@ -209,9 +182,32 @@ test_that("invert_byname() works correctly with the method argument", {
 })
 
 
-###########################################################
-context("Transpose")
-###########################################################
+test_that("invert_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(4, -2, 1, 
+                            5, 0, 3, 
+                            -1, 2, 6), byrow = TRUE, nrow = 3, ncol = 3,
+                          dimnames = list(paste0("i", 1:3), paste0("p", 1:3)), 
+                          rowtype = "Industries", coltype = "Products")
+  Minv <- matrix(c( -3/26,  7/26, -3/26, 
+                    -33/52, 25/52, -7/52, 
+                    5/26, -3/26,  5/26), byrow = TRUE, nrow = 3, ncol = 3, 
+                 dimnames = list(colnames(M), rownames(M))) %>% 
+    setrowtype(coltype(M)) %>% setcoltype(rowtype(M))
+  
+  expect_error(invert_byname(M, method = "bogus"), regexp = "'arg' should be one of ")
+  matsbyname:::expect_equal_matrix_or_Matrix(invert_byname(M), Minv, tolerance = 1e-15)
+  expect_true(is.Matrix(invert_byname(M, method = "solve")))
+  expect_false(is.matrix(invert_byname(M, method = "solve")))
+  
+  resQR <- invert_byname(M, method = "QR")
+  matsbyname:::expect_equal_matrix_or_Matrix(resQR, Minv, tolerance = 1e-15)
+  expect_true(is.Matrix(resQR))
+  
+  res_SVD <- invert_byname(M, method = "SVD")
+  matsbyname:::expect_equal_matrix_or_Matrix(res_SVD, Minv, tolerance = 1e-15)
+  expect_true(is.Matrix(res_SVD))
+})
+
 
 test_that("transpose_byname() works as expected", {
   m <- matrix(c(11,21,31,12,22,32), ncol = 2, dimnames = list(paste0("i", 1:3), paste0("p", 1:2))) %>%
@@ -276,9 +272,14 @@ test_that("transpose_byname() correctly handles constants", {
 })
 
 
-###########################################################
-context("Eigenvalues and eigenvectors")
-###########################################################
+test_that("transpose_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(11,21,31,12,22,32), nrow = 3, ncol = 2, dimnames = list(paste0("i", 1:3), paste0("p", 1:2)), 
+                          rowtype = "Industries", coltype = "Products")
+  MT <- matsbyname::Matrix(c(11, 12, 21, 22, 31, 32), nrow = 2, ncol = 3, dimnames = list(paste0("p", 1:2), paste0("i", 1:3)), 
+                           rowtype = "Products", coltype = "Industries")
+  expect_equal(transpose_byname(M), MT)
+})
+
 
 test_that("eigenvalues_byname() works as expected", {
   m <- matrix(c(4, 6, 10, 
@@ -297,6 +298,16 @@ test_that("eigenvalues_byname() works as expected", {
     )
   expect_equal(DF$eigen_col[[1]], expected)
   expect_equal(DF$eigen_col[[2]], 2*expected)
+})
+
+
+test_that("eigenvalues_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(4, 6, 10, 
+                            3, 10 , 13, 
+                            -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+                          dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+  expected <- c(4, 2, 0)
+  expect_equal(eigenvalues_byname(M), expected)
 })
 
 
@@ -322,55 +333,98 @@ test_that("eigenvectors_byname() works as expected", {
 })
 
 
-###########################################################
-context("SVD")
-###########################################################
-
-test_that("svd_byname() works as expected", {
-  # Example from https://medium.com/intuition/singular-value-decomposition-svd-working-example-c2b6135673b5
-  A = matrix(c(4, 0, 
-               3, -5), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-    setrowtype("rowtype") %>% setcoltype("coltype")
+test_that("eigenvectors_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(4, 6, 10, 
+                            3, 10 , 13, 
+                            -2, -6, -8), byrow = TRUE, nrow = 3, ncol = 3, 
+                          dimnames = list(c("p1", "p2", "p3"), c("p1", "p2", "p3")))
+  expected <- matrix(c(0.457495711, 0.408248290, -0.577350269,
+                       0.762492852, -0.816496581, -0.577350269,
+                       -0.457495711, 0.408248290, 0.577350269), byrow = TRUE, nrow = 3, ncol = 3)
+  expect_equal(eigenvectors_byname(M), expected)
   
-  D <- svd_byname(A)
-  expected_D <- diag(c(sqrt(40), sqrt(10)))
-  rownames(expected_D) <- rownames(A)
-  colnames(expected_D) <- colnames(A)
-  expected_D <- expected_D %>% 
-    setrowtype(rowtype(A)) %>% 
-    setcoltype(coltype(A))
-  expect_equal(D, expected_D)
-
-  U <- svd_byname(A, which = "u")
-  expected_U <- matrix(c(-1/sqrt(5), -2/sqrt(5), 
-                         -2/sqrt(5),  1/sqrt(5)), byrow = TRUE, nrow = 2, ncol = 2)
-  rownames(expected_U) <- rownames(A)
-  colnames(expected_U) <- rownames(A)
-  expected_U <- expected_U %>% 
-    setrowtype(rowtype(A)) %>% 
-    setcoltype(rowtype(A))
-  expect_equal(U, expected_U)
-  
-  V <- svd_byname(A, which = "v")
-  expected_V <- matrix(c(-1/sqrt(2), -1/sqrt(2), 
-                          1/sqrt(2), -1/sqrt(2)), byrow = TRUE, nrow = 2, ncol = 2)
-  rownames(expected_V) <- colnames(A)
-  colnames(expected_V) <- colnames(A)
-  expected_V <- expected_V %>% 
-    setrowtype(coltype(A)) %>% 
-    setcoltype(coltype(A))
-  expect_equal(V, expected_V)
-  
-  # Double-check multiplication
-  should_be_A <- matrixproduct_byname(U, D) %>% 
-    matrixproduct_byname(transpose_byname(V))
-  expect_true(equal_byname(should_be_A, A))
+  expect_equal(eigenvectors_byname(list(M, 2*M)), list(expected, expected)) 
 })
 
 
-###########################################################
-context("Hatize")
-###########################################################
+test_that("svd_byname() works as expected", {
+  # Example from https://medium.com/intuition/singular-value-decomposition-svd-working-example-c2b6135673b5
+  test_func <- function(A_mat) {
+    D <- svd_byname(A_mat)
+    expected_D <- diag(c(sqrt(40), sqrt(10)))
+    rownames(expected_D) <- rownames(A_mat)
+    colnames(expected_D) <- colnames(A_mat)
+    expected_D <- expected_D %>% 
+      setrowtype(rowtype(A_mat)) %>% 
+      setcoltype(coltype(A_mat))
+    expect_equal(D, expected_D)
+    
+    U <- svd_byname(A_mat, which = "u")
+    expected_U <- matrix(c(-1/sqrt(5), -2/sqrt(5), 
+                           -2/sqrt(5),  1/sqrt(5)), byrow = TRUE, nrow = 2, ncol = 2)
+    rownames(expected_U) <- rownames(A_mat)
+    colnames(expected_U) <- rownames(A_mat)
+    expected_U <- expected_U %>% 
+      setrowtype(rowtype(A_mat)) %>% 
+      setcoltype(rowtype(A_mat))
+    expect_equal(U, expected_U)
+    
+    V <- svd_byname(A_mat, which = "v")
+    expected_V <- matrix(c(-1/sqrt(2), -1/sqrt(2), 
+                           1/sqrt(2), -1/sqrt(2)), byrow = TRUE, nrow = 2, ncol = 2)
+    rownames(expected_V) <- colnames(A_mat)
+    colnames(expected_V) <- colnames(A_mat)
+    expected_V <- expected_V %>% 
+      setrowtype(coltype(A_mat)) %>% 
+      setcoltype(coltype(A_mat))
+    expect_equal(V, expected_V)
+    
+    # Double-check multiplication
+    should_be_A <- matrixproduct_byname(U, D) %>% 
+      matrixproduct_byname(transpose_byname(V))
+    matsbyname:::expect_equal_matrix_or_Matrix(should_be_A, A_mat, tolerance = 1e-14)
+  }
+  
+  # Try with a matrix object
+  A <- matrix(c(4, 0, 
+               3, -5), nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
+    setrowtype("rowtype") %>% setcoltype("coltype")
+  
+  test_func(A)
+  # Try with a Matrix object
+  AM <- matsbyname::Matrix(c(4, 0, 
+                             3, -5), nrow = 2, ncol = 2, byrow = TRUE, 
+                           dimnames = list(c("r1", "r2"), c("c1", "c2")), 
+                           rowtype = "rowtype", coltype = "coltype")
+  # Does not work at present. 
+  # Need to figure out how to do an SVD on a Matrix object
+  test_func(AM)
+})
+
+
+test_that("hatize_byname() works as expected", {
+  g <- matrix(4, dimnames = list("I", "Products"))
+  expect_error(hatize_byname(g), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
+  expect_equal(hatize_byname(g, keep = "rownames"), 
+               matrix(4, dimnames = list("I", "I")))
+  expect_equal(hatize_byname(g, keep = "colnames"), 
+               matrix(4, dimnames = list("Products", "Products")))
+  
+  v <- matrix(1:3, ncol = 1, dimnames = list(c(paste0("i", 1:3)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  # Try to hatize with the wrong keep argument
+  expect_error(hatize_byname(v, keep = "colnames"), 'In hatize_byname\\(\\), argument "keep" set to "colnames", but you supplied a column vector. Consider setting keep = "rownames".')
+  expect_error(hatize_byname(matrix(v, nrow = 1), keep = "rownames"), 'In hatize_byname\\(\\), argument "keep" set to "rownames", but you supplied a row vector. Consider setting keep = "colnames".')
+  # Try to hatize a list.
+  v_list <- list(v, v)
+  expected_m <- matrix(c(1, 0, 0, 
+                         0, 2, 0,
+                         0, 0, 3), nrow = 3, byrow = TRUE, 
+                       dimnames = list(c("i1", "i2", "i3"), c("i1", "i2", "i3"))) %>% 
+    setrowtype("Industries") %>% setcoltype("Industries")
+  expect_equal(hatize_byname(v_list, keep = "rownames"), list(expected_m, expected_m))
+})
+
 
 test_that("hatize_byname() works as expected", {
   # Check the absurd situation where a non-vector is sent to hatize()
@@ -461,7 +515,7 @@ test_that("hatize_byname() works with a simple vector", {
   v4 <- matrix(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1")) %>% 
     setrowtype("Product -> Industry") %>% 
     setcoltype("Industry -> Product")
-  expect_error(hatize_byname(v4), 'In hatize_byname\\(\\), the keep argument must be set to one of "rownames" or "colnames" when v is a 1x1 matrix.')
+  expect_error(hatize_byname(v4), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
   expect_equal(hatize_byname(v4, keep = "rownames"), matrix(42, dimnames = list("r1", "r1")) %>% 
                  setrowtype("Product -> Industry") %>% 
                  setcoltype("Product -> Industry"))
@@ -486,9 +540,143 @@ test_that("hatize_byname() issues a warning when keep is wrong", {
 })
 
 
-###########################################################
-context("Identize")
-###########################################################
+test_that("hatize_byname() works with a Matrix vector", {
+  v1 <- matsbyname::Matrix(c(1, 
+                             2), nrow = 2, ncol = 1, dimnames = list(c("r1", "r2"), c("c1")), 
+                           rowtype = "Product -> Industry")
+  v1_hat <- hatize_byname(v1, keep = "rownames")
+  v1_hat_expected <- matrix(c(1, 0,
+                              0, 2), nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("r1", "r2"))) %>% 
+    setrowtype("Product -> Industry") %>% 
+    setcoltype("Product -> Industry")
+  matsbyname:::expect_equal_matrix_or_Matrix(v1_hat, v1_hat_expected)
+  expect_true(inherits(v1_hat, "ddiMatrix"))
+  
+  v2 <- matsbyname::Matrix(1:10, nrow = 10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1")), 
+                           rowtype = "Industries", coltype = NA)
+  orderedRowNames <- c("i1", "i10", paste0("i", 2:9))
+  v2_hat_expected <- matsbyname::Matrix(c(1,0,0,0,0,0,0,0,0,0,
+                                          0,10,0,0,0,0,0,0,0,0,
+                                          0,0,2,0,0,0,0,0,0,0,
+                                          0,0,0,3,0,0,0,0,0,0,
+                                          0,0,0,0,4,0,0,0,0,0,
+                                          0,0,0,0,0,5,0,0,0,0,
+                                          0,0,0,0,0,0,6,0,0,0,
+                                          0,0,0,0,0,0,0,7,0,0,
+                                          0,0,0,0,0,0,0,0,8,0,
+                                          0,0,0,0,0,0,0,0,0,9),
+                                        nrow = 10, ncol = 10,
+                                        dimnames = list(orderedRowNames, orderedRowNames), 
+                                        rowtype = "Industries", coltype = "Industries")
+  res2 <- hatize_byname(v2)
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, v2_hat_expected)
+  
+  
+  r <- matsbyname::Matrix(1:5, nrow = 1, ncol = 5, dimnames = list("i1", paste0("p", 1:5)), 
+                          rowtype = NA, coltype = "Industries")
+  orderedColNames <- paste0("p", 1:5)
+  r_hat_expected <- matsbyname::Matrix(c(1,0,0,0,0,
+                                         0,2,0,0,0,
+                                         0,0,3,0,0,
+                                         0,0,0,4,0,
+                                         0,0,0,0,5),
+                                       nrow = 5, ncol = 5,
+                                       dimnames = list(orderedColNames, orderedColNames), 
+                                       rowtype = coltype(r), coltype = coltype(r))
+  matsbyname:::expect_equal_matrix_or_Matrix(hatize_byname(r, keep = "colnames"), r_hat_expected)
+})
+
+
+test_that("hatize_byname() tests hit all lines of code", {
+  v1 <- matrix(c(42), nrow = 1, ncol = 1)
+  expect_error(hatize_byname(v1), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
+  
+  v2 <- matrix(c(42), nrow = 1, ncol = 1, dimnames = list("r1"))
+  expect_error(hatize_byname(v2, keep = "bogus"), 'In hatize_byname\\(\\), argument "keep" must be one of "colnames" or "rownames".')
+  
+  expect_error(hatize_byname(NA), "argument is of length zero")
+  expect_null(hatize_byname(NULL))
+})
+
+
+test_that("hatinv_byname() works as expected", {
+  # Test with a column vector
+  v <- matrix(1:10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  res <- hatinv_byname(v, keep = "rownames")
+  expected <- v %>% 
+    hatize_byname(keep = "rownames") %>% 
+    invert_byname()
+  expect_equal(res, expected)
+  # Test with a row vector
+  r <- matrix(1:5, nrow = 1, dimnames = list(c("r1"), c(paste0("c", 1:5)))) %>%
+    setrowtype(NA) %>% setcoltype("Commodities")
+  expect_equal(hatinv_byname(r, keep = "colnames"), r %>% hatize_byname(keep = "colnames") %>% invert_byname())
+  # Test with a list
+  v_list <- list(v, v)
+  expect_equal(hatinv_byname(v_list, keep = "rownames"), v_list %>% hatize_byname(keep = "rownames") %>% invert_byname())
+  # Test with a data frame
+  DF <- data.frame(v_list = I(list()))
+  DF[[1, "v_list"]] <- v
+  DF[[2, "v_list"]] <- v
+  DF <- DF %>% 
+    dplyr::mutate(
+      hatinv = hatinv_byname(v_list, keep = "rownames")
+    )
+  DF_expected <- data.frame(v_list = I(list()), hatinv = I(list()))
+  DF_expected[[1, "v_list"]] <- v
+  DF_expected[[2, "v_list"]] <- v
+  DF_expected[[1, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
+  DF_expected[[2, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
+  # The hatinv column of DF_expected will have matrix.class = 'AsIs', but
+  # the hatinv column of DF will have no class attribute.  
+  # Eliminate that mismatch.
+  attr(DF_expected$hatinv, which = "class") <- NULL
+  expect_equal(DF, DF_expected)
+  # Test when one of the elements of v is 0.
+  v2 <- matrix(0:1, ncol = 1, dimnames = list(c(paste0("i", 0:1)), c("p1"))) %>%
+    setrowtype("Industries") %>% setcoltype(NA)
+  expect_equal(hatinv_byname(v2, keep = "rownames"), matrix(c(.Machine$double.xmax, 0,
+                                                              0, 1), 
+                                                            nrow = 2, ncol = 2, byrow = TRUE,
+                                                            dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
+                 setrowtype("Industries") %>% setcoltype("Industries"))
+  # Test when we want the 0 element of v to give Inf instead of .Machine$double.xmax.
+  expect_equal(hatinv_byname(v2, inf_becomes = NULL, keep = "rownames"), matrix(c(Inf, 0,
+                                                                                  0, 1), 
+                                                                                nrow = 2, ncol = 2, byrow = TRUE,
+                                                                                dimnames = list(c(paste0("i", 0:1)), c(paste0("i", 0:1)))) %>%  
+                 setrowtype("Industries") %>% setcoltype("Industries"))
+  
+  # Test that hatinv works with a 1x1 vector
+  g <- matrix(4, dimnames = list("I", "Products"))
+  expect_error(hatinv_byname(g), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
+})
+
+
+test_that("hatinv_byname() works with a Matrix object", {
+  # Test with a column vector
+  v <- matsbyname::Matrix(1:10, nrow = 10, ncol = 1, dimnames = list(c(paste0("i", 1:10)), c("p1")), 
+                          rowtype = "Industries", coltype = NA) 
+  res <- hatinv_byname(v, keep = "rownames")
+  expected <- v %>% 
+    hatize_byname(keep = "rownames") %>%
+    invert_byname()
+  expect_equal(res, expected)
+  
+  # Test with a row vector
+  r <- matsbyname::Matrix(1:5, nrow = 1, ncol = 5, dimnames = list(c("r1"), c(paste0("c", 1:5))), 
+                          rowtype = NA, coltype = "Commodities")
+  expect_equal(hatinv_byname(r, keep = "colnames"), 
+               r %>% 
+                 hatize_byname(keep = "colnames") %>%
+                 invert_byname())
+  
+  # Test that hatinv works with a 1x1 Matrix
+  g <- matsbyname::Matrix(4, dimnames = list("I", "Products"))
+  expect_error(hatinv_byname(g), "Unable to determine which names to keep \\(rows or cols\\) in hatize_byname\\(\\). Try setting the 'keep' argument.")
+})
+
 
 test_that("identize_byname() works as expected", {
   # Try first with a single number
@@ -504,10 +692,10 @@ test_that("identize_byname() works as expected", {
                         dimnames = dimnames(m)) %>% 
     setrowtype(rowtype(m)) %>% setcoltype(coltype(m))
   # Test for errors
-  expect_error(identize_byname(m, margin = c(1,2,3,4)), "margin should have length 1 or 2 in fractionize_byname")
+  expect_error(identize_byname(m, margin = c(1,2,3,4)), "margin should have length 1 or 2 in identize_byname")
   expect_error(identize_byname(m, margin = c(3)), "Unknown margin 3 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
   expect_error(identize_byname(m, margin = c(-1)), "Unknown margin -1 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
-  expect_error(identize_byname(m, margin = c(1,1,2,2)), "margin should have length 1 or 2 in fractionize_byname")
+  expect_error(identize_byname(m, margin = c(1,1,2,2)), "margin should have length 1 or 2 in identize_byname")
   
   # Test for column vector
   expect_equal(identize_byname(m, margin = 1), 
@@ -548,11 +736,58 @@ test_that("identize_byname() works as expected", {
 })
 
 
-###########################################################
-context("Vectorize")
-###########################################################
+test_that("identize_byname() works with a Matrix object", {
+  mI_expected <- matrix(c(1,0,0,0,
+                          0,1,0,0,
+                          0,0,1,0,
+                          0,0,0,1),
+                        nrow = 4, 
+                        dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>% 
+    setrowtype("Industries") %>% setcoltype("Products")
+  # Try with matrices.
+  m <- matsbyname::Matrix(42, nrow = 4, ncol = 4, 
+                          dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4)), 
+                          rowtype = "Industries", coltype = "Products")
+  res <- identize_byname(m)
+  matsbyname:::expect_equal_matrix_or_Matrix(res, mI_expected)
+    
+  m1 <- matsbyname::Matrix(1:16, nrow = 4, ncol = 4, dimnames = list(c(paste0("i", 1:4)), paste0("p", 1:4)), 
+                           rowtype = "Industries", coltype = "Products")
+  mI_expected <- matrix(c(1,0,0,0,
+                          0,1,0,0,
+                          0,0,1,0,
+                          0,0,0,1),
+                        nrow = 4,
+                        dimnames = dimnames(m1)) %>%
+    setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1))
+  # Test for errors
+  expect_error(identize_byname(m1, margin = c(1,2,3,4)), "margin should have length 1 or 2 in identize_byname")
+  expect_error(identize_byname(m1, margin = c(3)), "Unknown margin 3 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
+  expect_error(identize_byname(m1, margin = c(-1)), "Unknown margin -1 in identize_byname. margin should be 1, 2, or c\\(1,2\\)")
+  expect_error(identize_byname(m1, margin = c(1,1,2,2)), "margin should have length 1 or 2 in identize_byname")
 
-test_that("vectorize_byname works as expected", {
+  # Test for column vector
+  res <- identize_byname(m1, margin = 1)
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res,
+                                             matrix(1, nrow = nrow(m1), ncol = 1) %>%
+                                               setrownames_byname(rownames(m1)) %>% setcolnames_byname(coltype(m1)) %>%
+                                               setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1)))
+
+  # Test for row vector
+  matsbyname:::expect_equal_matrix_or_Matrix(identize_byname(m1, margin = 2),
+                                             matrix(1, nrow = 1, ncol = ncol(m1)) %>%
+                                               setrownames_byname(rowtype(m1)) %>% setcolnames_byname(colnames(m1)) %>%
+                                               setrowtype(rowtype(m1)) %>% setcoltype(coltype(m1)))
+
+  # Test for identity matrix
+  matsbyname:::expect_equal_matrix_or_Matrix(identize_byname(m1), mI_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(identize_byname(m1, margin = c(1,2)), mI_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(identize_byname(m1, margin = c(2,1)), mI_expected)
+})
+
+
+test_that("vectorize_byname() works as expected", {
   # Try with a square matrix
   m1 <- matrix(c(1, 5,
                  4, 5),
@@ -627,9 +862,9 @@ test_that("vectorize_byname works as expected", {
   # Test with NULL. Should get NULL back.
   expect_null(vectorize_byname(NULL, NULL))
   # Test with NA.
-  expect_error(vectorize_byname(NA, notation = RCLabels::arrow_notation), "a is not numeric in vectorize_byname")
+  expect_error(vectorize_byname(NA, notation = RCLabels::arrow_notation), "a is not numeric or a Matrix in vectorize_byname")
   # Test with string
-  expect_error(vectorize_byname("a", notation = RCLabels::arrow_notation), "a is not numeric in vectorize_byname")
+  expect_error(vectorize_byname("a", notation = RCLabels::arrow_notation), "a is not numeric or a Matrix in vectorize_byname")
   # Test with a list of matrices
   list6 <- list(m1, m1)
   actual6 <- vectorize_byname(list6, notation = list(RCLabels::arrow_notation))
@@ -638,7 +873,7 @@ test_that("vectorize_byname works as expected", {
 })
 
 
-test_that("vectorize works with 4 matrices", {
+test_that("vectorize_byname() works with 4 matrices in a list", {
   m <- matrix(c(1, 5,
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
@@ -657,7 +892,60 @@ test_that("vectorize works with 4 matrices", {
 })
 
 
-test_that("matricize_byname works as expected", {
+test_that("vectorize_byname() works with Matrix objects", {
+  # Try with a square Matrix
+  m1 <- matsbyname::Matrix(c(1, 5,
+                             4, 5),
+                           nrow = 2, ncol = 2, byrow = TRUE, 
+                           dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                           rowtype = "Products", coltype = "Industries")
+  expected1 <- matrix(c(1, 
+                        4, 
+                        5, 
+                        5),
+                      nrow = 4, ncol = 1, 
+                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"))) %>% 
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  actual1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
+  matsbyname:::expect_equal_matrix_or_Matrix(actual1, expected1)
+  
+  # Try with a rectangular matrix
+  m2 <- matsbyname::Matrix(c(1, 2, 3,
+                             4, 5, 6),
+                           nrow = 2, ncol = 3, byrow = TRUE,
+                           dimnames = list(c("p1", "p2"), c("i1", "i2", "i3")), 
+                           rowtype = "Products", coltype = "Industries") 
+  expected2 <- matrix(c(1, 
+                        4, 
+                        2, 
+                        5, 
+                        3, 
+                        6),
+                      nrow = 6, ncol = 1,
+                      dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2", "p1 -> i3", "p2 -> i3"))) %>% 
+    setrowtype("Products -> Industries") %>% setcoltype(NULL)
+  actual2 <- vectorize_byname(m2, notation = RCLabels::arrow_notation)
+  matsbyname:::expect_equal_matrix_or_Matrix(actual2, expected2)
+  
+  # Test with a Matrix that is already a column vector
+  m5 <- matsbyname::Matrix(c(1,
+                             2,
+                             3),
+                           nrow = 3, ncol = 1,
+                           dimnames = list(c("p1", "p2", "p3"), "i1"), 
+                           rowtype = "Products", coltype = "Industries")
+  actual5 <- vectorize_byname(m5, notation = RCLabels::notation_vec(sep = "***"))
+  expected5 <- matrix(c(1,
+                        2,
+                        3),
+                      nrow = 3, ncol = 1,
+                      dimnames = list(c("p1***i1", "p2***i1", "p3***i1"))) %>% 
+    setrowtype("Products***Industries") %>% setcoltype(NULL)
+  matsbyname:::expect_equal_matrix_or_Matrix(actual5, expected5)
+})
+
+
+test_that("matricize_byname() works as expected", {
   v1 <- array(dim = c(2, 2, 2))
   expect_error(matricize_byname(v1, notation = RCLabels::arrow_notation), "== 2 in matricize_byname")
 
@@ -718,7 +1006,25 @@ test_that("matricize_byname works as expected", {
 })
 
 
-test_that("vectorize and matricize are inverses of each other", {
+test_that("matricize_byname() works with Matrix objects", {
+  # Try with a column vector that is a Matrix object
+  v2 <- matsbyname::Matrix(c(1,
+                             2,
+                             3, 
+                             4), 
+                           nrow = 4, ncol = 1, dimnames = list(c("p1 -> i1", "p2 -> i1", "p1 -> i2", "p2 -> i2"), NULL), 
+                           rowtype = "Products -> Industries")
+  actual2 <- matricize_byname(v2, notation = RCLabels::arrow_notation)
+  expected2 <- matrix(c(1, 3,
+                        2, 4),
+                      nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  matsbyname:::expect_equal_matrix_or_Matrix(actual2, expected2)
+  expect_true(is.Matrix(actual2))
+})
+
+
+test_that("vectorize_byname() and matricize_byname() are inverses of each other", {
   m1 <- matrix(c(1, 2, 
                  3, 4, 
                  5, 6),
@@ -727,18 +1033,26 @@ test_that("vectorize and matricize are inverses of each other", {
   v1 <- vectorize_byname(m1, notation = RCLabels::arrow_notation)
   m2 <- matricize_byname(v1, notation = RCLabels::arrow_notation)
   expect_equal(m2, m1)
-  # Do a regular transpose here (t), because transpose_byname() switches rowtype and coltype.
   v3 <- transpose_byname(v1)
   m4 <- matricize_byname(v3, notation = RCLabels::arrow_notation)
   expect_equal(m4, m1)
+  
+  # Try with a Matrix object.
+  M1 <- matrix(c(1, 2, 
+                 3, 4, 
+                 5, 6),
+               nrow = 3, ncol = 2, byrow = TRUE, dimnames = list(c("p1", "p2", "p3"), c("i1", "i2"))) %>% 
+    setrowtype("Products") %>% setcoltype("Industries")
+  V1 <- vectorize_byname(M1, notation = RCLabels::arrow_notation)
+  M2 <- matricize_byname(V1, notation = RCLabels::arrow_notation)
+  expect_equal(M2, M1)
+  V3 <- transpose_byname(V1)
+  M4 <- matricize_byname(V3, notation = RCLabels::arrow_notation)
+  expect_equal(M4, M1)
 })
 
 
-###########################################################
-context("Fractionize")
-###########################################################
-
-test_that("fractionze_byname works as expected", {
+test_that("fractionze_byname() works as expected", {
   M <- matrix(c(1, 5,
                 4, 5),
               nrow = 2, ncol = 2, byrow = TRUE, 
@@ -774,7 +1088,7 @@ test_that("fractionze_byname works as expected", {
   expect_equal(fractionize_byname(2, margin = 1), 1) 
   expect_equal(fractionize_byname(-1, margin = 2), 1) 
   expect_equal(fractionize_byname(-5000, margin = c(1,2)), 1) 
-  expect_true(is.nan(fractionize_byname(0, margin = 1)))
+  expect_equal(fractionize_byname(0, margin = 1), .Machine$double.xmax)
   
   # Test dividing by row sums
   expect_equal(fractionize_byname(M, margin = 1), expectedM_rows)
@@ -822,7 +1136,7 @@ test_that("fractionze_byname works as expected", {
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
   # Verify that the zero column now works and gives NaNs.
-  expect_equal(fractionize_byname(Mzerocol, margin = 2), 
+  expect_equal(fractionize_byname(Mzerocol, margin = 2, inf_becomes = Inf), 
                matrix(c(1/3, 0/0,
                         2/3, 0/0), 
                       nrow = 2, ncol = 2, byrow = TRUE,
@@ -844,7 +1158,7 @@ test_that("fractionze_byname works as expected", {
                         1/3, 2/3),
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
-  expect_equal(fractionize_byname(Mzerorow, margin = 1), 
+  expect_equal(fractionize_byname(Mzerorow, margin = 1, inf_becomes = NaN), 
                matrix(c(0/0, 0/0,
                         1/3, 2/3),
                       nrow = 2, ncol = 2, byrow = TRUE,
@@ -860,12 +1174,12 @@ test_that("fractionze_byname works as expected", {
                     0, 0),
                   nrow = 2, ncol = 2, byrow = TRUE,
                   dimnames = list(c("p1", "p2"), c("i1", "i2")))
-  expect_equal(fractionize_byname(Mzero, margin = 1), 
+  expect_equal(fractionize_byname(Mzero, margin = 1, inf_becomes = NaN), 
                matrix(c(0/0, 0/0,
                         0/0, 0/0), 
                       nrow = 2, ncol = 2, byrow = TRUE,
                       dimnames = list(c("p1", "p2"), c("i1", "i2"))))
-  expect_equal(fractionize_byname(Mzero, margin = 2), 
+  expect_equal(fractionize_byname(Mzero, margin = 2, inf_becomes = NaN), 
                matrix(c(0/0, 0/0,
                         0/0, 0/0), 
                       nrow = 2, ncol = 2, byrow = TRUE,
@@ -878,177 +1192,51 @@ test_that("fractionze_byname works as expected", {
 })
 
 
-###########################################################
-context("Row selection")
-###########################################################
-
-m_rownames <- paste0("i", 1:4)
-m_colnames <- paste0("p", 1:4)
-m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
-  setrowtype("Industries") %>% setcoltype("Products")
-
-n1 <- setrownames_byname(m, c("a1", "a2", "b1", "b2"))
-n2 <- setcolnames_byname(m, c("a1", "a2", "b1", "b2"))
-
-
-test_that("matrix row selection by name with exact matches (^name$) works as expected", {
-  # Select only the first row (i1)
-  expect_equal(select_rows_byname(m, retain_pattern = "^i1$"), 
-               matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
-                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Try same test using the make_or_pattern utility function.
-  expect_equal(select_rows_byname(m, retain_pattern = RCLabels::make_or_pattern(strings = "i1", pattern_type = "exact")), 
-               matrix(c(seq(1, 13, by = 4)), nrow = 1, dimnames = list(c("i1"), m_colnames)) %>% 
-                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Select rows 1 and 4 (i1, i4)
-  expect_equal(select_rows_byname(m, retain_pattern = "^i1$|^i4$"), 
-               m[c(1, 4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Eliminate row 3 (i3)
-  expect_equal(select_rows_byname(m, remove_pattern = "^i3$"), 
-               m[-3, ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Eliminate rows 1 and 3
-  expect_equal(select_rows_byname(m, remove_pattern = "^i1$|^i3$"), 
-               m[c(-1,-3), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Retain row 4.  Retain has precedence over remove.
-  expect_equal(select_rows_byname(m, retain_pattern = "^i4$", remove_pattern = "^i1$|^i3$|^i4$"), 
-               matrix(c(seq(4, 16, by = 4)), nrow = 1, dimnames = list(c("i4"), m_colnames)) %>% 
-                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Matches nothing.  NULL is returned.
-  expect_null(select_rows_byname(m, retain_pattern = "^x$"))
-  # Matches nothing.  All of m is returned.
-  expect_equal(select_rows_byname(m, remove_pattern = "^x$"), m)
+test_that("fractionize_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(1, 5,
+                            4, 5),
+                          nrow = 2, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                          rowtype = "Products", coltype = "Industries")
+  expectedM_rows <- matsbyname::Matrix(c(1/6, 5/6,
+                                         4/9, 5/9),
+                                       nrow = 2, ncol = 2, byrow = TRUE,
+                                       dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                                       rowtype = "Products", coltype = "Industries")
+  expectedM_cols <- matsbyname::Matrix(c(1/5, 5/10,
+                                         4/5, 5/10),
+                                       nrow = 2, ncol = 2, byrow = TRUE,
+                                       dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                                       rowtype = "Products", coltype = "Industries")
+  expectedM_sumall <- matsbyname::Matrix(c(1/15, 5/15,
+                                           4/15, 5/15),
+                                         nrow = 2, ncol = 2, byrow = TRUE,
+                                         dimnames = list(c("p1", "p2"), c("i1", "i2")), 
+                                         rowtype = "Products", coltype = "Industries")
   
-  # Here is a pathological case where the row name contains ( and ).
-  # ( and ) need to be escaped properly for use in regex.
-  crazymat <- matrix(1, nrow = 2, ncol = 2, 
-                     dimnames = list(c("i (1)", "i (2)"), c("p (1)", "p (2)"))) %>% 
-    setrowtype("Industries") %>% setcoltype("Prodcuts")
-  expect_equal(select_rows_byname(crazymat, retain_pattern = RCLabels::make_or_pattern(strings = "i (1)", pattern_type = "exact")), 
-               matrix(1, nrow = 1, ncol = 2, dimnames = list("i (1)", c("p (1)", "p (2)"))) %>% 
-                 setrowtype(rowtype(crazymat)) %>% setcoltype(coltype(crazymat)))
+  # Test dividing by row sums
+  expect_equal(fractionize_byname(M, margin = 1), expectedM_rows)
+  
+  # Test dividing by column sums
+  expect_equal(fractionize_byname(M, margin = 2), expectedM_cols)
+  
+  # Test dividing by sum of all entries
+  expect_equal(fractionize_byname(M, margin = c(1,2)), expectedM_sumall)
+  expect_equal(fractionize_byname(M, margin = c(2,1)), expectedM_sumall)
 })
 
 
-test_that("matrix row selection by name with inexact matches works as expected", {
-  # Matches first two rows, because partial match is OK.
-  expect_equal(select_rows_byname(n1, retain_pattern = "^a"), 
-               n1[c(1,2), ] %>% setrowtype(rowtype(n1)) %>% setcoltype(coltype(n1)))
-  # Deletes first two rows, because partial match is OK, and first two row names start with "a".
-  expect_equal(select_rows_byname(n1, remove_pattern = "^a"), 
-               n1[c(3,4), ] %>% setrowtype(rowtype(n1)) %>% setcoltype(coltype(n1)))
+test_that("fractionize_byname() works with a single number 0", {
+  expect_equal(fractionize_byname(0, margin = c(1, 2)), .Machine$double.xmax)
 })
 
-
-test_that("matrix row selection by name with inexact matches and multiple selectors", {
-  # The retain_pattern selects all rows whose names start with "a" or "b".
-  # This approach should retain rows with names "a1", "a2", "b1", and "b2", i.e.,
-  # all rows in n1.
-  expect_equal(select_rows_byname(n1, retain_pattern = "^a|^b"), n1)
-})
-
-
-test_that("matrix row selection by name in lists works as expected", {
-  # Use same row names for each item in the list
-  expect_equal(select_rows_byname(list(m,m), retain_pattern = "^i1$|^i4$"),
-               list(m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
-                    m[c(1,4), ] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
-  # Using data frames
-  DF <- data.frame(m = I(list()))
-  DF[[1,"m"]] <- m
-  DF[[2,"m"]] <- m
-  DF <- DF %>% dplyr::mutate(trimmed = select_rows_byname(.$m, 
-                                                   retain_pattern = RCLabels::make_or_pattern(strings = c("i1", "i2"), 
-                                                                                 pattern_type = "exact")))
-  DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
-  DF_expected[[1,"m"]] <- m
-  DF_expected[[2,"m"]] <- m
-  DF_expected[[1,"trimmed"]] <- select_rows_byname(m, retain_pattern = "^i1$|^i2$")
-  DF_expected[[2,"trimmed"]] <- select_rows_byname(m, retain_pattern = "^i1$|^i2$")
-  # Need to use "expect_equivalent" because attributes are different 
-  # because DF_expected was made differently from how the mutated data fram was made.
-  expect_equivalent(DF, DF_expected)
-})
-
-
-###########################################################
-context("Column selection")
-###########################################################
-
-test_that("matrix column selection by name with exact matches (^name$) works as expected", {
-  # Select only the first column (p1)
-  expect_equal(select_cols_byname(m, retain_pattern = "^p1$"), 
-               matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
-                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Try same test using the make_or_pattern utility function.
-  expect_equal(select_cols_byname(m, retain_pattern = RCLabels::make_or_pattern(strings = "p1", pattern_type = "exact")), 
-               matrix(1:4, ncol = 1, dimnames = list(m_rownames, c("p1"))) %>% 
-                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Select columns 1 and 4 (p1, p4)
-  expect_equal(select_cols_byname(m, retain_pattern = "^p1$|^p4$"), 
-               m[ , c(1, 4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Eliminate column 3 (p3)
-  expect_equal(select_cols_byname(m, remove_pattern = "^p3$"), 
-               m[ , -3] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Eliminate columns 1 and 3
-  expect_equal(select_cols_byname(m, remove_pattern = "^p1$|^p3$"), 
-               m[ , c(-1,-3)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Retain column 4.  Retain has precedence over remove.
-  expect_equal(select_cols_byname(m, retain_pattern = "^p4$", remove_pattern = "^p1$|^p3$|^p4$"), 
-               matrix(13:16, ncol = 1, dimnames = list(m_rownames, c("p4"))) %>% 
-                 setrowtype(rowtype(m)) %>% setcoltype(coltype(m)))
-  # Matches nothing.  NULL is returned.
-  expect_null(select_cols_byname(m, retain_pattern = "^x$"))
-  # Matches nothing.  All of m is returned.
-  expect_equal(select_cols_byname(m, remove_pattern = "^x$"), m)
-})
-
-
-test_that("matrix column selection by name with inexact matches works as expected", {
-  # Matches first two columns, because partial match is OK.
-  expect_equal(select_cols_byname(n2, retain_pattern = "^a"), 
-               n2[ , c(1,2)] %>% setrowtype(rowtype(n2)) %>% setcoltype(coltype(n2)))
-  # Deletes first two columns, because partial match is OK, and first two column names start with "a".
-  expect_equal(select_cols_byname(n2, remove_pattern = "^a"), 
-               n2[ , c(3,4)] %>% setrowtype(rowtype(n2)) %>% setcoltype(coltype(n2)))
-})
-
-
-test_that("matrix column selection by name with inexact matches and multiple selectors", {
-  # The retain_pattern selects all columns whose names start with "a" or "b".
-  # This approach should retain columns with names "a1", "a2", "b1", and "b2", i.e.,
-  # all columns in n2.
-  expect_equal(select_cols_byname(n2, retain_pattern = "^a|^b"), n2)
-})
-
-
-test_that("matrix column selection by name in lists works as expected", {
-  # Use same column names for each item in the list
-  expect_equal(select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$"),
-               list(m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m)), 
-                    m[ , c(1,4)] %>% setrowtype(rowtype(m)) %>% setcoltype(coltype(m))))
-  # Using data frames
-  DF <- data.frame(m = I(list()))
-  DF[[1,"m"]] <- m
-  DF[[2,"m"]] <- m
-  DF <- DF %>% dplyr::mutate(trimmed = select_cols_byname(.$m, 
-                                                   retain_pattern = RCLabels::make_or_pattern(strings = c("p1", "p2"), 
-                                                                                 pattern_type = "exact")))
-  DF_expected <- data.frame(m = I(list()), trimmed = I(list()))
-  DF_expected[[1,"m"]] <- m
-  DF_expected[[2,"m"]] <- m
-  DF_expected[[1,"trimmed"]] <- select_cols_byname(m, retain_pattern = "^p1$|^p2$")
-  DF_expected[[2,"trimmed"]] <- select_cols_byname(m, retain_pattern = "^p1$|^p2$")
-  # Need to use "expect_equivalent" because attributes are different 
-  # because DF_expected was made differently from how the mutated data fram was made.
-  expect_equivalent(DF, DF_expected)
-})
-
-
-###########################################################
-context("Row, column, and all sums")
-###########################################################
 
 test_that("rowsums_byname() works as expected", {
+  m_rownames <- paste0("i", 1:4)
+  m_colnames <- paste0("p", 1:4)
+  m <- matrix(1:16, ncol = 4, dimnames = list(m_rownames, m_colnames)) %>%
+    setrowtype("Industries") %>% setcoltype("Products")
+  
   expect_error(rowsums_byname("bogus"), "Unknown type for 'a' in rowsums_byname")
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
@@ -1088,6 +1276,19 @@ test_that("rowsums_byname() works with single numbers and matrices", {
   expect_equal(rowsums_byname(matrix(1)), matrix(1))
   expect_equal(rowsums_byname(list(1, 42)), list(1, 42))
   expect_equal(rowsums_byname(list(matrix(c(1, 42)), matrix(c(2, 43)))), list(matrix(c(1, 42)), matrix(c(2, 43))))
+})
+
+
+test_that("rowsums_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2)), 
+                          rowtype = "Industries", coltype = "Products")
+  # Note, columns are sorted by name after rowsums_byname()
+  rowsumsM_expected <- matrix(c(9, 7, 5), nrow = 3, ncol = 1, dimnames = list(paste0("i", 1:3), coltype(M))) %>% 
+    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  res <- rowsums_byname(M)
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, rowsumsM_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(rowsums_byname(M, "E.ktoe"), rowsumsM_expected %>% setcolnames_byname("E.ktoe"))
 })
 
 
@@ -1133,6 +1334,18 @@ test_that("colsums_byname() works with single numbers and matrices", {
 })
 
 
+test_that("colsums_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2)), 
+                          rowtype = "Industries", coltype = "Products")
+  colsumsM_expected <- matrix(c(6, 15), nrow = 1, dimnames = list(rowtype(M), colnames(M))) %>% 
+    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  res <- colsums_byname(M)
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, colsumsM_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(colsums_byname(M, "E.ktoe"), colsumsM_expected %>% setrownames_byname("E.ktoe"))
+})
+
+
 test_that("sumall_byname() works as expected", {
   expect_error(sumall_byname("bogus"), "Unknown type for 'a' in sumall_byname")
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
@@ -1169,6 +1382,17 @@ test_that("sumall_byname() works for single numbers", {
 })
 
 
+test_that("sumall_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2)), 
+                          rowtype = "Industry", coltype = "Commodity")
+  res <- sumall_byname(M)
+  expect_equal(res, 8)
+  matsbyname:::expect_equal_matrix_or_Matrix(M %>% rowsums_byname %>% colsums_byname, 
+               matrix(8, nrow = 1, ncol = 1, dimnames = list(rowtype(M), coltype(M))) %>% 
+                 setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+})
+
+
 test_that("sum_byname() and sumall_byname() behave same with NULL", {
   expect_equal(sum_byname(0, 0), 0)
   expect_equal(sum_byname(1, 0), 1)
@@ -1191,11 +1415,7 @@ test_that("sum_byname() and sumall_byname() behave same with NULL", {
 })
 
 
-###########################################################
-context("Row, column, and all prods")
-###########################################################
-
-test_that("rowprods_byname works as expected", {
+test_that("rowprods_byname() works as expected", {
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   # Note, columns are sorted by name after rowprods_byname
@@ -1227,7 +1447,20 @@ test_that("rowprods_byname works as expected", {
 })
 
 
-test_that("colprods_byname works as expected", {
+test_that("rowprods_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2)), 
+                          rowtype = "Industries", coltype = "Products")
+  # Note, columns are sorted by name after rowprods_byname
+  rowprodsM_expected <- matrix(c(18, 10, 4), nrow = 3, dimnames = list(paste0("i", 1:3), coltype(M))) %>% 
+    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  res <- rowprods_byname(M)
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, rowprodsM_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(rowprods_byname(M, "E.ktoe"), rowprodsM_expected %>% setcolnames_byname("E.ktoe"))
+})
+
+
+test_that("colprods_byname() works as expected", {
   m <- matrix(c(1:6), ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   colprodsm_expected <- matrix(c(6, 120), nrow = 1, dimnames = list(rowtype(m), colnames(m))) %>% 
@@ -1258,7 +1491,19 @@ test_that("colprods_byname works as expected", {
 })
 
 
-test_that("prodall_byname works as expected", {
+test_that("colprods_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(1:6), nrow = 3, ncol = 2, dimnames = list(paste0("i", 3:1), paste0("p", 1:2)), 
+                          rowtype = "Industries", coltype = "Products")
+  colprodsM_expected <- matrix(c(6, 120), nrow = 1, dimnames = list(rowtype(M), colnames(M))) %>% 
+    setrowtype(rowtype(M)) %>% setcoltype(coltype(M))
+  res <- colprods_byname(M)
+  expect_true(is.Matrix(M))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, colprodsM_expected)
+  matsbyname:::expect_equal_matrix_or_Matrix(colprods_byname(M, "E.ktoe"), colprodsM_expected %>% setrownames_byname("E.ktoe"))
+})
+
+
+test_that("prodall_byname() works as expected", {
   m <- matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2))) %>%
     setrowtype("Industry") %>% setcoltype("Product")
   expect_equal(prodall_byname(m), 16)
@@ -1285,11 +1530,17 @@ test_that("prodall_byname works as expected", {
 })
 
 
-###########################################################
-context("Iminus")
-###########################################################
+test_that("prodall_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(2, nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2)), 
+                          rowtype = "Industry", coltype = "Product")
+  expect_equal(prodall_byname(M), 16)
+  matsbyname:::expect_equal_matrix_or_Matrix(M %>% rowprods_byname() %>% colprods_byname(), 
+                                             matrix(16, nrow = 1, ncol = 1, dimnames = list(rowtype(M), coltype(M))) %>% 
+                                               setrowtype(rowtype(M)) %>% setcoltype(coltype(M)))
+})
 
-test_that("Iminus_byname works as expected", {
+
+test_that("Iminus_byname() works as expected", {
   m <- matrix(c(-21, -12, -21, -10), ncol = 2, dimnames = list(c("b", "a"), c("b", "a"))) %>%
     setrowtype("Industries") %>% setcoltype("Products")
   Iminus_expected <- matrix(c(11, 12, 
@@ -1332,11 +1583,23 @@ test_that("Iminus_byname works as expected", {
 })
 
 
-###########################################################
-context("Matrix cleaning")
-###########################################################
+test_that("iminus_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(-21, -12, -21, -10), nrow = 2, ncol = 2, dimnames = list(c("b", "a"), c("b", "a")), 
+                          rowtype = "Industries", coltype = "Products")
+  Iminus_expected <- matsbyname::Matrix(c(11, 12, 
+                                          21, 22),
+                                        nrow = 2, ncol = 2, byrow = TRUE, dimnames = list(c("a", "b"), c("a", "b")), 
+                                        rowtype = rowtype(M), coltype = coltype(M))
+  # Rows and columns of m are unsorted
+  expect_equal(matsbyname::Matrix(diag(1, nrow = 2, ncol = 2) - M), matsbyname::Matrix(c(22, 12, 21, 11), nrow = 2, ncol = 2))
+  # Rows and columns of m are sorted prior to subtracting from the identity matrix
+  expect_equal(Iminus_byname(M), Iminus_expected)
+  # This also works with lists
+  expect_equal(Iminus_byname(list(M, M)), list(Iminus_expected, Iminus_expected))
+})
 
-test_that("matrix cleaning works as expected", {
+
+test_that("clean_byname() works as expected", {
   # Clean on rows
   mat1 <- matrix(c(0,1,0,1), nrow = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)"))) %>% 
     setrowtype("Rows") %>% setcoltype("Cols")
@@ -1358,11 +1621,38 @@ test_that("matrix cleaning works as expected", {
 })
 
 
-###########################################################
-context("Cumulative sum")
-###########################################################
+test_that("clean_byname() works as expected for Matrix objects", {
+  Mat1 <- matsbyname::Matrix(c(0,1,0,1), nrow = 2, ncol = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)")), 
+                             rowtype = "Rows", coltype = "Cols")
+  # Now clean in rows Should eliminate row 1.
+  res1 <- Mat1 %>% 
+    clean_byname(margin = 1, clean_value = 0)
+  expect_true(is.Matrix(res1))
+  matsbyname:::expect_equal_matrix_or_Matrix(res1, 
+                                             matrix(1, nrow = 1, ncol = 2, dimnames = list("r (2)", c("c (1)", "c (2)"))) %>% 
+                                               setrowtype("Rows") %>% setcoltype("Cols"))
+  # No column consists of all zeroes. So nothing to clean in columns Should get "mat1" back.
+  matsbyname:::expect_equal_matrix_or_Matrix(Mat1 %>% 
+                                               clean_byname(margin = 2, clean_value = 0), 
+                                             Mat1)
+  # Clean on columns
+  Mat2 <- matsbyname::Matrix(c(0,0,1,1), nrow = 2, ncol = 2, dimnames = list(c("r (1)", "r (2)"), c("c (1)", "c (2)")), 
+                             rowtype = "Rows", coltype = "Cols")
+  res2 <- Mat2 %>% 
+    clean_byname(margin = 1, clean_value = 0)
+  # No row consists of all zeroes. So nothing to clean in rows. Should get "mat2" back.
+  matsbyname:::expect_equal_matrix_or_Matrix(res2, Mat2)
+  # Now clean in columns. Should eliminate column 1.
+  res3 <- Mat2 %>%
+    clean_byname(margin = 2, clean_value = 0)
+  expect_true(is.Matrix(res3))
+  matsbyname:::expect_equal_matrix_or_Matrix(res3, 
+                                             matrix(1, nrow = 2, ncol = 1, dimnames = list(c("r (1)", "r (2)"), "c (2)")) %>% 
+                                               setrowtype("Rows") %>% setcoltype("Cols"))
+})
 
-test_that("cumsum_byname works as expected", {
+
+test_that("cumsum_byname() works as expected", {
   expect_null(cumsum_byname(NULL))
   expect_true(is.na(cumsum_byname(NA)))
   expect_equal(cumsum_byname(2), 2)
@@ -1412,11 +1702,22 @@ test_that("cumsum_byname works as expected", {
 })
 
 
-###########################################################
-context("Cumulative product")
-###########################################################
+test_that("cumsum_byname() works with Matrix objects", {
+  rowmat <- matsbyname::Matrix(c(1, 2, 3), nrow = 1, ncol = 3)
+  expect_equal(cumsum_byname(rowmat), rowmat)
+  
+  # Test in a list
+  expect_equal(cumsum_byname(list(rowmat, rowmat, rowmat)), list(rowmat, 2*rowmat, 3*rowmat))
+  # Test in a data frame
+  DF2 <- data.frame(m = I(list(rowmat, rowmat, rowmat))) %>% 
+    dplyr::mutate(
+      m2 = cumsum_byname(m)
+    )
+  expect_equal(DF2$m2, list(rowmat, 2*rowmat, 3*rowmat))
+})
 
-test_that("cumprod_byname works as expected", {
+
+test_that("cumprod_byname() works as expected", {
   expect_null(cumprod_byname(NULL))
   expect_true(is.na(cumprod_byname(NA)))
   expect_equal(cumprod_byname(2), 2)
@@ -1454,7 +1755,7 @@ test_that("cumprod_byname works as expected", {
   m3 <- matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3")) %>%
     setrowtype("row") %>% setcoltype("col")
   mlist <- list(m1, m2, m3)
-  expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2) %>% sum_byname(m3)) * 0)
+  expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2, m3)) * 0)
   expect_equal(cumprod_byname(mlist), expected)
 
   # Ensure that groups are respected in the context of mutate.
@@ -1468,12 +1769,36 @@ test_that("cumprod_byname works as expected", {
 })
 
 
-###########################################################
-context("Replace NaN")
-###########################################################
+test_that("cumprod_byname() works with Matrix objects", {
+  # Try with matrices
+  rowmat <- matsbyname::Matrix(c(1, 2, 3), nrow = 1, ncol = 3)
+  expect_equal(cumprod_byname(rowmat), rowmat)
+  # Test in a list
+  expected_powers <- list(rowmat, rowmat*rowmat, rowmat*rowmat*rowmat)
+  expect_equal(cumprod_byname(list(rowmat, rowmat, rowmat)), expected_powers)
+  # Test in a data frame
+  DF2 <- data.frame(m = I(list(rowmat, rowmat, rowmat))) %>%
+    dplyr::mutate(
+      m2 = cumprod_byname(m)
+    )
+  expect_equal(DF2$m2, expected_powers)
+  # Test with a matrix that will take advantage of the "by name" aspect of sum_byname
+  m1 <- matsbyname::Matrix(c(1), nrow = 1, ncol = 1, dimnames = list("r1", "c1"), rowtype = "row", coltype = "col")
+  m2 <- matsbyname::Matrix(c(2), nrow = 1, ncol = 1, dimnames = list("r2", "c2"), rowtype = "row", coltype = "col")
+  m3 <- matsbyname::Matrix(c(3), nrow = 1, ncol = 1, dimnames = list("r3", "c3"), rowtype = "row", coltype = "col")
+  mlist <- list(m1, m2, m3)
+  res <- cumprod_byname(mlist)
+  expected <- list(m1, sum_byname(m1, m2) * 0, (sum_byname(m1, m2, m3)) * 0)
 
-test_that("replaceNaN works as expected", {
-  expected <- matrix(c(1,0))
+  for (i in 1:3) {
+    expect_true(is.Matrix(res[[i]]))
+    matsbyname:::expect_equal_matrix_or_Matrix(res[[i]], expected[[i]])
+  }
+})
+
+
+test_that("replaceNaN() works as expected", {
+  expected <- matrix(c(1, 0))
   suppressWarnings(a <- matrix(c(1, sqrt(-1))))
   expect_equal(replaceNaN_byname(a), expected)
   # Should work with lists
@@ -1483,11 +1808,31 @@ test_that("replaceNaN works as expected", {
 })
 
 
-###########################################################
-context("Counting values")
-###########################################################
+test_that("replaceNaN_byname() works with Matrix objects", {
+  suppressWarnings(a <- matsbyname::Matrix(c(1, 
+                                             sqrt(-1)), byrow = TRUE,
+                                           nrow = 2, ncol = 1,
+                                           dimnames <- list(c("r1", "r2"), "c1"), 
+                                           rowtype = "row", coltype = "col"))
+  expected <- matsbyname::Matrix(c(1, 
+                                   0), byrow = TRUE, 
+                                 nrow = 2, ncol = 1, 
+                                 dimnames <- list(c("r1", "r2"), "c1"), 
+                                 rowtype = "row", coltype = "col")
+  expect_equal(replaceNaN_byname(a), expected)
+  # Should work with lists
+  expect_equal(replaceNaN_byname(list(a,a)), list(expected, expected))
+  # Try with a different value
+  expect_equal(replaceNaN_byname(a, 42),
+               matsbyname::Matrix(c(1, 
+                                    42), byrow = TRUE, 
+                                  nrow = 2, ncol = 1, 
+                                  dimnames <- list(c("r1", "r2"), "c1"), 
+                                  coltype = "col", rowtype = "row"))
+})
 
-test_that("count_vals_byname works as expected", {
+
+test_that("count_vals_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   expect_equal(count_vals_byname(m), 2)
@@ -1507,15 +1852,44 @@ test_that("count_vals_byname works as expected", {
 })
 
 
-test_that("compare_byname works as expected", {
+test_that("count_vals_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  expect_equal(count_vals_byname(m), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = `==`, 0), 2)
+  expect_equal(count_vals_byname(m, "==", 0), 2)
+  expect_equal(count_vals_byname(m, compare_fun = "!="), 4)
+  expect_equal(count_vals_byname(m, compare_fun = `!=`), 4)
+  expect_equal(count_vals_byname(m, "<", 1), 2)
+  expect_equal(count_vals_byname(m, "<=", 1), 3)
+  expect_equal(count_vals_byname(m, ">=", 3), 2)
+  expect_equal(count_vals_byname(m, ">", 4), 0)
+  expect_equal(count_vals_byname(m, `>`, 4), 0)
+  # Should also work for lists
+  l <- list(m, m)
+  expect_equal(count_vals_byname(l, `>`, 4), list(0, 0))
+})
+
+
+test_that("compare_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   expect_equal(compare_byname(m), matrix(c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
   expect_equal(compare_byname(m, "<", 3), 
                matrix(c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
 })
-  
-  
-test_that("count_vals_inrows_byname works as expected", {
+
+
+test_that("compare_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  matsbyname:::expect_equal_matrix_or_Matrix(compare_byname(m), 
+                                             matsbyname::Matrix(c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
+  expect_equal(compare_byname(m, "<", 3), 
+               matsbyname::Matrix(c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE), nrow = 3, ncol = 2))
+})
+
+
+test_that("count_vals_inrows_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   expect_equal(count_vals_inrows_byname(m), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
@@ -1536,7 +1910,29 @@ test_that("count_vals_inrows_byname works as expected", {
 })
 
 
-test_that("count_vals_incols_byname works as expected", {
+test_that("count_vals_inrows_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m), 
+                                             matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, compare_fun = "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, compare_fun = `==`, 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, "==", 0), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, compare_fun = "!="), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, compare_fun = `!=`), matrix(c(1, 2, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, "<", 1), matrix(c(1, 0, 1), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, "<=", 1), matrix(1, nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, ">=", 3), matrix(c(1, 1, 0), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, ">", 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_inrows_byname(m, `>`, 4), matrix(c(0, 0, 0), nrow = 3, ncol = 1))
+  # Should also work for lists
+  l <- list(m, m)
+  ans <- matrix(c(0, 0, 0), nrow = 3, ncol = 1)
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, count_vals_inrows_byname(l, `>`, 4), list(ans, ans))
+})
+
+
+test_that("count_vals_incols_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality
   expect_equal(count_vals_incols_byname(m), matrix(c(1, 1), nrow = 1, ncol = 2))
@@ -1557,11 +1953,28 @@ test_that("count_vals_incols_byname works as expected", {
 })
 
 
-###########################################################
-context("Any")
-###########################################################
+test_that("count_vals_incols_byname() works with Matrix objects", {
+  M <- matsbyname::Matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
+  # By default, looks for 0's and checks for equality
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, compare_fun = "==", 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, compare_fun = `==`, 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, "==", 0), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, compare_fun = "!="), matrix(c(2, 2), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, compare_fun = `!=`), matrix(c(2, 2), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, "<", 1), matrix(c(1, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, "<=", 1), matrix(c(2, 1), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, ">=", 3), matrix(c(0, 2), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, ">", 4), matrix(c(0, 0), nrow = 1, ncol = 2))
+  matsbyname:::expect_equal_matrix_or_Matrix(count_vals_incols_byname(M, `>`, 4), matrix(c(0, 0), nrow = 1, ncol = 2))
+  # Should also work for lists
+  l <- list(M, M)
+  ans <- matrix(c(0, 2), nrow = 1, ncol = 2)
+  Map(f = matsbyname:::expect_equal_matrix_or_Matrix, count_vals_incols_byname(l, `>`, 2), list(ans, ans))
+})
+  
 
-test_that("any_byname works as expected", {
+test_that("any_byname() works as expected", {
   m <- matrix(rep(TRUE, times = 4), nrow = 2, ncol = 2)
   expect_true(all_byname(m))
   expect_true(any_byname(m))
@@ -1575,13 +1988,25 @@ test_that("any_byname works as expected", {
   expect_equal(any_byname(list(m,m)), list(TRUE, TRUE))
   expect_equal(all_byname(list(n,n)), list(FALSE, FALSE))
   expect_equal(any_byname(list(n,n)), list(TRUE, TRUE))
-  
 })
 
 
-###########################################################
-context("Rename")
-###########################################################
+test_that("any_byname() works as expected with Matrix objexts", {
+  M <- matsbyname::Matrix(rep(TRUE, times = 4), nrow = 2, ncol = 2)
+  expect_true(all_byname(M))
+  expect_true(any_byname(M))
+  
+  N <- matsbyname::Matrix(c(TRUE, FALSE), nrow = 2, ncol = 1)
+  expect_false(all_byname(N))
+  expect_true(any_byname(N))
+  
+  # Also works for lists
+  expect_equal(all_byname(list(M, M)), list(TRUE, TRUE))
+  expect_equal(any_byname(list(M, M)), list(TRUE, TRUE))
+  expect_equal(all_byname(list(N, N)), list(FALSE, FALSE))
+  expect_equal(any_byname(list(N, N)), list(TRUE, TRUE))
+})
+
 
 test_that("rename_to_pref_suff_byname() works as expected", {
   m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
@@ -1593,401 +2018,13 @@ test_that("rename_to_pref_suff_byname() works as expected", {
 })
 
 
-test_that("aggregate_byname() works as expected", {
-  m <- matrix(1:9, nrow = 3, byrow = TRUE,
-              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
-  expected <- matrix(c(5, 7, 9,
-                       7, 8, 9), nrow = 2, byrow = TRUE,
-                     dimnames = list(c("a", "r3"), c("c1", "c2", "c3")))
-  actual <- aggregate_byname(m, aggregation_map = list(a = c("r1", "r2")))
-  expect_equal(actual, expected)
-  
-  # Try with wrong margin.
-  # This will try to aggregate r1 and r2 in columns, but there are no r1 or r2 columns.
-  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r1", "r2")), margin = 2), m)
-  
-  # Try to aggregate with only 1 row.
-  # Should get same thing with a renamed column
-  expected <- m
-  dimnames(expected) <- list(c("r1", "a", "r3"), c("c1", "c2", "c3"))
-  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r2")), margin = 1) %>% sort_rows_cols(margin = 1, roworder = dimnames(expected)[[1]]), expected)
-  
-  # Aggregate with a map that contains rows that don't exist.
-  expect_equal(aggregate_byname(m, aggregation_map = list(a = c("r4", "r5", "42", "supercalifragilisticexpialidocious")), margin = 1), m)
-})
-
-
-test_that("aggregate_byname() works as expected for NULL aggregation_map", {
-  m <- matrix(1:9, nrow = 3, byrow = TRUE,
-              dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
-  expected <- matrix(c(11, 13, 15,
-                       1, 2, 3), nrow = 2, byrow = TRUE,
-                     dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
-  # Nothing should change, because we're asking for aggregation by columns which have no repeated names.
-  expect_equal(aggregate_byname(m, margin = 2), m)
-  # Now we should get the expected result
-  expect_equal(aggregate_byname(m, margin = 1), expected)
-  # And, again should get the expected result, because we're asking for margin = c(1, 2), the default
-  expect_equal(aggregate_byname(m), expected)
-  
-  m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  e1 <- m1
-  expect_equal(aggregate_byname(m1), e1)
-  expect_equal(aggregate_byname(list(m1)), list(e1))
-  
-  # Now aggregate on both rows and columns when some names are duplicated in both rows and cols.
-  # First, try to aggregate on rows.
-  m2 <- matrix(1:9, nrow = 3, byrow = TRUE,
-               dimnames = list(c("r1", "a", "a"), c("b", "b", "c3")))
-  expected2 <- matrix(c(11, 13, 15,
-                        1, 2, 3), nrow = 2, byrow = TRUE, dimnames = list(c("a", "r1"), c("b", "b", "c3")))
-  expect_equal(aggregate_byname(m2, margin = 1), expected2)
-  
-  # Now try to aggregate on columns
-  expected3 <- matrix(c(3, 3,
-                        9, 6,
-                        15, 9), nrow = 3, byrow = TRUE, dimnames = list(c("r1", "a", "a"), c("b", "c3")))
-  expect_equal(aggregate_byname(m2, margin = 2), expected3)
-  
-  # Now try to aggregate both rows and columns.
-  expected4 <- matrix(c(24, 15,
-                        3, 3), nrow = 2, byrow = TRUE,
-                      dimnames = list(c("a", "r1"), c("b", "c3")))
-  expect_equal(aggregate_byname(m2), expected4)
-})
-
-
-test_that("aggregate_byname() works as expected for lists", {
-  m <- matrix(1:9, nrow = 3, byrow = TRUE,
-              dimnames = list(c("r1", "a", "a"), c("c1", "c2", "c3")))
-  expected <- matrix(c(11, 13, 15,
-                       1, 2, 3), nrow = 2, byrow = TRUE,
-                     dimnames = list(c("a", "r1"), c("c1", "c2", "c3")))
-  expect_equal(aggregate_byname(list(m, m, m)), list(expected, expected, expected))
-
-  expect_equal(aggregate_byname(list(m, m), margin = list(c(1, 2))), list(expected, expected))
-
-  # Also check that row and column type are preserved
-  m2 <- matrix(1:9, nrow = 3, byrow = TRUE, 
-               dimnames = list(c("b", "a", "a"), c("e", "d", "d"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  expected2 <- matrix(c(28, 11,
-                        5, 1), nrow = 2, byrow = TRUE, 
-                      dimnames = list(c("a", "b"), c("d", "e"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  expect_equal(aggregate_byname(m2), expected2)
-  expect_equal(aggregate_byname(list(m2)), list(expected2))
-  expect_equal(aggregate_byname(list(m2, m2), margin = list(c(1, 2))), list(expected2, expected2))
-  expect_equal(aggregate_byname(list(m2, m2, m2, m2)), list(expected2, expected2, expected2, expected2))
-})
-
-
-test_that("aggregate_byname() works when all rows collapse", {
-  m <- matrix(1:6, byrow = TRUE, nrow = 2, 
-              dimnames = list(c("a", "a"), c("c1", "c2", "c3")))
-  e <- matrix(c(5, 7, 9), byrow = TRUE, nrow = 1, 
-              dimnames = list(c("a"), c("c1", "c2", "c3")))
-  expect_equal(aggregate_byname(m), e)
-})
-
-
-test_that("aggregate_byname() works when aggregating all rows with an aggregation map", {
-  m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
-               dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  e3 <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
-               dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  # Aggregate all rows
-  am <- list(new_row = c("r1", "r2"))
-  a3 <- aggregate_byname(m3, aggregation_map = am, margin = 1)
-  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e3)
-})
-
-
-test_that("aggregate_byname() works as expected in data frames", {
-  m1 <- matrix(42, nrow = 1, dimnames = list(c("r1"), c("c1"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  e1 <- m1
-  m2 <- matrix(1:4, byrow = TRUE, nrow = 2, 
-               dimnames = list(c("a", "a"), c("a", "a")))
-  e2row <- matrix(c(4, 6), byrow = TRUE, nrow = 1, 
-                  dimnames = list(c("a"), c("a", "a")))
-  e2col <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "a"), c("a")))
-  e2both <- matrix(10, nrow = 1,
-               dimnames = list(c("a"), c("a")))
-  m3 <- matrix(1:9, byrow = TRUE, nrow = 3, 
-               dimnames = list(c("r2", "r1", "r1"), c("c2", "c1", "c1"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  e3row <- matrix(c(11, 13, 15, 
-                    1, 2, 3), byrow = TRUE, nrow = 2,
-                  dimnames = list(c("r1", "r2"), c("c2", "c1", "c1"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  e3col <- matrix(c(5, 1, 
-                    11, 4, 
-                    17, 7), byrow = TRUE, nrow = 3, 
-                  dimnames = list(c("r2", "r1", "r1"), c("c1", "c2"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  e3both <- matrix(c(28, 11, 
-                     5, 1), byrow = TRUE, nrow = 2, 
-                   dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  
-  expect_equal(aggregate_byname(m2, margin = 1), e2row)
-  expect_equal(aggregate_byname(m3, margin = 1), e3row)
-  expect_equal(aggregate_byname(m3, margin = c(1, 2)), e3both)
-  
-  DF <- tibble::tibble(m = list(m1, m1, m1, m2, m2, m2, m3, m3, m3), 
-                       margin = list(1, 2, c(1,2), 1, 2, c(1, 2), 1, 2, c(1, 2)), 
-                       expected = list(e1, e1, e1, e2row, e2col, e2both, e3row, e3col, e3both))
-  
-  expect_equal(aggregate_byname(DF$m, margin = DF$margin), DF$expected)
-  
-  res <- DF %>% 
-    dplyr::mutate(
-      actual = aggregate_byname(m, margin = margin), 
-      equal = all.equal(actual, expected)
-    )
-  expect_true(all(res$equal))
-  
-  # Now add an aggregation map
-  am <- list(new_row = c("r1", "r2"))
-  e4row <- matrix(c(12, 15, 18), byrow = TRUE, nrow = 1, 
-                  dimnames = list(c("new_row"), c("c2", "c1", "c1"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  e4col <- m3
-  e4both <- matrix(c(28, 11, 
-                     5, 1), byrow = TRUE, nrow = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
-    setrowtype("rows") %>% setcoltype("cols")
-  
-  expect_equal(aggregate_byname(m3, aggregation_map = am, margin = 1), e4row)
-  # The next call should fail, because we're 
-  # trying to aggregate on columns, but
-  # we're using an aggregation_map designed for rows.
-  # The aggregation fails to produce any changes in the data frame.
-  # When the aggregate_byname function tries to sort the columns, 
-  # it encounters duplicated row names and fails.
-  expect_error(aggregate_byname(m3, aggregation_map = am, margin = 2), "Row names not unique. Duplicated row names are: c1")
-  # The next call should fail, because we're trying to aggregate on both rows and columns (margin = c(1, 2)), but
-  # the aggregation_map only aggregates by rows.
-  # When we try to sum across both margins, 
-  # there is a duplicate name ("c1"), which causes a problem.
-  expect_error(aggregate_byname(m3, aggregation_map = am, margin = c(1, 2)), "Row names not unique. Duplicated row names are: c1")
-  
-  # The next call should work.
-  expect_equal(aggregate_byname(m3), e4both)
-  
-  DF2 <- tibble::tibble(
-    m = list(m3, m3, m3), 
-    margin = list(1, 2, c(1, 2)), 
-    expected = list(e4row, e3col, e4both), 
-    am = list(am, NULL, NULL)
-  )
-  res2 <- DF2 %>% 
-    dplyr::mutate(
-      actual = aggregate_byname(m, margin = margin, aggregation_map = am), 
-      equal = all.equal(actual, expected)
-    )
-  expect_true(all(res2$equal))
-})
-
-
-test_that("aggregate_byname() works when removing multiple rows", {
-  a <- matrix(1:4, nrow = 4, dimnames = list(c("a", "a", "b", "b"), "c1"))
-  e <- matrix(c(3, 7), nrow = 2, dimnames = list(c("a", "b"), "c1"))
-  expect_equal(aggregate_byname(a), e)
-})
-
-
-test_that("aggregate_byname() works when margin is NA", {
-  Y <- matrix(1, nrow = 4, dimnames = list(c("a", "a", "b", "b"), "c1")) %>% 
-    setrowtype("Product") %>% setcoltype("Unit")
-  res <- Y %>% 
-    aggregate_byname(margin = "Industry")
-  expect_equal(res, Y)
-})
-
-
-test_that("aggregate_to_pref_suff_byname() works as expected", {
-  m <- matrix((1:9), byrow = TRUE, nrow = 3, 
-              dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y")))
-  res1 <- aggregate_to_pref_suff_byname(m, keep = "pref", 
-                                        notation = RCLabels::arrow_notation)
-  expected1 <- rename_to_pref_suff_byname(m, keep = "pref", notation = RCLabels::arrow_notation)
-  expect_equal(res1, expected1)
-  # Aggregate by suffixes should do a lot, because several prefixes are same.
-  res2 <- aggregate_to_pref_suff_byname(m, keep = "suff", 
-                                        notation = RCLabels::arrow_notation)
-  expected2 <- m %>% 
-    rename_to_pref_suff_byname(keep = "suff", notation = RCLabels::arrow_notation) %>% 
-    aggregate_byname()
-  expect_equal(res2, expected2)
-})
-
-
-test_that("aggregate_to_pref_suff_byname() works with a column vector", {
-  # Ran into a bug where aggregating a column vector fails.
-  # A column vector should aggregate to itself.
-  # But instead, I get a "subscript out of bounds" error.
-  # This test triggers that bug.
-  #     -- MKH, 23 Nov 2020.
-  m <- matrix(1:4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
-  # This aggregation should simply return m with renamed column
-  res <- aggregate_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
+test_that("rename_to_pref_suff_byname() works with Matrix objects", {
+  m <- matsbyname::Matrix(1:4, nrow = 4, ncol = 1, dimnames = list(letters[1:4], "Product -> Industry"))
+  # This aggregation should simply return m with a renamed column.
+  res <- rename_to_pref_suff_byname(m, keep = "suff", margin = 2, notation = RCLabels::arrow_notation)
   expected <- m %>% 
     magrittr::set_colnames("Industry")
   expect_equal(res, expected)
 })
 
 
-test_that("aggregate_to_pref_suff_byname() handles types correctly", {
-  m <- matrix((1:9), byrow = TRUE, nrow = 3, 
-              dimnames = list(c("r1 -> b", "r2 -> b", "r3 -> a"), c("c1 -> z", "c2 -> y", "c3 -> y"))) %>% 
-    setrowtype("row -> letter") %>% setcoltype("col -> letter")
-  
-  res <- aggregate_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
-  expect_equal(rowtype(res), "letter")
-  expect_equal(coltype(res), "letter")
-})
-
-
-test_that("aggregate_pieces_byname() works as expected", {
-  m <- matrix(c(1, 2, 3, 
-                4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
-              dimnames = list(c("a [from b]", "c [from d]"), 
-                              c("e [from f]", "g [from h]", "i [from j]")))
-  
-  res1 <- m %>%
-    aggregate_pieces_byname(piece = "suff", 
-                            notation = RCLabels::from_notation,
-                            aggregation_map = list(rows = c("b", "d"), 
-                                                   cols = c("h", "j")))
-  
-  expected1 <- matrix(c(16, 5), nrow = 1, ncol = 2, byrow = TRUE, 
-                      dimnames = list("rows", c("cols", "f")))
-  expect_equal(res1, expected1)
-})
-
-
-test_that("aggregate_pieces_byname() works with aggregation by type", {
-  m <- matrix(c(1, 0, 0, 
-                0, 1, 1, 
-                0, 1, 1), nrow = 3, ncol = 3, byrow = TRUE, 
-              dimnames = list(c("Gasoline [from Oil refineries]", 
-                                "Electricity [from Main activity producer electricity plants]", 
-                                "Electricity [from Hydro]"),
-                              c("Automobiles", "LED lamps", "CFL lamps"))) %>%
-    setrowtype("Product") %>% setcoltype("Industry")
-  actual1 <- aggregate_pieces_byname(m, piece = "noun", margin = "Product",
-                                     notation = RCLabels::bracket_notation)
-  expected1 <- matrix(c(0, 2, 2, 
-                        1, 0, 0), nrow = 2, ncol = 3, byrow = TRUE, 
-                      dimnames = list(c("Electricity", "Gasoline"),
-                                      c("Automobiles", "LED lamps", "CFL lamps"))) %>%
-    setrowtype("Product") %>% setcoltype("Industry")
-  expect_equal(actual1, expected1)
-
-  # Try transposed
-  mT <- transpose_byname(m)
-  actual2 <- aggregate_pieces_byname(mT, piece = "noun", margin = "Product", 
-                                     notation = RCLabels::bracket_notation)
-  expected2 <- transpose_byname(expected1)
-  expect_equal(actual2, expected2)
-  
-  # Try in a list
-  actual3 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
-                                     margin = "Product",
-                                     notation = RCLabels::bracket_notation)
-  expected3 <- list(expected1, expected2)
-  expect_equal(actual3, expected3)
-
-  # Try with an aggregation map
-  actual4 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
-                                     margin = "Product",
-                                     aggregation_map = list(list(final = c("Electricity", "Gasoline")),
-                                                            list(final = c("Electricity", "Gasoline"))),
-                                     notation = RCLabels::bracket_notation)
-  expected4 <- matrix(c(1, 2, 2), nrow = 1, ncol = 3, 
-                      dimnames = list("final", c("Automobiles", "LED lamps", "CFL lamps"))) %>%
-    setrowtype("Product") %>% setcoltype("Industry")
-  expect_equal(actual4, list(expected4, transpose_byname(expected4)))
-  
-  # Try with a single aggregation map that is spread to both items in the list.
-  actual5 <- aggregate_pieces_byname(a = list(m, mT), piece = "noun", 
-                                     margin = "Product",
-                                     aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
-                                     notation = RCLabels::bracket_notation)
-  expect_equal(actual5, list(expected4, transpose_byname(expected4)))
-  
-  # Try in a data frame.
-  df <- tibble::tibble(m = list(m, mT)) %>%
-    dplyr::mutate(
-      agg = aggregate_pieces_byname(a = m, 
-                                    piece = "noun",
-                                    margin = "Product", 
-                                    aggregation_map = list(list(final = c("Electricity", "Gasoline"))),
-                                    notation = RCLabels::bracket_notation)
-    )
-  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
-
-
-  # Try in a data frame using columns for arguments.
-  df <- tibble::tibble(m = list(m, mT), 
-                       pce = "noun",
-                       mgn = "Product",
-                       agg_map = list(list(final = c("Electricity", "Gasoline"))),
-                       notn = list(RCLabels::bracket_notation)) %>%
-    dplyr::mutate(
-      agg = aggregate_pieces_byname(a = m, 
-                                    piece = pce, 
-                                    margin = mgn, 
-                                    aggregation_map = agg_map, 
-                                    notation = notn)
-    )
-  expect_equal(df$agg, list(expected4, transpose_byname(expected4)))
-})
-
-
-test_that("aggregate_pieces_byname() works with funny names", {
-  m_pieces <- matrix(c(1, 2, 3,
-                       4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
-                     dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
-                                     c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
-  
-  actual1 <- rename_to_piece_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation)
-  expected1 <- matrix(c(1, 2, 3,
-                        4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
-                      dimnames = list(c("Coal", "Solar"), 
-                                      c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
-  expect_equal(actual1, expected1)
-  
-  
-  actual2 <- aggregate_pieces_byname(m_pieces, piece = "from", margin = 1, notation = RCLabels::bracket_notation, 
-                                     aggregation_map = list(`All sources` = c("Coal", "Solar")))
-  expected2 <- matrix(c(5, 7, 9), nrow = 1, ncol = 3, byrow = TRUE, 
-                      dimnames = list(c("All sources"), 
-                                      c("Motors -> MD", "Cars -> MD", "LED lamps -> Light")))
-  expect_equal(actual2, expected2)  
-})
-
-
-test_that("aggregate_pieces_byname() works when inferring notation", {
-  m <- matrix(c(1, 2, 3, 
-                4, 5, 6, 
-                7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE, 
-              dimnames = list(c("a [from b]", "c [from d]", "e [from d]"), 
-                              c("e [from f]", "g [from h]", "i [from j]")))
-  
-  res1 <- m %>%
-    aggregate_pieces_byname(piece = "suff",
-                            choose_most_specific = TRUE,
-                            aggregation_map = list(rows = "d", 
-                                                   cols = c("h", "j")))
-  
-  expected1 <- matrix(c(5, 1,
-                        28, 11), nrow = 2, ncol = 2, byrow = TRUE, 
-                      dimnames = list(c("b", "rows"), c("cols", "f")))
-  expect_equal(res1, expected1)
-  
-})

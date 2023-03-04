@@ -2,7 +2,7 @@
 % Please edit documentation in R/Unary.R
 \name{svd_byname}
 \alias{svd_byname}
-\title{Calculate the U matrix in singular value decomposition}
+\title{Calculate the singular value decomposition of a matrix}
 \usage{
 svd_byname(a, which = c("d", "u", "v"))
 }

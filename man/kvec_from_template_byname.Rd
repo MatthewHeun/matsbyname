@@ -31,6 +31,9 @@ If \code{column} is \code{TRUE}, the output is a column vector with
 row names taken from row names of \code{a} and a column named by \code{colname}.
 If \code{column} is \code{FALSE}, the output is a row vevtor with
 column names taken from column names of \code{a} and a row named by \code{colname}.
+
+If the class of \code{a} is \code{Matrix}, the output object will be a \code{Matrix}.
+Otherwise, the class of the output object will be a \code{matrix}.
 }
 \examples{
 kvec_from_template_byname(matrix(42, nrow = 4, ncol = 2,

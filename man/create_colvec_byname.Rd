@@ -4,7 +4,12 @@
 \alias{create_colvec_byname}
 \title{Create column vectors from data}
 \usage{
-create_colvec_byname(.dat, dimnames = NA, colname = NA)
+create_colvec_byname(
+  .dat,
+  dimnames = NA,
+  colname = NA,
+  matrix.class = c("matrix", "Matrix")
+)
 }
 \arguments{
 \item{.dat}{Data to be converted to column vectors.}
@@ -13,10 +18,15 @@ create_colvec_byname(.dat, dimnames = NA, colname = NA)
 containing a list of the dimension names to be used for each observation.}
 
 \item{colname}{The name of the column of the colvector.}
+
+\item{matrix.class}{One of "matrix" or "Matrix".
+"matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
+"Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
+Default is "matrix".}
 }
 \value{
 A column vector, a list of column vectors, or a data frame column of column vectors, depending on the
-value of \code{.dat}.
+value of \code{.dat} and \code{class}.
 }
 \description{
 This function takes data in the \code{.dat} and creates column vectors.

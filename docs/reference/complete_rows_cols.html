@@ -16,7 +16,7 @@ fillrow, or fillcol.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@ fillrow, or fillcol.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Complete rows and columns in one matrix relative to another</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/R/CompletingMatrices.R" class="external-link"><code>R/CompletingMatrices.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/R/complete_rows_cols.R" class="external-link"><code>R/complete_rows_cols.R</code></a></small>
       <div class="d-none name"><code>complete_rows_cols.Rd</code></div>
     </div>
 
@@ -85,11 +85,12 @@ with missing data represented by the value for <code>fill</code> (<code>0</code>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>a</dt>
-<dd><p>A matrix or list of matrices to be completed.</p></dd>
+<dd><p>A <code>matrix</code> or list of <code>matrix</code> objects to be completed.
+<code>a</code> can be <code>Matrix</code> objects, too.</p></dd>
 
 
 <dt>mat</dt>
-<dd><p>A matrix from which dimnames will be extracted
+<dd><p>A <code>matrix</code> or <code>Matrix</code> from which dimnames will be extracted
 for the purposes of completing <code>a</code> with respect to <code>mat</code>.</p></dd>
 
 
@@ -125,7 +126,8 @@ for both rows and columns, give <code>c(1,2)</code>, the default value.</p></dd>
     
 
 <p>A modified version of <code>a</code> possibly containing additional rows and columns
-whose names are obtained from <code>mat</code>.</p>
+whose names are obtained from <code>mat</code> and whose values are obtained from
+<code>fillrow</code>, <code>fillcol</code> or <code>fill</code> (in that order of preference).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

@@ -29,8 +29,9 @@
 #' When conflicts arise, precedence among the `fill*` arguments is 
 #' `fillrow` then `fillcol` then `fill`.
 #'
-#' @param a A matrix or list of matrices to be completed. 
-#' @param mat A matrix from which dimnames will be extracted
+#' @param a A `matrix` or list of `matrix` objects to be completed. 
+#'          `a` can be `Matrix` objects, too.
+#' @param mat A `matrix` or `Matrix` from which dimnames will be extracted
 #'            for the purposes of completing `a` with respect to `mat`.
 #' @param fill Rows and columns added to `a` will contain the value `fill`. 
 #'             (Default is `0`.) 
@@ -51,7 +52,8 @@
 #' @export
 #' 
 #' @return A modified version of `a` possibly containing additional rows and columns 
-#'         whose names are obtained from `mat`.
+#'         whose names are obtained from `mat` and whose values are obtained from
+#'         `fillrow`, `fillcol` or `fill` (in that order of preference).
 #' 
 #' @examples
 #' m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
@@ -97,12 +99,12 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
                                margin = c(1,2)){
   
   if (is.null(a) & is.null(mat)) {
-    stop("Both a and mat are NULL in complete_rows_cols.")
+    stop("Both a and mat are NULL in complete_rows_cols().")
   }
   if (is.data.frame(a)) {
-    stop("a cannot be a data frame in complete_rows_cols.")
+    stop("a cannot be a data frame in complete_rows_cols().")
   }
-  if (is.list(a) & !is.data.frame(a) & !is.matrix(a)) {
+  if (is.list(a) & !is.data.frame(a) & !is_matrix_or_Matrix(a)) {
     # Assume we have a list of matrices for a, not a single matrix.
     # Double-check that we have what we need in the mat argument.
     if (is.null(mat)) {
@@ -111,12 +113,12 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
       # Make a list of same length as the list of a.
       # Each value is NA.
       mat <- RCLabels::make_list(NULL, length(a))
-    } else if (is.matrix(mat)) {
+    } else if (is_matrix_or_Matrix(mat)) {
       # We have a single matrix for matrix.
       # Duplicate it to be a list with same length as a.
       mat <- RCLabels::make_list(mat, length(a))
     }
-  } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is.matrix(mat)) {
+  } else if (is.null(a) & is.list(mat) & !is.data.frame(mat) & !is_matrix_or_Matrix(mat)) {
     # a is NULL, and assume we have a list of matrices in the mat argument.
     # Under these conditions, we return matrices with same row and column names as each mat, but
     # filled with the "fill" value.
@@ -124,7 +126,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     a = RCLabels::make_list(NULL, length(mat))
     margin <- RCLabels::make_list(margin, length(mat), lenx = 1)
   }
-
+  
   # Double-check that we have what we need for the margin argument.
   margin <- prep_vector_arg(a, margin)
   
@@ -132,40 +134,54 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     # When we get here, we should not have lists for any of the arguments.
     # We should have single matrices for a and/or matrix. 
     
+    dimnamesa <- dimnames(a)
+    # Sometimes, a Matrix will have a list for dimnames,
+    # but both components are NULL.
+    # Take care of that situation by NULLing dimnamesmat.
+    if (all(sapply(dimnamesa, is.null))) {
+      dimnamesa <- NULL
+    }
+    
     dimnamesmat <- dimnames(mat)
+    # Sometimes, a Matrix will have a list for dimnames,
+    # but both components are NULL.
+    # Take care of that situation by NULLing dimnamesmat.
+    if (all(sapply(dimnamesmat, is.null))) {
+      dimnamesmat <- NULL
+    }
     
     # Check that fillrow, if present, is appropriate
     if (!is.null(fillrow)) {
-      if (!is.matrix(fillrow)) {
-        stop("fillrow must be a matrix in complete_rows_cols.")
+      if (!is_matrix_or_Matrix(fillrow)) {
+        stop("fillrow must be a matrix or a Matrix in complete_rows_cols.")
       }
       if (!nrow(fillrow) == 1) {
-        stop("fillrow must be a matrix with one row in complete_rows_cols.")
+        stop("fillrow must be a matrix or a Matrix with one row in complete_rows_cols().")
       }
     }
     
     # Check that fillcol, if present, is appropriate
     if (!is.null(fillcol)) {
-      if (!is.matrix(fillcol)) {
-        stop("fillcol must be a matrix in complete_rows_cols.")
+      if (!is_matrix_or_Matrix(fillcol)) {
+        stop("fillcol must be a matrix or a Matrix in complete_rows_cols().")
       }
       if (!ncol(fillcol) == 1) {
-        stop("fillcol must be a matrix with one column in complete_rows_cols.")
+        stop("fillcol must be a matrix or a Matrix with one column in complete_rows_cols().")
       }
     }
     
     if (is.null(dimnamesmat)) {
       # dimnamesmat is null, even after trying to gather row and column names from mat.  
-      # If a is a matrix with names, complete it relative to itself.
-      if (is.matrix(a) & !is.null(dimnames(a))) {
+      # If a is a matrix or Matrix with names, complete it relative to itself.
+      if (is_matrix_or_Matrix(a) & !is.null(dimnamesa)) {
         if (!is.null(mat)) {
           # If we get here but matrix is not NULL, the user was probably trying
-          # to complete a relative to matrix.
-          # But matrix doens't have any dimnames.
+          # to complete a relative to matrix or a Matrix.
+          # But the matrix doesn't have any dimnames.
           # Warn that we're going to complete a relative to itself.
-          warning("NULL names in complete_rows_cols, despite 'mat' being specified. Completing a relative to itself.")
+          warning("NULL names in complete_rows_cols(), despite 'mat' being specified. Completing a relative to itself.")
         }
-        return(complete_rows_cols(a, mat = t(a)))
+        return(complete_rows_cols(a, mat = t_matrix_or_Matrix(a)))
       }
       # a is a matrix without dimnames.  Just return a.
       return(a)
@@ -173,7 +189,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     
     rt <- rowtype(a)
     ct <- coltype(a)
-    if ((is.null(a) | (is.matrix(a) & all(dim(a) == 0))) & length(dimnamesmat) == 2) {
+    if ((is.null(a) | (is_matrix_or_Matrix(a) & all(dim(a) == 0))) & length(dimnamesmat) == 2) {
       # a is NULL or a 0x0 matrix, but dimnamesmat is a nxn list.
       # We can work with this.
       # If we have fillcol, make a matrix consisting of repeated fillcols 
@@ -181,15 +197,16 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
       if (!is.null(fillcol) & is.null(fillrow)) {
         # Verify that we have the right size.
         if (!isTRUE(all.equal(rownames(fillcol), dimnamesmat[[1]]))) {
-          stop("rownames of fillcol must match rownames of mat in complete_rows_cols.")
+          stop("rownames of fillcol must match rownames of mat in complete_rows_cols().")
         }
         return(matrix(rep.int(fillcol, times = ncol(mat)), nrow = nrow(mat), ncol = ncol(mat),
-                      dimnames = dimnamesmat) %>% setrowtype(rt) %>% setcoltype(ct))
+                      dimnames = dimnamesmat) %>% 
+                 setrowtype(rt) %>% setcoltype(ct))
       }
       if (!is.null(fillrow)) {
         # Verify that we have the right size.
         if (!isTRUE(all.equal(colnames(fillrow), dimnamesmat[[2]]))) {
-          stop("colnames of fillrow must match colnames of mat in complete_rows_cols.")
+          stop("colnames of fillrow must match colnames of mat in complete_rows_cols().")
         }
         return(matrix(rep.int(fillrow, times = nrow(mat)), byrow = TRUE, nrow = nrow(mat), ncol = ncol(mat),
                       dimnames = dimnamesmat) %>% setrowtype(rt) %>% setcoltype(ct))
@@ -205,7 +222,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     # We don't know what row and column names are already present in a.
     # So we can't know how to complete a with the dimnames from mat.
     # Give an error.
-    if (is.null(dimnames(a)) & !is.null(dimnamesmat)) {
+    if (is.null(dimnamesa) & !is.null(dimnamesmat)) {
       stop("Can't complete a that is missing dimnames with non-NULL dimnames on mat.  How can we know which names are already present in a?")
     }
     
@@ -218,7 +235,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
     for (mar in margin) {
       # Check that row or column names are available for the margin to be completed.
       # If not, this is almost certainly an unintended error by the caller.
-      if (is.null(dimnames(a)[[mar]])) {
+      if (is.null(dimnamesa[[mar]])) {
         stop(paste("NULL dimnames for margin =", mar, "on a"))
       }
     }
@@ -232,26 +249,17 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
         fillcols <- matrix(fill, ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
       } else {
-        # # fillcol is present. Ensure that row names on fillcol are identical to rownames in a
-        # if (!isTRUE(all.equal(rownames(fillcol), rownames(a)))) {
-        #   stop("row names of fillcol must match row names of a in complete_rows_cols.")
-        # }
-        # # Make the fillcols matrix from the fillcol row vector
-        # fillcols <- matrix(rep.int(fillcol, length(fillcolnames)), 
-        #                    ncol = length(fillcolnames), nrow = nrow(a), 
-        #                    dimnames = list(rownames(a), fillcolnames))
-
         # fillcol is present. Perform some tests.
         # Stop if fillcol or a has any duplicated column names
         if (any(duplicated(rownames(fillcol)))) {
-          stop("Duplicated row names found in matrix fillcol in complete_rows_cols.")
+          stop("Duplicated row names found in matrix fillcol in complete_rows_cols().")
         }
         if (any(duplicated(rownames(a)))) {
-          stop("Duplicated row names found in matrix a in complete_rows_cols.")
+          stop("Duplicated row names found in matrix a in complete_rows_cols().")
         }
         # Ensure that all of the row names in matrix a are present in fillcol
         if (!all(rownames(a) %in% rownames(fillcol))) {
-          stop("Some rows of matrix a are not present in matrix fillcol in complete_rows_cols.")
+          stop("Some rows of matrix a are not present in matrix fillcol in complete_rows_cols().")
         }
         # Ensure that the order of rows in fillcol is the same as the order of rows in a.
         fillcol <- fillcol[rownames(a), , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
@@ -260,16 +268,16 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
                            ncol = length(fillcolnames), nrow = nrow(a), 
                            dimnames = list(rownames(a), fillcolnames))
       }
-      a <- cbind(a, fillcols) %>% 
+      a <- cbind_matrix_or_Matrix(a, fillcols) %>% 
         setrowtype(rt) %>% setcoltype(ct)
     }
-
+    
     if (1 %in% margin) {
       fillrownames <- setdiff(dimnamesmat[[1]], rownames(a))
       if (is.null(fillrow)) {
         # Make fill rows from the fill value.
         fillrows <- matrix(fill, nrow = length(fillrownames), ncol = ncol(a), 
-                          dimnames = list(fillrownames, colnames(a)))
+                           dimnames = list(fillrownames, colnames(a)))
       } else {
         # fillrow is present. Perform some tests.
         # Stop if fillrow or a has any duplicated column names
@@ -290,7 +298,7 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
                            nrow = length(fillrownames), ncol = ncol(a), 
                            dimnames = list(fillrownames, colnames(a)))
       }
-      a <- rbind(a, fillrows) %>% 
+      a <- rbind_matrix_or_Matrix(a, fillrows) %>% 
         setrowtype(rt) %>% setcoltype(ct)
     }
     return(a)
@@ -300,182 +308,4 @@ complete_rows_cols <- function(a = NULL, mat = NULL, fill = 0,
                                                                     fillrow = fillrow, fillcol = fillcol, 
                                                                     margin = margin), 
                      match_type = "all", set_rowcoltypes = TRUE, .organize = FALSE)
-}
-
-#' Sorts rows and columns of a matrix
-#' 
-#' Checks that row names are unique and that column names are unique.
-#' Then, sorts the rows and columns in a way that ensures
-#' any other matrix with the same row and column names will have 
-#' the same order.
-#' 
-#' Default sort order is given by \code{base::sort()} with \code{decreasing = FALSE}.
-#'
-#' @param a a matrix or data frame whose rows and columns are to be sorted
-#' @param margin specifies the subscript(s) in \code{a} over which sorting will occur. 
-#'        \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
-#'        For rows only, give \code{1}; 
-#'        for columns only, give \code{2};
-#'        for both rows and columns, give \code{c(1,2)}, the default value.
-#' @param roworder specifies the order for rows with default \code{sort(rownames(a))}. 
-#'        If \code{NA} (the default), default sort order is used. 
-#'        Unspecified rows are removed from the output, thus providing a way to delete rows from \code{a}.
-#'        Extraneous row names (row names in \code{roworder} that do not appear in \code{a}) are ignored.
-#' @param colorder specifies the order for rows with default \code{sort(colnames(a))}.
-#'        If \code{NA} (the default), default sort order is used. 
-#'        Unspecified columns are removed from the output, thus providing a way to delete columns from \code{a}.
-#'        Extraneous column names (column names in \code{colorder} that do not appear in \code{a}) are ignored.
-#' 
-#' @return A modified version of \code{a} with sorted rows and columns
-#' 
-#' @export
-#' 
-#' @examples
-#' m <- matrix(c(1:6), nrow=3, dimnames = list(c("r3", "r5", "r1"), c("c4", "c2")))
-#' sort_rows_cols(m)
-#' sort_rows_cols(t(m))
-#' sort_rows_cols(m, margin=1) # Sorts rows
-#' sort_rows_cols(m, margin=2) # Sorts columns
-#' v <- matrix(c(1:5), ncol=1, dimnames=list(rev(paste0("r", 1:5)), "c1")) # Column vector
-#' sort_rows_cols(v)
-#' sort_rows_cols(v, margin = 1) # Sorts rows
-#' sort_rows_cols(v, margin = 2) # No effect: only one column
-#' r <- matrix(c(1:4), nrow=1, dimnames=list("r1", rev(paste0("c", 1:4)))) # Row vector
-#' sort_rows_cols(r) # Sorts columns
-#' n <- matrix(c(1,2), nrow = 1, dimnames = list(NULL, c("c2", "c1"))) # No row name
-#' sort_rows_cols(n) # Sorts columns, because only one row.
-#' # Also works with lists
-#' sort_rows_cols(list(m,m)) # Sorts rows and columns for both m's.
-#' # Sort rows only for first one, sort rows and columns for second one.  
-#' # Row order is applied to all m's.  Column order is natural.
-#' sort_rows_cols(a = list(m,m), margin = 1, roworder = list(c("r5", "r3", "r1")))
-#' # Columns are sorted as default, because no colorder is given.
-#' # roworder is ignored. 
-#' sort_rows_cols(a = list(m,m), margin = 2, roworder = list(c("r5", "r3", "r1")))
-#' # Both columns and rows sorted, rows by the list, columns in natural order.
-#' sort_rows_cols(a = list(m,m), margin = c(1,2), roworder = list(c("r5", "r3", "r1")))
-sort_rows_cols <- function(a, margin = c(1,2), roworder = NA, colorder = NA){
-  margin <- prep_vector_arg(a, margin)
-  
-  sort_func <- function(a, margin, roworder, colorder){
-    # Gather rowtype and coltype so we can apply those later.
-    rt <- rowtype(a)
-    ct <- coltype(a)
-    if (any(is.na(roworder))) {
-      if (!is.null(rownames(a))) {
-        roworder <- sort(rownames(a))
-      } else {
-        # Can't sort on rows, because they are not named.
-        if (2 %in% margin) {
-          # Remove 1 from margin, if it is there.
-          margin <- 2
-        } else {
-          # Nothing to be done
-          return(a)
-        }
-      }
-    }
-    if (any(is.na(colorder))) {
-      if (!is.null(colnames(a))) {
-        colorder <- sort(colnames(a))
-      } else {
-        # Can't sort on columns, because they are not named.
-        if (1 %in% margin) {
-          # Remove 2 from margin, if it is there.
-          margin <- 1
-        } else {
-          # Nothing to be done
-          return(a)
-        }
-      }
-    }
-    if (1 %in% margin & nrow(a) > 1) {
-      # Sort rows
-      if (length(unique(rownames(a))) != length(rownames(a))) {
-        dupes <- rownames(a)[duplicated(rownames(a))] %>% unique()
-        stop(paste0("Row names not unique. Duplicated row names are: ", paste0(dupes, collapse = ", ")))
-      }
-      # Trim items from roworder that do not appear as names in rownames(a)
-      roworder <- roworder[roworder %in% rownames(a)]
-      a <- a[roworder, , drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
-    }
-    if (2 %in% margin & ncol(a) > 1) {
-      if (length(unique(colnames(a))) != length(colnames(a))) {
-        dupes <- colnames(a)[duplicated(colnames(a))] %>% unique()
-        stop(paste0("Column names not unique. Duplicated column names are: ", paste0(unique(dupes), collapse = ", ")))
-      }
-      # Trim items from colorder that do not appear as names in colnames(a)
-      colorder <- colorder[colorder %in% colnames(a)]
-      a <- a[ , colorder, drop = FALSE] # drop = FALSE prevents unhelpful conversion to numeric
-    }
-    return(a %>% setrowtype(rt) %>% setcoltype(ct))
-  }
-  unaryapply_byname(sort_func, a = a, 
-                    .FUNdots = list(margin = margin, roworder = roworder, colorder = colorder))
-}
-
-#' Complete matrices relative to one another and sort into same row, column order
-#'
-#' Completes each matrix relative to each other, thereby assuring that
-#' both matrices have same row and column names.
-#' Missing rows and columns (relative to the other matrix)
-#' are filled with \code{fill}.
-#' Thereafter, rows and columns of the matrices are sorted
-#' such that they are in the same order (by name).
-#' To complete rows of \code{m1} relative to columns of \code{m2},
-#' set the \code{m2} argument to \code{transpose_byname(m2)}.
-#'
-#' \code{margin} has nearly the same semantic meaning as in \code{\link[base]{apply}}.
-#' For rows only, give \code{1};
-#' for columns only, give \code{2};
-#' for both rows and columns, give \code{c(1,2)}, the default value.
-#'
-#' If only \code{m1} is specified, rows of \code{m1} are completed and sorted
-#' relative to columns of \code{m1}.
-#' If neither \code{m1} nor \code{m2} have dimnames,
-#' \code{m1} and \code{m2} are returned unmodified.
-#' If only one of \code{m1} or \code{m2} has dimnames, an error is thrown.
-#'
-#' @param a The first matrix
-#' @param b The second (optional) matrix.
-#' @param fill rows and columns added to \code{a} and \code{b} will contain the value \code{fill}. (a double)
-#' @param margin Specifies the dimension(s) of \code{a} and \code{b} over which
-#'        completing and sorting will occur
-#' @param roworder Specifies a custom ordering for rows of returned matrices.
-#'        Unspecified rows are dropped.
-#' @param colorder Specifies a custom ordering for columns of returned matrices.
-#'        Unspecified columns are dropped.
-#'
-#' @return A named list containing completed and sorted versions of \code{a} and \code{b}.
-#'
-#' @export
-#'
-#' @examples
-#' m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))
-#' m2 <- matrix(c(7:12), ncol=3, dimnames = list(c("r3", "r4"), c("c2", "c3", "c4")))
-#' complete_and_sort(m1)
-#' complete_and_sort(m1, m2)
-#' complete_and_sort(m1, m2, roworder = c("r3", "r2", "r1"))
-#' complete_and_sort(m1, m2, colorder = c("c4", "c3")) # Drops un-specified columns
-#' complete_and_sort(m1, m2, margin = 1)
-#' complete_and_sort(m1, m2, margin = 2)
-#' complete_and_sort(m1, t(m2))
-#' complete_and_sort(m1, t(m2), margin = 1)
-#' complete_and_sort(m1, t(m2), margin = 2)
-#' v <- matrix(1:6, ncol=2, dimnames=list(c("r3", "r1", "r2"), c("c2", "c1")))
-#' complete_and_sort(v, v)
-#' # Also works with lists
-#' complete_and_sort(list(m1,m1), list(m2,m2))
-complete_and_sort <- function(a, b, fill = 0, margin = c(1,2), roworder = NA, colorder = NA){
-  margin <- prep_vector_arg(a, margin)
-  if (missing(b)) {
-    a <- complete_rows_cols(a, fill = fill, margin = margin)
-    a <- sort_rows_cols(a, roworder = roworder, colorder = colorder)
-    return(a)
-  }
-  a <- complete_rows_cols(a, b, fill = fill, margin = margin) %>%
-    sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
-  b <- complete_rows_cols(b, a, fill = fill, margin = margin) %>%
-    sort_rows_cols(margin = margin, roworder = roworder, colorder = colorder)
-  return(list(a = a, b = b))
 }

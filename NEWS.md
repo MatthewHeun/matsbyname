@@ -4,7 +4,39 @@ output: html_document
 ---
 
 
-# matsbyname 0.5.1 (2023-01-16) 
+# matsbyname 0.6.0 (2023-03-04)
+
+* Fixed a bug in `aggregate_pieces_byname()`
+  where failure occurred if there were
+  repeated row (or column) names not included 
+  in the aggregation_map.
+* All functions now work with `Matrix` objects,
+  thereby enabling use of sparse matrices.
+  Use `matsbyname::Matrix()` to create sparse matrices
+  if desired.
+* `create_matrix_byname()` gains `matrix.class` argument
+  that tells whether the created object is of class
+  `matrix` or `Matrix`.
+  Default is "matrix".
+* New function `is.Matrix()` assists with determining
+  whether an object is a `Matrix`.
+  The base function`is.matrix()` assists with determining
+  whether an object is a `matrix`.
+* First function (`sum_byname()`) now works with
+  `Matrix` objects,
+  paving the way for sparse matrix representation
+  throughout `matsbyname`.
+* In tests, cleaned up many warnings emanating from
+  the change to `testthat` v3.
+* Reacted to a change in grouping policy in `dplyr`
+  that caused one test to issue a deprecation warning.
+* Update to latest GitHub actions continuous integration workflow.
+* Many new tests for new features.
+    - Now at 2078 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+# matsbyname 0.5.1 (2023-01-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7541455.svg)](https://doi.org/10.5281/zenodo.7541455)
 
 * Responded to deprecation warnings from `purrr::cross2()`.
 * Responded to deprecation warnings from `tidyselect`.

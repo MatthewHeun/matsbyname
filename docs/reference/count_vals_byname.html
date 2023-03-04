@@ -12,7 +12,7 @@ count_vals_byname(m, "&amp;lt;=", 1).'><!-- mathjax --><script src="https://cdnj
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,23 +76,25 @@ count_vals_byname(m, "&amp;lt;=", 1).'><!-- mathjax --><script src="https://cdnj
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>a</dt>
-<dd><p>a matrix or list of matrices whose values are to be counted according to <code>compare_fun</code></p></dd>
+<dd><p>A matrix or list of matrices whose values are to be counted according to <code>compare_fun</code>.</p></dd>
 
 
 <dt>compare_fun</dt>
-<dd><p>the comparison function, one of "<code>==</code>", "<code>!=</code>",
-"<code>&lt;</code>", "<code>&lt;=</code>", "<code>&gt;</code>", or "<code>&gt;=</code>". Default is "<code>==</code>".</p></dd>
+<dd><p>The comparison function, one of "==", "!=",
+"&lt;", "&lt;=", "&gt;", or "&gt;=".
+Default is "==".</p></dd>
 
 
 <dt>val</dt>
-<dd><p>the value against which matrix entries are compared. Default is <code>0</code>.</p></dd>
+<dd><p>The value against which matrix entries are compared.
+Default is <code>0</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>an integer indicating the number of entries in <code>a</code></p>
+<p>An integer indicating the number of entries in <code>a</code></p>
 
 
 <p>that meet the specified criterion</p>
@@ -100,7 +102,7 @@ count_vals_byname(m, "&amp;lt;=", 1).'><!-- mathjax --><script src="https://cdnj
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Either a single matrix or a list of matrices can be given as the <code>a</code> argument.
-<code>compare_fun</code> can be specified as a string (<code>"!="</code>)
+<code>compare_fun</code> can be specified as a string ("!=")
 or as a back-quoted function (<code>`!=`</code>).</p>
     </div>
 

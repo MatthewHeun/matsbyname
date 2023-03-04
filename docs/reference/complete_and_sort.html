@@ -24,7 +24,7 @@ set the m2 argument to transpose_byname(m2)."><!-- mathjax --><script src="https
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ set the m2 argument to transpose_byname(m2)."><!-- mathjax --><script src="https
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Complete matrices relative to one another and sort into same row, column order</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/R/CompletingMatrices.R" class="external-link"><code>R/CompletingMatrices.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/R/complete_and_sort.R" class="external-link"><code>R/complete_and_sort.R</code></a></small>
       <div class="d-none name"><code>complete_and_sort.Rd</code></div>
     </div>
 
@@ -105,7 +105,7 @@ set the <code>m2</code> argument to <code>transpose_byname(m2)</code>.</p>
 
 
 <dt>fill</dt>
-<dd><p>rows and columns added to <code>a</code> and <code>b</code> will contain the value <code>fill</code>. (a double)</p></dd>
+<dd><p>rows and columns added to <code>a</code> and <code>b</code> will contain the value <code>fill</code> (a double).</p></dd>
 
 
 <dt>margin</dt>
@@ -131,7 +131,7 @@ Unspecified columns are dropped.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>margin</code> has nearly the same semantic meaning as in <code><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></code>.
+    <p><code>margin</code> has nearly the same semantic meaning as in <code><a href="https://rdrr.io/r/base/apply.html" class="external-link">base::apply()</a></code>.
 For rows only, give <code>1</code>;
 for columns only, give <code>2</code>;
 for both rows and columns, give <code>c(1,2)</code>, the default value.</p>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.1" id="matsbyname-051-2023-01-16">matsbyname 0.5.1 (2023-01-16)<a class="anchor" aria-label="anchor" href="#matsbyname-051-2023-01-16"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.0" id="matsbyname-060-2023-03-04">matsbyname 0.6.0 (2023-03-04)<a class="anchor" aria-label="anchor" href="#matsbyname-060-2023-03-04"></a></h2>
+<ul><li>Fixed a bug in <code><a href="../reference/aggregate_pieces_byname.html">aggregate_pieces_byname()</a></code> where failure occurred if there were repeated row (or column) names not included in the aggregation_map.</li>
+<li>All functions now work with <code>Matrix</code> objects, thereby enabling use of sparse matrices. Use <code><a href="../reference/Matrix.html">matsbyname::Matrix()</a></code> to create sparse matrices if desired.</li>
+<li>
+<code><a href="../reference/create_matrix_byname.html">create_matrix_byname()</a></code> gains <code>matrix.class</code> argument that tells whether the created object is of class <code>matrix</code> or <code>Matrix</code>. Default is “matrix”.</li>
+<li>New function <code><a href="../reference/is.Matrix.html">is.Matrix()</a></code> assists with determining whether an object is a <code>Matrix</code>. The base function<code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">is.matrix()</a></code> assists with determining whether an object is a <code>matrix</code>.</li>
+<li>First function (<code><a href="../reference/sum_byname.html">sum_byname()</a></code>) now works with <code>Matrix</code> objects, paving the way for sparse matrix representation throughout <code>matsbyname</code>.</li>
+<li>In tests, cleaned up many warnings emanating from the change to <code>testthat</code> v3.</li>
+<li>Reacted to a change in grouping policy in <code>dplyr</code> that caused one test to issue a deprecation warning.</li>
+<li>Update to latest GitHub actions continuous integration workflow.</li>
+<li>Many new tests for new features.
+<ul><li>Now at 2078 tests, all passing.</li>
+<li>Test coverage remains at 100 %.</li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.1" id="matsbyname-051-2023-01-16-doi">matsbyname 0.5.1 (2023-01-16) <a href="https://doi.org/10.5281/zenodo.7541455" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7541455.svg" alt="DOI"></a>
+<a class="anchor" aria-label="anchor" href="#matsbyname-051-2023-01-16-doi"></a></h2><p class="text-muted">CRAN release: 2023-01-16</p>
 <ul><li>Responded to deprecation warnings from <code><a href="https://purrr.tidyverse.org/reference/cross.html" class="external-link">purrr::cross2()</a></code>.</li>
 <li>Responded to deprecation warnings from <code>tidyselect</code>.</li>
 <li>

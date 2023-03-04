@@ -4,7 +4,7 @@
 \alias{fractionize_byname}
 \title{Compute fractions of matrix entries}
 \usage{
-fractionize_byname(a, margin)
+fractionize_byname(a, margin, inf_becomes = .Machine$double.xmax)
 }
 \arguments{
 \item{a}{The matrix to be fractionized.}
@@ -13,6 +13,12 @@ fractionize_byname(a, margin)
 If \code{2} (columns), each entry in \code{a} is divided by its column's sum.
 If \code{c(1,2)} (both rows and columns),
 each entry in \code{a} is divided by the sum of all entries in \code{a}.}
+
+\item{inf_becomes}{A value to be substitute for any \code{Inf} produced by division.
+Default is \code{.Machine$double.xmax}.
+Another reasonable value is \code{Inf}.
+Set to \code{NULL} to disable substitution.
+\code{inf_becomes} is passed to \code{hatinv_byname()}.}
 }
 \value{
 A fractionized matrix of same dimensions and same row and column types as \code{a}.

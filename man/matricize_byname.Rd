@@ -7,16 +7,16 @@
 matricize_byname(a, notation)
 }
 \arguments{
-\item{a}{a row (column) vector to be converted to a matrix based on its row (column) names.}
+\item{a}{A row (column) vector to be converted to a matrix based on its row (column) names.}
 
-\item{notation}{a string vector created by \code{notation_vec()} that identifies the notation for row or column names.}
+\item{notation}{A string vector created by \code{RCLabels::notation_vec()} that identifies the notation for row or column names.}
 }
 \value{
-a matrix created from vector \code{a}.
+A matrix created from vector \code{a}.
 }
 \description{
 Converts a vector with rows or columns named according to \code{notation}
-into a matrix.
+into a \code{matrix} or a \code{Matrix}, depending on the type of \code{a}.
 }
 \examples{
 v <- matrix(c(1,

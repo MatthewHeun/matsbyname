@@ -12,7 +12,7 @@ thereby "fractionizing" the matrix.'><!-- mathjax --><script src="https://cdnjs.
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@ thereby "fractionizing" the matrix.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fractionize_byname</span><span class="op">(</span><span class="va">a</span>, <span class="va">margin</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fractionize_byname</span><span class="op">(</span><span class="va">a</span>, <span class="va">margin</span>, inf_becomes <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.xmax</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,6 +80,14 @@ thereby "fractionizing" the matrix.</p>
 If <code>2</code> (columns), each entry in <code>a</code> is divided by its column's sum.
 If <code>c(1,2)</code> (both rows and columns),
 each entry in <code>a</code> is divided by the sum of all entries in <code>a</code>.</p></dd>
+
+
+<dt>inf_becomes</dt>
+<dd><p>A value to be substitute for any <code>Inf</code> produced by division.
+Default is <code>.Machine$double.xmax</code>.
+Another reasonable value is <code>Inf</code>.
+Set to <code>NULL</code> to disable substitution.
+<code>inf_becomes</code> is passed to <code><a href="hatinv_byname.html">hatinv_byname()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -108,18 +116,18 @@ each entry in <code>a</code> is divided by the sum of all entries in <code>a</co
 <span class="r-out co"><span class="r-pr">#&gt;</span>           i1        i2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> p1 0.1666667 0.8333333</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> p2 0.4444444 0.5555556</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Products"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Products"</span>
 <span class="r-in"><span><span class="fu">fractionize_byname</span><span class="op">(</span><span class="va">M</span>, margin <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     i1  i2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> p1 0.2 0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> p2 0.8 0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Products"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industries"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Products"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
