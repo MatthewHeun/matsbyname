@@ -3,6 +3,7 @@
 `matsbyname` v0.6.0
 adds the capability to use `Matrix` objects,
 thereby enabling sparse matrices.
+A few bug fixes are also included.
 See `NEWS.md` for details.
 
 
