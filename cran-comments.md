@@ -55,7 +55,7 @@ See `NEWS.md` for details.
                 - * checking for detritus in the temp directory ... NOTE
                 - Found the following files/directories:
                 - 'lastMiKTeXException'
-                - This note appears to be a minor problem with the cleanup process, not caused by the package itself.
+                - This note appears to be a minor problem with the cleanup process, not caused by the `matsindf` package itself.
         * Ubuntu Linux 20.04.1 LTS, R-release, GCC
             * ERRORs: 0
             * WARNINGs: 0
