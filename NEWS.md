@@ -32,7 +32,7 @@ output: html_document
   that caused one test to issue a deprecation warning.
 * Update to latest GitHub actions continuous integration workflow.
 * Many new tests for new features.
-    - Now at 2083 tests, all passing.
+    - Now at 2078 tests, all passing.
     - Test coverage remains at 100 %.
 
 

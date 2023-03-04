@@ -6,7 +6,7 @@ thereby enabling sparse matrices.
 See `NEWS.md` for details.
 
 
-## Test environments (10 in total) and R CMD check results
+## Test environments (12 in total) and R CMD check results
 
 * Local macOS X 13.2.1 (Ventura), R4.2.2
     * ERRORs: 0
@@ -17,11 +17,15 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * ubuntu-20.04 (devel)
+    * ubuntu-latest (devel)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * ubuntu-20.04 (release)
+    * ubuntu-latest (release)
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
+    * ubuntu-latest (oldrel-1)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -34,7 +38,11 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2023-01-14 r83615 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2023-03-03 r83933 ucrt)
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
+    * `devtools::check_win_oldrelease()`, R version 4.1.3 (2022-03-10)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -43,13 +51,19 @@ See `NEWS.md` for details.
         * Windows Server 2022, R-devel, 64 bit
             * ERRORs: 0
             * WARNINGs: 0
-            * NOTEs: 0
-            * Note that Rhub reports "Error in aspell(files, ...): No suitable spell-checker program found. Execution halted"
-            * This test rig appears to be misconfigured.
+            * NOTEs: 1
+                - * checking for detritus in the temp directory ... NOTE
+                - Found the following files/directories:
+                - 'lastMiKTeXException'
+                - This note appears to be a minor problem with the cleanup process, not caused by the package itself.
         * Ubuntu Linux 20.04.1 LTS, R-release, GCC
-            * Something appears to be wrong at rhub. I receive the "We're sorry but something went wrong" message for this build.
+            * ERRORs: 0
+            * WARNINGs: 0
+            * NOTEs: 0
         * Fedora Linux, R-devel, clang, gfortran
-            * Something appears to be wrong at rhub. I receive the "We're sorry but something went wrong" message for this build.
+            * ERRORs: 0
+            * WARNINGs: 0
+            * NOTEs: 0
             
 
 ## revdepcheck results

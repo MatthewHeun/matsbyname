@@ -48,7 +48,7 @@ in `R` and other languages.
 Although built-in matrix functions
 ensure size conformity of matrix operands,
 they do not respect the names of rows and columns
-(known as <tt>dimnames</tt> in <tt>R</tt>).
+(known as `dimnames` in `R`).
 In the following example, 
 **U** represents a *use* matrix
 that contains the quantity of each product used by each industry,
@@ -132,7 +132,7 @@ tryCatch(solve(U_2000), error = function(err){print(err)})
 
 ### Problem 3
 
-Matrix functions provided by <tt>R</tt> and other languages
+Matrix functions provided by `R` and other languages
 do not ensure type conformity for matrix operands
 to matrix algebra functions. 
 In the example of matrix multiplication, 
@@ -142,12 +142,12 @@ as the rows of the multiplier.
 If the columns of **A** are countries, 
 then the rows of **B** must also be countries
 (and in the same order)
-if **A** <tt>%*%</tt> **B** is to make sense. 
+if **A** `%*%` **B** is to make sense. 
 
 
-## <tt>matsbyname</tt>
+## `matsbyname`
 
-The <tt>matsbyname</tt> package automatically addresses all three problems above.
+The `matsbyname` package automatically addresses all three problems above.
 It performs smart matrix operations that
 
 * respect row and column names
@@ -168,8 +168,8 @@ sum_byname(U, Y3)
 U_2000 %>% clean_byname(margin = c(1,2), clean_value = 0) %>% solve()
 ```
 
-In addition to <tt>sum_byname</tt> and <tt>clean_byname</tt>,
-the <tt>matsbyname</tt> package contains many additional 
+In addition to `sum_byname()` and `clean_byname()`,
+the `matsbyname` package contains many additional 
 matrix algebra functions 
 that respect the names of rows and columns. 
 Commonly-used functions are:
@@ -184,41 +184,41 @@ Commonly-used functions are:
 * `invert_byname()`, and 
 * `transpose_byname()`.
 
-The full list of functions can be found with <tt>?matsbyname</tt>
-and clicking the <tt>Index</tt> link.
+The full list of functions can be found with `?matsbyname`
+and clicking the `Index` link.
 
-Furthermore, <tt>matsbyname</tt> works well with its sister package, <tt>matsindf</tt>.
-<tt>matsindf</tt> creates data frames
+Furthermore, `matsbyname` works well with its sister package, `matsindf`.
+`matsindf` creates data frames
 whose entries are not numbers but entire matrices, thereby
-enabling the use of <tt>matsbyname</tt> functions in 
-[<tt>tidyverse</tt>](https://www.tidyverse.org)
+enabling the use of `matsbyname` functions in 
+[`tidyverse`](https://www.tidyverse.org)
 functional programming.
 
-When used together, <tt>matsbyname</tt> and <tt>matsindf</tt> 
+When used together, `matsbyname` and `matsindf` 
 allow analysts to wield simultaneously the power of both 
 [matrix mathematics](https://en.wikipedia.org/wiki/Matrix_(mathematics))
 and 
-[<tt>tidyverse</tt>](https://www.tidyverse.org) 
+[`tidyverse`](https://www.tidyverse.org)
 functional programming.
 
 This vignette demonstrates the power of matrix mathematics
-performed <tt>by name</tt>.
+performed `byname`.
 
 
-## <tt>matsbyname</tt> features
+## `matsbyname` features
 
-The <tt>matsbyname</tt> package has several features
+The `matsbyname` package has several features
 that both simplify analyses and ensure their correctness.
 
 
 ### Setting row and column names
 
 In the preceding examples, row and column names were provided by the 
-<tt>dimnames</tt> argument to the <tt>matrix</tt> function. 
-However, <tt>matsbyname</tt> provides the
-<tt>setcolnames_byname</tt> and <tt>setrownames_byname</tt>
+`dimnames` argument to the `matrix()` function. 
+However, `matsbyname` provides the
+`setcolnames_byname()` and `setrownames_byname()`
 functions to perform the same tasks
-using the pipe operator (<tt>%>%</tt>).
+using the pipe operator (`%>%` or `|>`).
 
 ```{r}
 U_2 <- matrix(1:4, ncol = 2) %>% 
@@ -234,20 +234,20 @@ row and column types are to matrices in matrix algebra as
 units are to scalars in scalar algebra.
 Just as careful tracking of units is necessary in scalar calculations, 
 careful tracking of row and column types is necessary in matrix operations.
-Because <tt>matsbyname</tt> keeps track of row and column types automatically,
+Because `matsbyname` keeps track of row and column types automatically,
 much of the burden of dealing with row and column types is removed from the analyst.
 
 Row and column types are character strings stored
 as attributes of the matrix object, and
-<tt>matsbyname</tt> functions ensure correctness
+`matsbyname` functions ensure correctness
 of matrix operations by checking
 row and column types, 
 throwing errors if needed.
 Row and column types can be set by the functions
-<tt>setrowtype</tt> and <tt>setcoltype</tt>
+`setrowtype()` and `setcoltype()`
 and 
 retrieved by the functions
-<tt>rowtype</tt> and <tt>coltype</tt>.
+`rowtype()` and `coltype()`.
 Consider matrices **A**, **B**, and **C**:
 
 ```{r}
@@ -297,8 +297,8 @@ quotient_byname(A, B)
 
 Note that **A** and **C** can be matrix-multiplied,
 because the column type of **A** and the row type of **C** 
-are identical (<tt>Industries</tt>).
-The result is a <tt>Products</tt>-by-<tt>Products</tt>
+are identical (`Industries`).
+The result is a `Products`-by-`Products`
 matrix.
 
 ```{r}
@@ -306,8 +306,8 @@ matrixproduct_byname(A, C)
 ```
 
 However, **A** and **B** cannot be matrix-multiplied, because 
-the column type of **A** (<tt>Industries</tt>) and 
-the row type of **B** (<tt>Products</tt>)
+the column type of **A** (`Industries`) and 
+the row type of **B** (`Products`)
 are different.
 
 ```{r}
@@ -335,13 +335,13 @@ matrixproduct_byname(list(A, A), list(C, C))
 ```
 
 
-### <tt>matsbyname</tt> works well with <tt>matsindf</tt>
+### `matsbyname` works well with `matsindf`
 
-The <tt>matsindf</tt> package provides functions that collapse
+The `matsindf` package provides functions that collapse
 [tidy](https://tidyr.tidyverse.org/articles/tidy-data.html) data frames
 of matrix elements into data frames of matrices.
 Data frames of matrices,
-such as those created by <tt>matsindf</tt>,
+such as those created by `matsindf`,
 are like magic spreadsheets
 in which single cells contain entire matrices.
 
@@ -380,7 +380,7 @@ Because
 
 * `matsbyname` works well with lists, and
 * data frame columns are implemented as lists, and
-* the <tt>matsindf</tt> package can create data frames of matrices, and
+* the `matsindf` package can create data frames of matrices, and
 * the [tidyr](https://tidyr.tidyverse.org) and
 [dplyr](https://dplyr.tidyverse.org) packages work with data frames,
 
@@ -425,18 +425,18 @@ A suggested analysis workflow is as follows:
 matrix name, element value,
 row name, column name,
 row type, and column type,
-similar to <tt>tidy</tt> above.
-* Use <tt>matsindf::collapse_to_matrices</tt>
+similar to `tidy` above.
+* Use `matsindf::collapse_to_matrices()`
 to create a data frame of matrices with columns for matrix names and
 matrices themselves,
-similar to <tt>mats</tt> above.
-* <tt>tidyr::spread</tt> the matrices to obtain a data frame with columns for each matrix,
-similar to <tt>result</tt> above.
+similar to `mats` above.
+* `tidyr::pivot_wider()` the matrices to obtain a data frame with columns for each matrix,
+similar to `result` above.
 * Perform matrix algebra operations on the columns of matrices
-using <tt>*_byname</tt> functions.
-* <tt>tidyr::gather</tt> the columns into a data frame with a single column of matrices.
-* Use <tt>matsindf::expand_to_tidy</tt> to create a tidy data frame of matrix elements.
-* <tt>tidyr::spread</tt> the data as necessary.
+using `*_byname` functions.
+* `tidyr::pivot_longer()` the columns into a data frame with a single column of matrices.
+* Use `matsindf::expand_to_tidy()` to create a tidy data frame of matrix elements.
+* `tidyr::pivot_wider()` the data as necessary.
 * Graph or perform other manipulations of the data.
 
 For more information and a detailed example of this workflow,
@@ -445,13 +445,13 @@ see the vignette for the `matsindf` package.
 
 ## Summary
 
-The <tt>matsbyname</tt> package simplifies analyses 
+The `matsbyname` package simplifies analyses 
 in which row and column names ought to be respected.
 It provides optional row and column types, thereby
 ensuring that only valid matrix operations are performed.
-Finally, <tt>matsbyname</tt> functions work equally well with lists
-to allow use of <tt>*_byname</tt> functions with 
-[<tt>tidyr</tt>](https://tidyr.tidyverse.org)
+Finally, `matsbyname` functions work equally well with lists
+to allow use of `*_byname` functions with 
+[`tidyr`](https://tidyr.tidyverse.org)
 and 
-[<tt>dplyr</tt>](https://dplyr.tidyverse.org)
+[`dplyr`](https://dplyr.tidyverse.org)
 approaches to manipulating data.
