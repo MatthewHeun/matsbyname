@@ -52,7 +52,7 @@ See `NEWS.md` for details.
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
-                - * checking for detritus in the temp directory ... NOTE
+                - checking for detritus in the temp directory ... NOTE
                 - Found the following files/directories:
                 - 'lastMiKTeXException'
                 - This note appears to be a minor problem with the cleanup process, not caused by the `matsindf` package itself.
@@ -60,10 +60,15 @@ See `NEWS.md` for details.
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 0
+            * Although this test setp reports a `PREPERROR`, R CMD check reports `OK`.
         * Fedora Linux, R-devel, clang, gfortran
             * ERRORs: 0
             * WARNINGs: 0
-            * NOTEs: 0
+            * NOTEs: 1
+                - checking HTML version of manual ... NOTE
+                - Skipping checking HTML validation: no command 'tidy' found
+                - This NOTE appears to be an anomaly, as it occurs only in this test setup.
+
             
 
 ## revdepcheck results
