@@ -35,11 +35,9 @@
 #' 
 #' This function has different defaults compared to `Matrix::Matrix()`, including
 #' 
-#' <ul>
-#' <li> Here, the default for `doDiag` is `FALSE`,
-#'      while the default for `doDiag` is `TRUE` for `Matrix::Matrix()`.
-#' <li> Preserves rowtype and coltype on `data`.
-#' </ul>
+#' * Here, the default for `doDiag` is `FALSE`,
+#'   while the default for `doDiag` is `TRUE` for `Matrix::Matrix()`.
+#' * Preserves rowtype and coltype on `data`.
 #'
 #' @param data An optional numeric data vector or matrix.
 #' @param nrow When `data` is not a `matrix` or a `Matrix`, the desired number of rows. 
@@ -66,18 +64,22 @@
 #' @export
 #'
 #' @examples
-#' # matsbyname::Matrix() will not create a Matrix with a symmetric subclass ...
+#' # matsbyname::Matrix() will not create a Matrix with a symmetric subclass.
+#' # dgCMatrix is a general matrix.
 #' matsbyname::Matrix(c(1, 0, 2, 
 #'                      0, 0, 0, 
 #'                      2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-#' # ... but Matrix::Matrix will create a symmetric matrix.
+#' # But Matrix::Matrix() will create a symmetric matrix.
+#' # dsCMatrix is a symmetric matrix.
 #' Matrix::Matrix(c(1, 0, 2, 
 #'                  0, 0, 0, 
 #'                  2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-#' # matsbyname::Matrix() will not create a diagonal matrix ...
+#' # matsbyname::Matrix() will not create a diagonal matrix.
+#' # dgeMatrix is a general matrix.
 #' matsbyname::Matrix(c(1, 0, 
 #'                      0, 1), byrow = TRUE, nrow = 2, ncol = 2)
-#' # ... but Matrix::Matrix will create a diagonal matrix.
+#' # But Matrix::Matrix() will create a diagonal matrix.
+#' # ddiMatrix is a diagonal matrix.
 #' Matrix::Matrix(c(1, 0, 
 #'                  0, 1), byrow = TRUE, nrow = 2, ncol = 2)
 Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = base::dimnames(data),

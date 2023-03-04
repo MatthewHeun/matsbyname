@@ -68,27 +68,30 @@ on the outgoing \code{Matrix} object.
 This function enables setting row and column types at the time of construction
 with the \code{rowtype} and \code{coltype} arguments.
 
-This function has different defaults compared to \code{Matrix::Matrix()}, including\if{html}{\out{
-<ul>
-<li> Here, the default for `doDiag` is `FALSE`,
-     while the default for `doDiag` is `TRUE` for `Matrix::Matrix()`.
-<li> Preserves rowtype and coltype on `data`.
-</ul>
-}}
+This function has different defaults compared to \code{Matrix::Matrix()}, including
+\itemize{
+\item Here, the default for \code{doDiag} is \code{FALSE},
+while the default for \code{doDiag} is \code{TRUE} for \code{Matrix::Matrix()}.
+\item Preserves rowtype and coltype on \code{data}.
+}
 }
 \examples{
-# matsbyname::Matrix() will not create a Matrix with a symmetric subclass ...
+# matsbyname::Matrix() will not create a Matrix with a symmetric subclass.
+# dgCMatrix is a general matrix.
 matsbyname::Matrix(c(1, 0, 2, 
                      0, 0, 0, 
                      2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-# ... but Matrix::Matrix will create a symmetric matrix.
+# But Matrix::Matrix() will create a symmetric matrix.
+# dsCMatrix is a symmetric matrix.
 Matrix::Matrix(c(1, 0, 2, 
                  0, 0, 0, 
                  2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
-# matsbyname::Matrix() will not create a diagonal matrix ...
+# matsbyname::Matrix() will not create a diagonal matrix.
+# dgeMatrix is a general matrix.
 matsbyname::Matrix(c(1, 0, 
                      0, 1), byrow = TRUE, nrow = 2, ncol = 2)
-# ... but Matrix::Matrix will create a diagonal matrix.
+# But Matrix::Matrix() will create a diagonal matrix.
+# ddiMatrix is a diagonal matrix.
 Matrix::Matrix(c(1, 0, 
                  0, 1), byrow = TRUE, nrow = 2, ncol = 2)
 }
