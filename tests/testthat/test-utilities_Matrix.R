@@ -118,8 +118,13 @@ test_that("matsbyname::Matrix() is usable with matsbyname", {
   
   m2 <- ms
   dimnames(m2) <- list(c("r1", "r2"), c("c1", "c2"))
+  # Make sure we have not changed the class of m2 by trying to set its
+  # dimnames by be asymmetric.
+  expect_true(inherits(m2, "dsyMatrix"))
   # Not identical, because rownames are wrong for a symmetric matrix.
   expect_false(identical(dimnames(m2), list(c("r1", "r2"), c("c1", "c2"))))
+  # In fact, m2 retains the column names for its row names.
+  expect_equal(dimnames(m2), list(c("c1", "c2"), c("c1", "c2")))
   
   # Try to set the rownames  
   rownames(m2) <- c("r1", "r2")

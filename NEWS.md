@@ -31,6 +31,9 @@ output: html_document
 * Reacted to a change in grouping policy in `dplyr`
   that caused one test to issue a deprecation warning.
 * Update to latest GitHub actions continuous integration workflow.
+* Many new tests for new features.
+    - Now at 2083 tests, all passing.
+    - Test coverage remains at 100 %.
 
 
 # matsbyname 0.5.1 (2023-01-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7541455.svg)](https://doi.org/10.5281/zenodo.7541455)
