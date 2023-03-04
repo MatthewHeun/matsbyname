@@ -11,7 +11,7 @@ output: html_document
 * All functions now work with `Matrix` objects,
   thereby enabling use of sparse matrices.
   Use `matsbyname::Matrix()` to create sparse matrices
-  if appropriate.
+  if desired.
 * `create_matrix_byname()` gains `matrix.class` argument
   that tells whether the created object is of class
   `matrix` or `Matrix`.
