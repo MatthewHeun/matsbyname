@@ -4,7 +4,7 @@ output: html_document
 ---
 
 
-# matsbyname 0.6.0 (2023-03-04)
+# matsbyname 0.6.0 (2023-03-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7699156.svg)](https://doi.org/10.5281/zenodo.7699156)
 
 * Fixed a bug in `aggregate_pieces_byname()`
   where failure occurred if there were
