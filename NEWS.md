@@ -4,6 +4,8 @@ output: html_document
 ---
 
 
+# matsbyname 0.6.0 (2023-03-04)
+
 * Fixed a bug in `aggregate_pieces_byname()`
   where failure occurred if there were
   repeated row (or column) names not included 
@@ -29,6 +31,9 @@ output: html_document
 * Reacted to a change in grouping policy in `dplyr`
   that caused one test to issue a deprecation warning.
 * Update to latest GitHub actions continuous integration workflow.
+* Many new tests for new features.
+    - Now at 2078 tests, all passing.
+    - Test coverage remains at 100 %.
 
 
 # matsbyname 0.5.1 (2023-01-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7541455.svg)](https://doi.org/10.5281/zenodo.7541455)

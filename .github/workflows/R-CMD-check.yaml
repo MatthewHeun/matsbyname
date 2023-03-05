@@ -3,7 +3,7 @@
 
 on:
   push:
-    branches: [master, release-*]
+    branches: [master, develop, release-*, hotfix-*]
   pull_request:
     branches: [master]
   schedule:

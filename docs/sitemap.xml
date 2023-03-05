@@ -37,6 +37,9 @@
     <loc>/reference/Iminus_byname.html</loc>
   </url>
   <url>
+    <loc>/reference/Matrix.html</loc>
+  </url>
+  <url>
     <loc>/reference/abs_byname.html</loc>
   </url>
   <url>
@@ -187,7 +190,13 @@
     <loc>/reference/invert_byname.html</loc>
   </url>
   <url>
+    <loc>/reference/is.Matrix.html</loc>
+  </url>
+  <url>
     <loc>/reference/is.mat_byname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/is_matrix_or_Matrix.html</loc>
   </url>
   <url>
     <loc>/reference/iszero_byname.html</loc>
