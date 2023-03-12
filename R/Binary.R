@@ -570,7 +570,8 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b)
 equal_byname <- function(..., .summarise = FALSE){
   equal_func <- function(a, b){
-    return(isTRUE(base::all.equal(a, b)))
+    # return(isTRUE(base::all.equal(a, b)))
+    return(equal_matrix_or_Matrix(a, b))
   }
   naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE, .summarise = .summarise)
 }

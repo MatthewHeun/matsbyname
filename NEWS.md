@@ -4,6 +4,11 @@ output: html_document
 ---
 
 
+* Fixed a bug where `equal_byname()` wasn't using `equal_matrix_or_Matrix()`.
+  As a result, it was difficult to tell whether a `matrix` and a `Matrix`
+  were equal.
+
+
 # matsbyname 0.6.0 (2023-03-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7699156.svg)](https://doi.org/10.5281/zenodo.7699156)
 
 * Fixed a bug in `aggregate_pieces_byname()`

@@ -1086,7 +1086,7 @@ test_that("identical_byname() works as expected", {
   # With a little bit of numerical fuzz, identical_byname fails
   expect_false(identical_byname(100, 100 + 1e-10))
   # With a little bit of numerical fuzz, equal_byname passes
-  expect_true(equal_byname(100, 100 + 1e-10))
+  expect_true(equal_byname(100, 100 + 1e-15))
   # Now try with matrices
   a <- matrix(1:4, nrow = 2)
   b <- matrix(1:4, nrow = 2)
