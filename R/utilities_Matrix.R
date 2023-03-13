@@ -260,7 +260,7 @@ equal_matrix_or_Matrix <- function(a, b, tolerance = 1e-16) {
   # the actual Matrix type.
 
   # Check numbers
-  if (!(all(abs(a - b) < tolerance))) {
+  if (!(all(abs(a - b) <= tolerance))) {
     return(FALSE)
   }
   # Check row and column names

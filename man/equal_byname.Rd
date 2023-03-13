@@ -4,13 +4,17 @@
 \alias{equal_byname}
 \title{Compare two matrices "by name" for equality}
 \usage{
-equal_byname(..., .summarise = FALSE)
+equal_byname(..., .summarise = FALSE, tol = 0)
 }
 \arguments{
 \item{...}{Operands to be compared.}
 
 \item{.summarise}{Tells whether the operation should be accomplished
 across lists (\code{FALSE}) or down lists (\code{TRUE}).}
+
+\item{tol}{A double that tells how precisely equal the values
+of \code{a} and \code{b} must be.
+Default is \code{0}.}
 }
 \value{
 \code{TRUE} iff all information is equal, including
@@ -22,11 +26,14 @@ entries in the matrices.
 If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 }
 \details{
-Comparisons are made by \code{isTRUE(all.equal(a, b))} so that variations among numbers
-within the computational precision will still return \code{TRUE}.
+Comparisons are made by \code{equal_matrix_or_Matrix(a, b, tolerance = abs(tol))}
+so that variations among numbers
+within \code{tol} will still return \code{TRUE.}
 
-If EXACT comparison is needed, use \code{\link{identical_byname}},
+If EXACT comparison is needed, use \code{identical_byname()},
 which compares using \code{identical(a, b)}.
+
+\code{tol} should be a single value that applies to all items in \code{...}.
 }
 \examples{
 a <- matrix(1:4, nrow = 2)

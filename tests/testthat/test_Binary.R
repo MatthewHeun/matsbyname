@@ -1081,6 +1081,14 @@ test_that("equal_byname() works with Matrix objects", {
 })
 
 
+test_that("equal_byname() works with tol argument", {
+  expect_true(equal_byname(0, 0))
+  expect_false(equal_byname(0, 1e-10))
+  expect_true(equal_byname(0, 1e-6, tol = 1e-5))
+  expect_true(equal_byname(0, -1e-6, tol = 1e-5))
+})
+
+
 test_that("identical_byname() works as expected", {
   expect_true(identical_byname(100, 100))
   # With a little bit of numerical fuzz, identical_byname fails
