@@ -4,7 +4,7 @@ output: html_document
 ---
 
 
-* `equal_bynam()` gains `tol` argument to control the 
+* `equal_byname()` gains `tol` argument to control the 
   precision with which equality is decided.
 * Fixed a bug where `equal_byname()` wasn't using `equal_matrix_or_Matrix()`.
   As a result, it was difficult to tell whether a `matrix` and a `Matrix`
