@@ -1,18 +1,54 @@
 ## Context
 
-`matsbyname` v0.6.0
-adds the capability to use `Matrix` objects,
-thereby enabling sparse matrices.
-A few bug fixes are also included.
+`matsbyname` v0.6.1
+fixes one bug and adds a new `tol` argument
+to control precision of equality determinations. 
 See `NEWS.md` for details.
 
 
 ## Test environments (12 in total) and R CMD check results
 
-* Local macOS X 13.2.1 (Ventura), R4.2.2
+* Local macOS X 13.3.1 (Ventura), R4.3.0
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
+
+
+* GitHub Actions: 
+
+
+
+* Windows (on win-builder):
+    * `devtools::check_win_release()`, R version 4.3.0 (2023-04-21 ucrt)
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
+
+
+
+* rhub:
+    * `devtools::check_rhub()`
+
+
+
+
+
+
+## revdepcheck results
+
+We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
+
+
+
+
+
+
+
+
+
 * GitHub Actions: 
     * macOS-latest (release)
         * ERRORs: 0
@@ -35,10 +71,6 @@ See `NEWS.md` for details.
         * WARNINGs: 0
         * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.2.2 (2022-10-31 ucrt)
-        * ERRORs: 0
-        * WARNINGs: 0
-        * NOTEs: 0
     * `devtools::check_win_devel()`, R Under development (unstable) (2023-03-03 r83933 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
@@ -71,12 +103,5 @@ See `NEWS.md` for details.
                 - This NOTE appears to be an anomaly, as it occurs only in this test setup.
 
             
-
-## revdepcheck results
-
-We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
-
- * We saw 0 new problems
- * We failed to check 0 packages
 
  
