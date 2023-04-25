@@ -63,7 +63,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">equal_byname</span><span class="op">(</span><span class="va">...</span>, .summarise <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">equal_byname</span><span class="op">(</span><span class="va">...</span>, .summarise <span class="op">=</span> <span class="cn">FALSE</span>, tol <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,6 +75,12 @@
 <dt>.summarise</dt>
 <dd><p>Tells whether the operation should be accomplished
 across lists (<code>FALSE</code>) or down lists (<code>TRUE</code>).</p></dd>
+
+
+<dt>tol</dt>
+<dd><p>A double that tells how precisely equal the values
+of <code>a</code> and <code>b</code> must be.
+Default is <code>0</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -92,10 +98,12 @@ row and column types <em>and</em></p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Comparisons are made by <code>isTRUE(all.equal(a, b))</code> so that variations among numbers
-within the computational precision will still return <code>TRUE</code>.</p>
-<p>If EXACT comparison is needed, use <code><a href="identical_byname.html">identical_byname</a></code>,
+    <p>Comparisons are made by <code>equal_matrix_or_Matrix(a, b, tolerance = abs(tol))</code>
+so that variations among numbers
+within <code>tol</code> will still return <code>TRUE.</code></p>
+<p>If EXACT comparison is needed, use <code><a href="identical_byname.html">identical_byname()</a></code>,
 which compares using <code>identical(a, b)</code>.</p>
+<p><code>tol</code> should be a single value that applies to all items in <code>...</code>.</p>
     </div>
 
     <div class="section level2">
