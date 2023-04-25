@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,16 @@
       <small>Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.1" id="matsbyname-061-2023-04-25">matsbyname 0.6.1 (2023-04-25)<a class="anchor" aria-label="anchor" href="#matsbyname-061-2023-04-25"></a></h2>
+<ul><li>
+<code><a href="../reference/equal_byname.html">equal_byname()</a></code> gains <code>tol</code> argument to control the precision with which equality is decided.</li>
+<li>Fixed a bug where <code><a href="../reference/equal_byname.html">equal_byname()</a></code> wasn’t using <code>equal_matrix_or_Matrix()</code>. As a result, it was difficult to tell whether a <code>matrix</code> and a <code>Matrix</code> were equal.</li>
+<li>New tests for new features.
+<ul><li>Now at 2082 tests, all passing.</li>
+<li>Test coverage remains at 100 %.</li>
+</ul></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="matsbyname-060-2023-03-04-doi">matsbyname 0.6.0 (2023-03-04) <a href="https://doi.org/10.5281/zenodo.7699156" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7699156.svg" alt="DOI"></a>
 <a class="anchor" aria-label="anchor" href="#matsbyname-060-2023-03-04-doi"></a></h2><p class="text-muted">CRAN release: 2023-03-04</p>
