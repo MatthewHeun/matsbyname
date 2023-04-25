@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,22 +102,22 @@ Etc.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> p2  3 10 13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> p3 -2 -6 -8</span>
 <span class="r-in"><span><span class="fu">eigenvalues_byname</span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  4.000000e+00  2.000000e+00 -8.364134e-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.000000e+00 2.000000e+00 3.864957e-17</span>
 <span class="r-in"><span><span class="fu">eigenvalues_byname</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="fl">2</span><span class="op">*</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  4.000000e+00  2.000000e+00 -8.364134e-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.000000e+00 2.000000e+00 3.864957e-17</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  8.000000e+00  4.000000e+00 -1.672827e-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.000000e+00 4.000000e+00 7.729914e-17</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>m_col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="fl">2</span><span class="op">*</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    eigen_col <span class="op">=</span> <span class="fu">eigenvalues_byname</span><span class="op">(</span><span class="va">m_col</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">DF</span><span class="op">$</span><span class="va">eigen_col</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  4.000000e+00  2.000000e+00 -8.364134e-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.000000e+00 2.000000e+00 3.864957e-17</span>
 <span class="r-in"><span><span class="va">DF</span><span class="op">$</span><span class="va">eigen_col</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  8.000000e+00  4.000000e+00 -1.672827e-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.000000e+00 4.000000e+00 7.729914e-17</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
