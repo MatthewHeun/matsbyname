@@ -537,19 +537,25 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #'
 #' If operands are matrices, they are completed and sorted relative to one another prior to comparison.
 #' 
-#' Comparisons are made by \code{isTRUE(all.equal(a, b))} so that variations among numbers
-#' within the computational precision will still return \code{TRUE}.
+#' Comparisons are made by `equal_matrix_or_Matrix(a, b, tolerance = abs(tol))`
+#' so that variations among numbers
+#' within `tol` will still return `TRUE.`
 #' 
-#' If EXACT comparison is needed, use \code{\link{identical_byname}}, 
-#' which compares using \code{identical(a, b)}.
+#' If EXACT comparison is needed, use `identical_byname()`, 
+#' which compares using `identical(a, b)`.
+#'
+#' `tol` should be a single value that applies to all items in `...`.
 #'
 #' @param ... Operands to be compared.
 #' @param .summarise Tells whether the operation should be accomplished
 #'                   across lists (`FALSE`) or down lists (`TRUE`).
+#' @param tol A double that tells how precisely equal the values
+#'            of `a` and `b` must be.
+#'            Default is `0`.
 #'
 #' @return `TRUE` iff all information is equal, including
-#' row and column types \emph{and}
-#' row and column names \emph{and}
+#' row and column types _and_
+#' row and column names _and_
 #' entries in the matrices.
 #' @export
 #'
@@ -568,9 +574,10 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' equal_byname(a, b) # FALSE, because row and column names are not equal
 #' dimnames(b) <- dimnames(a)
 #' equal_byname(a, b)
-equal_byname <- function(..., .summarise = FALSE){
+equal_byname <- function(..., .summarise = FALSE, tol = 0){
   equal_func <- function(a, b){
-    return(isTRUE(base::all.equal(a, b)))
+    # return(isTRUE(base::all.equal(a, b)))
+    return(equal_matrix_or_Matrix(a, b, tolerance = abs(tol)))
   }
   naryapplylogical_byname(equal_func, ..., set_rowcoltypes = FALSE, .summarise = .summarise)
 }
