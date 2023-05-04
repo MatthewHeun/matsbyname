@@ -12,7 +12,6 @@ output: html_document
     - Test coverage remains at 100 %.
 
 
-
 # matsbyname 0.6.1 (2023-04-25) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7865440.svg)](https://doi.org/10.5281/zenodo.7865440)
 
 * `equal_byname()` gains `tol` argument to control the 
