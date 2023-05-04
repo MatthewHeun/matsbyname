@@ -3,8 +3,17 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+# matsbyname 0.6.2 (2023-05-04)
 
-# matsbyname 0.6.1 (2023-04-25) 
+* Move to latest version of GitHub test coverage workflow.
+* This version not released to CRAN.
+* No new tests.
+    - Still at 2082 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+
+# matsbyname 0.6.1 (2023-04-25) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7865440.svg)](https://doi.org/10.5281/zenodo.7865440)
 
 * `equal_byname()` gains `tol` argument to control the 
   precision with which equality is decided.
