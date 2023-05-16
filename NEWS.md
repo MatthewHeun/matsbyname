@@ -3,6 +3,10 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+
+* Renamed `matrix.class` argument to `matrix_class`.
+
+
 # matsbyname 0.6.2 (2023-05-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7896773.svg)](https://doi.org/10.5281/zenodo.7896773)
 
 * Move to latest version of GitHub test coverage workflow.
