@@ -8,7 +8,7 @@ create_colvec_byname(
   .dat,
   dimnames = NA,
   colname = NA,
-  matrix.class = c("matrix", "Matrix")
+  matrix_class = c("matrix", "Matrix")
 )
 }
 \arguments{
@@ -19,7 +19,7 @@ containing a list of the dimension names to be used for each observation.}
 
 \item{colname}{The name of the column of the colvector.}
 
-\item{matrix.class}{One of "matrix" or "Matrix".
+\item{matrix_class}{One of "matrix" or "Matrix".
 "matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
 "Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
 Default is "matrix".}

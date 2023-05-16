@@ -82,7 +82,7 @@
 <ul><li>Fixed a bug in <code><a href="../reference/aggregate_pieces_byname.html">aggregate_pieces_byname()</a></code> where failure occurred if there were repeated row (or column) names not included in the aggregation_map.</li>
 <li>All functions now work with <code>Matrix</code> objects, thereby enabling use of sparse matrices. Use <code><a href="../reference/Matrix.html">matsbyname::Matrix()</a></code> to create sparse matrices if desired.</li>
 <li>
-<code><a href="../reference/create_matrix_byname.html">create_matrix_byname()</a></code> gains <code>matrix.class</code> argument that tells whether the created object is of class <code>matrix</code> or <code>Matrix</code>. Default is “matrix”.</li>
+<code><a href="../reference/create_matrix_byname.html">create_matrix_byname()</a></code> gains <code>matrix_class</code> argument that tells whether the created object is of class <code>matrix</code> or <code>Matrix</code>. Default is “matrix”.</li>
 <li>New function <code><a href="../reference/is.Matrix.html">is.Matrix()</a></code> assists with determining whether an object is a <code>Matrix</code>. The base function<code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">is.matrix()</a></code> assists with determining whether an object is a <code>matrix</code>.</li>
 <li>First function (<code><a href="../reference/sum_byname.html">sum_byname()</a></code>) now works with <code>Matrix</code> objects, paving the way for sparse matrix representation throughout <code>matsbyname</code>.</li>
 <li>In tests, cleaned up many warnings emanating from the change to <code>testthat</code> v3.</li>
