@@ -8,7 +8,8 @@ create_rowvec_byname(
   .dat,
   dimnames = NA,
   rowname = NA,
-  matrix_class = c("matrix", "Matrix")
+  matrix.class = c("matrix", "Matrix"),
+  matrix_class = matrix.class
 )
 }
 \arguments{
@@ -18,6 +19,8 @@ create_rowvec_byname(
 containing a list of the dimension names to be used for each observation.}
 
 \item{rowname}{The name of the row of the row vector.}
+
+\item{matrix.class}{Deprecated. Use \code{matrix_class} instead.}
 
 \item{matrix_class}{One of "matrix" or "Matrix".
 "matrix" creates a \code{base::matrix} object with the \code{matrix()} function.

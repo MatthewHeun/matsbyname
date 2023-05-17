@@ -2794,6 +2794,12 @@ test_that("create_matrix_byname() works with matrix_class = 'Matrix'", {
 })
 
 
+test_that("create_matrix_byname() deprecation is correct", {
+  expect_warning(create_matrix_byname(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1"), 
+                                      matrix.class = "Matrix"))
+})
+
+
 test_that("create_rowvec_byname() works with Matrix objects", {
   # Try with a single number
   single_vec <- create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), rowname = "r1", 
