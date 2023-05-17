@@ -3,7 +3,8 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
-
+* Deprecated `matrix.class`. 
+  It will be removed soon.
 * Renamed `matrix.class` argument to `matrix_class`.
 
 
