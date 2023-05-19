@@ -3,9 +3,12 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
-* Deprecated `matrix.class`. 
+* Deprecated `matrix.class` argument. 
   It will be removed soon.
 * Renamed `matrix.class` argument to `matrix_class`.
+* New tests for matrix_class transition.
+    - Still at 2085 tests, all passing.
+    - Test coverage remains at 100 %.
 
 
 # matsbyname 0.6.2 (2023-05-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7896773.svg)](https://doi.org/10.5281/zenodo.7896773)
