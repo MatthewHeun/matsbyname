@@ -1,8 +1,8 @@
 ## Context
 
-`matsbyname` v0.6.1
-fixes one bug and adds a new `tol` argument
-to control precision of equality determinations. 
+`matsbyname` v0.6.3
+deprecates one argument (`matrix.class`), and
+renames it (`matrix_class`).
 See `NEWS.md` for details.
 
 
