@@ -36,6 +36,9 @@ See `NEWS.md` for details.
 * Windows (on win-builder):
     * `devtools::check_win_release()`, R version 4.3.0 (2023-04-21 ucrt)
     * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
     * `devtools::check_win_devel()`, R Under development (unstable) (2023-05-18 r84448 ucrt)   OK
         * ERRORs: 0
         * WARNINGs: 0
@@ -43,6 +46,19 @@ See `NEWS.md` for details.
 * rhub:
     * `devtools::check_rhub()`
         * Windows Server 2022, R-devel, 64 bit
+            * ERRORs: 0
+            * WARNINGs: 0
+            * NOTEs: 2
+                * checking for non-standard things in the check directory ... NOTE
+                * Found the following files/directories:
+                * ''NULL''
+                    * This appears to be a problem with this test setup only.
+                    * This is the only platform on which this NOTE occurs.
+                * checking for detritus in the temp directory ... NOTE
+                * Found the following files/directories:
+                * 'lastMiKTeXException'
+                    * This appears to be a mal-configuration of the test setup.
+                    * This is the only platform on which this NOTE occurs.
         * Fedora Linux, R-devel, clang, gfortran
         * Ubuntu Linux 20.04.1 LTS, R-release, GCC
 
