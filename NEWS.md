@@ -6,7 +6,7 @@ output: html_document
 * Deprecated `matrix.class` argument. 
   It will be removed soon.
 * Renamed `matrix.class` argument to `matrix_class`.
-* New tests for matrix_class transition.
+* New tests for `matrix.class` --> `matrix_class` transition.
     - Still at 2085 tests, all passing.
     - Test coverage remains at 100 %.
 
