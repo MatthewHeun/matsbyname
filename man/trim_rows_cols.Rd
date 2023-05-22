@@ -18,7 +18,7 @@ trim_rows_cols(
 \arguments{
 \item{a}{A matrix to be trimmed.}
 
-\item{mat}{The matrix}
+\item{mat}{The matrix used as the template for rows and/or columns of \code{a}.}
 
 \item{margin}{The dimension of \code{a} to be trimmed. \code{1} means rows; \code{2} means columns.
 Default is \code{c(1,2)}.}
@@ -74,6 +74,7 @@ which will match the prefix or suffix of the labels.
 Alternatively, prepositions can be given such that
 objects of prepositions will be matched.
 Examples include "from" or "in".
+See \code{\link[RCLabels:get_piece]{RCLabels::get_piece()}} for details.
 }
 \examples{
 a <- matrix(c(1, 2, 3, 
