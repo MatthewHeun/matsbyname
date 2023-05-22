@@ -35,6 +35,9 @@ See `NEWS.md` for details.
         * NOTEs: 0
 * Windows (on win-builder):
     * `devtools::check_win_release()`, R version 4.3.0 (2023-04-21 ucrt)
+        * ERRORs: 0
+        * WARNINGs: 0
+        * NOTEs: 0
     * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
