@@ -628,7 +628,7 @@ test_that("hatinv_byname() works as expected", {
   DF_expected[[2, "v_list"]] <- v
   DF_expected[[1, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
   DF_expected[[2, "hatinv"]] <- v %>% hatize_byname(keep = "rownames") %>% invert_byname()
-  # The hatinv column of DF_expected will have matrix.class = 'AsIs', but
+  # The hatinv column of DF_expected will have matrix_class = 'AsIs', but
   # the hatinv column of DF will have no class attribute.  
   # Eliminate that mismatch.
   attr(DF_expected$hatinv, which = "class") <- NULL

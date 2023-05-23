@@ -10,7 +10,8 @@ create_matrix_byname(
   ncol,
   byrow = FALSE,
   dimnames,
-  matrix.class = c("matrix", "Matrix")
+  matrix.class = lifecycle::deprecated(),
+  matrix_class = c("matrix", "Matrix")
 )
 }
 \arguments{
@@ -30,9 +31,12 @@ Default is \code{FALSE.}}
 \item{dimnames}{The dimension names to be used for creating the matrices, in a list format, or as a data frame column
 containing a list of the dimension names to be used for each observation.}
 
-\item{matrix.class}{One of "matrix" or "Matrix".
+\item{matrix.class}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{matrix_class} instead.}
+
+\item{matrix_class}{One of "matrix" or "Matrix".
 "matrix" creates a \code{base::matrix} object with the \code{matrix()} function.
 "Matrix" creates a \code{Matrix::Matrix} object using the \code{matsbyname::Matrix()} function.
+This could be a sparse matrix.
 Default is "matrix".}
 }
 \value{

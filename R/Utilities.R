@@ -1559,9 +1559,11 @@ ncol_byname <- function(a) {
 #'              Default is `FALSE.`
 #' @param dimnames The dimension names to be used for creating the matrices, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param matrix.class One of "matrix" or "Matrix". 
+#' @param matrix.class `r lifecycle::badge("deprecated")` Use `matrix_class` instead. 
+#' @param matrix_class One of "matrix" or "Matrix". 
 #'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
 #'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     This could be a sparse matrix.
 #'                     Default is "matrix".
 #'
 #' @return A matrix, list of matrices, or column in a data frame, depending on the input arguments.
@@ -1574,14 +1576,23 @@ ncol_byname <- function(a) {
 #' create_matrix_byname(list(1, 2), nrow = list(1, 1), ncol = list(1,1), 
 #'                      dimnames = list(list("r1", "c1"), list("R1", "C1")))
 create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames, 
-                                 matrix.class = c("matrix", "Matrix")) {
-  matrix.class <- match.arg(matrix.class)
+                                 matrix.class = lifecycle::deprecated(),
+                                 matrix_class = c("matrix", "Matrix")) {
+  
+  if (lifecycle::is_present(matrix.class)) {
+    lifecycle::deprecate_warn(when = "0.6.3", 
+                              what = "create_matrix_byname(matrix.class)", 
+                              with = "create_matrix_byname(matrix_class)")
+    matrix_class <- matrix.class
+  }
+  
+  matrix_class <- match.arg(matrix_class)
   matrix_func <- function(a, nrow_val, ncol_val, byrow_val, 
                           dimnames_val, rowtype_val = NA, coltype_val = NA) {
-    if (matrix.class == "matrix") {
+    if (matrix_class == "matrix") {
       return(matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
     } 
-    if (matrix.class == "Matrix") {
+    if (matrix_class == "Matrix") {
       return(matsbyname::Matrix(a, nrow = nrow_val, ncol = ncol_val, byrow = byrow_val, dimnames = dimnames_val))
     }
     
@@ -1613,9 +1624,11 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames,
 #' @param rowname The name of the row of the row vector.
 #' @param dimnames The dimension names to be used for creating the row vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param matrix.class One of "matrix" or "Matrix". 
+#' @param matrix.class `r lifecycle::badge("deprecated")` Use `matrix_class` instead. 
+#' @param matrix_class One of "matrix" or "Matrix". 
 #'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
 #'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     This could be a sparse matrix.
 #'                     Default is "matrix".
 #'
 #' @return A row vector, a list of row vectors, or a data frame column of row vectors, depending on the 
@@ -1646,8 +1659,16 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames,
 #' df1$rowvec_col[[1]]
 #' df1$rowvec_col[[2]]
 #' df1$rowvec_col[[3]]
-create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, matrix.class = c("matrix", "Matrix")){
-  matrix.class <- match.arg(matrix.class)
+create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, 
+                                 matrix.class = lifecycle::deprecated(),
+                                 matrix_class = c("matrix", "Matrix")) {
+  if (lifecycle::is_present(matrix.class)) {
+    lifecycle::deprecate_warn(when = "0.6.3", 
+                              what = "create_matrix_byname(matrix.class)", 
+                              with = "create_matrix_byname(matrix_class)")
+    matrix_class <- matrix.class
+  }
+  matrix_class <- match.arg(matrix_class)
   rowvec_func <- function(a, dimnames_val, rowname_val) {
 
     # Figure out the column names.
@@ -1658,7 +1679,7 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, matrix.class
       dimnames_val <- list(rowname_val, names(a))
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val, matrix.class = matrix.class) 
+    create_matrix_byname(a, nrow = 1, ncol = length(a), dimnames = dimnames_val, matrix_class = matrix_class) 
   }
 
   unaryapply_byname(FUN = rowvec_func, 
@@ -1684,9 +1705,11 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, matrix.class
 #' @param colname The name of the column of the colvector.
 #' @param dimnames The dimension names to be used for creating the column vector, in a list format, or as a data frame column
 #'                 containing a list of the dimension names to be used for each observation.
-#' @param matrix.class One of "matrix" or "Matrix". 
+#' @param matrix.class `r lifecycle::badge("deprecated")` Use `matrix_class` instead. 
+#' @param matrix_class One of "matrix" or "Matrix". 
 #'                     "matrix" creates a `base::matrix` object with the `matrix()` function.
 #'                     "Matrix" creates a `Matrix::Matrix` object using the `matsbyname::Matrix()` function.
+#'                     This could be a sparse matrix.
 #'                     Default is "matrix".
 #'
 #' @return A column vector, a list of column vectors, or a data frame column of column vectors, depending on the 
@@ -1718,8 +1741,16 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA, matrix.class
 #' df1$colvec_col[[1]]
 #' df1$colvec_col[[2]]
 #' df1$colvec_col[[3]]
-create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, matrix.class = c("matrix", "Matrix")) {
-  matrix.class <- match.arg(matrix.class)
+create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, 
+                                 matrix.class = lifecycle::deprecated(),
+                                 matrix_class = c("matrix", "Matrix")) {
+  if (lifecycle::is_present(matrix.class)) {
+    lifecycle::deprecate_warn(when = "0.6.3", 
+                              what = "create_matrix_byname(matrix.class)", 
+                              with = "create_matrix_byname(matrix_class)")
+    matrix_class <- matrix.class
+  }
+  matrix_class <- match.arg(matrix_class)
   colvec_func <- function(a, dimnames_val, colname_val) {
 
     # Figure out the row names.
@@ -1730,7 +1761,7 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA, matrix.class
       dimnames_val <- list(names(a), colname_val)
     }
     # Create the row vector using the rowtype and coltype of a.
-    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val, matrix.class = matrix.class)
+    create_matrix_byname(a, nrow = length(a), ncol = 1, dimnames = dimnames_val, matrix_class = matrix_class)
   }
 
   unaryapply_byname(FUN = colvec_func,
@@ -1783,9 +1814,9 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
       class_a_mat <- "matrix"
     }
     if (column_val) {
-      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), matrix.class = class_a_mat)
+      create_colvec_byname(rep(k_val, nrow(a_mat)), dimnames = list(rownames(a_mat), colname_val), matrix_class = class_a_mat)
     } else {
-      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), matrix.class = class_a_mat)
+      create_rowvec_byname(rep(k_val, ncol(a_mat)), dimnames = list(colname_val, colnames(a_mat)), matrix_class = class_a_mat)
     }
   }
 
