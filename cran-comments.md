@@ -1,14 +1,14 @@
 ## Context
 
-`matsbyname` v0.6.1
-fixes one bug and adds a new `tol` argument
-to control precision of equality determinations. 
+`matsbyname` v0.6.3
+deprecates one argument (`matrix.class`), and
+renames it (`matrix_class`).
 See `NEWS.md` for details.
 
 
 ## Test environments (12 in total) and R CMD check results
 
-* Local macOS X 13.3.1 (Ventura), R4.3.0
+* Local macOS X 13.3.1(a) (Ventura), R4.3.0
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
@@ -42,7 +42,7 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2023-04-24 r84317 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2023-05-18 r84448 ucrt)   OK
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -51,29 +51,33 @@ See `NEWS.md` for details.
         * Windows Server 2022, R-devel, 64 bit
             * ERRORs: 0
             * WARNINGs: 0
-            * NOTEs: 1
-                - checking for detritus in the temp directory ... NOTE
-                - Found the following files/directories:
-                - 'lastMiKTeXException'
-                - This note appears to be a minor problem with the cleanup process, not caused by the `matsbyname` package itself.
+            * NOTEs: 2
+                * checking for non-standard things in the check directory ... NOTE
+                * Found the following files/directories:
+                * ''NULL''
+                    * This appears to be a problem with this test setup only.
+                    * This is the only platform on which this NOTE occurs.
+                * checking for detritus in the temp directory ... NOTE
+                * Found the following files/directories:
+                * 'lastMiKTeXException'
+                    * This appears to be a mal-configuration of the test setup.
+                    * This is the only platform on which this NOTE occurs.
         * Fedora Linux, R-devel, clang, gfortran
             * ERRORs: 0
             * WARNINGs: 0
-            * NOTEs: 2
-                - checking HTML version of manual ... NOTE
-                - Skipping checking HTML validation: no command 'tidy' found
-                - This NOTE appears to be an anomaly, as it occurs only on rhub.
-                - Examples with CPU (user + system) or elapsed time > 5s
-                -        user system elapsed
-                - Matrix 1.37  0.053   5.852
-                - This NOTE appears only in this test setup.
+            * NOTEs: 1
+                * checking HTML version of manual ... NOTE
+                * Skipping checking HTML validation: no command 'tidy' found
+                    * This appears to be a val-configuration of the Linux test setups.
+                    * Linux is the only platform on which this NOTE occurs.
         * Ubuntu Linux 20.04.1 LTS, R-release, GCC
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
-                - checking HTML version of manual ... NOTE
-                - Skipping checking HTML validation: no command 'tidy' found
-                - This NOTE appears to be an anomaly, as it occurs only on rhub.
+                * checking HTML version of manual ... NOTE
+                * Skipping checking HTML validation: no command 'tidy' found
+                    * This appears to be a val-configuration of the Linux test setups.
+                    * Linux is the only platform on which this NOTE occurs.
 
 
 ## revdepcheck results
