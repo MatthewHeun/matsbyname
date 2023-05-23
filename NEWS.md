@@ -3,7 +3,7 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
-# matsbyname 0.6.3 (2023-05-22) 
+# matsbyname 0.6.3 (2023-05-22) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7963562.svg)](https://doi.org/10.5281/zenodo.7963562)
 
 * Deprecated `matrix.class` argument. 
   It will be removed soon.
