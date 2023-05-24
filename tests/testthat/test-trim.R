@@ -366,3 +366,12 @@ test_that("trim_rows_cols() respects pieces with Matrix objects", {
   expect_equal(res2, expected1)
 })
 
+
+test_that("trim_rows_cols() works with partial matching", {
+  to_trim <- matrix(1:6, nrow = 3, ncol = 2, dimnames = list(c("r1p -> r1s", "r2p -> r2s", "r3p -> r3s"), 
+                                                             c("c1p -> c1s", "c2p -> c2s")))
+  mat <- matrix(42, nrow = 2, ncol = 1, dimnames = list(c("r1p", "r3p"), c("c2s")))
+  
+  res <- trim_rows_cols(a = to_trim, mat = mat, margin = 1, a_piece = "pref", notation = RCLabels::arrow_notation)
+  expect_equal(res, to_trim[c(1,3), c(1,2)])
+})
