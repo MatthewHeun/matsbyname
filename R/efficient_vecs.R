@@ -119,7 +119,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' @param missing The value used when the desired value is not found in `v`.
 #'                Default is `NA_real_`.
 #'
-#' @return A vector with names from `a` and values from `v`.
+#' @return A column vector with names from `a` and values from `v`.
 #' 
 #' @export
 #'
