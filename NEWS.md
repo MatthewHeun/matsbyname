@@ -3,6 +3,12 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+
+* Added a few new tests for `vec_from_store_byname()`
+  to verify operation when multiple rows in `a` match `v`.
+
+
+
 # matsbyname 0.6.3 (2023-05-22) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7963562.svg)](https://doi.org/10.5281/zenodo.7963562)
 
 * Deprecated `matrix.class` argument. 
