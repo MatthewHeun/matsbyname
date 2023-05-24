@@ -745,12 +745,13 @@ test_that("vec_from_store_byname() works when a row vector is desired.", {
                               "eta")) %>%
     setrowtype("Industry") %>% setcoltype("eta")
   
-  expect_equal(vec_from_store_byname(a, v, a_piece = "pref", column = FALSE), 
-               matrix(c(3, 5), nrow = 1, ncol = 2, 
-                      dimnames = list("eta", 
-                                      c("Wind turbines", 
-                                        "Oil wells"))) %>%
-                 setrowtype("eta") %>% setcoltype("Industry"))
+  expect_equal(vec_from_store_byname(a, v, a_piece = "pref", margin = 2), 
+               matrix(c(3, 
+                        5), nrow = 2, ncol = 1, 
+                      dimnames = list(c("Wind turbines", 
+                                        "Oil wells"), 
+                                      "eta")) %>%
+                 setrowtype("Industry") |> setcoltype("eta"))
   
   # See if it works with a row vector for v.
   v_row <- matrix(1:7, nrow = 1, ncol = 7, 
@@ -763,13 +764,13 @@ test_that("vec_from_store_byname() works when a row vector is desired.", {
                                     "Hard coal (if no detail)", 
                                     "f"))) %>%
     setrowtype("eta") %>% setcoltype("Industry")
-  expect_equal(vec_from_store_byname(a, v_row, a_piece = "pref", column = FALSE), 
-               matrix(c(3, 5), nrow = 1, ncol = 2, 
-                      dimnames = list("eta", 
-                                      c("Wind turbines", 
-                                        "Oil wells"))) %>%
-                 setrowtype("eta") %>% setcoltype("Industry"))
-  
+  expect_equal(vec_from_store_byname(a, v_row, a_piece = "pref", margin = 2), 
+               matrix(c(3, 
+                        5), nrow = 2, ncol = 1, 
+                      dimnames = list(c("Wind turbines", 
+                                        "Oil wells"), 
+                                      "eta")) %>%
+                 setrowtype("Industry") |> setcoltype("eta"))
 })
 
 
@@ -792,14 +793,15 @@ test_that("vec_from_store_byname() works when a row vector Matrix object is desi
                               "eta")) %>%
     setrowtype("Industry") %>% setcoltype("eta")
   
-  res <- vec_from_store_byname(a, v, a_piece = "pref", column = FALSE)
+  res <- vec_from_store_byname(a, v, a_piece = "pref", margin = 2)
   matsbyname:::expect_equal_matrix_or_Matrix(
     res, 
-    matrix(c(3, 5), nrow = 1, ncol = 2, 
-           dimnames = list("eta", 
-                           c("Wind turbines", 
-                             "Oil wells"))) %>%
-      setrowtype("eta") %>% setcoltype("Industry"))
+    matrix(c(3, 
+             5), nrow = 2, ncol = 1, 
+           dimnames = list(c("Wind turbines", 
+                             "Oil wells"), 
+                           "eta")) %>%
+      setrowtype("Industry") |> setcoltype("eta"))
   
   # See if it works with a row vector for v.
   v_row <- matrix(1:7, nrow = 1, ncol = 7, 
@@ -813,13 +815,13 @@ test_that("vec_from_store_byname() works when a row vector Matrix object is desi
                                     "f"))) %>%
     setrowtype("eta") %>% setcoltype("Industry")
   matsbyname:::expect_equal_matrix_or_Matrix(
-    vec_from_store_byname(a, v_row, a_piece = "pref", column = FALSE), 
-    matrix(c(3, 5), nrow = 1, ncol = 2, 
-           dimnames = list("eta", 
-                           c("Wind turbines", 
-                             "Oil wells"))) %>%
-      setrowtype("eta") %>% setcoltype("Industry"))
-  
+    vec_from_store_byname(a, v_row, a_piece = "pref", margin = 2), 
+    matrix(c(3, 
+             5), nrow = 2, ncol = 1, 
+           dimnames = list(c("Wind turbines", 
+                             "Oil wells"), 
+                           "eta")) %>%
+      setrowtype("Industry") |> setcoltype("eta"))
 })
 
 
@@ -842,14 +844,15 @@ test_that("vec_from_store_byname() works when a is a Matrix and v is a matrix.",
                                           "eta"), 
                           rowtype = "Industry", coltype = "eta")
   
-  res <- vec_from_store_byname(a, v, a_piece = "pref", column = FALSE)
+  res <- vec_from_store_byname(a, v, a_piece = "pref", margin = 2)
   expect_equal(
     res, 
-    matrix(c(3, 5), nrow = 1, ncol = 2, 
-           dimnames = list("eta", 
-                           c("Wind turbines", 
-                             "Oil wells"))) %>%
-      setrowtype("eta") %>% setcoltype("Industry"))
+    matrix(c(3, 
+             5), nrow = 2, ncol = 1, 
+           dimnames = list(c("Wind turbines", 
+                             "Oil wells"), 
+                           "eta")) %>%
+      setrowtype("Industry") |> setcoltype("eta"))
   
   # See if it works with a row vector for v.
   v_row <- matsbyname::Matrix(1:7, nrow = 1, ncol = 7, 
@@ -863,13 +866,13 @@ test_that("vec_from_store_byname() works when a is a Matrix and v is a matrix.",
                                                 "f")), 
                               rowtype = "eta", coltype = "Industry")
   expect_equal(
-    vec_from_store_byname(a, v_row, a_piece = "pref", column = FALSE), 
-    matrix(c(3, 5), nrow = 1, ncol = 2, 
-           dimnames = list("eta", 
-                           c("Wind turbines", 
-                             "Oil wells"))) %>%
-      setrowtype("eta") %>% setcoltype("Industry"))
-  
+    vec_from_store_byname(a, v_row, a_piece = "pref", margin = 2), 
+    matrix(c(3, 
+             5), nrow = 2, ncol = 1, 
+           dimnames = list(c("Wind turbines", 
+                             "Oil wells"), 
+                           "eta")) %>%
+      setrowtype("Industry") |> setcoltype("eta"))
 })
 
 
@@ -919,7 +922,6 @@ test_that("vec_from_store_byname() works with lists", {
   
   res2 <- vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from")
   expect_equal(res2, expected_list)
-  
 })
 
 

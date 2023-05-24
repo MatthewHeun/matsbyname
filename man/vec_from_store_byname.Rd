@@ -10,7 +10,8 @@ vec_from_store_byname(
   a_piece = "all",
   v_piece = "all",
   colname = NULL,
-  column = TRUE,
+  column = lifecycle::deprecated(),
+  margin = 1,
   notation = if (is.list(a)) {
      list(RCLabels::bracket_notation)
  } else {
@@ -42,7 +43,13 @@ Can also be a list or the name of a column in a data frame.}
 Default is \code{NULL}, meaning that the name of the 1-sized dimension in \code{v}
 should be used.}
 
-\item{column}{Tells whether a column vector (if \code{TRUE}, the default) or a row vector (if \code{FALSE}) should be created.}
+\item{column}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{margin} instead.
+For \code{column = TRUE}, use \code{margin = 1}.
+For \code{column = FALSE}, use \code{margin = 2}.}
+
+\item{margin}{Tells whether to assess the rows (\code{1}) or columns (\code{2}) of \code{a}
+when creating the outgoing vector.
+Default is \code{1}.}
 
 \item{notation}{The notation for the row and column labels.
 Default is \code{RCLabels::bracket_notation}, wrapped as a list if \code{a} is a list.}

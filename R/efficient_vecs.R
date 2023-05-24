@@ -106,7 +106,12 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'                (the only column if `column` is `TRUE`, the only row otherwise).
 #'                Default is `NULL`, meaning that the name of the 1-sized dimension in `v` 
 #'                should be used.
-#' @param column Tells whether a column vector (if `TRUE`, the default) or a row vector (if `FALSE`) should be created.
+#' @param column `r lifecycle::badge("deprecated")` Use `margin` instead.
+#'               For `column = TRUE`, use `margin = 1`.
+#'               For `column = FALSE`, use `margin = 2`.                
+#' @param margin Tells whether to assess the rows (`1`) or columns (`2`) of `a`
+#'               when creating the outgoing vector.
+#'               Default is `1`.
 #' @param notation The notation for the row and column labels.
 #'                 Default is `RCLabels::bracket_notation`, wrapped as a list if `a` is a list.
 #' @param prepositions The strings that will count for prepositions.
@@ -178,11 +183,26 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'   dplyr::mutate(
 #'     actual = vec_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from")
 #'   )
-vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, column = TRUE, 
+vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, 
+                                  column = lifecycle::deprecated(),
+                                  margin = 1,
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
                                   prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
                                   missing = NA_real_) {
-  vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, column_val, 
+  if (lifecycle::is_present(column)) {
+    lifecycle::deprecate_warn(when = "0.6.4", 
+                              what = "vec_from_store_byname(column)", 
+                              with = "vec_from_store_byname(margin)")
+    margin <- sapply(column, FUN = function(this_column) {
+      if (this_column) {
+        return(1)
+      } else {
+        return(2)
+      }
+    })
+  }
+  
+  vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, margin_val, 
                        notation_val = notation, 
                        prepositions_val = prepositions) {
     # Get size of the v vector
@@ -197,16 +217,14 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
     if (v_size[[1]] == 1) {
       # Turn it into a column vector, so we can assume a column vector 
       # for the rest of this function.
-      return(vec_func(a_mat, transpose_byname(v_vec), a_piece_val, v_piece_val, colname_val, column_val))
+      return(vec_func(a_mat, transpose_byname(v_vec), a_piece_val, v_piece_val, colname_val, margin_val))
     }
-    # If we want a row vector, transpose a_mat so that we want a column vector.
-    # By doing this, we can assume we want a column vector in the rest of this function.
-    if (!column_val) {
+    # If we want to match on columns of a, transpose a_mat so that its columns become rows.
+    if (margin_val == 2) {
       return(
         a_mat %>%
           transpose_byname() %>%
-          vec_func(v_vec, a_piece_val, v_piece_val, colname_val, column_val = TRUE) %>%
-          transpose_byname()        
+          vec_func(v_vec, a_piece_val, v_piece_val, colname_val, margin_val = 1)
       )
     }
     # At this point, we have a_mat and v_vec such that we want
@@ -268,7 +286,7 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
   
   binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE, set_rowcoltypes = FALSE,
                      .FUNdots = list(a_piece_val = a_piece, v_piece_val = v_piece, 
-                                     colname_val = colname, column_val = column, 
+                                     colname_val = colname, margin_val = margin, 
                                      notation_val = notation, 
                                      prepositions_val = prepositions))
 }

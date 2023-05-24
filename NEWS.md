@@ -3,7 +3,8 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
-
+* Deprecate the `column` argument of `vec_from_store_byname()`
+  in favor of a new `margin` argument, which is standard throughout `R`.
 * Added a few new tests for `vec_from_store_byname()`
   to verify operation when multiple rows in `a` match `v`.
 
