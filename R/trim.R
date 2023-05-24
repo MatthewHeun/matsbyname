@@ -41,6 +41,7 @@
 #'               Default is `c(1,2)`.
 #' @param warn_if_a_incomplete When `TRUE` (the default), a warning is emitted
 #'                             if `a` is missing entries on `margin` that are present in `mat`.
+#'                             Default is `TRUE`.
 #' @param a_piece The portion of `a` labels to be used for comparison. Default is "all".
 #' @param mat_piece The portion of `mat` labels to be used for comparison. Default is "all".
 #' @param notation The notation for row and column labels. 
