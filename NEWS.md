@@ -3,6 +3,8 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+* Policy change: 
+  `vec_from_store_byname()` now always returns a column vector.
 * Deprecate the `column` argument of `vec_from_store_byname()`
   in favor of a new `margin` argument, which is standard throughout `R`.
 * Added a few new tests for `vec_from_store_byname()`
