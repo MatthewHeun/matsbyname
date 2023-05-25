@@ -61,7 +61,7 @@ Default is \code{RCLabels::prepositions}, wrapped as a list if \code{a} is a lis
 Default is \code{NA_real_}.}
 }
 \value{
-A vector with names from \code{a} and values from \code{v}.
+A column vector with names from \code{a} and values from \code{v}.
 }
 \description{
 When a matrix is multiplied by a vector byname,

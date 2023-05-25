@@ -9,7 +9,7 @@ output: html_document
   in favor of a new `margin` argument, which is standard throughout `R`.
 * Added a few new tests for `vec_from_store_byname()`
   to verify operation when multiple rows in `a` match `v`.
-
+* Added a new test for `ncol_byname()` to verify operation.
 
 
 # matsbyname 0.6.3 (2023-05-22) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7963562.svg)](https://doi.org/10.5281/zenodo.7963562)

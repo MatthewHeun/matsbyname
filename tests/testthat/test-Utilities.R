@@ -2416,6 +2416,28 @@ test_that("ncol_byname() works with Matrix objects", {
 })
 
 
+test_that("ncol_byname() works with a single Matrix in a data frame", {
+  # First, test with a single 2x2 matrix:
+  productnames <- c("p1", "p2")
+  industrynames <- c("i1", "i2")
+  U <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, 
+                          dimnames = list(productnames, industrynames), 
+                          rowtype = "Products", coltype = "Industries")
+  dfUs <- data.frame(
+    matrix_byname = I(list())
+  )
+  colname <- "matrix_byname"
+  .phi_shape_OK <- ".phi_shape_OK"
+  dfUs[[1, colname]] <- U
+  res <- dfUs |> 
+    dplyr::mutate(
+      # Check that all phi vectors have 1 column.
+      "{.phi_shape_OK}" := (matsbyname::ncol_byname(.data[[colname]]) == 2)
+    )
+  expect_true(res$.phi_shape_OK[[1]])
+})
+
+
 test_that("create_matrix_byname() works as expected", {
   
   single_mat_with_types <- create_matrix_byname(1 %>% setrowtype("testing_rowtype") %>% setcoltype("testing_coltype"),
