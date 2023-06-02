@@ -248,6 +248,27 @@ test_that("matsbyname::Matrix() correctly deals with override dimnames", {
 })
 
 
+test_that("matsbyname::Matrix() is vectorized", {
+  m <- matrix(c(1, 0, 3, 
+                0, 3, 0, 
+                2, 0, 0), 
+              byrow = TRUE, nrow = 3, ncol = 3, 
+              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+  M <- matsbyname::Matrix(m)
+  m_list <- list(m, m)
+  M_list <- matsbyname::Matrix(m_list)
+  expect_equal(M_list, list(M, M))
+  df <- tibble::tibble(m = list(m, m, m))
+  dfM <- df |> 
+    dplyr::mutate(
+      M = matsbyname::Matrix(m)
+    )
+  expect_equal(dfM$M[[1]], M)
+  expect_equal(dfM$M[[2]], M)
+  expect_equal(dfM$M[[3]], M)
+})
+
+
 test_that("Matrix::solve() results in a sparse Matrix (or not)", {
   m <- matsbyname::Matrix(c(1, 0, 3, 
                             0, 3, 0, 

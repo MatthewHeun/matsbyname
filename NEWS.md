@@ -3,6 +3,8 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+* `matsbyname::Matrix` now vectorized for lists of `matrix` objects
+  in the `data` argument.
 * Policy change: 
   `vec_from_store_byname()` now always returns a column vector.
 * Deprecate the `column` argument of `vec_from_store_byname()`
