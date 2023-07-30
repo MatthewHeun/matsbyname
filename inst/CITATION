@@ -13,5 +13,5 @@ bibentry(
   textVersion = paste("Matthew Kuperus Heun (2023).", 
                       "matsbyname: An Implementation of Matrix Mathematics.",
                       "R package version 0.6.3.",
-                      "https://CRAN.R-project.org/package=matsbyname")
+                      "https://doi.org/10.5281/zenodo.5118872")
 )
