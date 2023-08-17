@@ -24,7 +24,7 @@ The return value will have rows or columns of a removed if they do not appear in
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,7 +103,7 @@ The return value will have rows or columns of <code>a</code> removed if they do 
 
 
 <dt>mat</dt>
-<dd><p>The matrix</p></dd>
+<dd><p>The matrix to be used as the template for rows and/or columns of <code>a</code>.</p></dd>
 
 
 <dt>margin</dt>
@@ -113,7 +113,8 @@ Default is <code>c(1,2)</code>.</p></dd>
 
 <dt>warn_if_a_incomplete</dt>
 <dd><p>When <code>TRUE</code> (the default), a warning is emitted
-if <code>a</code> is missing entries on <code>margin</code> that are present in <code>mat</code>.</p></dd>
+if <code>a</code> is missing entries on <code>margin</code> that are present in <code>mat</code>.
+Default is <code>TRUE</code>.</p></dd>
 
 
 <dt>a_piece</dt>
@@ -163,7 +164,8 @@ Other options for <code>a_piece</code> and <code>mat_piece</code> are "pref" and
 which will match the prefix or suffix of the labels.
 Alternatively, prepositions can be given such that
 objects of prepositions will be matched.
-Examples include "from" or "in".</p>
+Examples include "from" or "in".
+See <code><a href="https://rdrr.io/pkg/RCLabels/man/get_piece.html" class="external-link">RCLabels::get_piece()</a></code> for details.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
