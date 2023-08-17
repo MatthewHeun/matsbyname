@@ -7,6 +7,7 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+# matsbyname 0.6.4 (2023-08-17)
 
 * `matsbyname::Matrix` now vectorized for lists of `matrix` objects
   in the `data` argument.
