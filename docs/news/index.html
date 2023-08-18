@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.3" id="matsbyname-063-2023-05-22">matsbyname 0.6.3 (2023-05-22)<a class="anchor" aria-label="anchor" href="#matsbyname-063-2023-05-22"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.4" id="matsbyname-064-2023-08-17">matsbyname 0.6.4 (2023-08-17)<a class="anchor" aria-label="anchor" href="#matsbyname-064-2023-08-17"></a></h2>
+<ul><li>
+<code><a href="../reference/Matrix.html">matsbyname::Matrix</a></code> now vectorized for lists of <code>matrix</code> objects in the <code>data</code> argument.</li>
+<li>Policy change: <code><a href="../reference/vec_from_store_byname.html">vec_from_store_byname()</a></code> now always returns a column vector.</li>
+<li>Deprecate the <code>column</code> argument of <code><a href="../reference/vec_from_store_byname.html">vec_from_store_byname()</a></code> in favor of a new <code>margin</code> argument, which is standard throughout <code>R</code>.</li>
+<li>Added a few new tests for <code><a href="../reference/vec_from_store_byname.html">vec_from_store_byname()</a></code> to verify operation when multiple rows in <code>a</code> match <code>v</code>.</li>
+<li>Added a new test for <code><a href="../reference/ncol_byname.html">ncol_byname()</a></code> to verify operation.</li>
+<li>New tests for new features.
+<ul><li>Up to 2092 tests, all passing.</li>
+<li>Test coverage is at 99.41%, due only to deprecation code.</li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.3" id="matsbyname-063-2023-05-22-doi">matsbyname 0.6.3 (2023-05-22) <a href="https://doi.org/10.5281/zenodo.7963562" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7963562.svg" alt="DOI"></a>
+<a class="anchor" aria-label="anchor" href="#matsbyname-063-2023-05-22-doi"></a></h2><p class="text-muted">CRAN release: 2023-05-22</p>
 <ul><li>Deprecated <code>matrix.class</code> argument. It will be removed soon.</li>
 <li>Renamed <code>matrix.class</code> argument to <code>matrix_class</code>.</li>
 <li>New tests for <code>matrix.class</code> –&gt; <code>matrix_class</code> transition.
