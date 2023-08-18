@@ -3,7 +3,27 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
-# matsbyname 0.6.3 (2023-05-22) 
+Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
+which always resolves to the latest release.
+
+
+# matsbyname 0.6.4 (2023-08-17)
+
+* `matsbyname::Matrix` now vectorized for lists of `matrix` objects
+  in the `data` argument.
+* Policy change: 
+  `vec_from_store_byname()` now always returns a column vector.
+* Deprecate the `column` argument of `vec_from_store_byname()`
+  in favor of a new `margin` argument, which is standard throughout `R`.
+* Added a few new tests for `vec_from_store_byname()`
+  to verify operation when multiple rows in `a` match `v`.
+* Added a new test for `ncol_byname()` to verify operation.
+* New tests for new features.
+    - Up to 2092 tests, all passing.
+    - Test coverage is at 99.41%, due only to deprecation code.
+
+
+# matsbyname 0.6.3 (2023-05-22) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7963562.svg)](https://doi.org/10.5281/zenodo.7963562)
 
 * Deprecated `matrix.class` argument. 
   It will be removed soon.

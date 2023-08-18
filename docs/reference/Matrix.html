@@ -20,7 +20,7 @@ differences. See details."><!-- mathjax --><script src="https://cdnjs.cloudflare
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,7 @@ differences. See details.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
-<dd><p>An optional numeric data vector or matrix.</p></dd>
+<dd><p>An optional numeric data vector or <code>matrix.</code></p></dd>
 
 
 <dt>nrow</dt>
@@ -151,7 +151,8 @@ Default is <code>FALSE</code>.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function NEVER creates a symmetric matrix,
+    <p>This function NEVER creates a symmetric matrix
+(e.g., <code>dsCMatrix</code>, <code>dsyMatrix</code>, <code>dsRMatrix</code>, <code>lsyMatrix</code>, <code>nsyMatrix</code>),
 because symmetric matrices do not respect some future changes to <code>dimnames</code>,
 which can cause information loss in the <code>matsbyname</code> context.
 A non-symmetric <code>Matrix</code> is assured by calling <code>as(out, "generalMatrix")</code>
@@ -161,7 +162,9 @@ with the <code>rowtype</code> and <code>coltype</code> arguments.</p>
 <p>This function has different defaults compared to <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix::Matrix()</a></code>, including</p><ul><li><p>Here, the default for <code>doDiag</code> is <code>FALSE</code>,
 while the default for <code>doDiag</code> is <code>TRUE</code> for <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix::Matrix()</a></code>.</p></li>
 <li><p>Preserves rowtype and coltype on <code>data</code>.</p></li>
-</ul></div>
+</ul><p>This function is vectorized over a list of <code>matrix</code> objects supplied to <code>data</code>.
+See examples.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -201,6 +204,25 @@ while the default for <code>doDiag</code> is <code>TRUE</code> for <code><a href
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    .    1</span>
+<span class="r-in"><span><span class="co"># This function is vectorized over lists of `matrix` objects in `data`.</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">2</span>, </span></span>
+<span class="r-in"><span>              <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, </span></span>
+<span class="r-in"><span>              <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span>, nrow <span class="op">=</span> <span class="fl">3</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">matsbyname</span><span class="fu">::</span><span class="fu">Matrix</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 x 3 sparse Matrix of class "dgCMatrix"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1 . 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 2 . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 x 3 sparse Matrix of class "dgCMatrix"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1 . 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 2 . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

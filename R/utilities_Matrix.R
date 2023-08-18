@@ -24,7 +24,8 @@
 #' This function routes to `Matrix::Matrix()`, with some important
 #' differences. See details. 
 #' 
-#' This function NEVER creates a symmetric matrix, 
+#' This function NEVER creates a symmetric matrix
+#' (e.g., `dsCMatrix`, `dsyMatrix`, `dsRMatrix`, `lsyMatrix`, `nsyMatrix`), 
 #' because symmetric matrices do not respect some future changes to `dimnames`,
 #' which can cause information loss in the `matsbyname` context. 
 #' A non-symmetric `Matrix` is assured by calling `as(out, "generalMatrix")`
@@ -38,8 +39,11 @@
 #' * Here, the default for `doDiag` is `FALSE`,
 #'   while the default for `doDiag` is `TRUE` for `Matrix::Matrix()`.
 #' * Preserves rowtype and coltype on `data`.
+#' 
+#' This function is vectorized over a list of `matrix` objects supplied to `data`.
+#' See examples.
 #'
-#' @param data An optional numeric data vector or matrix.
+#' @param data An optional numeric data vector or `matrix.`
 #' @param nrow When `data` is not a `matrix` or a `Matrix`, the desired number of rows. 
 #'             Default is `1`.
 #' @param ncol When `data` is not a `matrix` or a `Matrix`, the desired number of columns.
@@ -82,9 +86,19 @@
 #' # ddiMatrix is a diagonal matrix.
 #' Matrix::Matrix(c(1, 0, 
 #'                  0, 1), byrow = TRUE, nrow = 2, ncol = 2)
+#' # This function is vectorized over lists of `matrix` objects in `data`.
+#' m <- matrix(c(1, 0, 2, 
+#'               0, 0, 0, 
+#'               2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+#' matsbyname::Matrix(list(m, m))
 Matrix <- function(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = base::dimnames(data),
                    sparse = NULL, doDiag = FALSE, forceCheck = FALSE, 
                    rowtype = matsbyname::rowtype(data), coltype = matsbyname::coltype(data)) {
+  if (is.list(data) & !is_matrix_or_Matrix(data)) {
+    # Vectorize
+    out <- lapply(data, FUN = Matrix)
+    return(out)
+  }
   if (is_matrix_or_Matrix(data)) {
     # Specifying nrow, ncol, or byrow results in a warning.
     out <- Matrix::Matrix(data = data, 

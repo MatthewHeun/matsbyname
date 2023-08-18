@@ -358,7 +358,7 @@ svd_byname <- function(a, which = c("d", "u", "v")) {
 #'   hatize_byname(keep = "rownames")
 #' m %>% 
 #'   hatize_byname(keep = "colnames")
-hatize_byname <- function(v, keep = NULL){
+hatize_byname <- function(v, keep = NULL) {
 
   hatize_func <- function(v_vec){
     # Check the v_vec has at least 1 dimension of size 1.

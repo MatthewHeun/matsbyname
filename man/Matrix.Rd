@@ -18,7 +18,7 @@ Matrix(
 )
 }
 \arguments{
-\item{data}{An optional numeric data vector or matrix.}
+\item{data}{An optional numeric data vector or \code{matrix.}}
 
 \item{nrow}{When \code{data} is not a \code{matrix} or a \code{Matrix}, the desired number of rows.
 Default is \code{1}.}
@@ -59,7 +59,8 @@ This function routes to \code{Matrix::Matrix()}, with some important
 differences. See details.
 }
 \details{
-This function NEVER creates a symmetric matrix,
+This function NEVER creates a symmetric matrix
+(e.g., \code{dsCMatrix}, \code{dsyMatrix}, \code{dsRMatrix}, \code{lsyMatrix}, \code{nsyMatrix}),
 because symmetric matrices do not respect some future changes to \code{dimnames},
 which can cause information loss in the \code{matsbyname} context.
 A non-symmetric \code{Matrix} is assured by calling \code{as(out, "generalMatrix")}
@@ -74,6 +75,9 @@ This function has different defaults compared to \code{Matrix::Matrix()}, includ
 while the default for \code{doDiag} is \code{TRUE} for \code{Matrix::Matrix()}.
 \item Preserves rowtype and coltype on \code{data}.
 }
+
+This function is vectorized over a list of \code{matrix} objects supplied to \code{data}.
+See examples.
 }
 \examples{
 # matsbyname::Matrix() will not create a Matrix with a symmetric subclass.
@@ -94,4 +98,9 @@ matsbyname::Matrix(c(1, 0,
 # ddiMatrix is a diagonal matrix.
 Matrix::Matrix(c(1, 0, 
                  0, 1), byrow = TRUE, nrow = 2, ncol = 2)
+# This function is vectorized over lists of `matrix` objects in `data`.
+m <- matrix(c(1, 0, 2, 
+              0, 0, 0, 
+              2, 0, 0), byrow = TRUE, nrow = 3, ncol = 3)
+matsbyname::Matrix(list(m, m))
 }

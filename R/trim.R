@@ -33,13 +33,15 @@
 #' Alternatively, prepositions can be given such that 
 #' objects of prepositions will be matched.
 #' Examples include "from" or "in".
+#' See [RCLabels::get_piece()] for details.
 #'
 #' @param a A matrix to be trimmed.
-#' @param mat The matrix 
+#' @param mat The matrix to be used as the template for rows and/or columns of `a`.
 #' @param margin The dimension of `a` to be trimmed. `1` means rows; `2` means columns.
 #'               Default is `c(1,2)`.
 #' @param warn_if_a_incomplete When `TRUE` (the default), a warning is emitted
 #'                             if `a` is missing entries on `margin` that are present in `mat`.
+#'                             Default is `TRUE`.
 #' @param a_piece The portion of `a` labels to be used for comparison. Default is "all".
 #' @param mat_piece The portion of `mat` labels to be used for comparison. Default is "all".
 #' @param notation The notation for row and column labels. 
