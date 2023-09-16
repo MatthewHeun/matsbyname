@@ -1,0 +1,50 @@
+---
+title: "Branches for `matsbyname`"
+author: "Matthew Kuperus Heun"
+date: "16 September 2023"
+output: html_document
+---
+
+
+## Purpose
+
+This file (data-raw/branch_meta.Rmd) describes branches in this repository.
+It will help us keep track of what we are doing and why.
+The file lives in the `data-raw` directory, so it is not part of the package.
+
+Information in this file supports my code development strategy,
+which can be found in my 
+[github repository](https://github.com/MatthewHeun/DevelopmentStrategies).
+
+
+## Branches
+
+### master
+
+The primary branch of the repository. 
+
+### develop
+
+The branch into which new features are merged.
+
+### Feature branches
+
+Use this template to describe feature branches.
+
+#### Branch name
+
+* Purpose:
+* Next step:
+* Author:
+* Date: 
+
+
+#### fix_Matrix
+
+* Purpose: Respond to test failures caused by upstream changes to the `Matrix package.
+           See the email from Mikael Jagan <mailto:jaganmn2@gmail.com> 
+           on 16 September 2023. 
+           Need to respond by mid-October.
+* Next step: Merge this branch into develop and later to master.
+* Author: Matthew Kuperus Heun
+* Date: 16 September 2023
