@@ -11,7 +11,9 @@ test_that("abs_byname() works as expected", {
   # Test with a Matrix object
   M <- matsbyname::Matrix(c(-10,1,1,100), nrow = 2, ncol = 2, dimnames = list(paste0("i", 1:2), paste0("c", 1:2)), 
                           rowtype = "Industry", coltype = "Commodity")
-  expect_equal(abs_byname(M), abs(M))
+  absM <- abs(M) |> 
+    setrowtype("Industry") |> setcoltype("Commodity")
+  expect_equal(abs_byname(M), absM)
 })
 
 

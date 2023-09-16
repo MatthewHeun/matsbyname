@@ -111,7 +111,11 @@ test_that("matrixproduct_byname() works with Matrix objects", {
   VYZ <- matrixproduct_byname(VY, Z)
   
   # Fails. 3 columns of V cannot be matrix multiplied into 2 rows of Y.  Y lacks a row named p3.
-  expect_error(V %*% Y, "Matrices are not conformable for multiplication")
+  # expect_error(V %*% Y, "Matrices are not conformable for multiplication")
+  # New error message in Matrix 1.6-2 is "non-conformaable arguments".
+  # But no sense is testing for the exact error message. 
+  # Just test that we do, in fact, receive some type of error.
+  expect_error(V %*% Y)
   # Succeeds because Y is completed to include a row named p3 (that contains zeroes).
   # Furthermore, rows and columns of Y are sorted to be in alphabetical order.
   expect_equal(matrixproduct_byname(V, Y), VY)
