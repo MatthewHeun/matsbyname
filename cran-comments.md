@@ -34,21 +34,21 @@ See `NEWS.md` for details.
         * WARNINGs: 0
         * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.3.1 (2023-06-16 ucrt)
+    * `devtools::check_win_release()`, R version 4.3.1 (2023-06-16 ucrt)                         **** not checked
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)
+    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)                      **** not checked
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2023-08-16 r84968 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2023-08-16 r84968 ucrt)     **** not checked
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
-        * Windows Server 2022, R-devel, 64 bit
+        * Windows Server 2022, R-devel, 64 bit                                                   **** not checked
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 2
@@ -62,7 +62,7 @@ See `NEWS.md` for details.
                 * 'lastMiKTeXException'
                     * This appears to be a mal-configuration of the test setup.
                     * This is the only platform on which this NOTE occurs.
-        * Fedora Linux, R-devel, clang, gfortran
+        * Fedora Linux, R-devel, clang, gfortran                                                 **** not checked
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
@@ -70,7 +70,7 @@ See `NEWS.md` for details.
                 * Skipping checking HTML validation: no command 'tidy' found
                     * This appears to be a val-configuration of the Linux test setups.
                     * Linux is the only platform on which this NOTE occurs.
-        * Ubuntu Linux 20.04.1 LTS, R-release, GCC
+        * Ubuntu Linux 20.04.1 LTS, R-release, GCC                                               **** not checked
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
