@@ -8,7 +8,6 @@ create_colvec_byname(
   .dat,
   dimnames = NA,
   colname = NA,
-  matrix.class = lifecycle::deprecated(),
   matrix_class = c("matrix", "Matrix")
 )
 }
@@ -19,8 +18,6 @@ create_colvec_byname(
 containing a list of the dimension names to be used for each observation.}
 
 \item{colname}{The name of the column of the colvector.}
-
-\item{matrix.class}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{matrix_class} instead.}
 
 \item{matrix_class}{One of "matrix" or "Matrix".
 "matrix" creates a \code{base::matrix} object with the \code{matrix()} function.

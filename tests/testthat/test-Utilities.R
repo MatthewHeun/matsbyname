@@ -2816,12 +2816,6 @@ test_that("create_matrix_byname() works with matrix_class = 'Matrix'", {
 })
 
 
-test_that("create_matrix_byname() deprecation is correct", {
-  expect_warning(create_matrix_byname(42, nrow = 1, ncol = 1, dimnames = list("r1", "c1"), 
-                                      matrix.class = "Matrix"))
-})
-
-
 test_that("create_rowvec_byname() works with Matrix objects", {
   # Try with a single number
   single_vec <- create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), rowname = "r1", 
@@ -2881,12 +2875,6 @@ test_that("create_rowvec_byname() works with Matrix objects", {
                                              matrix(c(1, 2, 3, 4, 5, 6), 
                                                     nrow = 1, ncol = 6,
                                                     dimnames = list("r01", c("c01", "c02", "c03", "c04", "c05", "c06"))))
-})
-
-
-test_that("create_rowvec_byname() deprecation is correct", {
-  expect_warning(create_rowvec_byname(c(c1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"), rowname = "r1", 
-                                      matrix.class = "Matrix"))
 })
 
 
@@ -2990,12 +2978,6 @@ test_that("create_colvec_byname() works for Matrix objects", {
                                              matrix(c(1, 2, 3, 4, 5, 6), 
                                                     nrow = 6, ncol = 1,
                                                     dimnames = list(c("r01", "r02", "r03", "r04", "r05", "r06"), "c01")))
-})
-
-
-test_that("create_colvec_byname() deprecation is correct", {
-  expect_warning(create_colvec_byname(c(r1 = 1) %>% setrowtype("rt") %>% setcoltype("ct"),
-                                      colname = "c1", matrix.class = "Matrix"))
 })
 
 
