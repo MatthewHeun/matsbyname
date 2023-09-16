@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.4" id="matsbyname-064-2023-08-17">matsbyname 0.6.4 (2023-08-17)<a class="anchor" aria-label="anchor" href="#matsbyname-064-2023-08-17"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.5" id="matsbyname-065-2023-09-16">matsbyname 0.6.5 (2023-09-16)<a class="anchor" aria-label="anchor" href="#matsbyname-065-2023-09-16"></a></h2>
+<ul><li>Remove deprecated <code>column</code> argument on <code><a href="../reference/vec_from_store_byname.html">vec_from_store_byname()</a></code>.</li>
+<li>Remove deprecated argument <code>matrix.class</code> in many places.</li>
+<li>Fixed tests to work with updated version of the <code>Matrix</code> package (1.6-2).</li>
+<li>Removed a few tests dealing with deprecated arguments.
+<ul><li>Now at 2089 tests, all passing.</li>
+<li>Test coverage is back up to 100%, due only to deprecation code.</li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.4" id="matsbyname-064-2023-08-17-doi">matsbyname 0.6.4 (2023-08-17) <a href="https://doi.org/10.5281/zenodo.8262639" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.8262639.svg" alt="DOI"></a>
+<a class="anchor" aria-label="anchor" href="#matsbyname-064-2023-08-17-doi"></a></h2><p class="text-muted">CRAN release: 2023-08-18</p>
 <ul><li>
 <code><a href="../reference/Matrix.html">matsbyname::Matrix</a></code> now vectorized for lists of <code>matrix</code> objects in the <code>data</code> argument.</li>
 <li>Policy change: <code><a href="../reference/vec_from_store_byname.html">vec_from_store_byname()</a></code> now always returns a column vector.</li>
