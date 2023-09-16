@@ -7,6 +7,10 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+
+* Fixed tests to work with updated version of the `Matrix` package (1.6-2).
+
+
 # matsbyname 0.6.4 (2023-08-17) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8262639.svg)](https://doi.org/10.5281/zenodo.8262639)
 
 * `matsbyname::Matrix` now vectorized for lists of `matrix` objects
