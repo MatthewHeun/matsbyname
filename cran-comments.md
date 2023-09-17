@@ -1,15 +1,14 @@
 ## Context
 
-`matsbyname` v0.6.4
-deprecates one argument (`column`) from `vec_from_store_byname()`
-plus a few other minor changes.
-Mostly this release is aimed at supporting a JOSS paper submission.
+`matsbyname` v0.6.5
+responds to upcoming changes to the `Matrix` package
+and removed deprecated arguments.
 See `NEWS.md` for details.
 
 
 ## Test environments (12 in total) and R CMD check results
 
-* Local macOS X 13.5 (Ventura), R4.3.1
+* Local macOS X 13.5.1 (Ventura), R4.3.1
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
@@ -43,7 +42,7 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2023-08-16 r84968 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2023-09-15 r85153 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
