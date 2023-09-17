@@ -12,3 +12,5 @@
 ^cran-comments\.html$
 ^\.github$
 ^CRAN-SUBMISSION$
+^data-raw$
+^LICENSE\.md$

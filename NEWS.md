@@ -7,7 +7,18 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-# matsbyname 0.6.4 (2023-08-17)
+# matsbyname 0.6.5 (2023-09-16)
+
+* Remove deprecated `column` argument on `vec_from_store_byname()`.
+* Remove deprecated argument `matrix.class` in many places.
+* Fixed tests to work with updated version of the `Matrix` package (1.6-2).
+* Removed a few tests dealing with deprecated arguments.
+    - Now at 2089 tests, all passing.
+    - Test coverage is back up to 100%, due only to deprecation code.
+
+
+
+# matsbyname 0.6.4 (2023-08-17) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8262639.svg)](https://doi.org/10.5281/zenodo.8262639)
 
 * `matsbyname::Matrix` now vectorized for lists of `matrix` objects
   in the `data` argument.

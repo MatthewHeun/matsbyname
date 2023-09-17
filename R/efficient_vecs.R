@@ -106,9 +106,6 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'                (the only column if `column` is `TRUE`, the only row otherwise).
 #'                Default is `NULL`, meaning that the name of the 1-sized dimension in `v` 
 #'                should be used.
-#' @param column `r lifecycle::badge("deprecated")` Use `margin` instead.
-#'               For `column = TRUE`, use `margin = 1`.
-#'               For `column = FALSE`, use `margin = 2`.                
 #' @param margin Tells whether to assess the rows (`1`) or columns (`2`) of `a`
 #'               when creating the outgoing vector.
 #'               Default is `1`.
@@ -184,24 +181,11 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #'     actual = vec_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from")
 #'   )
 vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colname = NULL, 
-                                  column = lifecycle::deprecated(),
                                   margin = 1,
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
                                   prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
                                   missing = NA_real_) {
-  if (lifecycle::is_present(column)) {
-    lifecycle::deprecate_warn(when = "0.6.4", 
-                              what = "vec_from_store_byname(column)", 
-                              with = "vec_from_store_byname(margin)")
-    margin <- sapply(column, FUN = function(this_column) {
-      if (this_column) {
-        return(1)
-      } else {
-        return(2)
-      }
-    })
-  }
-  
+
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, margin_val, 
                        notation_val = notation, 
                        prepositions_val = prepositions) {

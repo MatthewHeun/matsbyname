@@ -8,10 +8,10 @@ bibentry(
                        role = c("aut", "cre"), 
                        comment = c(ORCID = "0000-0002-7438-214X")),
   year        = "2023",
-  note        = "R package version 0.6.4",
+  note        = "R package version 0.6.5",
   url         = "https://doi.org/10.5281/zenodo.5118872",
   textVersion = paste("Matthew Kuperus Heun (2023).", 
                       "matsbyname: An Implementation of Matrix Mathematics.",
-                      "R package version 0.6.4.",
+                      "R package version 0.6.5.",
                       "https://doi.org/10.5281/zenodo.5118872")
 )

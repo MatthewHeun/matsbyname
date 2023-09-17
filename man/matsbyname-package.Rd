@@ -4,7 +4,7 @@
 \name{matsbyname-package}
 \alias{matsbyname}
 \alias{matsbyname-package}
-\title{matsbyname: An Implementation of Matrix Mathematics}
+\title{matsbyname: An Implementation of Matrix Mathematics that Respects Row and Column Names}
 \description{
 An implementation of matrix mathematics wherein operations are performed "by name."
 }
