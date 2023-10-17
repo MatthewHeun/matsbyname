@@ -17,6 +17,10 @@ A matrix created from vector \code{a}.
 \description{
 Converts a vector with rows or columns named according to \code{notation}
 into a \code{matrix} or a \code{Matrix}, depending on the type of \code{a}.
+Row and column types of the output are taken from the
+row or column type of the long dimension of the incoming vector.
+If the row or column type of the long dimension of the incoming vector is \code{NULL},
+the outgoing matrix will have \code{NULL} rowtype and \code{NULL} coltype.
 }
 \examples{
 v <- matrix(c(1,

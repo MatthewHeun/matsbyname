@@ -707,6 +707,10 @@ vectorize_byname <- function(a, notation) {
 #' 
 #' Converts a vector with rows or columns named according to `notation`
 #' into a `matrix` or a `Matrix`, depending on the type of `a`.
+#' Row and column types of the output are taken from the 
+#' row or column type of the long dimension of the incoming vector.
+#' If the row or column type of the long dimension of the incoming vector is `NULL`,
+#' the outgoing matrix will have `NULL` rowtype and `NULL` coltype.
 #'
 #' @param a A row (column) vector to be converted to a matrix based on its row (column) names.
 #' @param notation A string vector created by `RCLabels::notation_vec()` that identifies the notation for row or column names.
