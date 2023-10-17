@@ -7,6 +7,10 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Added new tests to verify `rowtype()` and `coltype()` behavior
+  in `matrixproduct_byname()`.
+
+
 # matsbyname 0.6.5 (2023-09-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8353760.svg)](https://doi.org/10.5281/zenodo.8353760)
 
 * Remove deprecated `column` argument on `vec_from_store_byname()`.
