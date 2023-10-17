@@ -7,6 +7,10 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Fixed a bug in `matricize_byname()`.
+  If the incoming matrix had `NULL` rowtype,
+  the coltype of the outgoing matrix was set to `list()`.
+  The coltype of the outgoing matrix is now set to `NULL`, as expected.
 * Added new tests to verify `rowtype()` and `coltype()` behavior
   in `matrixproduct_byname()`.
 

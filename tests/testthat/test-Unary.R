@@ -1026,6 +1026,23 @@ test_that("matricize_byname() works with Matrix objects", {
 })
 
 
+test_that("matricize_byname() coltype work correctly when input rowtype is NULL", {
+  # On 17 October 2023, Emmanuel and I noticed that some NULL-type matrices
+  # were showing coltype = list() after matricize.
+  am_vec <- matrix(data = c(1:2), nrow = 2, dimnames = list(c("p1 -> i1", "p2 -> i2"), c("onecol"))) |> 
+    setrowtype(NULL) |> setcoltype("coltype_am")
+  am_mat <- matricize_byname(am_vec, notation = RCLabels::arrow_notation)
+  expect_null(rowtype(am_mat))
+  expect_null(coltype(am_mat))
+  
+  aM_vec <- Matrix::Matrix(data = c(1:2), nrow = 2, dimnames = list(c("p1 -> i1", "p2 -> i2"), c("onecol"))) |> 
+    setrowtype(NULL) |> setcoltype("coltype_aM")
+  aM_mat <- matricize_byname(aM_vec, notation = RCLabels::arrow_notation)
+  expect_null(rowtype(aM_mat))
+  expect_null(coltype(aM_mat))
+})
+
+
 test_that("vectorize_byname() and matricize_byname() are inverses of each other", {
   m1 <- matrix(c(1, 2, 
                  3, 4, 
