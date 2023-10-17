@@ -800,10 +800,18 @@ matricize_byname <- function(a, notation) {
     }
     # Add row and column types after splitting the rowtype of a_mat
     rt <- rowtype(a_mat)
-    rctypes <- RCLabels::split_pref_suff(rt, notation = notation)
-    m %>% 
-      setrowtype(rctypes[["pref"]]) %>%
-      setcoltype(rctypes[["suff"]])
+    if (is.null(rt)) {
+      out <- m |> 
+        setrowtype(NULL) |> 
+        setcoltype(NULL)
+    } else {
+      # rt is not NULL
+      rctypes <- RCLabels::split_pref_suff(rt, notation = notation)
+      out <- m |> 
+        setrowtype(rctypes[["pref"]]) |> 
+        setcoltype(rctypes[["suff"]])
+    }
+    return(out)
   } 
   unaryapply_byname(matricize_func, a = a, .FUNdots = list(notation = notation), rowcoltypes = "none")
 }
