@@ -1,0 +1,2 @@
+CC=clang -arch x86_64
+CFLAGS=-falign-functions=64 -Wall -g -O2

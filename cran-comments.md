@@ -1,14 +1,13 @@
 ## Context
 
-`matsbyname` v0.6.5
-responds to upcoming changes to the `Matrix` package
-and removed deprecated arguments.
+`matsbyname` v0.6.6
+is a minor bugfix release.
 See `NEWS.md` for details.
 
 
 ## Test environments (12 in total) and R CMD check results
 
-* Local macOS X 13.5.1 (Ventura), R4.3.1
+* Local macOS X 13.5.2 (Ventura), R4.3.1
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
@@ -34,21 +33,21 @@ See `NEWS.md` for details.
         * WARNINGs: 0
         * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.3.1 (2023-06-16 ucrt)
+    * `devtools::check_win_release()`, R version 4.3.1 (2023-06-16 ucrt)     ******************* pending
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)
+    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)     ******************* pending
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2023-09-15 r85153 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2023-09-15 r85153 ucrt)     ******* pending
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
-        * Windows Server 2022, R-devel, 64 bit
+        * Windows Server 2022, R-devel, 64 bit      ******************* pending
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 2
@@ -62,7 +61,7 @@ See `NEWS.md` for details.
                 * 'lastMiKTeXException'
                     * This appears to be a mal-configuration of the test setup.
                     * This is the only platform on which this NOTE occurs.
-        * Fedora Linux, R-devel, clang, gfortran
+        * Fedora Linux, R-devel, clang, gfortran     ******************* pending
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
@@ -70,7 +69,7 @@ See `NEWS.md` for details.
                 * Skipping checking HTML validation: no command 'tidy' found
                     * This appears to be a val-configuration of the Linux test setups.
                     * Linux is the only platform on which this NOTE occurs.
-        * Ubuntu Linux 20.04.1 LTS, R-release, GCC
+        * Ubuntu Linux 20.04.1 LTS, R-release, GCC     ******************* pending
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
@@ -80,7 +79,7 @@ See `NEWS.md` for details.
                     * Linux is the only platform on which this NOTE occurs.
 
 
-## revdepcheck results
+## revdepcheck results     ******************* pending
 
 We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 

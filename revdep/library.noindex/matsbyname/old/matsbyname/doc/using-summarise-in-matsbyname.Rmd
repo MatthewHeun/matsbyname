@@ -1,0 +1,109 @@
+---
+title: "Using summarise in matsbyname"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using summarise in matsbyname}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dplyr)
+library(matsbyname)
+library(tibble)
+```
+
+## Introduction
+
+`matsbyname` functions in which 
+operands are specified in a `...` argument
+are ambiguous when applied to a data frame. 
+But there is an argument (`.summarise`)
+that signals intention, allowing the ambiguous
+functions to be used flexibly with data frames.
+
+
+## "Normal" functions
+
+For normal functions, such as `+` and `mean()`, 
+there is no ambiguity about their operation in a data frame.
+
+```{r}
+df <- tibble::tribble(~x, ~y, ~z, 
+                       1,  2,  3, 
+                       4,  5,  6)
+# Typically, operations are done across rows.
+df %>% 
+  dplyr::mutate(
+    a = x + y + z,
+    b = rowMeans(.)
+  )
+```
+
+To perform the same operations down columns, 
+use `dplyr::summarise()`.
+
+```{r}
+df %>% 
+  dplyr::summarise(
+    x = sum(x), 
+    y = sum(y), 
+    z = sum(z)
+  )
+df %>% 
+  dplyr::summarise(
+    x = mean(x), 
+    y = mean(y), 
+    z = mean(z)
+  )
+```
+
+
+## `matsbyname::sum_byname()`
+
+What does `matsbyname::sum_byname()` mean for a data frame? 
+Will it give sums across rows (as `+`), or
+will it give sums down columns (as `summarise()`)?
+This ambiguity is present for all `*_byname()` functions
+in which operands are specified via the `...` argument, 
+including `matrixproduct_byname()`, 
+`hadamardproduct_byname()`, 
+`mean_byname()`, etc.
+
+To resolve the ambiguity, 
+use the `.summarise` argument.
+The default value of `.summarise` is `FALSE`,
+meaning that the functions normally operate across rows.
+If you want to perform the action down columns, 
+set `.summarise = TRUE`.
+
+```{r}
+df %>% 
+  dplyr::mutate(
+    a = sum_byname(x, y, z), 
+    b = mean_byname(x, y, z)
+  )
+df %>% 
+  dplyr::summarise(
+    x = sum_byname(x, .summarise = TRUE) %>% unlist(), 
+    y = sum_byname(y, .summarise = TRUE) %>% unlist(), 
+    z = sum_byname(z, .summarise = TRUE) %>% unlist()
+  )
+```
+
+
+## Summary
+
+The `.summarise` argument broadens the range of applicability 
+for many `matsbyname` functions, especially when used with data frames.
+The default is `.summarise = FALSE`, meaning that operations 
+will be performed across columns.
+Set `.summarise = TRUE` argument to signal intent
+to perform operations down a column.
