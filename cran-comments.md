@@ -79,7 +79,7 @@ See `NEWS.md` for details.
                     * Linux is the only platform on which this NOTE occurs.
 
 
-## revdepcheck results     ******************* pending
+## revdepcheck results
 
 We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
