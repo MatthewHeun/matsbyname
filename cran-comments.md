@@ -61,7 +61,7 @@ See `NEWS.md` for details.
                 * 'lastMiKTeXException'
                     * This appears to be a mal-configuration of the test setup.
                     * This is the only platform on which this NOTE occurs.
-        * Fedora Linux, R-devel, clang, gfortran     ******************* pending
+        * Fedora Linux, R-devel, clang, gfortran
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
@@ -69,7 +69,7 @@ See `NEWS.md` for details.
                 * Skipping checking HTML validation: no command 'tidy' found
                     * This appears to be a val-configuration of the Linux test setups.
                     * Linux is the only platform on which this NOTE occurs.
-        * Ubuntu Linux 20.04.1 LTS, R-release, GCC     ******************* pending
+        * Ubuntu Linux 20.04.1 LTS, R-release, GCC
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
