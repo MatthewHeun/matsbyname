@@ -229,3 +229,14 @@ test_that("matrixproduct_byname() with NA is correct for Matrix objects", {
   expect_equal(matrixproduct_byname(Z2, NA), 
                matsbyname::Matrix(NA_real_, nrow = 2, ncol = 2, dimnames = dimnames(Z2)) %>% setrowtype(rowtype(Z2)))
 })
+
+
+test_that("rowtype and coltype are set correctly when pre-multiplying by NULL", {
+  mat_a <- NULL
+  mat_b <- Matrix::Matrix(1:12, nrow = 3, ncol = 4, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4"))) |> 
+    matsbyname::setrowtype("b_rowtype") |> matsbyname::setcoltype("b_coltype")
+  res <- matrixproduct_byname(mat_a, mat_b)
+  expect_equal(rowtype(res), NULL)
+  expect_equal(coltype(res), coltype(mat_b))
+})
+  

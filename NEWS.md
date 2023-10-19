@@ -7,7 +7,20 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-# matsbyname 0.6.5 (2023-09-16)
+# matsbyname 0.6.6 (2023-10-18)
+
+* Fixed a bug in `matricize_byname()`.
+  If the incoming matrix had `NULL` rowtype,
+  the coltype of the outgoing matrix was set to `list()`.
+  The coltype of the outgoing matrix is now set to `NULL`, as expected.
+* Added new tests to verify `rowtype()` and `coltype()` behavior
+  in `matrixproduct_byname()`.
+* New tests for new features. 
+    - Now at 2095 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+# matsbyname 0.6.5 (2023-09-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8353760.svg)](https://doi.org/10.5281/zenodo.8353760)
 
 * Remove deprecated `column` argument on `vec_from_store_byname()`.
 * Remove deprecated argument `matrix.class` in many places.
