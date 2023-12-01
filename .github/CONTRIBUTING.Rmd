@@ -10,7 +10,7 @@ output:
 ```{r, include=FALSE}
 # Set the name of the package here.
 # It will be used in several places below.
-pkg_name <- "RCLabels"
+pkg_name <- "matsbyname"
 ```
 
 # Contributing to ``r pkg_name``
