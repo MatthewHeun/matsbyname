@@ -7,6 +7,8 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+# matsbyname 0.6.7 (2023-12-01) 
+
 * Added code of conduct and contributing pages to documentation.
 * No new tests.
     - Still at 2095 tests, all passing.
