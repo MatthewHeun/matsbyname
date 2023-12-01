@@ -7,7 +7,15 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-# matsbyname 0.6.6 (2023-10-18)
+# matsbyname 0.6.7 (2023-12-01) 
+
+* Added code of conduct and contributing pages to documentation.
+* No new tests.
+    - Still at 2095 tests, all passing.
+    - Test coverage remains at 100 %.
+    
+
+# matsbyname 0.6.6 (2023-10-18) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10022015.svg)](https://doi.org/10.5281/zenodo.10022015)
 
 * Fixed a bug in `matricize_byname()`.
   If the incoming matrix had `NULL` rowtype,
