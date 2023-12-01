@@ -1,13 +1,13 @@
 ## Context
 
-`matsbyname` v0.6.6
-is a minor bugfix release.
+`matsbyname` v0.6.7
+adds a code of conduct and contributing guidelines.
 See `NEWS.md` for details.
 
 
 ## Test environments (12 in total) and R CMD check results
 
-* Local macOS X 13.5.2 (Ventura), R4.3.1
+* Local macOS X installation 13.5.1 (Ventura), R4.3.2 (2023-10-31)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
