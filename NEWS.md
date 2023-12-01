@@ -7,7 +7,7 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-# matsbyname 0.6.7 (2023-12-01) 
+# matsbyname 0.6.7 (2023-12-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10247250.svg)](https://doi.org/10.5281/zenodo.10247250)
 
 * Added code of conduct and contributing pages to documentation.
 * No new tests.
