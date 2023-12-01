@@ -8,7 +8,7 @@ which always resolves to the latest release.
 
 
 * Added code of conduct and contributing pages to documentation.
-* No new tests
+* No new tests.
     - Still at 2095 tests, all passing.
     - Test coverage remains at 100 %.
     
