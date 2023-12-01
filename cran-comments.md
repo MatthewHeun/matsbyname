@@ -1,13 +1,13 @@
 ## Context
 
-`matsbyname` v0.6.6
-is a minor bugfix release.
+`matsbyname` v0.6.7
+adds a code of conduct and contributing guidelines.
 See `NEWS.md` for details.
 
 
 ## Test environments (12 in total) and R CMD check results
 
-* Local macOS X 13.5.2 (Ventura), R4.3.1
+* Local macOS X installation 13.5.1 (Ventura), R4.3.2 (2023-10-31)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
@@ -33,15 +33,15 @@ See `NEWS.md` for details.
         * WARNINGs: 0
         * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.3.1 (2023-06-16 ucrt)     ******************* pending
+    * `devtools::check_win_release()`, R version 4.3.2 (2023-10-31 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)     ******************* pending
+    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2023-09-15 r85153 ucrt)     ******* pending
+    * `devtools::check_win_devel()`, R Under development (unstable) (2023-11-30 r85651 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
