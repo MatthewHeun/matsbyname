@@ -19,6 +19,7 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![Codecov test
 coverage](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MatthewHeun/matsbyname?branch=master)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118872.svg)](https://doi.org/10.5281/zenodo.5118872)
+[![R-CMD-check](https://github.com/MatthewHeun/matsbyname/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MatthewHeun/matsbyname/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The `R` package `matsbyname` enables matrix mathematics wherein
