@@ -34,6 +34,6 @@ Suggests:
     tidyr
 VignetteBuilder: 
     knitr
-URL: https://github.com/MatthewHeun/matsbyname
+URL: https://github.com/MatthewHeun/matsbyname, https://matthewheun.github.io/matsbyname/
 BugReports: https://github.com/MatthewHeun/matsbyname/issues
 Config/testthat/edition: 3
