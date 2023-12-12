@@ -6,7 +6,7 @@ output: html_document
 Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
 which always resolves to the latest release.
 
-
+* Added a statement of need.
 * Updated the GitHub pages approach to use the gh-pages branch.
 
 
