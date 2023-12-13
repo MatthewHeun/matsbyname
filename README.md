@@ -61,7 +61,9 @@ multiplier. If the columns of **A** are countries, then the rows of
 **B** is to make sense.
 
 This package provides functions that respect row and column names when
-performing matrix mathematics in `R`.
+performing matrix mathematics in `R`. Furthermore, operations can be
+performed on lists of matrices, such as columns in a
+[matsindf](https://matthewheun.github.io/matsindf/) data frame.
 
 ## Installation
 
