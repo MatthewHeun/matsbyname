@@ -24,7 +24,7 @@ using special matching rules between matrix a and vector v."><!-- mathjax --><sc
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,16 +92,16 @@ using special matching rules between matrix <code>a</code> and vector <code>v</c
 <span>  colname <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  margin <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  notation <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">is.list</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span></span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span></span>
 <span> <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>    </span>
-<span>    <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">bracket_notation</a></span></span>
+<span>    <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">bracket_notation</a></span></span>
 <span> <span class="op">}</span>,</span>
 <span>  prepositions <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">is.list</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/prepositions_list.html" class="external-link">prepositions_list</a></span><span class="op">)</span></span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/prepositions_list.html" class="external-link">prepositions_list</a></span><span class="op">)</span></span>
 <span> <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>    </span>
-<span>    <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/prepositions_list.html" class="external-link">prepositions_list</a></span></span>
+<span>    <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/prepositions_list.html" class="external-link">prepositions_list</a></span></span>
 <span> <span class="op">}</span>,</span>
 <span>  missing <span class="op">=</span> <span class="cn">NA_real_</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -142,12 +142,12 @@ Default is <code>1</code>.</p></dd>
 
 <dt>notation</dt>
 <dd><p>The notation for the row and column labels.
-Default is <code><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">RCLabels::bracket_notation</a></code>, wrapped as a list if <code>a</code> is a list.</p></dd>
+Default is <code><a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">RCLabels::bracket_notation</a></code>, wrapped as a list if <code>a</code> is a list.</p></dd>
 
 
 <dt>prepositions</dt>
 <dd><p>The strings that will count for prepositions.
-Default is <code><a href="https://rdrr.io/pkg/RCLabels/man/prepositions.html" class="external-link">RCLabels::prepositions</a></code>, wrapped as a list if <code>a</code> is a list.</p></dd>
+Default is <code><a href="https://matthewheun.github.io/RCLabels/reference/prepositions.html" class="external-link">RCLabels::prepositions</a></code>, wrapped as a list if <code>a</code> is a list.</p></dd>
 
 
 <dt>missing</dt>

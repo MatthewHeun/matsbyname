@@ -12,7 +12,7 @@ by pieces of the row and column names."><!-- mathjax --><script src="https://cdn
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,9 +71,9 @@ by pieces of the row and column names.</p>
 <span>  <span class="va">piece</span>,</span>
 <span>  margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  inf_notation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  notation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/notations_list.html" class="external-link">notations_list</a></span><span class="op">)</span>,</span>
+<span>  notation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/notations_list.html" class="external-link">notations_list</a></span><span class="op">)</span>,</span>
 <span>  choose_most_specific <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  prepositions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/prepositions_list.html" class="external-link">prepositions_list</a></span><span class="op">)</span>,</span>
+<span>  prepositions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/prepositions_list.html" class="external-link">prepositions_list</a></span><span class="op">)</span>,</span>
 <span>  aggregation_map <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pattern_type <span class="op">=</span> <span class="st">"exact"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -108,7 +108,7 @@ Default is <code>TRUE</code>.</p></dd>
 <dd><p>The notation used for row and column labels.
 Default is <code>list(RCLabels::notations_list)</code>.
 The default value is wrapped in a list,
-because <code><a href="https://rdrr.io/pkg/RCLabels/man/notations_list.html" class="external-link">RCLabels::notations_list</a></code> is, itself, a list.
+because <code><a href="https://matthewheun.github.io/RCLabels/reference/notations_list.html" class="external-link">RCLabels::notations_list</a></code> is, itself, a list.
 See <code>RCLabels</code>.</p></dd>
 
 
@@ -124,7 +124,7 @@ Default is <code>FALSE</code>.</p></dd>
 
 <dt>prepositions</dt>
 <dd><p>Prepositions that can be used in the row and column label.
-Default is <code><a href="https://rdrr.io/pkg/RCLabels/man/prepositions_list.html" class="external-link">RCLabels::prepositions_list</a></code>.</p></dd>
+Default is <code><a href="https://matthewheun.github.io/RCLabels/reference/prepositions_list.html" class="external-link">RCLabels::prepositions_list</a></code>.</p></dd>
 
 
 <dt>aggregation_map</dt>
@@ -132,7 +132,7 @@ Default is <code><a href="https://rdrr.io/pkg/RCLabels/man/prepositions_list.htm
 
 
 <dt>pattern_type</dt>
-<dd><p>See <code><a href="https://rdrr.io/pkg/RCLabels/man/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code>.
+<dd><p>See <code><a href="https://matthewheun.github.io/RCLabels/reference/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code>.
 Default is "exact".</p></dd>
 
 </dl></div>
@@ -182,7 +182,7 @@ not by the full, original row and/or column names.</p>
 <span class="r-in"><span>                            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"e [from f]"</span>, <span class="st">"g [from h]"</span>, <span class="st">"i [from j]"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">a</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">aggregate_pieces_byname</span><span class="op">(</span>piece <span class="op">=</span> <span class="st">"suff"</span>, </span></span>
-<span class="r-in"><span>                          notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/from_notation.html" class="external-link">from_notation</a></span>,</span></span>
+<span class="r-in"><span>                          notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/from_notation.html" class="external-link">from_notation</a></span>,</span></span>
 <span class="r-in"><span>                          aggregation_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b"</span>, <span class="st">"d"</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>                                                 cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"h"</span>, <span class="st">"j"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      cols f</span>
@@ -198,7 +198,7 @@ not by the full, original row and/or column names.</p>
 <span class="r-in"><span><span class="va">mT</span> <span class="op">&lt;-</span> <span class="fu"><a href="transpose_byname.html">transpose_byname</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Aggregate the "Electricity" rows.</span></span></span>
 <span class="r-in"><span><span class="fu">aggregate_pieces_byname</span><span class="op">(</span><span class="va">m</span>, piece <span class="op">=</span> <span class="st">"noun"</span>, margin <span class="op">=</span> <span class="st">"Product"</span>,</span></span>
-<span class="r-in"><span>                        notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>                        notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             Automobiles LED lamps CFL lamps</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electricity           0         2         2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Gasoline              1         0         0</span>
@@ -209,7 +209,7 @@ not by the full, original row and/or column names.</p>
 <span class="r-in"><span><span class="co"># Also works in a list.</span></span></span>
 <span class="r-in"><span><span class="fu">aggregate_pieces_byname</span><span class="op">(</span>a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">mT</span><span class="op">)</span>, piece <span class="op">=</span> <span class="st">"noun"</span>, </span></span>
 <span class="r-in"><span>                        margin <span class="op">=</span> <span class="st">"Product"</span>,</span></span>
-<span class="r-in"><span>                        notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>                        notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             Automobiles LED lamps CFL lamps</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Electricity           0         2         2</span>
@@ -233,7 +233,7 @@ not by the full, original row and/or column names.</p>
 <span class="r-in"><span><span class="fu">aggregate_pieces_byname</span><span class="op">(</span>a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">mT</span><span class="op">)</span>, piece <span class="op">=</span> <span class="st">"noun"</span>, </span></span>
 <span class="r-in"><span>                        margin <span class="op">=</span> <span class="st">"Product"</span>,</span></span>
 <span class="r-in"><span>                        aggregation_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>final <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Electricity"</span>, <span class="st">"Gasoline"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>                        notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Automobiles LED lamps CFL lamps</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> final           1         2         2</span>
@@ -257,7 +257,7 @@ not by the full, original row and/or column names.</p>
 <span class="r-in"><span>                     pce <span class="op">=</span> <span class="st">"noun"</span>,</span></span>
 <span class="r-in"><span>                     mgn <span class="op">=</span> <span class="st">"Product"</span>,</span></span>
 <span class="r-in"><span>                     agg_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>final <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Electricity"</span>, <span class="st">"Gasoline"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>                     notn <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>                     notn <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">bracket_notation</a></span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    agg <span class="op">=</span> <span class="fu">aggregate_pieces_byname</span><span class="op">(</span>a <span class="op">=</span> <span class="va">m</span>, piece <span class="op">=</span> <span class="va">pce</span>, margin <span class="op">=</span> <span class="va">mgn</span>, </span></span>
 <span class="r-in"><span>                                  aggregation_map <span class="op">=</span> <span class="va">agg_map</span>,</span></span>
@@ -298,7 +298,7 @@ not by the full, original row and/or column names.</p>
 <span class="r-in"><span>  <span class="fu">aggregate_pieces_byname</span><span class="op">(</span>piece <span class="op">=</span> <span class="st">"noun"</span>,</span></span>
 <span class="r-in"><span>                          margin <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                          inf_notation <span class="op">=</span> <span class="cn">FALSE</span>, </span></span>
-<span class="r-in"><span>                          notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/bracket_notation.html" class="external-link">bracket_notation</a></span>, </span></span>
+<span class="r-in"><span>                          notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">bracket_notation</a></span>, </span></span>
 <span class="r-in"><span>                          aggregation_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   c1 c2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c  5 11</span>

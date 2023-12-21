@@ -14,7 +14,7 @@ The number of rows of the matrix, or a list containing the number of rows
 in each of the matrices contained in the column of a data frame.
 }
 \description{
-The functionn gets the number of rows in a "byname" matrix, or for each "byname" matrix contained
+The function gets the number of rows in a "byname" matrix, or for each "byname" matrix contained
 in a column of a data frame.
 }
 \examples{

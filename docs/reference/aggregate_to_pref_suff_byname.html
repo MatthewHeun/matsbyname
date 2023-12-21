@@ -20,7 +20,7 @@ This function performs aggregation by prefix or suffix according to a notation v
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -139,12 +139,12 @@ All arguments are passed to the helper functions.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r1 -&gt; b       1       2       3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r2 -&gt; b       4       5       6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r3 -&gt; a       7       8       9</span>
-<span class="r-in"><span><span class="fu"><a href="aggregate_pieces_byname.html">aggregate_pieces_byname</a></span><span class="op">(</span><span class="va">m</span>, piece <span class="op">=</span> <span class="st">"pref"</span>, notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="aggregate_pieces_byname.html">aggregate_pieces_byname</a></span><span class="op">(</span><span class="va">m</span>, piece <span class="op">=</span> <span class="st">"pref"</span>, notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    c1 c2 c3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r1  1  2  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r2  4  5  6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r3  7  8  9</span>
-<span class="r-in"><span><span class="fu"><a href="aggregate_pieces_byname.html">aggregate_pieces_byname</a></span><span class="op">(</span><span class="va">m</span>, piece <span class="op">=</span> <span class="st">"suff"</span>, notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="aggregate_pieces_byname.html">aggregate_pieces_byname</a></span><span class="op">(</span><span class="va">m</span>, piece <span class="op">=</span> <span class="st">"suff"</span>, notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    y z</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a 17 7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b 16 5</span>
@@ -153,14 +153,14 @@ All arguments are passed to the helper functions.</p>
 <span class="r-in"><span><span class="co"># Aggregation by prefixes does nothing more than rename, because all prefixes are different.</span></span></span>
 <span class="r-in"><span><span class="co"># Doing renaming like this (without also aggregating) is potentially dangerous, because  </span></span></span>
 <span class="r-in"><span><span class="co"># some rows and some columns could end up with same names.</span></span></span>
-<span class="r-in"><span><span class="fu">aggregate_to_pref_suff_byname</span><span class="op">(</span><span class="va">m</span>, keep <span class="op">=</span> <span class="st">"pref"</span>, notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">aggregate_to_pref_suff_byname</span><span class="op">(</span><span class="va">m</span>, keep <span class="op">=</span> <span class="st">"pref"</span>, notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    c1 c2 c3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r1  1  2  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r2  4  5  6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r3  7  8  9</span>
 <span class="r-in"><span><span class="co"># Aggregation by suffix reduces the number of rows and columns, </span></span></span>
 <span class="r-in"><span><span class="co"># because there are same suffixes in both rows and columns</span></span></span>
-<span class="r-in"><span><span class="fu">aggregate_to_pref_suff_byname</span><span class="op">(</span><span class="va">m</span>, keep <span class="op">=</span> <span class="st">"suff"</span>, notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/RCLabels/man/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">aggregate_to_pref_suff_byname</span><span class="op">(</span><span class="va">m</span>, keep <span class="op">=</span> <span class="st">"suff"</span>, notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    y z</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a 17 7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b 16 5</span>

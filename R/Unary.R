@@ -301,7 +301,7 @@ svd_byname <- function(a, which = c("d", "u", "v")) {
 #' The argument `keep` 
 #' determines whether to keep "rownames" or "colnames".
 #' By default `keep` is `NULL`,
-#' meanding that the function should attempt to figure out which dimension's names
+#' meaning that the function should attempt to figure out which dimension's names
 #' should be used for the hatized matrix on output. 
 #' If vector `v` could ever be 1x1, 
 #' it is best to set a value for `keep` when writing code
