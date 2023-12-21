@@ -1,0 +1,14 @@
+pandoc: 2.19.2
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  about-vector-arguments: about-vector-arguments.html
+  aggregation-vignette: aggregation-vignette.html
+  applybyname-vignette: applybyname-vignette.html
+  matsbyname: matsbyname.html
+  using-summarise-in-matsbyname: using-summarise-in-matsbyname.html
+last_built: 2023-12-21T13:45Z
+urls:
+  reference: https://matthewheun.github.io/matsbyname/reference
+  article: https://matthewheun.github.io/matsbyname/articles
+
