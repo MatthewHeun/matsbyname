@@ -4,6 +4,7 @@
 adds a statement of need to the `README.Rmd` file 
 in preparation for submitting a paper to the 
 Journal of Open Source Software. 
+The GitHub pages approach has been modernized.
 No other changes have been made.
 See `NEWS.md` for details.
 
