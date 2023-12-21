@@ -7,7 +7,16 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-# matsbyname 0.6.7 (2023-12-01) 
+# matsbyname 0.6.8 (2023-12-20)
+
+* Added a statement of need.
+* Updated the GitHub pages approach to use the gh-pages branch.
+* No new tests.
+    - Still at 2095 tests, all passing.
+    - Test coverage remains at 100 %.
+
+
+# matsbyname 0.6.7 (2023-12-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10247250.svg)](https://doi.org/10.5281/zenodo.10247250)
 
 * Added code of conduct and contributing pages to documentation.
 * No new tests.

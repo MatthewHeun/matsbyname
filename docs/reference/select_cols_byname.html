@@ -14,7 +14,7 @@ that are matched against column names."><!-- mathjax --><script src="https://cdn
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ If no column names of <code>a</code> match the <code>remove_pattern</code>, <cod
 <li><p>"^Electricity|^Oil": column names that START WITH "Electricity" or "Oil".</p></li>
 <li><p>"Electricity|Oil": column names that CONTAIN "Electricity" or "Oil" anywhere within them.</p></li>
 </ul><p>Given a list of column names, a pattern can be constructed easily using the <code>make_pattern</code> function.</p>
-<p><code><a href="https://rdrr.io/pkg/RCLabels/man/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code> escapes regex strings using <code>Hmisc::escaprRegex()</code>.
+<p><code><a href="https://matthewheun.github.io/RCLabels/reference/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code> escapes regex strings using <code>Hmisc::escaprRegex()</code>.
 This function assumes that <code>retain_pattern</code> and <code>remove_pattern</code> have already been
 suitably escaped.</p>
 <p>Note that the default <code>retain_pattern</code> and <code>remove_pattern</code> ("$^")
@@ -118,7 +118,7 @@ retain nothing and remove nothing.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span>, ncol <span class="op">=</span> <span class="fl">4</span>, dimnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"i"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"p"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Industries"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="setcoltype.html">setcoltype</a></span><span class="op">(</span><span class="st">"Commodities"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">select_cols_byname</span><span class="op">(</span><span class="va">m</span>, </span></span>
-<span class="r-in"><span>                   retain_pattern <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RCLabels/man/make_or_pattern.html" class="external-link">make_or_pattern</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p4"</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                   retain_pattern <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="fu"><a href="https://matthewheun.github.io/RCLabels/reference/make_or_pattern.html" class="external-link">make_or_pattern</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p4"</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>                   pattern_type <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    p1 p4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i1  1 13</span>
@@ -130,7 +130,7 @@ retain nothing and remove nothing.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Commodities"</span>
 <span class="r-in"><span><span class="fu">select_cols_byname</span><span class="op">(</span><span class="va">m</span>, </span></span>
-<span class="r-in"><span>                   remove_pattern <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RCLabels/man/make_or_pattern.html" class="external-link">make_or_pattern</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p3"</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                   remove_pattern <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="fu"><a href="https://matthewheun.github.io/RCLabels/reference/make_or_pattern.html" class="external-link">make_or_pattern</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p3"</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>                   pattern_type <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    p2 p4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i1  5 13</span>

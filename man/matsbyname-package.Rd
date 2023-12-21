@@ -12,6 +12,7 @@ An implementation of matrix mathematics wherein operations are performed "by nam
 Useful links:
 \itemize{
   \item \url{https://github.com/MatthewHeun/matsbyname}
+  \item \url{https://matthewheun.github.io/matsbyname/}
   \item Report bugs at \url{https://github.com/MatthewHeun/matsbyname/issues}
 }
 

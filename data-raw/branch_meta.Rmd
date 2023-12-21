@@ -38,12 +38,3 @@ Use this template to describe feature branches.
 * Author:
 * Date: 
 
-
-
-#### release-0.6.6
-
-* Purpose: Preparing a bugfix release
-* Next step: Submit to CRAN
-* Author: MKH
-* Date: 18 Oct 2023
-

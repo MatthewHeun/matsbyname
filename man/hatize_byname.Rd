@@ -29,7 +29,7 @@ Hatizing a 1x1 vector is potentially undefined.
 The argument \code{keep}
 determines whether to keep "rownames" or "colnames".
 By default \code{keep} is \code{NULL},
-meanding that the function should attempt to figure out which dimension's names
+meaning that the function should attempt to figure out which dimension's names
 should be used for the hatized matrix on output.
 If vector \code{v} could ever be 1x1,
 it is best to set a value for \code{keep} when writing code

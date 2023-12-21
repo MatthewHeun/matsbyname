@@ -19,10 +19,51 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![Codecov test
 coverage](https://codecov.io/gh/MatthewHeun/matsbyname/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MatthewHeun/matsbyname?branch=master)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118872.svg)](https://doi.org/10.5281/zenodo.5118872)
+[![R-CMD-check](https://github.com/MatthewHeun/matsbyname/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MatthewHeun/matsbyname/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The `R` package `matsbyname` enables matrix mathematics wherein
-operations are performed “by name” and row and column types are allowed.
+## Statement of need
+
+Matrices are important mathematical objects, and they often describe
+networks of flows among nodes. Example networks are given in the
+following table. The power of matrices lies in their ability to organize
+network-wide calculations, thereby simplifying the work of analysts who
+study entire systems. However, three problems arise when performing
+matrix operations in `R` and other languages. The `R` package
+`matsbyname` enables matrix mathematics wherein operations are performed
+“by name” and row and column types are allowed.
+
+### Problem 1
+
+Although built-in matrix functions ensure size conformity of matrix
+operands, they do not respect the names of rows and columns (known as
+`dimnames` in `R`). If the rows and columns are not in the same order,
+mathematical operations with matrices are nonsensical.
+
+### Problem 2
+
+In many cases, operand matrices may have different numbers or different
+names of rows or columns. This situation can occur when, for example,
+products or industries changes across time periods. When performing
+matrix operations, rows or columns of zeros must be added to ensure name
+conformity. The analyst’s burden is cumbersome. But worse problems
+await. Respecting names (and adding rows and columns of zeroes) can lead
+to an inability to invert matrices downstream.
+
+### Problem 3
+
+Matrix functions provided by `R` and other languages do not ensure type
+conformity for matrix operands to matrix algebra functions. In the
+example of matrix multiplication, columns of the multiplicand must
+contain the same type of information as the as the rows of the
+multiplier. If the columns of **A** are countries, then the rows of
+**B** must also be countries (and in the same order) if **A** `%*%`
+**B** is to make sense.
+
+This package provides functions that respect row and column names when
+performing matrix mathematics in `R`. Furthermore, operations can be
+performed on lists of matrices, such as columns in a
+[matsindf](https://matthewheun.github.io/matsindf/) data frame.
 
 ## Installation
 

@@ -1,8 +1,8 @@
 Package: matsbyname
 Type: Package
 Title: An Implementation of Matrix Mathematics that Respects Row and Column Names
-Version: 0.6.7
-Date: 2023-12-01
+Version: 0.6.8
+Date: 2023-12-20
 Authors@R: c(person("Matthew", "Heun", role = c("aut", "cre"),
                      comment = c(ORCID = "0000-0002-7438-214X"),
                      email = "matthew.heun@me.com"))
@@ -30,10 +30,11 @@ Suggests:
     knitr,
     matsindf,
     rmarkdown,
+    spelling,
     testthat (>= 3.0.0),
     tidyr
 VignetteBuilder: 
     knitr
-URL: https://github.com/MatthewHeun/matsbyname
+URL: https://github.com/MatthewHeun/matsbyname, https://matthewheun.github.io/matsbyname/
 BugReports: https://github.com/MatthewHeun/matsbyname/issues
 Config/testthat/edition: 3
