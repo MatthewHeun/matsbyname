@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Matthew Kuperus
 Heun</h4>
             
-            <h4 data-toc-skip class="date">2023-12-01</h4>
+            <h4 data-toc-skip class="date">2023-12-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/HEAD/vignettes/matsbyname.Rmd" class="external-link"><code>vignettes/matsbyname.Rmd</code></a></small>
       <div class="d-none name"><code>matsbyname.Rmd</code></div>
@@ -560,7 +560,7 @@ frame of matrices.</p>
 <span><span class="co">#&gt; 8      B  p2  i2    5 Industries Products</span></span>
 <span><span class="va">mats</span> <span class="op">&lt;-</span> <span class="va">tidy</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">matrix</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">matsindf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/matsindf/man/collapse_to_matrices.html" class="external-link">collapse_to_matrices</a></span><span class="op">(</span>matnames <span class="op">=</span> <span class="st">"matrix"</span>, matvals <span class="op">=</span> <span class="st">"vals"</span>,</span>
+<span>  <span class="fu">matsindf</span><span class="fu">::</span><span class="fu"><a href="https://matthewheun.github.io/matsindf/reference/collapse_to_matrices.html" class="external-link">collapse_to_matrices</a></span><span class="op">(</span>matnames <span class="op">=</span> <span class="st">"matrix"</span>, matvals <span class="op">=</span> <span class="st">"vals"</span>,</span>
 <span>                                 rownames <span class="op">=</span> <span class="st">"row"</span>, colnames <span class="op">=</span> <span class="st">"col"</span>,</span>
 <span>                                 rowtypes <span class="op">=</span> <span class="st">"rowtype"</span>, coltypes <span class="op">=</span> <span class="st">"coltype"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
@@ -615,7 +615,7 @@ instruction performs the same operation on all rows of a
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    <span class="co"># Create a column of constants.</span></span>
-<span>    c <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RCLabels/man/make_list.html" class="external-link">make_list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, n <span class="op">=</span> <span class="fl">2</span>, lenx <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    c <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="fu"><a href="https://matthewheun.github.io/RCLabels/reference/make_list.html" class="external-link">make_list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, n <span class="op">=</span> <span class="fl">2</span>, lenx <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>    <span class="co"># Sum all rows of the data frame with a single instruction.</span></span>
 <span>    sum <span class="op">=</span> <span class="fu"><a href="../reference/sum_byname.html">sum_byname</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">B</span><span class="op">)</span>,</span>
 <span>    <span class="co"># Multiply matrices in the sum column by corresponding constants in the c column.</span></span>
@@ -667,7 +667,7 @@ instruction performs the same operation on all rows of a
 <li>Munge data into tidy data frame with columns for matrix name,
 element value, row name, column name, row type, and column type, similar
 to <code>tidy</code> above.</li>
-<li>Use <code><a href="https://rdrr.io/pkg/matsindf/man/collapse_to_matrices.html" class="external-link">matsindf::collapse_to_matrices()</a></code> to create a data
+<li>Use <code><a href="https://matthewheun.github.io/matsindf/reference/collapse_to_matrices.html" class="external-link">matsindf::collapse_to_matrices()</a></code> to create a data
 frame of matrices with columns for matrix names and matrices themselves,
 similar to <code>mats</code> above.</li>
 <li>
@@ -679,7 +679,7 @@ above.</li>
 <li>
 <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">tidyr::pivot_longer()</a></code> the columns into a data frame
 with a single column of matrices.</li>
-<li>Use <code><a href="https://rdrr.io/pkg/matsindf/man/expand_to_tidy.html" class="external-link">matsindf::expand_to_tidy()</a></code> to create a tidy data
+<li>Use <code><a href="https://matthewheun.github.io/matsindf/reference/expand_to_tidy.html" class="external-link">matsindf::expand_to_tidy()</a></code> to create a tidy data
 frame of matrix elements.</li>
 <li>
 <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">tidyr::pivot_wider()</a></code> the data as necessary.</li>

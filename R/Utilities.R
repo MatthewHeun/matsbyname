@@ -1435,7 +1435,7 @@ logmean <- function(a, b, base = exp(1)){
 
 #' Get the number of rows in a "byname" matrix.
 #' 
-#' The functionn gets the number of rows in a "byname" matrix, or for each "byname" matrix contained
+#' The function gets the number of rows in a "byname" matrix, or for each "byname" matrix contained
 #' in a column of a data frame.
 #'
 #' @param a A matrix or a column of a data frame populated with "byname" matrices.
@@ -1483,7 +1483,7 @@ nrow_byname <- function(a) {
 
 #' Get the number of columns in a "byname" matrix.
 #'
-#' The functionn gets the number of columns in a "byname" matrix, or for each "byname" matrix contained
+#' The function gets the number of columns in a "byname" matrix, or for each "byname" matrix contained
 #' in a column of a data frame.
 #'
 #'
