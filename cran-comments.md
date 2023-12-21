@@ -51,7 +51,7 @@ See `NEWS.md` for details.
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
-        * Windows Server 2022, R-devel, 64 bit          ********************
+        * Windows Server 2022, R-devel, 64 bit
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 2
