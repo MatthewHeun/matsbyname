@@ -1,7 +1,10 @@
 ## Context
 
-`matsbyname` v0.6.7
-adds a code of conduct and contributing guidelines.
+`matsbyname` v0.6.8
+adds a statement of need to the `README.Rmd` file 
+in preparation for submitting a paper to the 
+Journal of Open Source Software. 
+No other changes have been made.
 See `NEWS.md` for details.
 
 
@@ -33,21 +36,21 @@ See `NEWS.md` for details.
         * WARNINGs: 0
         * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.3.2 (2023-10-31 ucrt)
+    * `devtools::check_win_release()`, R version 4.3.2 (2023-10-31 ucrt)          ********************
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)
+    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)          ********************
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2023-11-30 r85651 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2023-11-30 r85651 ucrt)          ********************
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
-        * Windows Server 2022, R-devel, 64 bit
+        * Windows Server 2022, R-devel, 64 bit          ********************
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 2
@@ -61,7 +64,7 @@ See `NEWS.md` for details.
                 * 'lastMiKTeXException'
                     * This appears to be a mal-configuration of the test setup.
                     * This is the only platform on which this NOTE occurs.
-        * Fedora Linux, R-devel, clang, gfortran
+        * Fedora Linux, R-devel, clang, gfortran          ********************
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
@@ -69,7 +72,7 @@ See `NEWS.md` for details.
                 * Skipping checking HTML validation: no command 'tidy' found
                     * This appears to be a val-configuration of the Linux test setups.
                     * Linux is the only platform on which this NOTE occurs.
-        * Ubuntu Linux 20.04.1 LTS, R-release, GCC
+        * Ubuntu Linux 20.04.1 LTS, R-release, GCC          ********************
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
@@ -85,3 +88,4 @@ We checked 1 reverse dependencies, comparing R CMD check results across CRAN and
 
  * We saw 0 new problems
  * We failed to check 0 packages
+
