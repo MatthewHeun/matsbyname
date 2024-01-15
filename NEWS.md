@@ -8,7 +8,7 @@ which always resolves to the latest release.
 
 
 * Fixed a bug where renaming 
-  renaming to a suffix could yield an empty string ("") 
+  to a suffix could yield an empty string ("") 
   for rowtype or coltype when
   the existing rowtype or coltype
   did not have a suffix.
