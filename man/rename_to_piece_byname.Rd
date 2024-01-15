@@ -81,8 +81,10 @@ m2 <- m \%>\%
 m2
 rename_to_piece_byname(m2, piece = "pref", margin = "rows",
                        notation = RCLabels::arrow_notation)
-# Note that renaming to a suffix may yield an empty string ("") for
-# rowtype or coltype when an existing rowtype or coltype does not have a suffix.
-rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+m3 <- m2 |> 
+  setrowtype("Industry -> Product")
+m3
+# Note that renaming picks up the prefix for the rowtype.
+rename_to_piece_byname(m3, piece = "pref", margin = 1,
                        notation = RCLabels::arrow_notation)
 }

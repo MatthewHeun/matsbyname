@@ -536,10 +536,11 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' m2
 #' rename_to_piece_byname(m2, piece = "pref", margin = "rows",
 #'                        notation = RCLabels::arrow_notation)
-#' # Note that renaming to a suffix may yield an empty string ("") when
-#' # rowtype or coltype when an existing rowtype or coltype 
-#' # does not have a suffix.
-#' rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+#' m3 <- m2 |> 
+#'   setrowtype("Industry -> Product")
+#' m3
+#' # Note that renaming picks up the prefix for the rowtype.
+#' rename_to_piece_byname(m3, piece = "pref", margin = 1,
 #'                        notation = RCLabels::arrow_notation)
 rename_to_piece_byname <- function(a,
                                    piece,
@@ -585,6 +586,11 @@ rename_to_piece_byname <- function(a,
                             prepositions = these_prepositions)
       # Default is to return the old rowtype as the new rowtype
       new_rt <- rowtype(a_mat)
+      # Before calling infer_notation(), make sure we have a list of notations,
+      # otherwise infer_notation() will not work correctly.
+      if (!is.list(this_notation)) {
+        this_notation <- list(this_notation)
+      }
       if (!is.null(new_rt)) {
         # If we had a rowtype, see if we can find a notation for the rowtype.
         inferred_notation <- RCLabels::infer_notation(new_rt, 

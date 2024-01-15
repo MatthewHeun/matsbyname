@@ -1849,7 +1849,7 @@ test_that("rename_to_pref_suff_byname() also changes rowtype and coltype on Matr
 })
 
 
-test_that("rename_to_pref_suff_byname() to change row and column type correctly ignores missing suffixes for Matrix objects", {
+test_that("rename_to_pref_suff_byname() to change row and column type correctly returns the existing type when can't match notation", {
   m <- matsbyname::Matrix(c(1, 2, 
                             3, 4, 
                             5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
@@ -1861,7 +1861,7 @@ test_that("rename_to_pref_suff_byname() to change row and column type correctly 
   expect_equal(coltype(res), "Product")
   
   res_2 <- rename_to_pref_suff_byname(m, keep = "suff", notation = RCLabels::arrow_notation)
-  expect_equal(rowtype(res_2), "")
+  expect_equal(rowtype(res_2), "Rows")
   expect_equal(coltype(res_2), "Industry")
 })
 
@@ -3029,8 +3029,6 @@ test_that("rename_to_piece_byname() works as expected", {
                                  notation = RCLabels::arrow_notation)
   expected7 <- m2
   dimnames(expected7) <- list(c("b", "", ""), c("a -> b", "c -> d"))
-  expected7 <- expected7 %>%
-    setrowtype("")
   expect_equal(res7, expected7)
 })
 
@@ -3084,8 +3082,6 @@ test_that("rename_to_piece_byname() works with Matrix objects", {
                                  notation = RCLabels::arrow_notation)
   expected7 <- m2
   dimnames(expected7) <- list(c("b", "", ""), c("a -> b", "c -> d"))
-  expected7 <- expected7 %>%
-    setrowtype("")
   expect_equal(res7, expected7)
 })
 
