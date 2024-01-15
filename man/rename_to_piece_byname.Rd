@@ -34,6 +34,7 @@ Default is \code{TRUE}.}
 Default is \code{list(RCLabels::notations_list)}.
 The default value is wrapped in a list,
 because \code{RCLabels::notations_list} is, itself, a list.
+If \code{notation} is not a list, unexpected behavior can result.
 See \code{RCLabels}.}
 
 \item{choose_most_specific}{A boolean that indicates whether the most-specific notation

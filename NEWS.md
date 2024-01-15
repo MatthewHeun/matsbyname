@@ -7,10 +7,11 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-* Improved documentation of behavior where
-  renaming to a suffix may yield an empty string ("") when
-  rowtype or coltype when an existing rowtype or coltype
-  does not have a suffix.
+* Fixed a bug where renaming 
+  renaming to a suffix could yield an empty string ("") 
+  for rowtype or coltype when
+  the existing rowtype or coltype
+  did not have a suffix.
 
 
 # matsbyname 0.6.8 (2023-12-20) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10418797.svg)](https://doi.org/10.5281/zenodo.10418797)

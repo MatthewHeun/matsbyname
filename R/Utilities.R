@@ -509,6 +509,7 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'                 Default is `list(RCLabels::notations_list)`.
 #'                 The default value is wrapped in a list, 
 #'                 because `RCLabels::notations_list` is, itself, a list.
+#'                 If `notation` is not a list, unexpected behavior can result.
 #'                 See `RCLabels`.
 #' @param choose_most_specific A boolean that indicates whether the most-specific notation
 #'                             will be inferred when more than one of `notation` matches 
