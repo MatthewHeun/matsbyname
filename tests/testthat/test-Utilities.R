@@ -417,6 +417,7 @@ test_that("select_cols_byname() works for a specific case (Light [from Electric 
   mat <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), 
                                                          c("c1", "Light [from Electric lights]")))
   mat |> 
+    # Need to escape the string here, due to "[" and "]" characters.
     select_cols_byname(Hmisc::escapeRegex("Light [from Electric lights]")) |> 
     expect_equal(mat[ , 2, drop = FALSE])
 })
