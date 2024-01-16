@@ -413,6 +413,15 @@ test_that("select_cols_byname() works in lists for Matrix objects", {
 })
 
 
+test_that("select_cols_byname() works for a specific case (Light [from Electric lights])", {
+  mat <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), 
+                                                         c("c1", "Light [from Electric lights]")))
+  mat |> 
+    select_cols_byname(Hmisc::escapeRegex("Light [from Electric lights]")) |> 
+    expect_equal(mat[ , 2, drop = FALSE])
+})
+
+
 test_that("select_rows_byname() works even when everything is removed", {
   m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
