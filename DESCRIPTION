@@ -27,6 +27,7 @@ Imports:
     tibble
 Suggests:
     covr,
+    Hmisc,
     knitr,
     matsindf,
     rmarkdown,
