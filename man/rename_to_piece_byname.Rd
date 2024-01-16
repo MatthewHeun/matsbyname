@@ -95,20 +95,25 @@ rename_to_piece_byname(m, piece = "pref", notation = RCLabels::arrow_notation)
 m2 <- m \%>\%
   setrowtype("rows") \%>\% setcoltype("cols")
 m2
+# In this example, 
+# rowtype and coltype are unchanged, because the 
+# whole string is considered to be the prefix.
 rename_to_piece_byname(m2, piece = "pref", margin = "rows",
                        notation = RCLabels::arrow_notation)
-# The rowtype is set to the empty string ("")
+# Here, the rowtype is set to the empty string ("")
 # because there is no suffix for the type of the "rows" margin.
 rename_to_piece_byname(m2, piece = "suff", margin = "rows",
                        notation = RCLabels::arrow_notation)
 m3 <- m2 |> 
   setrowtype("Industry -> Product")
 m3
-# Note that renaming picks up the prefix for the rowtype.
+# Note that the rowtype becomes the prefix for the rowtype, 
+# in this example "Industry".
 rename_to_piece_byname(m3, piece = "pref", margin = 1,
                        notation = RCLabels::arrow_notation)
 # And when a suffix is present, 
-# the rowtype picks up the suffix.
+# the rowtype becomes the suffix, 
+# in this example "Product".
 rename_to_piece_byname(m3, piece = "suff", margin = 1,
                        notation = RCLabels::arrow_notation)
 }
