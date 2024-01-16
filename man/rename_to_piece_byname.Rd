@@ -69,6 +69,21 @@ resolve the integer margins of interest.
 
 Note that if row and/or column type are present,
 the row and/or column type are also renamed according to \code{piece}.
+This behavior is usually helpful.
+For example,
+if the prefix is requested (\code{piece = "pref"}) and
+the row/coltype is a single word
+that does not conform to the notation,
+the entire row/coltype string is retained.
+However, if the suffix is requested (\code{piece = "suff"}) and
+the row/coltype is a single word
+that does not conform to the notation,
+an empty string ("") is returned.
+In those circumstances,
+the caller is responsible for
+setting the row/coltype if an empty string ("")
+is not desired.
+See the examples for details.
 }
 \examples{
 m <- matrix(c(1, 2, 
@@ -82,10 +97,18 @@ m2 <- m \%>\%
 m2
 rename_to_piece_byname(m2, piece = "pref", margin = "rows",
                        notation = RCLabels::arrow_notation)
+# Rowtype is set to the empty string ("")
+# because there is no suffix for the type of the "rows" margin.
+rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+                       notation = RCLabels::arrow_notation)
 m3 <- m2 |> 
   setrowtype("Industry -> Product")
 m3
 # Note that renaming picks up the prefix for the rowtype.
 rename_to_piece_byname(m3, piece = "pref", margin = 1,
+                       notation = RCLabels::arrow_notation)
+# And when a suffix is present, 
+# the rowtype picks up the suffix.
+rename_to_piece_byname(m3, piece = "suff", margin = 1,
                        notation = RCLabels::arrow_notation)
 }

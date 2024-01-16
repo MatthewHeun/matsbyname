@@ -495,7 +495,7 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' the row and/or column type are also renamed according to `piece`.
 #' This behavior is usually helpful. 
 #' For example, 
-#' if the prefix is requested (`piece = "suff"`) and
+#' if the prefix is requested (`piece = "pref"`) and
 #' the row/coltype is a single word
 #' that does not conform to the notation,
 #' the entire row/coltype string is retained.
@@ -505,7 +505,9 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' an empty string ("") is returned. 
 #' In those circumstances, 
 #' the caller is responsible for 
-#' correctly setting the row/coltype.
+#' setting the row/coltype if an empty string ("") 
+#' is not desired.
+#' See the examples for details.
 #'
 #' @param a A matrix or list of matrices whose rows or columns will be renamed.
 #' @param piece A character string indicating which piece of the row or column names to retain, 
