@@ -537,6 +537,8 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' m2
 #' rename_to_piece_byname(m2, piece = "pref", margin = "rows",
 #'                        notation = RCLabels::arrow_notation)
+#' # Rowtype is set to the empty string ("")
+#' # because there is no suffix for the type of the "rows" margin.
 #' rename_to_piece_byname(m2, piece = "suff", margin = "rows",
 #'                        notation = RCLabels::arrow_notation)
 #' m3 <- m2 |> 
@@ -544,6 +546,10 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' m3
 #' # Note that renaming picks up the prefix for the rowtype.
 #' rename_to_piece_byname(m3, piece = "pref", margin = 1,
+#'                        notation = RCLabels::arrow_notation)
+#' # And when a suffix is present, 
+#' # the rowtype picks up the suffix.
+#' rename_to_piece_byname(m3, piece = "suff", margin = 1,
 #'                        notation = RCLabels::arrow_notation)
 rename_to_piece_byname <- function(a,
                                    piece,
