@@ -420,6 +420,10 @@ test_that("select_cols_byname() works for a specific case (Light [from Electric 
     # Need to escape the string here, due to "[" and "]" characters.
     select_cols_byname(Hmisc::escapeRegex("Light [from Electric lights]")) |> 
     expect_equal(mat[ , 2, drop = FALSE])
+  mat |> 
+    # Need to escape the string here, due to "[" and "]" characters.
+    select_cols_byname("Light [from Electric lights]", fixed = TRUE) |> 
+    expect_equal(mat[ , 2, drop = FALSE])
 })
 
 
