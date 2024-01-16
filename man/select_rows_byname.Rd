@@ -4,7 +4,15 @@
 \alias{select_rows_byname}
 \title{Select (or de-select) rows of a matrix (or list of matrices) by name}
 \usage{
-select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^")
+select_rows_byname(
+  a,
+  retain_pattern = "$^",
+  remove_pattern = "$^",
+  ignore.case = FALSE,
+  perl = FALSE,
+  fixed = FALSE,
+  useBytes = FALSE
+)
 }
 \arguments{
 \item{a}{A matrix or a list of matrices.}
@@ -14,6 +22,8 @@ Default pattern ("$^") retains nothing.}
 
 \item{remove_pattern}{An extended regex or list of extended regular expressions that specifies which rows of \code{a} to remove,
 Default pattern ("$^") removes nothing.}
+
+\item{ignore.case, perl, fixed, useBytes}{Arguments passed to \code{grep()}.}
 }
 \value{
 A matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.

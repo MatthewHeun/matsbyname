@@ -7,6 +7,12 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* `select_rows_byname()` and `select_cols_byname()` now both 
+  (a) have `grep()` arguments 
+  `ignore.case`, `perl`, `fixed`, and `useBytes` and 
+  (b) pass those arguments to `grep()`, 
+  enabling more flexible matching of row and column names.
+  
 * Fixed a bug where renaming 
   to a suffix could yield an empty string ("") 
   for rowtype or coltype when

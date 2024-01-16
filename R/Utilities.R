@@ -905,6 +905,7 @@ coltype <- function(a){
 #'                       Default pattern ("$^") retains nothing.
 #' @param remove_pattern An extended regex or list of extended regular expressions that specifies which rows of `a` to remove,
 #'                       Default pattern ("$^") removes nothing.
+#' @param ignore.case,perl,fixed,useBytes Arguments passed to `grep()`.
 #'
 #' @return A matrix that is a subset of `m` with rows selected by `retain_pattern` and `remove_pattern`.
 #' 
@@ -921,7 +922,9 @@ coltype <- function(a){
 #'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m, m), retain_pattern = "^i1$|^i4$")
-select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
+select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
+                               ignore.case = FALSE, perl = FALSE,
+                               fixed = FALSE, useBytes = FALSE){
   if (is.null(a)) {
     return(NULL)
   }
@@ -930,8 +933,12 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
   select_func <- function(a_mat, retain_pattern, remove_pattern){
-    retain_indices <- grep(pattern = retain_pattern, x = rownames(a_mat))
-    remove_indices <- grep(pattern = remove_pattern, x = rownames(a_mat))
+    retain_indices <- grep(pattern = retain_pattern, x = rownames(a_mat), 
+                           ignore.case = ignore.case, perl = perl,
+                           fixed = fixed, useBytes = useBytes)
+    remove_indices <- grep(pattern = remove_pattern, x = rownames(a_mat), 
+                           ignore.case = ignore.case, perl = perl,
+                           fixed = fixed, useBytes = useBytes)
     if (length(retain_indices) == 0) {
       # Nothing to be retained, so try removing columns
       if (length(remove_indices) == 0) {
@@ -1029,6 +1036,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' Default pattern ("$^") retains nothing.
 #' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of `m` to remove.
 #' Default pattern ("$^") removes nothing.
+#' @param ignore.case,perl,fixed,useBytes Arguments passed to `grep()`.
 #'
 #' @return a matrix that is a subset of `a` with columns selected by `retain_pattern` and `remove_pattern`.
 #' 
@@ -1045,13 +1053,17 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
-select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
+select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
+                               ignore.case = FALSE, perl = FALSE,
+                               fixed = FALSE, useBytes = FALSE){
   if (is.null(a)) {
     return(NULL)
   }
   out <- a %>% 
     transpose_byname() %>% 
-    select_rows_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern)
+    select_rows_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern, 
+                       ignore.case = ignore.case, perl = perl, 
+                       fixed = fixed, useBytes = useBytes)
   if (is.null(out)) {
     return(NULL)
   }
