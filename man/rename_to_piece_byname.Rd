@@ -97,7 +97,7 @@ m2 <- m \%>\%
 m2
 rename_to_piece_byname(m2, piece = "pref", margin = "rows",
                        notation = RCLabels::arrow_notation)
-# Rowtype is set to the empty string ("")
+# The rowtype is set to the empty string ("")
 # because there is no suffix for the type of the "rows" margin.
 rename_to_piece_byname(m2, piece = "suff", margin = "rows",
                        notation = RCLabels::arrow_notation)
