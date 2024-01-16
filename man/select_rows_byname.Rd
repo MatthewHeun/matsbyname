@@ -46,6 +46,10 @@ Given a list of row names, a pattern can be constructed easily using \code{RCLab
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 
+If the row or column labels contain "[" or "]",
+care should be taken to escape those characters.
+\code{Hmisc::escapeRegex()} is helpful in such situations.
+
 Note that if all rows are removed from \code{a}, \code{NULL} is returned.
 }
 \examples{

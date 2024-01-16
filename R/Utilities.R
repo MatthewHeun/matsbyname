@@ -894,6 +894,10 @@ coltype <- function(a){
 #' This function assumes that `retain_pattern` and `remove_pattern` have already been
 #' suitably escaped.
 #' 
+#' If the row or column labels contain "\[" or "\]", 
+#' care should be taken to escape those characters.
+#' `Hmisc::escapeRegex()` is helpful in such situations.
+#' 
 #' Note that if all rows are removed from `a`, `NULL` is returned.
 #'
 #' @param a A matrix or a list of matrices.
@@ -1013,6 +1017,10 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' 
 #' Note that the default `retain_pattern` and `remove_pattern` ("$^") 
 #' retain nothing and remove nothing.
+#' 
+#' If the row or column labels contain "\[" or "\]", 
+#' care should be taken to escape those characters.
+#' `Hmisc::escapeRegex()` is helpful in such situations.
 #' 
 #' Note that if all columns are removed from `a`, `NULL` is returned.
 #' 

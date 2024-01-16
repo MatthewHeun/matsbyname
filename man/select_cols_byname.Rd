@@ -48,6 +48,10 @@ suitably escaped.
 Note that the default \code{retain_pattern} and \code{remove_pattern} ("$^")
 retain nothing and remove nothing.
 
+If the row or column labels contain "[" or "]",
+care should be taken to escape those characters.
+\code{Hmisc::escapeRegex()} is helpful in such situations.
+
 Note that if all columns are removed from \code{a}, \code{NULL} is returned.
 }
 \examples{
