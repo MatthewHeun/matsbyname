@@ -140,4 +140,9 @@ test_that("operations on sparse matrices work in dplyr::mutate()", {
   expect_equal(res$m3, expected_m3)
   expected_m4 <- Map(f = `%*%`, df$m2, df$m2 |> lapply(FUN = Matrix::t))
   expect_equal(res$m4, expected_m4)
+  # Check that results are correct
+  small_mat_prod <- small_mat %*% Matrix::t(small_mat)
+  for (i in 1:nrow(df)) {
+    expect_equal(res$m4[[i]], small_mat_prod)  
+  }
 })
