@@ -122,3 +122,22 @@ test_that("object sizes", {
   expect_true(size_big_ijx_nodns < size_big_mat_dns) # 3104 bytes < 101288 bytes, factor of 32 improvement
 })
 
+
+test_that("operations on sparse matrices work in dplyr::mutate()", {
+  small_mat <- Matrix::Matrix(c(11, 21, 31, 12, 22, 32), nrow = 3, ncol = 2, sparse = TRUE)
+  small_mat_list <- list(small_mat, small_mat, small_mat)
+  m1str <- "m1"
+  m2str <- "m2"
+  m3str <- "m3"
+  m4str <- "m4"
+  df <- tibble::tibble(m1 = small_mat_list, m2 = small_mat_list)
+  res <- df |> 
+    dplyr::mutate(
+      "{m3str}" := Map(`+`, .data[[m1str]], .data[[m2str]]), 
+      "{m4str}" := Map(`%*%`, .data[[m2str]], .data[[m2str]] |> lapply(FUN = Matrix::t))
+    )
+  expected_m3 <- mapply(`+`, df$m1, df$m2)  
+  expect_equal(res$m3, expected_m3)
+  expected_m4 <- Map(f = `%*%`, df$m2, df$m2 |> lapply(FUN = Matrix::t))
+  expect_equal(res$m4, expected_m4)
+})
