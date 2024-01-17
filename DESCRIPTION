@@ -26,6 +26,7 @@ Imports:
     rlang,
     tibble
 Suggests:
+    bench,
     covr,
     Hmisc,
     knitr,
