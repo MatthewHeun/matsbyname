@@ -41,7 +41,7 @@ Default is \code{RCLabels::prepositions_list}.}
 Matrix \code{a} with rows or columns trimmed to match \code{mat}.
 }
 \description{
-By default, the \code{matsbyname} package expends matrices
+By default, the \code{matsbyname} package expands matrices
 with \code{0} rows or columns prior to matrix operations
 to ensure that rows and columns match.
 There are times when trimming rows or columns is preferred
