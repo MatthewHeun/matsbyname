@@ -1851,6 +1851,17 @@ test_that("replaceNaN_byname() works with Matrix objects", {
 })
 
 
+test_that("replaceNaN_byname() works with nothing to replace and sparseMatrix objects", {
+  m <- Matrix::sparseMatrix(i = c(1, 2, 2), 
+                            j = c(1, 5, 6), 
+                            x = c(11, 25, 26), 
+                            dimnames = list(paste0("r", 1:2), paste0("c", 1:6)))
+  # This errored when m had nothing to replace.
+  replaced <- replaceNaN_byname(m)
+  expect_equal(replaced, m)
+})
+
+
 test_that("count_vals_byname() works as expected", {
   m <- matrix(c(0, 1, 2, 3, 4, 0), nrow = 3, ncol = 2)
   # By default, looks for 0's and checks for equality

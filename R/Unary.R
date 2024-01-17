@@ -1384,16 +1384,20 @@ cumprod_byname <- function(a){
 replaceNaN_byname <- function(a, val = 0){
   replace_func <- function(a_mat){
     if (is.Matrix(a_mat)) {
-      # Get the triple
+      # Get the triplet
       trip <- Matrix::mat2triplet(a_mat) %>% 
         as.data.frame() %>% 
         # Find rows in the triple that are NaN
         dplyr::filter(is.nan(.data[["x"]]))
       # Set those values to val
-      for (k in 1:nrow(trip)) {
-        i <- trip[k, "i"]
-        j <- trip[k, "j"]
-        a_mat[i, j] <- val
+      if (nrow(trip) > 0) {
+        # But only replace if there is anything to replace, 
+        # because a sparseMatrix errors when there is nothing to replace.
+        for (k in 1:nrow(trip)) {
+          i <- trip[k, "i"]
+          j <- trip[k, "j"]
+          a_mat[i, j] <- val
+        }
       }
     } else {
       # Probably have a regular matrix object.

@@ -7,6 +7,9 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Fixed a bug in `replaceNaN_byname()`
+  where a `Matrix::sparseMatrix` would error when nothing
+  needed to be replaced. 
 * `select_rows_byname()` and `select_cols_byname()` now both 
   (a) have `grep()` arguments 
   `ignore.case`, `perl`, `fixed`, and `useBytes` and 
