@@ -1,6 +1,6 @@
 #' Trim rows and/or columns from a matrix
 #' 
-#' By default, the `matsbyname` package expends matrices
+#' By default, the `matsbyname` package expands matrices
 #' with `0` rows or columns prior to matrix operations
 #' to ensure that rows and columns match.
 #' There are times when trimming rows or columns is preferred 
