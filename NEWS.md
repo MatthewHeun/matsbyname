@@ -16,6 +16,9 @@ which always resolves to the latest release.
       `ignore.case`, `perl`, `fixed`, and `useBytes`, and 
   (b) pass those arguments to `grep()`, 
   enabling more flexible matching of row and column names.
+* New tests for fixed bugs and performance.
+    - Now up to 2113 tests, all passing.
+    - Test coverage remains at 100 %.
 
 
 # matsbyname 0.6.8 (2023-12-20) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10418797.svg)](https://doi.org/10.5281/zenodo.10418797)
