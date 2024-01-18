@@ -48,7 +48,7 @@ test_that("calculation speed", {
   future_sum_big = bench::mark(big_ijx_nodns + big_ijx_nodns, time_unit = "ms", min_time = min_time) |> 
     magrittr::extract2("median")
   speedup_sum_big <- current_sum_big/future_sum_big # 8.6
-  # expect_true(speedup_sum_big > 1) # Fails on GitHub action for macOS
+  # expect_true(speedup_sum_big > 1) # Fails on GitHub actions for macOS
 
   current_prod_big <- bench::mark(matsbyname::matrixproduct_byname(big_ijx_dns, t_big_ijx_dns), time_unit = "ms", min_time = min_time) |> 
     magrittr::extract2("median")
