@@ -17,6 +17,16 @@ test_that("abs_byname() works as expected", {
 })
 
 
+test_that("abs_byname() works with a matrix without dimnames or types", {
+  m <- matrix(c(-10,1,1,100), nrow = 2)
+  expect_equal(abs_byname(m), abs(m))
+  
+  # Check speed: base is 1461x faster than byname
+  bench::mark(base = abs(m), 
+              byname = abs_byname(m), relative = TRUE)
+})
+
+
 test_that("log_byname() works as expected", {
   expect_equal(log_byname(exp(1)), 1)
   m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
