@@ -719,17 +719,17 @@ which always resolves to the latest release.
 * Name change to `matsbyname`.
 
 
-# byname 0.1.9 (2018-02-14)
+## byname 0.1.9 (2018-02-14)
 
 * Now preserving names of list items in `*apply_byname` functions.
 
 
-# byname 0.1.8 (2018-02-14)
+## byname 0.1.8 (2018-02-14)
 
 * Added `applybyname` vignette.
 
 
-# byname 0.1.7 (2018-02-14)
+## byname 0.1.7 (2018-02-14)
 
 * `unaryapply_byname` and `binaryapply_byname` now have `.FUNdots` arguments
   through which arguments to `FUN` should be passed. 
@@ -743,18 +743,18 @@ which always resolves to the latest release.
   was not happening properly.
 
 
-# byname 0.1.6 (2018-02-08)
+## byname 0.1.6 (2018-02-08)
 
 * New functions `cumsum_byname`, `cumprod_byname`, and `cumapply_byname`.
 * Miscellaneous improvements to documentation of many functions.
 
 
-# byname 0.1.5 (2018-02-01)
+## byname 0.1.5 (2018-02-01)
 
 * New functions `elementlog_byname` and `elementexp_byname`.
 
 
-# byname 0.1.4 (2018-01-31)
+## byname 0.1.4 (2018-01-31)
 
 * New functions `unaryapply_byname` and `binaryapply_byname`.
   These functions have a `FUN` argument that allows an arbitrary function to be 
@@ -767,7 +767,7 @@ which always resolves to the latest release.
   very solid.
 
 
-# byname 0.1.3 (2018-01-27)
+## byname 0.1.3 (2018-01-27)
 
 * Fixed a vector vs. list bug that caused failure of binary `_byname` functions when one argument
   was a list and the other was a non-constant numeric vector. 
@@ -775,7 +775,7 @@ which always resolves to the latest release.
 * Various other fixes.
 
 
-# byname 0.1.2 (2018-01-23)
+## byname 0.1.2 (2018-01-23)
 
 * Added the following functions:
    + `mean_byname`: returns the arithmetic mean of corresponding entries of two matrices
@@ -786,7 +786,7 @@ which always resolves to the latest release.
 * Miscellaneous improvements to documentation of many functions.
    
 
-# byname 0.1.1 (2018-01-21)
+## byname 0.1.1 (2018-01-21)
 
 * Added the following functions: 
    + `rowprod_byname`: returns a column vector with row products (product of all entries in a row)
@@ -795,6 +795,6 @@ which always resolves to the latest release.
 * Miscellaneous improvements to documentation of many functions.
 
 
-# byname 0.1
+## byname 0.1
 
 Initial version.
