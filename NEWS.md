@@ -19,7 +19,7 @@ which always resolves to the latest release.
       enabling more flexible matching of row and column names.
 * New tests for fixed bugs and performance.
     - Now up to 2113 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.8 (2023-12-20) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10418797.svg)](https://doi.org/10.5281/zenodo.10418797)
@@ -28,7 +28,7 @@ which always resolves to the latest release.
 * Updated the GitHub pages approach to use the gh-pages branch.
 * No new tests.
     - Still at 2095 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.7 (2023-12-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10247250.svg)](https://doi.org/10.5281/zenodo.10247250)
@@ -36,7 +36,7 @@ which always resolves to the latest release.
 * Added code of conduct and contributing pages to documentation.
 * No new tests.
     - Still at 2095 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
     
 
 ## matsbyname 0.6.6 (2023-10-18) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10022015.svg)](https://doi.org/10.5281/zenodo.10022015)
@@ -49,7 +49,7 @@ which always resolves to the latest release.
   in `matrixproduct_byname()`.
 * New tests for new features. 
     - Now at 2095 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.5 (2023-09-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8353760.svg)](https://doi.org/10.5281/zenodo.8353760)
@@ -86,7 +86,7 @@ which always resolves to the latest release.
 * Renamed `matrix.class` argument to `matrix_class`.
 * New tests for `matrix.class` --> `matrix_class` transition.
     - Still at 2085 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.2 (2023-05-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7896773.svg)](https://doi.org/10.5281/zenodo.7896773)
@@ -95,7 +95,7 @@ which always resolves to the latest release.
 * This version not released to CRAN.
 * No new tests.
     - Still at 2082 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.1 (2023-04-25) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7865440.svg)](https://doi.org/10.5281/zenodo.7865440)
@@ -107,7 +107,7 @@ which always resolves to the latest release.
   were equal.
 * New tests for new features.
     - Now at 2082 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.0 (2023-03-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7699156.svg)](https://doi.org/10.5281/zenodo.7699156)
@@ -139,7 +139,7 @@ which always resolves to the latest release.
 * Update to latest GitHub actions continuous integration workflow.
 * Many new tests for new features.
     - Now at 2078 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.5.1 (2023-01-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7541455.svg)](https://doi.org/10.5281/zenodo.7541455)
@@ -181,7 +181,7 @@ which always resolves to the latest release.
   row and column notations.
 * Many new tests for new features.
     - Now at 1165 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.5.0 (2022-04-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6407149.svg)](https://doi.org/10.5281/zenodo.6407149)
@@ -250,7 +250,7 @@ which always resolves to the latest release.
   so the total number of tests
   has gone down slightly.
     - Now at 1072 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.25 (2021-10-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565352.svg)](https://doi.org/10.5281/zenodo.5565352)
@@ -258,7 +258,7 @@ which always resolves to the latest release.
 * New notation functions `preposition_notation()`, `from_notation()`, and `of_notation()`.
 * Many new tests for new features.
     - Now at 1077 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.24 (2021-10-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5545893.svg)](https://doi.org/10.5281/zenodo.5545893)
@@ -270,7 +270,7 @@ which always resolves to the latest release.
   in one matrix based on another.
 * Many new tests for new features.
     - Now at 1057 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.23 (2021-09-01)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5392263.svg)](https://doi.org/10.5281/zenodo.5392263)
@@ -281,7 +281,7 @@ which always resolves to the latest release.
 * This release is for CRAN.
 * One test could be deleted, because the `hatize_byname()` function is now simpler.
     - Now at 1039 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.22 (2021-07-26)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138201.svg)](https://doi.org/10.5281/zenodo.5138201)
@@ -293,7 +293,7 @@ which always resolves to the latest release.
 * Note this version was not released to CRAN, due to frequent revisions.
 * New tests for new features.
     - Now up to 1040 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.21 (2021-07-23)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
@@ -306,7 +306,7 @@ which always resolves to the latest release.
 * Note this version was not released to CRAN, due to frequent revisions.
 * New tests for new feature.
     - Now up to 1030 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.20 (2021-07-19)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118873.svg)](https://doi.org/10.5281/zenodo.5118873)
@@ -315,7 +315,7 @@ which always resolves to the latest release.
   or lists of strings, based on the `notation` provided.
 * New tests for new functions.  
     - Now up to 1025 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.19 (2021-07-17)
@@ -328,7 +328,7 @@ which always resolves to the latest release.
 * New tests for whether `split_pref_suff()` works in a data frame.
 * New tests for new logic.
     - Now up to 1009 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.18 (2021-06-02)
@@ -343,7 +343,7 @@ which always resolves to the latest release.
   much like `matrix()` with "byname" characteristics.
 * New tests for new functions.  
     - Now up to 1000 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.17 (2021-04-10)
@@ -351,7 +351,7 @@ which always resolves to the latest release.
 * Transition to GitHub actions for continuous integration.
 * No new tests.
     * Still at 906 tests, all passing.
-    * Test coverage remains at 100 %.
+    * Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.16 (2020-11-25)
@@ -372,7 +372,7 @@ which always resolves to the latest release.
 * Fixed a warning emitted from `stringi`.
 * New tests for bug fixes.  
   Now up to 906 tests, all passing.
-* Test coverage remains at 100 %.
+* Test coverage remains at 100%.
 
 
 ## matsbyname 0.4.15 (2020-05-29)
