@@ -16,7 +16,7 @@ which always resolves to the latest release.
   (a) have `grep()` arguments 
       `ignore.case`, `perl`, `fixed`, and `useBytes`, and 
   (b) pass those arguments to `grep()`, 
-  enabling more flexible matching of row and column names.
+      enabling more flexible matching of row and column names.
 * New tests for fixed bugs and performance.
     - Now up to 2113 tests, all passing.
     - Test coverage remains at 100 %.
