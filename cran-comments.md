@@ -39,17 +39,17 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)        ********************************
+    * `devtools::check_win_oldrelease()`, R version 4.2.3 (2023-03-15 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2023-12-20 r85713 ucrt)    ********************************
+    * `devtools::check_win_devel()`, R Under development (unstable) (2024-01-29 r85841 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
-        * Windows Server 2022, R-devel, 64 bit    ********************************
+        * Windows Server 2022, R-devel, 64 bit
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 2
@@ -63,7 +63,7 @@ See `NEWS.md` for details.
                 * 'lastMiKTeXException'
                     * This appears to be a mal-configuration of the test setup.
                     * This is the only platform on which this NOTE occurs.
-        * Fedora Linux, R-devel, clang, gfortran    ********************************
+        * Fedora Linux, R-devel, clang, gfortran
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 2
@@ -72,11 +72,7 @@ See `NEWS.md` for details.
                     * This appears to be a val-configuration of the Linux test setups.
                     * Linux is the only platform on which this NOTE occurs.
                 - checking CRAN incoming feasibility ... [10s/44s] NOTE
-                - Found the following (possibly) invalid URLs:
-                    * Followed by a series of files with invalid URLs.
-                    * I see no invalid URLs, and Fedora Linux is the only platform where this 
-                      NOTE is provided.
-        * Ubuntu Linux 20.04.1 LTS, R-release, GCC    ********************************
+        * Ubuntu Linux 20.04.1 LTS, R-release, GCC
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 1
