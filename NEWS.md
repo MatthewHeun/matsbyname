@@ -7,6 +7,7 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Now running tests in parallel.
 * Added performance tests.
 * Fixed a bug in `replaceNaN_byname()`
   where a `Matrix::sparseMatrix` would error when nothing

@@ -29,8 +29,9 @@ test_that("calculation speed", {
   t_big_ijx_dns <- Matrix::t(big_ijx_dns)
   t_big_ijx_nodns <- Matrix::t(big_ijx_nodns)
   
-  current_sum_small <- bench::mark(matsbyname::sum_byname(small_ijx_dns, small_ijx_dns), time_unit = "ms", min_time = min_time) |> 
-    magrittr::extract2("median")
+  suppressWarnings(
+    current_sum_small <- bench::mark(matsbyname::sum_byname(small_ijx_dns, small_ijx_dns), time_unit = "ms", min_time = min_time) |> 
+      magrittr::extract2("median"))
   future_sum_small = bench::mark(small_ijx_nodns + small_ijx_nodns, time_unit = "ms", min_time = min_time) |> 
     magrittr::extract2("median")
   speedup_sum_small <- current_sum_small/future_sum_small # 7.4

@@ -13,6 +13,9 @@ Language: en-US
 Encoding: UTF-8
 RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+Config/testthat/start-first: Binary, Utilities, Unary
 Imports:
     assertthat,
     dplyr,
@@ -39,4 +42,3 @@ VignetteBuilder:
     knitr
 URL: https://github.com/MatthewHeun/matsbyname, https://matthewheun.github.io/matsbyname/
 BugReports: https://github.com/MatthewHeun/matsbyname/issues
-Config/testthat/edition: 3
