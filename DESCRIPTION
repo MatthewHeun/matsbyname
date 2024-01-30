@@ -11,7 +11,7 @@ Description: An implementation of matrix mathematics wherein operations are perf
 License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 Imports:
     assertthat,
