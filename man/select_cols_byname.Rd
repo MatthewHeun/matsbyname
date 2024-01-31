@@ -4,7 +4,15 @@
 \alias{select_cols_byname}
 \title{Select columns of a matrix (or list of matrices) by name}
 \usage{
-select_cols_byname(a, retain_pattern = "$^", remove_pattern = "$^")
+select_cols_byname(
+  a,
+  retain_pattern = "$^",
+  remove_pattern = "$^",
+  ignore.case = FALSE,
+  perl = FALSE,
+  fixed = FALSE,
+  useBytes = FALSE
+)
 }
 \arguments{
 \item{a}{a matrix or a list of matrices}
@@ -14,6 +22,8 @@ Default pattern ("$^") retains nothing.}
 
 \item{remove_pattern}{an extended regex or list of extended regular expressions that specifies which columns of \code{m} to remove.
 Default pattern ("$^") removes nothing.}
+
+\item{ignore.case, perl, fixed, useBytes}{Arguments passed to \code{grep()}.}
 }
 \value{
 a matrix that is a subset of \code{a} with columns selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -47,6 +57,10 @@ suitably escaped.
 
 Note that the default \code{retain_pattern} and \code{remove_pattern} ("$^")
 retain nothing and remove nothing.
+
+If the row or column labels contain "[" or "]",
+care should be taken to escape those characters.
+\code{Hmisc::escapeRegex()} is helpful in such situations.
 
 Note that if all columns are removed from \code{a}, \code{NULL} is returned.
 }

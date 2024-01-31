@@ -413,6 +413,20 @@ test_that("select_cols_byname() works in lists for Matrix objects", {
 })
 
 
+test_that("select_cols_byname() works for a specific case (Light [from Electric lights])", {
+  mat <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), 
+                                                         c("c1", "Light [from Electric lights]")))
+  mat |> 
+    # Need to escape the string here, due to "[" and "]" characters.
+    select_cols_byname(Hmisc::escapeRegex("Light [from Electric lights]")) |> 
+    expect_equal(mat[ , 2, drop = FALSE])
+  mat |> 
+    # Need to escape the string here, due to "[" and "]" characters.
+    select_cols_byname("Light [from Electric lights]", fixed = TRUE) |> 
+    expect_equal(mat[ , 2, drop = FALSE])
+})
+
+
 test_that("select_rows_byname() works even when everything is removed", {
   m <- matrix(1:4, nrow = 2, ncol = 2, dimnames = list(c("r1", "r2"), c("c1", "c2"))) %>% 
     setrowtype("rows") %>% setcoltype("cols")
@@ -1849,7 +1863,7 @@ test_that("rename_to_pref_suff_byname() also changes rowtype and coltype on Matr
 })
 
 
-test_that("rename_to_pref_suff_byname() to change row and column type correctly ignores missing suffixes for Matrix objects", {
+test_that("rename_to_pref_suff_byname() to change row and column type correctly returns enpty string when a suffix is not present", {
   m <- matsbyname::Matrix(c(1, 2, 
                             3, 4, 
                             5, 6), nrow = 3, ncol = 2, byrow = TRUE, 
@@ -3029,7 +3043,7 @@ test_that("rename_to_piece_byname() works as expected", {
                                  notation = RCLabels::arrow_notation)
   expected7 <- m2
   dimnames(expected7) <- list(c("b", "", ""), c("a -> b", "c -> d"))
-  expected7 <- expected7 %>%
+  expected7 <- expected7 |> 
     setrowtype("")
   expect_equal(res7, expected7)
 })
@@ -3084,7 +3098,7 @@ test_that("rename_to_piece_byname() works with Matrix objects", {
                                  notation = RCLabels::arrow_notation)
   expected7 <- m2
   dimnames(expected7) <- list(c("b", "", ""), c("a -> b", "c -> d"))
-  expected7 <- expected7 %>%
+  expected7 <- expected7 |> 
     setrowtype("")
   expect_equal(res7, expected7)
 })

@@ -89,6 +89,35 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   } else if (rowcoltypes == "none") {
     # Do nothing. rowtype and coltype should have been set by FUN.
   }
+  
+  # Check whether row or column types are available
+  # before taking action.
+  # For speed, get the rowtype directly;
+  # using rowtype() results in recursion.
+  # rta <- attr(a, which = "rowtype", exact = TRUE)
+  # if (!is.null(rta)) {
+  #   if (rowcoltypes == "all") {
+  #     attr(out, "rowtype") <- rta
+  #   } else if (rowcoltypes == "transpose") {
+  #     attr(out, "coltype") <- rta
+  #   } else if (rowcoltypes == "row") {
+  #     attr(out, "rowtype") <- rta
+  #     attr(out, "coltype") <- rta
+  #   }
+  # }
+  # For speed, get the coltype directly;
+  # using coltype() results in recursion.
+  # cta <- attr(a, which = "rowtype", exact = TRUE)
+  # if (!is.null(cta)) {
+  #   if (rowcoltypes == "all") {
+  #     attr(out, "coltype") <- cta
+  #   } else if (rowcoltypes == "transpose") {
+  #     attr(out, "rowtype") <- cta
+  #   } else if (rowcoltypes == "col") {
+  #     attr(out, "coltype") <- cta
+  #     attr(out, "rowtype") <- cta
+  #   }
+  # }
   return(out)
 }
 

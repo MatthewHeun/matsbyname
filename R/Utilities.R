@@ -493,6 +493,21 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' 
 #' Note that if row and/or column type are present,
 #' the row and/or column type are also renamed according to `piece`.
+#' This behavior is usually helpful. 
+#' For example, 
+#' if the prefix is requested (`piece = "pref"`) and
+#' the row/coltype is a single word
+#' that does not conform to the notation,
+#' the entire row/coltype string is retained.
+#' However, if the suffix is requested (`piece = "suff"`) and
+#' the row/coltype is a single word
+#' that does not conform to the notation, 
+#' an empty string ("") is returned. 
+#' In those circumstances, 
+#' the caller is responsible for 
+#' setting the row/coltype if an empty string ("") 
+#' is not desired.
+#' See the examples for details.
 #'
 #' @param a A matrix or list of matrices whose rows or columns will be renamed.
 #' @param piece A character string indicating which piece of the row or column names to retain, 
@@ -509,6 +524,7 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #'                 Default is `list(RCLabels::notations_list)`.
 #'                 The default value is wrapped in a list, 
 #'                 because `RCLabels::notations_list` is, itself, a list.
+#'                 If `notation` is not a list, unexpected behavior can result.
 #'                 See `RCLabels`.
 #' @param choose_most_specific A boolean that indicates whether the most-specific notation
 #'                             will be inferred when more than one of `notation` matches 
@@ -534,9 +550,26 @@ rename_to_pref_suff_byname <- function(a, keep, margin = c(1, 2), notation) {
 #' m2 <- m %>%
 #'   setrowtype("rows") %>% setcoltype("cols")
 #' m2
+#' # In this example, 
+#' # rowtype and coltype are unchanged, because the 
+#' # whole string is considered to be the prefix.
 #' rename_to_piece_byname(m2, piece = "pref", margin = "rows",
 #'                        notation = RCLabels::arrow_notation)
+#' # Here, the rowtype is set to the empty string ("")
+#' # because there is no suffix for the type of the "rows" margin.
 #' rename_to_piece_byname(m2, piece = "suff", margin = "rows",
+#'                        notation = RCLabels::arrow_notation)
+#' m3 <- m2 |> 
+#'   setrowtype("Industry -> Product")
+#' m3
+#' # Note that the rowtype becomes the prefix for the rowtype, 
+#' # in this example "Industry".
+#' rename_to_piece_byname(m3, piece = "pref", margin = 1,
+#'                        notation = RCLabels::arrow_notation)
+#' # And when a suffix is present, 
+#' # the rowtype becomes the suffix, 
+#' # in this example "Product".
+#' rename_to_piece_byname(m3, piece = "suff", margin = 1,
 #'                        notation = RCLabels::arrow_notation)
 rename_to_piece_byname <- function(a,
                                    piece,
@@ -582,6 +615,11 @@ rename_to_piece_byname <- function(a,
                             prepositions = these_prepositions)
       # Default is to return the old rowtype as the new rowtype
       new_rt <- rowtype(a_mat)
+      # Before calling infer_notation(), make sure we have a list of notations,
+      # otherwise infer_notation() will not work correctly.
+      # if (!is.list(this_notation)) {
+      #   this_notation <- list(this_notation)
+      # }
       if (!is.null(new_rt)) {
         # If we had a rowtype, see if we can find a notation for the rowtype.
         inferred_notation <- RCLabels::infer_notation(new_rt, 
@@ -856,6 +894,10 @@ coltype <- function(a){
 #' This function assumes that `retain_pattern` and `remove_pattern` have already been
 #' suitably escaped.
 #' 
+#' If the row or column labels contain "\[" or "\]", 
+#' care should be taken to escape those characters.
+#' `Hmisc::escapeRegex()` is helpful in such situations.
+#' 
 #' Note that if all rows are removed from `a`, `NULL` is returned.
 #'
 #' @param a A matrix or a list of matrices.
@@ -863,6 +905,7 @@ coltype <- function(a){
 #'                       Default pattern ("$^") retains nothing.
 #' @param remove_pattern An extended regex or list of extended regular expressions that specifies which rows of `a` to remove,
 #'                       Default pattern ("$^") removes nothing.
+#' @param ignore.case,perl,fixed,useBytes Arguments passed to `grep()`.
 #'
 #' @return A matrix that is a subset of `m` with rows selected by `retain_pattern` and `remove_pattern`.
 #' 
@@ -879,7 +922,9 @@ coltype <- function(a){
 #'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_rows_byname(list(m, m), retain_pattern = "^i1$|^i4$")
-select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
+select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
+                               ignore.case = FALSE, perl = FALSE,
+                               fixed = FALSE, useBytes = FALSE){
   if (is.null(a)) {
     return(NULL)
   }
@@ -888,8 +933,12 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
   # The default pattern would match lines where the beginning of the line is the end of the line.
   # That is impossible, so nothing is matched.
   select_func <- function(a_mat, retain_pattern, remove_pattern){
-    retain_indices <- grep(pattern = retain_pattern, x = rownames(a_mat))
-    remove_indices <- grep(pattern = remove_pattern, x = rownames(a_mat))
+    retain_indices <- grep(pattern = retain_pattern, x = rownames(a_mat), 
+                           ignore.case = ignore.case, perl = perl,
+                           fixed = fixed, useBytes = useBytes)
+    remove_indices <- grep(pattern = remove_pattern, x = rownames(a_mat), 
+                           ignore.case = ignore.case, perl = perl,
+                           fixed = fixed, useBytes = useBytes)
     if (length(retain_indices) == 0) {
       # Nothing to be retained, so try removing columns
       if (length(remove_indices) == 0) {
@@ -976,6 +1025,10 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' Note that the default `retain_pattern` and `remove_pattern` ("$^") 
 #' retain nothing and remove nothing.
 #' 
+#' If the row or column labels contain "\[" or "\]", 
+#' care should be taken to escape those characters.
+#' `Hmisc::escapeRegex()` is helpful in such situations.
+#' 
 #' Note that if all columns are removed from `a`, `NULL` is returned.
 #' 
 #' @param a a matrix or a list of matrices
@@ -983,6 +1036,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #' Default pattern ("$^") retains nothing.
 #' @param remove_pattern an extended regex or list of extended regular expressions that specifies which columns of `m` to remove.
 #' Default pattern ("$^") removes nothing.
+#' @param ignore.case,perl,fixed,useBytes Arguments passed to `grep()`.
 #'
 #' @return a matrix that is a subset of `a` with columns selected by `retain_pattern` and `remove_pattern`.
 #' 
@@ -999,13 +1053,17 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
 #'                    pattern_type = "exact"))
 #' # Also works for lists and data frames
 #' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
-select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^"){
+select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^", 
+                               ignore.case = FALSE, perl = FALSE,
+                               fixed = FALSE, useBytes = FALSE){
   if (is.null(a)) {
     return(NULL)
   }
   out <- a %>% 
     transpose_byname() %>% 
-    select_rows_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern)
+    select_rows_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern, 
+                       ignore.case = ignore.case, perl = perl, 
+                       fixed = fixed, useBytes = useBytes)
   if (is.null(out)) {
     return(NULL)
   }

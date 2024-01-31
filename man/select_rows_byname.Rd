@@ -4,7 +4,15 @@
 \alias{select_rows_byname}
 \title{Select (or de-select) rows of a matrix (or list of matrices) by name}
 \usage{
-select_rows_byname(a, retain_pattern = "$^", remove_pattern = "$^")
+select_rows_byname(
+  a,
+  retain_pattern = "$^",
+  remove_pattern = "$^",
+  ignore.case = FALSE,
+  perl = FALSE,
+  fixed = FALSE,
+  useBytes = FALSE
+)
 }
 \arguments{
 \item{a}{A matrix or a list of matrices.}
@@ -14,6 +22,8 @@ Default pattern ("$^") retains nothing.}
 
 \item{remove_pattern}{An extended regex or list of extended regular expressions that specifies which rows of \code{a} to remove,
 Default pattern ("$^") removes nothing.}
+
+\item{ignore.case, perl, fixed, useBytes}{Arguments passed to \code{grep()}.}
 }
 \value{
 A matrix that is a subset of \code{m} with rows selected by \code{retain_pattern} and \code{remove_pattern}.
@@ -45,6 +55,10 @@ Given a list of row names, a pattern can be constructed easily using \code{RCLab
 \code{RCLabels::make_or_pattern()} escapes regex strings using \code{Hmisc::escapeRegex()}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
+
+If the row or column labels contain "[" or "]",
+care should be taken to escape those characters.
+\code{Hmisc::escapeRegex()} is helpful in such situations.
 
 Note that if all rows are removed from \code{a}, \code{NULL} is returned.
 }

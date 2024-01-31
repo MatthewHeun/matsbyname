@@ -1,8 +1,8 @@
 Package: matsbyname
 Type: Package
 Title: An Implementation of Matrix Mathematics that Respects Row and Column Names
-Version: 0.6.8
-Date: 2023-12-20
+Version: 0.6.9
+Date: 2024-01-30
 Authors@R: c(person("Matthew", "Heun", role = c("aut", "cre"),
                      comment = c(ORCID = "0000-0002-7438-214X"),
                      email = "matthew.heun@me.com"))
@@ -11,8 +11,11 @@ Description: An implementation of matrix mathematics wherein operations are perf
 License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+Config/testthat/start-first: Binary, Utilities, Unary
 Imports:
     assertthat,
     dplyr,
@@ -26,7 +29,9 @@ Imports:
     rlang,
     tibble
 Suggests:
+    bench,
     covr,
+    Hmisc,
     knitr,
     matsindf,
     rmarkdown,
@@ -37,4 +42,3 @@ VignetteBuilder:
     knitr
 URL: https://github.com/MatthewHeun/matsbyname, https://matthewheun.github.io/matsbyname/
 BugReports: https://github.com/MatthewHeun/matsbyname/issues
-Config/testthat/edition: 3

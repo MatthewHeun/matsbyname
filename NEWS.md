@@ -7,24 +7,41 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-# matsbyname 0.6.8 (2023-12-20)
+## matsbyname 0.6.9 (2024-01-30)
+
+* Now running tests in parallel.
+* Added performance tests.
+* Fixed a bug in `replaceNaN_byname()`
+  where a `Matrix::sparseMatrix` would error when nothing
+  needed to be replaced. 
+* `select_rows_byname()` and `select_cols_byname()` now both 
+  (a) have `grep()` arguments 
+      `ignore.case`, `perl`, `fixed`, and `useBytes`, and 
+  (b) pass those arguments to `grep()`, 
+      enabling more flexible matching of row and column names.
+* New tests for fixed bugs and performance.
+    - Now up to 2113 tests, all passing.
+    - Test coverage remains at 100%.
+
+
+## matsbyname 0.6.8 (2023-12-20) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10418797.svg)](https://doi.org/10.5281/zenodo.10418797)
 
 * Added a statement of need.
 * Updated the GitHub pages approach to use the gh-pages branch.
 * No new tests.
     - Still at 2095 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.6.7 (2023-12-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10247250.svg)](https://doi.org/10.5281/zenodo.10247250)
+## matsbyname 0.6.7 (2023-12-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10247250.svg)](https://doi.org/10.5281/zenodo.10247250)
 
 * Added code of conduct and contributing pages to documentation.
 * No new tests.
     - Still at 2095 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
     
 
-# matsbyname 0.6.6 (2023-10-18) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10022015.svg)](https://doi.org/10.5281/zenodo.10022015)
+## matsbyname 0.6.6 (2023-10-18) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10022015.svg)](https://doi.org/10.5281/zenodo.10022015)
 
 * Fixed a bug in `matricize_byname()`.
   If the incoming matrix had `NULL` rowtype,
@@ -34,10 +51,10 @@ which always resolves to the latest release.
   in `matrixproduct_byname()`.
 * New tests for new features. 
     - Now at 2095 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.6.5 (2023-09-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8353760.svg)](https://doi.org/10.5281/zenodo.8353760)
+## matsbyname 0.6.5 (2023-09-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8353760.svg)](https://doi.org/10.5281/zenodo.8353760)
 
 * Remove deprecated `column` argument on `vec_from_store_byname()`.
 * Remove deprecated argument `matrix.class` in many places.
@@ -48,7 +65,7 @@ which always resolves to the latest release.
 
 
 
-# matsbyname 0.6.4 (2023-08-17) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8262639.svg)](https://doi.org/10.5281/zenodo.8262639)
+## matsbyname 0.6.4 (2023-08-17) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8262639.svg)](https://doi.org/10.5281/zenodo.8262639)
 
 * `matsbyname::Matrix` now vectorized for lists of `matrix` objects
   in the `data` argument.
@@ -64,26 +81,26 @@ which always resolves to the latest release.
     - Test coverage is at 99.41%, due only to deprecation code.
 
 
-# matsbyname 0.6.3 (2023-05-22) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7963562.svg)](https://doi.org/10.5281/zenodo.7963562)
+## matsbyname 0.6.3 (2023-05-22) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7963562.svg)](https://doi.org/10.5281/zenodo.7963562)
 
 * Deprecated `matrix.class` argument. 
   It will be removed soon.
 * Renamed `matrix.class` argument to `matrix_class`.
 * New tests for `matrix.class` --> `matrix_class` transition.
     - Still at 2085 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.6.2 (2023-05-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7896773.svg)](https://doi.org/10.5281/zenodo.7896773)
+## matsbyname 0.6.2 (2023-05-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7896773.svg)](https://doi.org/10.5281/zenodo.7896773)
 
 * Move to latest version of GitHub test coverage workflow.
 * This version not released to CRAN.
 * No new tests.
     - Still at 2082 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.6.1 (2023-04-25) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7865440.svg)](https://doi.org/10.5281/zenodo.7865440)
+## matsbyname 0.6.1 (2023-04-25) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7865440.svg)](https://doi.org/10.5281/zenodo.7865440)
 
 * `equal_byname()` gains `tol` argument to control the 
   precision with which equality is decided.
@@ -92,10 +109,10 @@ which always resolves to the latest release.
   were equal.
 * New tests for new features.
     - Now at 2082 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.6.0 (2023-03-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7699156.svg)](https://doi.org/10.5281/zenodo.7699156)
+## matsbyname 0.6.0 (2023-03-04) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7699156.svg)](https://doi.org/10.5281/zenodo.7699156)
 
 * Fixed a bug in `aggregate_pieces_byname()`
   where failure occurred if there were
@@ -124,10 +141,10 @@ which always resolves to the latest release.
 * Update to latest GitHub actions continuous integration workflow.
 * Many new tests for new features.
     - Now at 2078 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.5.1 (2023-01-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7541455.svg)](https://doi.org/10.5281/zenodo.7541455)
+## matsbyname 0.5.1 (2023-01-16) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7541455.svg)](https://doi.org/10.5281/zenodo.7541455)
 
 * Responded to deprecation warnings from `purrr::cross2()`.
 * Responded to deprecation warnings from `tidyselect`.
@@ -166,10 +183,10 @@ which always resolves to the latest release.
   row and column notations.
 * Many new tests for new features.
     - Now at 1165 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.5.0 (2022-04-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6407149.svg)](https://doi.org/10.5281/zenodo.6407149)
+## matsbyname 0.5.0 (2022-04-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6407149.svg)](https://doi.org/10.5281/zenodo.6407149)
 
 * New format for documentation pages,
   including a search function!
@@ -235,18 +252,18 @@ which always resolves to the latest release.
   so the total number of tests
   has gone down slightly.
     - Now at 1072 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.25 (2021-10-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565352.svg)](https://doi.org/10.5281/zenodo.5565352)
+## matsbyname 0.4.25 (2021-10-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565352.svg)](https://doi.org/10.5281/zenodo.5565352)
 
 * New notation functions `preposition_notation()`, `from_notation()`, and `of_notation()`.
 * Many new tests for new features.
     - Now at 1077 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.24 (2021-10-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5545893.svg)](https://doi.org/10.5281/zenodo.5545893)
+## matsbyname 0.4.24 (2021-10-01) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5545893.svg)](https://doi.org/10.5281/zenodo.5545893)
 
 * Added a test to trigger errors when dimnames are `NULL`.
 * Fixed a bug where a 0x0 matrix was not being completed 
@@ -255,10 +272,10 @@ which always resolves to the latest release.
   in one matrix based on another.
 * Many new tests for new features.
     - Now at 1057 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.23 (2021-09-01)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5392263.svg)](https://doi.org/10.5281/zenodo.5392263)
+## matsbyname 0.4.23 (2021-09-01)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5392263.svg)](https://doi.org/10.5281/zenodo.5392263)
 
 * `hatize_byname()` now allows a missing `keep` argument, 
   eliminating a regression in reverse dependency
@@ -266,10 +283,10 @@ which always resolves to the latest release.
 * This release is for CRAN.
 * One test could be deleted, because the `hatize_byname()` function is now simpler.
     - Now at 1039 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.22 (2021-07-26)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138201.svg)](https://doi.org/10.5281/zenodo.5138201)
+## matsbyname 0.4.22 (2021-07-26)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138201.svg)](https://doi.org/10.5281/zenodo.5138201)
 
 * Now issuing a helpful warning when `hatize_byname()` is called with a `keep` argument that 
   is different from the structure of the vector.
@@ -278,10 +295,10 @@ which always resolves to the latest release.
 * Note this version was not released to CRAN, due to frequent revisions.
 * New tests for new features.
     - Now up to 1040 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.21 (2021-07-23)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
+## matsbyname 0.4.21 (2021-07-23)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5129356.svg)](https://doi.org/10.5281/zenodo.5129356)
 
 * `hatize_byname()` and `hatinv_byname()` gain a new 
   argument `keep` that tells whether to keep row names or column names
@@ -291,19 +308,19 @@ which always resolves to the latest release.
 * Note this version was not released to CRAN, due to frequent revisions.
 * New tests for new feature.
     - Now up to 1030 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.20 (2021-07-19)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118873.svg)](https://doi.org/10.5281/zenodo.5118873)
+## matsbyname 0.4.20 (2021-07-19)  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5118873.svg)](https://doi.org/10.5281/zenodo.5118873)
 
 * New function `keep_pref_suff()` keeps prefixes or suffixes of individual strings
   or lists of strings, based on the `notation` provided.
 * New tests for new functions.  
     - Now up to 1025 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.19 (2021-07-17)
+## matsbyname 0.4.19 (2021-07-17)
 
 * Breaking change: 
   New logic for situations where prefix or suffix is not found
@@ -313,10 +330,10 @@ which always resolves to the latest release.
 * New tests for whether `split_pref_suff()` works in a data frame.
 * New tests for new logic.
     - Now up to 1009 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.18 (2021-06-02)
+## matsbyname 0.4.18 (2021-06-02)
 
 * New function `kvec_from_template_byname()` that creates a row or column
   vector from a template matrix.
@@ -328,18 +345,18 @@ which always resolves to the latest release.
   much like `matrix()` with "byname" characteristics.
 * New tests for new functions.  
     - Now up to 1000 tests, all passing.
-    - Test coverage remains at 100 %.
+    - Test coverage remains at 100%.
 
 
-# matsbyname 0.4.17 (2021-04-10)
+## matsbyname 0.4.17 (2021-04-10)
 
 * Transition to GitHub actions for continuous integration.
 * No new tests.
     * Still at 906 tests, all passing.
-    * Test coverage remains at 100 %.
+    * Test coverage remains at 100%.
 
 
-# matsbyname 0.4.16 (2020-11-25)
+## matsbyname 0.4.16 (2020-11-25)
 
 * Moved URLs to `https://` where appropriate.
 * Fixed a bug in `rename_to_pref_suff_byname()` 
@@ -357,10 +374,10 @@ which always resolves to the latest release.
 * Fixed a warning emitted from `stringi`.
 * New tests for bug fixes.  
   Now up to 906 tests, all passing.
-* Test coverage remains at 100 %.
+* Test coverage remains at 100%.
 
 
-# matsbyname 0.4.15 (2020-05-29)
+## matsbyname 0.4.15 (2020-05-29)
 
 * Added additional tests for new features.
     * Now up to 900 tests, all passing.
@@ -387,7 +404,7 @@ which always resolves to the latest release.
   a nonempty `<title>` element.    
 
 
-# matsbyname 0.4.14 (2020-05-01)
+## matsbyname 0.4.14 (2020-05-01)
 
 * Added additional tests for bug fixes and new features.
     * Now up to 829 tests, all passing.
@@ -416,7 +433,7 @@ which always resolves to the latest release.
   so it can be used in other `*apply_byname()` functions.
 
 
-# matsbyname 0.4.13 (2020-04-17)
+## matsbyname 0.4.13 (2020-04-17)
 
 * Added additional tests for bug fixes.
     * Now up to 766 tests, all passing.
@@ -432,7 +449,7 @@ which always resolves to the latest release.
   The length of the second dimension of `.FUNdots` must be equal to the length of `a`.
 
 
-# matsbyname 0.4.12 (2020-03-21)
+## matsbyname 0.4.12 (2020-03-21)
 
 * Maintenance to prepare for `dplyr` 1.0.0.
   Several tests and examples in `matsbyname` needed a column of a data frame 
@@ -454,7 +471,7 @@ which always resolves to the latest release.
   This section could be re-added now that `matsindf` is now on CRAN.
 
 
-# matsbyname 0.4.11 (2019-12-04)
+## matsbyname 0.4.11 (2019-12-04)
 
 * Maintenance release to get ready for R4.0.0.
   `matrix` objects now inherit from both `matrix` and `array`.
@@ -465,7 +482,7 @@ which always resolves to the latest release.
   for more details.
 
 
-# matsbyname 0.4.10 (2019-02-16)
+## matsbyname 0.4.10 (2019-02-16)
 
 * Added CRAN installation instructions to README.Rmd, now that the package is on CRAN.
 * Added CITATION file. `citation("matsbyname")` now gives useful information.
@@ -474,29 +491,29 @@ which always resolves to the latest release.
   operand was a `matrix` and the other operand was `NA`.
 
 
-# matsbyname 0.4.9 (2019-01-17)
+## matsbyname 0.4.9 (2019-01-17)
 
 * Improved LICENSE file for submission to CRAN.
 * First version to appear on CRAN.
 * Added CRAN and lifecycle badges.
 
 
-# matsbyname 0.4.8 (2019-01-16)
+## matsbyname 0.4.8 (2019-01-16)
 
 * Improved cran-comments.md for submission to CRAN.
 
 
-# matsbyname 0.4.7 (2019-01-07)
+## matsbyname 0.4.7 (2019-01-07)
 
 * Cleaned up dependencies for testing.
 
 
-# matsbyname 0.4.6 (2019-01-07)
+## matsbyname 0.4.6 (2019-01-07)
 
 * Now all external function calls are fully qualified. 
 
 
-# matsbyname 0.4.5 (2019-01-07)
+## matsbyname 0.4.5 (2019-01-07)
 
 * New function `elementapply_byname()` applies a function to an element
   of a matrix specified by `row` and `col` arguments.
@@ -508,40 +525,40 @@ which always resolves to the latest release.
     * `elementexp_byname()` changed to `exp_byname()`.
 
 
-# matsbyname 0.4.4 (2019-01-02)
+## matsbyname 0.4.4 (2019-01-02)
 
 * Added tests to achieve 100% code coverage.
 
 
-# matsbyname 0.4.3 (2019-01-02)
+## matsbyname 0.4.3 (2019-01-02)
 
 * `complete_rows_cols()` is now agnostic about the order of columns in `fillrow`
   and the order of rows in `fillcol`.
 
 
-# matsbyname 0.4.2 (2019-01-02)
+## matsbyname 0.4.2 (2019-01-02)
 
 * `sort_rows_cols()` now allows entries in roworder and colorder 
   that are not presently names of rows or columns. 
   Extraneous names are silently ignored.
 
 
-# matsbyname 0.4.1 (2019-01-01)
+## matsbyname 0.4.1 (2019-01-01)
 
 * Adding code coverage badge.
 
 
-# matsbyname 0.4.0 (2018-12-27)
+## matsbyname 0.4.0 (2018-12-27)
 
 * Attempted first release to CRAN. (Failed.)
 
 
-# matsbyname 0.3.8 (2018-12-21)
+## matsbyname 0.3.8 (2018-12-21)
 
 * `fractionize_byname()` now correctly handles non-square matrices.
 
 
-# matsbyname 0.3.7 (2018-12-02)
+## matsbyname 0.3.7 (2018-12-02)
 
 * `hatinv_byname()` now handles `0` values in input vectors gracefully.
   By default, `0` values become `.Machine$double.xmax`.  
@@ -549,7 +566,7 @@ which always resolves to the latest release.
   To suppress default behavior, set `inf_becomes = NULL`.
 
 
-# matsbyname 0.3.6 (2018-11-25)
+## matsbyname 0.3.6 (2018-11-25)
 
 * `iszero_byname()` now checks if values of `abs(a)` are `<= tol`.
    (Previously, `iszero_byname()` tested with `< tol`.)
@@ -560,37 +577,37 @@ which always resolves to the latest release.
 * Now up to 672 tests.
 
 
-# matsbyname 0.3.5 (2018-11-18)
+## matsbyname 0.3.5 (2018-11-18)
 
 * Now using `identical()` instead of `isTRUE(all.equal())` for `equal_byname()` function.
 
 
-# matsbyname 0.3.4 (2018-11-18)
+## matsbyname 0.3.4 (2018-11-18)
 
 * Added new function `hatinv_byname()`.
 * Documented defaults for arguments to `count_*` functions.
 * Now importing pipe operator from magrittr package at global level
 
 
-# matsbyname 0.3.3 (2018-10-29)
+## matsbyname 0.3.3 (2018-10-29)
 
 * Fix version number on pkgdown website.
 * Updated many details of pkgdown website for better user navigation.
 
 
-# matsbyname 0.3.2 (2018-10-29)
+## matsbyname 0.3.2 (2018-10-29)
 
 * First release to CRAN didn't work.
 * Added online documentation at github with pkgdown.
 
 
-# matsbyname 0.3.1 (2018-08-25)
+## matsbyname 0.3.1 (2018-08-25)
 
 * Updated to new version of Roxygen which changed line breaks in some .Rd files.
 * First release to CRAN.
 
 
-# matsbyname 0.3.0 (2018-06-20)
+## matsbyname 0.3.0 (2018-06-20)
 
 * Removed parallelism features introduced in v0.2.6.
   Detailed timings revealed that the parallel code was slower than single-thread code.
@@ -599,20 +616,20 @@ which always resolves to the latest release.
   So there are no longer any `mc.cores` arguments to `matsbyname` functions.
 
 
-# matsbyname 0.2.9 (2018-05-24)
+## matsbyname 0.2.9 (2018-05-24)
 
 * Beginnings of S3 class `matbyname`. 
   Not sure if I want to keep it.
 * Fixed an argument name error exposed by check.
 
 
-# matsbyname 0.2.8 (2018-05-17)
+## matsbyname 0.2.8 (2018-05-17)
 
 * New functions `all_byname()` and `any_byname()` make logical tests easy.
 * New function `replaceNaN_byname()` replaces `NaN` entries with a value (default is 0).
 
 
-# matsbyname 0.2.7 (2018-04-15)
+## matsbyname 0.2.7 (2018-04-15)
 
 * Refactored most `*col*_byname` functions to call their respective `*row*_byname` functions
   with a transposed argument, thereby simplifying code.
@@ -626,7 +643,7 @@ which always resolves to the latest release.
 * Now up to 646 passing tests.
 
 
-# matsbyname 0.2.6 (2018-03-16)
+## matsbyname 0.2.6 (2018-03-16)
 
 * New multicore functionality available in most `*_byname` functions.
     - New functions `set_mc_cores` and `get_mc_cores` to set and get package-wide `mc.cores` variable.
@@ -643,7 +660,7 @@ which always resolves to the latest release.
      to do the same thing and set the package-wide value back to `1`.
 
 
-# matsbyname 0.2.5 (2018-03-13)
+## matsbyname 0.2.5 (2018-03-13)
 
 * New `*apply_byname` functions enable API improvements
     - These are API changes, but they shouldn't affect any existing code,
@@ -668,14 +685,14 @@ which always resolves to the latest release.
       add other logical functions in the future: `or_byname`, `xor_byname`, and `not_byname`.
 
 
-# matsbyname 0.2.4 (2018-03-08)
+## matsbyname 0.2.4 (2018-03-08)
 
 * Preparing for submission to CRAN. 
   Changed many variable names in the APIs to standardize on "a" and "b"
   as names for matrix or list of matrices arguments.
 
 
-# matsbyname 0.2.3 (2018-03-08)
+## matsbyname 0.2.3 (2018-03-08)
 
 * Eliminate dependence (temporarily) on `matsindf`. 
   Doing so allows `matsbyname` to be submitted first to CRAN.
@@ -683,12 +700,12 @@ which always resolves to the latest release.
   `matsbyname` and `matsindf`.
 
 
-# matsbyname 0.2.2 (2018-03-02)
+## matsbyname 0.2.2 (2018-03-02)
 
 * New function `elementpow_byname` raises all elements of a matrix to a power.
 
 
-# matsbyname 0.2.1 (2018-02-28)
+## matsbyname 0.2.1 (2018-02-28)
 
 * `complete_rows_cols` now accepts `fillrow` and `fillcol` arguments.
   These arguments can be used (instead of the `fill` argument) 
@@ -697,22 +714,22 @@ which always resolves to the latest release.
   `fillrow` then `fillcol` then `fill`.
 
 
-# matsbyname 0.2.0 (2018-02-23)
+## matsbyname 0.2.0 (2018-02-23)
 
 * Name change to `matsbyname`.
 
 
-# byname 0.1.9 (2018-02-14)
+## byname 0.1.9 (2018-02-14)
 
 * Now preserving names of list items in `*apply_byname` functions.
 
 
-# byname 0.1.8 (2018-02-14)
+## byname 0.1.8 (2018-02-14)
 
 * Added `applybyname` vignette.
 
 
-# byname 0.1.7 (2018-02-14)
+## byname 0.1.7 (2018-02-14)
 
 * `unaryapply_byname` and `binaryapply_byname` now have `.FUNdots` arguments
   through which arguments to `FUN` should be passed. 
@@ -726,18 +743,18 @@ which always resolves to the latest release.
   was not happening properly.
 
 
-# byname 0.1.6 (2018-02-08)
+## byname 0.1.6 (2018-02-08)
 
 * New functions `cumsum_byname`, `cumprod_byname`, and `cumapply_byname`.
 * Miscellaneous improvements to documentation of many functions.
 
 
-# byname 0.1.5 (2018-02-01)
+## byname 0.1.5 (2018-02-01)
 
 * New functions `elementlog_byname` and `elementexp_byname`.
 
 
-# byname 0.1.4 (2018-01-31)
+## byname 0.1.4 (2018-01-31)
 
 * New functions `unaryapply_byname` and `binaryapply_byname`.
   These functions have a `FUN` argument that allows an arbitrary function to be 
@@ -750,7 +767,7 @@ which always resolves to the latest release.
   very solid.
 
 
-# byname 0.1.3 (2018-01-27)
+## byname 0.1.3 (2018-01-27)
 
 * Fixed a vector vs. list bug that caused failure of binary `_byname` functions when one argument
   was a list and the other was a non-constant numeric vector. 
@@ -758,7 +775,7 @@ which always resolves to the latest release.
 * Various other fixes.
 
 
-# byname 0.1.2 (2018-01-23)
+## byname 0.1.2 (2018-01-23)
 
 * Added the following functions:
    + `mean_byname`: returns the arithmetic mean of corresponding entries of two matrices
@@ -769,7 +786,7 @@ which always resolves to the latest release.
 * Miscellaneous improvements to documentation of many functions.
    
 
-# byname 0.1.1 (2018-01-21)
+## byname 0.1.1 (2018-01-21)
 
 * Added the following functions: 
    + `rowprod_byname`: returns a column vector with row products (product of all entries in a row)
@@ -778,6 +795,6 @@ which always resolves to the latest release.
 * Miscellaneous improvements to documentation of many functions.
 
 
-# byname 0.1
+## byname 0.1
 
 Initial version.

@@ -17,6 +17,16 @@ test_that("abs_byname() works as expected", {
 })
 
 
+test_that("abs_byname() works with a matrix without dimnames or types", {
+  m <- matrix(c(-10,1,1,100), nrow = 2)
+  expect_equal(abs_byname(m), abs(m))
+  
+  # Check speed: base is 1461x faster than byname
+  bench::mark(base = abs(m), 
+              byname = abs_byname(m), relative = TRUE)
+})
+
+
 test_that("log_byname() works as expected", {
   expect_equal(log_byname(exp(1)), 1)
   m <- matrix(c(10,1,1,100), nrow = 2, dimnames = list(paste0("i", 1:2), paste0("p", 1:2))) %>%
@@ -1848,6 +1858,17 @@ test_that("replaceNaN_byname() works with Matrix objects", {
                                   nrow = 2, ncol = 1, 
                                   dimnames <- list(c("r1", "r2"), "c1"), 
                                   coltype = "col", rowtype = "row"))
+})
+
+
+test_that("replaceNaN_byname() works with nothing to replace and sparseMatrix objects", {
+  m <- Matrix::sparseMatrix(i = c(1, 2, 2), 
+                            j = c(1, 5, 6), 
+                            x = c(11, 25, 26), 
+                            dimnames = list(paste0("r", 1:2), paste0("c", 1:6)))
+  # This errored when m had nothing to replace.
+  replaced <- replaceNaN_byname(m)
+  expect_equal(replaced, m)
 })
 
 
