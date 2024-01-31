@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,12 +57,28 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.8" id="matsbyname-068-2023-12-20">matsbyname 0.6.8 (2023-12-20)<a class="anchor" aria-label="anchor" href="#matsbyname-068-2023-12-20"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.9" id="matsbyname-069-2024-01-30">matsbyname 0.6.9 (2024-01-30)<a class="anchor" aria-label="anchor" href="#matsbyname-069-2024-01-30"></a></h2><p class="text-muted">CRAN release: 2024-01-31</p>
+<ul><li>Now running tests in parallel.</li>
+<li>Added performance tests.</li>
+<li>Fixed a bug in <code><a href="../reference/replaceNaN_byname.html">replaceNaN_byname()</a></code> where a <code><a href="https://rdrr.io/pkg/Matrix/man/sparseMatrix.html" class="external-link">Matrix::sparseMatrix</a></code> would error when nothing needed to be replaced.</li>
+<li>
+<code><a href="../reference/select_rows_byname.html">select_rows_byname()</a></code> and <code><a href="../reference/select_cols_byname.html">select_cols_byname()</a></code> now both
+<ol style="list-style-type: lower-alpha"><li>have <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep()</a></code> arguments <code>ignore.case</code>, <code>perl</code>, <code>fixed</code>, and <code>useBytes</code>, and</li>
+<li>pass those arguments to <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep()</a></code>, enabling more flexible matching of row and column names.</li>
+</ol></li>
+<li>New tests for fixed bugs and performance.
+<ul><li>Now up to 2113 tests, all passing.</li>
+<li>Test coverage remains at 100%.</li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.8" id="matsbyname-068-2023-12-20-doi">matsbyname 0.6.8 (2023-12-20) <a href="https://doi.org/10.5281/zenodo.10418797" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.10418797.svg" alt="DOI"></a>
+<a class="anchor" aria-label="anchor" href="#matsbyname-068-2023-12-20-doi"></a></h2><p class="text-muted">CRAN release: 2023-12-21</p>
 <ul><li>Added a statement of need.</li>
 <li>Updated the GitHub pages approach to use the gh-pages branch.</li>
 <li>No new tests.
 <ul><li>Still at 2095 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -71,7 +87,7 @@
 <ul><li>Added code of conduct and contributing pages to documentation.</li>
 <li>No new tests.
 <ul><li>Still at 2095 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -81,7 +97,7 @@
 <li>Added new tests to verify <code><a href="../reference/rowtype.html">rowtype()</a></code> and <code><a href="../reference/coltype.html">coltype()</a></code> behavior in <code><a href="../reference/matrixproduct_byname.html">matrixproduct_byname()</a></code>.</li>
 <li>New tests for new features.
 <ul><li>Now at 2095 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -116,7 +132,7 @@
 <li>Renamed <code>matrix.class</code> argument to <code>matrix_class</code>.</li>
 <li>New tests for <code>matrix.class</code> –&gt; <code>matrix_class</code> transition.
 <ul><li>Still at 2085 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -126,7 +142,7 @@
 <li>This version not released to CRAN.</li>
 <li>No new tests.
 <ul><li>Still at 2082 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -137,7 +153,7 @@
 <li>Fixed a bug where <code><a href="../reference/equal_byname.html">equal_byname()</a></code> wasn’t using <code>equal_matrix_or_Matrix()</code>. As a result, it was difficult to tell whether a <code>matrix</code> and a <code>Matrix</code> were equal.</li>
 <li>New tests for new features.
 <ul><li>Now at 2082 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -154,7 +170,7 @@
 <li>Update to latest GitHub actions continuous integration workflow.</li>
 <li>Many new tests for new features.
 <ul><li>Now at 2078 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -183,7 +199,7 @@
 <li>Renaming and aggregation functions now (by default) infer row and column notations.</li>
 <li>Many new tests for new features.
 <ul><li>Now at 1165 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -209,7 +225,7 @@
 <code><a href="../reference/trim_rows_cols.html">trim_rows_cols()</a></code> gains a <code>warn_if_a_incomplete</code> argument. When <code>TRUE</code>, a warning is issued if argument <code>a</code> is missing entries on <code>margin</code> that are present in <code>mat</code>.</li>
 <li>Many new tests for new features. But some functions have been moved to <code>RCLabels</code>, so the total number of tests has gone down slightly.
 <ul><li>Now at 1072 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -218,7 +234,7 @@
 <ul><li>New notation functions <code>preposition_notation()</code>, <code>from_notation()</code>, and <code>of_notation()</code>.</li>
 <li>Many new tests for new features.
 <ul><li>Now at 1077 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -229,7 +245,7 @@
 <li>New function <code><a href="../reference/trim_rows_cols.html">trim_rows_cols()</a></code> eliminates rows and/or columns in one matrix based on another.</li>
 <li>Many new tests for new features.
 <ul><li>Now at 1057 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -240,7 +256,7 @@
 <li>This release is for CRAN.</li>
 <li>One test could be deleted, because the <code><a href="../reference/hatize_byname.html">hatize_byname()</a></code> function is now simpler.
 <ul><li>Now at 1039 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -250,7 +266,7 @@
 <li>Note this version was not released to CRAN, due to frequent revisions.</li>
 <li>New tests for new features.
 <ul><li>Now up to 1040 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -261,7 +277,7 @@
 <li>Note this version was not released to CRAN, due to frequent revisions.</li>
 <li>New tests for new feature.
 <ul><li>Now up to 1030 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -270,7 +286,7 @@
 <ul><li>New function <code>keep_pref_suff()</code> keeps prefixes or suffixes of individual strings or lists of strings, based on the <code>notation</code> provided.</li>
 <li>New tests for new functions.
 <ul><li>Now up to 1025 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -279,7 +295,7 @@
 <li>New tests for whether <code>split_pref_suff()</code> works in a data frame.</li>
 <li>New tests for new logic.
 <ul><li>Now up to 1009 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -290,7 +306,7 @@
 <li>New function <code><a href="../reference/create_matrix_byname.html">create_matrix_byname()</a></code> that behaves much like <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix()</a></code> with “byname” characteristics.</li>
 <li>New tests for new functions.
 <ul><li>Now up to 1000 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -298,7 +314,7 @@
 <ul><li>Transition to GitHub actions for continuous integration.</li>
 <li>No new tests.
 <ul><li>Still at 906 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
@@ -310,7 +326,7 @@
 <li>Fixed a warning emitted from <code>stringi</code>.</li>
 <li>New tests for bug fixes.<br>
 Now up to 906 tests, all passing.</li>
-<li>Test coverage remains at 100 %.</li>
+<li>Test coverage remains at 100%.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.15" id="matsbyname-0415-2020-05-29">matsbyname 0.4.15 (2020-05-29)<a class="anchor" aria-label="anchor" href="#matsbyname-0415-2020-05-29"></a></h2><p class="text-muted">CRAN release: 2020-05-29</p>

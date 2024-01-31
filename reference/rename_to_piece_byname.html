@@ -14,7 +14,7 @@ This function provides that capability."><!-- mathjax --><script src="https://cd
     
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,6 +110,7 @@ Default is <code>TRUE</code>.</p></dd>
 Default is <code>list(RCLabels::notations_list)</code>.
 The default value is wrapped in a list,
 because <code><a href="https://matthewheun.github.io/RCLabels/reference/notations_list.html" class="external-link">RCLabels::notations_list</a></code> is, itself, a list.
+If <code>notation</code> is not a list, unexpected behavior can result.
 See <code>RCLabels</code>.</p></dd>
 
 
@@ -146,7 +147,22 @@ it is interpreted as a row or column type, and
 <code><a href="margin_from_types_byname.html">margin_from_types_byname()</a></code> is called internally to
 resolve the integer margins of interest.</p>
 <p>Note that if row and/or column type are present,
-the row and/or column type are also renamed according to <code>piece</code>.</p>
+the row and/or column type are also renamed according to <code>piece</code>.
+This behavior is usually helpful.
+For example,
+if the prefix is requested (<code>piece = "pref"</code>) and
+the row/coltype is a single word
+that does not conform to the notation,
+the entire row/coltype string is retained.
+However, if the suffix is requested (<code>piece = "suff"</code>) and
+the row/coltype is a single word
+that does not conform to the notation,
+an empty string ("") is returned.
+In those circumstances,
+the caller is responsible for
+setting the row/coltype if an empty string ("")
+is not desired.
+See the examples for details.</p>
     </div>
 
     <div class="section level2">
@@ -176,6 +192,9 @@ the row and/or column type are also renamed according to <code>piece</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "rows"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cols"</span>
+<span class="r-in"><span><span class="co"># In this example, </span></span></span>
+<span class="r-in"><span><span class="co"># rowtype and coltype are unchanged, because the </span></span></span>
+<span class="r-in"><span><span class="co"># whole string is considered to be the prefix.</span></span></span>
 <span class="r-in"><span><span class="fu">rename_to_piece_byname</span><span class="op">(</span><span class="va">m2</span>, piece <span class="op">=</span> <span class="st">"pref"</span>, margin <span class="op">=</span> <span class="st">"rows"</span>,</span></span>
 <span class="r-in"><span>                       notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    a -&gt; b c -&gt; d</span>
@@ -186,6 +205,8 @@ the row and/or column type are also renamed according to <code>piece</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "rows"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cols"</span>
+<span class="r-in"><span><span class="co"># Here, the rowtype is set to the empty string ("")</span></span></span>
+<span class="r-in"><span><span class="co"># because there is no suffix for the type of the "rows" margin.</span></span></span>
 <span class="r-in"><span><span class="fu">rename_to_piece_byname</span><span class="op">(</span><span class="va">m2</span>, piece <span class="op">=</span> <span class="st">"suff"</span>, margin <span class="op">=</span> <span class="st">"rows"</span>,</span></span>
 <span class="r-in"><span>                       notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a -&gt; b c -&gt; d</span>
@@ -194,6 +215,42 @@ the row and/or column type are also renamed according to <code>piece</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        5      6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] ""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cols"</span>
+<span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="va">m2</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setrowtype.html">setrowtype</a></span><span class="op">(</span><span class="st">"Industry -&gt; Product"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m3</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        a -&gt; b c -&gt; d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a -&gt; b      1      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r2          3      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r3          5      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industry -&gt; Product"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cols"</span>
+<span class="r-in"><span><span class="co"># Note that the rowtype becomes the prefix for the rowtype, </span></span></span>
+<span class="r-in"><span><span class="co"># in this example "Industry".</span></span></span>
+<span class="r-in"><span><span class="fu">rename_to_piece_byname</span><span class="op">(</span><span class="va">m3</span>, piece <span class="op">=</span> <span class="st">"pref"</span>, margin <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                       notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    a -&gt; b c -&gt; d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a       1      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r2      3      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r3      5      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Industry"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cols"</span>
+<span class="r-in"><span><span class="co"># And when a suffix is present, </span></span></span>
+<span class="r-in"><span><span class="co"># the rowtype becomes the suffix, </span></span></span>
+<span class="r-in"><span><span class="co"># in this example "Product".</span></span></span>
+<span class="r-in"><span><span class="fu">rename_to_piece_byname</span><span class="op">(</span><span class="va">m3</span>, piece <span class="op">=</span> <span class="st">"suff"</span>, margin <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                       notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/arrow_notation.html" class="external-link">arrow_notation</a></span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   a -&gt; b c -&gt; d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> b      1      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        3      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        5      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"rowtype")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Product"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"coltype")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cols"</span>
 </code></pre></div>
