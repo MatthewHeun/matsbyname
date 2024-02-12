@@ -1,9 +1,9 @@
 ## Context
 
-`matsbyname` v0.6.9
-adds one minor feature (additional arguments to 
-select_rows_byname()` and `select_cols_byname()`).
-This release also fixes a bug in `replaceNaN_byname()`.
+`matsbyname` v0.6.10
+prevents some non-unit tests from running on CRAN
+to fix a problem with CRAN builds at
+https://cran.r-project.org/web/checks/check_results_matsbyname.html.
 See `NEWS.md` for details.
 
 
@@ -35,7 +35,7 @@ See `NEWS.md` for details.
         * WARNINGs: 0
         * NOTEs: 0
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.3.2 (2023-10-31 ucrt)
+    * `devtools::check_win_release()`,  R version 4.3.2 (2023-10-31 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -43,13 +43,13 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2024-01-29 r85841 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2024-02-11 r85891 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
 * rhub:
     * `devtools::check_rhub()`
-        * Windows Server 2022, R-devel, 64 bit
+        * Windows Server 2022 x64 (build 20348)
             * ERRORs: 0
             * WARNINGs: 0
             * NOTEs: 2
@@ -88,4 +88,5 @@ We checked 1 reverse dependencies, comparing R CMD check results across CRAN and
 
  * We saw 0 new problems
  * We failed to check 0 packages
+
 
