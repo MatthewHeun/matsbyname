@@ -7,6 +7,8 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+## matsbyname 0.6.10 (2024-02-12)
+
 * Now skipping speed tests on CRAN.
   These tests are appropriate only for certain machines
   whose timings from previous runs are hard-wired into

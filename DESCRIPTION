@@ -1,8 +1,8 @@
 Package: matsbyname
 Type: Package
 Title: An Implementation of Matrix Mathematics that Respects Row and Column Names
-Version: 0.6.9
-Date: 2024-01-30
+Version: 0.6.10
+Date: 2024-02-12
 Authors@R: c(person("Matthew", "Heun", role = c("aut", "cre"),
                      comment = c(ORCID = "0000-0002-7438-214X"),
                      email = "matthew.heun@me.com"))

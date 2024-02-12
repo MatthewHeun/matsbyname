@@ -1,9 +1,7 @@
 ## Context
 
-`matsbyname` v0.6.9
-adds one minor feature (additional arguments to 
-select_rows_byname()` and `select_cols_byname()`).
-This release also fixes a bug in `replaceNaN_byname()`.
+`matsbyname` v0.6.10
+prevents some non-unit tests from running on CRAN.
 See `NEWS.md` for details.
 
 
