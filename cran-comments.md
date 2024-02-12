@@ -41,7 +41,7 @@ See `NEWS.md` for details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2024-01-29 r85841 ucrt)  ****************************
+    * `devtools::check_win_devel()`, R Under development (unstable) (2024-02-11 r85891 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
