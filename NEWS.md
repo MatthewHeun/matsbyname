@@ -23,7 +23,7 @@ which always resolves to the latest release.
     - Test coverage remains at 100%.
 
 
-## matsbyname 0.6.9 (2024-01-30)
+## matsbyname 0.6.9 (2024-01-30) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10600663.svg)](https://doi.org/10.5281/zenodo.10600663)
 
 * Now running tests in parallel.
 * Added performance tests.
