@@ -7,6 +7,20 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Now skipping speed tests on CRAN.
+  These tests are appropriate only for certain machines
+  whose timings from previous runs are hard-wired into
+  the tests. 
+  Put another way, these are not actually unit tests
+  that verify correctness of code.
+  They are timing tests.
+  So no need to run these tests on CRAN
+  (or in continuous integration tests, for that matter).
+* No new tests.
+    - Still at 2113 tests, all passing.
+    - Test coverage remains at 100%.
+
+
 ## matsbyname 0.6.9 (2024-01-30)
 
 * Now running tests in parallel.
