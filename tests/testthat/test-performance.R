@@ -3,8 +3,9 @@
 
 test_that("calculation speed", {
   
-  # Don't run these tests on continuous integration systems
+  # Don't run these tests on continuous integration systems or CRAN
   skip_on_ci()
+  skip_on_cran()
   
   min_time <- 0.01 # seconds, default is 0.5 seconds
   small_mat_dimnames <- list(paste("My big long row name [from a suffix]", 1:3), 
