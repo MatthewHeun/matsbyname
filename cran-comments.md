@@ -1,7 +1,9 @@
 ## Context
 
 `matsbyname` v0.6.10
-prevents some non-unit tests from running on CRAN.
+prevents some non-unit tests from running on CRAN
+to fix a problem with CRAN builds at
+https://cran.r-project.org/web/checks/check_results_matsbyname.html.
 See `NEWS.md` for details.
 
 
