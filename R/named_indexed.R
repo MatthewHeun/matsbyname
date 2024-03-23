@@ -80,21 +80,65 @@
 
 #' @rdname to_named_indexed
 #' @export
-to_indexed <- function(a, index_map) {
-  to_indexed_func <- function(a_mat, ind_map) {
+to_indexed <- function(a, index_map, 
+                       row_index_colname = "i", 
+                       col_index_colname = "j", 
+                       val_colname = "x") {
+  orig_list <- TRUE
+  if (is_matrix_or_Matrix(a)) {
+    orig_list <- FALSE
+    a <- list(a)
+  }  
+  out <- lapply(a, function(a_mat) {
     # At this point, we should have a single a_mat. 
     # ind_map can be a single data frame or a list of data frames
     # Get a list of two index maps, 
     # the first for rows and the second for columns.
     # Both will be correctly formatted with integers in the first column
     # and names in the second column.
-    row_col_index_maps <- get_row_col_index_maps(a_mat, ind_map)
+    row_col_index_maps <- get_row_col_index_maps(a_mat, index_map)
     # Expand the matrix. To do so, leverage the Matrix package.
-    a_mat_Mat <- Matrix::Matrix(a_mat, sparse = TRUE) |> 
+    dnames <- dimnames(a_mat)
+    orig_row_indices_map <- tibble::as_tibble(dnames[[1]]) |> 
+      tibble::rowid_to_column(var = row_index_colname)
+    orig_row_names <- names(dnames[[1]])
+    orig_col_indices_map <- tibble::as_tibble(dnames[[2]]) |> 
+      tibble::rowid_to_column(var = col_index_colname)
+    orig_col_names <- names(dnames[[2]])
+    # Join with rownames and colnames from a_mat
+    orig_row_indices_map <- tibble::as_tibble(dnames[[1]]) |> 
+      magrittr::set_names("rownames") |> 
+      tibble::rowid_to_column(var = row_index_colname)
+    orig_col_indices_map <- tibble::as_tibble(dnames[[2]]) |> 
+      magrittr::set_names("colnames") |> 
+      tibble::rowid_to_column(var = col_index_colname)
+    a_mat |> 
+      Matrix::Matrix(sparse = TRUE) |> 
       Matrix::mat2triplet() |> 
-      tibble::as_tibble()
+      tibble::as_tibble() |> 
+      # Join with rownames and colnames from a_mat
+      dplyr::left_join(orig_row_indices_map, by = row_index_colname) |> 
+      # Eliminate the i column, because it is the original i.
+      dplyr::mutate("{row_index_colname}" := NULL) |> 
+      dplyr::left_join(orig_col_indices_map, by = col_index_colname) |> 
+      # Eliminate the j column, because it is the original j.
+      dplyr::mutate("{col_index_colname}" := NULL) |> 
+      # Add the row indices, which are found in the first map
+      dplyr::left_join(row_col_index_maps[[1]], 
+                       by = dplyr::join_by(rownames == names)) |> 
+      dplyr::rename("{row_index_colname}" := "indices") |> 
+      dplyr::mutate(rownames = NULL) |> 
+      # Add the column indices
+      dplyr::left_join(row_col_index_maps[[2]], 
+                       by = dplyr::join_by(colnames == names)) |> 
+      dplyr::rename("{col_index_colname}" := "indices") |> 
+      dplyr::mutate(colnames = NULL) |> 
+      dplyr::relocate(dplyr::all_of(val_colname), .after = dplyr::everything())
+  })
+  if (!orig_list) {
+    return(out[[1]])
   }
-  unaryapply_byname(to_indexed_func, a_mat = a, ind_map = index_map)
+  return(out)
 }
 
 
@@ -175,7 +219,7 @@ structure_index_map <- function(index_map) {
   if (all(is.integer(index_map[[2]]))) {
     # Move to first location
     index_map <- index_map |> 
-      dplyr::relocate(index_map[[2]])
+      dplyr::relocate(2)
   }
   # Now verify that structure is fine.
   assertthat::assert_that(all(is.integer(index_map[[1]])))

@@ -6,7 +6,13 @@
 \alias{to_named}
 \title{Convert a matrix or list of matrices from named form to indexed form}
 \usage{
-to_indexed(a, index_map)
+to_indexed(
+  a,
+  index_map,
+  row_index_colname = "i",
+  col_index_colname = "j",
+  val_colname = "x"
+)
 
 to_named(a, index_map)
 }
