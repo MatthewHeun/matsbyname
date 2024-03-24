@@ -1,4 +1,4 @@
-test_that("to_indexed() works as expected", {
+test_that("to_triplet() works as expected", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), 
@@ -21,15 +21,15 @@ test_that("to_indexed() works as expected", {
                               7, 4, 5, 
                               5, 4, 6)
   # This should error, because we need a list of 2 or more
-  expect_error(to_indexed(m, indices), regexp = "index_map must be a list and not a data frame")
+  expect_error(to_triplet(m, indices), regexp = "index_map must be a list and not a data frame")
   
   # Try with 2 unnamed data frames
   indices2 <- list(r_indices, c_indices)
-  expect_equal(to_indexed(m, indices2), expected)
+  expect_equal(to_triplet(m, indices2), expected)
   
   # Try with the index data frames in the wrong order.
   indices3 <- list(c_indices, r_indices)
-  expect_error(to_indexed(m, indices3))
+  expect_error(to_triplet(m, indices3))
   
   # Try with named data frames (and add a third to test the code)
   unused_rindices <- data.frame(rnames = c("r3u", "r1u", "r2u", "r0u"),
@@ -40,11 +40,11 @@ test_that("to_indexed() works as expected", {
                    cols = c_indices, 
                    rows = r_indices, 
                    unusedc = unused_cindices)
-  expect_equal(to_indexed(m, indices4), expected)
+  expect_equal(to_triplet(m, indices4), expected)
 })
 
 
-test_that("to_indexed() fails when index_map contains repeated information", {
+test_that("to_triplet() fails when index_map contains repeated information", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), 
@@ -57,11 +57,44 @@ test_that("to_indexed() fails when index_map contains repeated information", {
                           indices = as.integer(c(5, 9, 7, 100, 101))) 
   c_indices <- data.frame(names = c("c2", "c1", "c3", "c2"), 
                           indices = as.integer(c(4, 3, 100, 101)))
-  expect_error(to_indexed(m, list(r_indices, c_indices)), 
-               regexp = "All indices and names must be unique in to_indexed")
+  expect_error(to_triplet(m, list(r_indices, c_indices)), 
+               regexp = "All indices and names must be unique in to_triplet")
 })
 
-test_that("to_indexed() works with lists", {
+
+test_that("to_triplet() fails when the correct named index_map is not supplied", {
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), 
+              nrow = 3, ncol = 2, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1", "c2"))) |> 
+    setrowtype("rows") |> 
+    setcoltype("cols")
+  r_indices <- data.frame(names = c("r3", "r1", "r2", "r0", "r1"),
+                          indices = as.integer(c(5, 9, 7, 100, 101))) 
+  c_indices <- data.frame(names = c("c2", "c1", "c3", "c2"), 
+                          indices = as.integer(c(4, 3, 100, 101)))
+  unused_rindices <- data.frame(rnames = c("r3u", "r1u", "r2u", "r0u"),
+                                rindices = as.integer(c(5, 9, 7, 100))) 
+  unused_cindices <- data.frame(cnames = c("c2u", "c1u", "c3u"), 
+                                cindices = as.integer(c(4, 3, 100)))
+  indices_missing_rows <- list(unusedr = unused_rindices, 
+                               cols = c_indices, 
+                               # Wrong name. It should be called "rows".
+                               bogus = r_indices, 
+                               unusedc = unused_cindices)
+  expect_error(to_triplet(m, indices_missing_rows), regexp = "Suitable index map for row type rows not found")
+  indices_missing_cols <- list(unusedr = unused_rindices, 
+                               # Wrong name. It should be called "cols".
+                               bogus = c_indices, 
+                               rows = r_indices, 
+                               unusedc = unused_cindices)
+  expect_error(to_triplet(m, indices_missing_cols), regexp = "Suitable index map for column type cols not found")
+})
+
+
+test_that("to_triplet() works with lists", {
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), 
@@ -85,7 +118,7 @@ test_that("to_indexed() works with lists", {
   
   # Try with 2 unnamed data frames
   indices <- list(r_indices, c_indices)
-  expect_equal(to_indexed(m_list, indices), 
+  expect_equal(to_triplet(m_list, indices), 
                list(expected, expected, expected))
   
 })
