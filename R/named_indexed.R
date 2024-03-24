@@ -60,6 +60,7 @@
 #'   If an appropriate mapping cannot be found in `index_map`,
 #'   an error is raised.
 #'
+#' If any indices are _not_ set, an error is raised.
 #' It is an error to repeat a name in the name column of an `index_map`.
 #' It is an error to repeat an index in the index column
 #' of an `index_map`.
@@ -113,7 +114,7 @@ to_indexed <- function(a,
     orig_col_indices_map <- tibble::as_tibble(dnames[[2]]) |> 
       magrittr::set_names(colnames_colname) |> 
       tibble::rowid_to_column(var = col_index_colname)
-    a_mat |> 
+    single_result <- a_mat |> 
       Matrix::Matrix(sparse = TRUE) |> 
       Matrix::mat2triplet() |> 
       tibble::as_tibble() |> 
@@ -137,6 +138,10 @@ to_indexed <- function(a,
       dplyr::rename("{col_index_colname}" := {{col_indices_colname}}) |> 
       dplyr::mutate("{colnames_colname}" := NULL) |> 
       dplyr::relocate(dplyr::all_of(val_colname), .after = dplyr::everything())
+    # Verify that all indices have been set and no NA values exist
+    assertthat::assert_that(!any(is.na(single_result[[row_index_colname]])))
+    assertthat::assert_that(!any(is.na(single_result[[col_index_colname]])))
+    return(single_result)
   })
   if (!orig_list) {
     return(out[[1]])

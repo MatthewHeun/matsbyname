@@ -94,6 +94,7 @@ If an appropriate mapping cannot be found in \code{index_map},
 an error is raised.
 }
 
+If any indices are \emph{not} set, an error is raised.
 It is an error to repeat a name in the name column of an \code{index_map}.
 It is an error to repeat an index in the index column
 of an \code{index_map}.
