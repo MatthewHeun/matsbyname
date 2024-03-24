@@ -60,6 +60,13 @@
 #'   Both matching data frames must have only
 #'   an integer column and 
 #'   a character column.
+#' 
+#' When converting to triplet form, 
+#' rowtype and colytpe 
+#' are unavoidably lost.
+#' The caller should take care to retain 
+#' rowtype and coltype 
+#' information.
 #'
 #' If any indices are unavailable in the `index_map`, 
 #' an error is raised.

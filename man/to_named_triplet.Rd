@@ -95,6 +95,13 @@ an integer column and
 a character column.
 }
 
+When converting to triplet form,
+rowtype and colytpe
+are unavoidably lost.
+The caller should take care to retain
+rowtype and coltype
+information.
+
 If any indices are unavailable in the \code{index_map},
 an error is raised.
 It is an error to repeat a name in the name column of an \code{index_map}
