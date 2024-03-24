@@ -56,17 +56,10 @@ using externally supplied mappings
 in the \code{index_map} argument.
 }
 \details{
-\code{index_map} can be a single data frame,
-an unnamed list of two data frames, or
+\code{index_map} must be
+an unnamed list of two data frames or
 a named list of one or more data frames.
 \itemize{
-\item If a single data frame,
-\code{index_map} must have two columns,
-one containing exclusively integers
-(interpreted as row and column indices)
-and
-the other containing exclusively character strings
-(interpreted as row and column names).
 \item If an unnamed list of two data frames,
 each data frame must have only
 an integer column and a character column.
@@ -78,20 +71,22 @@ the second data frame of \code{index_map}
 is interpreted as the mapping
 between column names and column indices.
 \item If a named list of data frames,
-all data frames must have only an integer column and
-a character column.
 The names of \code{index_map}
 are interpreted as row and column types,
 with each named data frame applied as the mapping for the
 associated row or column type.
 For example the data frame named "Industry" would be applied
-to the dimension with an "Industry" type, regardless
-of whether rows or columns (could be both)
-were of type "Industry".
+to the dimension (row or column)
+with an "Industry" type.
+When both row and column have "Industry" type,
+the "Industry" mapping is applied to both.
 When sending named data frames in \code{index_map},
 \code{a} must have both a row type and a column type.
 If an appropriate mapping cannot be found in \code{index_map},
 an error is raised.
+Both matching data frames must have only
+an integer column and
+a character column.
 }
 
 If any indices are \emph{not} set, an error is raised.

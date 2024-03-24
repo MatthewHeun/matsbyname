@@ -24,16 +24,9 @@
 #' using externally supplied mappings 
 #' in the `index_map` argument.
 #' 
-#' `index_map` can be a single data frame,
-#' an unnamed list of two data frames, or 
+#' `index_map` must be 
+#' an unnamed list of two data frames or 
 #' a named list of one or more data frames.
-#' * If a single data frame, 
-#'   `index_map` must have two columns,
-#'   one containing exclusively integers
-#'   (interpreted as row and column indices) 
-#'   and 
-#'   the other containing exclusively character strings
-#'   (interpreted as row and column names).
 #' * If an unnamed list of two data frames, 
 #'   each data frame must have only 
 #'   an integer column and a character column.
@@ -45,20 +38,22 @@
 #'   is interpreted as the mapping 
 #'   between column names and column indices.
 #' * If a named list of data frames, 
-#'   all data frames must have only an integer column and 
-#'   a character column.
 #'   The names of `index_map`
 #'   are interpreted as row and column types, 
 #'   with each named data frame applied as the mapping for the
 #'   associated row or column type. 
 #'   For example the data frame named "Industry" would be applied
-#'   to the dimension with an "Industry" type, regardless
-#'   of whether rows or columns (could be both)
-#'   were of type "Industry".
+#'   to the dimension (row or column)
+#'   with an "Industry" type. 
+#'   When both row and column have "Industry" type, 
+#'   the "Industry" mapping is applied to both.
 #'   When sending named data frames in `index_map`, 
 #'   `a` must have both a row type and a column type.
 #'   If an appropriate mapping cannot be found in `index_map`,
 #'   an error is raised.
+#'   Both matching data frames must have only
+#'   an integer column and 
+#'   a character column.
 #'
 #' If any indices are _not_ set, an error is raised.
 #' It is an error to repeat a name in the name column of an `index_map`.
@@ -94,6 +89,9 @@ to_indexed <- function(a,
     orig_list <- FALSE
     a <- list(a)
   }  
+  assertthat::assert_that(is.list(index_map) & !is.data.frame(index_map), 
+                          msg = "index_map must be a list and not a data frame")
+  assertthat::assert_that(length(index_map) >= 2, msg = "index_map must have length of 2 or more")
   out <- lapply(a, function(a_mat) {
     # At this point, we should have a single a_mat. 
     row_col_index_maps <- get_row_col_index_maps(a_mat, index_map)
@@ -103,6 +101,15 @@ to_indexed <- function(a,
     # Get the names of the column indices and names columns
     col_indices_colname <- names(row_col_index_maps[[2]])[[1]]
     col_names_colname <- names(row_col_index_maps[[2]])[[2]]
+    # Check for repeated values
+    for (df in 1:2) {
+      for (col in 1:2) {
+        n_rows <- nrow(row_col_index_maps[[df]])
+        assertthat::assert_that(length(unique(row_col_index_maps[[df]][[col]])) == n_rows,
+                                msg = "All indices and names must be unique in to_indexed()")
+      }
+    }
+
     # Expand the matrix. To do so, leverage the Matrix package.
     # First get the dimnames.
     dnames <- dimnames(a_mat)
