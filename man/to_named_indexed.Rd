@@ -19,14 +19,15 @@ to_indexed(
 to_named(a, index_map)
 }
 \arguments{
-\item{a}{A matrix or list of matrices to be converted.}
+\item{a}{For \code{\link[=to_indexed]{to_indexed()}}, a matrix or list of matrices to be converted to indexed form.
+For \code{\link[=to_named]{to_named()}}, a data frame or list of data frames in indexed form to be converted to named form.}
 
 \item{index_map}{A mapping between row and column names
 and row and column indices.
 See details.}
 }
 \value{
-\code{\link[=to_indexed]{to_indexed()}} returns \code{a} in indexed form.
+\code{\link[=to_indexed]{to_indexed()}} returns \code{a} as a data frame in indexed form.
 \code{\link[=to_named]{to_named()}} returns \code{a} in named form.
 }
 \description{

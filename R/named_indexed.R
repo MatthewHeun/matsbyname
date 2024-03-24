@@ -64,12 +64,13 @@
 #' It is an error to repeat an index in the index column
 #' of an `index_map`.
 #'
-#' @param a A matrix or list of matrices to be converted.
+#' @param a For [to_indexed()], a matrix or list of matrices to be converted to indexed form.
+#'          For [to_named()], a data frame or list of data frames in indexed form to be converted to named form.
 #' @param index_map A mapping between row and column names
 #'                  and row and column indices.
 #'                  See details.
 #'
-#' @return [to_indexed()] returns `a` in indexed form.
+#' @return [to_indexed()] returns `a` as a data frame in indexed form.
 #'         [to_named()] returns `a` in named form. 
 #'
 #' @name to_named_indexed 
