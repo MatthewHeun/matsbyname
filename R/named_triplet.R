@@ -1,6 +1,6 @@
-#' Convert a matrix or list of matrices between named form and triplet form
+#' Convert a matrix or list of matrices between named form and indexed form
 #' 
-#' Matrices can be in named form or triplet form.
+#' Matrices can be in named form or indexed form.
 #' Named form is the usual representation for the `matsindf` package,
 #' wherein names for rows and columns are included in the `dimnames`
 #' attribute of the matrix object, consuming memory. 
@@ -9,26 +9,25 @@
 #' many sparse matrices with the same names will be created,
 #' leading to inefficiencies. 
 #' It can be more memory-efficient to store the matrices in 
-#' triplet form, 
+#' indexed form, 
 #' (a sparse format with matrix data represented as 
 #' a data frame with 
 #' a row integer (i) column, 
 #' a column integer (j) column, and 
 #' a value (x) column.
-#' Taken together, the columns form a triplet.
-#' In triplet form, 
+#' In indexed form, 
 #' a separate (external) mapping between
 #' row and column indices and row and column names
 #' must be maintained.
-#' (In triplet form, it becomes the responsibility of the caller
+#' (In indexed form, it becomes the responsibility of the caller
 #' to maintain a consistent mapping between row and column indices
 #' and row and column names.)
-#' These functions convert from named form to triplet form
-#' ([to_triplet()])
+#' These functions convert from named form to indexed form
+#' ([to_indexed()])
 #' and vice versa ([to_named()])
 #' using externally supplied mappings 
 #' in the `index_map` argument.
-#' [to_triplet()] and [to_named()] are inverses of each other.
+#' [to_indexed()] and [to_named()] are inverses of each other.
 #' 
 #' `index_map` must be 
 #' an unnamed list of two data frames or 
@@ -61,7 +60,7 @@
 #'   an integer column and 
 #'   a character column.
 #' 
-#' When converting to triplet form, 
+#' When converting to indexed form, 
 #' rowtype and colytpe 
 #' are unavoidably lost.
 #' The caller should take care to retain 
@@ -75,33 +74,33 @@
 #' It is an error to repeat an index in the index column
 #' of an `index_map` data frame.
 #'
-#' @param a For [to_triplet()], a matrix or list of matrices to be converted to triplet form.
-#'          For [to_named()], a data frame or list of data frames in triplet form to be converted to named form.
+#' @param a For [to_indexed()], a matrix or list of matrices to be converted to indexed form.
+#'          For [to_named()], a data frame or list of data frames in indexed form to be converted to named form.
 #' @param index_map A mapping between row and column names
 #'                  and row and column indices.
 #'                  See details.
 #'
-#' @return [to_triplet()] returns `a` as a data frame or list of data frames in triplet form.
+#' @return [to_indexed()] returns `a` as a data frame or list of data frames in indexed form.
 #'         [to_named()] returns `a` as a matrix or a list of matrices in named form.
 #'
-#' @name to_named_triplet
+#' @name to_named_indexed
 #' 
 #' @examples
 
 
 
-#' @rdname to_named_triplet
+#' @rdname to_named_indexed
 #' @export
-to_triplet <- function(a, 
+to_indexed <- function(a, 
                        index_map, 
                        row_index_colname = "i", 
                        col_index_colname = "j", 
                        val_colname = "x", 
                        rownames_colname = "rownames", 
                        colnames_colname = "colnames") {
-  orig_list <- TRUE
+  a_list <- TRUE
   if (is_matrix_or_Matrix(a)) {
-    orig_list <- FALSE
+    a_list <- FALSE
     a <- list(a)
   }  
   assertthat::assert_that(is.list(index_map) & !is.data.frame(index_map), 
@@ -109,7 +108,7 @@ to_triplet <- function(a,
   assertthat::assert_that(length(index_map) >= 2, msg = "index_map must have length of 2 or more")
   out <- lapply(a, function(a_mat) {
     # At this point, we should have a single a_mat. 
-    row_col_index_maps <- get_row_col_index_maps(a_mat, index_map)
+    row_col_index_maps <- get_row_col_index_maps_for_named(a_mat, index_map)
     # Get the names of the row indices and names columns
     row_indices_colname <- names(row_col_index_maps[[1]])[[1]]
     row_names_colname <- names(row_col_index_maps[[1]])[[2]]
@@ -121,7 +120,7 @@ to_triplet <- function(a,
       for (col in 1:2) {
         n_rows <- nrow(row_col_index_maps[[df]])
         assertthat::assert_that(length(unique(row_col_index_maps[[df]][[col]])) == n_rows,
-                                msg = "All indices and names must be unique in to_triplet()")
+                                msg = "All indices and names must be unique in to_indexed()")
       }
     }
 
@@ -165,17 +164,39 @@ to_triplet <- function(a,
     assertthat::assert_that(!any(is.na(single_result[[col_index_colname]])))
     return(single_result)
   })
-  if (!orig_list) {
+  if (!a_list) {
     return(out[[1]])
   }
   return(out)
 }
 
 
-#' @rdname to_named_triplet
+#' @rdname to_named_index
 #' @export
-to_named <- function(a, index_map) {
+to_named <- function(a, 
+                     index_map, 
+                     matrix_class = c("matrix", "Matrix"), 
+                     row_index_colname = "i", 
+                     col_index_colname = "j", 
+                     val_colname = "x", 
+                     rownames_colname = "rownames", 
+                     colnames_colname = "colnames", 
+                     rowtypes_colname = "rowtypes", 
+                     coltypes_colname = "coltypes") {
+  a_list <- TRUE
+  if (is_matrix_or_Matrix(a)) {
+    a_list <- FALSE
+    a <- list(a)
+  }
   
+  out <- lapply(a, function(a_indexed) {
+    # We should have one data frame here.
+  })
+  
+  if (!a_list) {
+    return(out[[1]])
+  }
+  return(out)
 }
 
 
@@ -195,11 +216,11 @@ to_named <- function(a, index_map) {
 #' @return A list of two data frames. 
 #'         The first data frame is the index map for the rows of `a_mat`.
 #'         The second data frame is the index map for the columns of `a_mat`.
-get_row_col_index_maps <- function(a_mat, ind_map) {
+get_row_col_index_maps_for_named <- function(a_mat, ind_map) {
 
   if (is.list(ind_map) & is.null(names(ind_map)) & length(ind_map) == 2) {
     # In this case, ensure that the structure is correct for each 
-    # index map and return a list of 2.
+    # index map and return the list of 2.
     return(list(structure_index_map(ind_map[[1]]), 
                 structure_index_map(ind_map[[2]])))
   }
@@ -210,13 +231,13 @@ get_row_col_index_maps <- function(a_mat, ind_map) {
                             msg = "matrix must have a row type")
     ctype <- coltype(a_mat)
     assertthat::assert_that(!is.null(ctype), 
-                            msg = "matrix must have a row type")
+                            msg = "matrix must have a column type")
     row_indices <- ind_map[[rtype]]
     assertthat::assert_that(!is.null(row_indices), 
-                            msg = paste("Suitable index map for row type", rtype, "not found."))
+                            msg = paste0("Suitable index map for row type '", rtype, "' not found."))
     col_indices <- ind_map[[ctype]]
     assertthat::assert_that(!is.null(col_indices), 
-                            msg = paste("Suitable index map for column type", ctype, "not found."))
+                            msg = paste0("Suitable index map for column type '", ctype, "' not found."))
     return(list(structure_index_map(row_indices), 
                 structure_index_map(col_indices)))
   }
@@ -224,6 +245,33 @@ get_row_col_index_maps <- function(a_mat, ind_map) {
   stop("Incorrectly formatted index_map in matsbyname::get_row_col_index_maps()")
 }
 
+
+get_row_col_index_maps_for_indexed <- function(a_indexed, ind_map, 
+                                               rowtypes_colname, coltypes_colname) {
+  if (is.list(a_indexed) & is.null(names(ind_map)) & length(ind_map) == 3) {
+    # We have an unnamed list.
+    # First item is assumed to contain row information.
+    # Second item is assumed to contain column information.
+    # Third item is assumed to contain row and column types.
+    # This case is easy. 
+    # Just return the items, after ensuring that the structure is correct.
+    return(list(structure_index_map(ind_map[[1]]), 
+                structure_index_map(ind_map[[2]]), 
+                structure_index_map(ind_map[[3]])))
+  }
+  if (is.list(a_indexed) & !is.null(names(ind_map)) & length(ind_map) >= 3) {
+    # Here, we have to figure out rowtype and coltype first.
+    # Then, we can put in the correct order.
+    
+    # Get the rowtype
+    rtype <- unique(a_indexed[[rowtypes_colname]])
+    assertthat::assert_that(length(rtype) == 1, msg = "Only one rowtype allowed")
+    # Get the coltype
+    ctype <- unique(a_indexed[[coltypes_colname]])
+    assertthat::assert_that(length(ctype) == 1, msg = "Only one coltype allowed")
+    
+  }
+}
 
 
 #' Set the structure of an index map
