@@ -85,8 +85,8 @@ to_indexed <- function(a,
                        row_index_colname = "i", 
                        col_index_colname = "j", 
                        val_colname = "x", 
-                       rownames_col = "rownames", 
-                       colnames_col = "colnames") {
+                       rownames_colname = "rownames", 
+                       colnames_colname = "colnames") {
   orig_list <- TRUE
   if (is_matrix_or_Matrix(a)) {
     orig_list <- FALSE
@@ -95,16 +95,22 @@ to_indexed <- function(a,
   out <- lapply(a, function(a_mat) {
     # At this point, we should have a single a_mat. 
     row_col_index_maps <- get_row_col_index_maps(a_mat, index_map)
+    # Get the names of the row indices and names columns
+    row_indices_colname <- names(row_col_index_maps[[1]])[[1]]
+    row_names_colname <- names(row_col_index_maps[[1]])[[2]]
+    # Get the names of the column indices and names columns
+    col_indices_colname <- names(row_col_index_maps[[2]])[[1]]
+    col_names_colname <- names(row_col_index_maps[[2]])[[2]]
     # Expand the matrix. To do so, leverage the Matrix package.
     # First get the dimnames.
     dnames <- dimnames(a_mat)
     assertthat::assert_that(!is.null(dnames))
     # Make index maps out of the original row and column indices
     orig_row_indices_map <- tibble::as_tibble(dnames[[1]]) |> 
-      magrittr::set_names(rownames_col) |> 
+      magrittr::set_names(rownames_colname) |> 
       tibble::rowid_to_column(var = row_index_colname)
     orig_col_indices_map <- tibble::as_tibble(dnames[[2]]) |> 
-      magrittr::set_names(colnames_col) |> 
+      magrittr::set_names(colnames_colname) |> 
       tibble::rowid_to_column(var = col_index_colname)
     a_mat |> 
       Matrix::Matrix(sparse = TRUE) |> 
@@ -119,14 +125,16 @@ to_indexed <- function(a,
       dplyr::mutate("{col_index_colname}" := NULL) |> 
       # Add the row indices, which are found in the first map
       dplyr::left_join(row_col_index_maps[[1]], 
-                       by = dplyr::join_by({{rownames_col}} == names)) |> 
-      dplyr::rename("{row_index_colname}" := "indices") |> 
-      dplyr::mutate(rownames = NULL) |> 
-      # Add the column indices
+                       by = dplyr::join_by({{rownames_colname}} == {{row_names_colname}})) |> 
+      # dplyr::rename("{row_index_colname}" := .data[[row_indices_colname]]) |> 
+      dplyr::rename("{row_index_colname}" := {{row_indices_colname}}) |> 
+      dplyr::mutate("{rownames_colname}" := NULL) |> 
+      # Add the column indices, which are found in the second map
       dplyr::left_join(row_col_index_maps[[2]], 
-                       by = dplyr::join_by({{colnames_col}} == names)) |> 
-      dplyr::rename("{col_index_colname}" := "indices") |> 
-      dplyr::mutate(colnames = NULL) |> 
+                       by = dplyr::join_by({{colnames_colname}} == {{col_names_colname}})) |> 
+      # dplyr::rename("{col_index_colname}" := .data[[col_indices_colname]]) |> 
+      dplyr::rename("{col_index_colname}" := {{col_indices_colname}}) |> 
+      dplyr::mutate("{colnames_colname}" := NULL) |> 
       dplyr::relocate(dplyr::all_of(val_colname), .after = dplyr::everything())
   })
   if (!orig_list) {

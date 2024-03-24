@@ -12,8 +12,8 @@ to_indexed(
   row_index_colname = "i",
   col_index_colname = "j",
   val_colname = "x",
-  rownames_col = "rownames",
-  colnames_col = "colnames"
+  rownames_colname = "rownames",
+  colnames_colname = "colnames"
 )
 
 to_named(a, index_map)
