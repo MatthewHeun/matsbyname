@@ -7,8 +7,8 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-* New functions `to_triplet()` and `to_named()`
-  convert between named and triplet forms of matrices
+* New functions `to_triplet()` and `to_named_matrix()`
+  convert between named matrix and triplet forms of matrices
   to assist some database operations 
   (which prefer triplet form).
 * Fixed a bug where setting rowtype or coltype attributes on a 
