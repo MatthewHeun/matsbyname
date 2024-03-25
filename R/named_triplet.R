@@ -184,20 +184,45 @@ to_named <- function(a,
                      colnames_colname = "colnames", 
                      rowtypes_colname = "rowtypes", 
                      coltypes_colname = "coltypes") {
-  # a_list <- TRUE
-  # if (is_matrix_or_Matrix(a)) {
-  #   a_list <- FALSE
-  #   a <- list(a)
-  # }
-  # 
-  # out <- lapply(a, function(a_indexed) {
-  #   # We should have one data frame here.
-  # })
-  # 
-  # if (!a_list) {
-  #   return(out[[1]])
-  # }
-  # return(out)
+  
+  matrix_class <- match.arg(matrix_class)
+  a_list <- TRUE
+  if (is.data.frame(a)) {
+    a_list <- FALSE
+    a <- list(a)
+  }
+
+  out <- lapply(a, function(a_triplet) {
+    # We should have one data frame here.
+    # Figure out the index maps to use
+    row_col_index_maps <- get_row_col_index_maps_for_named(a_triplet, index_map)
+    # Ensure that correct columns are present
+    assertthat::assert_that(row_index_colname %in% colnames(a_triplet), msg = paste0("'", row_index_colname, "' not found in column names of a_triplet"))
+    assertthat::assert_that(col_index_colname %in% colnames(a_triplet), msg = paste0("'", col_index_colname, "' not found in column names of a_triplet"))
+    assertthat::assert_that(val_colname %in% colnames(a_triplet), msg = paste0("'", val_colname, "' not found in column names of a_triplet"))
+    # Make a Matrix object from the triplet
+    out <- Matrix::sparseMatrix(i = a_triplet[[row_index_colname]], 
+                         j = a_triplet[[col_index_colname]], 
+                         x = a_triplet[[val_colname]], 
+                         dims = c(nrow(row_col_index_maps[[1]]),
+                                  nrow(row_col_index_maps[[2]])),
+                         dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]])) |> 
+    clean_byname() |> 
+    sort_rows_cols()
+    # Convert to matrix, if needed
+    if (matrix_class == "matrix") {
+      out <- as.matrix(out)
+    }
+    # Add row and column types befor returning
+    out |> 
+      setrowtype(rowtype(a_triplet)) |>
+      setcoltype(coltype(a_triplet))
+  })
+
+  if (!a_list) {
+    return(out[[1]])
+  }
+  return(out)
 }
 
 
@@ -247,32 +272,32 @@ get_row_col_index_maps_for_named <- function(a_mat, ind_map) {
 }
 
 
-get_row_col_index_maps_for_indexed <- function(a_indexed, ind_map, 
-                                               rowtypes_colname, coltypes_colname) {
-  if (is.list(a_indexed) & is.null(names(ind_map)) & length(ind_map) == 3) {
-    # We have an unnamed list.
-    # First item is assumed to contain row information.
-    # Second item is assumed to contain column information.
-    # Third item is assumed to contain row and column types.
-    # This case is easy. 
-    # Just return the items, after ensuring that the structure is correct.
-    return(list(structure_index_map(ind_map[[1]]), 
-                structure_index_map(ind_map[[2]]), 
-                structure_index_map(ind_map[[3]])))
-  }
-  if (is.list(a_indexed) & !is.null(names(ind_map)) & length(ind_map) >= 3) {
-    # Here, we have to figure out rowtype and coltype first.
-    # Then, we can put in the correct order.
-    
-    # Get the rowtype
-    rtype <- unique(a_indexed[[rowtypes_colname]])
-    assertthat::assert_that(length(rtype) == 1, msg = "Only one rowtype allowed")
-    # Get the coltype
-    ctype <- unique(a_indexed[[coltypes_colname]])
-    assertthat::assert_that(length(ctype) == 1, msg = "Only one coltype allowed")
-    
-  }
-}
+# get_row_col_index_maps_for_indexed <- function(a_indexed, ind_map, 
+#                                                rowtypes_colname, coltypes_colname) {
+#   if (is.list(a_indexed) & is.null(names(ind_map)) & length(ind_map) == 3) {
+#     # We have an unnamed list.
+#     # First item is assumed to contain row information.
+#     # Second item is assumed to contain column information.
+#     # Third item is assumed to contain row and column types.
+#     # This case is easy. 
+#     # Just return the items, after ensuring that the structure is correct.
+#     return(list(structure_index_map(ind_map[[1]]), 
+#                 structure_index_map(ind_map[[2]]), 
+#                 structure_index_map(ind_map[[3]])))
+#   }
+#   if (is.list(a_indexed) & !is.null(names(ind_map)) & length(ind_map) >= 3) {
+#     # Here, we have to figure out rowtype and coltype first.
+#     # Then, we can put in the correct order.
+#     
+#     # Get the rowtype
+#     rtype <- unique(a_indexed[[rowtypes_colname]])
+#     assertthat::assert_that(length(rtype) == 1, msg = "Only one rowtype allowed")
+#     # Get the coltype
+#     ctype <- unique(a_indexed[[coltypes_colname]])
+#     assertthat::assert_that(length(ctype) == 1, msg = "Only one coltype allowed")
+#     
+#   }
+# }
 
 
 #' Set the structure of an index map

@@ -126,32 +126,32 @@ test_that("to_triplet() works with lists", {
 })
 
 
-# test_that("to_named() works as expected", {
-#   indexed <- tibble::tribble(~i, ~j, ~x, ~rowtypes, ~coltypes,
-#                              9, 3, 1, 1, 2,
-#                              7, 3, 2, 1, 2, 
-#                              5, 3, 3, 1, 2,  
-#                              9, 4, 4, 1, 2,  
-#                              7, 4, 5, 1, 2,  
-#                              5, 4, 6, 1, 2)
-#   
-#   r_indices <- data.frame(names = c("r3", "r1", "r2", "r0", "r1"),
-#                           indices = as.integer(c(5, 9, 7, 100, 101))) 
-#   c_indices <- data.frame(names = c("c2", "c1", "c3", "c2"), 
-#                           indices = as.integer(c(4, 3, 100, 101)))
-#   t_indices <- data.frame(names = c("rows", "cols"), 
-#                           indices = as.integer(c(1, 2)))
-#   indices <- list(r_indices, c_indices, t_indices)
-#   expected <- matrix(c(1, 2, 
-#                        3, 4, 
-#                        5, 6), 
-#                      nrow = 3, ncol = 2, 
-#                      dimnames = list(c("r1", "r2", "r3"), 
-#                                      c("c1", "c2"))) |> 
-#     setrowtype("rows") |> 
-#     setcoltype("cols")
-#   
-#   expect_equal(to_named(indexed, indices), expected)
-#   
-# })
+test_that("to_named() works as expected", {
+  indexed <- tibble::tribble(~i, ~j, ~x, 
+                             9, 3, 1, 
+                             7, 3, 2, 
+                             5, 3, 3, 
+                             9, 4, 4, 
+                             7, 4, 5, 
+                             5, 4, 6) |> 
+    setrowtype("rows") |> setcoltype("cols")
+
+  r_indices <- data.frame(names = paste0("r", 1:101),
+                          indices = 1:101)
+  c_indices <- data.frame(names = paste0("c", 1:101),
+                          indices = 1:101)
+  indices <- list(r_indices, c_indices)
+  expected <- matrix(c(1, 2,
+                       3, 4,
+                       5, 6),
+                     nrow = 3, ncol = 2,
+                     dimnames = list(c("r9", "r7", "r5"),
+                                     c("c3", "c4"))) |>
+    sort_rows_cols() |> 
+    setrowtype("rows") |>
+    setcoltype("cols")
+
+  expect_equal(to_named(indexed, indices), expected)
+
+})
   
