@@ -29,7 +29,8 @@
 #' and vice versa ([to_named()])
 #' using externally supplied mappings 
 #' in the `index_map` argument.
-#' [to_triplet()] and [to_named()] are exact inverses of each other.
+#' [to_triplet()] and [to_named()] are inverses of each other, 
+#' with row and column order not necessarily preserved.
 #' 
 #' `index_map` must be 
 #' an unnamed list of two data frames or 
@@ -63,7 +64,7 @@
 #'   a character column.
 #' 
 #' When converting to indexed form, 
-#' rowtype and colytpe 
+#' rowtype and coltype 
 #' are retained as attributes. 
 #' See [rowtype()] and [coltype()].
 #'
@@ -79,6 +80,15 @@
 #' @param index_map A mapping between row and column names
 #'                  and row and column indices.
 #'                  See details.
+#' @param matrix_class One of "matrix" (standard) or "Matrix" (sparse) representation
+#'                     for matrices. 
+#'                     Default is "matrix".
+#' @param row_index_colname,col_index_colname The names of row and column index columns in data frames.
+#'                                            Defaults are "i" and "j", respectively.
+#' @param val_colname The name of the value column in data frames. 
+#'                    Default is "x".
+#' @param rownames_colname,colnames_colname The name of row name and column name columns in data frames.
+#'                                          Defaults are "rownames" and "colnames", respectively.
 #'
 #' @return [to_triplet()] returns `a` as a data frame or list of data frames in triplet form.
 #'         [to_named()] returns `a` as a matrix or a list of matrices in named form.
@@ -172,18 +182,14 @@ to_triplet <- function(a,
 }
 
 
-#' @rdname to_named_index
+#' @rdname to_named_triplet
 #' @export
 to_named <- function(a, 
                      index_map, 
                      matrix_class = c("matrix", "Matrix"), 
                      row_index_colname = "i", 
                      col_index_colname = "j", 
-                     val_colname = "x", 
-                     rownames_colname = "rownames", 
-                     colnames_colname = "colnames", 
-                     rowtypes_colname = "rowtypes", 
-                     coltypes_colname = "coltypes") {
+                     val_colname = "x") {
   
   matrix_class <- match.arg(matrix_class)
   a_list <- TRUE
@@ -276,7 +282,7 @@ get_row_col_index_maps <- function(a_mat, ind_maps) {
 #' 
 #' Index maps must be a data frame with one integer column
 #' and one character string column. 
-#' This functino verifies the structure and ensures
+#' This function verifies the structure and ensures
 #' that the integer column is first.
 #' 
 #' This is a non-exported function meant only for internal use.

@@ -1,32 +1,36 @@
 test_that("to_triplet() works as expected", {
+  # Create a sparse matrix, with only non-zero rows and cols
   m <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), 
               nrow = 3, ncol = 2, 
-              dimnames = list(c("r1", "r2", "r3"), 
-                              c("c1", "c2"))) |> 
+              dimnames = list(c("r5", "r9", "r7"), 
+                              c("c4", "c3"))) |> 
     setrowtype("rows") |> 
     setcoltype("cols")
-  r_indices <- data.frame(names = c("r3", "r1", "r2", "r0"),
+  r_indices <- data.frame(names = c("r5", "r9", "r7", "r100"),
                           indices = as.integer(c(5, 9, 7, 100))) 
-  c_indices <- data.frame(names = c("c2", "c1", "c3"), 
+  c_indices <- data.frame(names = c("c4", "c3", "c100"), 
                           indices = as.integer(c(4, 3, 100)))
   # Try with a single data frame
   indices <- dplyr::bind_rows(r_indices, c_indices)
   expected <- tibble::tribble(~i, ~j, ~x, 
-                              9, 3, 1, 
-                              7, 3, 2, 
-                              5, 3, 3, 
-                              9, 4, 4, 
-                              7, 4, 5, 
-                              5, 4, 6) |> 
+                              9, 3, 5, 
+                              7, 3, 6, 
+                              5, 3, 4, 
+                              9, 4, 2, 
+                              7, 4, 3, 
+                              5, 4, 1) |> 
     setrowtype("rows") |> setcoltype("cols")
   # This should error, because we need a list of 2 or more
   expect_error(to_triplet(m, indices), regexp = "index_map must be a list and not a data frame")
   
   # Try with 2 unnamed data frames
   indices2 <- list(r_indices, c_indices)
-  expect_equal(to_triplet(m, indices2), expected)
+  expect_equal(to_triplet(m, indices2) |> 
+                 dplyr::arrange(i, j),
+               expected |> 
+                 dplyr::arrange(i, j))
   
   # Try with the index data frames in the wrong order.
   indices3 <- list(c_indices, r_indices)
@@ -41,7 +45,29 @@ test_that("to_triplet() works as expected", {
                    cols = c_indices, 
                    rows = r_indices, 
                    unusedc = unused_cindices)
-  expect_equal(to_triplet(m, indices4), expected)
+  expect_equal(to_triplet(m, indices4) |> 
+                 dplyr::arrange(i, j),
+               expected |> 
+                 dplyr::arrange(i, j))
+  # Try again, with a non-sparse matrix
+  m5 <- matrix(c(0, 0, 0, 0, 
+                 0, 0, 0, 0, 
+                 0, 0, 0, 0, 
+                 0, 0, 0, 0, 
+                 0, 0, 4, 1, 
+                 0, 0, 0, 0, 
+                 0, 0, 6, 3, 
+                 0, 0, 0, 0, 
+                 0, 0, 5, 2), 
+               nrow = 9, ncol = 4, byrow = TRUE,
+               dimnames = list(c("r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9"), 
+                               c("c1", "c2", "c3", "c4"))) |> 
+    setrowtype("rows") |> 
+    setcoltype("cols")
+  expect_equal(to_triplet(m5, indices4) |> 
+                 dplyr::arrange(i, j),
+               expected |> 
+                 dplyr::arrange(i, j))
 })
 
 
@@ -177,4 +203,101 @@ test_that("to_named() fails when only one index_map is supplied", {
   expect_error(to_named(triplet, indices), 
                regexp = "Incorrectly formatted index_map in matsbyname::get_row_col_index_maps")
 })
+
+
+test_that("to_named() is reversible", {
+  # Start with a triplet.
+  triplet <- tibble::tribble(~i, ~j, ~x, 
+                             9, 3, 1, 
+                             7, 3, 2, 
+                             5, 3, 3, 
+                             9, 4, 4, 
+                             7, 4, 5, 
+                             5, 4, 6) |> 
+    setrowtype("rows") |> setcoltype("cols")
   
+  r_indices <- data.frame(names = paste0("r", 1:101),
+                          indices = 1:101)
+  c_indices <- data.frame(names = paste0("c", 1:101),
+                          indices = 1:101)
+  indices <- list(r_indices, c_indices)
+  expected_named <- matrix(c(1, 2,
+                             3, 4,
+                             5, 6),
+                           nrow = 3, ncol = 2,
+                           dimnames = list(c("r9", "r7", "r5"),
+                                           c("c3", "c4"))) |>
+    sort_rows_cols() |> 
+    setrowtype("rows") |>
+    setcoltype("cols")
+  # Convert to named
+  named <- to_named(triplet, indices)
+  expect_equal(named, expected_named)  
+  
+  # Now reverse the process
+  triplet2 <- to_triplet(named, indices)
+  expect_equal(triplet2 |> 
+                 dplyr::arrange(i, j), 
+               triplet |> 
+                 dplyr::arrange(i, j))
+  
+})  
+
+
+test_that("to_triplet() is reversible", {
+  m <- matrix(c(0, 0, 0, 0, 
+                0, 0, 0, 0, 
+                0, 0, 0, 0, 
+                0, 0, 0, 0, 
+                0, 0, 4, 1, 
+                0, 0, 0, 0, 
+                0, 0, 6, 3, 
+                0, 0, 0, 0, 
+                0, 0, 5, 2), 
+              nrow = 9, ncol = 4, byrow = TRUE,
+              dimnames = list(c("r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9"), 
+                              c("c1", "c2", "c3", "c4"))) |> 
+    setrowtype("rows") |> 
+    setcoltype("cols")
+  r_indices <- data.frame(names = paste0("r", 1:101),
+                          indices = 1:101)
+  c_indices <- data.frame(names = paste0("c", 1:101),
+                          indices = 1:101)
+  # Try with a single data frame
+  indices <- list(r_indices, c_indices)
+  
+  triplet <- to_triplet(m, indices)
+  expected <- tibble::tribble(~i, ~j, ~x, 
+                              9, 3, 5, 
+                              7, 3, 6, 
+                              5, 3, 4, 
+                              9, 4, 2, 
+                              7, 4, 3, 
+                              5, 4, 1) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  expect_equal(triplet |> 
+                 dplyr::arrange(i, j), 
+               expected |> 
+                 dplyr::arrange(i, j))
+  m2 <- to_named(triplet, indices)
+  expect_equal(m2, matrix(c(4, 1, 
+                            6, 3, 
+                            5, 2), nrow = 3, ncol = 2, byrow = TRUE, 
+                          dimnames = list(c("r5", "r7", "r9"), 
+                                          c("c3", "c4"))) |> 
+                 setrowtype("rows") |> setcoltype("cols"))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+

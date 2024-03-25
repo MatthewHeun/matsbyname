@@ -3,6 +3,7 @@
 \name{to_named_triplet}
 \alias{to_named_triplet}
 \alias{to_triplet}
+\alias{to_named}
 \title{Convert a matrix or list of matrices between named form and indexed form}
 \usage{
 to_triplet(
@@ -14,6 +15,15 @@ to_triplet(
   rownames_colname = "rownames",
   colnames_colname = "colnames"
 )
+
+to_named(
+  a,
+  index_map,
+  matrix_class = c("matrix", "Matrix"),
+  row_index_colname = "i",
+  col_index_colname = "j",
+  val_colname = "x"
+)
 }
 \arguments{
 \item{a}{For \code{\link[=to_triplet]{to_triplet()}}, a matrix or list of matrices to be converted to triplet form.
@@ -22,6 +32,19 @@ For \code{\link[=to_named]{to_named()}}, a data frame or list of data frames in 
 \item{index_map}{A mapping between row and column names
 and row and column indices.
 See details.}
+
+\item{row_index_colname, col_index_colname}{The names of row and column index columns in data frames.
+Defaults are "i" and "j", respectively.}
+
+\item{val_colname}{The name of the value column in data frames.
+Default is "x".}
+
+\item{rownames_colname, colnames_colname}{The name of row name and column name columns in data frames.
+Defaults are "rownames" and "colnames", respectively.}
+
+\item{matrix_class}{One of "matrix" (standard) or "Matrix" (sparse) representation
+for matrices.
+Default is "matrix".}
 }
 \value{
 \code{\link[=to_triplet]{to_triplet()}} returns \code{a} as a data frame or list of data frames in triplet form.
@@ -94,7 +117,7 @@ a character column.
 }
 
 When converting to indexed form,
-rowtype and colytpe
+rowtype and coltype
 are retained as attributes.
 See \code{\link[=rowtype]{rowtype()}} and \code{\link[=coltype]{coltype()}}.
 

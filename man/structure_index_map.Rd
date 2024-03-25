@@ -16,7 +16,7 @@ and a character string column as the second column.
 \description{
 Index maps must be a data frame with one integer column
 and one character string column.
-This functino verifies the structure and ensures
+This function verifies the structure and ensures
 that the integer column is first.
 }
 \details{
