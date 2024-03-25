@@ -272,34 +272,6 @@ get_row_col_index_maps_for_named <- function(a_mat, ind_map) {
 }
 
 
-# get_row_col_index_maps_for_indexed <- function(a_indexed, ind_map, 
-#                                                rowtypes_colname, coltypes_colname) {
-#   if (is.list(a_indexed) & is.null(names(ind_map)) & length(ind_map) == 3) {
-#     # We have an unnamed list.
-#     # First item is assumed to contain row information.
-#     # Second item is assumed to contain column information.
-#     # Third item is assumed to contain row and column types.
-#     # This case is easy. 
-#     # Just return the items, after ensuring that the structure is correct.
-#     return(list(structure_index_map(ind_map[[1]]), 
-#                 structure_index_map(ind_map[[2]]), 
-#                 structure_index_map(ind_map[[3]])))
-#   }
-#   if (is.list(a_indexed) & !is.null(names(ind_map)) & length(ind_map) >= 3) {
-#     # Here, we have to figure out rowtype and coltype first.
-#     # Then, we can put in the correct order.
-#     
-#     # Get the rowtype
-#     rtype <- unique(a_indexed[[rowtypes_colname]])
-#     assertthat::assert_that(length(rtype) == 1, msg = "Only one rowtype allowed")
-#     # Get the coltype
-#     ctype <- unique(a_indexed[[coltypes_colname]])
-#     assertthat::assert_that(length(ctype) == 1, msg = "Only one coltype allowed")
-#     
-#   }
-# }
-
-
 #' Set the structure of an index map
 #' 
 #' Index maps must be a data frame with one integer column
