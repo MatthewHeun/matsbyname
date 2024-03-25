@@ -23,11 +23,11 @@
 #' to maintain a consistent mapping between row and column indices
 #' and row and column names.)
 #' These functions convert from named form to indexed form
-#' ([to_indexed()])
+#' ([to_triplet()])
 #' and vice versa ([to_named()])
 #' using externally supplied mappings 
 #' in the `index_map` argument.
-#' [to_indexed()] and [to_named()] are inverses of each other.
+#' [to_triplet()] and [to_named()] are inverses of each other.
 #' 
 #' `index_map` must be 
 #' an unnamed list of two data frames or 
@@ -74,24 +74,24 @@
 #' It is an error to repeat an index in the index column
 #' of an `index_map` data frame.
 #'
-#' @param a For [to_indexed()], a matrix or list of matrices to be converted to indexed form.
+#' @param a For [to_triplet()], a matrix or list of matrices to be converted to indexed form.
 #'          For [to_named()], a data frame or list of data frames in indexed form to be converted to named form.
 #' @param index_map A mapping between row and column names
 #'                  and row and column indices.
 #'                  See details.
 #'
-#' @return [to_indexed()] returns `a` as a data frame or list of data frames in indexed form.
+#' @return [to_triplet()] returns `a` as a data frame or list of data frames in indexed form.
 #'         [to_named()] returns `a` as a matrix or a list of matrices in named form.
 #'
-#' @name to_named_indexed
+#' @name to_named_triplet
 #' 
 #' @examples
 
 
 
-#' @rdname to_named_indexed
+#' @rdname to_named_triplet
 #' @export
-to_indexed <- function(a, 
+to_triplet <- function(a, 
                        index_map, 
                        row_index_colname = "i", 
                        col_index_colname = "j", 
@@ -120,7 +120,7 @@ to_indexed <- function(a,
       for (col in 1:2) {
         n_rows <- nrow(row_col_index_maps[[df]])
         assertthat::assert_that(length(unique(row_col_index_maps[[df]][[col]])) == n_rows,
-                                msg = "All indices and names must be unique in to_indexed()")
+                                msg = "All indices and names must be unique in to_triplet()")
       }
     }
 
