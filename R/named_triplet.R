@@ -107,7 +107,7 @@ to_triplet <- function(a,
   assertthat::assert_that(length(index_map) >= 2, msg = "index_map must have length of 2 or more")
   out <- lapply(a, function(a_mat) {
     # At this point, we should have a single a_mat. 
-    row_col_index_maps <- get_row_col_index_maps_for_named(a_mat, index_map)
+    row_col_index_maps <- get_row_col_index_maps(a_mat, index_map)
     # Get the names of the row indices and names columns
     row_indices_colname <- names(row_col_index_maps[[1]])[[1]]
     row_names_colname <- names(row_col_index_maps[[1]])[[2]]
@@ -195,7 +195,7 @@ to_named <- function(a,
   out <- lapply(a, function(a_triplet) {
     # We should have one data frame here.
     # Figure out the index maps to use
-    row_col_index_maps <- get_row_col_index_maps_for_named(a_triplet, index_map)
+    row_col_index_maps <- get_row_col_index_maps(a_triplet, index_map)
     # Ensure that correct columns are present
     assertthat::assert_that(row_index_colname %in% colnames(a_triplet), msg = paste0("'", row_index_colname, "' not found in column names of a_triplet"))
     assertthat::assert_that(col_index_colname %in% colnames(a_triplet), msg = paste0("'", col_index_colname, "' not found in column names of a_triplet"))
@@ -236,21 +236,21 @@ to_named <- function(a,
 #' This is a non-exported function meant only for internal use.
 #'
 #' @param a_mat A matrix for which index maps should be determined.
-#' @param ind_map A data frame or list of data frames of potential
-#'                index maps.
+#' @param ind_maps A list of two or more data frames
+#'                 of potential index maps.
 #'
 #' @return A list of two data frames. 
 #'         The first data frame is the index map for the rows of `a_mat`.
 #'         The second data frame is the index map for the columns of `a_mat`.
-get_row_col_index_maps_for_named <- function(a_mat, ind_map) {
+get_row_col_index_maps <- function(a_mat, ind_maps) {
 
-  if (is.list(ind_map) & is.null(names(ind_map)) & length(ind_map) == 2) {
+  if (is.list(ind_maps) & is.null(names(ind_maps)) & length(ind_maps) == 2) {
     # In this case, ensure that the structure is correct for each 
     # index map and return the list of 2.
-    return(list(structure_index_map(ind_map[[1]]), 
-                structure_index_map(ind_map[[2]])))
+    return(list(structure_index_map(ind_maps[[1]]), 
+                structure_index_map(ind_maps[[2]])))
   }
-  if (is.list(ind_map) & !is.null(names(ind_map))) {
+  if (is.list(ind_maps) & !is.null(names(ind_maps))) {
     # Check for rowtype and coltype.
     rtype <- rowtype(a_mat)
     assertthat::assert_that(!is.null(rtype), 
@@ -258,10 +258,10 @@ get_row_col_index_maps_for_named <- function(a_mat, ind_map) {
     ctype <- coltype(a_mat)
     assertthat::assert_that(!is.null(ctype), 
                             msg = "matrix must have a column type")
-    row_indices <- ind_map[[rtype]]
+    row_indices <- ind_maps[[rtype]]
     assertthat::assert_that(!is.null(row_indices), 
                             msg = paste0("Suitable index map for row type '", rtype, "' not found."))
-    col_indices <- ind_map[[ctype]]
+    col_indices <- ind_maps[[ctype]]
     assertthat::assert_that(!is.null(col_indices), 
                             msg = paste0("Suitable index map for column type '", ctype, "' not found."))
     return(list(structure_index_map(row_indices), 

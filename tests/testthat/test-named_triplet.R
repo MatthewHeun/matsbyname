@@ -127,7 +127,7 @@ test_that("to_triplet() works with lists", {
 
 
 test_that("to_named() works as expected", {
-  indexed <- tibble::tribble(~i, ~j, ~x, 
+  triplet <- tibble::tribble(~i, ~j, ~x, 
                              9, 3, 1, 
                              7, 3, 2, 
                              5, 3, 3, 
@@ -151,7 +151,30 @@ test_that("to_named() works as expected", {
     setrowtype("rows") |>
     setcoltype("cols")
 
-  expect_equal(to_named(indexed, indices), expected)
+  expect_equal(to_named(triplet, indices), expected)
+  # Try with a Matrix object returned
+  expect_true(matsbyname:::equal_matrix_or_Matrix(to_named(triplet, indices, matrix_class = "Matrix"),
+                                                  expected))
+  
+  # Try with a list
+  expect_equal(to_named(list(triplet, triplet), indices), list(expected, expected))
+})
 
+
+test_that("to_named() fails when only one index_map is supplied", {
+  triplet <- tibble::tribble(~i, ~j, ~x, 
+                             9, 3, 1, 
+                             7, 3, 2, 
+                             5, 3, 3, 
+                             9, 4, 4, 
+                             7, 4, 5, 
+                             5, 4, 6) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  
+  r_indices <- data.frame(names = paste0("r", 1:101),
+                          indices = 1:101)
+  indices <- list(r_indices)
+  expect_error(to_named(triplet, indices), 
+               regexp = "Incorrectly formatted index_map in matsbyname::get_row_col_index_maps")
 })
   
