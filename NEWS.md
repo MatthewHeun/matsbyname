@@ -7,6 +7,20 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* New functions `to_triplet()` and `to_named_matrix()`
+  convert between named matrix and triplet forms of matrices
+  to assist some database operations 
+  (which prefer triplet form).
+* Fixed a bug where setting rowtype or coltype attributes on a 
+  data frame resulted in the attribute set on each column 
+  of the data frame.
+* New tests for new features.
+    - Now up to 2132 tests, all passing.
+    - Test coverage remains at 100%.
+
+
+## matsbyname 0.6.10 (2024-02-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10652382.svg)](https://doi.org/10.5281/zenodo.10652382)
+
 * Now skipping speed tests on CRAN.
   These tests are appropriate only for certain machines
   whose timings from previous runs are hard-wired into
@@ -21,7 +35,7 @@ which always resolves to the latest release.
     - Test coverage remains at 100%.
 
 
-## matsbyname 0.6.9 (2024-01-30)
+## matsbyname 0.6.9 (2024-01-30) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10600663.svg)](https://doi.org/10.5281/zenodo.10600663)
 
 * Now running tests in parallel.
 * Added performance tests.

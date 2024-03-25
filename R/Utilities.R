@@ -765,7 +765,17 @@ margin_from_types_byname <- function(a, types) {
 #' DF <- DF %>% mutate(newcol = setrowtype(U, "Commodities"))
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
-setrowtype <- function(a, rowtype){
+setrowtype <- function(a, rowtype) {
+  if (is.data.frame(a)) {
+    # Intercept a data frame here.
+    # A data frame is technically a list, so 
+    # the code below will set the rowtype attribute on 
+    # every column.
+    # That's unlikely to be the desired result.
+    # So set the attribute on the entire data frame and return.
+    attr(a, "rowtype") <- rowtype
+    return(a)
+  }
   rt_func <- function(a, rowtype){
     attr(a, "rowtype") <- rowtype
     return(a)
@@ -808,6 +818,16 @@ setrowtype <- function(a, rowtype){
 #' DF$newcol[[1]]
 #' DF$newcol[[2]]
 setcoltype <- function(a, coltype){
+  if (is.data.frame(a)) {
+    # Intercept a data frame here.
+    # A data frame is technically a list, so 
+    # the code below will set the rowtype attribute on 
+    # every column.
+    # That's unlikely to be the desired result.
+    # So set the attribute on the entire data frame and return.
+    attr(a, "coltype") <- coltype
+    return(a)
+  }
   ct_func <- function(a, coltype){
     attr(a, "coltype") <- coltype
     return(a)
@@ -836,7 +856,10 @@ setcoltype <- function(a, coltype){
 #' rowtype(U)
 #' # This also works for lists
 #' rowtype(list(U,U))
-rowtype <- function(a){
+rowtype <- function(a) {
+  if (is.data.frame(a)) {
+    return(attr(a, which = "rowtype"))
+  }
   unaryapply_byname(attr, a = a, .FUNdots = list(which = "rowtype"), 
                     rowcoltypes = "none")
 }
@@ -860,7 +883,10 @@ rowtype <- function(a){
 #' coltype(U)
 #' # This also works for lists
 #' coltype(list(U,U))
-coltype <- function(a){
+coltype <- function(a) {
+  if (is.data.frame(a)) {
+    return(attr(a, which = "coltype"))
+  }
   unaryapply_byname(attr, a = a, .FUNdots = list(which = "coltype"), 
                     rowcoltypes = "none")
 }
