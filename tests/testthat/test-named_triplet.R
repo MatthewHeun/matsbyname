@@ -19,7 +19,8 @@ test_that("to_triplet() works as expected", {
                               5, 3, 3, 
                               9, 4, 4, 
                               7, 4, 5, 
-                              5, 4, 6)
+                              5, 4, 6) |> 
+    setrowtype("rows") |> setcoltype("cols")
   # This should error, because we need a list of 2 or more
   expect_error(to_triplet(m, indices), regexp = "index_map must be a list and not a data frame")
   

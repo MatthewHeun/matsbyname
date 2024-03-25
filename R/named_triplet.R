@@ -3,31 +3,33 @@
 #' Matrices can be in named form or indexed form.
 #' Named form is the usual representation for the `matsindf` package,
 #' wherein names for rows and columns are included in the `dimnames`
-#' attribute of the matrix object, consuming memory. 
+#' attribute of every matrix object, consuming memory. 
 #' Typically, neither zero rows nor zero columns are present.
 #' In some instances, 
 #' many sparse matrices with the same names will be created,
 #' leading to inefficiencies. 
 #' It can be more memory-efficient to store the matrices in 
-#' indexed form, 
-#' (a sparse format with matrix data represented as 
+#' triplet form, 
+#' (a table format with matrix data represented as 
 #' a data frame with 
-#' a row integer (i) column, 
-#' a column integer (j) column, and 
-#' a value (x) column.
-#' In indexed form, 
+#' row integer (i), 
+#' column integer (j), and 
+#' value (x) columns.
+#' In triplet form, 
 #' a separate (external) mapping between
 #' row and column indices and row and column names
 #' must be maintained.
-#' (In indexed form, it becomes the responsibility of the caller
+#' (In triplet form, it becomes the responsibility of the caller
 #' to maintain a consistent mapping between row and column indices
-#' and row and column names.)
-#' These functions convert from named form to indexed form
+#' and row and column names.
+#' However, rowtype and coltype are retained as attributes 
+#' of the triplet data frame.)
+#' These functions convert from named form to triplet form
 #' ([to_triplet()])
 #' and vice versa ([to_named()])
 #' using externally supplied mappings 
 #' in the `index_map` argument.
-#' [to_triplet()] and [to_named()] are inverses of each other.
+#' [to_triplet()] and [to_named()] are exact inverses of each other.
 #' 
 #' `index_map` must be 
 #' an unnamed list of two data frames or 
@@ -43,9 +45,9 @@
 #'   is interpreted as the mapping 
 #'   between column names and column indices.
 #' * If a named list of two or more data frames, 
-#'   The names of `index_map`
+#'   the names of `index_map`
 #'   are interpreted as row and column types, 
-#'   with each named data frame applied as the mapping for the
+#'   with named data frames applied as the mapping for the
 #'   associated row or column type. 
 #'   For example the data frame named "Industry" would be applied
 #'   to the dimension (row or column)
@@ -62,10 +64,8 @@
 #' 
 #' When converting to indexed form, 
 #' rowtype and colytpe 
-#' are unavoidably lost.
-#' The caller should take care to retain 
-#' rowtype and coltype 
-#' information.
+#' are retained as attributes. 
+#' See [rowtype()] and [coltype()].
 #'
 #' If any indices are unavailable in the `index_map`, 
 #' an error is raised.
@@ -74,13 +74,13 @@
 #' It is an error to repeat an index in the index column
 #' of an `index_map` data frame.
 #'
-#' @param a For [to_triplet()], a matrix or list of matrices to be converted to indexed form.
-#'          For [to_named()], a data frame or list of data frames in indexed form to be converted to named form.
+#' @param a For [to_triplet()], a matrix or list of matrices to be converted to triplet form.
+#'          For [to_named()], a data frame or list of data frames in triplet form to be converted to named form.
 #' @param index_map A mapping between row and column names
 #'                  and row and column indices.
 #'                  See details.
 #'
-#' @return [to_triplet()] returns `a` as a data frame or list of data frames in indexed form.
+#' @return [to_triplet()] returns `a` as a data frame or list of data frames in triplet form.
 #'         [to_named()] returns `a` as a matrix or a list of matrices in named form.
 #'
 #' @name to_named_triplet
