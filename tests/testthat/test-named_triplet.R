@@ -152,7 +152,7 @@ test_that("to_triplet() works with lists", {
 })
 
 
-test_that("to_named() works as expected", {
+test_that("to_named_matrix() works as expected", {
   triplet <- tibble::tribble(~i, ~j, ~x, 
                              9, 3, 1, 
                              7, 3, 2, 
@@ -177,17 +177,17 @@ test_that("to_named() works as expected", {
     setrowtype("rows") |>
     setcoltype("cols")
 
-  expect_equal(to_named(triplet, indices), expected)
+  expect_equal(to_named_matrix(triplet, indices), expected)
   # Try with a Matrix object returned
-  expect_true(matsbyname:::equal_matrix_or_Matrix(to_named(triplet, indices, matrix_class = "Matrix"),
+  expect_true(matsbyname:::equal_matrix_or_Matrix(to_named_matrix(triplet, indices, matrix_class = "Matrix"),
                                                   expected))
   
   # Try with a list
-  expect_equal(to_named(list(triplet, triplet), indices), list(expected, expected))
+  expect_equal(to_named_matrix(list(triplet, triplet), indices), list(expected, expected))
 })
 
 
-test_that("to_named() fails when only one index_map is supplied", {
+test_that("to_named_matrix() fails when only one index_map is supplied", {
   triplet <- tibble::tribble(~i, ~j, ~x, 
                              9, 3, 1, 
                              7, 3, 2, 
@@ -200,12 +200,12 @@ test_that("to_named() fails when only one index_map is supplied", {
   r_indices <- data.frame(names = paste0("r", 1:101),
                           indices = 1:101)
   indices <- list(r_indices)
-  expect_error(to_named(triplet, indices), 
+  expect_error(to_named_matrix(triplet, indices), 
                regexp = "Incorrectly formatted index_map in matsbyname::get_row_col_index_maps")
 })
 
 
-test_that("to_named() is reversible", {
+test_that("to_named_matrix() is reversible", {
   # Start with a triplet.
   triplet <- tibble::tribble(~i, ~j, ~x, 
                              9, 3, 1, 
@@ -231,7 +231,7 @@ test_that("to_named() is reversible", {
     setrowtype("rows") |>
     setcoltype("cols")
   # Convert to named
-  named <- to_named(triplet, indices)
+  named <- to_named_matrix(triplet, indices)
   expect_equal(named, expected_named)  
   
   # Now reverse the process
@@ -279,7 +279,7 @@ test_that("to_triplet() is reversible", {
                  dplyr::arrange(i, j), 
                expected |> 
                  dplyr::arrange(i, j))
-  m2 <- to_named(triplet, indices)
+  m2 <- to_named_matrix(triplet, indices)
   expect_equal(m2, matrix(c(4, 1, 
                             6, 3, 
                             5, 2), nrow = 3, ncol = 2, byrow = TRUE, 

@@ -1,20 +1,22 @@
 #' Convert a matrix or list of matrices between named form and indexed form
 #' 
-#' Matrices can be in named form or indexed form.
-#' Named form is the usual representation for the `matsindf` package,
+#' Matrices can be in named matrix form or triplet form.
+#' Named matrix form is the usual representation for the `matsindf` package,
 #' wherein names for rows and columns are included in the `dimnames`
-#' attribute of every matrix object, consuming memory. 
+#' attribute of every matrix or Matrix object, consuming memory. 
 #' Typically, neither zero rows nor zero columns are present.
 #' In some instances, 
 #' many sparse matrices with the same names will be created,
-#' leading to inefficiencies. 
-#' It can be more memory-efficient to store the matrices in 
+#' leading to inefficiencies due to dimname storage with every matrix object. 
+#' It can be more memory-efficient to store named matrices in 
 #' triplet form, 
 #' (a table format with matrix data represented as 
 #' a data frame with 
 #' row integer (i), 
 #' column integer (j), and 
 #' value (x) columns.
+#' And triplet form is required for databases that
+#' do not recognize a matrix as a native storage format.
 #' In triplet form, 
 #' a separate (external) mapping between
 #' row and column indices and row and column names
@@ -24,18 +26,19 @@
 #' and row and column names.
 #' However, rowtype and coltype are retained as attributes 
 #' of the triplet data frame.)
-#' These functions convert from named form to triplet form
+#' These functions convert from named matrix form to triplet form
 #' ([to_triplet()])
-#' and vice versa ([to_named()])
-#' using externally supplied mappings 
-#' in the `index_map` argument.
-#' [to_triplet()] and [to_named()] are inverses of each other, 
+#' and vice versa ([to_named_matrix()])
+#' using row and column name mappings 
+#' supplied in the `index_map` argument.
+#' [to_triplet()] and [to_named_matrix()] are inverses of each other, 
 #' with row and column order not necessarily preserved.
+#' See examples.
 #' 
 #' `index_map` must be 
 #' an unnamed list of two data frames or 
 #' a named list of two or more data frames.
-#' * If an unnamed list of two data frames, 
+#' * If an unnamed list of exactly two data frames, 
 #'   each data frame must have only 
 #'   an integer column and a character column.
 #'   The first data frame of `index_map` 
@@ -76,7 +79,7 @@
 #' of an `index_map` data frame.
 #'
 #' @param a For [to_triplet()], a matrix or list of matrices to be converted to triplet form.
-#'          For [to_named()], a data frame or list of data frames in triplet form to be converted to named form.
+#'          For [to_named_matrix()], a data frame or list of data frames in triplet form to be converted to named matrix form.
 #' @param index_map A mapping between row and column names
 #'                  and row and column indices.
 #'                  See details.
@@ -91,11 +94,42 @@
 #'                                          Defaults are "rownames" and "colnames", respectively.
 #'
 #' @return [to_triplet()] returns `a` as a data frame or list of data frames in triplet form.
-#'         [to_named()] returns `a` as a matrix or a list of matrices in named form.
+#'         [to_named_matrix()] returns `a` as a named matrix or a list of matrices in named form.
 #'
 #' @name to_named_triplet
 #' 
 #' @examples
+#' triplet <- tibble::tribble(~i, ~j, ~x, 
+#'                             9,  3,  1, 
+#'                             7,  3,  2, 
+#'                             5,  3,  3, 
+#'                             9,  4,  4, 
+#'                             7,  4,  5, 
+#'                             5,  4,  6) |> 
+#'   setrowtype("rows") |> setcoltype("cols")
+#' triplet
+#' rowtype(triplet)
+#' coltype(triplet)
+#' # We have more indices than actual entries in the martix
+#' r_indices <- data.frame(names = paste0("r", 1:101),
+#'                         indices = 1:101)
+#' head(r_indices)
+#' c_indices <- data.frame(names = paste0("c", 1:101),
+#'                         indices = 1:101)
+#' head(c_indices)
+#' # Names are interpreted as row and column types
+#' indices <- list(cols = c_indices, rows = r_indices)
+#' named <- to_named_matrix(triplet, indices)
+#' named
+#' triplet2 <- to_triplet(named, indices)
+#'
+#' # Although not in the same row order, 
+#' # triplet and triplet2 are the same.
+#' triplet2
+#' rowtype(triplet2)
+#' coltype(triplet2)
+#' # And the same matrix can be recovered from triplet2
+#' to_named_matrix(triplet2, indices)
 
 
 #' @rdname to_named_triplet
@@ -184,7 +218,7 @@ to_triplet <- function(a,
 
 #' @rdname to_named_triplet
 #' @export
-to_named <- function(a, 
+to_named_matrix <- function(a, 
                      index_map, 
                      matrix_class = c("matrix", "Matrix"), 
                      row_index_colname = "i", 
