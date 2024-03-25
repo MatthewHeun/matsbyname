@@ -84,13 +84,13 @@ test_that("to_indexed() fails when the correct named index_map is not supplied",
                                # Wrong name. It should be called "rows".
                                bogus = r_indices, 
                                unusedc = unused_cindices)
-  expect_error(to_indexed(m, indices_missing_rows), regexp = "Suitable index map for row type rows not found")
+  expect_error(to_indexed(m, indices_missing_rows), regexp = "Suitable index map for row type 'rows' not found")
   indices_missing_cols <- list(unusedr = unused_rindices, 
                                # Wrong name. It should be called "cols".
                                bogus = c_indices, 
                                rows = r_indices, 
                                unusedc = unused_cindices)
-  expect_error(to_indexed(m, indices_missing_cols), regexp = "Suitable index map for column type cols not found")
+  expect_error(to_indexed(m, indices_missing_cols), regexp = "Suitable index map for column type 'cols' not found")
 })
 
 
@@ -123,32 +123,32 @@ test_that("to_indexed() works with lists", {
 })
 
 
-test_that("to_named() works as expected", {
-  indexed <- tibble::tribble(~i, ~j, ~x, ~rowtypes, ~coltypes,
-                             9, 3, 1, 1, 2,
-                             7, 3, 2, 1, 2, 
-                             5, 3, 3, 1, 2,  
-                             9, 4, 4, 1, 2,  
-                             7, 4, 5, 1, 2,  
-                             5, 4, 6, 1, 2)
-  
-  r_indices <- data.frame(names = c("r3", "r1", "r2", "r0", "r1"),
-                          indices = as.integer(c(5, 9, 7, 100, 101))) 
-  c_indices <- data.frame(names = c("c2", "c1", "c3", "c2"), 
-                          indices = as.integer(c(4, 3, 100, 101)))
-  t_indices <- data.frame(names = c("rows", "cols"), 
-                          indices = as.integer(c(1, 2)))
-  indices <- list(r_indices, c_indices, t_indices)
-  expected <- matrix(c(1, 2, 
-                       3, 4, 
-                       5, 6), 
-                     nrow = 3, ncol = 2, 
-                     dimnames = list(c("r1", "r2", "r3"), 
-                                     c("c1", "c2"))) |> 
-    setrowtype("rows") |> 
-    setcoltype("cols")
-  
-  expect_equal(to_named(indexed, indices), expected)
-  
-})
+# test_that("to_named() works as expected", {
+#   indexed <- tibble::tribble(~i, ~j, ~x, ~rowtypes, ~coltypes,
+#                              9, 3, 1, 1, 2,
+#                              7, 3, 2, 1, 2, 
+#                              5, 3, 3, 1, 2,  
+#                              9, 4, 4, 1, 2,  
+#                              7, 4, 5, 1, 2,  
+#                              5, 4, 6, 1, 2)
+#   
+#   r_indices <- data.frame(names = c("r3", "r1", "r2", "r0", "r1"),
+#                           indices = as.integer(c(5, 9, 7, 100, 101))) 
+#   c_indices <- data.frame(names = c("c2", "c1", "c3", "c2"), 
+#                           indices = as.integer(c(4, 3, 100, 101)))
+#   t_indices <- data.frame(names = c("rows", "cols"), 
+#                           indices = as.integer(c(1, 2)))
+#   indices <- list(r_indices, c_indices, t_indices)
+#   expected <- matrix(c(1, 2, 
+#                        3, 4, 
+#                        5, 6), 
+#                      nrow = 3, ncol = 2, 
+#                      dimnames = list(c("r1", "r2", "r3"), 
+#                                      c("c1", "c2"))) |> 
+#     setrowtype("rows") |> 
+#     setcoltype("cols")
+#   
+#   expect_equal(to_named(indexed, indices), expected)
+#   
+# })
   

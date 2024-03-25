@@ -183,20 +183,20 @@ to_named <- function(a,
                      colnames_colname = "colnames", 
                      rowtypes_colname = "rowtypes", 
                      coltypes_colname = "coltypes") {
-  a_list <- TRUE
-  if (is_matrix_or_Matrix(a)) {
-    a_list <- FALSE
-    a <- list(a)
-  }
-  
-  out <- lapply(a, function(a_indexed) {
-    # We should have one data frame here.
-  })
-  
-  if (!a_list) {
-    return(out[[1]])
-  }
-  return(out)
+  # a_list <- TRUE
+  # if (is_matrix_or_Matrix(a)) {
+  #   a_list <- FALSE
+  #   a <- list(a)
+  # }
+  # 
+  # out <- lapply(a, function(a_indexed) {
+  #   # We should have one data frame here.
+  # })
+  # 
+  # if (!a_list) {
+  #   return(out[[1]])
+  # }
+  # return(out)
 }
 
 
