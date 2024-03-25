@@ -88,7 +88,6 @@
 #' @examples
 
 
-
 #' @rdname to_named_triplet
 #' @export
 to_triplet <- function(a, 
@@ -158,7 +157,9 @@ to_triplet <- function(a,
       # dplyr::rename("{col_index_colname}" := .data[[col_indices_colname]]) |> 
       dplyr::rename("{col_index_colname}" := {{col_indices_colname}}) |> 
       dplyr::mutate("{colnames_colname}" := NULL) |> 
-      dplyr::relocate(dplyr::all_of(val_colname), .after = dplyr::everything())
+      dplyr::relocate(dplyr::all_of(val_colname), .after = dplyr::everything()) |> 
+      setrowtype(rowtype(a_mat)) |> 
+      setcoltype(coltype(a_mat))
     # Verify that all indices have been set and no NA values exist
     assertthat::assert_that(!any(is.na(single_result[[row_index_colname]])))
     assertthat::assert_that(!any(is.na(single_result[[col_index_colname]])))

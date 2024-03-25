@@ -115,7 +115,9 @@ test_that("to_triplet() works with lists", {
                               5, 3, 3, 
                               9, 4, 4, 
                               7, 4, 5, 
-                              5, 4, 6)
+                              5, 4, 6) |> 
+    setrowtype("rows") |> 
+    setcoltype("cols")
   
   # Try with 2 unnamed data frames
   indices <- list(r_indices, c_indices)

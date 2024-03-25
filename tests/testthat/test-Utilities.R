@@ -2155,6 +2155,14 @@ test_that("setcoltype() and coltype() work with Matrix objects", {
 })
 
 
+test_that("setrowtype() and rowtype() work with data frames", {
+  df <- data.frame(a = 2) |> 
+    setrowtype("row") |> setcoltype("col")
+  expect_equal(rowtype(df), "row")
+  expect_equal(coltype(df), "col")
+})
+
+
 test_that("nrow_byname() works as expected.", {
   
   # First, test with a single 2x2 matrix:
