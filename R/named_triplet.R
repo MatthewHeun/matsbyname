@@ -192,13 +192,11 @@ to_triplet <- function(a,
       # Add the row indices, which are found in the first map
       dplyr::left_join(row_col_index_maps[[1]], 
                        by = dplyr::join_by({{rownames_colname}} == {{row_names_colname}})) |> 
-      # dplyr::rename("{row_index_colname}" := .data[[row_indices_colname]]) |> 
       dplyr::rename("{row_index_colname}" := {{row_indices_colname}}) |> 
       dplyr::mutate("{rownames_colname}" := NULL) |> 
       # Add the column indices, which are found in the second map
       dplyr::left_join(row_col_index_maps[[2]], 
                        by = dplyr::join_by({{colnames_colname}} == {{col_names_colname}})) |> 
-      # dplyr::rename("{col_index_colname}" := .data[[col_indices_colname]]) |> 
       dplyr::rename("{col_index_colname}" := {{col_indices_colname}}) |> 
       dplyr::mutate("{colnames_colname}" := NULL) |> 
       dplyr::relocate(dplyr::all_of(val_colname), .after = dplyr::everything()) |> 
