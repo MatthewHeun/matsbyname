@@ -15,7 +15,7 @@ which always resolves to the latest release.
   data frame resulted in the attribute set on each column 
   of the data frame.
 * New tests for new features.
-    - Now up to 2132 tests, all passing.
+    - Now up to 2134 tests, all passing.
     - Test coverage remains at 100%.
 
 
