@@ -151,6 +151,38 @@ test_that("to_triplet() works with lists", {
                list(expected, expected, expected))
 })
 
+test_that("to_triplet() works with NULL", {
+  r_indices <- data.frame(names = c("r3", "r1", "r2", "r0"),
+                          indices = as.integer(c(5, 9, 7, 100))) 
+  c_indices <- data.frame(names = c("c2", "c1", "c3"), 
+                          indices = as.integer(c(4, 3, 100)))
+  # Try with 2 unnamed data frames
+  indices <- list(r_indices, c_indices)
+  expect_null(to_triplet(NULL, indices))
+  
+  
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), 
+              nrow = 3, ncol = 2, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1", "c2"))) |> 
+    setrowtype("rows") |> 
+    setcoltype("cols")
+  m_list <- list(m, NULL, m)
+  expected <- tibble::tribble(~i, ~j, ~x, 
+                              9, 3, 1, 
+                              7, 3, 2, 
+                              5, 3, 3, 
+                              9, 4, 4, 
+                              7, 4, 5, 
+                              5, 4, 6) |> 
+    setrowtype("rows") |> 
+    setcoltype("cols")
+  expect_equal(to_triplet(m_list, indices), 
+               list(expected, NULL, expected))
+})
+
 
 test_that("to_named_matrix() works as expected", {
   triplet <- tibble::tribble(~i, ~j, ~x, 
@@ -240,7 +272,6 @@ test_that("to_named_matrix() is reversible", {
                  dplyr::arrange(i, j), 
                triplet |> 
                  dplyr::arrange(i, j))
-  
 })  
 
 

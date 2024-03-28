@@ -131,6 +131,10 @@ It is an error to repeat a name in the name column of an \code{index_map}
 data frame.
 It is an error to repeat an index in the index column
 of an \code{index_map} data frame.
+
+If \code{a} is \code{NULL}, \code{NULL} is returned.
+If \code{a} is a list and any member of the list is \code{NULL},
+\code{NULL} is returned in that position.
 }
 \examples{
 triplet <- tibble::tribble(~i, ~j, ~x, 

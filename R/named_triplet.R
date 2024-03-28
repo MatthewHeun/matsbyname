@@ -78,6 +78,10 @@
 #' It is an error to repeat an index in the index column
 #' of an `index_map` data frame.
 #'
+#' If `a` is `NULL`, `NULL` is returned.
+#' If `a` is a list and any member of the list is `NULL`, 
+#' `NULL` is returned in that position.
+#'
 #' @param a For [to_triplet()], a matrix or list of matrices to be converted to triplet form.
 #'          For [to_named_matrix()], a data frame or list of data frames in triplet form to be converted to named matrix form.
 #' @param index_map A mapping between row and column names
@@ -142,7 +146,7 @@ to_triplet <- function(a,
                        rownames_colname = "rownames", 
                        colnames_colname = "colnames") {
   a_list <- TRUE
-  if (is_matrix_or_Matrix(a)) {
+  if (is_matrix_or_Matrix(a) | is.null(a)) {
     a_list <- FALSE
     a <- list(a)
   }  
@@ -150,6 +154,9 @@ to_triplet <- function(a,
                           msg = "index_map must be a list and not a data frame")
   assertthat::assert_that(length(index_map) >= 2, msg = "index_map must have length of 2 or more")
   out <- lapply(a, function(a_mat) {
+    if (is.null(a_mat)) {
+      return(NULL)
+    }
     # At this point, we should have a single a_mat. 
     row_col_index_maps <- get_row_col_index_maps(a_mat, index_map)
     # Get the names of the row indices and names columns
