@@ -247,12 +247,12 @@ to_named_matrix <- function(a,
     assertthat::assert_that(val_colname %in% colnames(a_triplet), msg = paste0("'", val_colname, "' not found in column names of a_triplet"))
     # Make a Matrix object from the triplet
     out <- Matrix::sparseMatrix(i = a_triplet[[row_index_colname]], 
-                         j = a_triplet[[col_index_colname]], 
-                         x = a_triplet[[val_colname]], 
-                         dims = c(nrow(row_col_index_maps[[1]]),
-                                  nrow(row_col_index_maps[[2]])),
-                         dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]])) |> 
-    clean_byname() |> 
+                                j = a_triplet[[col_index_colname]], 
+                                x = a_triplet[[val_colname]], 
+                                dims = c(nrow(row_col_index_maps[[1]]),
+                                         nrow(row_col_index_maps[[2]])),
+                                dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]])) |> 
+      clean_byname() |> 
     sort_rows_cols()
     # Convert to matrix, if needed
     if (matrix_class == "matrix") {
