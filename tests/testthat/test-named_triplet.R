@@ -185,13 +185,9 @@ test_that("to_triplet() works with NULL", {
 
 
 test_that("to_named_matrix() works as expected", {
-  triplet <- tibble::tribble(~i, ~j, ~x, 
-                             9, 3, 1, 
-                             7, 3, 2, 
-                             5, 3, 3, 
-                             9, 4, 4, 
-                             7, 4, 5, 
-                             5, 4, 6) |> 
+  triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
+                        j = as.integer(c(3, 3, 3, 4, 4, 4)), 
+                        x = c(1, 2, 3, 4, 5, 6)) |> 
     setrowtype("rows") |> setcoltype("cols")
 
   r_indices <- data.frame(names = paste0("r", 1:101),
@@ -220,13 +216,9 @@ test_that("to_named_matrix() works as expected", {
 
 
 test_that("to_named_matrix() fails when only one index_map is supplied", {
-  triplet <- tibble::tribble(~i, ~j, ~x, 
-                             9, 3, 1, 
-                             7, 3, 2, 
-                             5, 3, 3, 
-                             9, 4, 4, 
-                             7, 4, 5, 
-                             5, 4, 6) |> 
+  triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
+                        j = as.integer(c(3, 3, 3, 4, 4, 4)), 
+                        x = c(1, 2, 3, 4, 5, 6)) |> 
     setrowtype("rows") |> setcoltype("cols")
   
   r_indices <- data.frame(names = paste0("r", 1:101),
@@ -239,13 +231,9 @@ test_that("to_named_matrix() fails when only one index_map is supplied", {
 
 test_that("to_named_matrix() is reversible", {
   # Start with a triplet.
-  triplet <- tibble::tribble(~i, ~j, ~x, 
-                             9, 3, 1, 
-                             7, 3, 2, 
-                             5, 3, 3, 
-                             9, 4, 4, 
-                             7, 4, 5, 
-                             5, 4, 6) |> 
+  triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
+                        j = as.integer(c(3, 3, 3, 4, 4, 4)), 
+                        x = c(1, 2, 3, 4, 5, 6)) |> 
     setrowtype("rows") |> setcoltype("cols")
   
   r_indices <- data.frame(names = paste0("r", 1:101),
@@ -269,6 +257,7 @@ test_that("to_named_matrix() is reversible", {
   # Now reverse the process
   triplet2 <- to_triplet(named, indices)
   expect_equal(triplet2 |> 
+                 as.data.frame() |> 
                  dplyr::arrange(i, j), 
                triplet |> 
                  dplyr::arrange(i, j))
@@ -320,7 +309,26 @@ test_that("to_triplet() is reversible", {
 })
 
 
-
+test_that("to_named_matrix() works with names already replacing integers", {
+  triplet <- tibble::tribble(~i, ~j, ~x, 
+                             "r9", "c3", 5, 
+                             "r7", "c3", 6, 
+                             "r5", "c3", 4, 
+                             "r9", "c4", 2, 
+                             "r7", "c4", 3, 
+                             "r5", "c4", 1) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  res <- triplet |> 
+    to_named_matrix()
+  
+  expect_equal(res, matrix(c(4, 1, 
+                             6, 3, 
+                             5, 2), byrow = TRUE, 
+                           nrow = 3, ncol = 2, 
+                           dimnames = list(c("r5", "r7", "r9"), 
+                                           c("c3", "c4"))) |> 
+                 setrowtype("rows") |> setcoltype("cols"))
+})
 
 
 

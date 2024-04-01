@@ -22,7 +22,9 @@ to_named_matrix(
   matrix_class = c("matrix", "Matrix"),
   row_index_colname = "i",
   col_index_colname = "j",
-  val_colname = "x"
+  val_colname = "x",
+  .rnames = "rownames",
+  .cnames = "colnames"
 )
 }
 \arguments{
@@ -45,6 +47,9 @@ Defaults are "rownames" and "colnames", respectively.}
 \item{matrix_class}{One of "matrix" (standard) or "Matrix" (sparse) representation
 for matrices.
 Default is "matrix".}
+
+\item{.rnames, .cnames}{Column names used internally.
+Defaults are "rownames" and "colnames".}
 }
 \value{
 \code{\link[=to_triplet]{to_triplet()}} returns \code{a} as a data frame or list of data frames in triplet form.
@@ -60,24 +65,27 @@ In some instances,
 many sparse matrices with the same names will be created,
 leading to inefficiencies due to dimname storage with every matrix object.
 It can be more memory-efficient to store named matrices in
-triplet form,
+integer triplet form,
 (a table format with matrix data represented as
 a data frame with
 row integer (i),
 column integer (j), and
 value (x) columns.
-And triplet form is required for databases that
+(Row names and column names can be stored as character string
+in the \code{i} and \code{j} columns, too,
+called character triplet form.)
+Integer triplet form is required for databases that
 do not recognize a matrix as a native storage format.
-In triplet form,
+In integer triplet form,
 a separate (external) mapping between
 row and column indices and row and column names
 must be maintained.
-(In triplet form, it becomes the responsibility of the caller
+(In integer triplet form, it becomes the responsibility of the caller
 to maintain a consistent mapping between row and column indices
 and row and column names.
 However, rowtype and coltype are retained as attributes
-of the triplet data frame.)
-These functions convert from named matrix form to triplet form
+of both integer and character triplet data frames.)
+These functions convert from named matrix form to integer triplet form
 (\code{\link[=to_triplet]{to_triplet()}})
 and vice versa (\code{\link[=to_named_matrix]{to_named_matrix()}})
 using row and column name mappings
@@ -137,13 +145,9 @@ If \code{a} is a list and any member of the list is \code{NULL},
 \code{NULL} is returned in that position.
 }
 \examples{
-triplet <- tibble::tribble(~i, ~j, ~x, 
-                            9,  3,  1, 
-                            7,  3,  2, 
-                            5,  3,  3, 
-                            9,  4,  4, 
-                            7,  4,  5, 
-                            5,  4,  6) |> 
+triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
+                      j = as.integer(c(3, 3, 3, 4, 4, 4)), 
+                      x = c(1, 2, 3, 4, 5, 6)) |> 
   setrowtype("rows") |> setcoltype("cols")
 triplet
 rowtype(triplet)

@@ -9,24 +9,27 @@
 #' many sparse matrices with the same names will be created,
 #' leading to inefficiencies due to dimname storage with every matrix object. 
 #' It can be more memory-efficient to store named matrices in 
-#' triplet form, 
+#' integer triplet form, 
 #' (a table format with matrix data represented as 
 #' a data frame with 
 #' row integer (i), 
 #' column integer (j), and 
 #' value (x) columns.
-#' And triplet form is required for databases that
+#' (Row names and column names can be stored as character string
+#' in the `i` and `j` columns, too, 
+#' called character triplet form.)
+#' Integer triplet form is required for databases that
 #' do not recognize a matrix as a native storage format.
-#' In triplet form, 
+#' In integer triplet form, 
 #' a separate (external) mapping between
 #' row and column indices and row and column names
 #' must be maintained.
-#' (In triplet form, it becomes the responsibility of the caller
+#' (In integer triplet form, it becomes the responsibility of the caller
 #' to maintain a consistent mapping between row and column indices
 #' and row and column names.
 #' However, rowtype and coltype are retained as attributes 
-#' of the triplet data frame.)
-#' These functions convert from named matrix form to triplet form
+#' of both integer and character triplet data frames.)
+#' These functions convert from named matrix form to integer triplet form
 #' ([to_triplet()])
 #' and vice versa ([to_named_matrix()])
 #' using row and column name mappings 
@@ -96,6 +99,8 @@
 #'                    Default is "x".
 #' @param rownames_colname,colnames_colname The name of row name and column name columns in data frames.
 #'                                          Defaults are "rownames" and "colnames", respectively.
+#' @param .rnames,.cnames Column names used internally. 
+#'                        Defaults are "rownames" and "colnames".
 #'
 #' @return [to_triplet()] returns `a` as a data frame or list of data frames in triplet form.
 #'         [to_named_matrix()] returns `a` as a named matrix or a list of matrices in named form.
@@ -103,13 +108,9 @@
 #' @name to_named_triplet
 #' 
 #' @examples
-#' triplet <- tibble::tribble(~i, ~j, ~x, 
-#'                             9,  3,  1, 
-#'                             7,  3,  2, 
-#'                             5,  3,  3, 
-#'                             9,  4,  4, 
-#'                             7,  4,  5, 
-#'                             5,  4,  6) |> 
+#' triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
+#'                       j = as.integer(c(3, 3, 3, 4, 4, 4)), 
+#'                       x = c(1, 2, 3, 4, 5, 6)) |> 
 #'   setrowtype("rows") |> setcoltype("cols")
 #' triplet
 #' rowtype(triplet)
@@ -228,7 +229,9 @@ to_named_matrix <- function(a,
                             matrix_class = c("matrix", "Matrix"), 
                             row_index_colname = "i", 
                             col_index_colname = "j", 
-                            val_colname = "x") {
+                            val_colname = "x", 
+                            .rnames = "rownames", 
+                            .cnames = "colnames") {
   
   matrix_class <- match.arg(matrix_class)
   a_list <- TRUE
@@ -239,21 +242,61 @@ to_named_matrix <- function(a,
 
   out <- lapply(a, function(a_triplet) {
     # We should have one data frame here.
-    # Figure out the index maps to use
-    row_col_index_maps <- get_row_col_index_maps(a_triplet, index_map)
     # Ensure that correct columns are present
     assertthat::assert_that(row_index_colname %in% colnames(a_triplet), msg = paste0("'", row_index_colname, "' not found in column names of a_triplet"))
     assertthat::assert_that(col_index_colname %in% colnames(a_triplet), msg = paste0("'", col_index_colname, "' not found in column names of a_triplet"))
     assertthat::assert_that(val_colname %in% colnames(a_triplet), msg = paste0("'", val_colname, "' not found in column names of a_triplet"))
-    # Make a Matrix object from the triplet
-    out <- Matrix::sparseMatrix(i = a_triplet[[row_index_colname]], 
-                                j = a_triplet[[col_index_colname]], 
-                                x = a_triplet[[val_colname]], 
-                                dims = c(nrow(row_col_index_maps[[1]]),
-                                         nrow(row_col_index_maps[[2]])),
-                                dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]])) |> 
-      clean_byname() |> 
-    sort_rows_cols()
+    if (all(is.integer(a_triplet[[row_index_colname]])) & 
+        all(is.integer(a_triplet[[col_index_colname]]))) {
+      # Figure out the index maps to use
+      row_col_index_maps <- get_row_col_index_maps(a_triplet, index_map)
+      # Make a Matrix object from the triplet
+      out <- Matrix::sparseMatrix(i = a_triplet[[row_index_colname]], 
+                                  j = a_triplet[[col_index_colname]], 
+                                  x = a_triplet[[val_colname]], 
+                                  dims = c(nrow(row_col_index_maps[[1]]),
+                                           nrow(row_col_index_maps[[2]])),
+                                  dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]])) |> 
+        clean_byname() |> 
+        sort_rows_cols()
+    } else if (all(is.character(a_triplet[[row_index_colname]])) & 
+               all(is.character(a_triplet[[col_index_colname]]))) {
+      # All integers have already been converted to names
+      # Set up indices
+      rownames <- a_triplet[[row_index_colname]] |> 
+        unique()
+      rowname_df <- data.frame(1:length(rownames), 
+                               rownames) |> 
+        magrittr::set_colnames(c(row_index_colname, .rnames))
+      colnames <- a_triplet[[col_index_colname]] |> 
+        unique()
+      colname_df <- data.frame(1:length(colnames), 
+                               colnames) |> 
+        magrittr::set_colnames(c(col_index_colname, .cnames))
+      # Join to get the correct row and column indices
+      integer_df <- a_triplet |> 
+        dplyr::rename(
+          "{.rnames}" := dplyr::all_of(row_index_colname), 
+          "{.cnames}" := dplyr::all_of(col_index_colname)
+        ) |> 
+        dplyr::left_join(rowname_df, by = .rnames) |> 
+        dplyr::left_join(colname_df, by = .cnames) |> 
+        dplyr::mutate(
+          "{.rnames}" := NULL, 
+          "{.cnames}" := NULL
+        )
+      out <- Matrix::sparseMatrix(i = integer_df[[row_index_colname]], 
+                                  j = integer_df[[col_index_colname]], 
+                                  x = integer_df[[val_colname]], 
+                                  dims = c(nrow(rowname_df),
+                                           nrow(colname_df)),
+                                  dimnames = list(rowname_df[[.rnames]], colname_df[[.cnames]])) |> 
+        clean_byname() |> 
+        sort_rows_cols()
+    } else {
+      stop("`row_index_colname` and `col_index_colname` must both be all integer or all character in to_named_matrix()")
+    }
+
     # Convert to matrix, if needed
     if (matrix_class == "matrix") {
       out <- as.matrix(out)
