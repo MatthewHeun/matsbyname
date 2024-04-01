@@ -224,11 +224,11 @@ to_triplet <- function(a,
 #' @rdname to_named_triplet
 #' @export
 to_named_matrix <- function(a, 
-                     index_map, 
-                     matrix_class = c("matrix", "Matrix"), 
-                     row_index_colname = "i", 
-                     col_index_colname = "j", 
-                     val_colname = "x") {
+                            index_map, 
+                            matrix_class = c("matrix", "Matrix"), 
+                            row_index_colname = "i", 
+                            col_index_colname = "j", 
+                            val_colname = "x") {
   
   matrix_class <- match.arg(matrix_class)
   a_list <- TRUE
