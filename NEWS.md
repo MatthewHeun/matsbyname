@@ -8,14 +8,16 @@ which always resolves to the latest release.
 
 
 * New functions `to_triplet()` and `to_named_matrix()`
-  convert between named matrix and triplet forms of matrices
+  convert between named matrix and triplet forms 
+  (both integer triplet and character triplet) 
+  of matrices
   to assist some database operations 
-  (which prefer triplet form).
+  (which prefer integer triplet form).
 * Fixed a bug where setting rowtype or coltype attributes on a 
   data frame resulted in the attribute set on each column 
   of the data frame.
 * New tests for new features.
-    - Now up to 2134 tests, all passing.
+    - Now up to 2136 tests, all passing.
     - Test coverage remains at 100%.
 
 

@@ -331,6 +331,21 @@ test_that("to_named_matrix() works with names already replacing integers", {
 })
 
 
+test_that("to_named_matrix() fails when neither integer triplet nor character triplet", {
+  triplet <- tibble::tribble(~i, ~j, ~x, 
+                             9, "c3", 5, 
+                             7, "c3", 6, 
+                             5, "c3", 4, 
+                             9, "c4", 2, 
+                             7, "c4", 3, 
+                             5, "c4", 1) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  res <- triplet |> 
+    to_named_matrix() |> 
+    expect_error("`row_index_colname` and `col_index_colname` must both be all integer or all character in to_named_matrix")
+})
+
+
 
 
 
