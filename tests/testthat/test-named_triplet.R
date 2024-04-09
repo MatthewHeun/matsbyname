@@ -184,6 +184,73 @@ test_that("to_triplet() works with NULL", {
 })
 
 
+test_that("to_triplet() error messages are informative", {
+  # Create a sparse matrix, with only non-zero rows and cols
+  m <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), 
+              nrow = 3, ncol = 2, 
+              dimnames = list(c("r5", "r9", "r7"), 
+                              c("c4", "c3"))) |> 
+    setrowtype("rows") |> 
+    setcoltype("cols")
+  # Create the row indices so that r5 and r9 are missing,
+  # which will trigger NA in the triplet data frame
+  r_indices <- data.frame(names = c("r7", "r100"),
+                          indices = as.integer(c(7, 100))) 
+  c_indices <- data.frame(names = c("c4", "c3", "c100"), 
+                          indices = as.integer(c(4, 3, 100)))
+  # Try with a single data frame
+  indices <- list(r_indices, c_indices)
+  expect_error(to_triplet(m, indices), regexp = "Unmatched row names in")
+
+  # Create the row indices so that c3 and c4 are missing,
+  # which will trigger NA in the triplet data frame
+  r_indices2 <- data.frame(names = c("r5", "r9", "r7", "r100"),
+                           indices = as.integer(c(5, 9, 7, 100))) 
+  c_indices2 <- data.frame(names = c("c100"), 
+                           indices = as.integer(c(100)))
+  # Try with a single data frame
+  indices2 <- list(r_indices2, c_indices2)
+  expect_error(to_triplet(m, indices2), regexp = "Unmatched column names in")
+})
+
+
+test_that("to_triplet() retains zero matrix structure when asked", {
+  m <- matrix(c(0, 0, 
+                0, 0, 
+                0, 0), 
+              nrow = 3, ncol = 2, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1", "c2"))) |> 
+    setrowtype("rows") |> 
+    setcoltype("cols")
+  r_indices <- data.frame(names = c("r3", "r1", "r2", "r0"),
+                          indices = as.integer(c(5, 9, 7, 100))) 
+  c_indices <- data.frame(names = c("c2", "c1", "c3"), 
+                          indices = as.integer(c(4, 3, 100)))
+  # Try without retaining zero matrix structure
+  expect_equal(to_triplet(m, list(r_indices, c_indices)),
+               # Expect a zero-row data frame with correct row and column types
+               data.frame(i = as.integer(0), j = as.integer(0), x = 3.1415926) |> 
+                 dplyr::filter(FALSE) |> 
+                 tibble::as_tibble() |> 
+                 matsbyname::setrowtype("rows") |> 
+                 matsbyname::setcoltype("cols"))
+  # Now retain zero matrix structure
+  expect_equal(to_triplet(m, list(r_indices, c_indices), retain_zero_structure = TRUE),
+               # Expect a zero-row data frame with correct row and column types
+               data.frame(               # r1 r2 r3 r1 r2 r3
+                                         # c1 c1 c1 c2 c2 c2
+                          i = as.integer(c(9, 7, 5, 9, 7, 5)),
+                          j = as.integer(c(3, 3, 3, 4, 4, 4)), 
+                          x = 0) |> 
+                 tibble::as_tibble() |> 
+                 matsbyname::setrowtype("rows") |> 
+                 matsbyname::setcoltype("cols"))
+})
+
+
 test_that("to_named_matrix() works as expected", {
   triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
                         j = as.integer(c(3, 3, 3, 4, 4, 4)), 
@@ -346,6 +413,23 @@ test_that("to_named_matrix() fails when neither integer triplet nor character tr
 })
 
 
+test_that("create_triplet() correctly retains zero structure", {
+  m <- matrix(c(0, 0, 0, 
+                0, 0, 0), nrow = 2, dimnames = list(c("r1", "r2"), 
+                                                    c("c1", "c2", "c3")))
+  expect_equal(matsbyname:::create_triplet(m),
+               data.frame(i = as.integer(0), j = as.integer(0), x = 3.1415926) |> 
+                 dplyr::filter(FALSE) |> 
+                 tibble::as_tibble())
+  expect_equal(matsbyname:::create_triplet(m, retain_zero_structure = TRUE),
+               tibble::tribble(~i, ~j, ~x, 
+                               1, 1, 0, 
+                               2, 1, 0, 
+                               1, 2, 0, 
+                               2, 2, 0, 
+                               1, 3, 0, 
+                               2, 3, 0))
+})
 
 
 

@@ -1828,6 +1828,3 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA,
                     .FUNdots = list(dimnames_val = dimnames, colname_val = colname),
                     rowcoltypes = "all")
 }
-
-
-

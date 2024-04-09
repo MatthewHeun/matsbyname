@@ -9,6 +9,7 @@
 to_triplet(
   a,
   index_map,
+  retain_zero_structure = FALSE,
   row_index_colname = "i",
   col_index_colname = "j",
   val_colname = "x",
@@ -34,6 +35,12 @@ For \code{\link[=to_named_matrix]{to_named_matrix()}}, a data frame or list of d
 \item{index_map}{A mapping between row and column names
 and row and column indices.
 See details.}
+
+\item{retain_zero_structure}{A boolean that tells whether to retain
+the structure of zero matrices when creating triplets.
+Default is \code{FALSE},
+meaning that a zero matrix will return a
+no-row data frame.}
 
 \item{row_index_colname, col_index_colname}{The names of row and column index columns in data frames.
 Defaults are "i" and "j", respectively.}
