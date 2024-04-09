@@ -38,9 +38,8 @@ See details.}
 
 \item{retain_zero_structure}{A boolean that tells whether to retain
 the structure of zero matrices when creating triplets.
-Default is \code{FALSE},
-meaning that a zero matrix will return a
-no-row data frame.}
+Default is \code{FALSE}.
+See details.}
 
 \item{row_index_colname, col_index_colname}{The names of row and column index columns in data frames.
 Defaults are "i" and "j", respectively.}
@@ -150,6 +149,12 @@ of an \code{index_map} data frame.
 If \code{a} is \code{NULL}, \code{NULL} is returned.
 If \code{a} is a list and any member of the list is \code{NULL},
 \code{NULL} is returned in that position.
+
+By default, \code{\link[=to_triplet]{to_triplet()}} will return
+a zero-row data frame when
+\code{a} is a zero matrix.
+Set \code{retain_zero_structure = TRUE}
+to return all entries in the zero matrix.
 }
 \examples{
 triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
