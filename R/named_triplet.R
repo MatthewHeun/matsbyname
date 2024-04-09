@@ -95,9 +95,8 @@
 #'          For [to_named_matrix()], a data frame or list of data frames in triplet form to be converted to named matrix form.
 #' @param retain_zero_structure A boolean that tells whether to retain 
 #'                              the structure of zero matrices when creating triplets.
-#'                              Default is `FALSE`, 
-#'                              meaning that a zero matrix will return a 
-#'                              no-row data frame.
+#'                              Default is `FALSE`. 
+#'                              See details.
 #' @param index_map A mapping between row and column names
 #'                  and row and column indices.
 #'                  See details.
