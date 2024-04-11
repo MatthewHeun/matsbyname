@@ -101,11 +101,13 @@ with row and column order not necessarily preserved.
 See examples.
 }
 \details{
-\code{index_map} must be
-an unnamed list of two data frames or
-a named list of two or more data frames.
+\code{index_map} must be one of the following:
 \itemize{
-\item If an unnamed list of exactly two data frames,
+\item A single data frame of two columns,
+with one an integer column and the other a character column.
+When a single data frame,
+it will be applied to both rows and columns.
+\item An unnamed list of exactly two data frames,
 each data frame must have only
 an integer column and a character column.
 The first data frame of \code{index_map}
@@ -115,8 +117,8 @@ and
 the second data frame of \code{index_map}
 is interpreted as the mapping
 between column names and column indices.
-\item If a named list of two or more data frames,
-the names of \code{index_map}
+\item A named list of two or more data frames,
+in which the names of \code{index_map}
 are interpreted as row and column types,
 with named data frames applied as the mapping for the
 associated row or column type.
