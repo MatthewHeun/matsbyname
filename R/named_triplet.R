@@ -363,10 +363,23 @@ to_named_matrix <- function(a,
 #' the index maps for rows (first data frame in the return list)
 #' and columns (second data frame in the return list).
 #' 
+#' `ind_maps` can be a single data frame, 
+#' in which case the single data frame will be applied
+#' to both rows and columns of `a_mat`.
+#' 
+#' `ind_maps` can also be a 2-item list, 
+#' in which case the first item is applied to rows and the 
+#' second item is applied to columns.
+#' 
+#' Finally, `ind_maps` can be a named list of length 2 or more,
+#' in which case the names are interpreted as row or column types.
+#' Names in the `ind_maps` list are matched to row and column types
+#' and applied as required.
+#' 
 #' This is a non-exported function meant only for internal use.
 #'
 #' @param a_mat A matrix for which index maps should be determined.
-#' @param ind_maps A list of two or more data frames
+#' @param ind_maps A single data frame or a list of two or more data frames
 #'                 of potential index maps.
 #'
 #' @return A list of two data frames. 
@@ -374,13 +387,24 @@ to_named_matrix <- function(a,
 #'         The second data frame is the index map for the columns of `a_mat`.
 get_row_col_index_maps <- function(a_mat, ind_maps) {
 
+  if (is.data.frame(ind_maps)) {
+    # We have only one data frame for the index map.
+    # Ensure that the structure is correct and return two copies
+    # of the index map, one for each margin of the matrix.
+    ind_maps <- structure_index_map(ind_maps)
+    return(list(ind_maps, ind_maps))
+  }
+  
   if (is.list(ind_maps) & is.null(names(ind_maps)) & length(ind_maps) == 2) {
     # In this case, ensure that the structure is correct for each 
     # index map and return the list of 2.
     return(list(structure_index_map(ind_maps[[1]]), 
                 structure_index_map(ind_maps[[2]])))
   }
+  
   if (is.list(ind_maps) & !is.null(names(ind_maps))) {
+    # For this case, match names of the items in ind_maps
+    # with row and column types.
     # Check for rowtype and coltype.
     rtype <- rowtype(a_mat)
     assertthat::assert_that(!is.null(rtype), 

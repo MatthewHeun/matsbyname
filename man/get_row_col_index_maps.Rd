@@ -9,7 +9,7 @@ get_row_col_index_maps(a_mat, ind_maps)
 \arguments{
 \item{a_mat}{A matrix for which index maps should be determined.}
 
-\item{ind_maps}{A list of two or more data frames
+\item{ind_maps}{A single data frame or a list of two or more data frames
 of potential index maps.}
 }
 \value{
@@ -24,5 +24,18 @@ the index maps for rows (first data frame in the return list)
 and columns (second data frame in the return list).
 }
 \details{
+\code{ind_maps} can be a single data frame,
+in which case the single data frame will be applied
+to both rows and columns of \code{a_mat}.
+
+\code{ind_maps} can also be a 2-item list,
+in which case the first item is applied to rows and the
+second item is applied to columns.
+
+Finally, \code{ind_maps} can be a named list of length 2 or more,
+in which case the names are interpreted as row or column types.
+Names in the \code{ind_maps} list are matched to row and column types
+and applied as required.
+
 This is a non-exported function meant only for internal use.
 }

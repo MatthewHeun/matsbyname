@@ -296,6 +296,23 @@ test_that("to_named_matrix() fails when only one index_map is supplied", {
 })
 
 
+test_that("to_named_matrx() works when a single data frame is supplied", {
+  triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
+                        j = as.integer(c(3, 3, 3, 4, 4, 4)), 
+                        x =            c(1, 2, 3, 4, 5, 6)) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  
+  indices <- data.frame(names = c(paste0("r", 1:101), paste0("c", 1:101)),
+                          indices = 1:202)
+  expect_equal(to_named_matrix(triplet, indices), 
+               matrix(c(3, 6, 
+                        2, 5, 
+                        1, 4), byrow = TRUE, nrow = 3, 
+                      dimnames = list(c("r5", "r7", "r9"), c("r3", "r4"))) |> 
+                 matsbyname::setrowtype("rows") |> matsbyname::setcoltype("cols"))
+})
+
+
 test_that("to_named_matrix() is reversible", {
   # Start with a triplet.
   triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
