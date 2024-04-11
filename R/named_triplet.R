@@ -164,9 +164,11 @@ to_triplet <- function(a,
     a_list <- FALSE
     a <- list(a)
   }  
-  assertthat::assert_that(is.list(index_map) & !is.data.frame(index_map), 
-                          msg = "index_map must be a list and not a data frame")
-  assertthat::assert_that(length(index_map) >= 2, msg = "index_map must have length of 2 or more")
+  assertthat::assert_that(is.list(index_map) | is.data.frame(index_map), 
+                          msg = "index_map must be a list or a single data frame")
+  if (is.list(index_map) & !is.data.frame(index_map)) {
+    assertthat::assert_that(length(index_map) >= 2, msg = "index_map must have length of 2 or more when it's a list and not a data frame")
+  }
   out <- lapply(a, function(a_mat) {
     if (is.null(a_mat)) {
       return(NULL)

@@ -23,7 +23,7 @@ test_that("to_triplet() works as expected", {
                               5, 4, 1) |> 
     setrowtype("rows") |> setcoltype("cols")
   # This should error, because we need a list of 2 or more
-  expect_error(to_triplet(m, indices), regexp = "index_map must be a list and not a data frame")
+  expect_error(to_triplet(m, indices), regexp = "All indices and names must be unique in to_triplet")
   
   # Try with 2 unnamed data frames
   indices2 <- list(r_indices, c_indices)
