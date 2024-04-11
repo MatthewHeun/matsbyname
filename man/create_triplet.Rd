@@ -18,6 +18,8 @@ create_triplet(
 \item{retain_zero_structure}{A boolean that tells whether
 to retain the structure of zero matrices.
 Default is \code{FALSE}.}
+
+\item{i_col, j_col, x_col}{String names of i, j, and x columns.}
 }
 \value{
 A \code{tibble} triplet representation of \code{m}.
@@ -35,5 +37,5 @@ a zero-row data frame is returned by default
 (\code{retain_zero_structure = FALSE}).
 But when \code{retain_zero_structure} is \code{TRUE},
 zero entries are reported for all rows and columns,
-thereby presering the structure of the matrix.
+thereby preserving the structure of the matrix.
 }

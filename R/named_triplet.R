@@ -469,12 +469,13 @@ structure_index_map <- function(index_map) {
 #' (`retain_zero_structure = FALSE`).
 #' But when `retain_zero_structure` is `TRUE`, 
 #' zero entries are reported for all rows and columns,
-#' thereby presering the structure of the matrix.
+#' thereby preserving the structure of the matrix.
 #'
 #' @param m A `matrix` or `Matrix` to be converted to triplet form.
 #' @param retain_zero_structure A boolean that tells whether
 #'                              to retain the structure of zero matrices.
 #'                              Default is `FALSE`.
+#' @param i_col,j_col,x_col String names of i, j, and x columns.
 #'
 #' @return A `tibble` triplet representation of `m`.
 create_triplet <- function(m, 
