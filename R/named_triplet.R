@@ -302,9 +302,7 @@ to_named_matrix <- function(a,
                                   x = a_triplet[[val_colname]], 
                                   dims = c(nrow(row_col_index_maps[[1]]),
                                            nrow(row_col_index_maps[[2]])),
-                                  dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]])) |> 
-        clean_byname() |> 
-        sort_rows_cols()
+                                  dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]]))
     } else if (all(is.character(a_triplet[[row_index_colname]])) & 
                all(is.character(a_triplet[[col_index_colname]]))) {
       # All integers have already been converted to names
@@ -336,14 +334,23 @@ to_named_matrix <- function(a,
                                   x = integer_df[[val_colname]], 
                                   dims = c(nrow(rowname_df),
                                            nrow(colname_df)),
-                                  dimnames = list(rowname_df[[.rnames]], colname_df[[.cnames]])) |> 
-        clean_byname() |> 
-        sort_rows_cols()
+                                  dimnames = list(rowname_df[[.rnames]], colname_df[[.cnames]])) 
     } else {
       stop("`row_index_colname` and `col_index_colname` must both be all integer or all character in to_named_matrix()")
     }
+    
+    if (!iszero_byname(out)) {
+      # If this is NOT a zero matrix, get rid of zero rows and columns.
+      # We don't want to clean if it is a zero matrix, 
+      # because information will be lost.
+      out <- out |> 
+        clean_byname()
+    }
+    # Sort rows and columns as a courtesy to callers 
+    out <- out |> 
+      sort_rows_cols()
 
-    # Convert to matrix, if needed
+    # Convert to matrix class, if needed
     if (matrix_class == "matrix") {
       out <- as.matrix(out)
     }

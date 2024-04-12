@@ -452,15 +452,24 @@ test_that("create_triplet() correctly retains zero structure", {
 test_that("to_named_matrx() returns zero rows and column when requested", {
   zero_triplet <- data.frame(i = as.integer(c(1, 2, 1, 2, 1, 2)), 
                              j = as.integer(c(1, 1, 2, 2, 3, 3)), 
-                             x = c(0, 0, 0, 0, 0, 0))
+                             x = c(0, 0, 0, 0, 0, 0)) |> 
+    setrowtype("rows") |> setcoltype("cols")
   rindices <- data.frame(i = as.integer(c(1, 2)), 
                          rownames = c("r10", "r20"))
   cindices <- data.frame(j = as.integer(c(1, 2, 3)), 
                          colnames = c("c1", "c2", "c3"))
   index_map <- list(rindices, cindices)
-  to_named_matrix(zero_triplet, 
-                  index_map = index_map, 
-                  matrix_class = "Matrix")
+  expected <- matrix(c(0, 0, 0, 
+                       0, 0, 0), byrow = TRUE, 
+                     nrow = 2, ncol = 3,
+                     dimnames = list(c("r10", "r20"), c("c1", "c2", "c3"))) |> 
+    Matrix::Matrix() |> 
+    setrowtype("rows") |> setcoltype("cols")
+  
+  matsbyname:::equal_matrix_or_Matrix(to_named_matrix(zero_triplet, 
+                                                      index_map = index_map, 
+                                                      matrix_class = "Matrix"), 
+                                      expected)
   
   # Try again with row and column names already characters
   zero_triplet_char <- data.frame(i = c("r10", "r20", "r10", "r20", "r10", "r20"), 
