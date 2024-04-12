@@ -287,7 +287,7 @@ to_named_matrix <- function(a,
   }
 
   out <- lapply(a, function(a_triplet) {
-    # We should have one data frame here.
+    # a_triplet should be a single data frame here.
     # Ensure that correct columns are present
     assertthat::assert_that(row_index_colname %in% colnames(a_triplet), msg = paste0("'", row_index_colname, "' not found in column names of a_triplet"))
     assertthat::assert_that(col_index_colname %in% colnames(a_triplet), msg = paste0("'", col_index_colname, "' not found in column names of a_triplet"))

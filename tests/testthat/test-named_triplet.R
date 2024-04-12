@@ -282,7 +282,7 @@ test_that("to_named_matrix() works as expected", {
 })
 
 
-test_that("to_named_matrix() fails when only one index_map is supplied", {
+test_that("to_named_matrix() fails when only one index_map is supplied in a list", {
   triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
                         j = as.integer(c(3, 3, 3, 4, 4, 4)), 
                         x = c(1, 2, 3, 4, 5, 6)) |> 
@@ -449,6 +449,27 @@ test_that("create_triplet() correctly retains zero structure", {
 })
 
 
+test_that("to_named_matrx() returns zero rows and column when requested", {
+  zero_triplet <- data.frame(i = as.integer(c(1, 2, 1, 2, 1, 2)), 
+                             j = as.integer(c(1, 1, 2, 2, 3, 3)), 
+                             x = c(0, 0, 0, 0, 0, 0))
+  rindices <- data.frame(i = as.integer(c(1, 2)), 
+                         rownames = c("r10", "r20"))
+  cindices <- data.frame(j = as.integer(c(1, 2, 3)), 
+                         colnames = c("c1", "c2", "c3"))
+  index_map <- list(rindices, cindices)
+  to_named_matrix(zero_triplet, 
+                  index_map = index_map, 
+                  matrix_class = "Matrix")
+  
+  # Try again with row and column names already characters
+  zero_triplet_char <- data.frame(i = c("r10", "r20", "r10", "r20", "r10", "r20"), 
+                                  j = c("c1", "c1", "c2", "c2", "c3", "c3"), 
+                                  x = c(0, 0, 0, 0, 0, 0))
+  to_named_matrix(zero_triplet_char,
+                  index_map = index_map, 
+                  matrix_class = "Matrix")
+})
 
 
 
