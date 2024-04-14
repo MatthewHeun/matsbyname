@@ -449,7 +449,7 @@ test_that("create_triplet() correctly retains zero structure", {
 })
 
 
-test_that("to_named_matrx() returns zero rows and column when requested", {
+test_that("to_named_matrx() returns zero rows and columns when requested", {
   zero_triplet <- data.frame(i = as.integer(c(1, 2, 1, 2, 1, 2)), 
                              j = as.integer(c(1, 1, 2, 2, 3, 3)), 
                              x = c(0, 0, 0, 0, 0, 0)) |> 
@@ -475,7 +475,8 @@ test_that("to_named_matrx() returns zero rows and column when requested", {
                                   x = c(0, 0, 0, 0, 0, 0))
   res_char <- to_named_matrix(zero_triplet_char,
                               index_map = index_map, 
-                              matrix_class = "Matrix")
+                              matrix_class = "Matrix") |> 
+    setrowtype("rows") |> setcoltype("cols")
   matsbyname:::expect_equal_matrix_or_Matrix(res_char, expected)
 })
 
