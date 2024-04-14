@@ -463,21 +463,20 @@ test_that("to_named_matrx() returns zero rows and column when requested", {
                        0, 0, 0), byrow = TRUE, 
                      nrow = 2, ncol = 3,
                      dimnames = list(c("r10", "r20"), c("c1", "c2", "c3"))) |> 
-    Matrix::Matrix() |> 
     setrowtype("rows") |> setcoltype("cols")
-  
-  matsbyname:::equal_matrix_or_Matrix(to_named_matrix(zero_triplet, 
-                                                      index_map = index_map, 
-                                                      matrix_class = "Matrix"), 
-                                      expected)
+  res <- to_named_matrix(zero_triplet, 
+                         index_map = index_map, 
+                         matrix_class = "Matrix")
+  matsbyname:::expect_equal_matrix_or_Matrix(res, expected)
   
   # Try again with row and column names already characters
   zero_triplet_char <- data.frame(i = c("r10", "r20", "r10", "r20", "r10", "r20"), 
                                   j = c("c1", "c1", "c2", "c2", "c3", "c3"), 
                                   x = c(0, 0, 0, 0, 0, 0))
-  to_named_matrix(zero_triplet_char,
-                  index_map = index_map, 
-                  matrix_class = "Matrix")
+  res_char <- to_named_matrix(zero_triplet_char,
+                              index_map = index_map, 
+                              matrix_class = "Matrix")
+  matsbyname:::expect_equal_matrix_or_Matrix(res_char, expected)
 })
 
 
