@@ -9,6 +9,7 @@
 to_triplet(
   a,
   index_map,
+  retain_zero_structure = FALSE,
   row_index_colname = "i",
   col_index_colname = "j",
   val_colname = "x",
@@ -33,6 +34,11 @@ For \code{\link[=to_named_matrix]{to_named_matrix()}}, a data frame or list of d
 
 \item{index_map}{A mapping between row and column names
 and row and column indices.
+See details.}
+
+\item{retain_zero_structure}{A boolean that tells whether to retain
+the structure of zero matrices when creating triplets.
+Default is \code{FALSE}.
 See details.}
 
 \item{row_index_colname, col_index_colname}{The names of row and column index columns in data frames.
@@ -95,11 +101,13 @@ with row and column order not necessarily preserved.
 See examples.
 }
 \details{
-\code{index_map} must be
-an unnamed list of two data frames or
-a named list of two or more data frames.
+\code{index_map} must be one of the following:
 \itemize{
-\item If an unnamed list of exactly two data frames,
+\item A single data frame of two columns,
+with one an integer column and the other a character column.
+When a single data frame,
+it will be applied to both rows and columns.
+\item An unnamed list of exactly two data frames,
 each data frame must have only
 an integer column and a character column.
 The first data frame of \code{index_map}
@@ -109,8 +117,8 @@ and
 the second data frame of \code{index_map}
 is interpreted as the mapping
 between column names and column indices.
-\item If a named list of two or more data frames,
-the names of \code{index_map}
+\item A named list of two or more data frames,
+in which the names of \code{index_map}
 are interpreted as row and column types,
 with named data frames applied as the mapping for the
 associated row or column type.
@@ -143,6 +151,12 @@ of an \code{index_map} data frame.
 If \code{a} is \code{NULL}, \code{NULL} is returned.
 If \code{a} is a list and any member of the list is \code{NULL},
 \code{NULL} is returned in that position.
+
+By default, \code{\link[=to_triplet]{to_triplet()}} will return
+a zero-row data frame when
+\code{a} is a zero matrix.
+Set \code{retain_zero_structure = TRUE}
+to return all entries in the zero matrix.
 }
 \examples{
 triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 

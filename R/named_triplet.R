@@ -38,10 +38,12 @@
 #' with row and column order not necessarily preserved.
 #' See examples.
 #' 
-#' `index_map` must be 
-#' an unnamed list of two data frames or 
-#' a named list of two or more data frames.
-#' * If an unnamed list of exactly two data frames, 
+#' `index_map` must be one of the following:
+#' * A single data frame of two columns, 
+#'   with one an integer column and the other a character column.
+#'   When a single data frame, 
+#'   it will be applied to both rows and columns.
+#' * An unnamed list of exactly two data frames, 
 #'   each data frame must have only 
 #'   an integer column and a character column.
 #'   The first data frame of `index_map` 
@@ -51,8 +53,8 @@
 #'   the second data frame of `index_map`
 #'   is interpreted as the mapping 
 #'   between column names and column indices.
-#' * If a named list of two or more data frames, 
-#'   the names of `index_map`
+#' * A named list of two or more data frames, 
+#'   in which the names of `index_map`
 #'   are interpreted as row and column types, 
 #'   with named data frames applied as the mapping for the
 #'   associated row or column type. 
@@ -84,9 +86,19 @@
 #' If `a` is `NULL`, `NULL` is returned.
 #' If `a` is a list and any member of the list is `NULL`, 
 #' `NULL` is returned in that position.
+#' 
+#' By default, [to_triplet()] will return
+#' a zero-row data frame when 
+#' `a` is a zero matrix.
+#' Set `retain_zero_structure = TRUE` 
+#' to return all entries in the zero matrix.
 #'
 #' @param a For [to_triplet()], a matrix or list of matrices to be converted to triplet form.
 #'          For [to_named_matrix()], a data frame or list of data frames in triplet form to be converted to named matrix form.
+#' @param retain_zero_structure A boolean that tells whether to retain 
+#'                              the structure of zero matrices when creating triplets.
+#'                              Default is `FALSE`. 
+#'                              See details.
 #' @param index_map A mapping between row and column names
 #'                  and row and column indices.
 #'                  See details.
@@ -141,6 +153,7 @@
 #' @export
 to_triplet <- function(a, 
                        index_map, 
+                       retain_zero_structure = FALSE,
                        row_index_colname = "i", 
                        col_index_colname = "j", 
                        val_colname = "x", 
@@ -151,9 +164,11 @@ to_triplet <- function(a,
     a_list <- FALSE
     a <- list(a)
   }  
-  assertthat::assert_that(is.list(index_map) & !is.data.frame(index_map), 
-                          msg = "index_map must be a list and not a data frame")
-  assertthat::assert_that(length(index_map) >= 2, msg = "index_map must have length of 2 or more")
+  assertthat::assert_that(is.list(index_map) | is.data.frame(index_map), 
+                          msg = "index_map must be a list or a single data frame")
+  if (is.list(index_map) & !is.data.frame(index_map)) {
+    assertthat::assert_that(length(index_map) >= 2, msg = "index_map must have length of 2 or more when it's a list and not a data frame")
+  }
   out <- lapply(a, function(a_mat) {
     if (is.null(a_mat)) {
       return(NULL)
@@ -186,34 +201,65 @@ to_triplet <- function(a,
     orig_col_indices_map <- tibble::as_tibble(dnames[[2]]) |> 
       magrittr::set_names(colnames_colname) |> 
       tibble::rowid_to_column(var = col_index_colname)
-    single_result <- a_mat |> 
-      Matrix::Matrix(sparse = TRUE) |> 
-      Matrix::mat2triplet() |> 
-      tibble::as_tibble() |> 
-      # Join with rownames and colnames from a_mat
+    rows_matched <- a_mat |> 
+      # Matrix::Matrix(sparse = TRUE) |> 
+      # Matrix::mat2triplet() |> 
+      # tibble::as_tibble() |> 
+      create_triplet(retain_zero_structure = retain_zero_structure) |> 
+      # Join with rownames from a_mat
       dplyr::left_join(orig_row_indices_map, by = row_index_colname) |> 
       # Eliminate the i column, because it is the original i.
       dplyr::mutate("{row_index_colname}" := NULL) |> 
+      # Add the row indices, which are found in the first map
+      dplyr::left_join(row_col_index_maps[[1]], 
+                       by = dplyr::join_by({{rownames_colname}} == {{row_names_colname}}))
+    # Check for any errors before going on
+    if (any(is.na(rows_matched[[row_indices_colname]]))) {
+      # Create a helpful error message
+      unmatched_rownames <- rows_matched |> 
+        dplyr::filter(is.na(.data[[row_indices_colname]])) |> 
+        magrittr::extract2(rownames_colname) |> 
+        unique()
+      err_msg <- paste0("Unmatched row names in to_triplet():\n",
+                        paste0(unmatched_rownames, collapse = "\n"), 
+                        "\nDo you have a typo? Or should names be added to index_map?")
+      stop(err_msg)
+    }
+    # Complete the work on rows
+    rows_matched_completed <- rows_matched |> 
+      dplyr::rename("{row_index_colname}" := {{row_indices_colname}}) |> 
+      dplyr::mutate("{rownames_colname}" := NULL)
+    
+    cols_matched <- rows_matched_completed |> 
+      # Join with colnames from a_mat
       dplyr::left_join(orig_col_indices_map, by = col_index_colname) |> 
       # Eliminate the j column, because it is the original j.
       dplyr::mutate("{col_index_colname}" := NULL) |> 
-      # Add the row indices, which are found in the first map
-      dplyr::left_join(row_col_index_maps[[1]], 
-                       by = dplyr::join_by({{rownames_colname}} == {{row_names_colname}})) |> 
-      dplyr::rename("{row_index_colname}" := {{row_indices_colname}}) |> 
-      dplyr::mutate("{rownames_colname}" := NULL) |> 
       # Add the column indices, which are found in the second map
       dplyr::left_join(row_col_index_maps[[2]], 
-                       by = dplyr::join_by({{colnames_colname}} == {{col_names_colname}})) |> 
+                       by = dplyr::join_by({{colnames_colname}} == {{col_names_colname}}))
+    # Check for any errors before going on
+    if (any(is.na(cols_matched[[col_indices_colname]]))) {
+      # Create a helpful error message
+      unmatched_colnames <- cols_matched |> 
+        dplyr::filter(is.na(.data[[col_indices_colname]])) |> 
+        magrittr::extract2(colnames_colname) |> 
+        unique()
+      err_msg <- paste0("Unmatched column names in to_triplet():\n",
+                        paste0(unmatched_colnames, collapse = "\n"), 
+                        "\nDo you have a typo? Or should names be added to index_map?")
+      stop(err_msg)
+    }
+    # Complete the work on cols
+    cols_matched_completed <- cols_matched |> 
       dplyr::rename("{col_index_colname}" := {{col_indices_colname}}) |> 
-      dplyr::mutate("{colnames_colname}" := NULL) |> 
+      dplyr::mutate("{colnames_colname}" := NULL)
+    
+    # Finish everything off
+    cols_matched_completed |> 
       dplyr::relocate(dplyr::all_of(val_colname), .after = dplyr::everything()) |> 
       setrowtype(rowtype(a_mat)) |> 
       setcoltype(coltype(a_mat))
-    # Verify that all indices have been set and no NA values exist
-    assertthat::assert_that(!any(is.na(single_result[[row_index_colname]])))
-    assertthat::assert_that(!any(is.na(single_result[[col_index_colname]])))
-    return(single_result)
   })
   if (!a_list) {
     return(out[[1]])
@@ -241,7 +287,7 @@ to_named_matrix <- function(a,
   }
 
   out <- lapply(a, function(a_triplet) {
-    # We should have one data frame here.
+    # a_triplet should be a single data frame here.
     # Ensure that correct columns are present
     assertthat::assert_that(row_index_colname %in% colnames(a_triplet), msg = paste0("'", row_index_colname, "' not found in column names of a_triplet"))
     assertthat::assert_that(col_index_colname %in% colnames(a_triplet), msg = paste0("'", col_index_colname, "' not found in column names of a_triplet"))
@@ -256,9 +302,7 @@ to_named_matrix <- function(a,
                                   x = a_triplet[[val_colname]], 
                                   dims = c(nrow(row_col_index_maps[[1]]),
                                            nrow(row_col_index_maps[[2]])),
-                                  dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]])) |> 
-        clean_byname() |> 
-        sort_rows_cols()
+                                  dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]]))
     } else if (all(is.character(a_triplet[[row_index_colname]])) & 
                all(is.character(a_triplet[[col_index_colname]]))) {
       # All integers have already been converted to names
@@ -290,14 +334,23 @@ to_named_matrix <- function(a,
                                   x = integer_df[[val_colname]], 
                                   dims = c(nrow(rowname_df),
                                            nrow(colname_df)),
-                                  dimnames = list(rowname_df[[.rnames]], colname_df[[.cnames]])) |> 
-        clean_byname() |> 
-        sort_rows_cols()
+                                  dimnames = list(rowname_df[[.rnames]], colname_df[[.cnames]])) 
     } else {
       stop("`row_index_colname` and `col_index_colname` must both be all integer or all character in to_named_matrix()")
     }
+    
+    if (!iszero_byname(out)) {
+      # If this is NOT a zero matrix, get rid of zero rows and columns.
+      # We don't want to clean if it is a zero matrix, 
+      # because information will be lost.
+      out <- out |> 
+        clean_byname()
+    }
+    # Sort rows and columns as a courtesy to callers 
+    out <- out |> 
+      sort_rows_cols()
 
-    # Convert to matrix, if needed
+    # Convert to matrix class, if needed
     if (matrix_class == "matrix") {
       out <- as.matrix(out)
     }
@@ -321,10 +374,23 @@ to_named_matrix <- function(a,
 #' the index maps for rows (first data frame in the return list)
 #' and columns (second data frame in the return list).
 #' 
+#' `ind_maps` can be a single data frame, 
+#' in which case the single data frame will be applied
+#' to both rows and columns of `a_mat`.
+#' 
+#' `ind_maps` can also be a 2-item list, 
+#' in which case the first item is applied to rows and the 
+#' second item is applied to columns.
+#' 
+#' Finally, `ind_maps` can be a named list of length 2 or more,
+#' in which case the names are interpreted as row or column types.
+#' Names in the `ind_maps` list are matched to row and column types
+#' and applied as required.
+#' 
 #' This is a non-exported function meant only for internal use.
 #'
 #' @param a_mat A matrix for which index maps should be determined.
-#' @param ind_maps A list of two or more data frames
+#' @param ind_maps A single data frame or a list of two or more data frames
 #'                 of potential index maps.
 #'
 #' @return A list of two data frames. 
@@ -332,13 +398,24 @@ to_named_matrix <- function(a,
 #'         The second data frame is the index map for the columns of `a_mat`.
 get_row_col_index_maps <- function(a_mat, ind_maps) {
 
+  if (is.data.frame(ind_maps)) {
+    # We have only one data frame for the index map.
+    # Ensure that the structure is correct and return two copies
+    # of the index map, one for each margin of the matrix.
+    ind_maps <- structure_index_map(ind_maps)
+    return(list(ind_maps, ind_maps))
+  }
+  
   if (is.list(ind_maps) & is.null(names(ind_maps)) & length(ind_maps) == 2) {
     # In this case, ensure that the structure is correct for each 
     # index map and return the list of 2.
     return(list(structure_index_map(ind_maps[[1]]), 
                 structure_index_map(ind_maps[[2]])))
   }
+  
   if (is.list(ind_maps) & !is.null(names(ind_maps))) {
+    # For this case, match names of the items in ind_maps
+    # with row and column types.
     # Check for rowtype and coltype.
     rtype <- rowtype(a_mat)
     assertthat::assert_that(!is.null(rtype), 
@@ -385,4 +462,46 @@ structure_index_map <- function(index_map) {
   assertthat::assert_that(all(is.integer(index_map[[1]])))
   assertthat::assert_that(all(is.character(index_map[[2]])))
   return(index_map)
+}
+
+
+#' Create a triplet from a matrix
+#' 
+#' Creates a data frame triplet with columns
+#' `i_col`, `j_col`, and `x_col` from matrix `m`.
+#' Zero entries are not reported.
+#' `i` and `j` integers are directly from `m`
+#' and not referenced to any global set of `i` and `j` values.
+#' 
+#' When `m` is a zero matrix, 
+#' a zero-row data frame is returned by default
+#' (`retain_zero_structure = FALSE`).
+#' But when `retain_zero_structure` is `TRUE`, 
+#' zero entries are reported for all rows and columns,
+#' thereby preserving the structure of the matrix.
+#'
+#' @param m A `matrix` or `Matrix` to be converted to triplet form.
+#' @param retain_zero_structure A boolean that tells whether
+#'                              to retain the structure of zero matrices.
+#'                              Default is `FALSE`.
+#' @param i_col,j_col,x_col String names of i, j, and x columns.
+#'
+#' @return A `tibble` triplet representation of `m`.
+create_triplet <- function(m, 
+                           retain_zero_structure = FALSE, 
+                           i_col = "i", j_col = "j", x_col = "x") {
+  out <- m |> 
+    Matrix::Matrix(sparse = TRUE) |> 
+    Matrix::mat2triplet() |> 
+    tibble::as_tibble()
+  if (retain_zero_structure & nrow(out) == 0) {
+    # Create an outgoing data frame that includes all the 0 values
+    out <- expand.grid(1:dim(m)[[1]], 1:dim(m)[[2]], KEEP.OUT.ATTRS = FALSE) |> 
+      tibble::as_tibble() |> 
+      magrittr::set_names(c(i_col, j_col)) |> 
+      dplyr::mutate(
+        "{x_col}" := 0
+      )
+  }
+  return(out)
 }
