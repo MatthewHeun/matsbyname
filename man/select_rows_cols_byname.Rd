@@ -81,10 +81,11 @@ select_rows_cols_byname(m,
                         margin = 2, # for columns
                         retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), 
                         pattern_type = "exact"))
-select_cols_byname(m, 
-                   margin = 2, 
-                   remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), 
-                   pattern_type = "exact"))
+select_rows_cols_byname(m, 
+                        margin = 2, 
+                        remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), 
+                        pattern_type = "exact"))
 # Also works for lists and data frames
-select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
+select_rows_cols_byname(list(m,m), margin = 2, 
+                        retain_pattern = "^p1$|^p4$")
 }

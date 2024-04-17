@@ -1155,18 +1155,19 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^",
 #' @export
 #'
 #' @examples
-#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
-#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) |> 
+#'   setrowtype("Industries") |> setcoltype("Commodities")
 #' select_rows_cols_byname(m, 
 #'                         margin = 2, # for columns
 #'                         retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), 
 #'                         pattern_type = "exact"))
-#' select_cols_byname(m, 
-#'                    margin = 2, 
-#'                    remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), 
-#'                    pattern_type = "exact"))
+#' select_rows_cols_byname(m, 
+#'                         margin = 2, 
+#'                         remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), 
+#'                         pattern_type = "exact"))
 #' # Also works for lists and data frames
-#' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
+#' select_rows_cols_byname(list(m,m), margin = 2, 
+#'                         retain_pattern = "^p1$|^p4$")
 select_rows_cols_byname <- function(a, margin = c(1, 2), 
                                     retain_pattern = "$^", remove_pattern = "$^", 
                                     ignore.case = FALSE, perl = FALSE,
