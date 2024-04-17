@@ -18,7 +18,7 @@ select_rows_cols_byname(
 \arguments{
 \item{a}{A matrix or a list of matrices.}
 
-\item{margin}{\code{1} for rows, \code{2} for columns, or \code{c(1, 2)} for both.
+\item{margin}{\code{1} for rows, \code{2} for columns, or \code{c(1, 2)} (the default) for both.
 Can be a string or vector of strings that indicate
 row and/or column types.}
 

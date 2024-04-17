@@ -1141,7 +1141,7 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^",
 #' Note that if all columns are removed from `a`, `NULL` is returned.
 #' 
 #' @param a A matrix or a list of matrices.
-#' @param margin `1` for rows, `2` for columns, or `c(1, 2)` for both.
+#' @param margin `1` for rows, `2` for columns, or `c(1, 2)` (the default) for both.
 #'               Can be a string or vector of strings that indicate
 #'               row and/or column types.
 #' @param retain_pattern An extended regex or list of extended regular expressions that specifies which columns of `m` to retain.
@@ -1171,8 +1171,6 @@ select_rows_cols_byname <- function(a, margin = c(1, 2),
                                     retain_pattern = "$^", remove_pattern = "$^", 
                                     ignore.case = FALSE, perl = FALSE,
                                     fixed = FALSE, useBytes = FALSE) {
-  
-  margin <- match.arg(margin, several.ok = TRUE)
   
   if (is.null(a)) {
     return(NULL)
