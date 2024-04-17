@@ -3,10 +3,13 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+
 Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
 which always resolves to the latest release.
 
 
+* New function `select_rows_cols_byname()` includes `margin` argument
+  that de-references row and column types, as needed.
 * New functions `to_triplet()` and `to_named_matrix()`
   convert between named matrix and triplet forms 
   (both integer triplet and character triplet) 
@@ -17,7 +20,7 @@ which always resolves to the latest release.
   data frame resulted in the attribute set on each column 
   of the data frame.
 * New tests for new features.
-    - Now up to 2136 tests, all passing.
+    - Now up to 2142 tests, all passing.
     - Test coverage remains at 100%.
 
 
