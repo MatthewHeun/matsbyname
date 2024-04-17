@@ -915,14 +915,15 @@ coltype <- function(a) {
 #'   \item{"Electricity|Oil": row names that CONTAIN "Electricity" or CONTAIN "Oil" anywhere within them.}
 #' }
 #'
-#' Given a list of row names, a pattern can be constructed easily using `RCLabels::make_or_pattern()`.
-#' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escapeRegex()`.
+#' Given a list of column names, a pattern can be constructed easily using 
+#' [RCLabels::make_or_pattern()].
+#' [RCLabels::make_or_pattern()] escapes regex strings using [Hmisc::escapeRegex()].
 #' This function assumes that `retain_pattern` and `remove_pattern` have already been
 #' suitably escaped.
 #' 
 #' If the row or column labels contain "\[" or "\]", 
 #' care should be taken to escape those characters.
-#' `Hmisc::escapeRegex()` is helpful in such situations.
+#' [Hmisc::escapeRegex()] is helpful in such situations.
 #' 
 #' Note that if all rows are removed from `a`, `NULL` is returned.
 #'
@@ -1042,9 +1043,9 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^",
 #'   \item{"Electricity|Oil": column names that CONTAIN "Electricity" or "Oil" anywhere within them.}
 #' }
 #'
-#' Given a list of column names, a pattern can be constructed easily using the `make_pattern` function.
-#' 
-#' `RCLabels::make_or_pattern()` escapes regex strings using `Hmisc::escaprRegex()`.
+#' Given a list of column names, a pattern can be constructed easily using 
+#' [RCLabels::make_or_pattern()].
+#' [RCLabels::make_or_pattern()] escapes regex strings using [Hmisc::escapeRegex()].
 #' This function assumes that `retain_pattern` and `remove_pattern` have already been
 #' suitably escaped.
 #' 
@@ -1053,7 +1054,7 @@ select_rows_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^",
 #' 
 #' If the row or column labels contain "\[" or "\]", 
 #' care should be taken to escape those characters.
-#' `Hmisc::escapeRegex()` is helpful in such situations.
+#' [Hmisc::escapeRegex()] is helpful in such situations.
 #' 
 #' Note that if all columns are removed from `a`, `NULL` is returned.
 #' 
@@ -1095,6 +1096,107 @@ select_cols_byname <- function(a, retain_pattern = "$^", remove_pattern = "$^",
   }
   out %>% 
     transpose_byname()
+}
+
+
+#' Select (or deselect) rows or columns
+#' 
+#' Arguments indicate which columns are to be retained and which are to be removed
+#' by routing to [select_rows_byname()] or [select_cols_byname()]
+#' based on the value of `margin`. 
+#' `margin` can be a string or vector of strings that are matched
+#' to row and column types.
+#'
+#' If `a` is `NULL`, `NULL` is returned.
+#' 
+#' For maximum flexibility, arguments can be extended regex patterns
+#' that are matched against row or column names.
+#' If no row or column (depending on `margin`) 
+#' names of `a` match the `retain_pattern`, `NULL` is returned.
+#' If no row or column (depending on `margin`) 
+#' names of `a` match the `remove_pattern`, `a` is returned.
+#'
+#' Retaining takes precedence over removing, always.
+#'
+#' Some typical patterns are:
+#' \itemize{
+#'   \item{"^Electricity$|^Oil$": row or column names that are EXACTLY "Electricity" or "Oil".}
+#'   \item{"^Electricity|^Oil": row or column names that START WITH "Electricity" or "Oil".}
+#'   \item{"Electricity|Oil": row or column names that CONTAIN "Electricity" or "Oil" anywhere within them.}
+#' }
+#'
+#' If the row or column labels contain "\[" or "\]", 
+#' care should be taken to escape those characters.
+#' [Hmisc::escapeRegex()] is helpful in such situations.
+#' This function assumes that `retain_pattern` and `remove_pattern` have already been
+#' suitably escaped.
+#' 
+#' Given a list of row or column names, a pattern can be constructed easily using 
+#' [RCLabels::make_or_pattern()].
+#' `RCLabels::make_or_pattern()` escapes regex strings using [Hmisc::escapeRegex()].
+#' 
+#' Note that the default `retain_pattern` and `remove_pattern` ("$^") 
+#' retain nothing and remove nothing.
+#' 
+#' Note that if all columns are removed from `a`, `NULL` is returned.
+#' 
+#' @param a A matrix or a list of matrices.
+#' @param margin `1` for rows, `2` for columns, or `c(1, 2)` for both.
+#'               Can be a string or vector of strings that indicate
+#'               row and/or column types.
+#' @param retain_pattern An extended regex or list of extended regular expressions that specifies which columns of `m` to retain.
+#'                       Default pattern ("$^") retains nothing.
+#' @param remove_pattern An extended regex or list of extended regular expressions that specifies which columns of `m` to remove.
+#'                       Default pattern ("$^") removes nothing.
+#' @param ignore.case,perl,fixed,useBytes Arguments passed to `grep()`.
+#'
+#' @return A matrix that is a subset of `a` with columns selected by `retain_pattern` and `remove_pattern`.
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) %>%
+#'   setrowtype("Industries") %>% setcoltype("Commodities")
+#' select_rows_cols_byname(m, 
+#'                         margin = 2, # for columns
+#'                         retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), 
+#'                         pattern_type = "exact"))
+#' select_cols_byname(m, 
+#'                    margin = 2, 
+#'                    remove_pattern = RCLabels::make_or_pattern(c("p1", "p3"), 
+#'                    pattern_type = "exact"))
+#' # Also works for lists and data frames
+#' select_cols_byname(list(m,m), retain_pattern = "^p1$|^p4$")
+select_rows_cols_byname <- function(a, margin = c(1, 2), 
+                                    retain_pattern = "$^", remove_pattern = "$^", 
+                                    ignore.case = FALSE, perl = FALSE,
+                                    fixed = FALSE, useBytes = FALSE) {
+  
+  margin <- match.arg(margin, several.ok = TRUE)
+  
+  if (is.null(a)) {
+    return(NULL)
+  }
+  
+  select_func <- function(a_mat, margin, retain_pattern, remove_pattern) {
+    margin <- margin_from_types_byname(a_mat, types = margin)
+    out <- a_mat
+    if (1 %in% margin) {
+      out <- out |> 
+        select_rows_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern)
+    }
+    if (2 %in% margin) {
+      out <- out |> 
+        select_cols_byname(retain_pattern = retain_pattern, remove_pattern = remove_pattern)
+    }
+    return(out)
+  }
+  
+  unaryapply_byname(select_func, a = a,
+                    .FUNdots = list(margin = margin, 
+                                    retain_pattern = retain_pattern, 
+                                    remove_pattern = remove_pattern), 
+                    rowcoltypes = "none")
 }
 
 

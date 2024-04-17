@@ -51,14 +51,15 @@ Some typical patterns are:
 \item{"Electricity|Oil": row names that CONTAIN "Electricity" or CONTAIN "Oil" anywhere within them.}
 }
 
-Given a list of row names, a pattern can be constructed easily using \code{RCLabels::make_or_pattern()}.
-\code{RCLabels::make_or_pattern()} escapes regex strings using \code{Hmisc::escapeRegex()}.
+Given a list of column names, a pattern can be constructed easily using
+\code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}}.
+\code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}} escapes regex strings using \code{\link[Hmisc:escapeRegex]{Hmisc::escapeRegex()}}.
 This function assumes that \code{retain_pattern} and \code{remove_pattern} have already been
 suitably escaped.
 
 If the row or column labels contain "[" or "]",
 care should be taken to escape those characters.
-\code{Hmisc::escapeRegex()} is helpful in such situations.
+\code{\link[Hmisc:escapeRegex]{Hmisc::escapeRegex()}} is helpful in such situations.
 
 Note that if all rows are removed from \code{a}, \code{NULL} is returned.
 }
