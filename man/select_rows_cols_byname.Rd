@@ -75,8 +75,8 @@ retain nothing and remove nothing.
 Note that if all columns are removed from \code{a}, \code{NULL} is returned.
 }
 \examples{
-m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) \%>\%
-  setrowtype("Industries") \%>\% setcoltype("Commodities")
+m <- matrix(1:16, ncol = 4, dimnames=list(c(paste0("i", 1:4)), paste0("p", 1:4))) |> 
+  setrowtype("Industries") |> setcoltype("Commodities")
 select_rows_cols_byname(m, 
                         margin = 2, # for columns
                         retain_pattern = RCLabels::make_or_pattern(c("p1", "p4"), 
