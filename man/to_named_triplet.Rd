@@ -161,7 +161,7 @@ to return all entries in the zero matrix.
 \examples{
 triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
                       j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-                      x = c(1, 2, 3, 4, 5, 6)) |> 
+                      value = c(1, 2, 3, 4, 5, 6)) |> 
   setrowtype("rows") |> setcoltype("cols")
 triplet
 rowtype(triplet)

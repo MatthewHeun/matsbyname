@@ -122,7 +122,7 @@
 #' @examples
 #' triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
 #'                       j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-#'                       x = c(1, 2, 3, 4, 5, 6)) |> 
+#'                       value = c(1, 2, 3, 4, 5, 6)) |> 
 #'   setrowtype("rows") |> setcoltype("cols")
 #' triplet
 #' rowtype(triplet)
@@ -501,9 +501,9 @@ create_triplet <- function(m,
       # Matrix::mat2triplet() does not allow setting of names.
       # Hard-coded names are i, j, x.
       # So we set names here.
-      "{i_col}" := i, 
-      "{j_col}" := j, 
-      "{val_col}" := x
+      "{i_col}" := .data[["i"]], 
+      "{j_col}" := .data[["j"]], 
+      "{val_col}" := .data[["x"]]
     )
   if (retain_zero_structure & nrow(out) == 0) {
     # Create an outgoing data frame that includes all the 0 values
