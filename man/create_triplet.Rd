@@ -9,7 +9,7 @@ create_triplet(
   retain_zero_structure = FALSE,
   i_col = "i",
   j_col = "j",
-  x_col = "x"
+  val_col = "x"
 )
 }
 \arguments{
@@ -19,7 +19,7 @@ create_triplet(
 to retain the structure of zero matrices.
 Default is \code{FALSE}.}
 
-\item{i_col, j_col, x_col}{String names of i, j, and x columns.}
+\item{i_col, j_col, val_col}{String names of i, j, and value columns.}
 }
 \value{
 A \code{tibble} triplet representation of \code{m}.

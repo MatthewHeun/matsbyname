@@ -14,7 +14,7 @@ test_that("to_triplet() works as expected", {
                           indices = as.integer(c(4, 3, 100)))
   # Try with a single data frame
   indices <- dplyr::bind_rows(r_indices, c_indices)
-  expected <- tibble::tribble(~i, ~j, ~x, 
+  expected <- tibble::tribble(~i, ~j, ~value, 
                               9, 3, 5, 
                               7, 3, 6, 
                               5, 3, 4, 
@@ -135,7 +135,7 @@ test_that("to_triplet() works with lists", {
                           indices = as.integer(c(5, 9, 7, 100))) 
   c_indices <- data.frame(names = c("c2", "c1", "c3"), 
                           indices = as.integer(c(4, 3, 100)))
-  expected <- tibble::tribble(~i, ~j, ~x, 
+  expected <- tibble::tribble(~i, ~j, ~value, 
                               9, 3, 1, 
                               7, 3, 2, 
                               5, 3, 3, 
@@ -170,7 +170,7 @@ test_that("to_triplet() works with NULL", {
     setrowtype("rows") |> 
     setcoltype("cols")
   m_list <- list(m, NULL, m)
-  expected <- tibble::tribble(~i, ~j, ~x, 
+  expected <- tibble::tribble(~i, ~j, ~value, 
                               9, 3, 1, 
                               7, 3, 2, 
                               5, 3, 3, 
@@ -232,7 +232,7 @@ test_that("to_triplet() retains zero matrix structure when asked", {
   # Try without retaining zero matrix structure
   expect_equal(to_triplet(m, list(r_indices, c_indices)),
                # Expect a zero-row data frame with correct row and column types
-               data.frame(i = as.integer(0), j = as.integer(0), x = 3.1415926) |> 
+               data.frame(i = as.integer(0), j = as.integer(0), value = 3.1415926) |> 
                  dplyr::filter(FALSE) |> 
                  tibble::as_tibble() |> 
                  matsbyname::setrowtype("rows") |> 
@@ -244,7 +244,7 @@ test_that("to_triplet() retains zero matrix structure when asked", {
                                          # c1 c1 c1 c2 c2 c2
                           i = as.integer(c(9, 7, 5, 9, 7, 5)),
                           j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-                          x = 0) |> 
+                          value = 0) |> 
                  tibble::as_tibble() |> 
                  matsbyname::setrowtype("rows") |> 
                  matsbyname::setcoltype("cols"))
@@ -254,7 +254,7 @@ test_that("to_triplet() retains zero matrix structure when asked", {
 test_that("to_named_matrix() works as expected", {
   triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
                         j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-                        x = c(1, 2, 3, 4, 5, 6)) |> 
+                        value = c(1, 2, 3, 4, 5, 6)) |> 
     setrowtype("rows") |> setcoltype("cols")
 
   r_indices <- data.frame(names = paste0("r", 1:101),
@@ -285,7 +285,7 @@ test_that("to_named_matrix() works as expected", {
 test_that("to_named_matrix() fails when only one index_map is supplied in a list", {
   triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
                         j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-                        x = c(1, 2, 3, 4, 5, 6)) |> 
+                        value = c(1, 2, 3, 4, 5, 6)) |> 
     setrowtype("rows") |> setcoltype("cols")
   
   r_indices <- data.frame(names = paste0("r", 1:101),
@@ -299,7 +299,7 @@ test_that("to_named_matrix() fails when only one index_map is supplied in a list
 test_that("to_named_matrx() works when a single data frame is supplied", {
   triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
                         j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-                        x =            c(1, 2, 3, 4, 5, 6)) |> 
+                        value =        c(1, 2, 3, 4, 5, 6)) |> 
     setrowtype("rows") |> setcoltype("cols")
   
   indices <- data.frame(names = c(paste0("r", 1:101), paste0("c", 1:101)),
@@ -317,7 +317,7 @@ test_that("to_named_matrix() is reversible", {
   # Start with a triplet.
   triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
                         j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-                        x = c(1, 2, 3, 4, 5, 6)) |> 
+                        value = c(1, 2, 3, 4, 5, 6)) |> 
     setrowtype("rows") |> setcoltype("cols")
   
   r_indices <- data.frame(names = paste0("r", 1:101),
@@ -371,7 +371,7 @@ test_that("to_triplet() is reversible", {
   indices <- list(r_indices, c_indices)
   
   triplet <- to_triplet(m, indices)
-  expected <- tibble::tribble(~i, ~j, ~x, 
+  expected <- tibble::tribble(~i, ~j, ~value, 
                               9, 3, 5, 
                               7, 3, 6, 
                               5, 3, 4, 
@@ -394,7 +394,7 @@ test_that("to_triplet() is reversible", {
 
 
 test_that("to_named_matrix() works with names already replacing integers", {
-  triplet <- tibble::tribble(~i, ~j, ~x, 
+  triplet <- tibble::tribble(~i, ~j, ~value, 
                              "r9", "c3", 5, 
                              "r7", "c3", 6, 
                              "r5", "c3", 4, 
@@ -416,7 +416,7 @@ test_that("to_named_matrix() works with names already replacing integers", {
 
 
 test_that("to_named_matrix() fails when neither integer triplet nor character triplet", {
-  triplet <- tibble::tribble(~i, ~j, ~x, 
+  triplet <- tibble::tribble(~i, ~j, ~value, 
                              9, "c3", 5, 
                              7, "c3", 6, 
                              5, "c3", 4, 
@@ -452,7 +452,7 @@ test_that("create_triplet() correctly retains zero structure", {
 test_that("to_named_matrx() returns zero rows and columns when requested", {
   zero_triplet <- data.frame(i = as.integer(c(1, 2, 1, 2, 1, 2)), 
                              j = as.integer(c(1, 1, 2, 2, 3, 3)), 
-                             x = c(0, 0, 0, 0, 0, 0)) |> 
+                             value = c(0, 0, 0, 0, 0, 0)) |> 
     setrowtype("rows") |> setcoltype("cols")
   rindices <- data.frame(i = as.integer(c(1, 2)), 
                          rownames = c("r10", "r20"))
@@ -472,7 +472,7 @@ test_that("to_named_matrx() returns zero rows and columns when requested", {
   # Try again with row and column names already characters
   zero_triplet_char <- data.frame(i = c("r10", "r20", "r10", "r20", "r10", "r20"), 
                                   j = c("c1", "c1", "c2", "c2", "c3", "c3"), 
-                                  x = c(0, 0, 0, 0, 0, 0))
+                                  value = c(0, 0, 0, 0, 0, 0))
   res_char <- to_named_matrix(zero_triplet_char,
                               index_map = index_map, 
                               matrix_class = "Matrix") |> 

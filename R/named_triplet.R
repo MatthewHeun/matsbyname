@@ -156,7 +156,7 @@ to_triplet <- function(a,
                        retain_zero_structure = FALSE,
                        row_index_colname = "i", 
                        col_index_colname = "j", 
-                       val_colname = "x", 
+                       val_colname = "value", 
                        rownames_colname = "rownames", 
                        colnames_colname = "colnames") {
   a_list <- TRUE
@@ -205,7 +205,10 @@ to_triplet <- function(a,
       # Matrix::Matrix(sparse = TRUE) |> 
       # Matrix::mat2triplet() |> 
       # tibble::as_tibble() |> 
-      create_triplet(retain_zero_structure = retain_zero_structure) |> 
+      create_triplet(retain_zero_structure = retain_zero_structure, 
+                     i_col = row_index_colname, 
+                     j_col = col_index_colname, 
+                     val_col = val_colname) |> 
       # Join with rownames from a_mat
       dplyr::left_join(orig_row_indices_map, by = row_index_colname) |> 
       # Eliminate the i column, because it is the original i.
@@ -275,7 +278,7 @@ to_named_matrix <- function(a,
                             matrix_class = c("matrix", "Matrix"), 
                             row_index_colname = "i", 
                             col_index_colname = "j", 
-                            val_colname = "x", 
+                            val_colname = "value", 
                             .rnames = "rownames", 
                             .cnames = "colnames") {
   
@@ -484,23 +487,31 @@ structure_index_map <- function(index_map) {
 #' @param retain_zero_structure A boolean that tells whether
 #'                              to retain the structure of zero matrices.
 #'                              Default is `FALSE`.
-#' @param i_col,j_col,x_col String names of i, j, and x columns.
+#' @param i_col,j_col,val_col String names of i, j, and value columns.
 #'
 #' @return A `tibble` triplet representation of `m`.
 create_triplet <- function(m, 
                            retain_zero_structure = FALSE, 
-                           i_col = "i", j_col = "j", x_col = "x") {
+                           i_col = "i", j_col = "j", val_col = "x") {
   out <- m |> 
     Matrix::Matrix(sparse = TRUE) |> 
     Matrix::mat2triplet() |> 
-    tibble::as_tibble()
+    tibble::as_tibble() |> 
+    dplyr::rename(
+      # Matrix::mat2triplet() does not allow setting of names.
+      # Hard-coded names are i, j, x.
+      # So we set names here.
+      "{i_col}" := i, 
+      "{j_col}" := j, 
+      "{val_col}" := x
+    )
   if (retain_zero_structure & nrow(out) == 0) {
     # Create an outgoing data frame that includes all the 0 values
     out <- expand.grid(1:dim(m)[[1]], 1:dim(m)[[2]], KEEP.OUT.ATTRS = FALSE) |> 
       tibble::as_tibble() |> 
       magrittr::set_names(c(i_col, j_col)) |> 
       dplyr::mutate(
-        "{x_col}" := 0
+        "{val_col}" := 0
       )
   }
   return(out)
