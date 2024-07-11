@@ -12,7 +12,7 @@ to_triplet(
   retain_zero_structure = FALSE,
   row_index_colname = "i",
   col_index_colname = "j",
-  val_colname = "value",
+  value_colname = "value",
   rownames_colname = "rownames",
   colnames_colname = "colnames"
 )
@@ -44,7 +44,7 @@ See details.}
 \item{row_index_colname, col_index_colname}{The names of row and column index columns in data frames.
 Defaults are "i" and "j", respectively.}
 
-\item{val_colname}{The name of the value column in data frames.
+\item{value_colname}{The name of the value column in data frames.
 Default is "value".}
 
 \item{rownames_colname, colnames_colname}{The name of row name and column name columns in data frames.
@@ -161,7 +161,7 @@ to return all entries in the zero matrix.
 \examples{
 triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
                       j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-                      x = c(1, 2, 3, 4, 5, 6)) |> 
+                      value = c(1, 2, 3, 4, 5, 6)) |> 
   setrowtype("rows") |> setcoltype("cols")
 triplet
 rowtype(triplet)

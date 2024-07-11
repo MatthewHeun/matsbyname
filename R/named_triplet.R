@@ -107,8 +107,8 @@
 #'                     Default is "matrix".
 #' @param row_index_colname,col_index_colname The names of row and column index columns in data frames.
 #'                                            Defaults are "i" and "j", respectively.
-#' @param val_colname The name of the value column in data frames. 
-#'                    Default is "value".
+#' @param value_colname The name of the value column in data frames. 
+#'                      Default is "value".
 #' @param rownames_colname,colnames_colname The name of row name and column name columns in data frames.
 #'                                          Defaults are "rownames" and "colnames", respectively.
 #' @param .rnames,.cnames Column names used internally. 
@@ -122,7 +122,7 @@
 #' @examples
 #' triplet <- data.frame(i = as.integer(c(9, 7, 5, 9, 7, 5)), 
 #'                       j = as.integer(c(3, 3, 3, 4, 4, 4)), 
-#'                       x = c(1, 2, 3, 4, 5, 6)) |> 
+#'                       value = c(1, 2, 3, 4, 5, 6)) |> 
 #'   setrowtype("rows") |> setcoltype("cols")
 #' triplet
 #' rowtype(triplet)
@@ -156,7 +156,7 @@ to_triplet <- function(a,
                        retain_zero_structure = FALSE,
                        row_index_colname = "i", 
                        col_index_colname = "j", 
-                       val_colname = "value", 
+                       value_colname = "value", 
                        rownames_colname = "rownames", 
                        colnames_colname = "colnames") {
   a_list <- TRUE
@@ -205,7 +205,10 @@ to_triplet <- function(a,
       # Matrix::Matrix(sparse = TRUE) |> 
       # Matrix::mat2triplet() |> 
       # tibble::as_tibble() |> 
-      create_triplet(retain_zero_structure = retain_zero_structure) |> 
+      create_triplet(retain_zero_structure = retain_zero_structure, 
+                     i_col = row_index_colname, 
+                     j_col = col_index_colname, 
+                     value_col = value_colname) |> 
       # Join with rownames from a_mat
       dplyr::left_join(orig_row_indices_map, by = row_index_colname) |> 
       # Eliminate the i column, because it is the original i.
@@ -257,7 +260,7 @@ to_triplet <- function(a,
     
     # Finish everything off
     cols_matched_completed |> 
-      dplyr::relocate(dplyr::all_of(val_colname), .after = dplyr::everything()) |> 
+      dplyr::relocate(dplyr::all_of(value_colname), .after = dplyr::everything()) |> 
       setrowtype(rowtype(a_mat)) |> 
       setcoltype(coltype(a_mat))
   })
@@ -498,9 +501,9 @@ create_triplet <- function(m,
       # Matrix::mat2triplet() gives i, j, x columns
       # with no option to rename.
       # So we rename here.
-      "{i_col}" := .data[["i"]], 
-      "{j_col}" := .data[["j"]],
-      "{value_col}" := .data[["x"]]
+      "{i_col}" := dplyr::all_of("i"), 
+      "{j_col}" := dplyr::all_of("j"),
+      "{value_col}" := dplyr::all_of("x")
     )
   if (retain_zero_structure & nrow(out) == 0) {
     # Create an outgoing data frame that includes all the 0 values
