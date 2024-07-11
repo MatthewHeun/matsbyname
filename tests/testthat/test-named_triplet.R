@@ -435,11 +435,11 @@ test_that("create_triplet() correctly retains zero structure", {
                 0, 0, 0), nrow = 2, dimnames = list(c("r1", "r2"), 
                                                     c("c1", "c2", "c3")))
   expect_equal(matsbyname:::create_triplet(m),
-               data.frame(i = as.integer(0), j = as.integer(0), x = 3.1415926) |> 
+               data.frame(i = as.integer(0), j = as.integer(0), value = 3.1415926) |> 
                  dplyr::filter(FALSE) |> 
                  tibble::as_tibble())
   expect_equal(matsbyname:::create_triplet(m, retain_zero_structure = TRUE),
-               tibble::tribble(~i, ~j, ~x, 
+               tibble::tribble(~i, ~j, ~value, 
                                1, 1, 0, 
                                2, 1, 0, 
                                1, 2, 0, 

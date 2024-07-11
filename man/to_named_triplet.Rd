@@ -12,7 +12,7 @@ to_triplet(
   retain_zero_structure = FALSE,
   row_index_colname = "i",
   col_index_colname = "j",
-  val_colname = "x",
+  val_colname = "value",
   rownames_colname = "rownames",
   colnames_colname = "colnames"
 )
@@ -23,7 +23,7 @@ to_named_matrix(
   matrix_class = c("matrix", "Matrix"),
   row_index_colname = "i",
   col_index_colname = "j",
-  val_colname = "x",
+  val_colname = "value",
   .rnames = "rownames",
   .cnames = "colnames"
 )
@@ -45,7 +45,7 @@ See details.}
 Defaults are "i" and "j", respectively.}
 
 \item{val_colname}{The name of the value column in data frames.
-Default is "x".}
+Default is "value".}
 
 \item{rownames_colname, colnames_colname}{The name of row name and column name columns in data frames.
 Defaults are "rownames" and "colnames", respectively.}

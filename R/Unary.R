@@ -1388,6 +1388,9 @@ replaceNaN_byname <- function(a, val = 0){
       trip <- Matrix::mat2triplet(a_mat) %>% 
         as.data.frame() %>% 
         # Find rows in the triple that are NaN
+        # Note that "x" is the name of the value column produced by
+        # Matrix::mat2triplet().
+        # We can't change it!
         dplyr::filter(is.nan(.data[["x"]]))
       # Set those values to val
       if (nrow(trip) > 0) {

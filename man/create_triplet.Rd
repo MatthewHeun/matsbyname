@@ -9,7 +9,7 @@ create_triplet(
   retain_zero_structure = FALSE,
   i_col = "i",
   j_col = "j",
-  x_col = "x"
+  value_col = "value"
 )
 }
 \arguments{
@@ -19,14 +19,14 @@ create_triplet(
 to retain the structure of zero matrices.
 Default is \code{FALSE}.}
 
-\item{i_col, j_col, x_col}{String names of i, j, and x columns.}
+\item{i_col, j_col, value_col}{String names of i, j, and x columns.}
 }
 \value{
 A \code{tibble} triplet representation of \code{m}.
 }
 \description{
 Creates a data frame triplet with columns
-\code{i_col}, \code{j_col}, and \code{x_col} from matrix \code{m}.
+\code{i_col}, \code{j_col}, and \code{value_col} from matrix \code{m}.
 Zero entries are not reported.
 \code{i} and \code{j} integers are directly from \code{m}
 and not referenced to any global set of \code{i} and \code{j} values.

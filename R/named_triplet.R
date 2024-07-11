@@ -108,7 +108,7 @@
 #' @param row_index_colname,col_index_colname The names of row and column index columns in data frames.
 #'                                            Defaults are "i" and "j", respectively.
 #' @param val_colname The name of the value column in data frames. 
-#'                    Default is "x".
+#'                    Default is "value".
 #' @param rownames_colname,colnames_colname The name of row name and column name columns in data frames.
 #'                                          Defaults are "rownames" and "colnames", respectively.
 #' @param .rnames,.cnames Column names used internally. 
@@ -156,7 +156,7 @@ to_triplet <- function(a,
                        retain_zero_structure = FALSE,
                        row_index_colname = "i", 
                        col_index_colname = "j", 
-                       val_colname = "x", 
+                       val_colname = "value", 
                        rownames_colname = "rownames", 
                        colnames_colname = "colnames") {
   a_list <- TRUE
@@ -275,7 +275,7 @@ to_named_matrix <- function(a,
                             matrix_class = c("matrix", "Matrix"), 
                             row_index_colname = "i", 
                             col_index_colname = "j", 
-                            val_colname = "x", 
+                            val_colname = "value", 
                             .rnames = "rownames", 
                             .cnames = "colnames") {
   
@@ -468,7 +468,7 @@ structure_index_map <- function(index_map) {
 #' Create a triplet from a matrix
 #' 
 #' Creates a data frame triplet with columns
-#' `i_col`, `j_col`, and `x_col` from matrix `m`.
+#' `i_col`, `j_col`, and `value_col` from matrix `m`.
 #' Zero entries are not reported.
 #' `i` and `j` integers are directly from `m`
 #' and not referenced to any global set of `i` and `j` values.
@@ -484,23 +484,31 @@ structure_index_map <- function(index_map) {
 #' @param retain_zero_structure A boolean that tells whether
 #'                              to retain the structure of zero matrices.
 #'                              Default is `FALSE`.
-#' @param i_col,j_col,x_col String names of i, j, and x columns.
+#' @param i_col,j_col,value_col String names of i, j, and x columns.
 #'
 #' @return A `tibble` triplet representation of `m`.
 create_triplet <- function(m, 
                            retain_zero_structure = FALSE, 
-                           i_col = "i", j_col = "j", x_col = "x") {
+                           i_col = "i", j_col = "j", value_col = "value") {
   out <- m |> 
     Matrix::Matrix(sparse = TRUE) |> 
     Matrix::mat2triplet() |> 
-    tibble::as_tibble()
+    tibble::as_tibble() |> 
+    dplyr::rename(
+      # Matrix::mat2triplet() gives i, j, x columns
+      # with no option to rename.
+      # So we rename here.
+      "{i_col}" := .data[["i"]], 
+      "{j_col}" := .data[["j"]],
+      "{value_col}" := .data[["x"]]
+    )
   if (retain_zero_structure & nrow(out) == 0) {
     # Create an outgoing data frame that includes all the 0 values
     out <- expand.grid(1:dim(m)[[1]], 1:dim(m)[[2]], KEEP.OUT.ATTRS = FALSE) |> 
       tibble::as_tibble() |> 
       magrittr::set_names(c(i_col, j_col)) |> 
       dplyr::mutate(
-        "{x_col}" := 0
+        "{value_col}" := 0
       )
   }
   return(out)
