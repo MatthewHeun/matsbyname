@@ -4,6 +4,12 @@
 #' redistribute values from one row or column to another,
 #' in proportion to remaining values in corresponding columns or rows.
 #' This function performs the redistribution operation.
+#' See examples.
+#' 
+#' This function will provide answers, but 
+#' it is unlikely that the answers will be meaningful when the
+#' remaining data (the rows or columns not being distributed)
+#' contain negative numbers.
 #'
 #' @param a A matrix or a list of matrices.
 #' @param rowcolnames The names of the rows or columns to be redistributed.
@@ -26,6 +32,17 @@
 #' @export
 #'
 #' @examples
+#' m <- matrix(c(1, 2, 3,
+#'               4, 5, 6,
+#'               7, 8, 9), 
+#'             nrow = 3, ncol = 3, byrow = TRUE, 
+#'             dimnames = list(c("r1", "r2", "r3"), 
+#'             c("c1", "c2", "c3")))
+#' m
+#' # Move row 3 into the other rows proportionally
+#' redistribute_byname(m, rowcolnames = "r3", margin = 1)
+#' # Move column 2 into the other columns proportionally
+#' redistribute_byname(m, rowcolnames = "c2", margin = 2)
 redistribute_byname <- function(a, 
                                 rowcolnames = NULL,
                                 margin = c(1, 2), 
@@ -75,6 +92,29 @@ redistribute_byname <- function(a,
                                                pattern_type = pattern_type, 
                                                prepositions = prepositions, 
                                                notation = notation)
+      
+      # Find which columns in keeprows have all zero values.
+      keeprows_zerocol <- apply(keeprows, 
+                                MARGIN = 2, 
+                                FUN = function(thiscol) {
+                                  all(thiscol == 0)
+                                })
+      # Find which redistribution values are non-zero
+      non_zero_redist_rows <- redistrows[1, ] != 0
+      # We will have a potential problem for those columns
+      # where both are true.
+      # In this case, we can't know how to do the redistribution.
+      problem_cols <- keeprows_zerocol & non_zero_redist_rows
+      
+      # Give a warning when there are any problem_cols
+      if (any(problem_cols)) {
+        names_problem_cols <- names(problem_cols[which(problem_cols)])
+        rows_or_cols <- ifelse(margin == 1, "rows", "columns")
+        warning(paste0("The following cannot be redistributed due to all zero values in the receiving ", 
+                       rows_or_cols, 
+                       ": ", 
+                       paste0(names_problem_cols, collapse = ", ")))
+      }
       
       # Calculate fractions of redistribution that should be placed in each keeprows
       keepfracs <- keeprows |> 

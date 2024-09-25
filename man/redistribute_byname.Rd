@@ -44,4 +44,24 @@ There are situations where it is helpful to
 redistribute values from one row or column to another,
 in proportion to remaining values in corresponding columns or rows.
 This function performs the redistribution operation.
+See examples.
+}
+\details{
+This function will provide answers, but
+it is unlikely that the answers will be meaningful when the
+remaining data (the rows or columns not being distributed)
+contain negative numbers.
+}
+\examples{
+m <- matrix(c(1, 2, 3,
+              4, 5, 6,
+              7, 8, 9), 
+            nrow = 3, ncol = 3, byrow = TRUE, 
+            dimnames = list(c("r1", "r2", "r3"), 
+            c("c1", "c2", "c3")))
+m
+# Move row 3 into the other rows proportionally
+redistribute_byname(m, rowcolnames = "r3", margin = 1)
+# Move column 2 into the other columns proportionally
+redistribute_byname(m, rowcolnames = "c2", margin = 2)
 }
