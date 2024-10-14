@@ -14,7 +14,7 @@ test_that("reallocate_byname() errors as expected", {
 })
 
 
-test_that("reallocate_byname() works with row redistribution", {
+test_that("reallocate_byname() works with row reallocation", {
   a <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), 
@@ -47,7 +47,7 @@ test_that("reallocate_byname() works with row redistribution", {
 })
 
 
-test_that("reallocate_byname() works with column redistribution", {
+test_that("reallocate_byname() works with column reallocation", {
   a <- matrix(c(1, 2, 3,
                 4, 5, 6), 
               nrow = 2, ncol = 3, byrow = TRUE, 
@@ -80,7 +80,41 @@ test_that("reallocate_byname() works with column redistribution", {
 })
 
 
-test_that("reallocate_byname() works with a 0 column", {
+test_that("reallocate_byname() works when allocating multiple rows", {
+  a <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6, 
+                7, 8), 
+              nrow = 4, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1", "r2", "r3", "r4"), 
+                              c("c1", "c2")))
+  expected <- matrix(c(1 + 1/4*12, 2 + 2/6*14, 
+                       3 + 3/4*12, 4 + 4/6*14), 
+                     nrow = 2, ncol = 2, byrow = TRUE, 
+                     dimnames = list(c("r1", "r2"), c("c1", "c2")))
+  
+  res <- matsbyname::reallocate_byname(a, c("r3", "r4"), margin = 1)
+  expect_equal(res, expected)
+})
+
+
+test_that("reallocate_byname() works when allocating multiple columns", {
+  a <- matrix(c(1, 2, 3, 5, 
+                5, 6, 7, 9), 
+              nrow = 2, ncol = 4, byrow = TRUE, 
+              dimnames = list(c("r1", "r2"), 
+                              c("c1", "c2", "c3", "c4")))
+  expected <- matrix(c(1 + 1/6*5, 5 + 5/6*5, 
+                       5 + 5/14*13, 9 + 9/14*13), 
+                     nrow = 2, ncol = 2, byrow = TRUE, 
+                     dimnames = list(c("r1", "r2"), c("c1", "c4")))
+  
+  res <- matsbyname::reallocate_byname(a, c("c2", "c3"), margin = 2)
+  expect_equal(res, expected)
+})
+
+
+test_that("reallocate_byname() works as expected with a 0 column, a degenerate case", {
   # Try reallocating a 0 column.
   a <- matrix(c(1, 2, 3, 0,
                 4, 5, 6, 0), 
@@ -111,11 +145,23 @@ test_that("reallocate_byname() works with a 0 column", {
     expect_equal(expected3) |> 
     expect_warning("The following cannot be reallocated due to all zero values in the receiving rows: c2")
   
-
+  # Same result as res3, but no warning.
+  res4 <- matsbyname::reallocate_byname(a2, "r3", margin = 1, .zero_behaviour = "zeroes") |> 
+    expect_equal(expected3)
+  
+  # Allocate evenly
+  expected5 <- matrix(c(2, 3,
+                        4, 3), 
+                      nrow = 2, ncol = 2, byrow = TRUE, 
+                      dimnames = list(c("r1", "r2"), 
+                                      c("c1", "c2")))
+  res5 <- matsbyname::reallocate_byname(a2, "r3", margin = 1, .zero_behaviour = "allocate equally") |> 
+    expect_equal(expected5)
 })
 
 
 # Test when row or column is missing
 # Test with row col name pieces
 # Test with different row and col notation
+# Test in a data frame
 

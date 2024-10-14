@@ -16,7 +16,8 @@
 #' Options are one of:
 #' * "error" (the default) to throw an error.
 #' * "warning" to issue a warning but continue execution. Be careful with this option!
-#' * "evenly distribute" to evenly distribute across remaining rows or columns.
+#' * "zeroes" to return zeroes in the row or column with zeroes. Note that "zeroes" and "warning" return the same value. "zeroes" does so without a warning.
+#' * "allocate equally" to equally allocate across remaining rows or columns.
 #'
 #' @param a A matrix or a list of matrices.
 #' @param rowcolnames The names of the rows or columns to be redistributed.
@@ -56,7 +57,7 @@
 reallocate_byname <- function(a, 
                               rowcolnames = NULL,
                               margin = c(1, 2), 
-                              .zero_behaviour = c("error", "warning"),
+                              .zero_behaviour = c("error", "warning", "zeroes", "allocate equally"),
                               piece = "all", 
                               pattern_type = "exact", 
                               prepositions = RCLabels::prepositions_list, 
@@ -128,9 +129,17 @@ reallocate_byname <- function(a,
                       paste0(names_problem_cols, collapse = ", "))
         if (.zero_behaviour == "error") {
           stop(msg)
-        }
-        if (.zero_behaviour == "warning") {
+        } else if (.zero_behaviour == "warning") {
           warning(msg)  
+        } else if (.zero_behaviour == "zeroes") {
+          # Nothing to be done. 
+        } else if (.zero_behaviour == "allocate equally") {
+          # Change the 0s to 1s to obtain equal allocations
+          # Will need later to subtract the 1.
+          keeprows_problem_cols <- keeprows |> 
+            matsbyname::select_cols_byname(retain_pattern = names(which(problem_cols)), fixed = TRUE)
+          keeprows_problem_cols_1 <- keeprows_problem_cols + 1
+          keeprows <- matsbyname::sum_byname(keeprows, keeprows_problem_cols_1)
         }
       }
       
@@ -143,6 +152,11 @@ reallocate_byname <- function(a,
       
       # Return the sum of keeprows and addmat
       out <- matsbyname::sum_byname(keeprows, addmat)
+      
+      # Subtract the 1s, if needed
+      if (any(problem_cols) & .zero_behaviour == "allocate equally") {
+        out <- matsbyname::difference_byname(out, keeprows_problem_cols_1)
+      }
     }
     
     return(out)

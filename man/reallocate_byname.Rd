@@ -8,7 +8,7 @@ reallocate_byname(
   a,
   rowcolnames = NULL,
   margin = c(1, 2),
-  .zero_behaviour = c("error", "warning"),
+  .zero_behaviour = c("error", "warning", "zeroes", "allocate equally"),
   piece = "all",
   pattern_type = "exact",
   prepositions = RCLabels::prepositions_list,
@@ -19,7 +19,7 @@ reallocate_byname(
   a,
   rowcolnames = NULL,
   margin = c(1, 2),
-  .zero_behaviour = c("error", "warning"),
+  .zero_behaviour = c("error", "warning", "zeroes", "allocate equally"),
   piece = "all",
   pattern_type = "exact",
   prepositions = RCLabels::prepositions_list,
@@ -87,7 +87,8 @@ Options are one of:
 \itemize{
 \item "error" (the default) to throw an error.
 \item "warning" to issue a warning but continue execution. Be careful with this option!
-\item "evenly distribute" to evenly distribute across remaining rows or columns.
+\item "zeroes" to return zeroes in the row or column with zeroes. Note that "zeroes" and "warning" return the same value. "zeroes" does so without a warning.
+\item "allocate equally" to equally allocate across remaining rows or columns.
 }
 }
 \examples{
