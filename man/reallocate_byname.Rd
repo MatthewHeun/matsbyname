@@ -30,6 +30,9 @@ will be checked for \code{rowcolnames} and redistributed.}
 Default behaviour is to throw an error.
 See details.}
 
+\item{piece}{The piece of row or column names to be assessed.
+Default is "all", indicating that the entire label will be assessed.}
+
 \item{pattern_type}{The pattern type desired. Default is "exact".
 Other options are "leading", "trailing", "anywhere",
 and "literal".
@@ -42,6 +45,20 @@ Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.}
 \item{notation}{The row or column notation used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 for row and column name matching.
 Default is \link[RCLabels:notations_list]{RCLabels::notations_list}.}
+
+\item{inf_notation}{A boolean that tells whether to infer notation for rows and columns.
+Default is \code{TRUE}.
+See \code{\link[RCLabels:infer_notation]{RCLabels::infer_notation()}} for details.}
+
+\item{choose_most_specific}{A boolean that tells whether to choose the most specific
+notation from \code{notation} when inferring notation.
+Default is \code{FALSE} so that a less specific notation can be
+inferred.
+In combination with \link[RCLabels:notations_list]{RCLabels::notations_list},
+the default value of \code{FALSE} means that
+\link[RCLabels:bracket_notation]{RCLabels::bracket_notation} will be selected instead of
+anything more specific, such as
+\link[RCLabels:from_notation]{RCLabels::from_notation}.}
 }
 \value{
 A modified version of \code{a} with \code{rowcolnames} redistributed.

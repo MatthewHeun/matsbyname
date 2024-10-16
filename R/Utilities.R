@@ -1241,15 +1241,27 @@ select_rows_cols_byname <- function(a, margin = c(1, 2),
 #' @param piece The piece of row or column names to be assessed.
 #'              Default is "all", indicating that the entire label will be assessed.
 #' @param pattern_type The way to match label pieces.
-#'                     `pattern_type` is passed to `RCLabels::make_or_pattern()`.
-#'                     See `RCLabels::make_or_pattern()` for details.
+#'                     `pattern_type` is passed to [RCLabels::make_or_pattern()].
+#'                     See [RCLabels::make_or_pattern()] for details.
 #'                     Default is "exact", meaning that exact matches are retained or removed.  
 #'                     Other options are "leading", "trailing", "anywhere", and "literal".
 #' @param prepositions The prepositions that can be used for identifying pieces.
-#'                     Default is `RCLabels::prepositions_list`.
+#'                     Default is [RCLabels::prepositions_list].
 #' @param notation The notation for the row and column names. 
-#'                 Default is `RCLabels::notations_list`, meaning that all notations known to 
+#'                 Default is [RCLabels::notations_list], meaning that all notations known to 
 #'                 `RCLabels` will be assessed.
+#' @param inf_notation A boolean that tells whether to infer notation for rows and columns.
+#'                     Default is `TRUE`.
+#'                     See [RCLabels::infer_notation()] for details.
+#' @param choose_most_specific A boolean that tells whether to choose the most specific
+#'                             notation from `notation` when inferring notation.
+#'                             Default is `FALSE` so that a less specific notation can be
+#'                             inferred.
+#'                             In combination with [RCLabels::notations_list],
+#'                             the default value of `FALSE` means that
+#'                             [RCLabels::bracket_notation] will be selected instead of
+#'                             anything more specific, such as
+#'                             [RCLabels::from_notation].
 #' @param margin The margin to which row or column removal is requested.
 #'               `1` indicates rows; `2` indicates columns.
 #'               Default is `c(1, 2)`, meaning that action should be taken on both rows and columns.

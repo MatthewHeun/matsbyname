@@ -27,6 +27,8 @@
 #' @param .zero_behaviour Tells how to proceed when remaining rows or columns are all zero.
 #'                        Default behaviour is to throw an error.
 #'                        See details.
+#' @param piece The piece of row or column names to be assessed.
+#'              Default is "all", indicating that the entire label will be assessed.
 #' @param pattern_type The pattern type desired. Default is "exact". 
 #'                     Other options are "leading", "trailing", "anywhere", 
 #'                     and "literal". 
@@ -37,7 +39,19 @@
 #' @param notation The row or column notation used by [matsbyname::select_rowcol_piece_byname()]
 #'                     for row and column name matching.
 #'                     Default is [RCLabels::notations_list].
-#'
+#' @param inf_notation A boolean that tells whether to infer notation for rows and columns.
+#'                     Default is `TRUE`.
+#'                     See [RCLabels::infer_notation()] for details.
+#' @param choose_most_specific A boolean that tells whether to choose the most specific
+#'                             notation from `notation` when inferring notation.
+#'                             Default is `FALSE` so that a less specific notation can be
+#'                             inferred.
+#'                             In combination with [RCLabels::notations_list],
+#'                             the default value of `FALSE` means that
+#'                             [RCLabels::bracket_notation] will be selected instead of
+#'                             anything more specific, such as
+#'                             [RCLabels::from_notation].
+#'                     
 #' @return A modified version of `a` with `rowcolnames` redistributed.
 #'
 #' @export

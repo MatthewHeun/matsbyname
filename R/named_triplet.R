@@ -278,7 +278,7 @@ to_named_matrix <- function(a,
                             matrix_class = c("matrix", "Matrix"), 
                             row_index_colname = "i", 
                             col_index_colname = "j", 
-                            val_colname = "value", 
+                            value_colname = "value", 
                             .rnames = "rownames", 
                             .cnames = "colnames") {
   
@@ -294,7 +294,7 @@ to_named_matrix <- function(a,
     # Ensure that correct columns are present
     assertthat::assert_that(row_index_colname %in% colnames(a_triplet), msg = paste0("'", row_index_colname, "' not found in column names of a_triplet"))
     assertthat::assert_that(col_index_colname %in% colnames(a_triplet), msg = paste0("'", col_index_colname, "' not found in column names of a_triplet"))
-    assertthat::assert_that(val_colname %in% colnames(a_triplet), msg = paste0("'", val_colname, "' not found in column names of a_triplet"))
+    assertthat::assert_that(value_colname %in% colnames(a_triplet), msg = paste0("'", value_colname, "' not found in column names of a_triplet"))
     if (all(is.integer(a_triplet[[row_index_colname]])) & 
         all(is.integer(a_triplet[[col_index_colname]]))) {
       # Figure out the index maps to use
@@ -302,7 +302,7 @@ to_named_matrix <- function(a,
       # Make a Matrix object from the triplet
       out <- Matrix::sparseMatrix(i = a_triplet[[row_index_colname]], 
                                   j = a_triplet[[col_index_colname]], 
-                                  x = a_triplet[[val_colname]], 
+                                  x = a_triplet[[value_colname]], 
                                   dims = c(nrow(row_col_index_maps[[1]]),
                                            nrow(row_col_index_maps[[2]])),
                                   dimnames = list(row_col_index_maps[[1]][[2]], row_col_index_maps[[2]][[2]]))
@@ -334,7 +334,7 @@ to_named_matrix <- function(a,
         )
       out <- Matrix::sparseMatrix(i = integer_df[[row_index_colname]], 
                                   j = integer_df[[col_index_colname]], 
-                                  x = integer_df[[val_colname]], 
+                                  x = integer_df[[value_colname]], 
                                   dims = c(nrow(rowname_df),
                                            nrow(colname_df)),
                                   dimnames = list(rowname_df[[.rnames]], colname_df[[.cnames]])) 
