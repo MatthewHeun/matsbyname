@@ -149,7 +149,7 @@ test_that("reallocate_byname() works as expected with a 0 column, a degenerate c
   res4 <- matsbyname::reallocate_byname(a2, "r3", margin = 1, .zero_behaviour = "zeroes") |> 
     expect_equal(expected3)
   
-  # Allocate evenly
+  # Allocate equally
   expected5 <- matrix(c(2, 3,
                         4, 3), 
                       nrow = 2, ncol = 2, byrow = TRUE, 
