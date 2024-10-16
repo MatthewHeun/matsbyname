@@ -37,12 +37,14 @@
 #'                     for row and column name matching.
 #'                     Default is [RCLabels::prepositions_list].
 #' @param notation The row or column notation used by [matsbyname::select_rowcol_piece_byname()]
-#'                     for row and column name matching.
-#'                     Default is [RCLabels::notations_list].
-#' @param inf_notation A boolean that tells whether to infer notation for rows and columns.
+#'                 for row and column name matching.
+#'                 Default is [RCLabels::notations_list].
+#' @param inf_notation A boolean used by [matsbyname::select_rowcol_piece_byname()]
+#'                     that tells whether to infer notation for rows and columns.
 #'                     Default is `TRUE`.
 #'                     See [RCLabels::infer_notation()] for details.
-#' @param choose_most_specific A boolean that tells whether to choose the most specific
+#' @param choose_most_specific A boolean used by [matsbyname::select_rowcol_piece_byname()]
+#'                             that tells whether to choose the most specific
 #'                             notation from `notation` when inferring notation.
 #'                             Default is `FALSE` so that a less specific notation can be
 #'                             inferred.
