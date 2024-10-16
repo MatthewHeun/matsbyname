@@ -12,6 +12,8 @@ select_rowcol_piece_byname(
   pattern_type = "exact",
   prepositions = RCLabels::prepositions_list,
   notation = RCLabels::notations_list,
+  inf_notation = TRUE,
+  choose_most_specific = FALSE,
   margin = c(1, 2)
 )
 }

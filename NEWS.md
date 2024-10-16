@@ -8,6 +8,8 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Added function `reallocate_byname()` to reallocate a 
+  row or column proportionally to other rows or columns.
 * Change default name of value column in `to_triplet()`
   from "x" to "value".
 * New function `select_rows_cols_byname()` includes `margin` argument

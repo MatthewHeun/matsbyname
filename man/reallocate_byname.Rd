@@ -12,7 +12,9 @@ reallocate_byname(
   piece = "all",
   pattern_type = "exact",
   prepositions = RCLabels::prepositions_list,
-  notation = RCLabels::notations_list
+  notation = RCLabels::notations_list,
+  inf_notation = TRUE,
+  choose_most_specific = FALSE
 )
 }
 \arguments{

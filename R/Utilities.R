@@ -1292,6 +1292,8 @@ select_rowcol_piece_byname <- function(a,
                                        pattern_type = "exact",
                                        prepositions = RCLabels::prepositions_list, 
                                        notation = RCLabels::notations_list, 
+                                       inf_notation = TRUE,
+                                       choose_most_specific = FALSE,
                                        margin = c(1, 2)) {
   if (is.null(a)) {
     return(NULL)
@@ -1305,7 +1307,10 @@ select_rowcol_piece_byname <- function(a,
       # Transpose, perform the selection (or de-selection), and re-transpose
       a_mat <- transpose_byname(a_mat) %>% 
         select_rowcol_piece_byname(retain = retain, remove = remove, piece = piece, 
-                                   prepositions = prepositions, notation = notation, margin = 1) %>% 
+                                   prepositions = prepositions, notation = notation, 
+                                   inf_notation = inf_notation, 
+                                   choose_most_specific = choose_most_specific, 
+                                   margin = 1) %>% 
         # Re-transpose
         transpose_byname()
     }
@@ -1320,7 +1325,9 @@ select_rowcol_piece_byname <- function(a,
                                                     regex_pattern = keep_pattern, 
                                                     pieces = piece, 
                                                     prepositions = prepositions,
-                                                    notation = notation)
+                                                    notation = notation, 
+                                                    inf_notation = inf_notation, 
+                                                    choose_most_specific = choose_most_specific)
       } else {
         # When retain is NULL, we want to remove
         remove_pattern <- RCLabels::make_or_pattern(remove, pattern_type = pattern_type)
@@ -1328,7 +1335,10 @@ select_rowcol_piece_byname <- function(a,
                                                       regex_pattern = remove_pattern, 
                                                       pieces = piece, 
                                                       prepositions = prepositions,
-                                                      notation = notation)
+                                                      notation = notation,
+                                                      inf_notation = inf_notation, 
+                                                      choose_most_specific = choose_most_specific)
+        
         which_to_keep <- ! which_to_remove
       }
       # Now keep only the rows that we want, retaining all columns.

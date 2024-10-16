@@ -61,7 +61,9 @@ reallocate_byname <- function(a,
                               piece = "all", 
                               pattern_type = "exact", 
                               prepositions = RCLabels::prepositions_list, 
-                              notation = RCLabels::notations_list) {
+                              notation = RCLabels::notations_list, 
+                              inf_notation = TRUE, 
+                              choose_most_specific = FALSE) {
   margin <- prep_vector_arg(a, margin)
   .zero_behaviour <- match.arg(.zero_behaviour, several.ok = FALSE)
   reallocate_func <- function(a_mat, margin) {
@@ -91,7 +93,9 @@ reallocate_byname <- function(a,
                                                piece = piece, 
                                                pattern_type = pattern_type, 
                                                prepositions = prepositions, 
-                                               notation = notation)
+                                               notation = notation, 
+                                               inf_notation = inf_notation, 
+                                               choose_most_specific = choose_most_specific)
       # Calculate the diagonal matrix that will multiply into keepfracs
       hatmat <- redistrows |> 
         matsbyname::colsums_byname() |> 
@@ -104,7 +108,9 @@ reallocate_byname <- function(a,
                                                piece = piece, 
                                                pattern_type = pattern_type, 
                                                prepositions = prepositions, 
-                                               notation = notation)
+                                               notation = notation, 
+                                               inf_notation = inf_notation, 
+                                               choose_most_specific = choose_most_specific)
       
       # Find which columns in keeprows have all zero values.
       keeprows_zerocol <- apply(keeprows, 
