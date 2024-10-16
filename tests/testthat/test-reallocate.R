@@ -149,7 +149,7 @@ test_that("reallocate_byname() works as expected with a 0 column, a degenerate c
   res4 <- matsbyname::reallocate_byname(a2, "r3", margin = 1, .zero_behaviour = "zeroes") |> 
     expect_equal(expected3)
   
-  # Allocate equally
+  # Allocate equally when only zeroes are present.
   expected5 <- matrix(c(2, 3,
                         4, 3), 
                       nrow = 2, ncol = 2, byrow = TRUE, 
@@ -157,6 +157,27 @@ test_that("reallocate_byname() works as expected with a 0 column, a degenerate c
                                       c("c1", "c2")))
   res5 <- matsbyname::reallocate_byname(a2, "r3", margin = 1, .zero_behaviour = "allocate equally") |> 
     expect_equal(expected5)
+})
+
+
+test_that("reallocate_byname() works in a data frame and with Matrix objects", {
+  a <- Matrix(c(1, 2, 
+                5, 6, 
+                10, 11), byrow = TRUE, nrow = 3, ncol = 2,
+              dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
+  expectedUSA <- Matrix(c(1 + 1/11*5, 2 + 2/13*6, 
+                          10 + 10/11*5, 11 + 11/13*6), byrow = TRUE, nrow = 2, ncol = 2, 
+                        dimnames = list(c("r1", "r3"), c("c1", "c2")))
+  expectedGHA <- Matrix(c(6 + 6/21*10, 7 + 7/23*11,
+                          15 + 15/21*10, 16 + 16/23*11), byrow = TRUE, nrow = 2, ncol = 2, 
+                        dimnames = list(c("r1", "r3"), c("c1", "c2")))
+  df <- tibble::tribble(~Country, ~a_mat, 
+                        "USA", a, 
+                        "GHA", a + 5)
+  res <- df |> 
+    dplyr::mutate(
+      a_reallocated = matsbyname::reallocate_byname(a_mat, "r2", margin = 1)
+    )
 })
 
 
