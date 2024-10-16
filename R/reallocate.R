@@ -24,9 +24,10 @@
 #' @param margin The margin of the matrix on which the `rowcolnames` are located.
 #'               Default is `c(1, 2)`, meaning that both rows (`1`) and columns (`2`)
 #'               will be checked for `rowcolnames` and redistributed.
-#' @param .zero_behaviour Tells how to proceed when remaining rows or columns are all zero.
-#'                        Default behaviour is to throw an error.
-#'                        See details.
+#' @param .zero_behaviour Tells how to proceed when remaining (i.e., unallocated) 
+#'                        rows or columns are all zero.
+#'                        Default is "error", which throws an error.
+#'                        See details for other options.
 #' @param piece The piece of row or column names to be assessed.
 #'              Default is "all", indicating that the entire label will be assessed.
 #' @param pattern_type The pattern type desired. Default is "exact". 
@@ -70,6 +71,17 @@
 #' reallocate_byname(m, rowcolnames = "r3", margin = 1)
 #' # Move column 2 into the other columns (c1 and c3) proportionally
 #' reallocate_byname(m, rowcolnames = "c2", margin = 2)
+#' # Demonstrate different options for reallocating when zeroes remain.
+#' m2 <- matrix(c(1, 2,  0,
+#'                4, 5,  0,
+#'                7, 8, 10), 
+#'              nrow = 3, ncol = 3, byrow = TRUE, 
+#'              dimnames = list(c("r1", "r2", "r3"), 
+#'              c("c1", "c2", "c3")))
+#' reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+#'                   .zero_behaviour = "zeroes")
+#' reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+#'                   .zero_behaviour = "allocate equally")
 reallocate_byname <- function(a, 
                               rowcolnames = NULL,
                               margin = c(1, 2), 

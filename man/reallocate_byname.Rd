@@ -26,9 +26,10 @@ reallocate_byname(
 Default is \code{c(1, 2)}, meaning that both rows (\code{1}) and columns (\code{2})
 will be checked for \code{rowcolnames} and redistributed.}
 
-\item{.zero_behaviour}{Tells how to proceed when remaining rows or columns are all zero.
-Default behaviour is to throw an error.
-See details.}
+\item{.zero_behaviour}{Tells how to proceed when remaining (i.e., unallocated)
+rows or columns are all zero.
+Default is "error", which throws an error.
+See details for other options.}
 
 \item{piece}{The piece of row or column names to be assessed.
 Default is "all", indicating that the entire label will be assessed.}
@@ -46,11 +47,13 @@ Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.}
 for row and column name matching.
 Default is \link[RCLabels:notations_list]{RCLabels::notations_list}.}
 
-\item{inf_notation}{A boolean that tells whether to infer notation for rows and columns.
+\item{inf_notation}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+that tells whether to infer notation for rows and columns.
 Default is \code{TRUE}.
 See \code{\link[RCLabels:infer_notation]{RCLabels::infer_notation()}} for details.}
 
-\item{choose_most_specific}{A boolean that tells whether to choose the most specific
+\item{choose_most_specific}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+that tells whether to choose the most specific
 notation from \code{notation} when inferring notation.
 Default is \code{FALSE} so that a less specific notation can be
 inferred.
@@ -98,4 +101,15 @@ m
 reallocate_byname(m, rowcolnames = "r3", margin = 1)
 # Move column 2 into the other columns (c1 and c3) proportionally
 reallocate_byname(m, rowcolnames = "c2", margin = 2)
+# Demonstrate different options for reallocating when zeroes remain.
+m2 <- matrix(c(1, 2,  0,
+               4, 5,  0,
+               7, 8, 10), 
+             nrow = 3, ncol = 3, byrow = TRUE, 
+             dimnames = list(c("r1", "r2", "r3"), 
+             c("c1", "c2", "c3")))
+reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+                  .zero_behaviour = "zeroes")
+reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+                  .zero_behaviour = "allocate equally")
 }
