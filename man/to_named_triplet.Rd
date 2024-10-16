@@ -23,7 +23,7 @@ to_named_matrix(
   matrix_class = c("matrix", "Matrix"),
   row_index_colname = "i",
   col_index_colname = "j",
-  val_colname = "value",
+  value_colname = "value",
   .rnames = "rownames",
   .cnames = "colnames"
 )
@@ -76,7 +76,7 @@ integer triplet form,
 a data frame with
 row integer (i),
 column integer (j), and
-value (x) columns.
+value (value) columns.
 (Row names and column names can be stored as character string
 in the \code{i} and \code{j} columns, too,
 called character triplet form.)
