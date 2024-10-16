@@ -108,6 +108,7 @@ m2 <- matrix(c(1, 2,  0,
              nrow = 3, ncol = 3, byrow = TRUE, 
              dimnames = list(c("r1", "r2", "r3"), 
              c("c1", "c2", "c3")))
+m2
 reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
                   .zero_behaviour = "zeroes")
 reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
