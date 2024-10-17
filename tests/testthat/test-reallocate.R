@@ -206,15 +206,13 @@ test_that("reallocate_byname() works when choosing by pieces of column names", {
                       dimnames = list(c("r1", "r2"), c("a [from c]", "e")))
   expect_equal(a_reallocated2, expected2)
   
-    
-  # Specify notation
-  # As of 16 October 2024, this doesn't work. 
-  # Need to fix a bug in the RCLabels package.
-  # a_reallocated3 <- reallocate_byname(a, "b", piece = "from", notation = RCLabels::from_notation)
-  # expected3 <- matrix(c(2 + 2/6*4, 4 + 4/6*4, 
-  #                       6 + 6/14*12, 8 + 8/14*12), byrow = TRUE, nrow = 2, ncol = 2, 
-  #                     dimnames = list(c("r1", "r2"), c("a [from c]", "e")))
-  # expect_equal(a_reallocated3, expected3)
+  # Specify notation as bracket_notation.
+  # Specifying from_notation will not work.
+  a_reallocated3 <- reallocate_byname(a, "b", piece = "from", notation = RCLabels::bracket_notation)
+  expected3 <- matrix(c(2 + 2/6*4, 4 + 4/6*4,
+                        6 + 6/14*12, 8 + 8/14*12), byrow = TRUE, nrow = 2, ncol = 2,
+                      dimnames = list(c("r1", "r2"), c("a [from c]", "e")))
+  expect_equal(a_reallocated3, expected3)
 })
 
 
