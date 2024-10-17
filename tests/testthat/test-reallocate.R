@@ -134,7 +134,7 @@ test_that("reallocate_byname() works as expected with a 0 column, a degenerate c
                dimnames = list(c("r1", "r2", "r3"), 
                                c("c1", "c2")))
   res2 <- reallocate_byname(a2, "r3", margin = 1) |> 
-    expect_error("The following cannot be reallocated due to all zero values in the receiving rows: c2")
+    expect_error("r3 cannot be reallocated due to all zero values remaining in columns: c2")
 
   expected3 <- matrix(c(2, 0,
                         4, 0), 
@@ -143,7 +143,7 @@ test_that("reallocate_byname() works as expected with a 0 column, a degenerate c
                                       c("c1", "c2")))
   res3 <- reallocate_byname(a2, "r3", margin = 1, .zero_behaviour = "warning") |> 
     expect_equal(expected3) |> 
-    expect_warning("The following cannot be reallocated due to all zero values in the receiving rows: c2")
+    expect_warning("r3 cannot be reallocated due to all zero values remaining in columns: c2")
   
   # Same result as res3, but no warning.
   res4 <- reallocate_byname(a2, "r3", margin = 1, .zero_behaviour = "zeroes") |> 

@@ -157,8 +157,9 @@ reallocate_byname <- function(a,
       # Give a warning when there are any problem_cols
       if (any(problem_cols)) {
         names_problem_cols <- names(problem_cols[which(problem_cols)])
-        rows_or_cols <- ifelse(margin == 1, "rows", "columns")
-        msg <- paste0("The following cannot be reallocated due to all zero values in the receiving ", 
+        rows_or_cols <- ifelse(margin == 1, "columns", "rows")
+        msg <- paste0(paste0(rowcolnames, collapse = ", "), 
+                      " cannot be reallocated due to all zero values remaining in ", 
                       rows_or_cols, 
                       ": ", 
                       paste0(names_problem_cols, collapse = ", "))
