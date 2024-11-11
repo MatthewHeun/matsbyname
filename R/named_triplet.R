@@ -342,10 +342,12 @@ to_named_matrix <- function(a,
       stop("`row_index_colname` and `col_index_colname` must both be all integer or all character in to_named_matrix()")
     }
     
-    if (!iszero_byname(out)) {
-      # If this is NOT a zero matrix, get rid of zero rows and columns.
-      # We don't want to clean if it is a zero matrix, 
-      # because information will be lost.
+    # If this is NOT a zero or NA matrix, 
+    # get rid of zero rows and columns.
+    # We don't want to clean if it is a zero or NA matrix, 
+    # because information will be lost.
+    iszero_out <- iszero_byname(out)
+    if (!is.na(iszero_out) & !iszero_out) {
       out <- out |> 
         clean_byname()
     }
