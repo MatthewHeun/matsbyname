@@ -8,6 +8,9 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Documented the behaviour of `iszero_byname()` when 
+  a matrix has any `NA` elements:
+  the result is `NA`.
 * Added function `reallocate_byname()` to reallocate a 
   row or column proportionally to other rows or columns.
 * Change default name of value column in `to_triplet()`

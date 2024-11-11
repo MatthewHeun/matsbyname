@@ -1450,6 +1450,9 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #' Note that this function tests whether the elements of `abs(a)` are `<= tol`.
 #' The default value for `tol` is `1e-6`.
 #' So, you can set `tol = 0` to discover if `a` is EXACTLY the zero matrix.
+#' 
+#' If `a` contains any `NA` values, 
+#' `NA` is returned.
 #'
 #' @param a A matrix or list of matrices.
 #' @param tol The allowable deviation from 0 for any element.
@@ -1476,6 +1479,10 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #' iszero_byname(DF$B)
 #' iszero_byname(matrix(1e-10, nrow = 2))
 #' iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
+#' # When any NA value is present, NA is returned
+#' iszero_byname(NA)
+#' iszero_byname(matrix(c(0, NA), ncol = 2))
+#' iszero_byname(list(matrix(c(0, NA)), zero, nonzero))
 iszero_byname <- function(a, tol = 1e-6) {
   zero_func <- function(a_mat, tol){
     all(abs(a_mat) <= abs(tol))
