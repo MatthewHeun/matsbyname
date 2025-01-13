@@ -8,6 +8,8 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+## matsbyname 0.6.11 (2025-01-13)
+
 * Fixed a bug in `to_named_matrix()`, which previously
   errored when a matrix with any `NA` values was passed in the `a` argument.
 * Documented the behaviour of `iszero_byname()` when 
