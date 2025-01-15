@@ -1,10 +1,12 @@
 ## Context
 
-`matsbyname` v0.6.10
-prevents some non-unit tests from running on CRAN
-to fix a problem with CRAN builds at
-https://cran.r-project.org/web/checks/check_results_matsbyname.html.
-See `NEWS.md` for details.
+`matsbyname` v0.6.11
+documents behaviour of `iszero_byname()` when a matrix has any `NA` elements, 
+adds new functions `reallocate_byname()`, `select_rows_cols_byname()`,
+`to_triplet()`, and `to_named_matrix()`.
+There are bug fixes in 
+`to_named_matrix()` and for some cases of setting rowtype or coltype.
+See `NEWS.md` for additional details.
 
 
 ## Test environments (12 in total) and R CMD check results
