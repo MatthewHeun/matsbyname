@@ -9,7 +9,7 @@ There are bug fixes in
 See `NEWS.md` for additional details.
 
 
-## Test environments (12 in total) and R CMD check results
+## Test environments (13 in total) and R CMD check results
 
 * Local macOS X installation 14.6.1 (Sonoma), R4.4.2 (2024-10-31)
     * ERRORs: 0
