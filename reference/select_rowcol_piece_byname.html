@@ -13,7 +13,7 @@ based on the pieces of row and column labels."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,6 +64,8 @@ based on the pieces of row and column labels.</p>
 <span>  pattern_type <span class="op">=</span> <span class="st">"exact"</span>,</span>
 <span>  prepositions <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/prepositions_list.html" class="external-link">prepositions_list</a></span>,</span>
 <span>  notation <span class="op">=</span> <span class="fu">RCLabels</span><span class="fu">::</span><span class="va"><a href="https://matthewheun.github.io/RCLabels/reference/notations_list.html" class="external-link">notations_list</a></span>,</span>
+<span>  inf_notation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  choose_most_specific <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -101,13 +103,31 @@ Other options are "leading", "trailing", "anywhere", and "literal".</p></dd>
 
 <dt id="arg-prepositions">prepositions<a class="anchor" aria-label="anchor" href="#arg-prepositions"></a></dt>
 <dd><p>The prepositions that can be used for identifying pieces.
-Default is <code><a href="https://matthewheun.github.io/RCLabels/reference/prepositions_list.html" class="external-link">RCLabels::prepositions_list</a></code>.</p></dd>
+Default is <a href="https://matthewheun.github.io/RCLabels/reference/prepositions_list.html" class="external-link">RCLabels::prepositions_list</a>.</p></dd>
 
 
 <dt id="arg-notation">notation<a class="anchor" aria-label="anchor" href="#arg-notation"></a></dt>
 <dd><p>The notation for the row and column names.
-Default is <code><a href="https://matthewheun.github.io/RCLabels/reference/notations_list.html" class="external-link">RCLabels::notations_list</a></code>, meaning that all notations known to
+Default is <a href="https://matthewheun.github.io/RCLabels/reference/notations_list.html" class="external-link">RCLabels::notations_list</a>, meaning that all notations known to
 <code>RCLabels</code> will be assessed.</p></dd>
+
+
+<dt id="arg-inf-notation">inf_notation<a class="anchor" aria-label="anchor" href="#arg-inf-notation"></a></dt>
+<dd><p>A boolean that tells whether to infer notation for rows and columns.
+Default is <code>TRUE</code>.
+See <code><a href="https://matthewheun.github.io/RCLabels/reference/infer_notation.html" class="external-link">RCLabels::infer_notation()</a></code> for details.</p></dd>
+
+
+<dt id="arg-choose-most-specific">choose_most_specific<a class="anchor" aria-label="anchor" href="#arg-choose-most-specific"></a></dt>
+<dd><p>A boolean that tells whether to choose the most specific
+notation from <code>notation</code> when inferring notation.
+Default is <code>FALSE</code> so that a less specific notation can be
+inferred.
+In combination with <a href="https://matthewheun.github.io/RCLabels/reference/notations_list.html" class="external-link">RCLabels::notations_list</a>,
+the default value of <code>FALSE</code> means that
+<a href="https://matthewheun.github.io/RCLabels/reference/bracket_notation.html" class="external-link">RCLabels::bracket_notation</a> will be selected instead of
+anything more specific, such as
+<a href="https://matthewheun.github.io/RCLabels/reference/from_notation.html" class="external-link">RCLabels::from_notation</a>.</p></dd>
 
 
 <dt id="arg-margin">margin<a class="anchor" aria-label="anchor" href="#arg-margin"></a></dt>

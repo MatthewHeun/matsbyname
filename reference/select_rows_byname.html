@@ -11,7 +11,7 @@ that are matched against row names."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,7 +102,8 @@ retain nothing and remove nothing.</p>
 <p>Some typical patterns are:</p><ul><li><p>"^Electricity$|^Oil$": row names that are EXACTLY "Electricity" or EXACTLY "Oil".</p></li>
 <li><p>"^Electricity|^Oil": row names that START WITH "Electricity" or START WITH "Oil".</p></li>
 <li><p>"Electricity|Oil": row names that CONTAIN "Electricity" or CONTAIN "Oil" anywhere within them.</p></li>
-</ul><p>Given a list of row names, a pattern can be constructed easily using <code><a href="https://matthewheun.github.io/RCLabels/reference/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code>.
+</ul><p>Given a list of column names, a pattern can be constructed easily using
+<code><a href="https://matthewheun.github.io/RCLabels/reference/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code>.
 <code><a href="https://matthewheun.github.io/RCLabels/reference/make_or_pattern.html" class="external-link">RCLabels::make_or_pattern()</a></code> escapes regex strings using <code><a href="https://rdrr.io/pkg/Hmisc/man/escapeRegex.html" class="external-link">Hmisc::escapeRegex()</a></code>.
 This function assumes that <code>retain_pattern</code> and <code>remove_pattern</code> have already been
 suitably escaped.</p>

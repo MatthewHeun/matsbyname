@@ -37,6 +37,7 @@
 <url><loc>https://matthewheun.github.io/matsbyname/reference/create_colvec_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/create_matrix_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/create_rowvec_byname.html</loc></url>
+<url><loc>https://matthewheun.github.io/matsbyname/reference/create_triplet.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/cumapply_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/cumprod_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/cumsum_byname.html</loc></url>
@@ -49,6 +50,7 @@
 <url><loc>https://matthewheun.github.io/matsbyname/reference/exp_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/fractionize_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/geometricmean_byname.html</loc></url>
+<url><loc>https://matthewheun.github.io/matsbyname/reference/get_row_col_index_maps.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/getcolnames_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/getrownames_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/getzerorowcolnames_byname.html</loc></url>
@@ -84,6 +86,7 @@
 <url><loc>https://matthewheun.github.io/matsbyname/reference/prodall_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/quasi-quote-assign.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/quotient_byname.html</loc></url>
+<url><loc>https://matthewheun.github.io/matsbyname/reference/reallocate_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/rename_to_piece_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/rename_to_pref_suff_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/replaceNaN_byname.html</loc></url>
@@ -94,6 +97,7 @@
 <url><loc>https://matthewheun.github.io/matsbyname/reference/select_cols_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/select_rowcol_piece_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/select_rows_byname.html</loc></url>
+<url><loc>https://matthewheun.github.io/matsbyname/reference/select_rows_cols_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/selectzerocols_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/selectzerorows_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/setcolnames_byname.html</loc></url>
@@ -101,10 +105,12 @@
 <url><loc>https://matthewheun.github.io/matsbyname/reference/setrownames_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/setrowtype.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/sort_rows_cols.html</loc></url>
+<url><loc>https://matthewheun.github.io/matsbyname/reference/structure_index_map.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/sum_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/sumall_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/svd_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/switch_notation_byname.html</loc></url>
+<url><loc>https://matthewheun.github.io/matsbyname/reference/to_named_triplet.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/transpose_byname.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/trim_rows_cols.html</loc></url>
 <url><loc>https://matthewheun.github.io/matsbyname/reference/unaryapply_byname.html</loc></url>

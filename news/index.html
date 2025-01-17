@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.10" id="matsbyname-0610-2024-02-12">matsbyname 0.6.10 (2024-02-12)<a class="anchor" aria-label="anchor" href="#matsbyname-0610-2024-02-12"></a></h2><p class="text-muted">CRAN release: 2024-02-12</p>
+<h2 class="pkg-version" data-toc-text="0.6.11" id="matsbyname-0611-2025-01-17">matsbyname 0.6.11 (2025-01-17)<a class="anchor" aria-label="anchor" href="#matsbyname-0611-2025-01-17"></a></h2>
+<ul><li>Fixed a bug in <code><a href="../reference/to_named_triplet.html">to_named_matrix()</a></code>, which previously errored when a matrix with any <code>NA</code> values was passed in the <code>a</code> argument.</li>
+<li>Documented the behaviour of <code><a href="../reference/iszero_byname.html">iszero_byname()</a></code> when a matrix has any <code>NA</code> elements: the result is <code>NA</code>.</li>
+<li>Added function <code><a href="../reference/reallocate_byname.html">reallocate_byname()</a></code> to reallocate a row or column proportionally to other rows or columns.</li>
+<li>Change default name of value column in <code><a href="../reference/to_named_triplet.html">to_triplet()</a></code> from “x” to “value”.</li>
+<li>New function <code><a href="../reference/select_rows_cols_byname.html">select_rows_cols_byname()</a></code> includes <code>margin</code> argument that de-references row and column types, as needed.</li>
+<li>New functions <code><a href="../reference/to_named_triplet.html">to_triplet()</a></code> and <code><a href="../reference/to_named_triplet.html">to_named_matrix()</a></code> convert between named matrix and triplet forms (both integer triplet and character triplet) of matrices to assist some database operations (which prefer integer triplet form).</li>
+<li>Fixed a bug where setting rowtype or coltype attributes on a data frame resulted in the attribute set on each column of the data frame.</li>
+<li>New tests for new features.
+<ul><li>Now up to 2175 tests, all passing.</li>
+<li>Test coverage remains at 100%.</li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.10" id="matsbyname-0610-2024-02-12-doi">matsbyname 0.6.10 (2024-02-12) <a href="https://doi.org/10.5281/zenodo.10652382" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.10652382.svg" alt="DOI"></a>
+<a class="anchor" aria-label="anchor" href="#matsbyname-0610-2024-02-12-doi"></a></h2><p class="text-muted">CRAN release: 2024-02-12</p>
 <ul><li>Now skipping speed tests on CRAN. These tests are appropriate only for certain machines whose timings from previous runs are hard-wired into the tests. Put another way, these are not actually unit tests that verify correctness of code. They are timing tests. So no need to run these tests on CRAN (or in continuous integration tests, for that matter).</li>
 <li>No new tests.
 <ul><li>Still at 2113 tests, all passing.</li>
