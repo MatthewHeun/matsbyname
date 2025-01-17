@@ -48,7 +48,7 @@ See `NEWS.md` for additional details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * rhub windows (R-devel) ******************
+    * rhub windows (R-devel)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0  
@@ -57,7 +57,7 @@ See `NEWS.md` for additional details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2025-01-14 r87574 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2025-01-16 r87584 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
