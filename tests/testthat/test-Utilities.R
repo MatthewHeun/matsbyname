@@ -490,6 +490,43 @@ test_that("select_rows_byname() works even when there is a NULL situation with M
 })
 
 
+test_that("select_rows_cols_byname() works as expected", {
+  # Try with NULL
+  expect_null(select_rows_cols_byname(NULL))
+  # Try with a real matrix
+  m <- matsbyname::Matrix(1:4, nrow = 2, ncol = 2, 
+                          dimnames = list(c("r1", "r2"), c("c1", "c2")), 
+                          rowtype = "rows", coltype = "cols")
+  # Try with rows
+  expect_equal(m |> select_rows_cols_byname(margin = 1, 
+                                            retain_pattern = "r1"), 
+               matsbyname::Matrix(c(1, 3), nrow = 1, ncol = 2,
+                                  dimnames = list("r1", c("c1", "c2")), 
+                                  rowtype = "rows", coltype = "cols"))
+  # Try with columns
+  expect_equal(m |> select_rows_cols_byname(margin = 2, 
+                                            retain_pattern = "c2"), 
+               matsbyname::Matrix(c(3, 4), nrow = 2, ncol = 1,
+                                  dimnames = list(c("r1", "r2"), "c2"), 
+                                  rowtype = "rows", coltype = "cols"))
+  # Try with rowtype
+  expect_equal(m |> select_rows_cols_byname(margin = "rows", 
+                                            retain_pattern = "r2"), 
+               matsbyname::Matrix(c(2, 4), nrow = 1, ncol = 2,
+                                  dimnames = list("r2", c("c1", "c2")), 
+                                  rowtype = "rows", coltype = "cols"))
+  # Try with coltype
+  expect_equal(m |> select_rows_cols_byname(margin = "cols", 
+                                            retain_pattern = "c1"), 
+               matsbyname::Matrix(c(1, 2), nrow = 2, ncol = 1,
+                                  dimnames = list(c("r1", "r2"), "c1"), 
+                                  rowtype = "rows", coltype = "cols"))
+  # Should work when there is nothing to select.
+  expect_null(m %>% select_rows_cols_byname(retain_pattern = "r3"))
+  
+})
+
+
 test_that("select_rowcol_piece_byname() works for selecting rows", {
   expect_null(select_rowcol_piece_byname(a = NULL))
   
@@ -2152,6 +2189,14 @@ test_that("setcoltype() and coltype() work with Matrix objects", {
   expect_equal(coltype(DF2), list("Industries", "Industries"))
   DF3 <- DF %>% dplyr::mutate(newcol = setcoltype(U, "Industries"))
   expect_equal(DF3$newcol %>% coltype, list("Industries", "Industries"))
+})
+
+
+test_that("setrowtype() and rowtype() work with data frames", {
+  df <- data.frame(a = 2) |> 
+    setrowtype("row") |> setcoltype("col")
+  expect_equal(rowtype(df), "row")
+  expect_equal(coltype(df), "col")
 })
 
 

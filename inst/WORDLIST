@@ -20,6 +20,7 @@ al
 arg
 ary
 augend
+behaviour
 byname
 byrow
 colname
@@ -30,8 +31,10 @@ colvector
 cran
 de
 differencing
+dimname
 doi
 dplyr
+errored
 et
 fractionized
 fractionizing
@@ -63,6 +66,7 @@ tibble
 tidyr
 tol
 un
+unallocated
 vectorized
 vevtor
 zenodo

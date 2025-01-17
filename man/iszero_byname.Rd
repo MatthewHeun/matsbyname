@@ -20,6 +20,10 @@ Note that this function tests whether the elements of \code{abs(a)} are \verb{<=
 The default value for \code{tol} is \code{1e-6}.
 So, you can set \code{tol = 0} to discover if \code{a} is EXACTLY the zero matrix.
 }
+\details{
+If \code{a} contains any \code{NA} values,
+\code{NA} is returned.
+}
 \examples{
 zero <- matrix(0, nrow = 50, ncol = 50)
 iszero_byname(zero)
@@ -37,4 +41,8 @@ iszero_byname(DF$A)
 iszero_byname(DF$B)
 iszero_byname(matrix(1e-10, nrow = 2))
 iszero_byname(matrix(1e-10, nrow = 2), tol = 1e-11)
+# When any NA value is present, NA is returned
+iszero_byname(NA)
+iszero_byname(matrix(c(0, NA), ncol = 2))
+iszero_byname(list(matrix(c(0, NA)), zero, nonzero))
 }

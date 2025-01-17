@@ -3,11 +3,39 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+
 Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
 which always resolves to the latest release.
 
 
-## matsbyname 0.6.10 (2024-02-12)
+## matsbyname 0.6.11 (2025-01-17)
+
+* Fixed a bug in `to_named_matrix()`, which previously
+  errored when a matrix with any `NA` values was passed in the `a` argument.
+* Documented the behaviour of `iszero_byname()` when 
+  a matrix has any `NA` elements:
+  the result is `NA`.
+* Added function `reallocate_byname()` to reallocate a 
+  row or column proportionally to other rows or columns.
+* Change default name of value column in `to_triplet()`
+  from "x" to "value".
+* New function `select_rows_cols_byname()` includes `margin` argument
+  that de-references row and column types, as needed.
+* New functions `to_triplet()` and `to_named_matrix()`
+  convert between named matrix and triplet forms 
+  (both integer triplet and character triplet) 
+  of matrices
+  to assist some database operations 
+  (which prefer integer triplet form).
+* Fixed a bug where setting rowtype or coltype attributes on a 
+  data frame resulted in the attribute set on each column 
+  of the data frame.
+* New tests for new features.
+    - Now up to 2175 tests, all passing.
+    - Test coverage remains at 100%.
+
+
+## matsbyname 0.6.10 (2024-02-12) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10652382.svg)](https://doi.org/10.5281/zenodo.10652382)
 
 * Now skipping speed tests on CRAN.
   These tests are appropriate only for certain machines

@@ -41,8 +41,8 @@
 #'                          "Rolling Stones", "Bill",
 #'                          "Rolling Stones", "Charlie")
 #' agg_map <- agg_table_to_agg_map(bands, 
-#'                                  few_colname = "band",
-#'                                  many_colname = "members")
+#'                                 few_colname = "band",
+#'                                 many_colname = "members")
 #' agg_map
 #' agg_map_to_agg_table(agg_map, few_colname = "bands", many_colname = "members")
 #' @name aggregation_map_helpers

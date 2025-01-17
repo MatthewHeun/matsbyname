@@ -12,6 +12,8 @@ select_rowcol_piece_byname(
   pattern_type = "exact",
   prepositions = RCLabels::prepositions_list,
   notation = RCLabels::notations_list,
+  inf_notation = TRUE,
+  choose_most_specific = FALSE,
   margin = c(1, 2)
 )
 }
@@ -28,17 +30,31 @@ Default is \code{NULL}, meaning that retaining is requested.}
 Default is "all", indicating that the entire label will be assessed.}
 
 \item{pattern_type}{The way to match label pieces.
-\code{pattern_type} is passed to \code{RCLabels::make_or_pattern()}.
-See \code{RCLabels::make_or_pattern()} for details.
+\code{pattern_type} is passed to \code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}}.
+See \code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}} for details.
 Default is "exact", meaning that exact matches are retained or removed.
 Other options are "leading", "trailing", "anywhere", and "literal".}
 
 \item{prepositions}{The prepositions that can be used for identifying pieces.
-Default is \code{RCLabels::prepositions_list}.}
+Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.}
 
 \item{notation}{The notation for the row and column names.
-Default is \code{RCLabels::notations_list}, meaning that all notations known to
+Default is \link[RCLabels:notations_list]{RCLabels::notations_list}, meaning that all notations known to
 \code{RCLabels} will be assessed.}
+
+\item{inf_notation}{A boolean that tells whether to infer notation for rows and columns.
+Default is \code{TRUE}.
+See \code{\link[RCLabels:infer_notation]{RCLabels::infer_notation()}} for details.}
+
+\item{choose_most_specific}{A boolean that tells whether to choose the most specific
+notation from \code{notation} when inferring notation.
+Default is \code{FALSE} so that a less specific notation can be
+inferred.
+In combination with \link[RCLabels:notations_list]{RCLabels::notations_list},
+the default value of \code{FALSE} means that
+\link[RCLabels:bracket_notation]{RCLabels::bracket_notation} will be selected instead of
+anything more specific, such as
+\link[RCLabels:from_notation]{RCLabels::from_notation}.}
 
 \item{margin}{The margin to which row or column removal is requested.
 \code{1} indicates rows; \code{2} indicates columns.
