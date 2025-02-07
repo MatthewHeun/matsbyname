@@ -10,12 +10,18 @@ reallocate_byname(
   colnames = NULL,
   margin,
   .zero_behaviour = c("error", "warning", "zeroes", "allocate equally"),
-  piece = "all",
-  pattern_type = "exact",
-  prepositions = RCLabels::prepositions_list,
-  notation = RCLabels::notations_list,
-  inf_notation = TRUE,
-  choose_most_specific = FALSE
+  piece_rownames = "all",
+  pattern_type_rownames = "exact",
+  prepositions_rownames = RCLabels::prepositions_list,
+  notation_rownames = RCLabels::notations_list,
+  inf_notation_rownames = TRUE,
+  choose_most_specific_rownames = FALSE,
+  piece_colnames = "all",
+  pattern_type_colnames = "exact",
+  prepositions_colnames = RCLabels::prepositions_list,
+  notation_colnames = RCLabels::notations_list,
+  inf_notation_colnames = TRUE,
+  choose_most_specific_colnames = FALSE
 )
 }
 \arguments{
@@ -32,40 +38,43 @@ where each entry has length 1.
 The margin of the matrix over which the reallocation should occur.
 The only valid values are
 \code{1} (reallocate to other rows) or
-\code{2} (reallocate to other columns).}
+\code{2} (reallocate to other columns).
+If you want to reallocate both rows and columns,
+call the function twice.}
 
 \item{.zero_behaviour}{Tells how to proceed when remaining (i.e., unallocated)
 rows or columns are all zero.
 Default is "error", which throws an error.
 See details for other options.}
 
-\item{piece}{The piece of row or column names to be assessed.
+\item{piece_rownames, piece_colnames}{The piece of row or column names to be assessed.
 Default is "all", indicating that the entire label will be assessed.}
 
-\item{pattern_type}{The pattern type desired. Default is "exact".
+\item{pattern_type_rownames, pattern_type_colnames}{The pattern type desired for row and column names.
+Default is "exact".
 Other options are "leading", "trailing", "anywhere",
 and "literal".
 See \code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}} for details.}
 
-\item{prepositions}{Prepositions used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+\item{prepositions_rownames, prepositions_colnames}{Prepositions used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 for row and column name matching.
 Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.}
 
-\item{notation}{The row or column notation used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+\item{notation_rownames, notation_colnames}{The row or column notation used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 for row and column name matching.
 Default is \link[RCLabels:notations_list]{RCLabels::notations_list}.}
 
-\item{inf_notation}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+\item{inf_notation_rownames, inf_notation_colnames}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 that tells whether to infer notation for rows and columns.
 Default is \code{TRUE}.
 See \code{\link[RCLabels:infer_notation]{RCLabels::infer_notation()}} for details.}
 
-\item{choose_most_specific}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+\item{choose_most_specific_rownames, choose_most_specific_colnames}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 that tells whether to choose the most specific
 notation from \code{notation} when inferring notation.
 Default is \code{FALSE} so that a less specific notation can be
 inferred.
-In combination with \link[RCLabels:notations_list]{RCLabels::notations_list},
+In combination with \code{notations_list}s,
 the default value of \code{FALSE} means that
 \link[RCLabels:bracket_notation]{RCLabels::bracket_notation} will be selected instead of
 anything more specific, such as
