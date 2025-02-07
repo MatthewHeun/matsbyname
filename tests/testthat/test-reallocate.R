@@ -1,16 +1,25 @@
-test_that("reallocate_byname() errors as expected", {
+test_that("reallocate_byname() errors with invalid margin argument", {
+  a <- matrix(1)
   expect_error(
-    reallocate_byname(a = 42, margin = c(1, 2, 3)), 
-    "margin must have length 1 or 2 in matsbyname::reallocate_byname\\(\\)"
+    reallocate_byname(a, margin = 3), 
+    "margin must be 1 or 2 in matsbyname::reallocate_byname\\(\\)"
   )
   expect_error(
-    reallocate_byname(a = 42, margin = 4), 
-    "margin must be 1, 2, or c\\(1, 2\\) in matsbyname::reallocate_byname\\(\\)"
+    reallocate_byname(a, margin = c(1, 2)), 
+    "margin must have length 1 in matsbyname::reallocate_byname\\(\\)"
   )
-  expect_error(
-    reallocate_byname(a = 42, margin = c(1, 1)), 
-    "margin must contain unique integers in matsbyname::reallocate_byname\\(\\)"
-  )
+})
+
+
+test_that("reallocate_byname() works with row reallocation", {
+  a <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), 
+              nrow = 3, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1", "c2")))
+  res <- reallocate_byname(a, rownames = "r3", margin = 1)
+  
 })
 
 

@@ -1,4 +1,4 @@
-#' Reallocate values from one row or column to another
+#' Reallocate values from one row or column to others
 #'
 #' There are situations where it is helpful to 
 #' reallocate values from one row or column to another,
@@ -7,23 +7,38 @@
 #' See examples.
 #' 
 #' This function will provide answers, but 
-#' it is unlikely that the answers will be meaningful, when the
-#' remaining data (the rows or columns not being allocated)
+#' it is unlikely that the answers will be meaningful when the
+#' remaining data (the rows or columns not being reallocated)
 #' contain negative numbers.
 #' 
+#' The value of `margin` affects the interpretation of 
+#' `rownames` and `colnames`. 
+#' If `margin = 1`, `rownames` identifies the rows to be reallocated to other rows. 
+#' `colnames` identifies the columns to be reallocated, where
+#' `NULL` (the default) means that all columns are reallocated.
+#' If `margin = 2`, `colnames` identifies the columns to be reallocated to other columns. 
+#' `rownames` identifies the rows to be reallocated, where
+#' `NULL` (the default) means that all rows are reallocated.
+#'
 #' When the remaining rows or columns not being reallocated
-#' contain zeroes, the result is determined by `.zero_behaviour`.
+#' contain exclusively zeroes, the result is determined by `.zero_behaviour`.
 #' Options are one of:
 #' * "error" (the default) to throw an error.
 #' * "warning" to issue a warning but continue execution. Be careful with this option!
 #' * "zeroes" to return zeroes in the row or column with zeroes. Note that "zeroes" and "warning" return the same value. "zeroes" does so without a warning.
 #' * "allocate equally" to equally allocate across remaining rows or columns.
-#'
+#' 
 #' @param a A matrix or a list of matrices.
-#' @param rowcolnames The names of the rows or columns to be redistributed.
-#' @param margin The margin of the matrix on which the `rowcolnames` are located.
-#'               Default is `c(1, 2)`, meaning that both rows (`1`) and columns (`2`)
-#'               will be checked for `rowcolnames` and redistributed.
+#' @param rownames The row names to reallocate. 
+#'                 `NULL` (the default) means include all rows.
+#' @param colnames The column names to reallocate.
+#'                 `NULL` (the default) means include all rows.
+#' @param margin An integer vector of length 1 or a vector of integers
+#'               where each entry has length 1. 
+#'               The margin of the matrix over which the reallocation should occur. 
+#'               The only valid values are 
+#'               `1` (reallocate to other rows) or
+#'               `2` (reallocate to other columns).
 #' @param .zero_behaviour Tells how to proceed when remaining (i.e., unallocated) 
 #'                        rows or columns are all zero.
 #'                        Default is "error", which throws an error.
@@ -93,8 +108,9 @@
 #'                   .zero_behaviour = "warning")
 #' }
 reallocate_byname <- function(a, 
-                              rowcolnames = NULL,
-                              margin = c(1, 2), 
+                              rownames = NULL,
+                              colnames = NULL,
+                              margin, 
                               .zero_behaviour = c("error", "warning", "zeroes", "allocate equally"),
                               piece = "all", 
                               pattern_type = "exact", 
@@ -102,32 +118,41 @@ reallocate_byname <- function(a,
                               notation = RCLabels::notations_list, 
                               inf_notation = TRUE, 
                               choose_most_specific = FALSE) {
+  
   margin <- prep_vector_arg(a, margin)
+  rownames <- prep_vector_arg(a, rownames)
+  colnames <- prep_vector_arg(a, colnames)
   .zero_behaviour <- match.arg(.zero_behaviour, several.ok = FALSE)
-  reallocate_func <- function(a_mat, margin) {
-    if (length(margin) != length(unique(margin))) {
-      stop("margin must contain unique integers in matsbyname::reallocate_byname()")
-    }
-    if (!length(margin) %in% c(1,2)) {
-      stop("margin must have length 1 or 2 in matsbyname::reallocate_byname()")
+  
+  reallocate_func <- function(a_mat, rownames, colnames, margin) {
+    if (length(margin) != 1) {
+      stop("margin must have length 1 in matsbyname::reallocate_byname()")
     }
     
-    if (!all(sapply(margin, function(mar) {mar %in% c(1,2)}))) {
-      stop("margin must be 1, 2, or c(1, 2) in matsbyname::reallocate_byname()")
+    if (! (margin %in% c(1, 2))) {
+      stop("margin must be 1 or 2 in matsbyname::reallocate_byname()")
     }
 
     out <- a_mat
     if (2 %in% margin) {
       out <- out |> 
         matsbyname::transpose_byname() |> 
-        reallocate_func(margin = 1) |> 
+        reallocate_func(rownames = colnames, colnames = rownames, margin = 1) |> 
         matsbyname::transpose_byname()
     }
     if (1 %in% margin) {
       # These are the rows to be redistributed
       redistrows <- out |> 
-        matsbyname::select_rowcol_piece_byname(retain = rowcolnames, 
-                                               margin = margin, 
+        matsbyname::select_rowcol_piece_byname(retain = rownames, 
+                                               margin = 1, 
+                                               piece = piece, 
+                                               pattern_type = pattern_type, 
+                                               prepositions = prepositions, 
+                                               notation = notation, 
+                                               inf_notation = inf_notation, 
+                                               choose_most_specific = choose_most_specific) |> 
+        matsbyname::select_rowcol_piece_byname(retain = colnames, 
+                                               margin = 2, 
                                                piece = piece, 
                                                pattern_type = pattern_type, 
                                                prepositions = prepositions, 
@@ -141,8 +166,16 @@ reallocate_byname <- function(a,
       
       # These are the rows into which the redistribution will happen
       keeprows <- out |>
-        matsbyname::select_rowcol_piece_byname(remove = rowcolnames, 
-                                               margin = margin, 
+        matsbyname::select_rowcol_piece_byname(remove = rownames, 
+                                               margin = 1, 
+                                               piece = piece, 
+                                               pattern_type = pattern_type, 
+                                               prepositions = prepositions, 
+                                               notation = notation, 
+                                               inf_notation = inf_notation, 
+                                               choose_most_specific = choose_most_specific) |> 
+        matsbyname::select_rowcol_piece_byname(remove = colnames, 
+                                               margin = 2, 
                                                piece = piece, 
                                                pattern_type = pattern_type, 
                                                prepositions = prepositions, 
@@ -207,6 +240,6 @@ reallocate_byname <- function(a,
     return(out)
   }
   unaryapply_byname(reallocate_func, a = a,
-                    .FUNdots = list(margin = margin), 
+                    .FUNdots = list(rownames = rownames, colnames = colnames, margin = margin), 
                     rowcoltypes = "all")
 }

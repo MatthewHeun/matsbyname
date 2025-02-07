@@ -2,12 +2,13 @@
 % Please edit documentation in R/reallocate.R
 \name{reallocate_byname}
 \alias{reallocate_byname}
-\title{Reallocate values from one row or column to another}
+\title{Reallocate values from one row or column to others}
 \usage{
 reallocate_byname(
   a,
-  rowcolnames = NULL,
-  margin = c(1, 2),
+  rownames = NULL,
+  colnames = NULL,
+  margin,
   .zero_behaviour = c("error", "warning", "zeroes", "allocate equally"),
   piece = "all",
   pattern_type = "exact",
@@ -20,11 +21,18 @@ reallocate_byname(
 \arguments{
 \item{a}{A matrix or a list of matrices.}
 
-\item{rowcolnames}{The names of the rows or columns to be redistributed.}
+\item{rownames}{The row names to reallocate.
+\code{NULL} (the default) means include all rows.}
 
-\item{margin}{The margin of the matrix on which the \code{rowcolnames} are located.
-Default is \code{c(1, 2)}, meaning that both rows (\code{1}) and columns (\code{2})
-will be checked for \code{rowcolnames} and redistributed.}
+\item{colnames}{The column names to reallocate.
+\code{NULL} (the default) means include all rows.}
+
+\item{margin}{An integer vector of length 1 or a vector of integers
+where each entry has length 1.
+The margin of the matrix over which the reallocation should occur.
+The only valid values are
+\code{1} (reallocate to other rows) or
+\code{2} (reallocate to other columns).}
 
 \item{.zero_behaviour}{Tells how to proceed when remaining (i.e., unallocated)
 rows or columns are all zero.
@@ -75,12 +83,21 @@ See examples.
 }
 \details{
 This function will provide answers, but
-it is unlikely that the answers will be meaningful, when the
-remaining data (the rows or columns not being allocated)
+it is unlikely that the answers will be meaningful when the
+remaining data (the rows or columns not being reallocated)
 contain negative numbers.
 
+The value of \code{margin} affects the interpretation of
+\code{rownames} and \code{colnames}.
+If \code{margin = 1}, \code{rownames} identifies the rows to be reallocated to other rows.
+\code{colnames} identifies the columns to be reallocated, where
+\code{NULL} (the default) means that all columns are reallocated.
+If \code{margin = 2}, \code{colnames} identifies the columns to be reallocated to other columns.
+\code{rownames} identifies the rows to be reallocated, where
+\code{NULL} (the default) means that all rows are reallocated.
+
 When the remaining rows or columns not being reallocated
-contain zeroes, the result is determined by \code{.zero_behaviour}.
+contain exclusively zeroes, the result is determined by \code{.zero_behaviour}.
 Options are one of:
 \itemize{
 \item "error" (the default) to throw an error.
