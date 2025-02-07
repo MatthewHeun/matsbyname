@@ -113,4 +113,13 @@ reallocate_byname(m2, rowcolnames = "r3", margin = 1,
                   .zero_behaviour = "zeroes")
 reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
                   .zero_behaviour = "allocate equally")
+\dontrun{
+# "error" will cause an error to be emitted.
+reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+                  .zero_behaviour = "error")
+# "warning" will cause a warning to be emitted
+# and will return a result that is the same as "zeroes".
+reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+                  .zero_behaviour = "warning")
+}
 }
