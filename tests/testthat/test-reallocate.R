@@ -19,7 +19,23 @@ test_that("reallocate_byname() works with row reallocation", {
               dimnames = list(c("r1", "r2", "r3"), 
                               c("c1", "c2")))
   res <- reallocate_byname(a, rownames = "r3", margin = 1)
+
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
 })
 
 

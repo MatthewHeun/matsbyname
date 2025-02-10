@@ -45,29 +45,35 @@ call the function twice.}
 \item{.zero_behaviour}{Tells how to proceed when remaining (i.e., unallocated)
 rows or columns are all zero.
 Default is "error", which throws an error.
-See details for other options.}
+See details for other options.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
 \item{piece_rownames, piece_colnames}{The piece of row or column names to be assessed.
-Default is "all", indicating that the entire label will be assessed.}
+Default is "all", indicating that the entire label will be assessed.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
 \item{pattern_type_rownames, pattern_type_colnames}{The pattern type desired for row and column names.
 Default is "exact".
 Other options are "leading", "trailing", "anywhere",
 and "literal".
-See \code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}} for details.}
+See \code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}} for details.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
 \item{prepositions_rownames, prepositions_colnames}{Prepositions used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 for row and column name matching.
-Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.}
+Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
 \item{notation_rownames, notation_colnames}{The row or column notation used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 for row and column name matching.
-Default is \link[RCLabels:notations_list]{RCLabels::notations_list}.}
+Default is \link[RCLabels:notations_list]{RCLabels::notations_list}.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
 \item{inf_notation_rownames, inf_notation_colnames}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 that tells whether to infer notation for rows and columns.
 Default is \code{TRUE}.
-See \code{\link[RCLabels:infer_notation]{RCLabels::infer_notation()}} for details.}
+See \code{\link[RCLabels:infer_notation]{RCLabels::infer_notation()}} for details.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
 \item{choose_most_specific_rownames, choose_most_specific_colnames}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 that tells whether to choose the most specific
@@ -78,7 +84,8 @@ In combination with \code{notations_list}s,
 the default value of \code{FALSE} means that
 \link[RCLabels:bracket_notation]{RCLabels::bracket_notation} will be selected instead of
 anything more specific, such as
-\link[RCLabels:from_notation]{RCLabels::from_notation}.}
+\link[RCLabels:from_notation]{RCLabels::from_notation}.
+If \code{a} is a \code{list}, applies to all items in the list.}
 }
 \value{
 A modified version of \code{a} with \code{rownames} or \code{colnames} redistributed.

@@ -45,23 +45,29 @@
 #'                        rows or columns are all zero.
 #'                        Default is "error", which throws an error.
 #'                        See details for other options.
+#'                        If `a` is a `list`, applies to all items in the list.
 #' @param piece_rownames,piece_colnames The piece of row or column names to be assessed.
 #'                       Default is "all", indicating that the entire label will be assessed.
+#'                        If `a` is a `list`, applies to all items in the list.
 #' @param pattern_type_rownames,pattern_type_colnames The pattern type desired for row and column names.
 #'                              Default is "exact". 
 #'                              Other options are "leading", "trailing", "anywhere", 
 #'                              and "literal". 
 #'                              See [RCLabels::make_or_pattern()] for details.
+#'                              If `a` is a `list`, applies to all items in the list.
 #' @param prepositions_rownames,prepositions_colnames Prepositions used by [matsbyname::select_rowcol_piece_byname()]
 #'                              for row and column name matching.
 #'                               Default is [RCLabels::prepositions_list].
+#'                               If `a` is a `list`, applies to all items in the list.
 #' @param notation_rownames,notation_colnames The row or column notation used by [matsbyname::select_rowcol_piece_byname()]
 #'                          for row and column name matching.
 #'                          Default is [RCLabels::notations_list].
+#'                          If `a` is a `list`, applies to all items in the list.
 #' @param inf_notation_rownames,inf_notation_colnames A boolean used by [matsbyname::select_rowcol_piece_byname()]
 #'                              that tells whether to infer notation for rows and columns.
 #'                              Default is `TRUE`.
 #'                              See [RCLabels::infer_notation()] for details.
+#'                              If `a` is a `list`, applies to all items in the list.
 #' @param choose_most_specific_rownames,choose_most_specific_colnames A boolean used by [matsbyname::select_rowcol_piece_byname()]
 #'                                      that tells whether to choose the most specific
 #'                                      notation from `notation` when inferring notation.
@@ -72,6 +78,7 @@
 #'                                      [RCLabels::bracket_notation] will be selected instead of
 #'                                      anything more specific, such as
 #'                                      [RCLabels::from_notation].
+#'                                      If `a` is a `list`, applies to all items in the list.
 #'                     
 #' @return A modified version of `a` with `rownames` or `colnames` redistributed.
 #'
@@ -133,13 +140,7 @@ reallocate_byname <- function(a,
   colnames <- prep_vector_arg(a, colnames)
   .zero_behaviour <- match.arg(.zero_behaviour, several.ok = FALSE)
   
-  reallocate_func <- function(a_mat, rownames, colnames, margin, 
-                              piece_rownames, pattern_type_rownames, prepositions_rownames,
-                              notation_rownames, inf_notation_rownames, 
-                              choose_most_specific_rownames, 
-                              piece_colnames, pattern_type_colnames, prepositions_colnames,
-                              notation_colnames, inf_notation_colnames, 
-                              choose_most_specific_colnames) {
+  reallocate_func <- function(a_mat, rownames, colnames, margin) {
     if (length(margin) != 1) {
       stop("margin must have length 1 in matsbyname::reallocate_byname()")
     }
@@ -149,24 +150,24 @@ reallocate_byname <- function(a,
     }
 
     out <- a_mat
-    if (2 %in% margin) {
+    if (margin == 2) {
       out <- out |> 
         matsbyname::transpose_byname() |> 
-        reallocate_func(rownames = colnames, 
-                        colnames = rownames,
-                        margin = 1, 
-                        piece_rownames = piece_colnames,
-                        pattern_type_rownames = pattern_type_colnames, 
-                        prepositions_rownames = prepositions_colnames,
-                        notation_rownames = notation_colnames, 
-                        inf_notation_rownames = inf_notation_colnames, 
-                        choose_most_specific_rownames = choose_most_specific_colnames, 
-                        piece_colnames = piece_rownames, 
-                        pattern_type_colnames = pattern_type_rownames, 
-                        prepositions_colnames = prepositions_rownames,
-                        notation_colnames = notation_rownames, 
-                        inf_notation_colnames = inf_notation_rownames, 
-                        choose_most_specific_colnames = choose_most_specific_rownames) |> 
+        reallocate_byname(rownames = colnames, 
+                          colnames = rownames,
+                          margin = 1, 
+                          piece_rownames = piece_colnames,
+                          pattern_type_rownames = pattern_type_colnames, 
+                          prepositions_rownames = prepositions_colnames,
+                          notation_rownames = notation_colnames, 
+                          inf_notation_rownames = inf_notation_colnames, 
+                          choose_most_specific_rownames = choose_most_specific_colnames, 
+                          piece_colnames = piece_rownames, 
+                          pattern_type_colnames = pattern_type_rownames, 
+                          prepositions_colnames = prepositions_rownames,
+                          notation_colnames = notation_rownames, 
+                          inf_notation_colnames = inf_notation_rownames, 
+                          choose_most_specific_colnames = choose_most_specific_rownames) |> 
         matsbyname::transpose_byname()
     }
     if (1 %in% margin) {
@@ -266,18 +267,6 @@ reallocate_byname <- function(a,
     return(out)
   }
   unaryapply_byname(reallocate_func, a = a,
-                    .FUNdots = list(rownames = rownames, colnames = colnames, margin = margin, 
-                                    piece_rownames = piece_rownames,
-                                    pattern_type_rownames = pattern_type_rownames, 
-                                    prepositions_rownames = prepositions_rownames,
-                                    notation_rownames = notation_rownames, 
-                                    inf_notation_rownames = inf_notation_rownames, 
-                                    choose_most_specific_rownames = choose_most_specific_rownames, 
-                                    piece_colnames = piece_colnames, 
-                                    pattern_type_colnames = pattern_type_colnames, 
-                                    prepositions_colnames = prepositions_colnames,
-                                    notation_colnames = notation_colnames, 
-                                    inf_notation_colnames = inf_notation_colnames, 
-                                    choose_most_specific_colnames = choose_most_specific_colnames), 
+                    .FUNdots = list(rownames = rownames, colnames = colnames, margin = margin), 
                     rowcoltypes = "all")
 }
