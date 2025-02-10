@@ -11,31 +11,23 @@ test_that("reallocate_byname() errors with invalid margin argument", {
 })
 
 
-test_that("reallocate_byname() works with row reallocation", {
+test_that("reallocate_byname() works with row reallocation and column filtering", {
   a <- matrix(c(1, 2, 
                 3, 4, 
                 5, 6), 
               nrow = 3, ncol = 2, byrow = TRUE, 
               dimnames = list(c("r1", "r2", "r3"), 
                               c("c1", "c2")))
-  res <- reallocate_byname(a, rownames = "r3", margin = 1)
+  # Reallocate r3 but only c2
+  res <- reallocate_byname(a, rownames = "r3", colnames = "c2", margin = 1)
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-    
+  expected <- matrix(c(1, 2 + 2/6*6, 
+                       3, 4 + 4/6*6, 
+                       5, 0), 
+                     nrow = 3, ncol = 2, byrow = TRUE, 
+                     dimnames = list(c("r1", "r2", "r3"), 
+                                     c("c1", "c2")))
+  expect_equal(res, expected)
 })
 
 
