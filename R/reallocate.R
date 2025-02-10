@@ -73,7 +73,7 @@
 #'                                      anything more specific, such as
 #'                                      [RCLabels::from_notation].
 #'                     
-#' @return A modified version of `a` with `rowcolnames` redistributed.
+#' @return A modified version of `a` with `rownames` or `colnames` redistributed.
 #'
 #' @export
 #'
@@ -86,9 +86,9 @@
 #'             c("c1", "c2", "c3")))
 #' m
 #' # Move row 3 into the other rows (r1 and r2) proportionally
-#' reallocate_byname(m, rowcolnames = "r3", margin = 1)
+#' reallocate_byname(m, rownames = "r3", margin = 1)
 #' # Move column 2 into the other columns (c1 and c3) proportionally
-#' reallocate_byname(m, rowcolnames = "c2", margin = 2)
+#' reallocate_byname(m, colnames = "c2", margin = 2)
 #' # Demonstrate different options for reallocating when zeroes remain.
 #' m2 <- matrix(c(1, 2,  0,
 #'                4, 5,  0,
@@ -97,17 +97,17 @@
 #'              dimnames = list(c("r1", "r2", "r3"), 
 #'              c("c1", "c2", "c3")))
 #' m2
-#' reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+#' reallocate_byname(m2, rownames = "r3", margin = 1, 
 #'                   .zero_behaviour = "zeroes")
-#' reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+#' reallocate_byname(m2, rownames = "r3", margin = 1, 
 #'                   .zero_behaviour = "allocate equally")
 #' \dontrun{
 #' # "error" will cause an error to be emitted.
-#' reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+#' reallocate_byname(m2, rownames = "r3", margin = 1, 
 #'                   .zero_behaviour = "error")
 #' # "warning" will cause a warning to be emitted
 #' # and will return a result that is the same as "zeroes".
-#' reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+#' reallocate_byname(m2, rownames = "r3", margin = 1, 
 #'                   .zero_behaviour = "warning")
 #' }
 reallocate_byname <- function(a, 
@@ -133,7 +133,13 @@ reallocate_byname <- function(a,
   colnames <- prep_vector_arg(a, colnames)
   .zero_behaviour <- match.arg(.zero_behaviour, several.ok = FALSE)
   
-  reallocate_func <- function(a_mat, rownames, colnames, margin) {
+  reallocate_func <- function(a_mat, rownames, colnames, margin, 
+                              piece_rownames, pattern_type_rownames, prepositions_rownames,
+                              notation_rownames, inf_notation_rownames, 
+                              choose_most_specific_rownames, 
+                              piece_colnames, pattern_type_colnames, prepositions_colnames,
+                              notation_colnames, inf_notation_colnames, 
+                              choose_most_specific_colnames) {
     if (length(margin) != 1) {
       stop("margin must have length 1 in matsbyname::reallocate_byname()")
     }
@@ -146,7 +152,21 @@ reallocate_byname <- function(a,
     if (2 %in% margin) {
       out <- out |> 
         matsbyname::transpose_byname() |> 
-        reallocate_func(rownames = colnames, colnames = rownames, margin = 1) |> 
+        reallocate_func(rownames = colnames, 
+                        colnames = rownames,
+                        margin = 1, 
+                        piece_rownames = piece_colnames,
+                        pattern_type_rownames = pattern_type_colnames, 
+                        prepositions_rownames = prepositions_colnames,
+                        notation_rownames = notation_colnames, 
+                        inf_notation_rownames = inf_notation_colnames, 
+                        choose_most_specific_rownames = choose_most_specific_colnames, 
+                        piece_colnames = piece_rownames, 
+                        pattern_type_colnames = pattern_type_rownames, 
+                        prepositions_colnames = prepositions_rownames,
+                        notation_colnames = notation_rownames, 
+                        inf_notation_colnames = inf_notation_rownames, 
+                        choose_most_specific_colnames = choose_most_specific_rownames) |> 
         matsbyname::transpose_byname()
     }
     if (1 %in% margin) {
@@ -205,14 +225,11 @@ reallocate_byname <- function(a,
       # In this case, we can't know how to do the redistribution.
       problem_cols <- keeprows_zerocol & non_zero_redist_rows
       
-      # Give a warning when there are any problem_cols
+      # Deal with warnings or errors when there are any problem_cols
       if (any(problem_cols)) {
         names_problem_cols <- names(problem_cols[which(problem_cols)])
-        rows_or_cols <- ifelse(margin == 1, "columns", "rows")
-        msg <- paste0(paste0(rowcolnames, collapse = ", "), 
-                      " cannot be reallocated due to all zero values remaining in ", 
-                      rows_or_cols, 
-                      ": ", 
+        msg <- paste0(paste0(rownames, collapse = ", "), 
+                      " cannot be reallocated due to all zero values remaining on the other margin: ", 
                       paste0(names_problem_cols, collapse = ", "))
         if (.zero_behaviour == "error") {
           stop(msg)
@@ -249,6 +266,18 @@ reallocate_byname <- function(a,
     return(out)
   }
   unaryapply_byname(reallocate_func, a = a,
-                    .FUNdots = list(rownames = rownames, colnames = colnames, margin = margin), 
+                    .FUNdots = list(rownames = rownames, colnames = colnames, margin = margin, 
+                                    piece_rownames = piece_rownames,
+                                    pattern_type_rownames = pattern_type_rownames, 
+                                    prepositions_rownames = prepositions_rownames,
+                                    notation_rownames = notation_rownames, 
+                                    inf_notation_rownames = inf_notation_rownames, 
+                                    choose_most_specific_rownames = choose_most_specific_rownames, 
+                                    piece_colnames = piece_colnames, 
+                                    pattern_type_colnames = pattern_type_colnames, 
+                                    prepositions_colnames = prepositions_colnames,
+                                    notation_colnames = notation_colnames, 
+                                    inf_notation_colnames = inf_notation_colnames, 
+                                    choose_most_specific_colnames = choose_most_specific_colnames), 
                     rowcoltypes = "all")
 }

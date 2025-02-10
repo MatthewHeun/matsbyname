@@ -81,7 +81,7 @@ anything more specific, such as
 \link[RCLabels:from_notation]{RCLabels::from_notation}.}
 }
 \value{
-A modified version of \code{a} with \code{rowcolnames} redistributed.
+A modified version of \code{a} with \code{rownames} or \code{colnames} redistributed.
 }
 \description{
 There are situations where it is helpful to
@@ -124,9 +124,9 @@ m <- matrix(c(1, 2, 3,
             c("c1", "c2", "c3")))
 m
 # Move row 3 into the other rows (r1 and r2) proportionally
-reallocate_byname(m, rowcolnames = "r3", margin = 1)
+reallocate_byname(m, rownames = "r3", margin = 1)
 # Move column 2 into the other columns (c1 and c3) proportionally
-reallocate_byname(m, rowcolnames = "c2", margin = 2)
+reallocate_byname(m, colnames = "c2", margin = 2)
 # Demonstrate different options for reallocating when zeroes remain.
 m2 <- matrix(c(1, 2,  0,
                4, 5,  0,
@@ -135,17 +135,17 @@ m2 <- matrix(c(1, 2,  0,
              dimnames = list(c("r1", "r2", "r3"), 
              c("c1", "c2", "c3")))
 m2
-reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+reallocate_byname(m2, rownames = "r3", margin = 1, 
                   .zero_behaviour = "zeroes")
-reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+reallocate_byname(m2, rownames = "r3", margin = 1, 
                   .zero_behaviour = "allocate equally")
 \dontrun{
 # "error" will cause an error to be emitted.
-reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+reallocate_byname(m2, rownames = "r3", margin = 1, 
                   .zero_behaviour = "error")
 # "warning" will cause a warning to be emitted
 # and will return a result that is the same as "zeroes".
-reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+reallocate_byname(m2, rownames = "r3", margin = 1, 
                   .zero_behaviour = "warning")
 }
 }
