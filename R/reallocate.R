@@ -170,9 +170,31 @@ reallocate_byname <- function(a,
                           choose_most_specific_colnames = choose_most_specific_rownames) |> 
         matsbyname::transpose_byname()
     }
-    if (1 %in% margin) {
-      # These are the rows and columns to be redistributed
-      redistrows <- out |> 
+    if (margin == 1) {
+      
+      # submat is the submatrix on which we will do the redistribution.
+      # submat has only the columns that we want to redistribute
+      if (is.null(colnames)) {
+        submat <- out
+      } else {
+        submat <- out |> 
+          matsbyname::select_rowcol_piece_byname(retain = colnames, 
+                                                 margin = 2, 
+                                                 piece = piece_colnames, 
+                                                 pattern_type = pattern_type_colnames, 
+                                                 prepositions = prepositions_colnames, 
+                                                 notation = notation_colnames, 
+                                                 inf_notation = inf_notation_colnames, 
+                                                 choose_most_specific = choose_most_specific_colnames)
+      }
+      # If submat is NULL, there is no redistribution to be done.
+      # Just return a_mat.
+      if (is.null(submat)) {
+        return(a_mat)
+      }
+
+      # These are the rows of submat to be redistributed
+      redistrows <- submat |> 
         matsbyname::select_rowcol_piece_byname(retain = rownames, 
                                                margin = 1, 
                                                piece = piece_rownames, 
@@ -180,22 +202,14 @@ reallocate_byname <- function(a,
                                                prepositions = prepositions_rownames, 
                                                notation = notation_rownames, 
                                                inf_notation = inf_notation_rownames, 
-                                               choose_most_specific = choose_most_specific_rownames) |> 
-        matsbyname::select_rowcol_piece_byname(retain = colnames, 
-                                               margin = 2, 
-                                               piece = piece_colnames, 
-                                               pattern_type = pattern_type_colnames, 
-                                               prepositions = prepositions_colnames, 
-                                               notation = notation_colnames, 
-                                               inf_notation = inf_notation_colnames, 
-                                               choose_most_specific = choose_most_specific_colnames)
+                                               choose_most_specific = choose_most_specific_rownames)
       # Calculate the diagonal matrix that will multiply into keepfracs
       hatmat <- redistrows |> 
         matsbyname::colsums_byname() |> 
         matsbyname::hatize_byname(keep = "colnames")
       
-      # These are the rows and columns into which the redistribution will happen
-      keeprows <- out |>
+      # These are the rows into which the redistribution will happen
+      keeprows <- submat |>
         matsbyname::select_rowcol_piece_byname(remove = rownames, 
                                                margin = 1, 
                                                piece = piece_rownames, 
@@ -203,15 +217,7 @@ reallocate_byname <- function(a,
                                                prepositions = prepositions_rownames, 
                                                notation = notation_rownames, 
                                                inf_notation = inf_notation_rownames, 
-                                               choose_most_specific = choose_most_specific_rownames) |> 
-        matsbyname::select_rowcol_piece_byname(remove = colnames, 
-                                               margin = 2, 
-                                               piece = piece_colnames, 
-                                               pattern_type = pattern_type_colnames, 
-                                               prepositions = prepositions_colnames, 
-                                               notation = notation_colnames, 
-                                               inf_notation = inf_notation_colnames, 
-                                               choose_most_specific = choose_most_specific_colnames)
+                                               choose_most_specific = choose_most_specific_rownames)
       
       # Find which columns in keeprows have all zero values.
       keeprows_zerocol <- apply(keeprows, 
@@ -256,14 +262,34 @@ reallocate_byname <- function(a,
       addmat <- matsbyname::matrixproduct_byname(keepfracs, hatmat)
       
       # Return the sum of keeprows and addmat
-      out <- matsbyname::sum_byname(keeprows, addmat)
-      
+      submat <- matsbyname::sum_byname(keeprows, addmat)
+
       # Subtract the 1s, if needed
       if (any(problem_cols) & .zero_behaviour == "allocate equally") {
-        out <- matsbyname::difference_byname(out, keeprows_problem_cols_1)
+        submat <- matsbyname::difference_byname(submat, keeprows_problem_cols_1)
+      }
+      
+      if (is.null(colnames)) {
+        # Nothing to do here.
+        out <- submat
+      } else {
+        # We selected only some columns in which to do the reallocation.
+        # Reassemble the full matrix.
+        out <- a_mat |> 
+          # Start with the undisturbed columns
+          matsbyname::select_rowcol_piece_byname(remove = colnames, 
+                                                 margin = 2, 
+                                                 piece = piece_colnames, 
+                                                 pattern_type = pattern_type_colnames, 
+                                                 prepositions = prepositions_colnames, 
+                                                 notation = notation_colnames, 
+                                                 inf_notation = inf_notation_colnames, 
+                                                 choose_most_specific = choose_most_specific_colnames) |> 
+          # Now add back submat
+          matsbyname::sum_byname(submat)
       }
     }
-    
+
     return(out)
   }
   unaryapply_byname(reallocate_func, a = a,
