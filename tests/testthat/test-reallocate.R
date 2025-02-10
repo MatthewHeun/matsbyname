@@ -11,26 +11,6 @@ test_that("reallocate_byname() errors with invalid margin argument", {
 })
 
 
-test_that("reallocate_byname() works with row reallocation and column filtering", {
-  a <- matrix(c(1, 2, 
-                3, 4, 
-                5, 6), 
-              nrow = 3, ncol = 2, byrow = TRUE, 
-              dimnames = list(c("r1", "r2", "r3"), 
-                              c("c1", "c2")))
-  # Reallocate r3 but only c2
-  res <- reallocate_byname(a, rownames = "r3", colnames = "c2", margin = 1)
-
-  expected <- matrix(c(1, 2 + 2/6*6, 
-                       3, 4 + 4/6*6, 
-                       5, 0), 
-                     nrow = 3, ncol = 2, byrow = TRUE, 
-                     dimnames = list(c("r1", "r2", "r3"), 
-                                     c("c1", "c2")))
-  expect_equal(res, expected)
-})
-
-
 test_that("reallocate_byname() works with row reallocation", {
   a <- matrix(c(1, 2, 
                 3, 4, 
@@ -266,5 +246,46 @@ test_that("reallocate_byname() works with different row and column name notation
                              dimnames = list("c -> d", c("a -> b", "a -> c", "d -> b", "e")))
   expect_equal(a_arrow_reallocated, a_arrow_expected)
 })
+
+
+test_that("reallocate_byname() works with row reallocation and column filtering", {
+  a <- matrix(c(1, 2, 
+                3, 4, 
+                5, 6), 
+              nrow = 3, ncol = 2, byrow = TRUE, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1", "c2")))
+  # Reallocate r3 but only c2
+  res_a <- reallocate_byname(a, rownames = "r3", colnames = "c2", margin = 1)
+  
+  expected_a <- matrix(c(1, 2 + 2/6*6, 
+                         3, 4 + 4/6*6, 
+                         5, 0), 
+                       nrow = 3, ncol = 2, byrow = TRUE, 
+                       dimnames = list(c("r1", "r2", "r3"), 
+                                       c("c1", "c2")))
+  expect_equal(res_a, expected_a)
+  
+  
+  b <- matrix(c(1, 2, 3,
+                4, 5, 6,
+                7, 8, 9), 
+              nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1", "c2", "c3")))
+  res_b <- reallocate_byname(b, rownames = "r1", colnames = c("c1", "c3"), margin = 1)
+  
+  expected_b <- matrix(c(0, 2, 0, 
+                         4 + 4/11*1, 5, 6 + 6/15*3, 
+                         7 + 7/11*1, 8, 9 + 9/15*3), 
+                       nrow = 3, ncol = 3, byrow = TRUE, 
+                       dimnames = list(c("r1", "r2", "r3"), 
+                                       c("c1", "c2", "c3")))
+  expect_equal(res_b, expected_b)
+  
+})
+
+
+
 
 
