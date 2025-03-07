@@ -282,9 +282,36 @@ test_that("reallocate_byname() works with row reallocation and column filtering"
                        dimnames = list(c("r1", "r2", "r3"), 
                                        c("c1", "c2", "c3")))
   expect_equal(res_b, expected_b)
-  
 })
 
+
+test_that("reallocate_byname() works with column reallocation and row filtering", {
+  a <- matrix(c(1, 2, 3,
+                4, 5, 6,
+                7, 8, 9), 
+              nrow = 3, ncol = 3, byrow = TRUE, 
+              dimnames = list(c("r1", "r2", "r3"), 
+                              c("c1", "c2", "c3")))
+  res_a <- reallocate_byname(a, rownames = c("r2", "r3"), colnames = c("c1", "c2"), margin = 2)
+  
+  expected_a <- matrix(c(1, 2, 3, 
+                         0, 0, 15, 
+                         0, 0, 24), 
+                       nrow = 3, ncol = 3, byrow = TRUE, 
+                       dimnames = list(c("r1", "r2", "r3"), 
+                                       c("c1", "c2", "c3")))
+  expect_equal(res_a, expected_a)
+
+  
+  res_b <- reallocate_byname(a, rownames = "r1", colnames = "c3", margin = 2)
+  expected_b <- matrix(c(2, 4, 0, 
+                         4, 5, 6, 
+                         7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE, 
+                       dimnames = list(c("r1", "r2", "r3"), 
+                                       c("c1", "c2", "c3")))
+  expect_equal(res_b, expected_b)
+    
+})
 
 
 
