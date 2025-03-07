@@ -8,6 +8,15 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+## matsbyname 0.6.12 (2025-03-06) 
+
+* Update test-coverage.yaml to v4 of the upload-artifact workflow.
+* This version not released to CRAN.
+* No new tests.
+    - Now up to 2175 tests, all passing.
+    - Test coverage remains at 100%.
+
+
 ## matsbyname 0.6.11 (2025-01-17) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14680392.svg)](https://doi.org/10.5281/zenodo.14680392)
 
 * Fixed a bug in `to_named_matrix()`, which previously
