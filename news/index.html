@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,11 +37,21 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/v0.6.11/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/MatthewHeun/matsbyname/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.11" id="matsbyname-0611-2025-01-17">matsbyname 0.6.11 (2025-01-17)<a class="anchor" aria-label="anchor" href="#matsbyname-0611-2025-01-17"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.12" id="matsbyname-0612-2025-03-06">matsbyname 0.6.12 (2025-03-06)<a class="anchor" aria-label="anchor" href="#matsbyname-0612-2025-03-06"></a></h2>
+<ul><li>Update test-coverage.yaml to v4 of the upload-artifact workflow.</li>
+<li>This version not released to CRAN.</li>
+<li>No new tests.
+<ul><li>Now up to 2175 tests, all passing.</li>
+<li>Test coverage remains at 100%.</li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.11" id="matsbyname-0611-2025-01-17-doi">matsbyname 0.6.11 (2025-01-17) <a href="https://doi.org/10.5281/zenodo.14680392" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.14680392.svg" alt="DOI"></a>
+<a class="anchor" aria-label="anchor" href="#matsbyname-0611-2025-01-17-doi"></a></h2><p class="text-muted">CRAN release: 2025-01-17</p>
 <ul><li>Fixed a bug in <code><a href="../reference/to_named_triplet.html">to_named_matrix()</a></code>, which previously errored when a matrix with any <code>NA</code> values was passed in the <code>a</code> argument.</li>
 <li>Documented the behaviour of <code><a href="../reference/iszero_byname.html">iszero_byname()</a></code> when a matrix has any <code>NA</code> elements: the result is <code>NA</code>.</li>
 <li>Added function <code><a href="../reference/reallocate_byname.html">reallocate_byname()</a></code> to reallocate a row or column proportionally to other rows or columns.</li>
