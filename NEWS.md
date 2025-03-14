@@ -8,6 +8,10 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Improved documentation for `equal_byname()` by indicating the default
+  for the `.summarise` argument.
+
+
 ## matsbyname 0.6.12 (2025-03-06) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14984877.svg)](https://doi.org/10.5281/zenodo.14984877)
 
 * Update test-coverage.yaml to v4 of the upload-artifact workflow.

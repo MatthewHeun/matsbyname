@@ -10,7 +10,8 @@ equal_byname(..., .summarise = FALSE, tol = 0)
 \item{...}{Operands to be compared.}
 
 \item{.summarise}{Tells whether the operation should be accomplished
-across lists (\code{FALSE}) or down lists (\code{TRUE}).}
+across lists (\code{FALSE}) or down lists (\code{TRUE}).
+Default is \code{FALSE} (across lists).}
 
 \item{tol}{A double that tells how precisely equal the values
 of \code{a} and \code{b} must be.
