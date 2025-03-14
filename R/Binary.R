@@ -549,6 +549,7 @@ logarithmicmean_byname <- function(a, b, base = exp(1)){
 #' @param ... Operands to be compared.
 #' @param .summarise Tells whether the operation should be accomplished
 #'                   across lists (`FALSE`) or down lists (`TRUE`).
+#'                   Default is `FALSE` (across lists).
 #' @param tol A double that tells how precisely equal the values
 #'            of `a` and `b` must be.
 #'            Default is `0`.
