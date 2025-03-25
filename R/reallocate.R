@@ -39,7 +39,7 @@
 #'               The only valid values are 
 #'               `1` (reallocate to other rows) or
 #'               `2` (reallocate to other columns).
-#'               If you want to reallocate both rows and columns, 
+#'               To reallocate both rows and columns, 
 #'               call the function twice.
 #' @param .zero_behaviour Tells how to proceed when remaining (i.e., unallocated) 
 #'                        rows or columns are all zero.
