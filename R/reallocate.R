@@ -21,7 +21,7 @@
 #'
 #' @param a A matrix or a list of matrices.
 #' @param rowcolnames The names of the rows or columns to be redistributed.
-#' @param margin The margin of the matrix on which the `rowcolnames` are located.
+#' @param margin The margin of the matrix on which `rowcolnames` are located.
 #'               Default is `c(1, 2)`, meaning that both rows (`1`) and columns (`2`)
 #'               will be checked for `rowcolnames` and redistributed.
 #' @param .zero_behaviour Tells how to proceed when remaining (i.e., unallocated) 
