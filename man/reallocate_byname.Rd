@@ -39,7 +39,7 @@ The margin of the matrix over which the reallocation should occur.
 The only valid values are
 \code{1} (reallocate to other rows) or
 \code{2} (reallocate to other columns).
-If you want to reallocate both rows and columns,
+To reallocate both rows and columns,
 call the function twice.}
 
 \item{.zero_behaviour}{Tells how to proceed when remaining (i.e., unallocated)
