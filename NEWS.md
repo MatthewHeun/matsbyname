@@ -8,6 +8,7 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Additional tests for `fractionize_byname()`.
 * Improved documentation for `equal_byname()` by indicating the default
   for the `.summarise` argument.
 
