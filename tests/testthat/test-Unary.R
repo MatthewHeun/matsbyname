@@ -1260,6 +1260,26 @@ test_that("fractionize_byname() works with a single number 0", {
 })
 
 
+test_that("fractionize_byname() works with column and row vectors", {
+  rv <- matrix(c(7, 3), nrow = 1, dimnames = list("row", c("c1", "c2")))
+  expect_equal(fractionize_byname(rv, margin = 1), 
+               matrix(c(0.7, 0.3), nrow = 1, dimnames = list("row", c("c1", "c2"))))
+
+  cv <- matrix(c(7, 3), ncol = 1, dimnames = list(c("r1", "r2"), "col"))
+  expect_equal(fractionize_byname(cv, margin = 2), 
+               matrix(c(0.7, 0.3), ncol = 1, dimnames = list(c("r1", "r2"), "col")))
+  
+  # Try fractionizing over the other margin. 
+  # Should get all 1's.
+  expect_equal(fractionize_byname(rv, margin = 2),
+               matrix(1, nrow = 1, ncol = 2, 
+                      dimnames = list("row", c("c1", "c2"))))
+  expect_equal(fractionize_byname(cv, margin = 1),
+               matrix(1, nrow = 2, ncol = 1, 
+                      dimnames = list(c("r1", "r2"), "col")))
+})
+
+
 test_that("rowsums_byname() works as expected", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
