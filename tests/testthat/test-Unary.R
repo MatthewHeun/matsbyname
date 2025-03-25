@@ -1288,6 +1288,13 @@ test_that("fractionize_byname() works with a 1x1 matrix", {
 })
 
 
+test_that("fractionize_byname() works with a column vector containing some zeroes", {
+  cv <- matrix(c(0, 0, 10), ncol = 1, dimnames = list(c("r1", "r2", "r3"), "col"))
+  expect_equal(fractionize_byname(cv, margin = 2), 
+               matrix(c(0, 0, 1), ncol = 1, dimnames = list(c("r1", "r2", "r3"), "col")))
+})
+
+
 test_that("rowsums_byname() works as expected", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
