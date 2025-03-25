@@ -1280,6 +1280,14 @@ test_that("fractionize_byname() works with column and row vectors", {
 })
 
 
+test_that("fractionize_byname() works with a 1x1 matrix", {
+  m <- matrix(42, nrow = 1, ncol = 1, dimnames = list("row", "col"))
+  expected <- matrix(1, nrow = 1, ncol = 1, dimnames = list("row", "col"))
+  expect_equal(fractionize_byname(m, margin = 1), expected)
+  expect_equal(fractionize_byname(m, margin = 2), expected)
+})
+
+
 test_that("rowsums_byname() works as expected", {
   m_rownames <- paste0("i", 1:4)
   m_colnames <- paste0("p", 1:4)
