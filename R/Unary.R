@@ -883,7 +883,8 @@ fractionize_byname <- function(a, margin, inf_becomes = .Machine$double.xmax){
       # but singular matrix problems can arise.
       return(matrixproduct_byname(a %>% 
                                     rowsums_byname() %>% 
-                                    hatinv_byname(inf_becomes = inf_becomes), 
+                                    hatinv_byname(inf_becomes = inf_becomes, 
+                                                  keep = "rownames"), 
                                   a))
       # The next line works only for matrix objects, not Matrix objects.
       # return(sweep(a, margin, rowSums(a), `/`))
@@ -895,7 +896,8 @@ fractionize_byname <- function(a, margin, inf_becomes = .Machine$double.xmax){
       return(matrixproduct_byname(a, 
                                   a %>% 
                                     colsums_byname() %>% 
-                                    hatinv_byname(inf_becomes = inf_becomes)))
+                                    hatinv_byname(inf_becomes = inf_becomes, 
+                                                  keep = "colnames")))
       # The next line works only for matrix objects, not Matrix objects.
       # return(sweep(a, margin, colSums(a), `/`))
     } 

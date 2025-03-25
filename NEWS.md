@@ -7,7 +7,8 @@ output: html_document
 Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
 which always resolves to the latest release.
 
-
+* Fixed an edge-case bug in `fractionize_byname()` when 
+  the matrix to be fractionized had only one row or column.
 * Additional tests for `fractionize_byname()`.
 * Improved documentation for `equal_byname()` by indicating the default
   for the `.summarise` argument.
