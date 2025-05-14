@@ -1,5 +1,5 @@
-pandoc: '3.2'
-pkgdown: 2.1.1
+pandoc: '3.4'
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   about-vector-arguments: about-vector-arguments.html
@@ -7,7 +7,7 @@ articles:
   applybyname-vignette: applybyname-vignette.html
   matsbyname: matsbyname.html
   using-summarise-in-matsbyname: using-summarise-in-matsbyname.html
-last_built: 2025-03-07T01:26Z
+last_built: 2025-05-14T17:48Z
 urls:
   reference: https://matthewheun.github.io/matsbyname/reference
   article: https://matthewheun.github.io/matsbyname/articles
