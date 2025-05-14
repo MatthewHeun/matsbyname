@@ -8,7 +8,7 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-## matsbyname 0.6.13 (2025-05-14) 
+## matsbyname 0.6.13 (2025-05-14) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15416297.svg)](https://doi.org/10.5281/zenodo.15416297)
 
 * New function `reallocate_byname()`  
   reallocates some entries in a matrix to other rows or columns
