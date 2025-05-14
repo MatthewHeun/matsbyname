@@ -1523,7 +1523,7 @@ selectzerorows_byname <- function(a, tol = 1e-6) {
   zerorow_func <- function(a_mat, tol_val) {
     zero_rows <- sapply(1:nrow(a_mat), FUN = function(i_row) {
       this_row <- a_mat[i_row, ]
-      all(abs(this_row) <= tol_val)
+      all(abs(this_row) <= abs(tol_val))
     }) %>% 
       which()
     a_mat[zero_rows, , drop = FALSE]
@@ -1562,7 +1562,7 @@ selectzerocols_byname <- function(a, tol = 1e-6) {
   zerocol_func <- function(a_mat, tol_val) {
     zero_cols <- sapply(1:ncol(a_mat), FUN = function(i_col) {
       this_col <- a_mat[ , i_col]
-      all(abs(this_col) <= tol_val)
+      all(abs(this_col) <= abs(tol_val))
     }) %>% 
       which()
     a_mat[ , zero_cols, drop = FALSE]
