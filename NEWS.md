@@ -8,7 +8,22 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-## matsbyname 0.6.12 (2025-03-06) 
+## matsbyname 0.6.13 (2025-05-14) 
+
+* New function `reallocate_byname()`  
+  reallocates some entries in a matrix to other rows or columns
+  in proportion to remaining values in corresponding columns or rows.
+* Fixed an edge-case bug in `fractionize_byname()` when 
+  the matrix to be fractionized had only one row or column.
+* Additional tests for `fractionize_byname()`.
+* Improved documentation for `equal_byname()` by indicating the default
+  value of the `.summarise` argument.
+* New tests for new features.
+    - Now up to 2185 tests, all passing.
+    - Test coverage remains at 100%.
+
+
+## matsbyname 0.6.12 (2025-03-06) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14984877.svg)](https://doi.org/10.5281/zenodo.14984877)
 
 * Update test-coverage.yaml to v4 of the upload-artifact workflow.
 * This version not released to CRAN.
@@ -115,7 +130,6 @@ which always resolves to the latest release.
 * Removed a few tests dealing with deprecated arguments.
     - Now at 2089 tests, all passing.
     - Test coverage is back up to 100%, due only to deprecation code.
-
 
 
 ## matsbyname 0.6.4 (2023-08-17) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8262639.svg)](https://doi.org/10.5281/zenodo.8262639)

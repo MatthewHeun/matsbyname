@@ -2,69 +2,93 @@
 % Please edit documentation in R/reallocate.R
 \name{reallocate_byname}
 \alias{reallocate_byname}
-\title{Reallocate values from one row or column to another}
+\title{Reallocate values from one row or column to others}
 \usage{
 reallocate_byname(
   a,
-  rowcolnames = NULL,
-  margin = c(1, 2),
+  rownames = NULL,
+  colnames = NULL,
+  margin,
   .zero_behaviour = c("error", "warning", "zeroes", "allocate equally"),
-  piece = "all",
-  pattern_type = "exact",
-  prepositions = RCLabels::prepositions_list,
-  notation = RCLabels::notations_list,
-  inf_notation = TRUE,
-  choose_most_specific = FALSE
+  piece_rownames = "all",
+  pattern_type_rownames = "exact",
+  prepositions_rownames = RCLabels::prepositions_list,
+  notation_rownames = RCLabels::notations_list,
+  inf_notation_rownames = TRUE,
+  choose_most_specific_rownames = FALSE,
+  piece_colnames = "all",
+  pattern_type_colnames = "exact",
+  prepositions_colnames = RCLabels::prepositions_list,
+  notation_colnames = RCLabels::notations_list,
+  inf_notation_colnames = TRUE,
+  choose_most_specific_colnames = FALSE
 )
 }
 \arguments{
 \item{a}{A matrix or a list of matrices.}
 
-\item{rowcolnames}{The names of the rows or columns to be redistributed.}
+\item{rownames}{The row names to reallocate.
+\code{NULL} (the default) means include all rows.}
 
-\item{margin}{The margin of the matrix on which the \code{rowcolnames} are located.
-Default is \code{c(1, 2)}, meaning that both rows (\code{1}) and columns (\code{2})
-will be checked for \code{rowcolnames} and redistributed.}
+\item{colnames}{The column names to reallocate.
+\code{NULL} (the default) means include all rows.}
+
+\item{margin}{An integer vector of length 1 or a vector of integers
+where each entry has length 1.
+The margin of the matrix over which the reallocation should occur.
+The only valid values are
+\code{1} (reallocate to other rows) or
+\code{2} (reallocate to other columns).
+To reallocate both rows and columns,
+call the function twice.}
 
 \item{.zero_behaviour}{Tells how to proceed when remaining (i.e., unallocated)
 rows or columns are all zero.
 Default is "error", which throws an error.
-See details for other options.}
+See details for other options.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
-\item{piece}{The piece of row or column names to be assessed.
-Default is "all", indicating that the entire label will be assessed.}
+\item{piece_rownames, piece_colnames}{The piece of row or column names to be assessed.
+Default is "all", indicating that the entire label will be assessed.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
-\item{pattern_type}{The pattern type desired. Default is "exact".
+\item{pattern_type_rownames, pattern_type_colnames}{The pattern type desired for row and column names.
+Default is "exact".
 Other options are "leading", "trailing", "anywhere",
 and "literal".
-See \code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}} for details.}
+See \code{\link[RCLabels:make_or_pattern]{RCLabels::make_or_pattern()}} for details.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
-\item{prepositions}{Prepositions used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+\item{prepositions_rownames, prepositions_colnames}{Prepositions used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 for row and column name matching.
-Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.}
+Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
-\item{notation}{The row or column notation used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+\item{notation_rownames, notation_colnames}{The row or column notation used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 for row and column name matching.
-Default is \link[RCLabels:notations_list]{RCLabels::notations_list}.}
+Default is \link[RCLabels:notations_list]{RCLabels::notations_list}.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
-\item{inf_notation}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+\item{inf_notation_rownames, inf_notation_colnames}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 that tells whether to infer notation for rows and columns.
 Default is \code{TRUE}.
-See \code{\link[RCLabels:infer_notation]{RCLabels::infer_notation()}} for details.}
+See \code{\link[RCLabels:infer_notation]{RCLabels::infer_notation()}} for details.
+If \code{a} is a \code{list}, applies to all items in the list.}
 
-\item{choose_most_specific}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
+\item{choose_most_specific_rownames, choose_most_specific_colnames}{A boolean used by \code{\link[=select_rowcol_piece_byname]{select_rowcol_piece_byname()}}
 that tells whether to choose the most specific
 notation from \code{notation} when inferring notation.
 Default is \code{FALSE} so that a less specific notation can be
 inferred.
-In combination with \link[RCLabels:notations_list]{RCLabels::notations_list},
+In combination with \code{notations_list}s,
 the default value of \code{FALSE} means that
 \link[RCLabels:bracket_notation]{RCLabels::bracket_notation} will be selected instead of
 anything more specific, such as
-\link[RCLabels:from_notation]{RCLabels::from_notation}.}
+\link[RCLabels:from_notation]{RCLabels::from_notation}.
+If \code{a} is a \code{list}, applies to all items in the list.}
 }
 \value{
-A modified version of \code{a} with \code{rowcolnames} redistributed.
+A modified version of \code{a} with \code{rownames} or \code{colnames} redistributed.
 }
 \description{
 There are situations where it is helpful to
@@ -75,12 +99,21 @@ See examples.
 }
 \details{
 This function will provide answers, but
-it is unlikely that the answers will be meaningful, when the
-remaining data (the rows or columns not being allocated)
+it is unlikely that the answers will be meaningful when the
+remaining data (the rows or columns not being reallocated)
 contain negative numbers.
 
+The value of \code{margin} affects the interpretation of
+\code{rownames} and \code{colnames}.
+If \code{margin = 1}, \code{rownames} identifies the rows to be reallocated to other rows.
+\code{colnames} identifies the columns to be reallocated, where
+\code{NULL} (the default) means that all columns are reallocated.
+If \code{margin = 2}, \code{colnames} identifies the columns to be reallocated to other columns.
+\code{rownames} identifies the rows to be reallocated, where
+\code{NULL} (the default) means that all rows are reallocated.
+
 When the remaining rows or columns not being reallocated
-contain zeroes, the result is determined by \code{.zero_behaviour}.
+contain exclusively zeroes, the result is determined by \code{.zero_behaviour}.
 Options are one of:
 \itemize{
 \item "error" (the default) to throw an error.
@@ -98,9 +131,9 @@ m <- matrix(c(1, 2, 3,
             c("c1", "c2", "c3")))
 m
 # Move row 3 into the other rows (r1 and r2) proportionally
-reallocate_byname(m, rowcolnames = "r3", margin = 1)
+reallocate_byname(m, rownames = "r3", margin = 1)
 # Move column 2 into the other columns (c1 and c3) proportionally
-reallocate_byname(m, rowcolnames = "c2", margin = 2)
+reallocate_byname(m, colnames = "c2", margin = 2)
 # Demonstrate different options for reallocating when zeroes remain.
 m2 <- matrix(c(1, 2,  0,
                4, 5,  0,
@@ -109,17 +142,17 @@ m2 <- matrix(c(1, 2,  0,
              dimnames = list(c("r1", "r2", "r3"), 
              c("c1", "c2", "c3")))
 m2
-reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+reallocate_byname(m2, rownames = "r3", margin = 1, 
                   .zero_behaviour = "zeroes")
-reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+reallocate_byname(m2, rownames = "r3", margin = 1, 
                   .zero_behaviour = "allocate equally")
 \dontrun{
 # "error" will cause an error to be emitted.
-reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+reallocate_byname(m2, rownames = "r3", margin = 1, 
                   .zero_behaviour = "error")
 # "warning" will cause a warning to be emitted
 # and will return a result that is the same as "zeroes".
-reallocate_byname(m2, rowcolnames = "r3", margin = 1, 
+reallocate_byname(m2, rownames = "r3", margin = 1, 
                   .zero_behaviour = "warning")
 }
 }

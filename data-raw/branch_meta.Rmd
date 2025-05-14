@@ -29,6 +29,14 @@ The branch into which new features are merged.
 
 ### Feature branches
 
+#### allocate+
+
+* Purpose: Improve the reallocation code to include a filter in other dimension
+* Next step: Implement the code.
+* Author: MKH
+* Date: 7 Feb 2025
+
+
 Use this template to describe feature branches.
 
 #### Branch name
