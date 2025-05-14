@@ -63,15 +63,20 @@ See `NEWS.md` for additional details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2025-01-16 r87584 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2025-05-13 r88200 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_oldrelease()`, R version 4.3.3 (2024-02-29 ucrt)
+    * `devtools::check_win_oldrelease()`, R version 4.4.3 (2025-02-28 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
-        * NOTEs: 0
-
+        * NOTEs: 1
+            * checking DESCRIPTION meta-information ... NOTE
+            Author field differs from that derived from Authors@R
+              Author:    'Matthew Heun [aut, cre] (ORCID: <https://orcid.org/0000-0002-7438-214X>)'
+              Authors@R: 'Matthew Heun [aut, cre] (<https://orcid.org/0000-0002-7438-214X>)'
+            `check_win_oldrelease()` is the only test environment where this note occurs.
+        
 
 ## revdepcheck results
 
