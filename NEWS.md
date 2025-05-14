@@ -7,6 +7,9 @@ output: html_document
 Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
 which always resolves to the latest release.
 
+
+## matsbyname 0.6.13 (2025-05-14) 
+
 * New function `reallocate_byname()` that 
   reallocates some entries in a matrix to other rows or columns
   in proportion to remaining values in corresponding columns or rows.
@@ -15,6 +18,9 @@ which always resolves to the latest release.
 * Additional tests for `fractionize_byname()`.
 * Improved documentation for `equal_byname()` by indicating the default
   for the `.summarise` argument.
+* New tests for new features.
+    - Now up to 2185 tests, all passing.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.12 (2025-03-06) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14984877.svg)](https://doi.org/10.5281/zenodo.14984877)
