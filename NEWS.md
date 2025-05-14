@@ -126,7 +126,6 @@ which always resolves to the latest release.
     - Test coverage is back up to 100%, due only to deprecation code.
 
 
-
 ## matsbyname 0.6.4 (2023-08-17) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8262639.svg)](https://doi.org/10.5281/zenodo.8262639)
 
 * `matsbyname::Matrix` now vectorized for lists of `matrix` objects
