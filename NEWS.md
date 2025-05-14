@@ -10,14 +10,14 @@ which always resolves to the latest release.
 
 ## matsbyname 0.6.13 (2025-05-14) 
 
-* New function `reallocate_byname()` that 
+* New function `reallocate_byname()`  
   reallocates some entries in a matrix to other rows or columns
   in proportion to remaining values in corresponding columns or rows.
 * Fixed an edge-case bug in `fractionize_byname()` when 
   the matrix to be fractionized had only one row or column.
 * Additional tests for `fractionize_byname()`.
 * Improved documentation for `equal_byname()` by indicating the default
-  for the `.summarise` argument.
+  value of the `.summarise` argument.
 * New tests for new features.
     - Now up to 2185 tests, all passing.
     - Test coverage remains at 100%.
