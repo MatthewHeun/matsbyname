@@ -7,7 +7,7 @@
 rename_via_pattern_byname(
   a,
   margin = list(c(1, 2)),
-  regexp_pattern,
+  regexp_pattern = "$^",
   replacement,
   pieces = "all",
   prepositions = RCLabels::prepositions_list,
@@ -16,22 +16,45 @@ rename_via_pattern_byname(
 )
 }
 \arguments{
-\item{a}{}
+\item{a}{A matrix or list of matrices.}
 
-\item{margin}{}
+\item{margin}{The margin on which replacements are performed.
+Default is \code{c(1, 2)}, meaning both
+row (\code{1}) and column (\code{2}) names will be replaced.}
 
-\item{replacement}{}
+\item{regexp_pattern}{The regular expression pattern that will be replaced
+in the row or column labels.
+Default is "$^", meaning nothing will be matched.}
 
-\item{prepositions}{}
+\item{replacement}{The string to replace the \code{regexp_pattern}.}
 
-\item{notation}{}
+\item{pieces}{The pieces of labels to be searched for \code{regexp_pattern}.
+See \link[RCLabels:regex_funcs]{RCLabels::replace_by_pattern} for details.
+Default is "all".}
 
-\item{pattern}{}
+\item{prepositions}{Prepositions to use while searching for
+\code{pieces}.
+Default is \link[RCLabels:prepositions_list]{RCLabels::prepositions_list}.}
 
-\item{inf_notation}{}
+\item{notation}{The notation used for for searching \code{pieces}.
+Default is \link[RCLabels:bracket_notation]{RCLabels::bracket_notation}.}
 
-\item{choose_most_specific}{}
+\item{...}{Other arguments passed to \code{\link[=gsub]{gsub()}},
+such as \code{ignore.case}, \code{perl}, \code{fixed},
+or \code{useBytes}.
+See examples.}
 }
 \description{
-Rename row or column names via regexp pattern
+It is sometimes helpful to rename row or column names
+for a list of matrices via a \code{regexp_pattern}.
+When \code{a} is a matrix or a list of matrices,
+\code{regexp_pattern} indicates which characters
+are replaced by \code{replacement}.
+}
+\details{
+Note that \code{margin} can be a rowtype or coltype string
+which will be dereferenced to the integer margin
+(\code{1} for rows or \code{2} for columns).
+
+Internally, this function calls \link[RCLabels:regex_funcs]{RCLabels::replace_by_pattern}.
 }

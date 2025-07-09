@@ -1092,37 +1092,123 @@ test_that("setrownames_byname() and setcolnames_byname() works even when there i
 test_that("rename_via_pattern_byname() works as expected", {
   ma <- matrix(c(1, 2), 
                nrow = 2,
-               dimnames = list(c("Natural gas [from Supply]", "row2"), "col"))
+               dimnames = list(c("Natural gas [from Supply]", "row2"), "col")) |> 
+    setrowtype("Product") |> setcoltype("Industry")
   mb <- matrix(c(1, 2), 
                nrow = 2,
-               dimnames = list(c("Natural gas [from Supply]", "Fuel oil [from Supply]"), "col"))
-  df <- tibble::tibble(m = list(ma, mb))
-  # First, try without using RCLabels::replace_by_pattern()
-  df2 <- df |> 
-    dplyr::mutate(
-      m2 = .data[["m"]] |> 
-        matsbyname::setrownames_byname(rownames = list(c("Natural gas", "row2")))
-    )
-  expectedm2 <- matrix(c(1, 2), 
-                       nrow = 2,
-                       dimnames = list(c("Natural gas", "row2"), "col"))
-  expect_equal(df2$m2[[1]], expectedm2)
-  expect_equal(df2$m2[[2]], expectedm2)
+               dimnames = list(c("Natural gas [from Supply]", "Fuel oil [from Supply]"), "col")) |> 
+    setrowtype("Product") |> setcoltype("Industry")
   
-  # Now, try with rename_via_pattern_byname()
-  df3 <- df |> 
+  # First, try with an individual matrix
+  res1 <- ma |> 
+    rename_via_pattern_byname(regexp_pattern = " [from Supply]", 
+                              replacement = "bogus", 
+                              fixed = TRUE)
+  res1 |> 
+    rownames() |> 
+    expect_equal(c("Natural gasbogus", "row2"))
+  res1 |> 
+    colnames() |> 
+    expect_equal("col")
+  res1 |> 
+    rowtype() |> 
+    expect_equal("Product")
+  res1 |> 
+    coltype() |> 
+    expect_equal("Industry")  
+  
+
+  # Next, try with a list of matrices
+  res2 <- list(ma, mb) |> 
+    rename_via_pattern_byname(margin = 1,
+                              regexp_pattern = " [from Supply]",
+                              replacement = "bogus", 
+                              fixed = TRUE)
+  res2[[1]] |> 
+    rownames() |> 
+    expect_equal(c("Natural gasbogus", "row2"))
+  res2[[1]] |> 
+    colnames() |> 
+    expect_equal("col")
+  res2[[1]] |> 
+    rowtype() |> 
+    expect_equal("Product")
+  res2[[1]] |> 
+    coltype() |> 
+    expect_equal("Industry")  
+  res2[[2]] |> 
+    rownames() |> 
+    expect_equal(c("Natural gasbogus", "Fuel oilbogus"))
+  res2[[2]] |> 
+    colnames() |> 
+    expect_equal("col")
+  
+  # Now, try in a data frame
+  df <- tibble::tibble(m = list(ma, mb))
+  df4 <- df |> 
     dplyr::mutate(
-      m3 = rename_via_pattern_byname(.data[["m"]],
-                                     regexp_pattern = " [from Supply]", 
-                                     replacement = "", 
-                                     fixed = TRUE)
+      m4 = .data[["m"]] |> 
+        rename_via_pattern_byname(regexp_pattern = " [from Supply]", 
+                                  replacement = "", 
+                                  fixed = TRUE)
     )
-        
-  df3$m3[[1]] |> 
+  
+  df4$m4[[1]] |> 
     rownames() |> 
     expect_equal(c("Natural gas", "row2"))
-    
+  df4$m4[[1]] |> 
+    rowtype() |> 
+    expect_equal("Product")
+  df4$m4[[1]] |> 
+    coltype() |> 
+    expect_equal("Industry")
+  df4$m4[[2]] |> 
+    rownames() |> 
+    expect_equal(c("Natural gas", "Fuel oil"))
   
+  # Try using a string for the margin (rowtype of coltype)
+  df5 <- df |> 
+    dplyr::mutate(
+      m5 = .data[["m"]] |> 
+        rename_via_pattern_byname(margin = "Product", 
+                                  regexp_pattern = "[", 
+                                  replacement = "(", 
+                                  fixed = TRUE)
+    )
+  df5$m5[[1]] |> 
+    rownames() |> 
+    expect_equal(c("Natural gas (from Supply]", "row2"))
+  df5$m5[[2]] |> 
+    rownames() |> 
+    expect_equal(c("Natural gas (from Supply]", "Fuel oil (from Supply]"))
+  
+  # Try with Product on the other margin
+  df6 <- tibble::tibble(m = list(ma, transpose_byname(mb))) |> 
+    dplyr::mutate(
+      m6 = .data[["m"]] |> 
+        rename_via_pattern_byname(margin = "Product", 
+                                  regexp_pattern = " [from Supply]", 
+                                  replacement = "", 
+                                  fixed = TRUE)
+    )
+  df6$m6[[1]] |> 
+    rownames() |> 
+    expect_equal(c("Natural gas", "row2"))
+  df6$m6[[1]] |> 
+    colnames() |> 
+    expect_equal("col")
+  df6$m6[[2]] |> 
+    rownames() |> 
+    expect_equal("col")
+  df6$m6[[2]] |> 
+    colnames() |> 
+    expect_equal(c("Natural gas", "Fuel oil"))
+  df6$m6[[2]] |> 
+    rowtype() |> 
+    expect_equal("Industry")
+  df6$m6[[2]] |> 
+    coltype() |> 
+    expect_equal("Product")
 })
 
 

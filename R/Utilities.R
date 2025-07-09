@@ -660,14 +660,38 @@ rename_to_piece_byname <- function(a,
 
 #' Rename row or column names via regexp pattern
 #'
-#' @param a 
-#' @param margin 
-#' @param pattern 
-#' @param replacement 
-#' @param inf_notation 
-#' @param notation 
-#' @param choose_most_specific 
-#' @param prepositions 
+#' It is sometimes helpful to rename row or column names
+#' for a list of matrices via a `regexp_pattern`. 
+#' When `a` is a matrix or a list of matrices, 
+#' `regexp_pattern` indicates which characters 
+#' are replaced by `replacement`.
+#'
+#' Note that `margin` can be a rowtype or coltype string
+#' which will be dereferenced to the integer margin
+#' (`1` for rows or `2` for columns).
+#'
+#' Internally, this function calls [RCLabels::replace_by_pattern].
+#'
+#' @param a A matrix or list of matrices.
+#' @param margin The margin on which replacements are performed.
+#'               Default is `c(1, 2)`, meaning both 
+#'               row (`1`) and column (`2`) names will be replaced.
+#' @param regexp_pattern The regular expression pattern that will be replaced
+#'                       in the row or column labels.
+#'                       Default is "$^", meaning nothing will be matched.
+#' @param replacement The string to replace the `regexp_pattern`.
+#' @param pieces The pieces of labels to be searched for `regexp_pattern`.
+#'               See [RCLabels::replace_by_pattern] for details.
+#'               Default is "all". 
+#' @param prepositions Prepositions to use while searching for 
+#'                     `pieces`.
+#'                     Default is [RCLabels::prepositions_list].
+#' @param notation The notation used for for searching `pieces`.
+#'                 Default is [RCLabels::bracket_notation].
+#' @param ... Other arguments passed to [gsub()],
+#'            such as `ignore.case`, `perl`, `fixed`,
+#'            or `useBytes`.
+#'            See examples.
 #'
 #' @returns
 #' @export
@@ -675,7 +699,7 @@ rename_to_piece_byname <- function(a,
 #' @examples
 rename_via_pattern_byname <- function(a, 
                                       margin = list(c(1, 2)), 
-                                      regexp_pattern, 
+                                      regexp_pattern = "$^", 
                                       replacement, 
                                       pieces = "all",
                                       prepositions = RCLabels::prepositions_list,
@@ -692,6 +716,9 @@ rename_via_pattern_byname <- function(a,
   rename_func <- function(a_mat, this_margin, this_regexp_pattern, 
                           this_replacement, these_pieces, 
                           these_prepositions, this_notation) {
+    
+    # Figure out the margin.
+    this_margin <- margin_from_types_byname(a_mat, this_margin)
     
     if (2 %in% this_margin) {
       # Want to rename columns.
