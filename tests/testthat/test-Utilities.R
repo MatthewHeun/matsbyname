@@ -1089,6 +1089,34 @@ test_that("setrownames_byname() and setcolnames_byname() works even when there i
 })
 
 
+test_that("setrownames_byname() works with RCLables::replace_by_pattern()", {
+  m <- matrix(c(1, 2), 
+              nrow = 2,
+              dimnames = list(c("Natural gas [from Supply]", "row2"), "col"))
+  df <- tibble::tibble(m = list(m, m))
+  # First, try without using RCLabels::replace_by_pattern()
+  df2 <- df |> 
+    dplyr::mutate(
+      m2 = .data[["m"]] |> 
+        matsbyname::setrownames_byname(rownames = list(c("Natural gas", "row2")))
+    )
+  expectedm2 <- matrix(c(1, 2), 
+                       nrow = 2,
+                       dimnames = list(c("Natural gas", "row2"), "col"))
+  expect_equal(df2$m2[[1]], expectedm2)
+  expect_equal(df2$m2[[2]], expectedm2)
+  
+  # Now, try with RCLabels::replace_by_pattern()
+  df3 <- df |> 
+    dplyr::mutate(
+      m3 = .data[["m"]] |> 
+        matsbyname::setrownames_byname(rownames = RCLabels::replace_by_pattern(labels = 
+        ))
+    )
+  
+})
+
+
 test_that("clean_byname() works with bad margins", {
   m <- matrix(c(0, 0, 0, 1, 2, 3), nrow = 3, ncol = 2, dimnames = list(c("r1", "r2", "r3"), c("c1", "c2")))
   expect_error(clean_byname(m, margin = 42), 
