@@ -1120,7 +1120,6 @@ test_that("rename_via_pattern_byname() works as expected", {
         
   df3$m3[[1]] |> 
     rownames() |> 
-    magrittr::extract2(1) |> 
     expect_equal(c("Natural gas", "row2"))
     
   
