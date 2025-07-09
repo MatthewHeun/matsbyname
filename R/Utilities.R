@@ -658,6 +658,159 @@ rename_to_piece_byname <- function(a,
 }
 
 
+#' Rename row or column names via regexp pattern
+#'
+#' It is sometimes helpful to rename row or column names
+#' for a list of matrices via a `regexp_pattern`. 
+#' When `a` is a matrix or a list of matrices, 
+#' `regexp_pattern` indicates which characters 
+#' are replaced by `replacement`.
+#'
+#' Note that `margin` can be a rowtype or coltype string
+#' which will be dereferenced to the integer margin
+#' (`1` for rows or `2` for columns).
+#'
+#' Internally, this function calls [RCLabels::replace_by_pattern].
+#'
+#' @param a A matrix or list of matrices.
+#' @param margin The margin on which replacements are performed.
+#'               Default is `c(1, 2)`, meaning both 
+#'               row (`1`) and column (`2`) names will be replaced.
+#' @param regexp_pattern The regular expression pattern that will be replaced
+#'                       in the row or column labels.
+#'                       Default is "$^", meaning nothing will be matched.
+#' @param replacement The string to replace the `regexp_pattern`.
+#' @param pieces The pieces of labels to be searched for `regexp_pattern`.
+#'               See [RCLabels::replace_by_pattern] for details.
+#'               Default is "all". 
+#' @param prepositions Prepositions to use while searching for 
+#'                     `pieces`.
+#'                     Default is [RCLabels::prepositions_list].
+#' @param notation The notation used for for searching `pieces`.
+#'                 Default is [RCLabels::bracket_notation].
+#' @param ... Other arguments passed to [gsub()],
+#'            such as `ignore.case`, `perl`, `fixed`,
+#'            or `useBytes`.
+#'            Arguments in `...` apply to all matrices
+#'            in `a`.
+#'            See examples.
+#'
+#' @returns A modified version of `a`.
+#' 
+#' @export
+#'
+#' @examples
+#' ma <- matrix(c(1, 2), nrow = 2,
+#'              dimnames = list(c("Natural gas [from Supply]",
+#'                                "row2"), 
+#'                              "col")) |> 
+#'   setrowtype("Product") |> setcoltype("Industry")
+#' mb <- matrix(c(1, 2), nrow = 2,
+#'              dimnames = list(c("Natural gas [from Supply]",
+#'                                "Fuel oil [from Supply]"), 
+#'                              "col")) |> 
+#'   setrowtype("Product") |> setcoltype("Industry")
+#' ma |> 
+#'   rename_via_pattern_byname(regexp_pattern = " [from Supply]",
+#'                             replacement = " bogus", 
+#'                             fixed = TRUE)
+#' list(ma, mb) |> 
+#'   rename_via_pattern_byname(margin = 1,
+#'                             regexp_pattern = " [from Supply]",
+#'                             replacement = " from Supply", 
+#'                             fixed = TRUE)
+#' res1 <- tibble::tibble(m = list(ma, mb)) |> 
+#'   dplyr::mutate(
+#'     m1 = .data[["m"]] |> 
+#'       rename_via_pattern_byname(regexp_pattern = " [from Supply]", 
+#'                                 replacement = "", 
+#'                                 fixed = TRUE)
+#'   )
+#' res1$m1
+#' # Transpose mb and use a string for the margin.
+#' # The string (in this case "Product")
+#' # is dereferenced to an integer margin.
+#' # In this case, the rownames of the first matrix
+#' # and the colnames of the second matrix are replaced,
+#' # because those are on the "Product" margin.
+#' res2 <- tibble::tibble(m = list(ma, 
+#'                                 transpose_byname(mb))) |> 
+#'   dplyr::mutate(
+#'     m2 = .data[["m"]] |> 
+#'       rename_via_pattern_byname(margin = "Product", 
+#'                                 regexp_pattern = " [from Supply]", 
+#'                                 replacement = "", 
+#'                                 fixed = TRUE)
+#'   )
+#' rowtype(res2$m2[[1]])
+#' coltype(res2$m2[[2]])
+#' res2$m2
+rename_via_pattern_byname <- function(a, 
+                                      margin = list(c(1, 2)), 
+                                      regexp_pattern = "$^", 
+                                      replacement, 
+                                      pieces = "all",
+                                      prepositions = RCLabels::prepositions_list,
+                                      notation = RCLabels::bracket_notation,
+                                      ...) {
+  
+  margin <- prep_vector_arg(a, margin)
+  regexp_pattern <- prep_vector_arg(a, regexp_pattern)
+  replacement <- prep_vector_arg(a, replacement)
+  pieces <- prep_vector_arg(a, pieces)
+  prepositions <- prep_vector_arg(a, prepositions)
+  notation <- prep_vector_arg(a, notation)
+
+  rename_func <- function(a_mat, this_margin, this_regexp_pattern, 
+                          this_replacement, these_pieces, 
+                          these_prepositions, this_notation) {
+    
+    # Figure out the margin.
+    this_margin <- margin_from_types_byname(a_mat, this_margin)
+    
+    if (2 %in% this_margin) {
+      # Want to rename columns.
+      # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
+      a_mat <- transpose_byname(a_mat) %>% 
+        rename_func(this_margin = 1,
+                    this_regexp_pattern = this_regexp_pattern, 
+                    this_replacement = this_replacement, 
+                    these_pieces = these_pieces, 
+                    these_prepositions = these_prepositions, 
+                    this_notation = this_notation) |>  
+        transpose_byname()
+    }
+    
+    if (1 %in% this_margin) {
+      # Get existing labels
+      new_rnames <- a_mat |> 
+        getrownames_byname() |> 
+        RCLabels::replace_by_pattern(regex_pattern = this_regexp_pattern, 
+                                     replacement = this_replacement, 
+                                     pieces = these_pieces,
+                                     prepositions = these_prepositions, 
+                                     notation = this_notation, 
+                                     ...)
+      a_mat <- a_mat |> 
+        setrownames_byname(rownames = new_rnames)
+    }
+    return(a_mat)
+  }
+  
+  
+  unaryapply_byname(rename_func, a = a,
+                    .FUNdots = list(this_margin = margin,
+                                    this_regexp_pattern = regexp_pattern,
+                                    this_replacement = replacement, 
+                                    these_pieces = pieces, 
+                                    these_prepositions = prepositions, 
+                                    this_notation = notation), 
+                    rowcoltypes = "none")
+  
+  
+}
+
+
 #' Translate row and column types to integer margins
 #' 
 #' Converts row and column types to integer margins,

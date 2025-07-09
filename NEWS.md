@@ -8,8 +8,13 @@ Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-
+* New function `rename_via_pattern_byname()`
+  enables row and column renaming via regular expressions
+  for single matrices, lists, and columns of a data frame.
 * Improved documentation for `complete_and_sort()`.
+* New tests for new features.
+    - Now up to 2207 tests, all passing.
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.13 (2025-05-14) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15416297.svg)](https://doi.org/10.5281/zenodo.15416297)
