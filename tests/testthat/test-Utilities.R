@@ -1089,7 +1089,7 @@ test_that("setrownames_byname() and setcolnames_byname() works even when there i
 })
 
 
-test_that("rename_via_pattern_byname() works with as expected", {
+test_that("rename_via_pattern_byname() works as expected", {
   ma <- matrix(c(1, 2), 
                nrow = 2,
                dimnames = list(c("Natural gas [from Supply]", "row2"), "col"))
@@ -1109,20 +1109,17 @@ test_that("rename_via_pattern_byname() works with as expected", {
   expect_equal(df2$m2[[1]], expectedm2)
   expect_equal(df2$m2[[2]], expectedm2)
   
-  # Now, try with RCLabels::replace_by_pattern()
+  # Now, try with rename_via_pattern_byname()
   df3 <- df |> 
     dplyr::mutate(
-      m3 = .data[["m"]] |> 
-        matsbyname::setrownames_byname(
-          # Wrap with a list so it applies to all rows
-          rownames = list(matsbyname::getrownames_byname(.data[["m"]]) |> 
-            RCLabels::replace_by_pattern(regex_pattern = " [from Supply]",
-                                         replacement = "", 
-                                         fixed = TRUE))
-        ))
+      m3 = rename_via_pattern_byname(.data[["m"]],
+                                     regexp_pattern = " [from Supply]", 
+                                     replacement = "", 
+                                     fixed = TRUE)
+    )
+        
   df3$m3[[1]] |> 
     rownames() |> 
-    
     magrittr::extract2(1) |> 
     expect_equal(c("Natural gas", "row2"))
     

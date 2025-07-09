@@ -675,38 +675,61 @@ rename_to_piece_byname <- function(a,
 #' @examples
 rename_via_pattern_byname <- function(a, 
                                       margin = list(c(1, 2)), 
-                                      pattern, 
+                                      regexp_pattern, 
                                       replacement, 
-                                      inf_notation = TRUE,
-                                      notation = list(RCLabels::notations_list),
-                                      choose_most_specific = FALSE,
-                                      prepositions = list(RCLabels::prepositions_list)) {
+                                      pieces = "all",
+                                      prepositions = RCLabels::prepositions_list,
+                                      notation = RCLabels::bracket_notation,
+                                      ...) {
   
-  piece <- prep_vector_arg(a, piece)
   margin <- prep_vector_arg(a, margin)
-  inf_notation <- prep_vector_arg(a, inf_notation)
-  notation <- prep_vector_arg(a, notation)
-  choose_most_specific <- prep_vector_arg(a, choose_most_specific)
+  regexp_pattern <- prep_vector_arg(a, regexp_pattern)
+  replacement <- prep_vector_arg(a, replacement)
+  pieces <- prep_vector_arg(a, pieces)
   prepositions <- prep_vector_arg(a, prepositions)
-  
-  
-  rename_func <- function(a_mat, this_piece, this_margin, this_inf_notation, this_notation, 
-                          this_choose_most_specific, these_prepositions) {
+  notation <- prep_vector_arg(a, notation)
+
+  rename_func <- function(a_mat, this_margin, this_regexp_pattern, 
+                          this_replacement, these_pieces, 
+                          these_prepositions, this_notation) {
     
+    if (2 %in% this_margin) {
+      # Want to rename columns.
+      # Easier to transpose, recursively call ourselves to rename rows, and then transpose again.
+      a_mat <- transpose_byname(a_mat) %>% 
+        rename_func(this_margin = 1,
+                    this_regexp_pattern = this_regexp_pattern, 
+                    this_replacement = this_replacement, 
+                    these_pieces = these_pieces, 
+                    these_prepositions = these_prepositions, 
+                    this_notation = this_notation) |>  
+        transpose_byname()
+    }
     
-    
-    RCLabels::replace_by_pattern()
-    
+    if (1 %in% this_margin) {
+      # Get existing labels
+      new_rnames <- a_mat |> 
+        getrownames_byname() |> 
+        RCLabels::replace_by_pattern(regex_pattern = this_regexp_pattern, 
+                                     replacement = this_replacement, 
+                                     pieces = these_pieces,
+                                     prepositions = these_prepositions, 
+                                     notation = this_notation, 
+                                     ...)
+      a_mat <- a_mat |> 
+        setrownames_byname(rownames = new_rnames)
+    }
+    return(a_mat)
   }
   
   
   unaryapply_byname(rename_func, a = a,
-                    .FUNdots = list(this_piece = piece,
-                                    this_margin = margin,
-                                    this_inf_notation = inf_notation,
-                                    this_notation = notation,
-                                    this_choose_most_specific = choose_most_specific,
-                                    these_prepositions = prepositions), 
+                    .FUNdots = list(this_margin = margin,
+                                    this_regexp_pattern = regexp_pattern,
+                                    this_replacement = replacement, 
+                                    these_pieces = pieces, 
+                                    these_prepositions = prepositions, 
+                                    this_notation = notation), 
                     rowcoltypes = "none")
   
   
