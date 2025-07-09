@@ -658,6 +658,61 @@ rename_to_piece_byname <- function(a,
 }
 
 
+#' Rename row or column names via regexp pattern
+#'
+#' @param a 
+#' @param margin 
+#' @param pattern 
+#' @param replacement 
+#' @param inf_notation 
+#' @param notation 
+#' @param choose_most_specific 
+#' @param prepositions 
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+rename_via_pattern_byname <- function(a, 
+                                      margin = list(c(1, 2)), 
+                                      pattern, 
+                                      replacement, 
+                                      inf_notation = TRUE,
+                                      notation = list(RCLabels::notations_list),
+                                      choose_most_specific = FALSE,
+                                      prepositions = list(RCLabels::prepositions_list)) {
+  
+  piece <- prep_vector_arg(a, piece)
+  margin <- prep_vector_arg(a, margin)
+  inf_notation <- prep_vector_arg(a, inf_notation)
+  notation <- prep_vector_arg(a, notation)
+  choose_most_specific <- prep_vector_arg(a, choose_most_specific)
+  prepositions <- prep_vector_arg(a, prepositions)
+  
+  
+  rename_func <- function(a_mat, this_piece, this_margin, this_inf_notation, this_notation, 
+                          this_choose_most_specific, these_prepositions) {
+    
+    
+    
+    RCLabels::replace_by_pattern()
+    
+  }
+  
+  
+  unaryapply_byname(rename_func, a = a,
+                    .FUNdots = list(this_piece = piece,
+                                    this_margin = margin,
+                                    this_inf_notation = inf_notation,
+                                    this_notation = notation,
+                                    this_choose_most_specific = choose_most_specific,
+                                    these_prepositions = prepositions), 
+                    rowcoltypes = "none")
+  
+  
+}
+
+
 #' Translate row and column types to integer margins
 #' 
 #' Converts row and column types to integer margins,

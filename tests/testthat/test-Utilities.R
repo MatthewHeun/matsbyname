@@ -1089,11 +1089,14 @@ test_that("setrownames_byname() and setcolnames_byname() works even when there i
 })
 
 
-test_that("setrownames_byname() works with RCLables::replace_by_pattern()", {
-  m <- matrix(c(1, 2), 
-              nrow = 2,
-              dimnames = list(c("Natural gas [from Supply]", "row2"), "col"))
-  df <- tibble::tibble(m = list(m, m))
+test_that("rename_via_pattern_byname() works with as expected", {
+  ma <- matrix(c(1, 2), 
+               nrow = 2,
+               dimnames = list(c("Natural gas [from Supply]", "row2"), "col"))
+  mb <- matrix(c(1, 2), 
+               nrow = 2,
+               dimnames = list(c("Natural gas [from Supply]", "Fuel oil [from Supply]"), "col"))
+  df <- tibble::tibble(m = list(ma, mb))
   # First, try without using RCLabels::replace_by_pattern()
   df2 <- df |> 
     dplyr::mutate(
@@ -1110,9 +1113,19 @@ test_that("setrownames_byname() works with RCLables::replace_by_pattern()", {
   df3 <- df |> 
     dplyr::mutate(
       m3 = .data[["m"]] |> 
-        matsbyname::setrownames_byname(rownames = RCLabels::replace_by_pattern(labels = 
+        matsbyname::setrownames_byname(
+          # Wrap with a list so it applies to all rows
+          rownames = list(matsbyname::getrownames_byname(.data[["m"]]) |> 
+            RCLabels::replace_by_pattern(regex_pattern = " [from Supply]",
+                                         replacement = "", 
+                                         fixed = TRUE))
         ))
-    )
+  df3$m3[[1]] |> 
+    rownames() |> 
+    
+    magrittr::extract2(1) |> 
+    expect_equal(c("Natural gas", "row2"))
+    
   
 })
 
