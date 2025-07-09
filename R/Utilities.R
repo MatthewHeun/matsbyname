@@ -667,7 +667,7 @@ rename_to_piece_byname <- function(a,
 #' are replaced by `replacement`.
 #'
 #' Note that `margin` can be a rowtype or coltype string
-#' which will be dereferenced to the integer margin
+#' which will be de-referenced to the integer margin
 #' (`1` for rows or `2` for columns).
 #'
 #' Internally, this function calls [RCLabels::replace_by_pattern].

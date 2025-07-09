@@ -2,7 +2,6 @@ Behaviour
 Brockway
 CMD
 Codecov
-DOI
 FUNdots
 Hadamard
 Hatize
@@ -30,9 +29,7 @@ coltypes
 colvector
 cran
 de
-differencing
 dimname
-doi
 dplyr
 errored
 et
@@ -67,7 +64,6 @@ tidyr
 tol
 un
 unallocated
-vectorized
 vevtor
 yaml
 zenodo

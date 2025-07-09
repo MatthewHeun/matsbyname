@@ -58,7 +58,7 @@ are replaced by \code{replacement}.
 }
 \details{
 Note that \code{margin} can be a rowtype or coltype string
-which will be dereferenced to the integer margin
+which will be de-referenced to the integer margin
 (\code{1} for rows or \code{2} for columns).
 
 Internally, this function calls \link[RCLabels:regex_funcs]{RCLabels::replace_by_pattern}.
