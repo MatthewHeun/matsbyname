@@ -691,12 +691,60 @@ rename_to_piece_byname <- function(a,
 #' @param ... Other arguments passed to [gsub()],
 #'            such as `ignore.case`, `perl`, `fixed`,
 #'            or `useBytes`.
+#'            Arguments in `...` apply to all matrices
+#'            in `a`.
 #'            See examples.
 #'
-#' @returns
+#' @returns A modified version of `a`.
+#' 
 #' @export
 #'
 #' @examples
+#' ma <- matrix(c(1, 2), nrow = 2,
+#'              dimnames = list(c("Natural gas [from Supply]",
+#'                                "row2"), 
+#'                              "col")) |> 
+#'   setrowtype("Product") |> setcoltype("Industry")
+#' mb <- matrix(c(1, 2), nrow = 2,
+#'              dimnames = list(c("Natural gas [from Supply]",
+#'                                "Fuel oil [from Supply]"), 
+#'                              "col")) |> 
+#'   setrowtype("Product") |> setcoltype("Industry")
+#' ma |> 
+#'   rename_via_pattern_byname(regexp_pattern = " [from Supply]",
+#'                             replacement = " bogus", 
+#'                             fixed = TRUE)
+#' list(ma, mb) |> 
+#'   rename_via_pattern_byname(margin = 1,
+#'                             regexp_pattern = " [from Supply]",
+#'                             replacement = " from Supply", 
+#'                             fixed = TRUE)
+#' res1 <- tibble::tibble(m = list(ma, mb)) |> 
+#'   dplyr::mutate(
+#'     m1 = .data[["m"]] |> 
+#'       rename_via_pattern_byname(regexp_pattern = " [from Supply]", 
+#'                                 replacement = "", 
+#'                                 fixed = TRUE)
+#'   )
+#' res1$m1
+#' # Transpose mb and use a string for the margin.
+#' # The string (in this case "Product")
+#' # is dereferenced to an integer margin.
+#' # In this case, the rownames of the first matrix
+#' # and the colnames of the second matrix are replaced,
+#' # because those are on the "Product" margin.
+#' res2 <- tibble::tibble(m = list(ma, 
+#'                                 transpose_byname(mb))) |> 
+#'   dplyr::mutate(
+#'     m2 = .data[["m"]] |> 
+#'       rename_via_pattern_byname(margin = "Product", 
+#'                                 regexp_pattern = " [from Supply]", 
+#'                                 replacement = "", 
+#'                                 fixed = TRUE)
+#'   )
+#' rowtype(res2$m2[[1]])
+#' coltype(res2$m2[[2]])
+#' res2$m2
 rename_via_pattern_byname <- function(a, 
                                       margin = list(c(1, 2)), 
                                       regexp_pattern = "$^", 
