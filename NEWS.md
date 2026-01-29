@@ -3,10 +3,13 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+## All releases
 
 Cite all releases with DOI [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
 which always resolves to the latest release.
 
+
+## matsbyname 0.6.14 (2026-01-29)
 
 * Responded to changes in `dplyr::summarise()`,
   where no more than one row can be returned per group.

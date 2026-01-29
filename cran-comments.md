@@ -1,6 +1,6 @@
 ## Context
 
-`matsbyname` v0.6.13
+`matsbyname` v0.6.14
 updates `test-coverage.yaml` to v4, adds features, and fixed bugs.
 Feature: new function `reallocate_byname()`
 reallocates some entries in a matrix to other rows or columns
@@ -12,7 +12,7 @@ See `NEWS.md` for additional details.
 
 ## Test environments (14 in total) and R CMD check results
 
-* Local macOS X installation 14.6.1 (Sonoma), R4.5.0 (2025-04-11)
+* Local macOS installation 15.7.3 (Sequoia), R4.5.2 (2025-10-31)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
@@ -84,4 +84,5 @@ We checked 1 reverse dependencies, comparing R CMD check results across CRAN and
 
  * We saw 0 new problems
  * We failed to check 0 packages
+
 
