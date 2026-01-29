@@ -323,14 +323,17 @@ as in the `dplyr::summarise()` function?
 (See the vignette titled "Using summarise in matsbyname"
 for additional detail about this ambiguity.) 
 In the example below, the grouping has no effect
-on the `summarise()` function, because `sum_byname(.summarise = FALSE)`
+on the `dplyr::summarise()` function, because `sum_byname(.summarise = FALSE)`
 assumes that each row of `val` is an augend without an addend.
+Furthermore, `dplyr::summarise()` will error,
+because it no longer allows returning more than one row per group.
+`dplyr::reframe()` must be used instead.
 
 ```{r}
 # 2 rows are expected. 3 are observed.
 df_simple %>% 
   dplyr::group_by(key) %>% 
-  dplyr::summarise(val = sum_byname(val), .groups = "drop")
+  dplyr::reframe(val = sum_byname(val))
 ```
 
 To signal intention to summarise down the `val` column, 
@@ -358,7 +361,7 @@ m <- matrix(c(11, 12, 13,
 df <- tibble::tibble(key = c("A", "A", "B"), m = list(m, m, m))
 unexpected <- df %>% 
   dplyr::group_by(key) %>% 
-  dplyr::summarise(m = sum_byname(m), .groups = "drop")
+  dplyr::reframe(m = sum_byname(m))
 # 2 rows are expected. 3 are observed.
 unexpected
 res <- df %>% 
