@@ -9,15 +9,6 @@ for single matrices, lists, and columns of a data frame; and
 improved documentation for `complete_and_sort()`.
 
 
-updates `test-coverage.yaml` to v4, adds features, and fixed bugs.
-Feature: new function `reallocate_byname()`
-reallocates some entries in a matrix to other rows or columns
-in proportion to remaining values in corresponding columns or rows.
-Bugfix: fixed an edge-case bug in `fractionize_byname()` when 
-the matrix to be fractionized had only one row or column.
-See `NEWS.md` for additional details.
-
-
 ## Test environments (14 in total) and R CMD check results
 
 * Local macOS installation 15.7.3 (Sequoia), R4.5.2 (2025-10-31)
