@@ -1,6 +1,14 @@
 ## Context
 
 `matsbyname` v0.6.14
+responds to changes in `dplyr::summarise()`,
+where no more than one row can be returned per group; 
+adds new function `rename_via_pattern_byname()`, 
+enabling row and column renaming via regular expressions
+for single matrices, lists, and columns of a data frame; and 
+improved documentation for `complete_and_sort()`.
+
+
 updates `test-coverage.yaml` to v4, adds features, and fixed bugs.
 Feature: new function `reallocate_byname()`
 reallocates some entries in a matrix to other rows or columns
