@@ -8,6 +8,10 @@ Cite all releases with DOI [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+* Responded to changes in `dplyr::summarise()`,
+  where no more than one row can be returned per group.
+  There was an issue in the aggregation vignette
+  that required a change from `dplyr::summarise()` to `dplyr::reframe()`.
 * New function `rename_via_pattern_byname()`
   enables row and column renaming via regular expressions
   for single matrices, lists, and columns of a data frame.
