@@ -36,7 +36,7 @@ improved documentation for `complete_and_sort()`.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-* rhub (routed to GitHub Actions)
+* rhub via rhub::rhub_check(branch = "release-0.6.14")
     * rhub linux (R-devel)
         * ERRORs: 0
         * WARNINGs: 0
@@ -46,9 +46,7 @@ improved documentation for `complete_and_sort()`.
         * WARNINGs: 0
         * NOTEs: 0
     * rhub macos (R-devel)
-        * ERRORs: 0
-        * WARNINGs: 0
-        * NOTEs: 0
+        * CANCELLED: The macOS-13 based runner images are now retired. (I have no control over this.)
     * rhub macos-arm64 (R-devel)
         * ERRORs: 0
         * WARNINGs: 0
@@ -58,11 +56,11 @@ improved documentation for `complete_and_sort()`.
         * WARNINGs: 0
         * NOTEs: 0  
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.4.2 (2024-10-31 ucrt)
+    * `devtools::check_win_release()`, R version 4.5.2 (2025-10-31 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2025-05-13 r88200 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2026-01-28 r89344 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
