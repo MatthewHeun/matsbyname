@@ -9,7 +9,7 @@ Cite all releases with DOI [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
-## matsbyname 0.6.14 (2026-01-29)
+## matsbyname 0.6.14 (2026-01-29) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18436385.svg)](https://doi.org/10.5281/zenodo.18436385)
 
 * Responded to changes in `dplyr::summarise()`,
   where no more than one row can be returned per group.
