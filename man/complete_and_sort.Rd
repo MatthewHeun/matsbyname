@@ -39,20 +39,21 @@ Missing rows and columns (relative to the other matrix)
 are filled with \code{fill}.
 Thereafter, rows and columns of the matrices are sorted
 such that they are in the same order (by name).
-To complete rows of \code{m1} relative to columns of \code{m2},
-set the \code{m2} argument to \code{transpose_byname(m2)}.
+To complete rows of \code{a} relative to columns of \code{b}
+(and vice versa),
+\code{\link[=transpose_byname]{transpose_byname()}} the \code{b} argument.
 }
 \details{
-\code{margin} has nearly the same semantic meaning as in \code{base::apply()}.
+\code{margin} has nearly the same semantic meaning as in \code{\link[=apply]{apply()}}.
 For rows only, give \code{1};
 for columns only, give \code{2};
 for both rows and columns, give \code{c(1,2)}, the default value.
 
-If only \code{m1} is specified, rows of \code{m1} are completed and sorted
-relative to columns of \code{m1}.
-If neither \code{m1} nor \code{m2} have dimnames,
-\code{m1} and \code{m2} are returned unmodified.
-If only one of \code{m1} or \code{m2} has dimnames, an error is thrown.
+If only \code{a} is specified, rows of \code{a} are completed and sorted
+relative to columns of \code{a}.
+If neither \code{a} nor \code{b} have dimnames,
+\code{a} and \code{b} are returned unmodified.
+If only one of \code{a} or \code{b} has dimnames, an error is thrown.
 }
 \examples{
 m1 <- matrix(c(1:6), nrow=3, dimnames = list(c("r1", "r2", "r3"), c("c2", "c1")))

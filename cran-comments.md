@@ -1,18 +1,17 @@
 ## Context
 
-`matsbyname` v0.6.13
-updates `test-coverage.yaml` to v4, adds features, and fixed bugs.
-Feature: new function `reallocate_byname()`
-reallocates some entries in a matrix to other rows or columns
-in proportion to remaining values in corresponding columns or rows.
-Bugfix: fixed an edge-case bug in `fractionize_byname()` when 
-the matrix to be fractionized had only one row or column.
-See `NEWS.md` for additional details.
+`matsbyname` v0.6.14
+responds to changes in `dplyr::summarise()`,
+where no more than one row can be returned per group; 
+adds new function `rename_via_pattern_byname()`, 
+enabling row and column renaming via regular expressions
+for single matrices, lists, and columns of a data frame; and 
+improved documentation for `complete_and_sort()`.
 
 
 ## Test environments (14 in total) and R CMD check results
 
-* Local macOS X installation 14.6.1 (Sonoma), R4.5.0 (2025-04-11)
+* Local macOS installation 15.7.3 (Sequoia), R4.5.2 (2025-10-31)
     * ERRORs: 0
     * WARNINGs: 0
     * NOTEs: 0
@@ -37,7 +36,7 @@ See `NEWS.md` for additional details.
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-* rhub (routed to GitHub Actions)
+* rhub via rhub::rhub_check(branch = "release-0.6.14")
     * rhub linux (R-devel)
         * ERRORs: 0
         * WARNINGs: 0
@@ -47,9 +46,7 @@ See `NEWS.md` for additional details.
         * WARNINGs: 0
         * NOTEs: 0
     * rhub macos (R-devel)
-        * ERRORs: 0
-        * WARNINGs: 0
-        * NOTEs: 0
+        * CANCELLED: The macOS-13 based runner images are now retired. (I have no control over this.)
     * rhub macos-arm64 (R-devel)
         * ERRORs: 0
         * WARNINGs: 0
@@ -59,11 +56,11 @@ See `NEWS.md` for additional details.
         * WARNINGs: 0
         * NOTEs: 0  
 * Windows (on win-builder):
-    * `devtools::check_win_release()`, R version 4.4.2 (2024-10-31 ucrt)
+    * `devtools::check_win_release()`, R version 4.5.2 (2025-10-31 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
-    * `devtools::check_win_devel()`, R Under development (unstable) (2025-05-13 r88200 ucrt)
+    * `devtools::check_win_devel()`, R Under development (unstable) (2026-01-28 r89344 ucrt)
         * ERRORs: 0
         * WARNINGs: 0
         * NOTEs: 0
@@ -84,4 +81,5 @@ We checked 1 reverse dependencies, comparing R CMD check results across CRAN and
 
  * We saw 0 new problems
  * We failed to check 0 packages
+
 

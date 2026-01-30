@@ -1,7 +1,10 @@
 
 <!-- *********** -->
+
 <!-- Note: README.md is generated from README.Rmd.   -->
+
 <!-- Be sure to edit README.Rmd and generate the README.md file by Cmd/Ctl-shift-K -->
+
 <!-- *********** -->
 
 # matsbyname
@@ -96,7 +99,8 @@ at <https://MatthewHeun.github.io/matsbyname/>.
 
 ## References
 
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
 
 <div id="ref-Heun:2018" class="csl-entry">
 

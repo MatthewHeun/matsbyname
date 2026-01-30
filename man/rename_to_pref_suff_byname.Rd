@@ -40,7 +40,7 @@ If prefixes or suffixes are not found in a row and/or column name, that name is 
 }
 \examples{
 # This function is superseded. 
-# Instead, use `rename_to_pieces_byname()`.
+# Instead, use `rename_to_piece_byname()`.
 # For example:
 m <- matrix(c(1, 2, 
               3, 4, 

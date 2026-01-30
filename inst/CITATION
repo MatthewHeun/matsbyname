@@ -7,11 +7,11 @@ bibentry(
                        email = "matthew.heun@me.com", 
                        role = c("aut", "cre"), 
                        comment = c(ORCID = "0000-0002-7438-214X")),
-  year        = "2025",
-  note        = "R package version 0.6.13",
+  year        = "2026",
+  note        = "R package version 0.6.14",
   url         = "https://doi.org/10.5281/zenodo.5118872",
-  textVersion = paste("Matthew Kuperus Heun (2025).", 
+  textVersion = paste("Matthew Kuperus Heun (2026).", 
                       "matsbyname: An Implementation of Matrix Mathematics.",
-                      "R package version 0.6.13.",
+                      "R package version 0.6.14.",
                       "https://doi.org/10.5281/zenodo.5118872")
 )

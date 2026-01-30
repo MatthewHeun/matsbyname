@@ -3,12 +3,28 @@ title: "Release notes for `matsbyname`"
 output: html_document
 ---
 
+## All releases
 
-Cite all releases with doi [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
+Cite all releases with DOI [10.5281/zenodo.5118872](https://doi.org/10.5281/zenodo.5118872), 
 which always resolves to the latest release.
 
 
-## matsbyname 0.6.13 (2025-05-14) 
+## matsbyname 0.6.14 (2026-01-29)
+
+* Responded to changes in `dplyr::summarise()`,
+  where no more than one row can be returned per group.
+  There was an issue in the aggregation vignette
+  that required a change from `dplyr::summarise()` to `dplyr::reframe()`.
+* New function `rename_via_pattern_byname()`
+  enables row and column renaming via regular expressions
+  for single matrices, lists, and columns of a data frame.
+* Improved documentation for `complete_and_sort()`.
+* New tests for new features.
+    - Now up to 2207 tests, all passing.
+    - Test coverage remains at 100%.
+
+
+## matsbyname 0.6.13 (2025-05-14) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15416297.svg)](https://doi.org/10.5281/zenodo.15416297)
 
 * New function `reallocate_byname()`  
   reallocates some entries in a matrix to other rows or columns

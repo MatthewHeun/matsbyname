@@ -8,19 +8,20 @@
 #' are filled with `fill`.
 #' Thereafter, rows and columns of the matrices are sorted
 #' such that they are in the same order (by name).
-#' To complete rows of `m1` relative to columns of `m2`,
-#' set the `m2` argument to `transpose_byname(m2)`.
+#' To complete rows of `a` relative to columns of `b`
+#' (and vice versa),
+#' [transpose_byname()] the `b` argument.
 #'
-#' `margin` has nearly the same semantic meaning as in `base::apply()`.
+#' `margin` has nearly the same semantic meaning as in [apply()].
 #' For rows only, give `1`;
 #' for columns only, give `2`;
 #' for both rows and columns, give `c(1,2)`, the default value.
 #'
-#' If only `m1` is specified, rows of `m1` are completed and sorted
-#' relative to columns of `m1`.
-#' If neither `m1` nor `m2` have dimnames,
-#' `m1` and `m2` are returned unmodified.
-#' If only one of `m1` or `m2` has dimnames, an error is thrown.
+#' If only `a` is specified, rows of `a` are completed and sorted
+#' relative to columns of `a`.
+#' If neither `a` nor `b` have dimnames,
+#' `a` and `b` are returned unmodified.
+#' If only one of `a` or `b` has dimnames, an error is thrown.
 #'
 #' @param a The first matrix
 #' @param b The second (optional) matrix.

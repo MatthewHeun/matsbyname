@@ -5,15 +5,17 @@ Missing rows and columns (relative to the other matrix)
 are filled with fill.
 Thereafter, rows and columns of the matrices are sorted
 such that they are in the same order (by name).
-To complete rows of m1 relative to columns of m2,
-set the m2 argument to transpose_byname(m2)."><meta property="og:description" content="Completes each matrix relative to each other, thereby assuring that
+To complete rows of a relative to columns of b
+(and vice versa),
+transpose_byname() the b argument."><meta property="og:description" content="Completes each matrix relative to each other, thereby assuring that
 both matrices have same row and column names.
 Missing rows and columns (relative to the other matrix)
 are filled with fill.
 Thereafter, rows and columns of the matrices are sorted
 such that they are in the same order (by name).
-To complete rows of m1 relative to columns of m2,
-set the m2 argument to transpose_byname(m2)."></head><body>
+To complete rows of a relative to columns of b
+(and vice versa),
+transpose_byname() the b argument."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ set the m2 argument to transpose_byname(m2)."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">matsbyname</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.13</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.14</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +64,9 @@ Missing rows and columns (relative to the other matrix)
 are filled with <code>fill</code>.
 Thereafter, rows and columns of the matrices are sorted
 such that they are in the same order (by name).
-To complete rows of <code>m1</code> relative to columns of <code>m2</code>,
-set the <code>m2</code> argument to <code>transpose_byname(m2)</code>.</p>
+To complete rows of <code>a</code> relative to columns of <code>b</code>
+(and vice versa),
+<code><a href="transpose_byname.html">transpose_byname()</a></code> the <code>b</code> argument.</p>
     </div>
 
     <div class="section level2">
@@ -115,15 +118,15 @@ Unspecified columns are dropped.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>margin</code> has nearly the same semantic meaning as in <code><a href="https://rdrr.io/r/base/apply.html" class="external-link">base::apply()</a></code>.
+    <p><code>margin</code> has nearly the same semantic meaning as in <code><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply()</a></code>.
 For rows only, give <code>1</code>;
 for columns only, give <code>2</code>;
 for both rows and columns, give <code>c(1,2)</code>, the default value.</p>
-<p>If only <code>m1</code> is specified, rows of <code>m1</code> are completed and sorted
-relative to columns of <code>m1</code>.
-If neither <code>m1</code> nor <code>m2</code> have dimnames,
-<code>m1</code> and <code>m2</code> are returned unmodified.
-If only one of <code>m1</code> or <code>m2</code> has dimnames, an error is thrown.</p>
+<p>If only <code>a</code> is specified, rows of <code>a</code> are completed and sorted
+relative to columns of <code>a</code>.
+If neither <code>a</code> nor <code>b</code> have dimnames,
+<code>a</code> and <code>b</code> are returned unmodified.
+If only one of <code>a</code> or <code>b</code> has dimnames, an error is thrown.</p>
     </div>
 
     <div class="section level2">
@@ -314,7 +317,7 @@ If only one of <code>m1</code> or <code>m2</code> has dimnames, an error is thro
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
