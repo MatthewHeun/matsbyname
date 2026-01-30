@@ -1,0 +1,423 @@
+# matsbyname
+
+## Statement of need
+
+Matrices are important mathematical objects, and they often describe
+networks of flows among nodes. Example networks are given in the
+following table. The power of matrices lies in their ability to organize
+network-wide calculations, thereby simplifying the work of analysts who
+study entire systems. However, three problems arise when performing
+matrix operations in `R` and other languages. The `R` package
+`matsbyname` enables matrix mathematics wherein operations are performed
+“by name” and row and column types are allowed.
+
+### Problem 1
+
+Although built-in matrix functions ensure size conformity of matrix
+operands, they do not respect the names of rows and columns (known as
+`dimnames` in `R`). If the rows and columns are not in the same order,
+mathematical operations with matrices are nonsensical.
+
+### Problem 2
+
+In many cases, operand matrices may have different numbers or different
+names of rows or columns. This situation can occur when, for example,
+products or industries changes across time periods. When performing
+matrix operations, rows or columns of zeros must be added to ensure name
+conformity. The analyst’s burden is cumbersome. But worse problems
+await. Respecting names (and adding rows and columns of zeroes) can lead
+to an inability to invert matrices downstream.
+
+### Problem 3
+
+Matrix functions provided by `R` and other languages do not ensure type
+conformity for matrix operands to matrix algebra functions. In the
+example of matrix multiplication, columns of the multiplicand must
+contain the same type of information as the as the rows of the
+multiplier. If the columns of **A** are countries, then the rows of
+**B** must also be countries (and in the same order) if **A** `%*%`
+**B** is to make sense.
+
+This package provides functions that respect row and column names when
+performing matrix mathematics in `R`. Furthermore, operations can be
+performed on lists of matrices, such as columns in a
+[matsindf](https://matthewheun.github.io/matsindf/) data frame.
+
+## Installation
+
+You can install `matsbyname` from CRAN with:
+
+``` r
+install.packages("matsbyname")
+```
+
+You can install a recent development version of `matsbyname` from github
+with:
+
+``` r
+# install devtools if not already installed
+# install.packages("devtools")
+devtools::install_github("MatthewHeun/matsbyname")
+# To build vignettes locally, use
+devtools::install_github("MatthewHeun/matsbyname", build_vignettes = TRUE)
+```
+
+## History
+
+The functions in this package were used in [Heun et al.
+(2018)](https://doi.org/10.1016/j.apenergy.2018.05.109).
+
+## More Information
+
+Find more information, including vignettes and function documentation,
+at <https://MatthewHeun.github.io/matsbyname/>.
+
+## References
+
+Heun, Matthew Kuperus, Anne Owen, and Paul E. Brockway. 2018. “A
+Physical Supply-Use Table Framework for Energy Analysis on the Energy
+Conversion Chain.” *Applied Energy* 226 (September): 1134–62.
+<https://doi.org/10.1016/j.apenergy.2018.05.109>.
+
+# Package index
+
+## All functions
+
+- [`Iminus_byname()`](https://matthewheun.github.io/matsbyname/reference/Iminus_byname.md)
+  :
+
+  Subtract a matrix with named rows and columns from a suitably named
+  and sized identity matrix (`I`)
+
+- [`Matrix()`](https://matthewheun.github.io/matsbyname/reference/Matrix.md)
+  :
+
+  Create a Matrix amenable to use in the `matsbyname` package
+
+- [`abs_byname()`](https://matthewheun.github.io/matsbyname/reference/abs_byname.md)
+  : Absolute value of matrix elements
+
+- [`aggregate_byname()`](https://matthewheun.github.io/matsbyname/reference/aggregate_byname.md)
+  : Aggregate rows and columns in a matrix
+
+- [`aggregate_pieces_byname()`](https://matthewheun.github.io/matsbyname/reference/aggregate_pieces_byname.md)
+  : Aggregate a matrix by pieces of row and/or column names
+
+- [`aggregate_to_pref_suff_byname()`](https://matthewheun.github.io/matsbyname/reference/aggregate_to_pref_suff_byname.md)
+  **\[superseded\]** : Aggregate a matrix to prefixes or suffixes of row
+  and/or column names
+
+- [`agg_table_to_agg_map()`](https://matthewheun.github.io/matsbyname/reference/aggregation_map_helpers.md)
+  [`agg_map_to_agg_table()`](https://matthewheun.github.io/matsbyname/reference/aggregation_map_helpers.md)
+  : Aggregation map conversions
+
+- [`all_byname()`](https://matthewheun.github.io/matsbyname/reference/all_byname.md)
+  :
+
+  Are all matrix elements `TRUE`?
+
+- [`and_byname()`](https://matthewheun.github.io/matsbyname/reference/and_byname.md)
+  : And "by name"
+
+- [`any_byname()`](https://matthewheun.github.io/matsbyname/reference/any_byname.md)
+  :
+
+  Are any matrix elements `TRUE`?
+
+- [`binaryapply_byname()`](https://matthewheun.github.io/matsbyname/reference/binaryapply_byname.md)
+  : Apply a binary function "by name"
+
+- [`clean_byname()`](https://matthewheun.github.io/matsbyname/reference/clean_byname.md)
+  :
+
+  Clean (delete) rows or columns of matrices that contain exclusively
+  `clean_value`
+
+- [`colprods_byname()`](https://matthewheun.github.io/matsbyname/reference/colprods_byname.md)
+  : Column products, sorted by name
+
+- [`colsums_byname()`](https://matthewheun.github.io/matsbyname/reference/colsums_byname.md)
+  : Column sums, sorted by name
+
+- [`coltype()`](https://matthewheun.github.io/matsbyname/reference/coltype.md)
+  : Column type
+
+- [`compare_byname()`](https://matthewheun.github.io/matsbyname/reference/compare_byname.md)
+  : Compare matrix entries to a value
+
+- [`complete_and_sort()`](https://matthewheun.github.io/matsbyname/reference/complete_and_sort.md)
+  : Complete matrices relative to one another and sort into same row,
+  column order
+
+- [`complete_rows_cols()`](https://matthewheun.github.io/matsbyname/reference/complete_rows_cols.md)
+  : Complete rows and columns in one matrix relative to another
+
+- [`count_vals_byname()`](https://matthewheun.github.io/matsbyname/reference/count_vals_byname.md)
+  : Count the number of matrix entries that meet a criterion
+
+- [`count_vals_incols_byname()`](https://matthewheun.github.io/matsbyname/reference/count_vals_incols_byname.md)
+  : Count the number of matrix entries in columns that meet a criterion
+
+- [`count_vals_inrows_byname()`](https://matthewheun.github.io/matsbyname/reference/count_vals_inrows_byname.md)
+  : Count the number of matrix entries in rows that meet a criterion
+
+- [`create_colvec_byname()`](https://matthewheun.github.io/matsbyname/reference/create_colvec_byname.md)
+  : Create column vectors from data
+
+- [`create_matrix_byname()`](https://matthewheun.github.io/matsbyname/reference/create_matrix_byname.md)
+  : Create a "byname" matrix from a vector
+
+- [`create_rowvec_byname()`](https://matthewheun.github.io/matsbyname/reference/create_rowvec_byname.md)
+  : Create row vectors from data
+
+- [`create_triplet()`](https://matthewheun.github.io/matsbyname/reference/create_triplet.md)
+  : Create a triplet from a matrix
+
+- [`cumapply_byname()`](https://matthewheun.github.io/matsbyname/reference/cumapply_byname.md)
+  : Apply a function cumulatively to a list of matrices or numbers
+
+- [`cumprod_byname()`](https://matthewheun.github.io/matsbyname/reference/cumprod_byname.md)
+  : Cumulative element-product that respects row and column names
+
+- [`cumsum_byname()`](https://matthewheun.github.io/matsbyname/reference/cumsum_byname.md)
+  : Cumulative sum that respects row and column names
+
+- [`difference_byname()`](https://matthewheun.github.io/matsbyname/reference/difference_byname.md)
+  : Name-wise subtraction of matrices
+
+- [`eigenvalues_byname()`](https://matthewheun.github.io/matsbyname/reference/eigenvalues_byname.md)
+  : Calculate eigenvalues of a matrix
+
+- [`eigenvectors_byname()`](https://matthewheun.github.io/matsbyname/reference/eigenvectors_byname.md)
+  : Calculate eigenvectors of a matrix
+
+- [`elementapply_byname()`](https://matthewheun.github.io/matsbyname/reference/elementapply_byname.md)
+  : Apply a function to an element of a matrix specified by rows and
+  columns
+
+- [`equal_byname()`](https://matthewheun.github.io/matsbyname/reference/equal_byname.md)
+  : Compare two matrices "by name" for equality
+
+- [`exp_byname()`](https://matthewheun.github.io/matsbyname/reference/exp_byname.md)
+  : Exponential of matrix elements
+
+- [`fractionize_byname()`](https://matthewheun.github.io/matsbyname/reference/fractionize_byname.md)
+  : Compute fractions of matrix entries
+
+- [`geometricmean_byname()`](https://matthewheun.github.io/matsbyname/reference/geometricmean_byname.md)
+  : Name- and element-wise geometric mean of two matrices.
+
+- [`get_row_col_index_maps()`](https://matthewheun.github.io/matsbyname/reference/get_row_col_index_maps.md)
+  : Figure out row and column index maps
+
+- [`getcolnames_byname()`](https://matthewheun.github.io/matsbyname/reference/getcolnames_byname.md)
+  : Gets column names
+
+- [`getrownames_byname()`](https://matthewheun.github.io/matsbyname/reference/getrownames_byname.md)
+  : Gets row names
+
+- [`getzerorowcolnames_byname()`](https://matthewheun.github.io/matsbyname/reference/getzerorowcolnames_byname.md)
+  : Names of zero rows and columns
+
+- [`hadamardproduct_byname()`](https://matthewheun.github.io/matsbyname/reference/hadamardproduct_byname.md)
+  : Name-wise matrix Hadamard multiplication
+
+- [`hatinv_byname()`](https://matthewheun.github.io/matsbyname/reference/hatinv_byname.md)
+  : Hatize and invert a vector
+
+- [`hatize_byname()`](https://matthewheun.github.io/matsbyname/reference/hatize_byname.md)
+  : Creates a diagonal "hat" matrix from a vector
+
+- [`identical_byname()`](https://matthewheun.github.io/matsbyname/reference/identical_byname.md)
+  : Compare two matrices "by name" for exact equality
+
+- [`identize_byname()`](https://matthewheun.github.io/matsbyname/reference/identize_byname.md)
+  : Named identity matrix or vector
+
+- [`invert_byname()`](https://matthewheun.github.io/matsbyname/reference/invert_byname.md)
+  : Invert a matrix
+
+- [`is.Matrix()`](https://matthewheun.github.io/matsbyname/reference/is.Matrix.md)
+  : Is an object a Matrix?
+
+- [`is_matrix_or_Matrix()`](https://matthewheun.github.io/matsbyname/reference/is_matrix_or_Matrix.md)
+  : Tells whether an object is one of a matrix or a Matrix
+
+- [`iszero_byname()`](https://matthewheun.github.io/matsbyname/reference/iszero_byname.md)
+  : Test whether this is the zero matrix
+
+- [`kvec_from_template_byname()`](https://matthewheun.github.io/matsbyname/reference/kvec_from_template_byname.md)
+  :
+
+  Create a constant vector from matrix `a`
+
+- [`list_of_rows_or_cols()`](https://matthewheun.github.io/matsbyname/reference/list_of_rows_or_cols.md)
+  : Named list of rows or columns of matrices
+
+- [`log_byname()`](https://matthewheun.github.io/matsbyname/reference/log_byname.md)
+  : Logarithm of matrix elements
+
+- [`logarithmicmean_byname()`](https://matthewheun.github.io/matsbyname/reference/logarithmicmean_byname.md)
+  : Name- and element-wise logarithmic mean of matrices
+
+- [`logmean()`](https://matthewheun.github.io/matsbyname/reference/logmean.md)
+  : Logarithmic mean of two numbers
+
+- [`margin_from_types_byname()`](https://matthewheun.github.io/matsbyname/reference/margin_from_types_byname.md)
+  : Translate row and column types to integer margins
+
+- [`matricize_byname()`](https://matthewheun.github.io/matsbyname/reference/matricize_byname.md)
+  : Matricize a vector
+
+- [`matrixproduct_byname()`](https://matthewheun.github.io/matsbyname/reference/matrixproduct_byname.md)
+  : Name-wise matrix multiplication
+
+- [`mean_byname()`](https://matthewheun.github.io/matsbyname/reference/mean_byname.md)
+  : Name- and element-wise arithmetic mean of matrices
+
+- [`naryapply_byname()`](https://matthewheun.github.io/matsbyname/reference/naryapply_byname.md)
+  : Apply a function "by name" to any number of operands
+
+- [`naryapplylogical_byname()`](https://matthewheun.github.io/matsbyname/reference/naryapplylogical_byname.md)
+  : Apply a function logically to numbers, matrices, or lists of numbers
+  or matrices
+
+- [`ncol_byname()`](https://matthewheun.github.io/matsbyname/reference/ncol_byname.md)
+  : Get the number of columns in a "byname" matrix.
+
+- [`nrow_byname()`](https://matthewheun.github.io/matsbyname/reference/nrow_byname.md)
+  : Get the number of rows in a "byname" matrix.
+
+- [`organize_args()`](https://matthewheun.github.io/matsbyname/reference/organize_args.md)
+  : Organize binary arguments
+
+- [`pow_byname()`](https://matthewheun.github.io/matsbyname/reference/pow_byname.md)
+  : Powers of matrix elements
+
+- [`prep_vector_arg()`](https://matthewheun.github.io/matsbyname/reference/prep_vector_arg.md)
+  : Prepare a vector argument
+
+- [`prepare_.FUNdots()`](https://matthewheun.github.io/matsbyname/reference/prepare_.FUNdots.md)
+  :
+
+  Prepare the `.FUNdots` argument for `*apply_byname` functions.
+
+- [`prodall_byname()`](https://matthewheun.github.io/matsbyname/reference/prodall_byname.md)
+  : Product of all elements in a matrix
+
+- [`quotient_byname()`](https://matthewheun.github.io/matsbyname/reference/quotient_byname.md)
+  : Name-wise matrix element division
+
+- [`reallocate_byname()`](https://matthewheun.github.io/matsbyname/reference/reallocate_byname.md)
+  : Reallocate values from one row or column to others
+
+- [`rename_to_piece_byname()`](https://matthewheun.github.io/matsbyname/reference/rename_to_piece_byname.md)
+  : Rename matrix rows and columns by piece of row or column names
+
+- [`rename_to_pref_suff_byname()`](https://matthewheun.github.io/matsbyname/reference/rename_to_pref_suff_byname.md)
+  **\[superseded\]** : Rename matrix rows and columns by prefix and
+  suffix
+
+- [`rename_via_pattern_byname()`](https://matthewheun.github.io/matsbyname/reference/rename_via_pattern_byname.md)
+  : Rename row or column names via regexp pattern
+
+- [`replaceNaN_byname()`](https://matthewheun.github.io/matsbyname/reference/replaceNaN_byname.md)
+  :
+
+  Replace `NaN` values with a value
+
+- [`rowprods_byname()`](https://matthewheun.github.io/matsbyname/reference/rowprods_byname.md)
+  : Row products, sorted by name
+
+- [`rowsums_byname()`](https://matthewheun.github.io/matsbyname/reference/rowsums_byname.md)
+  : Row sums, sorted by name
+
+- [`rowtype()`](https://matthewheun.github.io/matsbyname/reference/rowtype.md)
+  : Row type
+
+- [`samestructure_byname()`](https://matthewheun.github.io/matsbyname/reference/samestructure_byname.md)
+  : Test whether matrices or lists of matrices have same structure
+
+- [`select_cols_byname()`](https://matthewheun.github.io/matsbyname/reference/select_cols_byname.md)
+  : Select columns of a matrix (or list of matrices) by name
+
+- [`select_rowcol_piece_byname()`](https://matthewheun.github.io/matsbyname/reference/select_rowcol_piece_byname.md)
+  : Select or remove rows or columns based on pieces of the names.
+
+- [`select_rows_byname()`](https://matthewheun.github.io/matsbyname/reference/select_rows_byname.md)
+  : Select (or de-select) rows of a matrix (or list of matrices) by name
+
+- [`select_rows_cols_byname()`](https://matthewheun.github.io/matsbyname/reference/select_rows_cols_byname.md)
+  : Select (or deselect) rows or columns
+
+- [`selectzerocols_byname()`](https://matthewheun.github.io/matsbyname/reference/selectzerocols_byname.md)
+  : Select zero columns
+
+- [`selectzerorows_byname()`](https://matthewheun.github.io/matsbyname/reference/selectzerorows_byname.md)
+  : Select zero rows
+
+- [`setcolnames_byname()`](https://matthewheun.github.io/matsbyname/reference/setcolnames_byname.md)
+  : Sets column names
+
+- [`setcoltype()`](https://matthewheun.github.io/matsbyname/reference/setcoltype.md)
+  : Sets column type for a matrix or a list of matrices
+
+- [`setrownames_byname()`](https://matthewheun.github.io/matsbyname/reference/setrownames_byname.md)
+  : Sets row names
+
+- [`setrowtype()`](https://matthewheun.github.io/matsbyname/reference/setrowtype.md)
+  : Sets row type for a matrix or a list of matrices
+
+- [`sort_rows_cols()`](https://matthewheun.github.io/matsbyname/reference/sort_rows_cols.md)
+  : Sorts rows and columns of a matrix
+
+- [`structure_index_map()`](https://matthewheun.github.io/matsbyname/reference/structure_index_map.md)
+  : Set the structure of an index map
+
+- [`sum_byname()`](https://matthewheun.github.io/matsbyname/reference/sum_byname.md)
+  : Name-wise addition of matrices
+
+- [`sumall_byname()`](https://matthewheun.github.io/matsbyname/reference/sumall_byname.md)
+  : Sum of all elements in a matrix
+
+- [`svd_byname()`](https://matthewheun.github.io/matsbyname/reference/svd_byname.md)
+  : Calculate the singular value decomposition of a matrix
+
+- [`switch_notation_byname()`](https://matthewheun.github.io/matsbyname/reference/switch_notation_byname.md)
+  : Change row and column name notation
+
+- [`to_triplet()`](https://matthewheun.github.io/matsbyname/reference/to_named_triplet.md)
+  [`to_named_matrix()`](https://matthewheun.github.io/matsbyname/reference/to_named_triplet.md)
+  : Convert a matrix or list of matrices between named form and indexed
+  form
+
+- [`transpose_byname()`](https://matthewheun.github.io/matsbyname/reference/transpose_byname.md)
+  : Transpose a matrix by name
+
+- [`trim_rows_cols()`](https://matthewheun.github.io/matsbyname/reference/trim_rows_cols.md)
+  : Trim rows and/or columns from a matrix
+
+- [`unaryapply_byname()`](https://matthewheun.github.io/matsbyname/reference/unaryapply_byname.md)
+  : Apply a unary function by name
+
+- [`vec_from_store_byname()`](https://matthewheun.github.io/matsbyname/reference/vec_from_store_byname.md)
+  : Create a vector with labels from a matrix and values from a vector
+  store
+
+- [`vectorize_byname()`](https://matthewheun.github.io/matsbyname/reference/vectorize_byname.md)
+  : Vectorize a matrix
+
+# Articles
+
+### All vignettes
+
+- [About Vector
+  Arguments](https://matthewheun.github.io/matsbyname/articles/about-vector-arguments.md):
+- [Aggregation in
+  \`matsbyname\`](https://matthewheun.github.io/matsbyname/articles/aggregation-vignette.md):
+- [Writing Custom Functions for
+  \`matsbyname\`](https://matthewheun.github.io/matsbyname/articles/applybyname-vignette.md):
+- [Use Cases and Examples for
+  \`matsbyname\`](https://matthewheun.github.io/matsbyname/articles/matsbyname.md):
+- [Using summarise in
+  matsbyname](https://matthewheun.github.io/matsbyname/articles/using-summarise-in-matsbyname.md):
