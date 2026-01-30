@@ -191,14 +191,14 @@ Furthermore, `matsbyname` works well with its sister package, `matsindf`.
 `matsindf` creates data frames
 whose entries are not numbers but entire matrices, thereby
 enabling the use of `matsbyname` functions in 
-[`tidyverse`](https://www.tidyverse.org)
+[`tidyverse`](https://tidyverse.org)
 functional programming.
 
 When used together, `matsbyname` and `matsindf` 
 allow analysts to wield simultaneously the power of both 
 [matrix mathematics](https://en.wikipedia.org/wiki/Matrix_(mathematics))
 and 
-[`tidyverse`](https://www.tidyverse.org)
+[`tidyverse`](https://tidyverse.org)
 functional programming.
 
 This vignette demonstrates the power of matrix mathematics
@@ -451,7 +451,7 @@ It provides optional row and column types, thereby
 ensuring that only valid matrix operations are performed.
 Finally, `matsbyname` functions work equally well with lists
 to allow use of `*_byname` functions with 
-[`tidyr`](https://tidyr.tidyverse.org)
+[tidyr](https://tidyr.tidyverse.org)
 and 
-[`dplyr`](https://dplyr.tidyverse.org)
+[dplyr](https://dplyr.tidyverse.org)
 approaches to manipulating data.
