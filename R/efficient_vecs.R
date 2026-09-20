@@ -71,7 +71,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
 #' The labels of the long dimension are taken from matrix `a`
 #' (the row names of `a` if `column` is `TRUE`; 
 #' the column names of `a` if `column` is `FALSE`).
-#' The values of the output vector are obtained from v
+#' The values of the output vector are obtained from `v`
 #' when `a_piece` matches `v_piece` using the `RCLabels` package.
 #' The `v_piece`s of `v` must be unique.
 #' The default values for `a_piece` and `v_piece` are "all", 

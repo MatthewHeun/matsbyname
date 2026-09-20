@@ -10,7 +10,6 @@ Description: An implementation of matrix mathematics wherein operations are perf
 License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.1.0)
 Config/testthat/edition: 3
@@ -42,3 +41,4 @@ VignetteBuilder:
     knitr
 URL: https://github.com/MatthewHeun/matsbyname, https://matthewheun.github.io/matsbyname/
 BugReports: https://github.com/MatthewHeun/matsbyname/issues
+Config/roxygen2/version: 8.1.0

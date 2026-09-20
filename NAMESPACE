@@ -101,5 +101,7 @@ export(vectorize_byname)
 importFrom(dplyr,mutate)
 importFrom(lifecycle,deprecated)
 importFrom(magrittr,"%>%")
-importFrom(rlang,":=")
-importFrom(rlang,.data)
+importFrom(rlang,
+  ":=",
+  .data
+)

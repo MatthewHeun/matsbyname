@@ -20,5 +20,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Matthew Heun \email{matthew.heun@me.com} (\href{https://orcid.org/0000-0002-7438-214X}{ORCID})
 
+Authors:
+\itemize{
+  \item Matthew Heun \email{matthew.heun@me.com} (\href{https://orcid.org/0000-0002-7438-214X}{ORCID})
+}
+
 }
 \keyword{internal}
