@@ -1427,3 +1427,46 @@ test_that("mat_from_store_byname() works with multiple matches", {
                       dimnames = list(c("r1p -> r1s", "r2p -> r2s",
                                         "r3p -> r3s", "r1p -> r3s"), "col")))
 })
+
+
+test_that("mat_from_store_byname() works in a data frame", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in GBR]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) |> 
+    setrowtype("Product") |> setcoltype("Industry")
+  
+  
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity [from USA]", 
+                                "Peat [from nowhere]", 
+                                "Production [from GHA]", 
+                                "e [from ZAF]",
+                                "Coal [from AUS]", 
+                                "Hard coal (if no detail) [from GBR]", 
+                                "b [from Nebraska]"), 
+                              "phi")) |> 
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expected <- matrix(c(6, NA_real_, 1), nrow = 3, ncol = 1, 
+                     dimnames = list(c("Electricity [from b in GBR]", 
+                                       "Coal [from e in f]", 
+                                       "Crude oil [from Production in USA]"), 
+                                     "phi")) |> 
+    setrowtype("Product") |> setcoltype("phi")
+  
+  df <- tibble::tibble(a = list(a, a, a), 
+                       v = list(v, v, v), 
+                       expected = list(expected, expected, expected))
+  
+  with_res <- df %>%
+    dplyr::mutate(
+      actual = mat_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from")
+    )
+  expect_equal(with_res$actual, with_res$expected)
+})
