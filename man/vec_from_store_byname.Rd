@@ -77,7 +77,7 @@ The label of the size = 1 dimension is taken from \code{colname}
 The labels of the long dimension are taken from matrix \code{a}
 (the row names of \code{a} if \code{column} is \code{TRUE};
 the column names of \code{a} if \code{column} is \code{FALSE}).
-The values of the output vector are obtained from v
+The values of the output vector are obtained from \code{v}
 when \code{a_piece} matches \code{v_piece} using the \code{RCLabels} package.
 The \code{v_piece}s of \code{v} must be unique.
 The default values for \code{a_piece} and \code{v_piece} are "all",
