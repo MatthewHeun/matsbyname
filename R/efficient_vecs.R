@@ -274,3 +274,237 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
                                      notation_val = notation, 
                                      prepositions_val = prepositions))
 }
+
+
+#' Create a matrix (or vector) with labels from a matrix and values from a "store"
+#' 
+#' When a matrix (`a`) is multiplied by another matrix or vector (`v`) byname, 
+#' naming can be tricky.
+#' There are times when pieces of the labels in `v` should be matched to 
+#' pieces of the `a` labels. 
+#' This function helps by performing the matching byname.
+#' For this function, matrix or vector `v` is considered a store 
+#' of values, rows, or columns
+#' from which the output vector or matrix is constructed
+#' using special matching rules between matrix `a` and matrix or vector `v`.
+#' 
+#' The output of this function is a matrix or vector.
+#' The names of the output rows are taken from
+#' the `margin` of `a`.
+#' (`a = 1` means rows; `a = 2` means columns.)
+#' The names of the other dimension of the output are taken from `v`,
+#' but not `margin`. 
+#' Rather, the names of the other dimension of the output are taken from 
+#' the other dimension of `v`. 
+#' If `margin_v` is `1`, the names of the other dimension of the output
+#' are taken from columns of `v`. 
+#' If `margin_v` is `2`, the names of the other dimension of the output
+#' are taken from rows of `v`.
+#' 
+#' The values of the output matrix are obtained from `v`
+#' when `a_piece` matches `v_piece` using the `RCLabels` package.
+#' The `v_piece`s of `v`'s `margin_v` must be unique.
+#' The default values for `a_piece` and `v_piece` are "all", 
+#' meaning that the entire label of `a` should be matched to the entire 
+#' label of `v`.
+#' Other options for `a_piece` and `v_piece` are "pref" and "suff",
+#' which will match the prefix or suffix of the labels.
+#' Alternatively, prepositions can be given such that 
+#' objects of prepositions will be matched.
+#' Examples include "from" or "in".
+#' Row and column types from `v` are applied to the output.
+#' If the piece given in `a_piece` is not present in row or column names of `a`, 
+#' `NA_real_` is returned.
+#' If the piece given in `v_piece` is not present in row or column names of `v`, 
+#' `NA_real_` is returned.
+#' 
+#' Note that `notation` and `prepositions` should be lists if `a` is a list
+#' but a single value otherwise. 
+#' The default values of `notation` and `prepositions` take care of this requirement,
+#' switching on the type of `a` (list or not).
+#' 
+#' The class of the output object is determined from `a`.
+#' If `a` is a `Matrix`, the output will be a `Matrix`.
+#' Otherwise, the output will be a `matrix`.
+#'
+#' @param a A matrix from which row or column labels are taken.
+#'          Can also be a list or the name of a column in a data frame.
+#' @param v A matrix or vector from which values are taken, when `a_piece`
+#'          of names on `a`'s `margin` matches `v_piece` of names on `v`'s `margin_v`.
+#'          Can also be a list or the name of a column in a data frame.
+#' @param a_piece The piece of labels on `a`'s `margin` that is to be matched. Default is "all".
+#' @param v_piece The piece of labels on `v`'s `margin_v` that is to be matched. Default is "all".
+#' @param margin Tells whether to assess the rows (`1`) or columns (`2`) of `a`
+#'               when creating the outgoing vector.
+#'               Default is `1`.
+#' @param margin_v Tells whether to assess the rows (`1`) or columns (`2`) of `v`
+#'                  when creating the outgoing vector.
+#'                  Default is `1`.
+#' @param notation The notation for the row and column labels.
+#'                 Default is `RCLabels::bracket_notation`, wrapped as a list if `a` is a list.
+#' @param prepositions The strings that will count for prepositions.
+#'                     Default is `RCLabels::prepositions`, wrapped as a list if `a` is a list.
+#' @param missing The value used when the desired value is not found in `v`.
+#'                Default is `NA_real_`.
+#'
+#' @return A column vector with names from `a` and values from `v`.
+#' 
+#' @export
+#'
+#' @examples
+#' a <- matrix(42, nrow = 3, ncol = 5, 
+#'             dimnames = list(c("Electricity [from b in c]", 
+#'                               "Coal [from e in f]", 
+#'                               "Crude oil [from Production in USA]"), 
+#'                             c("Main activity producer electricity plants", 
+#'                               "Wind turbines", 
+#'                               "Oil refineries", 
+#'                               "Coal mines", 
+#'                               "Automobiles"))) %>%
+#'   setrowtype("Product") %>% setcoltype("Industry")
+#' a
+#' v <- matrix(1:7, nrow = 7, ncol = 1, 
+#'             dimnames = list(c("Electricity", 
+#'                               "Peat", 
+#'                               "Hydro", 
+#'                               "Crude oil",
+#'                               "Coal", 
+#'                               "Hard coal (if no detail)", 
+#'                               "Brown coal"), 
+#'                             "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' v
+#' vec_from_store_byname(a, v, a_piece = "pref")
+#' vec_from_store_byname(a, v, a_piece = "noun")
+#' 
+#' v2 <- matrix(1:7, nrow = 7, ncol = 1, 
+#'              dimnames = list(c("Electricity", 
+#'                                "Peat", 
+#'                                "USA", 
+#'                                "c",
+#'                                "Coal", 
+#'                                "Hard coal (if no detail)", 
+#'                                "f"), 
+#'                              "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' vec_from_store_byname(a, v2, a_piece = "in")
+#' 
+#' # Works with lists
+#' v3 <- matrix(1:7, nrow = 7, ncol = 1, 
+#'              dimnames = list(c("Electricity [from USA]", 
+#'                                "Peat [from nowhere]", 
+#'                                "Production [from GHA]", 
+#'                                "e [from ZAF]",
+#'                                "Coal [from AUS]", 
+#'                                "Hard coal (if no detail) [from GBR]", 
+#'                                "b [from Nebraska]"), 
+#'                              "phi")) %>%
+#'   setrowtype("Product") %>% setcoltype("phi")
+#' a_list <- list(a, a)
+#' v_list <- list(v3, v3)
+#' vec_from_store_byname(a_list, v_list, a_piece = "in", v_piece = "from")
+#' 
+#' # Also works in a data frame
+#' df <- tibble::tibble(a = list(a, a, a), 
+#'                      v = list(v3, v3, v3))
+#' df %>%
+#'   dplyr::mutate(
+#'     actual = vec_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from")
+#'   )
+mat_from_store_byname <- function(a, 
+                                  v, 
+                                  a_piece = "all", 
+                                  v_piece = "all",
+                                  margin = 1,
+                                  margin_v = 1,
+                                  notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
+                                  prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
+                                  missing = NA_real_) {
+  
+  vec_func <- function(a_mat, v_vec, 
+                       a_piece_val, v_piece_val, 
+                       margin_val, margin_v_val,
+                       notation_val = notation, 
+                       prepositions_val = prepositions) {
+    
+    # Make sure v is a matrix or Matrix
+    assertthat::assert_that(is_matrix_or_Matrix(v_vec), 
+                            msg = "v must be a matrix or a Matrix with 2 dimensions in vec_from_store_byname()")
+    if (margin_val == 2) {
+      return(
+        a_mat |> 
+          # If we want to match on columns of a, transpose a_mat so that its columns become rows.
+          transpose_byname() |> 
+          vec_func(v_vec = v_vec, 
+                   a_piece_val = a_piece_val, v_piece_val = v_piece_val, 
+                   margin_val = 1, margin_v_val = margin_v_val,
+                   notation_val = notation_val, prepositions_val = prepositions_val) |> 
+          # Then transpose back again before returning.
+          transpose_byname()
+      )
+    }
+    # If we want to match on the columns of v, transpose v_vec so that
+    # its columns become rows.
+    if (margin_v_val == 2) {
+      v_vec <- transpose_byname(v_vec)
+    }
+    
+    # At this point, we have a_mat and v_vec such that we want
+    # names from the rows of a_mat and the values from the rows of v_vec
+    # when matches occur.
+
+    # Get row names from the matrix and the vector
+    a_rownames <- dimnames(a_mat)[[1]]
+    v_rownames <- dimnames(v_vec)[[1]]
+    v_colnames <- dimnames(v_vec)[[2]]
+    a_pieces <- RCLabels::get_piece(a_rownames, 
+                                    piece = a_piece,
+                                    notation = notation_val, 
+                                    prepositions = prepositions_val)
+    v_pieces <- RCLabels::get_piece(v_rownames, 
+                                    piece = v_piece,
+                                    notation = notation_val,
+                                    prepositions = prepositions_val)
+    # Ensure that v_pieces are unique
+    assertthat::assert_that(length(v_pieces) == length(unique(v_pieces)), 
+                            msg = "v_pieces must be unique in vec_from_store_byname()")
+    
+    # Find the size of the outgoing matrix
+    out_nrow <- nrow(a_mat)
+    out_ncol <- ncol(v_vec)
+    # Build the outgoing matrix with NA's everywhere
+    if (is.Matrix(a_mat)) {
+      out <- matsbyname::Matrix(missing, nrow = out_nrow, ncol = out_ncol, 
+                                dimnames = list(a_rownames, v_colnames), 
+                                rowtype = rowtype(v_vec), coltype = coltype(v_vec))
+    } else {
+      out <- matrix(missing, nrow = out_nrow, ncol = out_ncol, 
+                    dimnames = list(a_rownames, v_colnames))
+    }
+    # Fill the matrix
+    for (i in 1:out_nrow) {
+      # Get the value we want
+      this_a_piece <- a_pieces[[i]]
+      rownum_in_v <- which(v_pieces == this_a_piece, arr.ind = TRUE)
+      
+      # We need both this_a_piece to be something (not "") and
+      # rownum_in_v to be different from 0 (i.e. present somewhere)
+      # to assign something different from missing, the default value.
+      if (this_a_piece != "" & length(rownum_in_v) != 0) {
+        out[i, ] <- v_vec[rownum_in_v, ]
+      }
+    }
+    # Set the rowtype and column type of the outgoing matrix.
+    out <- out |> 
+      setrowtype(rowtype(v_vec)) %>% setcoltype(coltype(v_vec))
+    return(out)
+  }
+  
+  binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE, set_rowcoltypes = FALSE,
+                     .FUNdots = list(a_piece_val = a_piece, 
+                                     v_piece_val = v_piece, 
+                                     margin_val = margin, 
+                                     margin_v_val = margin_v,
+                                     notation_val = notation, 
+                                     prepositions_val = prepositions))
+}
