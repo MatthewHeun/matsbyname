@@ -1470,3 +1470,12 @@ test_that("mat_from_store_byname() works in a data frame", {
     )
   expect_equal(with_res$actual, with_res$expected)
 })
+
+
+test_that("mat_from_store_byname() works with multiple matches", {
+  a <- matrix(42, nrow = 4, ncol = 2, dimnames = list(c("r1p -> r1s", "r2p -> r2s", "r3p -> r3s", "r1p -> r3s"), 
+                                                      c("c1p -> c1s", "c2p -> c2s")))
+  vec <- matrix(1:6, nrow = 6, ncol = 1, dimnames = list(c("r1p", "r2p", "r3p", "r1s", "r2s", "r3s"), "col"))
+  expect_equal(mat_from_store_byname(a = a, v = vec, a_piece = "pref", notation = RCLabels::arrow_notation), 
+               matrix(c(1, 2, 3, 1), ncol = 1, dimnames = list(c("r1p -> r1s", "r2p -> r2s", "r3p -> r3s", "r1p -> r3s"), "col")))
+})
