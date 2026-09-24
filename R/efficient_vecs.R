@@ -185,6 +185,12 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
                                   notation = if (is.list(a)) {list(RCLabels::bracket_notation)} else {RCLabels::bracket_notation}, 
                                   prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
                                   missing = NA_real_) {
+  
+  lifecycle::deprecate_soft(when = "0.6.15", 
+                            what = "vec_from_store_byname()", 
+                            with = "mat_from_store_byname()", 
+                            details = c("`mat_from_store_byname()`, a more-capable replacement,", 
+                                        "allows matrices in the `v` argument and matrices in the output."))
 
   vec_func <- function(a_mat, v_vec, a_piece_val, v_piece_val, colname_val, margin_val, 
                        notation_val = notation, 
@@ -326,6 +332,13 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
 #' The class of the output object is determined from `a`.
 #' If `a` is a `Matrix`, the output will be a `Matrix`.
 #' Otherwise, the output will be a `matrix`.
+#' 
+#' `mat_from_store_byname()` is a more-capable replacement for 
+#' the deprecated `vec_from_store_byname()`.
+#' `mat_from_store_byname()` allows matrices in the `v` argument.
+#' If `vec_from_store_byname()` was used previously with a column vector
+#' in the `v` argument and a column vector was the desired output,
+#' `mat_from_store_byname()` should be a drop-in replacement.
 #'
 #' @param a A matrix from which row or column labels are taken.
 #'          Can also be a list or the name of a column in a data frame.

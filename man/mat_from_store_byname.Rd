@@ -108,6 +108,13 @@ switching on the type of \code{a} (list or not).
 The class of the output object is determined from \code{a}.
 If \code{a} is a \code{Matrix}, the output will be a \code{Matrix}.
 Otherwise, the output will be a \code{matrix}.
+
+\code{mat_from_store_byname()} is a more-capable replacement for
+the deprecated \code{vec_from_store_byname()}.
+\code{mat_from_store_byname()} allows matrices in the \code{v} argument.
+If \code{vec_from_store_byname()} was used previously with a column vector
+in the \code{v} argument and a column vector was the desired output,
+\code{mat_from_store_byname()} should be a drop-in replacement.
 }
 \examples{
 a <- matrix(42, nrow = 3, ncol = 5, 
