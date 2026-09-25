@@ -1,6 +1,6 @@
 ## Context
 
-`matsbyname` v0.6.14
+`matsbyname` v0.6.15
 responds to changes in `dplyr::summarise()`,
 where no more than one row can be returned per group; 
 adds new function `rename_via_pattern_byname()`, 

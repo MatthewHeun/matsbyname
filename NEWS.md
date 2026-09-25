@@ -9,6 +9,21 @@ Cite all releases with DOI [10.5281/zenodo.5118872](https://doi.org/10.5281/zeno
 which always resolves to the latest release.
 
 
+## matsbyname 0.6.15 (2026-09-26)
+
+* New function `mat_from_store_byname()` creates matrices
+  from a "store" according to matching rules for row and column names.
+* `vec_from_store_byname()` now deprecated in favor of 
+  `mat_from_store_byname()`.
+  `mat_from_store_byname()` is a drop-in replacement for 
+  `vec_from_store_byname()` when argument `v` is a column vector.
+* New tests for new features.
+    - Now up to 2222 tests, all passing.
+    - Test coverage now at 96.89% due to no longer testing 
+      `vec_from_store_byname()`, thereby avoiding 
+
+
+
 ## matsbyname 0.6.14 (2026-01-29) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18436385.svg)](https://doi.org/10.5281/zenodo.18436385)
 
 * Responded to changes in `dplyr::summarise()`,
