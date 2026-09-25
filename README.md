@@ -99,8 +99,7 @@ at <https://MatthewHeun.github.io/matsbyname/>.
 
 ## References
 
-<div id="refs" class="references csl-bib-body hanging-indent"
-entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-Heun:2018" class="csl-entry">
 
