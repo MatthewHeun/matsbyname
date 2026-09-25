@@ -19,9 +19,7 @@ which always resolves to the latest release.
   `vec_from_store_byname()` when argument `v` is a column vector.
 * New tests for new features.
     - Now up to 2222 tests, all passing.
-    - Test coverage now at 96.89% due to no longer testing 
-      `vec_from_store_byname()`, thereby avoiding 
-
+    - Test coverage remains at 100%.
 
 
 ## matsbyname 0.6.14 (2026-01-29) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18436385.svg)](https://doi.org/10.5281/zenodo.18436385)
