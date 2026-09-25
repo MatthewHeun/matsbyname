@@ -5,6 +5,15 @@ adds new function `mat_from_store_byname()`
 and deprecates its predecessor `vec_from_store_byname()`.
 
 
+## A note about problems at <https://cran.rstudio.com//web/checks/check_results_matsbyname.html>
+
+There is one failure: r-release-macos-x86_64.
+The failure is caused by unavailability of a suggested package: matsindf.
+I believe this failure is caused by a mis-configuration of the 
+testing environment.
+No other environments exhibit that problem.
+
+
 ## Test environments (14 in total) and R CMD check results
 
 * Local macOS installation Tahoe 26.6.2, R4.6.1 (2026-06-24)
