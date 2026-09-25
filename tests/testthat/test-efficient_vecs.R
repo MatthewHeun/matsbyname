@@ -1113,6 +1113,16 @@ test_that("mat_from_store_byname() works with multiple matches", {
 
 
 
+
+
+
+
+
+
+
+
+
+
 ## Tests for deprecated functions
 
 test_that("vec_from_store_byname() yields deprecation warnings", {
@@ -1203,5 +1213,37 @@ test_that("vec_from_store_byname() works as expected with single Matrix objects 
   expect_true(all(is.na(res2)))
 })
 
+
+test_that("vec_from_store_byname() works with a 1x1 vector, throwing a deprecation warning", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) |> 
+    setrowtype("Product") |> setcoltype("Industry")
+  v <- matrix(1:7, nrow = 1, ncol = 7, 
+              dimnames = list("phi", c("Electricity", 
+                                       "Peat", 
+                                       "Hydro", 
+                                       "Crude oil",
+                                       "Coal", 
+                                       "Hard coal (if no detail)", 
+                                       "Brown coal"))) |> 
+    setrowtype("phi") |> setcoltype("Product")
+  expect_warning(
+    res <- vec_from_store_byname(a, v, a_piece = "noun")
+  )
+  matsbyname:::expect_equal_matrix_or_Matrix(res, 
+                                             matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                                                    dimnames = list(c("Electricity [from b in c]", 
+                                                                      "Coal [from e in f]", 
+                                                                      "Crude oil [from Production in USA]"), 
+                                                                    "phi")) %>%
+                                               setrowtype("Product") %>% setcoltype("phi"))
+})
 
 ## End tests for deprecated functions
