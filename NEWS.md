@@ -18,7 +18,7 @@ which always resolves to the latest release.
   `mat_from_store_byname()` is a drop-in replacement for 
   `vec_from_store_byname()` when argument `v` is a column vector.
 * New tests for new features.
-    - Now up to 2222 tests, all passing.
+    - Now up to 2234 tests, all passing.
     - Test coverage remains at 100%.
 
 
