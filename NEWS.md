@@ -10,8 +10,9 @@ Cite all releases with DOI
 which always resolves to the latest release.
 
 
-* Improved error message in `mat_from_store_byname()`.
-
+* Fixed a bug in `mat_from_store_byname()` in which
+  the sense of the return matrix could be transposed.
+* Improved error message in `mat_from_store_byname()`
 
 
 ## matsbyname 0.6.15 (2026-09-26)
