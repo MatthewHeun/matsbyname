@@ -434,7 +434,7 @@ mat_from_store_byname <- function(a,
                                   prepositions = if (is.list(a)) {list(RCLabels::prepositions_list)} else {RCLabels::prepositions_list}, 
                                   missing = NA_real_) {
   
-  vec_func <- function(a_mat, v_vec, 
+  mat_func <- function(a_mat, v_vec, 
                        a_piece_val, v_piece_val, 
                        margin_val, margin_v_val,
                        notation_val = notation, 
@@ -442,13 +442,13 @@ mat_from_store_byname <- function(a,
     
     # Make sure v is a matrix or Matrix
     assertthat::assert_that(is_matrix_or_Matrix(v_vec), 
-                            msg = "v must be a matrix or a Matrix with 2 dimensions in vec_from_store_byname()")
+                            msg = "v must be a matrix or a Matrix with 2 dimensions in mat_from_store_byname()")
     if (margin_val == 2) {
       return(
         a_mat |> 
           # If we want to match on columns of a, transpose a_mat so that its columns become rows.
           transpose_byname() |> 
-          vec_func(v_vec = v_vec, 
+          mat_func(v_vec = v_vec, 
                    a_piece_val = a_piece_val, v_piece_val = v_piece_val, 
                    margin_val = 1, margin_v_val = margin_v_val,
                    notation_val = notation_val, prepositions_val = prepositions_val) |> 
@@ -513,7 +513,9 @@ mat_from_store_byname <- function(a,
     return(out)
   }
   
-  binaryapply_byname(vec_func, a = a, b = v, .organize = FALSE, set_rowcoltypes = FALSE,
+  binaryapply_byname(mat_func, a = a, b = v, 
+                     .organize = FALSE, 
+                     set_rowcoltypes = FALSE,
                      .FUNdots = list(a_piece_val = a_piece, 
                                      v_piece_val = v_piece, 
                                      margin_val = margin, 
