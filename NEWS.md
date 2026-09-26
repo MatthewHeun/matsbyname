@@ -10,6 +10,10 @@ Cite all releases with DOI
 which always resolves to the latest release.
 
 
+* Improved error message in `mat_from_store_byname()`.
+
+
+
 ## matsbyname 0.6.15 (2026-09-26)
 
 * New function `mat_from_store_byname()` creates matrices
