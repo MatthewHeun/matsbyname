@@ -29,7 +29,7 @@ Default is "$^", meaning nothing will be matched.}
 \item{replacement}{The string to replace the \code{regexp_pattern}.}
 
 \item{pieces}{The pieces of labels to be searched for \code{regexp_pattern}.
-See \link[RCLabels:regex_funcs]{RCLabels::replace_by_pattern} for details.
+See \link[RCLabels:replace_by_pattern]{RCLabels::replace_by_pattern} for details.
 Default is "all".}
 
 \item{prepositions}{Prepositions to use while searching for
@@ -61,7 +61,7 @@ Note that \code{margin} can be a rowtype or coltype string
 which will be de-referenced to the integer margin
 (\code{1} for rows or \code{2} for columns).
 
-Internally, this function calls \link[RCLabels:regex_funcs]{RCLabels::replace_by_pattern}.
+Internally, this function calls \link[RCLabels:replace_by_pattern]{RCLabels::replace_by_pattern}.
 }
 \examples{
 ma <- matrix(c(1, 2), nrow = 2,

@@ -57,6 +57,7 @@ export(log_byname)
 export(logarithmicmean_byname)
 export(logmean)
 export(margin_from_types_byname)
+export(mat_from_store_byname)
 export(matricize_byname)
 export(matrixproduct_byname)
 export(mean_byname)
@@ -101,5 +102,7 @@ export(vectorize_byname)
 importFrom(dplyr,mutate)
 importFrom(lifecycle,deprecated)
 importFrom(magrittr,"%>%")
-importFrom(rlang,":=")
-importFrom(rlang,.data)
+importFrom(rlang,
+  ":=",
+  .data
+)
