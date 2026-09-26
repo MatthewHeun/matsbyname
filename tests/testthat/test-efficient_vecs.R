@@ -1105,3 +1105,145 @@ test_that("mat_from_store_byname() works with multiple matches", {
   expect_equal(mat_from_store_byname(a = a, v = vec, a_piece = "pref", notation = RCLabels::arrow_notation), 
                matrix(c(1, 2, 3, 1), ncol = 1, dimnames = list(c("r1p -> r1s", "r2p -> r2s", "r3p -> r3s", "r1p -> r3s"), "col")))
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Tests for deprecated functions
+
+test_that("vec_from_store_byname() yields deprecation warnings", {
+  # This test exists to provide test coverage for the deprecated function
+  # vec_from_store_byname().
+  a <- matsbyname::Matrix(42, nrow = 3, ncol = 5, 
+                          dimnames = list(c("Electricity [from b in GBR]", 
+                                            "Coal [from e in f]", 
+                                            "Crude oil [from Production in USA]"), 
+                                          c("Main activity producer electricity plants", 
+                                            "Wind turbines", 
+                                            "Oil refineries", 
+                                            "Coal mines", 
+                                            "Automobiles")), 
+                          rowtype = "Product", coltype = "Industry")
+  
+  v <- matrix(1:7, nrow = 7, ncol = 1, 
+              dimnames = list(c("Electricity [from USA]", 
+                                "Peat [from nowhere]", 
+                                "Production [from GHA]", 
+                                "e [from ZAF]",
+                                "Coal [from AUS]", 
+                                "Hard coal (if no detail) [from GBR]", 
+                                "b [from Nebraska]"), 
+                              "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  expected <- matrix(c(6, -9999, 1), nrow = 3, ncol = 1, 
+                     dimnames = list(c("Electricity [from b in GBR]", 
+                                       "Coal [from e in f]", 
+                                       "Crude oil [from Production in USA]"), 
+                                     "phi")) %>%
+    setrowtype("Product") %>% setcoltype("phi")
+  
+  df <- tibble::tibble(a = list(a, a, a), 
+                       v = list(v, v, v), 
+                       expected = list(expected, expected, expected))
+  
+  expect_warning(
+    with_res <- df %>%
+      dplyr::mutate(
+        actual = vec_from_store_byname(a = a, v = v, a_piece = "in", v_piece = "from", 
+                                       missing = -9999)
+      )
+  )
+  expect_true(all(mapply(matsbyname:::expect_equal_matrix_or_Matrix, with_res$actual, with_res$expected)))
+})
+
+
+test_that("vec_from_store_byname() works as expected with single Matrix objects and nouns, throwing deprecation warning", {
+  a <- matsbyname::Matrix(42, nrow = 3, ncol = 5, 
+                          dimnames = list(c("Electricity [from b in c]", 
+                                            "Coal [from e in f]", 
+                                            "Crude oil [from Production in USA]"), 
+                                          c("Main activity producer electricity plants", 
+                                            "Wind turbines", 
+                                            "Oil refineries", 
+                                            "Coal mines", 
+                                            "Automobiles")), 
+                          rowtype = "Product", coltype = "Industry")
+  v <- matsbyname::Matrix(1:7, nrow = 7, ncol = 1, 
+                          dimnames = list(c("Electricity", 
+                                            "Peat", 
+                                            "Hydro", 
+                                            "Crude oil",
+                                            "Coal", 
+                                            "Hard coal (if no detail)", 
+                                            "Brown coal"), 
+                                          "phi"), 
+                          rowtype = "Product", coltype = "phi")
+  expect_warning(
+    res <- vec_from_store_byname(a, v, a_piece = "noun")
+  )
+  expect_true(is.Matrix(res))
+  matsbyname:::expect_equal_matrix_or_Matrix(res, 
+                                             matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                                                    dimnames = list(c("Electricity [from b in c]", 
+                                                                      "Coal [from e in f]", 
+                                                                      "Crude oil [from Production in USA]"), 
+                                                                    "phi")) %>%
+                                               setrowtype("Product") %>% setcoltype("phi"))
+  
+  
+  expect_warning(
+    # Try with margin = 2 to cover more code in tests.
+    res2 <- vec_from_store_byname(a, v, a_piece = "noun", margin = 2)
+  )
+  expect_true(all(is.na(res2)))
+})
+
+
+test_that("vec_from_store_byname() works with a 1x1 vector, throwing a deprecation warning", {
+  a <- matrix(42, nrow = 3, ncol = 5, 
+              dimnames = list(c("Electricity [from b in c]", 
+                                "Coal [from e in f]", 
+                                "Crude oil [from Production in USA]"), 
+                              c("Main activity producer electricity plants", 
+                                "Wind turbines", 
+                                "Oil refineries", 
+                                "Coal mines", 
+                                "Automobiles"))) |> 
+    setrowtype("Product") |> setcoltype("Industry")
+  v <- matrix(1:7, nrow = 1, ncol = 7, 
+              dimnames = list("phi", c("Electricity", 
+                                       "Peat", 
+                                       "Hydro", 
+                                       "Crude oil",
+                                       "Coal", 
+                                       "Hard coal (if no detail)", 
+                                       "Brown coal"))) |> 
+    setrowtype("phi") |> setcoltype("Product")
+  expect_warning(
+    res <- vec_from_store_byname(a, v, a_piece = "noun")
+  )
+  matsbyname:::expect_equal_matrix_or_Matrix(res, 
+                                             matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                                                    dimnames = list(c("Electricity [from b in c]", 
+                                                                      "Coal [from e in f]", 
+                                                                      "Crude oil [from Production in USA]"), 
+                                                                    "phi")) %>%
+                                               setrowtype("Product") %>% setcoltype("phi"))
+})
+
+## End tests for deprecated functions
