@@ -19,7 +19,7 @@ which always resolves to the latest release.
 
 * New function `mat_from_store_byname()` creates matrices
   from a "store" according to matching rules for row and column names.
-* `vec_from_store_byname()` now deprecated in favor of 
+* `vec_from_store_byname()` is now deprecated in favor of 
   `mat_from_store_byname()`.
   `mat_from_store_byname()` is a drop-in replacement for 
   `vec_from_store_byname()` when argument `v` is a column vector.
