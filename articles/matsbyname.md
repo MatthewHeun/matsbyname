@@ -30,6 +30,7 @@ columns are not in the same order, the sum of the matrices is
 nonsensical.
 
 ``` r
+
 productnames <- c("p1", "p2")
 industrynames <- c("i1", "i2")
 U <- matrix(1:4, ncol = 2, dimnames = list(productnames, industrynames))
@@ -53,6 +54,7 @@ As a result, analysts performing matrix operations must maintain strict
 order of rows and columns across all calculations.
 
 ``` r
+
 # Make a new version of Y (Y2), this time with dimnames in same order as U
 Y2 <- matrix(4:1, ncol = 2, dimnames = list(productnames, industrynames))
 Y2
@@ -75,6 +77,7 @@ matrix operations, rows or columns of zeros must be added to ensure name
 conformity.
 
 ``` r
+
 Y3 <- matrix(5:8, ncol = 2, dimnames = list(c("p1", "p3"), c("i1", "i3")))
 Y3
 #>    i1 i3
@@ -123,6 +126,7 @@ inability to invert matrices downstream, as shown in the following
 example.
 
 ``` r
+
 # The original U matrix is invertible.
 solve(U)
 #>    p1   p2
@@ -159,6 +163,7 @@ These features are available without analyst intervention, as shown in
 the following example.
 
 ``` r
+
 # Same as U + Y2, without needing to create Y2.
 sum_byname(U, Y)
 #>    i1 i2
@@ -231,6 +236,7 @@ functions to perform the same tasks using the pipe operator (`%>%` or
 `|>`).
 
 ``` r
+
 U_2 <- matrix(1:4, ncol = 2) %>% 
   setrownames_byname(productnames) %>% setcolnames_byname(industrynames)
 U_2
@@ -263,6 +269,7 @@ and
 Consider matrices **A**, **B**, and **C**:
 
 ``` r
+
 A <- matrix(1:4, ncol = 2) %>% 
   setrownames_byname(productnames) %>% setcolnames_byname(industrynames) %>% 
   setrowtype("Products") %>% setcoltype("Industries")
@@ -301,6 +308,7 @@ C
 **B** can be added to **A**, because row and column types are identical.
 
 ``` r
+
 sum_byname(A, B)
 #>    i1 i2
 #> p1  9  9
@@ -315,6 +323,7 @@ However, **C** cannot be added to **A** (or **B**), because row and
 column types disagree.
 
 ``` r
+
 tryCatch(sum_byname(A, C), error = function(err){print(err)})
 #> <simpleError in organize_args(a, b, fill = 0, match_type = match_type): rowtype(a) (Products) != rowtype(b) (Industries).>
 ```
@@ -323,6 +332,7 @@ In this case, a sum is possible if **C** is transposed prior to adding
 to **A**, because row and column types of **A** and **C**^(T) agree.
 
 ``` r
+
 sum_byname(A, transpose_byname(C))
 #>    i1 i2
 #> p1  2  5
@@ -337,6 +347,7 @@ Matrices **A** and **B** can be element-multiplied and element-divided
 for the same reason they can be summed: row and column types agree.
 
 ``` r
+
 hadamardproduct_byname(A, B)
 #>    i1 i2
 #> p1  8 18
@@ -360,6 +371,7 @@ type of **A** and the row type of **C** are identical (`Industries`).
 The result is a `Products`-by-`Products` matrix.
 
 ``` r
+
 matrixproduct_byname(A, C)
 #>    p1 p2
 #> p1  7 15
@@ -375,6 +387,7 @@ type of **A** (`Industries`) and the row type of **B** (`Products`) are
 different.
 
 ``` r
+
 tryCatch(matrixproduct_byname(A, B), error = function(err){print(err)})
 #> <simpleError in organize_args(a, b, fill = 0, match_type = match_type): coltype(a) != rowtype(b): Industries != Products.>
 ```
@@ -390,6 +403,7 @@ arguments to functions are lists of matrices, returning lists as
 appropriate.
 
 ``` r
+
 sum_byname(A, list(B, B))
 #> [[1]]
 #>    i1 i2
@@ -458,6 +472,7 @@ The following example demonstrates an approach to creating a data frame
 of matrices.
 
 ``` r
+
 tidy <- data.frame(
   matrix = c("A", "A", "A", "A", "B", "B", "B", "B"),
   row = c("p1", "p1", "p2", "p2", "p1", "p1", "p2", "p2"),
@@ -527,6 +542,7 @@ single `matsbyname` instruction performs the same operation on all rows
 of a `matsindf` data frame. Loops begone!
 
 ``` r
+
 result <- mats %>%
   tidyr::spread(key = matrix.name, value = matrix) %>%
   # Duplicate the row to demonstrate byname operating simultaneously

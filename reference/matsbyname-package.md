@@ -17,3 +17,8 @@ Useful links:
 
 **Maintainer**: Matthew Heun <matthew.heun@me.com>
 ([ORCID](https://orcid.org/0000-0002-7438-214X))
+
+Authors:
+
+- Matthew Heun <matthew.heun@me.com>
+  ([ORCID](https://orcid.org/0000-0002-7438-214X))

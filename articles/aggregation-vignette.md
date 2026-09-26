@@ -15,6 +15,7 @@ sums all rows and columns with the same names, with the effect that
 remaining row and column names are unique.
 
 ``` r
+
 m <- matrix(c(1, 2, 3, 4, 
               5, 6, 7, 8, 
               9, 10, 11, 12), nrow = 3, ncol = 4, byrow = TRUE,
@@ -38,6 +39,7 @@ rows and columns to be aggregated. The names of the list entries provide
 the names of the resulting aggregates.
 
 ``` r
+
 m
 #>       John Paul George Ringo
 #> duck     1    2      3     4
@@ -53,6 +55,7 @@ The margin over which the aggregation is to be performed is given by the
 `margin` argument (`1` for rows, `2` for columns).
 
 ``` r
+
 m
 #>       John Paul George Ringo
 #> duck     1    2      3     4
@@ -70,6 +73,7 @@ aggregate_byname(m, aggregation_map = list(Beatles = c("John", "Paul", "George",
 columns to aggregate. Use `pattern_type = "literal"` for this feature.
 
 ``` r
+
 m
 #>       John Paul George Ringo
 #> duck     1    2      3     4
@@ -87,6 +91,7 @@ Note that rows and columns of aggregated matrices are always sorted
 alphabetically.
 
 ``` r
+
 m
 #>       John Paul George Ringo
 #> duck     1    2      3     4
@@ -106,6 +111,7 @@ the two “duck” rows. The error is informative: “Row names not unique.
 Duplicated row names are: duck”.
 
 ``` r
+
 # Not run
 aggregate_byname(m, aggregation_map = list(Beatles = c("John", "Paul", "George", "Ringo")))
 ```
@@ -125,6 +131,7 @@ for columns). The renaming and aggregation capabilities of `matsbyname`
 still work, despite the different notations.
 
 ``` r
+
 m_pieces <- matrix(c(1, 2, 3,
                      4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE, 
                    dimnames = list(c("Electricity [from Coal]", "Electricity [from Solar]"), 
@@ -141,6 +148,7 @@ Rows and columns can be renamed to their prefixes, suffixes, or objects
 of prepositions, as demonstrated below.
 
 ``` r
+
 m_pieces
 #>                          Motors -> MD Cars -> MD LED lamps -> Light
 #> Electricity [from Coal]             1          2                  3
@@ -184,6 +192,7 @@ the `notation` argument. By default,
 is a list itself.
 
 ``` r
+
 m_pieces
 #>                          Motors -> MD Cars -> MD LED lamps -> Light
 #> Electricity [from Coal]             1          2                  3
@@ -198,6 +207,7 @@ When inferring notation, both margins can be renamed at the same time,
 despite having different notations.
 
 ``` r
+
 rename_to_piece_byname(m_pieces, piece = "pref", margin = c(1, 2))
 #>             Motors Cars LED lamps
 #> Electricity      1    2         3
@@ -208,6 +218,7 @@ But `margin = list(c(1, 2))` is the default, so the code can be simpler
 still.
 
 ``` r
+
 rename_to_piece_byname(m_pieces, piece = "pref")
 #>             Motors Cars LED lamps
 #> Electricity      1    2         3
@@ -231,6 +242,7 @@ is inferred, the suffixes are different, and the renamed rows no longer
 contain “from”.
 
 ``` r
+
 rename_to_piece_byname(m_pieces, piece = "suff", choose_most_specific = TRUE)
 #>       MD MD Light
 #> Coal   1  2     3
@@ -240,6 +252,7 @@ rename_to_piece_byname(m_pieces, piece = "suff", choose_most_specific = TRUE)
 Note that “noun” is a synonym for “pref”.
 
 ``` r
+
 rename_to_piece_byname(m_pieces, piece = "noun")
 #>             Motors Cars LED lamps
 #> Electricity      1    2         3
@@ -250,6 +263,7 @@ The margin can be specified using row or column types from which the
 numerical margin is inferred.
 
 ``` r
+
 m_pieces_with_types <- m_pieces %>% 
   setrowtype("Product") %>% setcoltype("Industry")
 m_pieces_with_types
@@ -325,6 +339,7 @@ With the default `aggregation_map = NULL`, identically named pieces are
 aggregated together.
 
 ``` r
+
 m_pieces
 #>                          Motors -> MD Cars -> MD LED lamps -> Light
 #> Electricity [from Coal]             1          2                  3
@@ -346,6 +361,7 @@ When an `aggregation_map` is supplied, it applies to the requested
 `piece`, not to the original row and/or column names, as shown below.
 
 ``` r
+
 m_pieces
 #>                          Motors -> MD Cars -> MD LED lamps -> Light
 #> Electricity [from Coal]             1          2                  3
@@ -371,6 +387,7 @@ The functions for renaming and aggregating can be used on lists and data
 frames of matrices.
 
 ``` r
+
 m_pieces
 #>                          Motors -> MD Cars -> MD LED lamps -> Light
 #> Electricity [from Coal]             1          2                  3
@@ -429,6 +446,7 @@ Another type of aggregation is aided by the metadata columns of a
 look like this:
 
 ``` r
+
 df_simple <- tibble::tribble(~key, ~val, 
                              "A", 1, 
                              "A", 2, 
@@ -475,6 +493,7 @@ group.
 must be used instead.
 
 ``` r
+
 # 2 rows are expected. 3 are observed.
 df_simple %>% 
   dplyr::group_by(key) %>% 
@@ -495,6 +514,7 @@ column, because if the summarised column were to contain matrices, it
 *must* be a list column.
 
 ``` r
+
 res <- df_simple %>% 
   dplyr::group_by(key) %>% 
   dplyr::summarise(val = sum_byname(val, .summarise = TRUE))
@@ -517,6 +537,7 @@ The `.summarise = TRUE` argument works when there are matrices in a
 `matsindf` data frame, too.
 
 ``` r
+
 m <- matrix(c(11, 12, 13,
               21, 22, 23), nrow = 2, ncol = 3, byrow = TRUE, 
             dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
@@ -560,6 +581,7 @@ defined.
 assists converting from a two-column data frame to an aggregation map.
 
 ``` r
+
 df <- tibble::tribble(~member, ~role, ~band, 
                       "John", "guitarists", "The Beatles", 
                       "Paul", "guitarists", "The Beatles", 
@@ -605,6 +627,7 @@ In a similar manner, an aggregation map can be converted to a data frame
 to assist with join operations with data frames.
 
 ``` r
+
 agg_map_to_agg_table(bands_membs_agg_map, 
                       few_colname = "bands",
                       many_colname = "members")

@@ -8,16 +8,16 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/MatthewHeun/matsbyname/blob/v0.6.14/inst/CITATION)
+[`inst/CITATION`](https://github.com/MatthewHeun/matsbyname/blob/master/inst/CITATION)
 
 Matthew Kuperus Heun (2026). matsbyname: An Implementation of Matrix
-Mathematics. R package version 0.6.14.
+Mathematics. R package version 0.6.15.
 https://doi.org/10.5281/zenodo.5118872
 
     @Manual{,
       title = {{matsbyname}: An Implementation of Matrix Mathematics},
       author = {Matthew Kuperus Heun},
       year = {2026},
-      note = {R package version 0.6.14},
+      note = {R package version 0.6.15},
       url = {https://doi.org/10.5281/zenodo.5118872},
     }

@@ -1,6 +1,7 @@
 # Using summarise in matsbyname
 
 ``` r
+
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -28,6 +29,7 @@ For normal functions, such as `+` and
 about their operation in a data frame.
 
 ``` r
+
 df <- tibble::tribble(~x, ~y, ~z, 
                        1,  2,  3, 
                        4,  5,  6)
@@ -48,6 +50,7 @@ To perform the same operations down columns, use
 [`dplyr::summarise()`](https://dplyr.tidyverse.org/reference/summarise.html).
 
 ``` r
+
 df %>% 
   dplyr::summarise(
     x = sum(x), 
@@ -90,6 +93,7 @@ operate across rows. If you want to perform the action down columns, set
 `.summarise = TRUE`.
 
 ``` r
+
 df %>% 
   dplyr::mutate(
     a = sum_byname(x, y, z), 

@@ -48,6 +48,7 @@ performed on lists of matrices, such as columns in a
 You can install `matsbyname` from CRAN with:
 
 ``` r
+
 install.packages("matsbyname")
 ```
 
@@ -55,6 +56,7 @@ You can install a recent development version of `matsbyname` from github
 with:
 
 ``` r
+
 # install devtools if not already installed
 # install.packages("devtools")
 devtools::install_github("MatthewHeun/matsbyname")
@@ -265,6 +267,10 @@ Conversion Chain.” *Applied Energy* 226 (September): 1134–62.
 
 - [`margin_from_types_byname()`](https://matthewheun.github.io/matsbyname/reference/margin_from_types_byname.md)
   : Translate row and column types to integer margins
+
+- [`mat_from_store_byname()`](https://matthewheun.github.io/matsbyname/reference/mat_from_store_byname.md)
+  : Create a matrix (or vector) with labels from a matrix and values
+  from a "store"
 
 - [`matricize_byname()`](https://matthewheun.github.io/matsbyname/reference/matricize_byname.md)
   : Matricize a vector

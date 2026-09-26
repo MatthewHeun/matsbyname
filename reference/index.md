@@ -185,6 +185,10 @@
 - [`margin_from_types_byname()`](https://matthewheun.github.io/matsbyname/reference/margin_from_types_byname.md)
   : Translate row and column types to integer margins
 
+- [`mat_from_store_byname()`](https://matthewheun.github.io/matsbyname/reference/mat_from_store_byname.md)
+  : Create a matrix (or vector) with labels from a matrix and values
+  from a "store"
+
 - [`matricize_byname()`](https://matthewheun.github.io/matsbyname/reference/matricize_byname.md)
   : Matricize a vector
 

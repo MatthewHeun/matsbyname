@@ -93,8 +93,8 @@ the size = 1 dimension is taken from `colname` (so named, because the
 default is to return a column vector). The labels of the long dimension
 are taken from matrix `a` (the row names of `a` if `column` is `TRUE`;
 the column names of `a` if `column` is `FALSE`). The values of the
-output vector are obtained from v when `a_piece` matches `v_piece` using
-the `RCLabels` package. The `v_piece`s of `v` must be unique. The
+output vector are obtained from `v` when `a_piece` matches `v_piece`
+using the `RCLabels` package. The `v_piece`s of `v` must be unique. The
 default values for `a_piece` and `v_piece` are "all", meaning that the
 entire label should be matched. Other options for `a_piece` and
 `v_piece` are "pref" and "suff", which will match the prefix or suffix

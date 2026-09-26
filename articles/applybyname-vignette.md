@@ -7,26 +7,26 @@ manipulation of matrices, lists of matrices, and matrices in columns of
 data frames. However, the built-in functions may not cover all possible
 needs. `matsbyname` provides three functions for these situations:
 
-|              Function | Purpose                                                                                                                                  |
-|----------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------|
-|   `unaryapply_byname` | apply a unary function to a single matrix, a list of matrices, or a column of matrices in a data frame                                   |
-| `elementapply_byname` | apply a unary function to a single element of a matrix or a column of matrices in a data frame                                           |
-|  `binaryapply_byname` | apply a binary function to two matrices or Map a binary function across two lists of matrices or two columns of matrices in a data frame |
-|     `cumapply_byname` | apply a binary function cumulatively to a single list of matrices or a column of matrices in a data frame                                |
+| Function | Purpose |
+|---:|:---|
+| `unaryapply_byname` | apply a unary function to a single matrix, a list of matrices, or a column of matrices in a data frame |
+| `elementapply_byname` | apply a unary function to a single element of a matrix or a column of matrices in a data frame |
+| `binaryapply_byname` | apply a binary function to two matrices or Map a binary function across two lists of matrices or two columns of matrices in a data frame |
+| `cumapply_byname` | apply a binary function cumulatively to a single list of matrices or a column of matrices in a data frame |
 
 ## How the `*apply_byname` functions work
 
 The `*apply_byname` functions have several arguments.
 
-|      Argument | Description                                                                                                                                                                                                                                                |
-|--------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|         `FUN` | a unary function in the case of `unaryapply_byname`, a binary function (that may also accept a single argument) in the case of `binaryapply_byname`, and a binary function (that must also accept only a single argument) in the case of `cumapply_byname` |
-|           `a` | a matrix, a list or matrices, or a column of matrices in a data frame                                                                                                                                                                                      |
-|           `b` | a matrix, a list or matrices, or a column of matrices in a data frame                                                                                                                                                                                      |
-|    `.FUNdots` | a named list of arguments to be passed to `FUN`                                                                                                                                                                                                            |
-| `rowcoltypes` | tells what to do with row and column types                                                                                                                                                                                                                 |
-|  `match_type` | tells how row and column types of `a` and `b` arguments must be matched                                                                                                                                                                                    |
-|   `.organize` | tells whether to automatically complete `a` and `b` relative to each other and sort the rows and columns of the completed matrices                                                                                                                         |
+| Argument | Description |
+|---:|:---|
+| `FUN` | a unary function in the case of `unaryapply_byname`, a binary function (that may also accept a single argument) in the case of `binaryapply_byname`, and a binary function (that must also accept only a single argument) in the case of `cumapply_byname` |
+| `a` | a matrix, a list or matrices, or a column of matrices in a data frame |
+| `b` | a matrix, a list or matrices, or a column of matrices in a data frame |
+| `.FUNdots` | a named list of arguments to be passed to `FUN` |
+| `rowcoltypes` | tells what to do with row and column types |
+| `match_type` | tells how row and column types of `a` and `b` arguments must be matched |
+| `.organize` | tells whether to automatically complete `a` and `b` relative to each other and sort the rows and columns of the completed matrices |
 
 `FUN` is mapped as expected over `a` (in the case of
 `unaryapply_byname`, `elementapply_byname`, and `cumapply_byname`) or
@@ -43,17 +43,18 @@ matrices, or (if used with
 a column in a data frame that contains matrices. The `rowcoltypes`
 argument must be one of the following:
 
-| `rowcoltypes` value | Behaviour                                                                  |
-|--------------------:|:---------------------------------------------------------------------------|
-|             `"all"` | transfer both row and column types of directly to output (the default)     |
-|       `"transpose"` | rowtype of becomes coltype of output; coltype of becomes rowtype of output |
-|             `"row"` | rowtype of becomes both rowtype and coltype of output                      |
-|             `"col"` | coltype of becomes both rowtype and coltype of output                      |
-|            `"none"` | rowtype and coltype not set by this function; will set rowtype and coltype |
+| `rowcoltypes` value | Behaviour |
+|---:|:---|
+| `"all"` | transfer both row and column types of directly to output (the default) |
+| `"transpose"` | rowtype of becomes coltype of output; coltype of becomes rowtype of output |
+| `"row"` | rowtype of becomes both rowtype and coltype of output |
+| `"col"` | coltype of becomes both rowtype and coltype of output |
+| `"none"` | rowtype and coltype not set by this function; will set rowtype and coltype |
 
 A simple example follows.
 
 ``` r
+
 U <- matrix(1:4, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>%
   setrowtype("Products") %>% setcoltype("Industries")
 U
@@ -68,6 +69,7 @@ U
     ## [1] "Industries"
 
 ``` r
+
 difference_byname(0, U)
 ```
 
@@ -80,6 +82,7 @@ difference_byname(0, U)
     ## [1] "Industries"
 
 ``` r
+
 unaryapply_byname(`-`, U)
 ```
 
@@ -101,6 +104,7 @@ a column in a data frame that contains matrices.
 A simple example follows.
 
 ``` r
+
 divide <- function(x, divisor){
   x/divisor
 }
@@ -118,6 +122,7 @@ m
     ## [1] "col"
 
 ``` r
+
 elementapply_byname(divide, a = m, row = 1, col = 1, .FUNdots = list(divisor = 2))
 ```
 
@@ -138,11 +143,11 @@ pair of columns in a data frame that contains matrices.
 
 `match_type` must be one of `"all"`, `"matmult"`, or `"none"`.
 
-| `match_type` value | Behaviour                                                                                               |
-|-------------------:|:--------------------------------------------------------------------------------------------------------|
-|            `"all"` | rowtypes of `a` must match rowtypes of `b` and coltypes of `a` must match coltypes of `b` (the default) |
-|        `"matmult"` | coltypes of `a` must match rowtypes of `b`                                                              |
-|           `"none"` | neither coltypes nor rowtypes are checked                                                               |
+| `match_type` value | Behaviour |
+|---:|:---|
+| `"all"` | rowtypes of `a` must match rowtypes of `b` and coltypes of `a` must match coltypes of `b` (the default) |
+| `"matmult"` | coltypes of `a` must match rowtypes of `b` |
+| `"none"` | neither coltypes nor rowtypes are checked |
 
 The `rowcoltypes` argument (a boolean) tells whether to apply row and
 column types from `a` and `b` to the output.
@@ -155,6 +160,7 @@ default).
 A simple example follows.
 
 ``` r
+
 U <- matrix(1:4, ncol = 2, dimnames = list(c("p1", "p2"), c("i1", "i2"))) %>%
   setrowtype("Products") %>% setcoltype("Industries")
 U
@@ -169,6 +175,7 @@ U
     ## [1] "Industries"
 
 ``` r
+
 Y <- matrix(1:4, ncol = 2, dimnames = list(c("p2", "p1"), c("i2", "i1"))) %>%
   setrowtype("Products") %>% setcoltype("Industries")
 Y
@@ -183,6 +190,7 @@ Y
     ## [1] "Industries"
 
 ``` r
+
 sum_byname(U, Y)
 ```
 
@@ -195,6 +203,7 @@ sum_byname(U, Y)
     ## [1] "Industries"
 
 ``` r
+
 binaryapply_byname(`+`, U, Y)
 ```
 
@@ -219,6 +228,7 @@ a single argument. The result is a list with first element
 Simple examples follow.
 
 ``` r
+
 cumapply_byname(sum_byname, list(1, 2, 3, 4))
 ```
 
@@ -235,6 +245,7 @@ cumapply_byname(sum_byname, list(1, 2, 3, 4))
     ## [1] 10
 
 ``` r
+
 cumapply_byname(hadamardproduct_byname, list(1, 2, 3, 4))
 ```
 

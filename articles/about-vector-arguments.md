@@ -24,6 +24,7 @@ that takes advantage of
 value of `margin`.
 
 ``` r
+
 mysum <- function(a, margin = c(1, 2)) {
   sum_func <- function(a_mat, margin) {
     # When we get here, we will have a single matrix a
@@ -45,6 +46,7 @@ Structuring `mysum()` as shown above provides several interesting
 capabilities. First, `mysum()` works with single matrices.
 
 ``` r
+
 m <- matrix(1:4, nrow = 2, byrow = TRUE)
 m
 #>      [,1] [,2]
@@ -65,6 +67,7 @@ mysum(m, margin = c(1, 2))
 Second, `mysum()` works with lists.
 
 ``` r
+
 # Works for lists of matrices
 mysum(list(one = m, two = m), margin = 1)
 #> $one
@@ -89,6 +92,7 @@ mysum(list(one = m, two = m), margin = 2)
 Finally, `mysum()` works within data frames.
 
 ``` r
+
 # Works in data frames and tibbles
 DF <- tibble::tibble(mcol = list(m, m, m))
 res <- DF %>% 
@@ -132,6 +136,7 @@ the list and data frame examples. Let’s see what happens when
 `margin = c(1, 2)` and `a` is a list.
 
 ``` r
+
 tryCatch(mysum(list(m, m, m), margin = c(1, 2)), 
          error = function(e) {strwrap(e, width = 60)})
 #> [1] "Error: In prepare_.FUNdots(), when 'a' is a list, but an"   
@@ -146,6 +151,7 @@ To understand better what is happening, let’s try when the list argument
 to `mysum()` has length `2`.
 
 ``` r
+
 mysum(list(m, m), margin = c(1, 2))
 #> [[1]]
 #>      [,1]
@@ -200,6 +206,7 @@ we have items in our `a` list, using one `c(1, 2)` for each item in the
 list.”
 
 ``` r
+
 mysum(list(m, m, m), margin = list(c(1, 2)))
 #> [[1]]
 #> [1] 10
@@ -215,6 +222,7 @@ The caller can also supply different `margin`s for each item in the list
 of matrices.
 
 ``` r
+
 mysum(list(m, m, m), margin = list(1, 2, c(1, 2)))
 #> [[1]]
 #>      [,1]
@@ -233,6 +241,7 @@ But the caller must provide either `1` or `length(a)` items in the
 `margin` argument, else an error is emitted.
 
 ``` r
+
 tryCatch(mysum(list(m, m, m), margin = list(1, 2)), 
          error = function(e) {strwrap(e, width = 60)})
 #> [1] "Error: In prepare_.FUNdots(), when both 'a' and '.FUNdots'"
@@ -258,6 +267,7 @@ possible.
 [`prep_vector_arg()`](https://matthewheun.github.io/matsbyname/reference/prep_vector_arg.md).
 
 ``` r
+
 mysum2 <- function(a, margin = c(1, 2)) {
   margin <- prep_vector_arg(a, margin)
   sum_func <- function(a_mat, margin) {
@@ -290,6 +300,7 @@ wraps the vector argument (in this case `margin`) in a
 caller of having to remember to make it into a `list`.
 
 ``` r
+
 mysum2(list(m, m, m), margin = c(1, 2))
 #> [[1]]
 #> [1] 10
@@ -306,6 +317,7 @@ the list in `a`, the caller’s intention is ambiguous, and the vector
 argument is passed without modification.
 
 ``` r
+
 mysum2(list(m, m), margin = c(1, 2))
 #> [[1]]
 #>      [,1]
@@ -321,6 +333,7 @@ If the caller wants `c(1, 2)` to be applied to each item in the `a`
 list, the caller must wrap `c(1, 2)` in a list.
 
 ``` r
+
 mysum2(list(m, m), margin = list(c(1, 2)))
 #> [[1]]
 #> [1] 10
@@ -337,6 +350,7 @@ cannot *always* wrap vector arguments in a list is that data frame
 columns are extracted as vectors when they are atomic.
 
 ``` r
+
 DF2 <- tibble::tibble(mcol = list(m, m), margin = c(1, 2))
 DF2
 #> # A tibble: 2 × 2
@@ -354,6 +368,7 @@ It would be a mistake to wrap `DF2$margin` in a
 the first row and `margin = 2` for the second row.
 
 ``` r
+
 res2 <- DF2 %>% 
   dplyr::mutate(
     sums = mysum2(mcol, margin = margin)
@@ -373,6 +388,7 @@ The good news is that within the context of a data frame, the caller’s
 intent is unambiguous.
 
 ``` r
+
 DF3 <- tibble::tibble(mcol = list(m, m, m), margin = list(1, c(1, 2), c(1, 2))) %>% 
   dplyr::mutate(
     sumcol = mysum2(mcol, margin = margin)

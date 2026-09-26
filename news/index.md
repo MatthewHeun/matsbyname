@@ -1,6 +1,25 @@
 # Changelog
 
-## matsbyname 0.6.14 (2026-01-29)
+## matsbyname 0.6.15 (2026-09-26)
+
+CRAN release: 2026-09-25
+
+- New function
+  [`mat_from_store_byname()`](https://matthewheun.github.io/matsbyname/reference/mat_from_store_byname.md)
+  creates matrices from a “store” according to matching rules for row
+  and column names.
+- [`vec_from_store_byname()`](https://matthewheun.github.io/matsbyname/reference/vec_from_store_byname.md)
+  now deprecated in favor of
+  [`mat_from_store_byname()`](https://matthewheun.github.io/matsbyname/reference/mat_from_store_byname.md).
+  [`mat_from_store_byname()`](https://matthewheun.github.io/matsbyname/reference/mat_from_store_byname.md)
+  is a drop-in replacement for
+  [`vec_from_store_byname()`](https://matthewheun.github.io/matsbyname/reference/vec_from_store_byname.md)
+  when argument `v` is a column vector.
+- New tests for new features.
+  - Now up to 2234 tests, all passing.
+  - Test coverage remains at 100%.
+
+## matsbyname 0.6.14 (2026-01-29) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18436385.svg)](https://doi.org/10.5281/zenodo.18436385)
 
 CRAN release: 2026-01-30
 

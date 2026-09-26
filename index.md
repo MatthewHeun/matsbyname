@@ -48,6 +48,7 @@ performed on lists of matrices, such as columns in a
 You can install `matsbyname` from CRAN with:
 
 ``` r
+
 install.packages("matsbyname")
 ```
 
@@ -55,6 +56,7 @@ You can install a recent development version of `matsbyname` from github
 with:
 
 ``` r
+
 # install devtools if not already installed
 # install.packages("devtools")
 devtools::install_github("MatthewHeun/matsbyname")
