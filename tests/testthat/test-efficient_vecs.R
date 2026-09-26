@@ -535,9 +535,9 @@ test_that("mat_from_store_byname() works when a row vector Matrix object is desi
   res <- mat_from_store_byname(a, v, a_piece = "pref", margin = 2)
   matsbyname:::expect_equal_matrix_or_Matrix(
     res, 
-    matrix(c(3, 5), nrow = 1, ncol = 2, 
-           dimnames = list("eta", c("Wind turbines", "Oil wells"))) |> 
-      setrowtype("eta") |> setcoltype("Industry"))
+    matrix(c(3, 5), nrow = 2, ncol = 1, 
+           dimnames = list(c("Wind turbines", "Oil wells"), "eta")) |> 
+      setrowtype("Industry") |> setcoltype("eta"))
   
   # See if it works with a row vector for v.
   v_row <- matrix(1:7, nrow = 1, ncol = 7, 
@@ -580,9 +580,9 @@ test_that("mat_from_store_byname() works when a is a Matrix and v is a matrix.",
   res <- mat_from_store_byname(a, v, a_piece = "pref", margin = 2)
   expect_equal(
     res, 
-    matrix(c(3, 5), nrow = 1, ncol = 2, 
-           dimnames = list("eta", c("Wind turbines", "Oil wells"))) |> 
-      setrowtype("eta") |> setcoltype("Industry"))
+    matrix(c(3, 5), nrow = 2, ncol = 1, 
+           dimnames = list(c("Wind turbines", "Oil wells"), "eta")) |> 
+      setrowtype("Industry") |> setcoltype("eta"))
   
   # See if it works with a row vector for v.
   v_row <- matsbyname::Matrix(1:7, nrow = 1, ncol = 7, 
@@ -708,27 +708,27 @@ test_that("mat_from_store_byname() works as expected with single matrices", {
                  setrowtype("rt") |> setcoltype("ct"))
   # Try with transposed v
   expect_equal(mat_from_store_byname(a = a, v = transpose_byname(v), margin_v = 2), 
-               matrix(c(10, 9, 20, 19), nrow = 2, ncol = 2, 
-                      dimnames = list(c("r1", "r2"), c("c1", "c2"))) |> 
-                 setrowtype("rt") |> setcoltype("ct"))
+               matrix(c(10, 20, 9, 19), nrow = 2, ncol = 2, 
+                      dimnames = list(c("c1", "c2"), c("r1", "r2"))) |> 
+                 setrowtype("ct") |> setcoltype("rt"))
   # See what happens when you feed garbage.
   # Here, we're saying to match on the columns of v, 
   # which will match nothing.
   # We expect all NA values in the output.
   res <- mat_from_store_byname(a = a, v = v, margin_v = 2)
-  expect_equal(nrow(res), 2)
-  expect_equal(ncol(res), 10)
+  expect_equal(nrow(res), 10)
+  expect_equal(ncol(res), 2)
   expect_true(all(is.na(res)))
-  expect_true(all(rownames(res) == rownames(a)))
-  expect_true(all(colnames(res) == rownames(v)))
+  expect_true(all(rownames(res) == rownames(v)))
+  expect_true(all(colnames(res) == rownames(a)))
   # Try to transpose v but don't say the right margin.
   res2 <- mat_from_store_byname(a = a, v = transpose_byname(v))
-  # Should get the same NA garbage
+  # Should get the same NA garbage but with different sense.
   expect_equal(nrow(res2), 2)
   expect_equal(ncol(res2), 10)
   expect_true(all(is.na(res2)))
   expect_true(all(rownames(res2) == rownames(a)))
-  expect_true(all(colnames(res2) == rownames(v)))
+  expect_true(all(colnames(res2) == colnames(transpose_byname(v))))
 })
 
 
@@ -775,11 +775,12 @@ test_that("mat_from_store_byname() works as expected with single matrices and no
                  setrowtype("Product") |> setcoltype("phi"))
   # Now try with transposed matrices
   expect_equal(mat_from_store_byname(transpose_byname(a), v, margin = 2, a_piece = "noun"), 
-               matrix(c(1, 5, 4), nrow = 1, ncol = 3, 
-                      dimnames = list("phi", c("Electricity [from b in c]", 
-                                               "Coal [from e in f]", 
-                                               "Crude oil [from Production in USA]"))) |> 
-                 setrowtype("phi") |> setcoltype("Product"))
+               matrix(c(1, 5, 4), nrow = 3, ncol = 1, 
+                      dimnames = list(c("Electricity [from b in c]", 
+                                        "Coal [from e in f]", 
+                                        "Crude oil [from Production in USA]"), 
+                                      "phi")) |> 
+                 setrowtype("Product") |> setcoltype("phi"))
   # Try with wrong margin. Nothing matches
   expect_equal(mat_from_store_byname(transpose_byname(a), v, a_piece = "noun"), 
                matrix(NA_real_, nrow = 5, ncol = 1, 
@@ -965,9 +966,9 @@ test_that("mat_from_store_byname() works when a row vector is desired.", {
     setrowtype("Industry") %>% setcoltype("eta")
   
   expect_equal(mat_from_store_byname(a, v, a_piece = "pref", margin = 2), 
-               matrix(c(3, 5), nrow = 1, ncol = 2, 
-                      dimnames = list("eta", c("Wind turbines", "Oil wells"))) |> 
-                 setrowtype("eta") |> setcoltype("Industry"))
+               matrix(c(3, 5), nrow = 2, ncol = 1, 
+                      dimnames = list(c("Wind turbines", "Oil wells"), "eta")) |> 
+                 setrowtype("Industry") |> setcoltype("eta"))
   
   # See if it works with a row vector for v.
   v_row <- matrix(1:7, nrow = 1, ncol = 7, 

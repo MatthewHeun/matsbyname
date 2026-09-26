@@ -294,7 +294,9 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
 #' from which the output vector or matrix is constructed
 #' using special matching rules between matrix `a` and matrix or vector `v`.
 #' 
-#' The output of this function is a matrix or vector.
+#' The output of this function is a matrix or vector with the same 
+#' sense as `v` but with names of `a`'s `margin` 
+#' placed on `v`'s `margin_v` accordoing to matching rules.
 #' The names of the output rows are taken from
 #' the `margin` of `a`.
 #' (`a = 1` means rows; `a = 2` means columns.)
@@ -360,7 +362,9 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
 #' @param missing The value used when the desired value is not found in `v`.
 #'                Default is `NA_real_`.
 #'
-#' @return A column vector with names from `a` and values from `v`.
+#' @return A version of `v` with the same sense as `v`
+#'         but with names from `a`'s `margin` on `v`'s `margin_v` 
+#'         when `v_piece` matches `v_piece`.
 #' 
 #' @export
 #'
@@ -445,21 +449,33 @@ mat_from_store_byname <- function(a,
                             msg = "v must be a matrix or a Matrix with 2 dimensions in mat_from_store_byname()")
     if (margin_val == 2) {
       return(
-        a_mat |> 
-          # If we want to match on columns of a, transpose a_mat so that its columns become rows.
-          transpose_byname() |> 
-          mat_func(v_vec = v_vec, 
-                   a_piece_val = a_piece_val, v_piece_val = v_piece_val, 
-                   margin_val = 1, margin_v_val = margin_v_val,
-                   notation_val = notation_val, prepositions_val = prepositions_val) |> 
-          # Then transpose back again before returning.
-          transpose_byname()
+        # All code below assumes we want to match on rows of a_mat.
+        mat_func(a_mat = transpose_byname(a_mat), 
+                 v_vec = v_vec, 
+                 a_piece_val = a_piece_val, 
+                 v_piece_val = v_piece_val, 
+                 margin_val = 1, 
+                 margin_v_val = margin_v_val,
+                 notation_val = notation_val, 
+                 prepositions_val = prepositions_val)
       )
     }
-    # If we want to match on the columns of v, transpose v_vec so that
-    # its columns become rows.
     if (margin_v_val == 2) {
-      v_vec <- transpose_byname(v_vec)
+      return(
+        mat_func(a_mat = a_mat, 
+                 # If we want to match on the columns of v, transpose v_vec so that
+                 # its columns become rows.
+                 # All code below assumes that we want to match rows of v_vec.
+                 v_vec = transpose_byname(v_vec), 
+                 a_piece_val = a_piece_val, 
+                 v_piece_val = v_piece_val, 
+                 margin_val = margin_val, 
+                 margin_v_val = 1,
+                 notation_val = notation_val, 
+                 prepositions_val = prepositions_val) |> 
+          # Then transpose again before returning.
+          transpose_byname()
+      )
     }
     
     # At this point, we have a_mat and v_vec such that we want

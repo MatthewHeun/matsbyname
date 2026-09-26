@@ -56,7 +56,9 @@ Default is \code{RCLabels::prepositions}, wrapped as a list if \code{a} is a lis
 Default is \code{NA_real_}.}
 }
 \value{
-A column vector with names from \code{a} and values from \code{v}.
+A version of \code{v} with the same sense as \code{v}
+but with names from \code{a}'s \code{margin} on \code{v}'s \code{margin_v}
+when \code{v_piece} matches \code{v_piece}.
 }
 \description{
 When a matrix (\code{a}) is multiplied by another matrix or vector (\code{v}) byname,
@@ -70,7 +72,9 @@ from which the output vector or matrix is constructed
 using special matching rules between matrix \code{a} and matrix or vector \code{v}.
 }
 \details{
-The output of this function is a matrix or vector.
+The output of this function is a matrix or vector with the same
+sense as \code{v} but with names of \code{a}'s \code{margin}
+placed on \code{v}'s \code{margin_v} accordoing to matching rules.
 The names of the output rows are taken from
 the \code{margin} of \code{a}.
 (\code{a = 1} means rows; \code{a = 2} means columns.)
