@@ -15,7 +15,7 @@ which always resolves to the latest release.
 * Improved error message in `mat_from_store_byname()`
 
 
-## matsbyname 0.6.15 (2026-09-26)
+## matsbyname 0.6.15 (2026-09-26) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22978706.svg)](https://doi.org/10.5281/zenodo.22978706)
 
 * New function `mat_from_store_byname()` creates matrices
   from a "store" according to matching rules for row and column names.
