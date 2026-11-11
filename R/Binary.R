@@ -300,6 +300,14 @@ hadamardproduct_byname <- function(..., .summarise = FALSE){
 #' Note that which order of multiplicand and multiplier
 #' does not affect the result, except
 #' that the order of indices may be different.
+#' 
+#' Note, too, that no rows and no columns are not added
+#' to multiplicand or multiplier to 
+#' ensure conformity for the outer product operation.
+#' All combinations of rows and columns are present
+#' in the result.
+#' There is no need, and doing so would only 
+#' increase memory usage.
 #'
 #' @param multiplicand The left side of the outer product.
 #' @param multiplier The right side of the outer product.
