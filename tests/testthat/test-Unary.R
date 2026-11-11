@@ -2158,7 +2158,7 @@ test_that("selector_byname() works as expected for margin = 1 or 2", {
                                                    c("c1", "c2", "c3"))) |> 
     setrowtype("rows") |> setcoltype("cols")
   res2 <- selector_byname(m2, margin = 1)
-  expected2 <- matrix(c(1, 0), ncol = 2, dimnames = list(c("r1", "r2"), "sums")) |> 
+  expected2 <- matrix(c(1, 0), nrow = 2, dimnames = list(c("r1", "r2"), "sums")) |> 
     setrowtype("rows") |> setcoltype("cols")
   expect_equal(res2, expected2)
 })

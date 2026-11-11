@@ -12,9 +12,12 @@ selector_byname(a, margin = c(1, 2), tol = 1e-10, sumname = "sums")
 \item{margin}{The margin (rows or columns) over which to create a selector.}
 
 \item{tol}{The tolerance with which values are determined to be zero.}
+
+\item{sumname}{The name of the row or column containing sums
+when \code{margin = 1} or \code{margin = 2}.}
 }
 \value{
-A selection matrix or vector.
+A selection matrix or vector containing \code{1}s or \code{0}s.
 }
 \description{
 Creates a selector matrix or vector from

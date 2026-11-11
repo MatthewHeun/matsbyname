@@ -1607,17 +1607,19 @@ any_byname <- function(a) {
 #' A selector matrix has `1` where non-zero elements of `a` are found
 #' and `0` where zeros (within `tol`) elements of `a` are found.
 #' If `margin = 1`, the result is a column vector
-#' that tells which rows have non-zero elements.
+#' that tells which rows have non-zero elements in at least 1 column.
 #' If `margin = 2`, the result is a row vector
-#' that tells which columns have non-zero elements.
+#' that tells which columns have non-zero elements in at least 1 row.
 #' If `margin = c(1, 2)` (the default), the result is a matrix
 #' that tells where non-zero elements exist.
 #'
 #' @param a The matrix template used to create a selector.
 #' @param margin The margin (rows or columns) over which to create a selector.
 #' @param tol The tolerance with which values are determined to be zero.
+#' @param sumname The name of the row or column containing sums
+#'                when `margin = 1` or `margin = 2`.
 #'
-#' @returns A selection matrix or vector. 
+#' @returns A selection matrix or vector containing `1`s or `0`s. 
 #' 
 #' @export
 #'
@@ -1629,6 +1631,8 @@ any_byname <- function(a) {
 #'                             c("c1", "c2", "c3"))) |> 
 #'   setrowtype("rows") |> setcoltype("cols")
 #' selector_byname(m)
+#' selector_byname(m, margin = 1)
+#' selector_byname(m, margin = 2)
 selector_byname <- function(a, margin = c(1, 2), tol = 1e-10, sumname = "sums") {
   selector_func <- function(a, this_margin, this_tol) {
     logicalmat <- (abs(a) > tol) + 0 # +0 converts to numeric

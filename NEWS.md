@@ -10,6 +10,11 @@ Cite all releases with DOI
 which always resolves to the latest release.
 
 
+* New function `selector_byname()` creates a selector
+  matrix with `1`s for non-zero elements of a matrix
+  and `0`s for zero (within tolerance) elements of a matrix.
+* New function `outerproduct_byname()` calculates
+  outer products of matrix objects.
 * Changed strings in various `*apply_byname()` functions.
   In `binaryapply_byname()`, `matchtype = "all"` is renamed to 
   `"matchtype = rowsmatchrowscolsmatchcols"`.
