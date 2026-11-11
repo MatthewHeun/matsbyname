@@ -41,4 +41,4 @@ VignetteBuilder:
     knitr
 URL: https://github.com/MatthewHeun/matsbyname, https://matthewheun.github.io/matsbyname/
 BugReports: https://github.com/MatthewHeun/matsbyname/issues
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
