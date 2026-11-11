@@ -286,6 +286,35 @@ hadamardproduct_byname <- function(..., .summarise = FALSE){
 }
 
 
+
+#' Name-wise outer product of two matrices
+#' 
+#' Calculates the outer product of two matrices.
+#' The outer product is the product of all combinations of 
+#' rows and columns.
+#' The result is a four-dimensional array.
+#' 
+#' Row and column types are ignored for this calculation, and
+#' the result does not contain row or column types.
+#' 
+#' Note that which order of multiplicand and multiplier
+#' does not affect the result, except
+#' that the order of indices may be different.
+#'
+#' @param multiplicand The left side of the outer product.
+#' @param multiplier The right side of the outer product.
+#'
+#' @returns The four-dimensional outer product of two matrices.
+#' 
+#' @export
+#'
+#' @examples
+outerproduct_byname <- function(multiplicand, multiplier) {
+  binaryapply_byname(FUN = outer, multiplicand, multiplier, match_type = "none")
+}
+
+
+
 #' Name-wise matrix element division
 #'
 #' Element-wise division of two matrices.
