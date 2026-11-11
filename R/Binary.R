@@ -323,20 +323,32 @@ outerproduct_byname <- function(multiplicand, multiplier) {
 
 
 
+outerproductcommoninner_byname <- function(multiplicand, multiplier) {
+  outerproductcommoninner_func <- function(a, b) {
+    
+  }
+  binaryapply_byname(outerproductcommoninner_func, 
+                     a = multiplicand, 
+                     b = multiplier, 
+                     match_type = "none")
+}
+
+
+
 #' Name-wise matrix element division
 #'
 #' Element-wise division of two matrices.
 #' 
-#' Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
+#' Performs a union and sorting of names of rows and columns for both `dividend` and `divisor`
 #' prior to element division.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
-#' the dimensions of the \code{dividend} and \code{divisor} will be conformable.
+#' the dimensions of the `dividend` and `divisor` will be conformable.
 #'
 #' @param dividend Dividend matrix or constant
 #' @param divisor Divisor matrix or constant
 #'
-#' @return A matrix representing the name-wise element quotient of \code{dividend} and \code{divisor}
+#' @return A matrix representing the name-wise element quotient of `dividend` and `divisor`
 #' 
 #' @export
 #'

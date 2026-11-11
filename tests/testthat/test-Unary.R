@@ -2103,3 +2103,62 @@ test_that("rename_to_pref_suff_byname() works with Matrix objects", {
 })
 
 
+test_that("selector_byname() works as expected for matrices", {
+  m <- matrix(c(0, 1, 10,
+                13, 0, 42), byrow = TRUE, 
+              nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), 
+                                                  c("c1", "c2", "c3"))) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  
+  res <- selector_byname(m)
+  expected <- matrix(c(0, 1, 1, 
+                       1, 0, 1), byrow = TRUE, 
+                     nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), 
+                                                         c("c1", "c2", "c3"))) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  expect_equal(res, expected)
+  
+  # Try with a small value and a negative value
+  m2 <- m
+  m2[2, 3] <- 1e-11
+  m2[2,1] <- -m[2,1]
+  expected2 <- expected
+  expected2[2, 3] <- 0
+  res2 <- selector_byname(m2)
+  expect_equal(res2, expected2)
+})
+
+
+test_that("selector_byname() works as expected for margin = 1 or 2", {
+  m <- matrix(c(0, 0, 10,
+                13, 0, 42), byrow = TRUE, 
+              nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), 
+                                                  c("c1", "c2", "c3"))) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  
+  res <- selector_byname(m, margin = 2)
+  expected <- matrix(c(1, 0, 1), byrow = TRUE, 
+                     nrow = 1, ncol = 3, dimnames = list("sums", 
+                                                         c("c1", "c2", "c3"))) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  expect_equal(res, expected)
+  
+  # Try in a data frame
+  df <- tibble::tibble(m = list(m, m))
+  res_col <- df |> 
+    dplyr::mutate(
+      res = selector_byname(m, margin = 2)
+    )
+  expect_equal(res_col$res, list(expected, expected))
+  
+  # Try with margin = 1
+  m2 <- matrix(c(0, 0, -1e-9,
+                 -1.1e-11, 1e-20, -1e-12), byrow = TRUE, 
+               nrow = 2, ncol = 3, dimnames = list(c("r1", "r2"), 
+                                                   c("c1", "c2", "c3"))) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  res2 <- selector_byname(m2, margin = 1)
+  expected2 <- matrix(c(1, 0), ncol = 2, dimnames = list(c("r1", "r2"), "sums")) |> 
+    setrowtype("rows") |> setcoltype("cols")
+  expect_equal(res2, expected2)
+})

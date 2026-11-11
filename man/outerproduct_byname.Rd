@@ -2,10 +2,37 @@
 % Please edit documentation in R/Binary.R
 \name{outerproduct_byname}
 \alias{outerproduct_byname}
-\title{Title}
+\title{Name-wise outer product of two matrices}
 \usage{
 outerproduct_byname(multiplicand, multiplier)
 }
+\arguments{
+\item{multiplicand}{The left side of the outer product.}
+
+\item{multiplier}{The right side of the outer product.}
+}
+\value{
+The four-dimensional outer product of two matrices.
+}
 \description{
-Title
+Calculates the outer product of two matrices.
+The outer product is the product of all combinations of
+rows and columns.
+The result is a four-dimensional array.
+}
+\details{
+Row and column types are ignored for this calculation, and
+the result does not contain row or column types.
+
+Note that which order of multiplicand and multiplier
+does not affect the result, except
+that the order of indices may be different.
+
+Note, too, that no rows and no columns are not added
+to multiplicand or multiplier to
+ensure conformity for the outer product operation.
+All combinations of rows and columns are present
+in the result.
+There is no need, and doing so would only
+increase memory usage.
 }
