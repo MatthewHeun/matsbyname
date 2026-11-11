@@ -905,7 +905,7 @@ fractionize_byname <- function(a, margin, inf_becomes = .Machine$double.xmax){
     # stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
   unaryapply_byname(fractionize_func, a = a, .FUNdots = list(margin = margin), 
-                    rowcoltypes = "all")
+                    rowcoltypes = "both")
 }
 
 
@@ -1289,7 +1289,7 @@ Iminus_byname <- function(a){
       setcoltype(coltype(a_mat))
     difference_byname(identize_byname(A), A)
   }
-  unaryapply_byname(iminus_func, a = a, rowcoltypes = "all")
+  unaryapply_byname(iminus_func, a = a, rowcoltypes = "both")
 }
 
 
@@ -1410,7 +1410,7 @@ replaceNaN_byname <- function(a, val = 0){
     }
     return(a_mat)
   }
-  unaryapply_byname(replace_func, a = a, rowcoltypes = "all")
+  unaryapply_byname(replace_func, a = a, rowcoltypes = "both")
 }
 
 
@@ -1548,7 +1548,8 @@ compare_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
     compare_fun(a, val)
   }
   unaryapply_byname(FUN = test_func, a = a, 
-                    .FUNdots = c(compare_fun = compare_fun, val = val), rowcoltypes = "all")
+                    .FUNdots = c(compare_fun = compare_fun, val = val), 
+                    rowcoltypes = "both")
 }
 
 

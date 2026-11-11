@@ -23,7 +23,7 @@
 #' See `prepare_.FUNdots()` for more details on the `.FUNdots` argument.
 #' 
 #' Options for the `rowcoltypes` argument are:
-#'   * "all": transfer both row and column types of `a` directly to output.
+#'   * "both": transfer both row and column types of `a` directly to output.
 #'   * "transpose": rowtype of `a` becomes coltype of output; coltype of `a` becomes rowtype of output. "transpose" is helpful for `FUN`s that transpose `a` upon output.
 #'   * "row": rowtype of `a` becomes both rowtype and coltype of output.
 #'   * "col": coltype of `a` becomes both rowtype and coltype of output.
@@ -51,7 +51,7 @@
 #' difference_byname(0, U)
 #' unaryapply_byname(`-`, U)
 unaryapply_byname <- function(FUN, a, .FUNdots = NULL, 
-                              rowcoltypes = c("all", "transpose", "row", "col", "none")){
+                              rowcoltypes = c("both", "transpose", "row", "col", "none")){
   
   rowcoltypes <- match.arg(rowcoltypes)
   if (is.null(a)) {
@@ -70,7 +70,7 @@ unaryapply_byname <- function(FUN, a, .FUNdots = NULL,
   # a is not a list.
   out <- do.call(FUN, c(list(a), lFUNdots))
 
-  if (rowcoltypes == "all") {
+  if (rowcoltypes == "both") {
     out <- out %>%
       setrowtype(rowtype(a)) %>%
       setcoltype(coltype(a))
@@ -317,7 +317,7 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
 #' @param .FUNdots a list of additional named arguments passed to `FUN.`
 #' @param match_type one of "all", "matmult", or "none".
 #'        When both `a` and `b` are matrices,
-#'        "all" (the default) indicates that
+#'        "rowsmatchrowscolsmatchcols" (the default) indicates that
 #'        rowtypes of `a` must match rowtypes of `b` and
 #'        coltypes of `a` must match coltypes of `b`.
 #'        If "matmult",
@@ -348,7 +348,7 @@ elementapply_byname <- function(FUN, a, row, col, .FUNdots = NULL){
 #' sum_byname(U, Y)
 #' binaryapply_byname(`+`, U, Y)
 binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL, 
-                               match_type = c("all", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
+                               match_type = c("rowsmatchrowscolsmatchcols", "matmult", "none"), set_rowcoltypes = TRUE, .organize = TRUE){
   match_type <- match.arg(match_type)
   if (.organize) {
     args <- organize_args(a, b, fill = 0, match_type = match_type)
@@ -367,7 +367,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
   out <- do.call(FUN, c(list(a), list(b), .FUNdots))
   
   if (set_rowcoltypes) {
-    if (match_type == "all") {
+    if (match_type == "rowsmatchrowscolsmatchcols") {
       if (!is.null(a)) {
         # Rowtypes and coltypes of a and b are set to a if it exists.
         out <- out %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
@@ -421,9 +421,9 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' @param FUN a binary function to be applied "by name" to all operands in `...`.
 #' @param ... the operands for `FUN`.
 #' @param .FUNdots a list of additional named arguments passed to `FUN`.
-#' @param match_type One of "all", "matmult", or "none".
+#' @param match_type One of "rowsmatchrowscolsmatchcols", "matmult", or "none".
 #'                   When `...` are matrices,
-#'                   "all" (the default) indicates that
+#'                   "rowsmatchrowscolsmatchcols" (the default) indicates that
 #'                   rowtypes of all `...` matrices must match and
 #'                   coltypes of all `...` matrices must match.
 #'                   If "matmult",
@@ -455,7 +455,7 @@ binaryapply_byname <- function(FUN, a, b, .FUNdots = NULL,
 #' # Routes to unaryapply_byname
 #' naryapply_byname(FUN = `^`, list(1,2,3), .FUNdots = list(2))
 naryapply_byname <- function(FUN, ..., 
-                             .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
+                             .FUNdots = NULL, match_type = c("rowsmatchrowscolsmatchcols", "matmult", "none"), 
                              set_rowcoltypes = TRUE, .organize = TRUE, .summarise = FALSE){
   match_type <- match.arg(match_type)
   dots <- list(...)
@@ -466,7 +466,7 @@ naryapply_byname <- function(FUN, ...,
   if (length(dots) == 1) {
     # Perform unaryapply
     return(unaryapply_byname(FUN, a = dots[[1]], 
-                             .FUNdots = .FUNdots, rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
+                             .FUNdots = .FUNdots, rowcoltypes = ifelse(set_rowcoltypes, "both", "none")))
   }
   a <- dots[[1]]
   for (i in 2:length(dots)) {
@@ -491,9 +491,9 @@ naryapply_byname <- function(FUN, ...,
 #' @param FUN a binary function (that returns logical values) to be applied over operands 
 #' @param ... operands; constants, matrices, or lists of matrices
 #' @param .FUNdots a list of additional named arguments passed to `FUN`.
-#' @param match_type One of "all", "matmult", or "none".
+#' @param match_type One of "rowsmatchrowscolsmatchcols", "matmult", or "none".
 #'                   When `...` are matrices,
-#'                   "all" (the default) indicates that
+#'                   "rowsmatchrowscolsmatchcols" (the default) indicates that
 #'                   rowtypes of all `...` matrices must match and
 #'                   coltypes of all `...` matrices must match.
 #'                   If "matmult",
@@ -521,7 +521,7 @@ naryapply_byname <- function(FUN, ...,
 #' matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, TRUE)
 #' matsbyname:::naryapplylogical_byname(`&`, TRUE, TRUE, FALSE)
 naryapplylogical_byname <- function(FUN, ..., 
-                                    .FUNdots = NULL, match_type = c("all", "matmult", "none"), 
+                                    .FUNdots = NULL, match_type = c("rowsmatchrowscolsmatchcols", "matmult", "none"), 
                                     set_rowcoltypes = TRUE, .organize = TRUE, .summarise = FALSE){
   match_type <- match.arg(match_type)
   dots <- list(...)
@@ -531,7 +531,7 @@ naryapplylogical_byname <- function(FUN, ...,
   }
   if (length(dots) == 1) {
     return(unaryapply_byname(FUN, a = dots[[1]], .FUNdots = .FUNdots, 
-                             rowcoltypes = ifelse(set_rowcoltypes, "all", "none")))
+                             rowcoltypes = ifelse(set_rowcoltypes, "both", "none")))
   }
   # Get things started.
   a <- dots[[1]]

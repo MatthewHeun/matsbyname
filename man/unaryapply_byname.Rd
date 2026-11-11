@@ -8,7 +8,7 @@ unaryapply_byname(
   FUN,
   a,
   .FUNdots = NULL,
-  rowcoltypes = c("all", "transpose", "row", "col", "none")
+  rowcoltypes = c("both", "transpose", "row", "col", "none")
 )
 }
 \arguments{
@@ -43,7 +43,7 @@ See \code{prepare_.FUNdots()} for more details on the \code{.FUNdots} argument.
 
 Options for the \code{rowcoltypes} argument are:
 \itemize{
-\item "all": transfer both row and column types of \code{a} directly to output.
+\item "both": transfer both row and column types of \code{a} directly to output.
 \item "transpose": rowtype of \code{a} becomes coltype of output; coltype of \code{a} becomes rowtype of output. "transpose" is helpful for \code{FUN}s that transpose \code{a} upon output.
 \item "row": rowtype of \code{a} becomes both rowtype and coltype of output.
 \item "col": coltype of \code{a} becomes both rowtype and coltype of output.

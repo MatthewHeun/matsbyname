@@ -294,5 +294,5 @@ reallocate_byname <- function(a,
   }
   unaryapply_byname(reallocate_func, a = a,
                     .FUNdots = list(rownames = rownames, colnames = colnames, margin = margin), 
-                    rowcoltypes = "all")
+                    rowcoltypes = "both")
 }

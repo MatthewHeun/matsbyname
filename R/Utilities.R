@@ -14,17 +14,18 @@
 #'
 #' @param a the first argument to be organized
 #' @param b the second argument to be organized
-#' @param match_type one of \code{"all"}, \code{"matmult"}, \code{"none"}.
-#' When both \code{a} and \code{b} are matrices,
-#' "\code{all}" (the default) indicates that
-#' rowtypes of \code{a} must match rowtypes of \code{b} and
-#' coltypes of \code{a} must match coltypes of \code{b}.
-#' If "\code{matmult}",
-#' coltypes of \code{a} must match rowtypes of \code{b}.
-#' @param fill a replacement value for \code{a} or \code{b} if either is missing or \code{NULL}.
+#' @param match_type one of "rowsmatchrowscolsmatchcols", 
+#'                   "matmult", or "none".
+#'                    When both `a` and `b` are matrices,
+#'                    "rowsmatchrowscolsmatchcols" (the default) indicates that
+#'                    rowtypes of `a` must match rowtypes of `b` and
+#'                    coltypes of `a` must match coltypes of `b`.
+#'                    If "matmult",
+#'                    coltypes of `a` must match rowtypes of `b`.
+#' @param fill a replacement value for `a` or `b` if either is missing or `NULL`.
 #'
 #' @return a list with two elements (named \code{a} and \code{b}) containing organized versions of the arguments
-organize_args <- function(a, b, match_type = "all", fill){
+organize_args <- function(a, b, match_type = "rowsmatchrowscolsmatchcols", fill){
   if (missing(a)) {
     if (missing(fill)) {
       stop("Missing argument a with no fill in organize_args.")
@@ -83,7 +84,7 @@ organize_args <- function(a, b, match_type = "all", fill){
   
   # Neither a nor b are lists.
   # First check whether matchtype is a known value.
-  if (!match_type %in% c("all", "matmult", "none"))  {
+  if (!match_type %in% c("rowsmatchrowscolsmatchcols", "matmult", "none"))  {
     stop(paste("Unknown match_type", match_type, "in organize_args."))
   }
   # We don't know if one or both a and b is a matrix.
@@ -95,7 +96,7 @@ organize_args <- function(a, b, match_type = "all", fill){
     } else {
       a <- matrix(a, nrow = nrow(b), ncol = ncol(b), dimnames = dimnames(b))
     }
-    if (match_type == "all") {
+    if (match_type == "rowsmatchrowscolsmatchcols") {
       a <- a %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
     } 
     if (match_type == "matmult") {
@@ -108,7 +109,7 @@ organize_args <- function(a, b, match_type = "all", fill){
     } else {
       b <- matrix(b, nrow = nrow(a), ncol = ncol(a), dimnames = dimnames(a))
     }
-    if (match_type == "all") {
+    if (match_type == "rowsmatchrowscolsmatchcols") {
       b <- b %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     }
     if (match_type == "matmult") {
@@ -120,7 +121,7 @@ organize_args <- function(a, b, match_type = "all", fill){
   # Assume that both a and b are now matrices.
   
   # Verify that row and column types are appropriate.
-  if (match_type == "all") {
+  if (match_type == "rowsmatchrowscolsmatchcols") {
     # If neither rowtype nor coltype are set,
     # skip these tests
     if (!is.null(rowtype(a)) & !is.null(coltype(a)) & !is.null(rowtype(b)) & !is.null(coltype(b))) {
@@ -147,7 +148,7 @@ organize_args <- function(a, b, match_type = "all", fill){
   
   # We already ensured that match_type was one of the known types. 
   # Ensure that matrices have correct row and column names and are in same order.
-  if (match_type == "all") {
+  if (match_type == "rowsmatchrowscolsmatchcols") {
     matrices <- complete_and_sort(a, b)
     outa <- matrices$a %>% setrowtype(rowtype(a)) %>% setcoltype(coltype(a))
     outb <- matrices$b %>% setrowtype(rowtype(b)) %>% setcoltype(coltype(b))
@@ -382,7 +383,7 @@ setrownames_byname <- function(a, rownames){
     return(out)
   }
   unaryapply_byname(rowname_func, a = a, .FUNdots = list(rownames = rownames), 
-                    rowcoltypes = "all")
+                    rowcoltypes = "both")
 }
 
 
@@ -1594,7 +1595,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
     return(out)
   }
   unaryapply_byname(clean_func, a = a, .FUNdots = list(margin = margin, clean_value = clean_value, tol = tol), 
-                    rowcoltypes = "all")
+                    rowcoltypes = "both")
 }
 
 
@@ -1961,7 +1962,7 @@ create_matrix_byname <- function(.dat, nrow, ncol, byrow = FALSE, dimnames,
                                     byrow_val = byrow,
                                     dimnames_val = dimnames),
                     # Transfer any row or column type information in .dat to the output.
-                    rowcoltypes = "all")
+                    rowcoltypes = "both")
 }
 
 
@@ -2034,7 +2035,7 @@ create_rowvec_byname <- function(.dat, dimnames = NA, rowname = NA,
 
   unaryapply_byname(FUN = rowvec_func, 
                     a = .dat,
-                    .FUNdots = list(dimnames_val = dimnames, rowname_val = rowname), rowcoltypes = "all")
+                    .FUNdots = list(dimnames_val = dimnames, rowname_val = rowname), rowcoltypes = "both")
 }
 
 
@@ -2109,5 +2110,5 @@ create_colvec_byname <- function(.dat, dimnames = NA, colname = NA,
   unaryapply_byname(FUN = colvec_func,
                     a = .dat,
                     .FUNdots = list(dimnames_val = dimnames, colname_val = colname),
-                    rowcoltypes = "all")
+                    rowcoltypes = "both")
 }

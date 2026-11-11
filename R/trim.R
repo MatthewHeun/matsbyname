@@ -184,6 +184,8 @@ trim_rows_cols <- function(a = NULL, mat = NULL,
   }
   
   binaryapply_byname(trim_func, a = a, b = mat, .FUNdots = list(margin = margin), 
-                     match_type = "all", set_rowcoltypes = TRUE, .organize = FALSE)
+                     match_type = "rowsmatchrowscolsmatchcols",
+                     set_rowcoltypes = TRUE,
+                     .organize = FALSE)
   
 }

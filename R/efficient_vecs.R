@@ -48,7 +48,7 @@ kvec_from_template_byname <- function(a, k = 1, colname = NA, column = TRUE) {
   }
   
   unaryapply_byname(FUN = k_from_template_func, a = a, 
-                    .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "all")
+                    .FUNdots = list(k_val = k, colname_val = colname, column_val = column), rowcoltypes = "both")
 }
 
 
