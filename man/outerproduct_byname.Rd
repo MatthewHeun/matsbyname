@@ -36,3 +36,20 @@ in the result.
 There is no need, and doing so would only
 increase memory usage.
 }
+\examples{
+A <- matrix(c(2, 3), nrow = 2, ncol = 1, dimnames = list(c("Ar1", "Ar2"), "Ac1"))
+A
+B <- matrix(10, nrow = 1, ncol = 1, dimnames = list("Br1", "Bc1"))
+B
+outerproduct_byname(A, B)
+outerproduct_byname(B, A)
+df <- tibble::tibble(Acol = list(A, A, A), 
+                     Bcol = list(B, B, B)) |> 
+  dplyr::mutate(
+    AB = outerproduct_byname(Acol, Bcol)
+  )
+df
+df$Acol
+df$Bcol
+df$AB
+}

@@ -460,7 +460,9 @@ hatize_byname <- function(v, keep = NULL) {
 #' Multiplying `Inf` by `0` gives `NaN` which would effectively end the stream of calculations.
 #' 
 #' @param v The vector to be hatized and inverted.
-#' @param keep See `hatize_byname()`.
+#' @param keep One of "rownames" or "colnames" or `NULL`.
+#'             If `NULL`, the default, names are kept from 
+#'             the dimension that is not size 1.
 #' @param inf_becomes A value to be substitute for any `Inf` produced by the inversion process. 
 #'        Default is `.Machine$double.xmax`. 
 #'        Another reasonable value is `Inf`.

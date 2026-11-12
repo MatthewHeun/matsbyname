@@ -25,9 +25,9 @@ argument \code{a}.
 A selector matrix has \code{1} where non-zero elements of \code{a} are found
 and \code{0} where zeros (within \code{tol}) elements of \code{a} are found.
 If \code{margin = 1}, the result is a column vector
-that tells which rows have non-zero elements.
+that tells which rows have non-zero elements in at least 1 column.
 If \code{margin = 2}, the result is a row vector
-that tells which columns have non-zero elements.
+that tells which columns have non-zero elements in at least 1 row.
 If \code{margin = c(1, 2)} (the default), the result is a matrix
 that tells where non-zero elements exist.
 }
@@ -39,4 +39,6 @@ m <- matrix(c(0, 1e-11, 10,
                             c("c1", "c2", "c3"))) |> 
   setrowtype("rows") |> setcoltype("cols")
 selector_byname(m)
+selector_byname(m, margin = 1)
+selector_byname(m, margin = 2)
 }

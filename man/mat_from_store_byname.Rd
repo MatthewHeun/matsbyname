@@ -74,7 +74,7 @@ using special matching rules between matrix \code{a} and matrix or vector \code{
 \details{
 The output of this function is a matrix or vector with the same
 sense as \code{v} but with names of \code{a}'s \code{margin}
-placed on \code{v}'s \code{margin_v} accordoing to matching rules.
+placed on \code{v}'s \code{margin_v} according to matching rules.
 The names of the output rows are taken from
 the \code{margin} of \code{a}.
 (\code{a = 1} means rows; \code{a = 2} means columns.)

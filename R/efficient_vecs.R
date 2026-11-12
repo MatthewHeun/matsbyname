@@ -296,7 +296,7 @@ vec_from_store_byname <- function(a, v, a_piece = "all", v_piece = "all", colnam
 #' 
 #' The output of this function is a matrix or vector with the same 
 #' sense as `v` but with names of `a`'s `margin` 
-#' placed on `v`'s `margin_v` accordoing to matching rules.
+#' placed on `v`'s `margin_v` according to matching rules.
 #' The names of the output rows are taken from
 #' the `margin` of `a`.
 #' (`a = 1` means rows; `a = 2` means columns.)
