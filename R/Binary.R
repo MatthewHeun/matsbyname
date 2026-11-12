@@ -286,20 +286,71 @@ hadamardproduct_byname <- function(..., .summarise = FALSE){
 }
 
 
+
+#' Name-wise outer product of two matrices
+#' 
+#' Calculates the outer product of two matrices.
+#' The outer product is the product of all combinations of 
+#' rows and columns.
+#' The result is a four-dimensional array.
+#' 
+#' Row and column types are ignored for this calculation, and
+#' the result does not contain row or column types.
+#' 
+#' Note that which order of multiplicand and multiplier
+#' does not affect the result, except
+#' that the order of indices may be different.
+#' 
+#' Note, too, that no rows and no columns are not added
+#' to multiplicand or multiplier to 
+#' ensure conformity for the outer product operation.
+#' All combinations of rows and columns are present
+#' in the result.
+#' There is no need, and doing so would only 
+#' increase memory usage.
+#'
+#' @param multiplicand The left side of the outer product.
+#' @param multiplier The right side of the outer product.
+#'
+#' @returns The four-dimensional outer product of two matrices.
+#' 
+#' @export
+#'
+#' @examples
+#' A <- matrix(c(2, 3), nrow = 2, ncol = 1, dimnames = list(c("Ar1", "Ar2"), "Ac1"))
+#' A
+#' B <- matrix(10, nrow = 1, ncol = 1, dimnames = list("Br1", "Bc1"))
+#' B
+#' outerproduct_byname(A, B)
+#' outerproduct_byname(B, A)
+#' df <- tibble::tibble(Acol = list(A, A, A), 
+#'                      Bcol = list(B, B, B)) |> 
+#'   dplyr::mutate(
+#'     AB = outerproduct_byname(Acol, Bcol)
+#'   )
+#' df
+#' df$Acol
+#' df$Bcol
+#' df$AB
+outerproduct_byname <- function(multiplicand, multiplier) {
+  binaryapply_byname(FUN = outer, multiplicand, multiplier, match_type = "none")
+}
+
+
 #' Name-wise matrix element division
 #'
 #' Element-wise division of two matrices.
 #' 
-#' Performs a union and sorting of names of rows and columns for both \code{dividend} and \code{divisor}
+#' Performs a union and sorting of names of rows and columns for both `dividend` and `divisor`
 #' prior to element division.
 #' Zeroes are inserted for missing matrix elements.
 #' Doing so ensures that
-#' the dimensions of the \code{dividend} and \code{divisor} will be conformable.
+#' the dimensions of the `dividend` and `divisor` will be conformable.
 #'
 #' @param dividend Dividend matrix or constant
 #' @param divisor Divisor matrix or constant
 #'
-#' @return A matrix representing the name-wise element quotient of \code{dividend} and \code{divisor}
+#' @return A matrix representing the name-wise element quotient of `dividend` and `divisor`
 #' 
 #' @export
 #'

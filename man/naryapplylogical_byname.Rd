@@ -8,7 +8,7 @@ naryapplylogical_byname(
   FUN,
   ...,
   .FUNdots = NULL,
-  match_type = c("all", "matmult", "none"),
+  match_type = c("rowsmatchrowscolsmatchcols", "matmult", "none"),
   set_rowcoltypes = TRUE,
   .organize = TRUE,
   .summarise = FALSE
@@ -21,9 +21,9 @@ naryapplylogical_byname(
 
 \item{.FUNdots}{a list of additional named arguments passed to \code{FUN}.}
 
-\item{match_type}{One of "all", "matmult", or "none".
+\item{match_type}{One of "rowsmatchrowscolsmatchcols", "matmult", or "none".
 When \code{...} are matrices,
-"all" (the default) indicates that
+"rowsmatchrowscolsmatchcols" (the default) indicates that
 rowtypes of all \code{...} matrices must match and
 coltypes of all \code{...} matrices must match.
 If "matmult",

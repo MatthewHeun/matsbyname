@@ -460,7 +460,9 @@ hatize_byname <- function(v, keep = NULL) {
 #' Multiplying `Inf` by `0` gives `NaN` which would effectively end the stream of calculations.
 #' 
 #' @param v The vector to be hatized and inverted.
-#' @param keep See `hatize_byname()`.
+#' @param keep One of "rownames" or "colnames" or `NULL`.
+#'             If `NULL`, the default, names are kept from 
+#'             the dimension that is not size 1.
 #' @param inf_becomes A value to be substitute for any `Inf` produced by the inversion process. 
 #'        Default is `.Machine$double.xmax`. 
 #'        Another reasonable value is `Inf`.
@@ -905,7 +907,7 @@ fractionize_byname <- function(a, margin, inf_becomes = .Machine$double.xmax){
     # stop(paste("Unknown margin", margin, "in fractionize_byname. margin should be 1, 2, or c(1,2)."))
   }
   unaryapply_byname(fractionize_func, a = a, .FUNdots = list(margin = margin), 
-                    rowcoltypes = "all")
+                    rowcoltypes = "both")
 }
 
 
@@ -1289,7 +1291,7 @@ Iminus_byname <- function(a){
       setcoltype(coltype(a_mat))
     difference_byname(identize_byname(A), A)
   }
-  unaryapply_byname(iminus_func, a = a, rowcoltypes = "all")
+  unaryapply_byname(iminus_func, a = a, rowcoltypes = "both")
 }
 
 
@@ -1410,7 +1412,7 @@ replaceNaN_byname <- function(a, val = 0){
     }
     return(a_mat)
   }
-  unaryapply_byname(replace_func, a = a, rowcoltypes = "all")
+  unaryapply_byname(replace_func, a = a, rowcoltypes = "both")
 }
 
 
@@ -1548,7 +1550,8 @@ compare_byname <- function(a, compare_fun = c("==", "!=", "<", "<=", ">=", ">"),
     compare_fun(a, val)
   }
   unaryapply_byname(FUN = test_func, a = a, 
-                    .FUNdots = c(compare_fun = compare_fun, val = val), rowcoltypes = "all")
+                    .FUNdots = c(compare_fun = compare_fun, val = val), 
+                    rowcoltypes = "both")
 }
 
 
@@ -1590,11 +1593,68 @@ all_byname <- function(a){
 #' @examples
 #' any_byname(matrix(c(TRUE, FALSE), nrow = 2, ncol = 1))
 #' any_byname(matrix(rep(FALSE, times = 4), nrow = 2, ncol = 2))
-any_byname <- function(a){
-  any_func <- function(a){
+any_byname <- function(a) {
+  any_func <- function(a) {
     any(a)
   }
   unaryapply_byname(FUN = any_func, a = a, rowcoltypes = "none")
 }
 
 
+
+#' Create selector matrix
+#' 
+#' Creates a selector matrix or vector from 
+#' argument `a`.
+#' A selector matrix has `1` where non-zero elements of `a` are found
+#' and `0` where zeros (within `tol`) elements of `a` are found.
+#' If `margin = 1`, the result is a column vector
+#' that tells which rows have non-zero elements in at least 1 column.
+#' If `margin = 2`, the result is a row vector
+#' that tells which columns have non-zero elements in at least 1 row.
+#' If `margin = c(1, 2)` (the default), the result is a matrix
+#' that tells where non-zero elements exist.
+#'
+#' @param a The matrix template used to create a selector.
+#' @param margin The margin (rows or columns) over which to create a selector.
+#' @param tol The tolerance with which values are determined to be zero.
+#' @param sumname The name of the row or column containing sums
+#'                when `margin = 1` or `margin = 2`.
+#'
+#' @returns A selection matrix or vector containing `1`s or `0`s. 
+#' 
+#' @export
+#'
+#' @examples
+#' m <- matrix(c(0, 1e-11, 10,
+#'               -13, 0, 42), byrow = TRUE, 
+#'             nrow = 2, ncol = 3, 
+#'             dimnames = list(c("r1", "r2"), 
+#'                             c("c1", "c2", "c3"))) |> 
+#'   setrowtype("rows") |> setcoltype("cols")
+#' selector_byname(m)
+#' selector_byname(m, margin = 1)
+#' selector_byname(m, margin = 2)
+selector_byname <- function(a, margin = c(1, 2), tol = 1e-10, sumname = "sums") {
+  selector_func <- function(a, this_margin, this_tol) {
+    logicalmat <- (abs(a) > tol) + 0 # +0 converts to numeric
+    if (isTRUE(all.equal(margin, 1))) {
+      rowsums <- logicalmat |> 
+        rowsums_byname(colname = sumname)
+      out <- quotient_byname(rowsums, rowsums) |> 
+        replaceNaN_byname()
+    } else if (isTRUE(all.equal(margin, 2))) {
+      colsums <- logicalmat |> 
+        colsums_byname(rowname = sumname)
+      out <- quotient_byname(colsums, colsums) |> 
+        replaceNaN_byname()
+    } else if (isTRUE(all.equal(margin, c(1, 2)))) {
+      out <- logicalmat
+    } else {
+      stop("margin is not 1, 2, or c(1, 2) in selector_byname()")
+    }
+    out
+  }
+  unaryapply_byname(FUN = selector_func, a = a,
+                    .FUNdots = list(this_margin = margin, this_tol = tol))
+}

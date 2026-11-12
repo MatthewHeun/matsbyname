@@ -9,7 +9,9 @@ hatinv_byname(v, keep = NULL, inf_becomes = .Machine$double.xmax)
 \arguments{
 \item{v}{The vector to be hatized and inverted.}
 
-\item{keep}{See \code{hatize_byname()}.}
+\item{keep}{One of "rownames" or "colnames" or \code{NULL}.
+If \code{NULL}, the default, names are kept from
+the dimension that is not size 1.}
 
 \item{inf_becomes}{A value to be substitute for any \code{Inf} produced by the inversion process.
 Default is \code{.Machine$double.xmax}.

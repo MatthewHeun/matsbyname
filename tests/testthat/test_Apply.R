@@ -114,7 +114,7 @@ test_that("unaryapply_byname() works as expected", {
                difference_byname(0, U) %>% setcoltype("Products"))
   expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "col"), 
                difference_byname(0, U) %>% setrowtype("Industries"))
-  expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "all"), difference_byname(0, U))
+  expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "both"), difference_byname(0, U))
 })
 
 
@@ -127,7 +127,7 @@ test_that("unaryapply_byname() works with Matrix objects", {
                difference_byname(0, U) %>% setcoltype("Products"))
   expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "col"), 
                difference_byname(0, U) %>% setrowtype("Industries"))
-  expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "all"), difference_byname(0, U))
+  expect_equal(unaryapply_byname(FUN = `-`, a = U, rowcoltypes = "both"), difference_byname(0, U))
 })
 
 
@@ -137,7 +137,9 @@ test_that("binaryapply_byname() works as expected", {
                list(5, 7, 9))
   expect_error(binaryapply_byname(FUN = sum, 
                                   a = NULL, b = NULL, 
-                                  match_type = "all", set_rowcoltypes = TRUE, .organize = FALSE), 
+                                  match_type = "rowsmatchrowscolsmatchcols",
+                                  set_rowcoltypes = TRUE,
+                                  .organize = FALSE), 
                "set_rowcoltypes == TRUE, but a and b and NULL. How can we set row and column types from NULL?")
 })
 

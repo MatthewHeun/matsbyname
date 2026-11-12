@@ -9,7 +9,7 @@ binaryapply_byname(
   a,
   b,
   .FUNdots = NULL,
-  match_type = c("all", "matmult", "none"),
+  match_type = c("rowsmatchrowscolsmatchcols", "matmult", "none"),
   set_rowcoltypes = TRUE,
   .organize = TRUE
 )
@@ -25,7 +25,7 @@ binaryapply_byname(
 
 \item{match_type}{one of "all", "matmult", or "none".
 When both \code{a} and \code{b} are matrices,
-"all" (the default) indicates that
+"rowsmatchrowscolsmatchcols" (the default) indicates that
 rowtypes of \code{a} must match rowtypes of \code{b} and
 coltypes of \code{a} must match coltypes of \code{b}.
 If "matmult",
