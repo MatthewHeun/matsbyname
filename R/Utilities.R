@@ -1602,7 +1602,6 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #' Test whether this is the zero matrix
 #' 
 #' Note that this function tests whether the elements of `abs(a)` are `<= tol`.
-#' The default value for `tol` is `1e-6`.
 #' So, you can set `tol = 0` to discover if `a` is EXACTLY the zero matrix.
 #' 
 #' If `a` contains any `NA` values, 
@@ -1611,6 +1610,7 @@ clean_byname <- function(a, margin = c(1, 2), clean_value = 0, tol = 0){
 #' @param a A matrix or list of matrices.
 #' @param tol The allowable deviation from 0 for any element.
 #'            Interpreted as an absolute value.
+#'            Default is 1e-6.
 #' 
 #' @return `TRUE` Iff this is the zero matrix within `tol`.
 #' 

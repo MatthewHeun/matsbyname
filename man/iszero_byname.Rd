@@ -10,14 +10,14 @@ iszero_byname(a, tol = 1e-06)
 \item{a}{A matrix or list of matrices.}
 
 \item{tol}{The allowable deviation from 0 for any element.
-Interpreted as an absolute value.}
+Interpreted as an absolute value.
+Default is 1e-6.}
 }
 \value{
 \code{TRUE} Iff this is the zero matrix within \code{tol}.
 }
 \description{
 Note that this function tests whether the elements of \code{abs(a)} are \verb{<= tol}.
-The default value for \code{tol} is \code{1e-6}.
 So, you can set \code{tol = 0} to discover if \code{a} is EXACTLY the zero matrix.
 }
 \details{
