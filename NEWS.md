@@ -10,6 +10,7 @@ Cite all releases with DOI
 which always resolves to the latest release.
 
 
+* Better documentation of `select_rowcol_piece_byname()`.
 * New function `selector_byname()` creates a selector
   matrix with `1`s for non-zero elements of a matrix
   and `0`s for zero (within tolerance) elements of a matrix.
