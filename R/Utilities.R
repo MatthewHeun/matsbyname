@@ -1388,9 +1388,11 @@ select_rows_cols_byname <- function(a, margin = c(1, 2),
 #' in the matrix, `NULL` is returned.
 #' 
 #' @param a A matrix or list of matrices whose rows or columns are to be selected.
-#' @param retain The row or column names to be retained.
+#' @param retain The row or column names to be retained. 
+#'               May be a string vector, which is interpreted with OR logic.
 #'               Default is `NULL`, meaning that removal is requested.
 #' @param remove The row or column names to be removed.
+#'               May be a string vector, which is interpreted with OR logic.
 #'               Default is `NULL`, meaning that retaining is requested.
 #' @param piece The piece of row or column names to be assessed.
 #'              Default is "all", indicating that the entire label will be assessed.
